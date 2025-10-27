@@ -8,7 +8,7 @@ export default function Brutalist() {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <img
-                src="/logo.png"
+                src="logo.png"
                 alt="atmix logo"
                 className="w-12 h-12"
               />

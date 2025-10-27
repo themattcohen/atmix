@@ -7,7 +7,7 @@ export default function Warm() {
         <header className="mb-16 md:mb-24 flex justify-between items-start">
           <div className="flex items-center gap-4">
             <img
-              src="/logo.png"
+              src="logo.png"
               alt="atmix logo"
               className="w-14 h-14 md:w-16 md:h-16"
             />
