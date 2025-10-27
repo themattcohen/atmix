@@ -5,22 +5,17 @@ export default function Brutalist() {
 
         {/* Header */}
         <header className="mb-24 border-b border-black pb-8">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
-              <img
-                src="logo.png"
-                alt="atmix logo"
-                className="w-12 h-12"
-              />
-              <div>
-                <p className="text-sm text-gray-600">
-                  audit trail mix<br />because the name was available and I thought it was funny
-                </p>
-              </div>
+          <div className="flex items-center gap-4">
+            <img
+              src="logo.png"
+              alt="atmix logo"
+              className="w-12 h-12"
+            />
+            <div>
+              <p className="text-sm text-gray-600">
+                audit trail mix - because the name was available and I thought it was funny
+              </p>
             </div>
-            <a href="mailto:matt@atmix.org" className="hover:underline text-sm">
-              matt@atmix.org
-            </a>
           </div>
         </header>
 
@@ -32,6 +27,9 @@ export default function Brutalist() {
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
               I'm not looking for full-time work - I'm enjoying life. But I like solving problems that involve building systems, implementing automations, and making workflows actually work. Most finance people think more work is better. I think the right tech stack matters more than working harder.
+            </p>
+            <p>
+              I also do broader operations work beyond just finance - workflows and systems that need to actually function. Turns out growing a startup to 150 people and a seven-figure accounting practice are effective proving grounds for figuring out what works under pressure.
             </p>
             <p>
               Also: I bake a lot of bread, ride bikes up mountains, and have two dogs who think they're helping.
@@ -58,7 +56,13 @@ export default function Brutalist() {
               </li>
             </ul>
             <p>
-              On the side, I built an accounting practice that started as helping friends and grew into something real. Sold it on Tax Day 2025 - I took it from zero to one, and the new owner is taking it to the next level. I'm excited about that. Still happy to make intros if you need a great accountant.
+              On the side, I accidentally started an accounting practice that grew into something real.
+            </p>
+            <p>
+              Sold it on Tax Day 2025 - I took it from zero to one, and the new owner is taking it to the next level. I'm excited about that.
+            </p>
+            <p>
+              Always happy to make intros if you need a great accountant.
             </p>
           </div>
         </section>
@@ -129,6 +133,7 @@ export default function Brutalist() {
               <li>Handle migrations and integrations</li>
               <li>Build scalable finance ops that don't require proportional hiring</li>
               <li>Fix broken processes before they get expensive</li>
+              <li>Core business operations consulting - making workflows and systems actually work</li>
             </ul>
             <p className="mt-6">
               Good fit if you're scaling and your finance ops are held together with spreadsheets and hope. You value efficiency over "we've always done it this way." You're willing to invest in the right tools.
@@ -151,9 +156,6 @@ export default function Brutalist() {
           >
             matt@atmix.org
           </a>
-          <p className="mt-8 leading-relaxed">
-            I look forward to hearing from you.
-          </p>
         </section>
 
         {/* Footer */}
