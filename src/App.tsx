@@ -4,7 +4,7 @@ import Warm from './pages/Warm';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Navigate to="/warm" replace />} />
         <Route path="/brutalist" element={<Brutalist />} />
