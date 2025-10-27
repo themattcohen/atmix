@@ -13,9 +13,8 @@ export default function Brutalist() {
                 className="w-12 h-12"
               />
               <div>
-                <h1 className="text-2xl font-bold">atmix.org</h1>
-                <p className="text-sm mt-1 text-gray-600">
-                  audit trail mix - because the name was available and I thought it was funny
+                <p className="text-sm text-gray-600">
+                  audit trail mix<br />because the name was available and I thought it was funny
                 </p>
               </div>
             </div>
@@ -28,7 +27,7 @@ export default function Brutalist() {
         {/* Hero */}
         <section className="mb-24">
           <h2 className="text-4xl font-bold mb-8 leading-tight">
-            Hi, I'm Matt Cohen. I'm a CPA who does project-based work and fractional controller roles for companies that need their finance operations built right.
+            Hi, I'm Matt.<br />I'm a CPA who does project-based work and fractional controller roles for companies that need their finance operations built right.
           </h2>
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
@@ -48,7 +47,7 @@ export default function Brutalist() {
               I started in audit (because that's what you do), moved to forensics (more interesting problems), then jumped to private industry as employee #5 at a startup.
             </p>
             <p>
-              I built the entire finance and accounting function from scratch and scaled it to 150 employees through a liquidity event. Some highlights:
+              I built the entire finance and accounting function from scratch and scaled it to 150 employees through a liquidity event. A couple highlights:
             </p>
             <ul className="list-none space-y-3 ml-4 border-l-2 border-black pl-6">
               <li>
