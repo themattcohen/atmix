@@ -4,7 +4,21 @@
       "mcp__sequential-thinking__sequentialthinking",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "Bash(gh run list:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(git log:*)",
+      "WebFetch(domain:docs.github.com)"
     ],
     "deny": [],
     "ask": []
