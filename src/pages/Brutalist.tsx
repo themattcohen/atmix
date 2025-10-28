@@ -13,7 +13,7 @@ export default function Brutalist() {
             />
             <div>
               <p className="text-sm text-gray-600">
-                audit trail mix - because the name was available and I thought it was funny
+                audit trail mix<br />because the name was available and I thought it was funny
               </p>
             </div>
           </div>
@@ -22,7 +22,7 @@ export default function Brutalist() {
         {/* Hero */}
         <section className="mb-24">
           <h2 className="text-4xl font-bold mb-8 leading-tight">
-            Hi, I'm Matt.<br />I'm a CPA who does project-based work and fractional controller roles for companies that need their finance operations built right.
+            Hi, I'm Matt.<br />I'm a CPA who does project-based work for companies that need their finance operations built right.
           </h2>
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
