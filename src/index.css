@@ -1,3 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Walkies grain texture overlay */
+.walkies-grain::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Walkies custom styles */
+.walkies-nav-gradient {
+  background: linear-gradient(to bottom, #f8f5f0 60%, transparent);
+}
+
+.walkies-problems-gradient {
+  background: linear-gradient(135deg, #7d9b8a 0%, #2d4a3e 100%);
+}
+
+.walkies-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.walkies-quote::before {
+  content: '"';
+  font-family: 'Fraunces', serif;
+  font-size: 6rem;
+  color: #7d9b8a;
+  opacity: 0.3;
+  position: absolute;
+  top: 10px;
+  left: 24px;
+  line-height: 1;
+}
+
+.walkies-anti-quote::before {
+  content: '"';
+  font-family: 'Fraunces', serif;
+  font-size: 40rem;
+  position: absolute;
+  top: -120px;
+  right: -40px;
+  opacity: 0.05;
+  line-height: 1;
+}
