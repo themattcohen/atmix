@@ -1,0 +1,79 @@
+fragment PageParts on Page {
+  __typename
+  theme
+  header {
+    __typename
+    logoAlt
+    tagline
+  }
+  hero {
+    __typename
+    heading
+    paragraphs {
+      __typename
+      text
+    }
+  }
+  background {
+    __typename
+    heading
+    introParagraphs {
+      __typename
+      text
+    }
+    highlights {
+      __typename
+      text
+    }
+    outroParagraphs {
+      __typename
+      text
+    }
+  }
+  howIThink {
+    __typename
+    heading
+    paragraphs {
+      __typename
+      text
+    }
+  }
+  thingsBuilt {
+    __typename
+    heading
+    items {
+      __typename
+      title
+      description
+    }
+  }
+  outsideWork {
+    __typename
+    heading
+    paragraphs {
+      __typename
+      text
+    }
+  }
+  openTo {
+    __typename
+    heading
+    intro
+    bulletPoints {
+      __typename
+      text
+    }
+    goodFit
+    notAFit
+  }
+  contact {
+    __typename
+    heading
+    text
+    email
+  }
+  footer {
+    __typename
+    copyright
+  }
+}
