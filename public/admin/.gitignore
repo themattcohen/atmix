@@ -1,2 +1,2 @@
-index.html
-assets/
+# Admin assets are pre-built and committed
+# This avoids TinaCMS build issues on Vercel
