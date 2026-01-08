@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "tinacms dev -c \"vite\"",
-    "build": "tinacms build && tsc && vite build",
+    "build": "tinacms build --skip-cloud-checks && tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
