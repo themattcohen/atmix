@@ -1,0 +1,114 @@
+{
+  "theme": "brutalist",
+  "header": {
+    "logoAlt": "atmix logo",
+    "tagline": "audit trail mix\nbecause the name was available and I thought it was funny"
+  },
+  "hero": {
+    "heading": "Hi, I'm Matt.\nI'm a CPA who does project-based work for companies that need their finance operations built right.",
+    "paragraphs": [
+      {
+        "text": "I'm not looking for full-time work - I'm enjoying life. But I like solving problems that involve building systems, implementing automations, and making workflows actually work. Most finance people think more work is better. I think the right tech stack matters more than working harder."
+      },
+      {
+        "text": "I also do broader operations work beyond just finance - workflows and systems that need to actually function. Turns out growing a startup to 150 people and a seven-figure accounting practice are effective proving grounds for figuring out what works under pressure."
+      },
+      {
+        "text": "Also: I bake a lot of bread, ride bikes up mountains, and have two dogs who think they're helping."
+      }
+    ]
+  },
+  "background": {
+    "heading": "Background",
+    "introParagraphs": [
+      {
+        "text": "I started in audit (because that's what you do), moved to forensics (more interesting problems), then jumped to private industry as employee #5 at a startup."
+      },
+      {
+        "text": "I built the entire finance and accounting function from scratch and scaled it to 150 employees through a liquidity event. A couple highlights:"
+      }
+    ],
+    "highlights": [
+      {
+        "text": "Migrated from QuickBooks to NetSuite in 20 days without professional services. They were taking too long, so I just did it."
+      },
+      {
+        "text": "Built systems to process $85MM in monthly AP - about 4,000 invoices - with 1.5 FTEs. Every invoice fully audited against POs. Math works when you don't do it manually."
+      }
+    ],
+    "outroParagraphs": [
+      {
+        "text": "On the side, I accidentally started an accounting practice that grew into something real."
+      },
+      {
+        "text": "Sold it on Tax Day 2025 - I took it from zero to one, and the new owner is taking it to the next level. I'm excited about that."
+      },
+      {
+        "text": "Always happy to make intros if you need a great accountant."
+      }
+    ]
+  },
+  "howIThink": {
+    "heading": "How I Think",
+    "paragraphs": [
+      {
+        "text": "The right systems, automations, and tech stack can save hundreds of hours and prevent countless mistakes. I've spent my career building finance operations that scale without adding headcount proportionally."
+      },
+      {
+        "text": "I care about making finance operations efficient, not just compliant. Building systems that prevent problems instead of catching them late. Using technology as a leverage point, not a checkbox. Doing work that compounds over time."
+      }
+    ]
+  },
+  "thingsBuilt": {
+    "heading": "Things I've Built",
+    "items": [
+      {
+        "title": "An Accounting Practice",
+        "description": "Started as a side hustle, grew it into something real, sold it because I wanted to build other things. The new owner is taking it to the next level."
+      },
+      {
+        "title": "Finance Operations That Scale",
+        "description": "Systems that don't drown you in month-end close. Board decks that don't take 40 hours to pull together. Processes that work when you're 10 people and still work when you're 150."
+      },
+      {
+        "title": "benchproof.app",
+        "description": "A tool (and Chrome extension) for bread bakers. Baking bread is technically fussy in annoying ways. I got tired of the friction, so I built something to fix it. Turns out other people had the same problem."
+      }
+    ]
+  },
+  "outsideWork": {
+    "heading": "Outside Work",
+    "paragraphs": [
+      {
+        "text": "Mountain biking, road biking, skiing. I like going up hills and then coming back down them."
+      },
+      {
+        "text": "Baking bread. It's meditative until you realize you forgot to start your levain the night before."
+      },
+      {
+        "text": "Two dogs who are convinced they're helping with all of the above."
+      }
+    ]
+  },
+  "openTo": {
+    "heading": "What I'm Open To",
+    "intro": "Project-based work and fractional controller roles where I can build or fix something:",
+    "bulletPoints": [
+      { "text": "Implement systems, automations, workflows" },
+      { "text": "Handle migrations and integrations" },
+      { "text": "Build scalable finance ops that don't require proportional hiring" },
+      { "text": "Fix broken processes before they get expensive" },
+      { "text": "Core business operations consulting - making workflows and systems actually work" }
+    ],
+    "goodFit": "Good fit if you're scaling and your finance ops are held together with spreadsheets and hope. You value efficiency over \"we've always done it this way.\" You're willing to invest in the right tools.",
+    "notAFit": "Not a fit if you need someone 40+ hours a week indefinitely, or you're looking for someone to just match receipts and send reports."
+  },
+  "contact": {
+    "heading": "Let's Talk",
+    "text": "If something here resonates or you think we should work together on something:",
+    "email": "matt@atmix.org"
+  },
+  "footer": {
+    "copyright": "2025 Matt Cohen"
+  }
+}
