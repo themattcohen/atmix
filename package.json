@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "tinacms dev -c \"vite\"",
-    "build": "tinacms build --skip-cloud-checks && tsc && vite build",
+    "build": "tsc && vite build",
+    "build:admin": "tinacms build --skip-cloud-checks",
     "preview": "vite preview"
   },
   "dependencies": {
