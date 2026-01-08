@@ -5,7 +5,7 @@
     "tagline": "audit trail mix\nbecause the name was available and I thought it was funny"
   },
   "hero": {
-    "heading": "Hi, I'm Matt.\nI'm a CPA who does project-based work for companies that need their finance operations built right.",
+    "heading": "Hi, I'm Matt.\nI'm a CPA who does project-based work for companies that need their operations built right.",
     "paragraphs": [
       {
         "text": "I'm not looking for full-time work - I'm enjoying life. But I like solving problems that involve building systems, implementing automations, and making workflows actually work. Most finance people think more work is better. I think the right tech stack matters more than working harder."
@@ -94,11 +94,21 @@
     "heading": "What I'm Open To",
     "intro": "Project-based work and fractional controller roles where I can build or fix something:",
     "bulletPoints": [
-      { "text": "Implement systems, automations, workflows" },
-      { "text": "Handle migrations and integrations" },
-      { "text": "Build scalable finance ops that don't require proportional hiring" },
-      { "text": "Fix broken processes before they get expensive" },
-      { "text": "Core business operations consulting - making workflows and systems actually work" }
+      {
+        "text": "Implement systems, automations, workflows"
+      },
+      {
+        "text": "Handle migrations and integrations"
+      },
+      {
+        "text": "Build scalable finance ops that don't require proportional hiring"
+      },
+      {
+        "text": "Fix broken processes before they get expensive"
+      },
+      {
+        "text": "Core business operations consulting - making workflows and systems actually work"
+      }
     ],
     "goodFit": "Good fit if you're scaling and your finance ops are held together with spreadsheets and hope. You value efficiency over \"we've always done it this way.\" You're willing to invest in the right tools.",
     "notAFit": "Not a fit if you need someone 40+ hours a week indefinitely, or you're looking for someone to just match receipts and send reports."
