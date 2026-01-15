@@ -73,6 +73,26 @@
       {
         "title": "benchproof.app",
         "description": "A tool (and Chrome extension) for bread bakers. Baking bread is technically fussy in annoying ways. I got tired of the friction, so I built something to fix it. Turns out other people had the same problem."
+      },
+      {
+        "title": "Automation for a Broker Business",
+        "description": "Email routing + project management. Saved 45 mins per day for the company's most expensive employee. Quote turnaround went from hours to minutes. Digital board replaced printed sheets."
+      },
+      {
+        "title": "AI Voice Agent for a Cleaning Company",
+        "description": "Calls Angi leads within 2 minutes. Quotes, schedules, connects to owner if needed. No more lost leads."
+      },
+      {
+        "title": "Travel Documentation System",
+        "description": "Email and photo geotag scraping for a busy CEO. Automated proof of where he was and how he traveled."
+      },
+      {
+        "title": "Provider Payment Template for Medical Practice",
+        "description": "Consolidated disparate reports for doctor commission transparency. Calculation time: 25 hours per doctor per month down to under one hour. Centralized math, bulletproof accuracy."
+      },
+      {
+        "title": "Marketing Measurement Dashboard",
+        "description": "Funnel tracking by lead source. Shows prospect behavior and quality to help allocate marketing spend."
       }
     ]
   },
