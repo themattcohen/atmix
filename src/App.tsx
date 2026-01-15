@@ -7,7 +7,6 @@ function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Brutalist />} />
-        <Route path="/brutalist" element={<Brutalist />} />
         <Route path="/walkies" element={<Walkies />} />
       </Routes>
     </BrowserRouter>
