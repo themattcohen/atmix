@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Brutalist from './pages/Brutalist';
 import Walkies from './pages/Walkies';
+import WorkingTogether from './pages/WorkingTogether';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Brutalist />} />
         <Route path="/walkies" element={<Walkies />} />
+        <Route path="/working-together" element={<WorkingTogether />} />
       </Routes>
     </BrowserRouter>
   );
