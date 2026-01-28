@@ -25,10 +25,137 @@ export default defineConfig({
   schema: {
     collections: [
       {
+        name: "workingTogether",
+        label: "Working Together Page",
+        path: "content/pages",
+        format: "json",
+        match: {
+          include: "working-together",
+        },
+        fields: [
+          {
+            type: "string",
+            name: "theme",
+            label: "Theme",
+            required: true,
+          },
+          {
+            type: "object",
+            name: "header",
+            label: "Header",
+            fields: [
+              { type: "string", name: "logoAlt", label: "Logo Alt Text" },
+              { type: "string", name: "tagline", label: "Tagline" },
+            ],
+          },
+          {
+            type: "string",
+            name: "title",
+            label: "Page Title",
+            required: true,
+          },
+          {
+            type: "object",
+            name: "intro",
+            label: "Introduction",
+            fields: [
+              {
+                type: "object",
+                name: "paragraphs",
+                label: "Paragraphs",
+                list: true,
+                fields: [
+                  { type: "string", name: "text", label: "Text", ui: { component: "textarea" } },
+                ],
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "sections",
+            label: "Main Sections",
+            list: true,
+            fields: [
+              { type: "string", name: "heading", label: "Section Heading" },
+              {
+                type: "object",
+                name: "content",
+                label: "Content Items",
+                list: true,
+                fields: [
+                  {
+                    type: "string",
+                    name: "type",
+                    label: "Content Type",
+                    options: ["paragraph", "pullquote"],
+                  },
+                  { type: "string", name: "text", label: "Text", ui: { component: "textarea" } },
+                ],
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "notRightFor",
+            label: "Not Right For Section",
+            fields: [
+              { type: "string", name: "heading", label: "Heading" },
+              {
+                type: "object",
+                name: "items",
+                label: "Items",
+                list: true,
+                fields: [
+                  { type: "string", name: "text", label: "Text", ui: { component: "textarea" } },
+                ],
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "goodFitFor",
+            label: "Good Fit For Section",
+            fields: [
+              { type: "string", name: "heading", label: "Heading" },
+              {
+                type: "object",
+                name: "items",
+                label: "Items",
+                list: true,
+                fields: [
+                  { type: "string", name: "text", label: "Text", ui: { component: "textarea" } },
+                ],
+              },
+            ],
+          },
+          {
+            type: "object",
+            name: "contact",
+            label: "Contact Section",
+            fields: [
+              { type: "string", name: "heading", label: "Heading" },
+              { type: "string", name: "text", label: "Text" },
+              { type: "string", name: "email", label: "Email" },
+            ],
+          },
+          {
+            type: "object",
+            name: "footer",
+            label: "Footer",
+            fields: [
+              { type: "string", name: "copyright", label: "Copyright" },
+            ],
+          },
+        ],
+      },
+      {
         name: "page",
         label: "Pages",
         path: "content/pages",
         format: "json",
+        match: {
+          include: "brutalist",
+        },
         fields: [
           {
             type: "string",
