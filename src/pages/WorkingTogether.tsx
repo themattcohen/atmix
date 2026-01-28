@@ -14,7 +14,7 @@ export default function WorkingTogether() {
         <header className="mb-20 pb-6 border-b border-black">
           <div className="flex items-center gap-3">
             <img
-              src="logo.png"
+              src="/logo.png"
               alt={content.header.logoAlt}
               className="w-7 h-7"
             />
