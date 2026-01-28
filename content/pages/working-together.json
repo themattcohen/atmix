@@ -1,0 +1,169 @@
+{
+  "theme": "working-together",
+  "header": {
+    "logoAlt": "Audit Trail Mix Logo",
+    "tagline": "because the name was available and I thought it was funny"
+  },
+  "title": "Working With Me",
+  "intro": {
+    "paragraphs": [
+      {
+        "text": "If we're talking, it's probably because something in your business isn't working the way you want it to. Maybe you're stuck. Maybe you're frustrated. Maybe you know you could be doing more but you can't figure out how to get there."
+      },
+      {
+        "text": "I'm going to be honest with you. That's the whole point."
+      }
+    ]
+  },
+  "sections": [
+    {
+      "heading": "Why I Do This",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "I've had a few careers. I've seen what works and what doesn't. At this point, I'm doing this for the work itself and for fair compensation. I'm not trying to pay my mortgage or put food on the table."
+        },
+        {
+          "type": "paragraph",
+          "text": "That changes things. It means I'm never going to sell you something you don't need. My only metric for success is whether I actually helped you. If we have a 30-minute conversation and realize I'm not the right person, we go our separate ways. No harm, no foul."
+        }
+      ]
+    },
+    {
+      "heading": "Expect Hard Truths",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "There's a good chance I'm going to share some things that are hard to hear. Not because I'm trying to be difficult, but because the reason we're having this conversation is probably because there's something in your business or your life that you already know deep down, but haven't addressed. You're busy. You don't have the time. You don't have the money. There are always a million reasons not to do something."
+        },
+        {
+          "type": "paragraph",
+          "text": "This isn't about judgment. It's about seeing things clearly so we can actually fix them."
+        },
+        {
+          "type": "paragraph",
+          "text": "I'll tell you what I see. And then I'll help you build a path forward."
+        }
+      ]
+    },
+    {
+      "heading": "How I Work",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "I always start at the end. The first question I'm going to ask is: what are we solving for?"
+        },
+        {
+          "type": "paragraph",
+          "text": "This sounds simple. It's not. Are you trying to make more money? Get your time back? Build something you're proud of? Stop feeling like you're drowning? Most business owners are so deep in the day-to-day that they can't step back and answer clearly."
+        },
+        {
+          "type": "pullquote",
+          "text": "If you're worried about making payroll, we're not talking about your legacy. If you're drowning, we're not optimizing. We deal with what's fundamental first, then build from there."
+        },
+        {
+          "type": "paragraph",
+          "text": "If you don't know what you're solving for, that's fine. I'll ask questions. About your life, your business, what takes your time, what frustrates you, what excites you, what you're best at, what you're worst at. No judgment. We'll figure it out together."
+        },
+        {
+          "type": "paragraph",
+          "text": "Once we know where we're going, we talk about where you are today. Your processes, your systems, your people, what works, what doesn't. You know your business better than anyone. My job is to understand, without judgment, how things actually work."
+        },
+        {
+          "type": "paragraph",
+          "text": "Then we take inventory. What resources do we have? Your time. My time. Your team's time. And money, which we can think about a few ways: return on investment, available cash flow, and revenue that's sitting there waiting to be captured but you don't have the bandwidth to go get it."
+        },
+        {
+          "type": "paragraph",
+          "text": "Only after we understand the destination, the starting point, and the resources do we start talking tactics."
+        }
+      ]
+    },
+    {
+      "heading": "Technology Is Never the First Step",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "I love automation. I love good software. But trying to automate something before you understand the process is a recipe for disaster, wasted money, and failed implementations."
+        },
+        {
+          "type": "paragraph",
+          "text": "I'll spend hours, days, sometimes weeks testing new tools before I recommend them to anyone. The gap between what software companies promise and what their products actually do for regular people is enormous. I've done that work so you don't have to."
+        },
+        {
+          "type": "paragraph",
+          "text": "Technology is a lever. But you need to know what you're lifting first."
+        }
+      ]
+    },
+    {
+      "heading": "Accountability Goes Both Ways",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "One of the most valuable things I bring is accountability. I'm going to hold you to what you say you want. And I'm going to hold myself to delivering what I promise."
+        },
+        {
+          "type": "paragraph",
+          "text": "I like solving problems. Elegant, efficient solutions to hard puzzles are what get me out of bed in the morning. Sometimes they keep me up at night. That's how I'm wired."
+        }
+      ]
+    },
+    {
+      "heading": "Fee Arrangements",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "I'm not interested in billing hours. If you want to engage me hourly, the minimum is $275, and that's rarely the best structure for either of us. In my experience, one hour of focused conversation typically returns 4-5X for small business owners. But hourly billing creates the wrong incentives."
+        },
+        {
+          "type": "paragraph",
+          "text": "What I prefer are arrangements where we both have skin in the game. We agree on what success looks like, and we share in the upside. My incentives will always be aligned with yours. If I can't help you, I'll tell you."
+        },
+        {
+          "type": "paragraph",
+          "text": "The specifics depend on the situation. We'll figure out what makes sense after we understand what we're solving for."
+        }
+      ]
+    }
+  ],
+  "notRightFor": {
+    "heading": "I'm Not The Best One for The Job If:",
+    "items": [
+      {
+        "text": "You need someone 40+ hours a week indefinitely. I'm not looking for a full-time role."
+      },
+      {
+        "text": "You've already decided what needs to be done and just want someone to execute. I can help find a vendor and project manage for a fixed fee, but that's a different engagement."
+      },
+      {
+        "text": "You're not open to trying new things. Skepticism is healthy. Resistance to advice you asked for is something else."
+      }
+    ]
+  },
+  "goodFitFor": {
+    "heading": "If You Like The Below, We Should Chat:",
+    "items": [
+      {
+        "text": "You're stuck or frustrated and you know something needs to change."
+      },
+      {
+        "text": "You want a partner, not a vendor."
+      },
+      {
+        "text": "You're willing to invest in doing things right, not just doing things fast."
+      },
+      {
+        "text": "You understand the difference between price and value. When the pie gets bigger, we both get a bigger slice."
+      }
+    ]
+  },
+  "contact": {
+    "heading": "Let's Talk",
+    "text": "If we haven't already, reach out.",
+    "email": "matt@atmix.org"
+  },
+  "footer": {
+    "copyright": "2025 Matt Cohen"
+  }
+}
