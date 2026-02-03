@@ -1,6 +1,7 @@
 """ATMIX Audit Engine - Interactive Streamlit Web Interface.
 
 Full interactive workflow with approval gates matching the CLI experience.
+v1.1 - Added status indicators and error handling.
 """
 
 import os
