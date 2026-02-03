@@ -1,0 +1,33 @@
+# ATMIX - Audit Multi-Agent Intelligence eXtractor
+# Python 3.11+
+
+# Core
+anthropic>=0.40.0
+pydantic>=2.0.0
+pyyaml>=6.0
+jinja2>=3.1.0
+
+# Data processing
+pandas>=2.0.0
+openpyxl>=3.1.0  # Excel support
+python-dateutil>=2.8.0
+
+# CLI
+click>=8.1.0
+rich>=13.0.0  # Pretty terminal output
+
+# PDF processing
+pypdf>=4.0.0           # PDF reading, encryption handling
+pdfplumber>=0.10.0     # Text and table extraction
+
+# OCR support (optional but recommended)
+pytesseract>=0.3.10    # OCR wrapper for Tesseract
+pdf2image>=1.16.0      # Convert PDF pages to images for OCR
+# Note: Requires tesseract-ocr system package: brew install tesseract (macOS)
+
+# OpenAI for vision-based PDF extraction (optional fallback)
+openai>=1.0.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0

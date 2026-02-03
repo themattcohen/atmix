@@ -28,3 +28,18 @@ dist-ssr
 .env
 .env.local
 .env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Audit Engine
+audit-engine/workspaces/
+archive/
