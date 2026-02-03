@@ -1,8 +1,9 @@
 """ATMIX Audit Engine - Interactive Streamlit Web Interface.
 
 Full interactive workflow with approval gates matching the CLI experience.
-v1.1 - Added status indicators and error handling.
 """
+
+__version__ = "1.2.0"  # Visible version for debugging
 
 import os
 import sys
@@ -350,6 +351,7 @@ def render_sidebar():
     """Sidebar with progress."""
     with st.sidebar:
         st.title("📊 ATMIX Audit")
+        st.caption(f"v{__version__}")
         st.divider()
 
         phases = [
@@ -390,85 +392,50 @@ def render_sidebar():
 
 def render_upload():
     """Phase: Upload files."""
+    # Debug: confirm we reached this function
+    st.caption(f"v{__version__}")
+
     st.header("Step 1: Upload Financial Data")
 
     st.markdown("""
     Upload your financial files. Supported: **CSV**, **Excel**, **PDF**
     """)
 
-    try:
-        uploaded = st.file_uploader(
-            "Choose files",
-            type=["csv", "xlsx", "xls", "pdf"],
-            accept_multiple_files=True,
-        )
-    except Exception as e:
-        st.error(f"File uploader error: {e}")
-        return
+    uploaded = st.file_uploader(
+        "Choose files",
+        type=["csv", "xlsx", "xls", "pdf"],
+        accept_multiple_files=True,
+    )
+
+    # Debug: show upload state
+    st.caption(f"Debug: uploaded={type(uploaded).__name__}, count={len(uploaded) if uploaded else 0}")
 
     if uploaded:
-        st.success(f"{len(uploaded)} file(s) selected")
+        st.success(f"✓ {len(uploaded)} file(s) received")
 
-        # Show file list WITHOUT loading into pandas (memory safe)
-        for f in uploaded:
-            try:
-                size_kb = f.size / 1024
-                size_str = f"{size_kb:.1f} KB" if size_kb < 1024 else f"{size_kb/1024:.1f} MB"
-                file_type = f.name.split('.')[-1].upper()
-                st.markdown(f"- 📄 **{f.name}** ({size_str}) - {file_type}")
-            except Exception as e:
-                st.markdown(f"- 📄 **{f.name}** (size unknown)")
-
-        # Optional preview for SMALL files only (< 1MB)
-        with st.expander("Preview files (optional)", expanded=False):
-            for f in uploaded:
-                try:
-                    if f.size > 1_000_000:  # > 1MB
-                        st.caption(f"{f.name}: Too large for preview")
-                        continue
-                    if f.name.endswith(".csv"):
-                        # Only read first 100 rows for preview
-                        df = pd.read_csv(f, nrows=100)
-                        st.caption(f"{f.name}:")
-                        st.dataframe(df.head(10), use_container_width=True)
-                        f.seek(0)
-                    elif f.name.endswith((".xlsx", ".xls")):
-                        df = pd.read_excel(f, nrows=100)
-                        st.caption(f"{f.name}:")
-                        st.dataframe(df.head(10), use_container_width=True)
-                        f.seek(0)
-                    elif f.name.endswith(".pdf"):
-                        st.caption(f"{f.name}: PDF preview not available")
-                except Exception as e:
-                    st.caption(f"{f.name}: Preview error - {e}")
-                    try:
-                        f.seek(0)
-                    except:
-                        pass
+        # Minimal file list - no pandas, no size calculations that could fail
+        for i, f in enumerate(uploaded):
+            st.write(f"{i+1}. {f.name}")
 
         st.session_state.uploaded_files = uploaded
 
         if st.button("Continue →", type="primary"):
-            with st.spinner("Saving files..."):
-                try:
-                    # Create workspace and save files
-                    temp_dir = tempfile.mkdtemp(prefix="atmix_")
-                    workspace = Path(temp_dir)
-                    input_dir = workspace / "input"
-                    input_dir.mkdir(parents=True, exist_ok=True)
+            st.write("Creating workspace...")
+            temp_dir = tempfile.mkdtemp(prefix="atmix_")
+            workspace = Path(temp_dir)
+            input_dir = workspace / "input"
+            input_dir.mkdir(parents=True, exist_ok=True)
 
-                    for f in uploaded:
-                        file_path = input_dir / f.name
-                        file_path.write_bytes(f.getbuffer())
-                        st.write(f"✓ Saved {f.name}")
+            for f in uploaded:
+                st.write(f"Saving {f.name}...")
+                file_path = input_dir / f.name
+                file_path.write_bytes(f.getbuffer())
 
-                    st.session_state.workspace_path = workspace
-                    st.session_state.start_time = time.time()
-                    st.session_state.phase = Phase.CONTEXT
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Error saving files: {e}")
-                    return
+            st.write("Done! Moving to next step...")
+            st.session_state.workspace_path = workspace
+            st.session_state.start_time = time.time()
+            st.session_state.phase = Phase.CONTEXT
+            st.rerun()
 
 
 def render_context():
