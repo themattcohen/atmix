@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "1.2.0"  # Visible version for debugging
+__version__ = "1.3.0"  # Visible version for debugging
 
 import os
 import sys
@@ -17,18 +17,23 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Any
 
 import streamlit as st
-import pandas as pd
 
-# Add parent to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
-
-# Page config must be first
+# Page config must be first Streamlit command
 st.set_page_config(
     page_title="ATMIX Audit Engine",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# DEBUG: Show immediately that script is running
+st.sidebar.write(f"🔧 v{__version__} loaded")
+
+# Now import pandas (after page config)
+import pandas as pd
+
+# Add parent to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
 
 
 # === Workflow State ===
@@ -52,6 +57,12 @@ class Phase(Enum):
 
 def init_session():
     """Initialize all session state."""
+    # Track reruns for debugging
+    if "rerun_count" not in st.session_state:
+        st.session_state.rerun_count = 0
+    st.session_state.rerun_count += 1
+    st.sidebar.write(f"🔄 Rerun #{st.session_state.rerun_count}")
+
     defaults = {
         # Workflow
         "phase": Phase.UPLOAD,
@@ -392,50 +403,51 @@ def render_sidebar():
 
 def render_upload():
     """Phase: Upload files."""
-    # Debug: confirm we reached this function
-    st.caption(f"v{__version__}")
+    st.write("📍 render_upload() called")  # Debug marker
 
     st.header("Step 1: Upload Financial Data")
+    st.markdown("Upload your financial files. Supported: **CSV**, **Excel**, **PDF**")
 
-    st.markdown("""
-    Upload your financial files. Supported: **CSV**, **Excel**, **PDF**
-    """)
+    st.write("📍 About to create file_uploader...")  # Debug marker
 
     uploaded = st.file_uploader(
         "Choose files",
         type=["csv", "xlsx", "xls", "pdf"],
         accept_multiple_files=True,
+        key="main_uploader",  # Explicit key for stability
     )
 
-    # Debug: show upload state
-    st.caption(f"Debug: uploaded={type(uploaded).__name__}, count={len(uploaded) if uploaded else 0}")
+    st.write(f"📍 file_uploader returned: {type(uploaded)}, len={len(uploaded) if uploaded else 0}")  # Debug
 
-    if uploaded:
+    if uploaded and len(uploaded) > 0:
         st.success(f"✓ {len(uploaded)} file(s) received")
 
-        # Minimal file list - no pandas, no size calculations that could fail
         for i, f in enumerate(uploaded):
-            st.write(f"{i+1}. {f.name}")
+            st.write(f"  {i+1}. {f.name}")
 
-        st.session_state.uploaded_files = uploaded
+        if st.button("Continue →", type="primary", key="continue_btn"):
+            st.write("📍 Button clicked, creating workspace...")
 
-        if st.button("Continue →", type="primary"):
-            st.write("Creating workspace...")
             temp_dir = tempfile.mkdtemp(prefix="atmix_")
             workspace = Path(temp_dir)
             input_dir = workspace / "input"
             input_dir.mkdir(parents=True, exist_ok=True)
 
             for f in uploaded:
-                st.write(f"Saving {f.name}...")
+                st.write(f"📍 Saving {f.name}...")
                 file_path = input_dir / f.name
                 file_path.write_bytes(f.getbuffer())
 
-            st.write("Done! Moving to next step...")
+            st.write("📍 All files saved, updating session state...")
             st.session_state.workspace_path = workspace
             st.session_state.start_time = time.time()
             st.session_state.phase = Phase.CONTEXT
+
+            st.write("📍 About to rerun...")
+            time.sleep(0.5)  # Brief pause so user can see the messages
             st.rerun()
+    else:
+        st.info("👆 Select files above to begin")
 
 
 def render_context():
