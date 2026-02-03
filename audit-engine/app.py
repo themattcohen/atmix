@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "1.5.0"  # Fixed enum comparison issue
+__version__ = "1.6.0"  # Better error handling + UI improvements
 
 import os
 import sys
@@ -232,17 +232,25 @@ def run_data_prep():
 def run_planning():
     """Phase 2: Generate analysis plan."""
     orch = get_orchestrator()
-    plan = orch._run_planning_phase(
-        st.session_state.data_files,
-        st.session_state.data_samples,
-    )
-    if plan:
-        st.session_state.analysis_plan = plan.to_dict()
-        from atmix.prompts.planning import PlanningPrompts
-        st.session_state.plan_display = PlanningPrompts.format_plan_for_display(plan)
-        orch.analysis_plan = plan
-    st.session_state.total_tokens = orch.total_tokens
-    return plan is not None
+    try:
+        plan = orch._run_planning_phase(
+            st.session_state.data_files,
+            st.session_state.data_samples,
+        )
+        if plan:
+            st.session_state.analysis_plan = plan.to_dict()
+            from atmix.prompts.planning import PlanningPrompts
+            st.session_state.plan_display = PlanningPrompts.format_plan_for_display(plan)
+            orch.analysis_plan = plan
+            st.session_state.total_tokens = orch.total_tokens
+            return True
+        else:
+            st.session_state.error_message = "Planning returned empty result. Check data files."
+            return False
+    except Exception as e:
+        st.session_state.error_message = f"Planning error: {str(e)}"
+        st.session_state.total_tokens = orch.total_tokens
+        raise  # Re-raise so caller can display it
 
 
 def run_analysis():
@@ -502,17 +510,29 @@ def render_context():
             if q.get("why"):
                 st.caption(q["why"])
 
+            q_hash = abs(hash(q['id'])) % 100000  # Stable positive hash
+
             if q.get("options"):
-                answer = st.selectbox(
+                # Dropdown with "Other" option for custom text
+                options_with_other = [""] + q["options"] + ["Other (type below)"]
+                selected = st.selectbox(
                     f"Select for: {q['id'][:30]}",
-                    [""] + q["options"],
-                    key=f"q_{hash(q['id'])}",
+                    options_with_other,
+                    key=f"q_sel_{q_hash}",
                     label_visibility="collapsed",
                 )
+                if selected == "Other (type below)":
+                    answer = st.text_input(
+                        "Your answer:",
+                        key=f"q_txt_{q_hash}",
+                        placeholder="Type your answer...",
+                    )
+                else:
+                    answer = selected
             else:
                 answer = st.text_input(
                     f"Answer: {q['id'][:30]}",
-                    key=f"q_{hash(q['id'])}",
+                    key=f"q_{q_hash}",
                     label_visibility="collapsed",
                 )
             answers[q["id"]] = answer
@@ -552,19 +572,49 @@ def render_data_gaps():
 
     gaps = st.session_state.data_gaps
 
+    # Show what data we have
+    st.subheader("📁 Available Data")
+    for filename in st.session_state.data_files.keys():
+        st.markdown(f"- ✓ {filename}")
+
     if gaps and gaps.get("gaps"):
+        st.subheader("⚠️ Data Gaps Identified")
         st.warning(f"Found {len(gaps['gaps'])} potential data gap(s)")
 
         for gap in gaps["gaps"]:
-            desc = gap.get("description", str(gap))
-            with st.expander(f"⚠️ {desc}"):
-                st.write(gap.get("impact", "May affect analysis accuracy"))
+            if isinstance(gap, dict):
+                desc = gap.get("description", gap.get("gap_type", str(gap)))
+                impact = gap.get("impact", "May affect analysis accuracy")
+                recommendation = gap.get("recommendation", gap.get("how_to_resolve", ""))
+            else:
+                desc = str(gap)
+                impact = "May affect analysis accuracy"
+                recommendation = ""
+
+            with st.expander(f"📋 {desc}"):
+                st.markdown(f"**Impact:** {impact}")
+                if recommendation:
+                    st.markdown(f"**Recommendation:** {recommendation}")
+                st.markdown("---")
+                st.markdown("*You can upload additional files or provide context below.*")
 
     if gaps and gaps.get("proceed_with_caveats"):
-        st.info("**Note:** Proceeding with available data may have limitations:")
+        st.subheader("📝 Notes for Proceeding")
+        st.info("Proceeding with available data may have these limitations:")
         for caveat in gaps["proceed_with_caveats"]:
             st.markdown(f"- {caveat}")
 
+    # Allow user to provide additional context about gaps
+    with st.expander("💬 Provide additional context (optional)"):
+        gap_context = st.text_area(
+            "Explain any data limitations or provide context:",
+            placeholder="e.g., 'We only have 6 months of data because the business started in July...'",
+            key="gap_context",
+        )
+        if gap_context:
+            st.session_state.context_answers["data_gap_context"] = gap_context
+
+    st.divider()
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Proceed with Available Data →", type="primary"):
@@ -586,15 +636,37 @@ def render_plan_review():
         status = st.status("Creating analysis plan...", expanded=True)
         status.write("🤖 AI is planning the audit approach...")
         status.write("This may take 30-60 seconds...")
+
+        # Show what data we're working with
+        status.write(f"📁 Data files: {list(st.session_state.data_files.keys())}")
+
         try:
             if not run_planning():
                 status.update(label="Planning failed", state="error")
-                st.error("Failed to generate plan")
+                error_msg = st.session_state.get("error_message", "Unknown error")
+                st.error(f"Failed to generate plan: {error_msg}")
+
+                # Show debug info
+                with st.expander("Debug info"):
+                    st.write("**Data files:**", list(st.session_state.data_files.keys()))
+                    st.write("**Business type:**", st.session_state.business_type)
+                    st.write("**Context answers:**", st.session_state.context_answers)
+
+                if st.button("← Go back to upload"):
+                    st.session_state.phase = Phase.UPLOAD
+                    st.session_state.analysis_plan = None
+                    st.rerun()
                 return
             status.update(label="Plan ready!", state="complete")
         except Exception as e:
             status.update(label="Error creating plan", state="error")
             st.error(f"Planning error: {e}")
+            import traceback
+            with st.expander("Error details"):
+                st.code(traceback.format_exc())
+            if st.button("← Go back"):
+                st.session_state.phase = Phase.UPLOAD
+                st.rerun()
             return
 
     # Display plan
