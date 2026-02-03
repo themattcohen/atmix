@@ -1,0 +1,980 @@
+"""ATMIX Audit Engine - Interactive Streamlit Web Interface.
+
+Full interactive workflow with approval gates matching the CLI experience.
+"""
+
+import os
+import sys
+import tempfile
+import time
+import json
+from pathlib import Path
+from datetime import datetime
+from enum import Enum
+from dataclasses import dataclass, field
+from typing import Optional, List, Dict, Any
+
+import streamlit as st
+import pandas as pd
+
+# Add parent to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+# Page config must be first
+st.set_page_config(
+    page_title="ATMIX Audit Engine",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+
+# === Workflow State ===
+
+class Phase(Enum):
+    UPLOAD = "upload"
+    CONTEXT = "context"
+    DATA_GAPS = "data_gaps"
+    PLAN_REVIEW = "plan_review"          # Gate 1
+    ANALYSIS_RUNNING = "analysis_running"
+    FINDINGS_REVIEW = "findings_review"   # Gate 2
+    INVESTIGATION = "investigation"       # LLM asks questions
+    SYNTHESIS_RUNNING = "synthesis_running"
+    DRAFT_REVIEW = "draft_review"         # Gate 3
+    GENERATING = "generating"
+    COMPLETE = "complete"
+    ERROR = "error"
+
+
+# === Session State Management ===
+
+def init_session():
+    """Initialize all session state."""
+    defaults = {
+        # Workflow
+        "phase": Phase.UPLOAD,
+        "workspace_path": None,
+
+        # Upload
+        "uploaded_files": [],
+
+        # Context
+        "business_type": "",
+        "business_notes": "",
+        "context_questions": [],
+        "context_answers": {},
+
+        # Data Gaps
+        "data_gaps": None,
+
+        # Planning (Gate 1)
+        "analysis_plan": None,
+        "plan_display": "",
+
+        # Analysis
+        "findings": [],
+        "validation_results": None,
+
+        # Investigation
+        "investigation_plan": None,
+        "investigation_answers": {},
+        "investigation_docs": [],
+
+        # Synthesis (Gate 3)
+        "synthesis_data": None,
+
+        # Output
+        "report_html": None,
+
+        # Metrics
+        "total_tokens": 0,
+        "start_time": None,
+        "error_message": None,
+
+        # Orchestrator instance (persisted)
+        "orchestrator": None,
+        "data_files": {},
+        "data_samples": {},
+    }
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+
+def reset_session():
+    """Reset to initial state."""
+    # Cleanup temp workspace
+    if st.session_state.get("workspace_path"):
+        import shutil
+        try:
+            shutil.rmtree(st.session_state.workspace_path, ignore_errors=True)
+        except:
+            pass
+
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    init_session()
+
+
+# === API Key ===
+
+def setup_api_key() -> bool:
+    """Ensure API key is available."""
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return True
+    try:
+        if "ANTHROPIC_API_KEY" in st.secrets:
+            os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
+            return True
+    except:
+        pass
+    return False
+
+
+# === Orchestrator Integration ===
+
+def get_orchestrator():
+    """Get or create orchestrator instance."""
+    if st.session_state.orchestrator is None:
+        from atmix.engine.llm_orchestrator import LLMOrchestrator
+        from atmix.prompts.context_gathering import BusinessContext
+
+        # Build context
+        context = BusinessContext()
+        context.business_type = st.session_state.business_type
+        context.clarifications = st.session_state.context_answers
+
+        st.session_state.orchestrator = LLMOrchestrator(
+            workspace=st.session_state.workspace_path,
+            interactive=False,  # We handle UI
+            predefined_context=context,
+        )
+        st.session_state.orchestrator._init_client()
+
+    return st.session_state.orchestrator
+
+
+def run_data_ingestion():
+    """Phase 1: Ingest data files."""
+    orch = get_orchestrator()
+    data_files, data_samples = orch._ingest_data()
+    st.session_state.data_files = data_files
+    st.session_state.data_samples = data_samples
+    st.session_state.total_tokens = orch.total_tokens
+    return bool(data_files)
+
+
+def run_context_gathering():
+    """Phase 0: Get context questions from LLM."""
+    orch = get_orchestrator()
+    result = orch._gather_context(
+        st.session_state.data_files,
+        st.session_state.data_samples,
+    )
+    if result:
+        st.session_state.context_questions = [
+            {"question": q.question, "why": q.why_asking, "options": q.options, "id": q.question}
+            for q in result.questions
+        ]
+    st.session_state.total_tokens = orch.total_tokens
+
+
+def run_gap_analysis():
+    """Phase 0.5: Analyze data gaps."""
+    orch = get_orchestrator()
+    from atmix.prompts.context_gathering import BusinessContext
+
+    # Build context from answers
+    ctx = BusinessContext()
+    ctx.business_type = st.session_state.business_type
+    ctx.clarifications = st.session_state.context_answers
+    ctx.available_data = list(st.session_state.data_files.keys())
+    orch.business_context = ctx
+
+    gaps = orch._analyze_data_gaps(ctx, st.session_state.data_files, st.session_state.data_samples)
+    if gaps:
+        st.session_state.data_gaps = {
+            "gaps": [g.__dict__ if hasattr(g, '__dict__') else g for g in (gaps.gaps or [])],
+            "proceed_with_caveats": gaps.proceed_with_caveats or [],
+        }
+    st.session_state.total_tokens = orch.total_tokens
+
+
+def run_data_prep():
+    """Phase 1.5: Prepare large data files."""
+    orch = get_orchestrator()
+    data_files, data_samples = orch._run_data_prep_phase(
+        st.session_state.data_files,
+        st.session_state.data_samples,
+    )
+    st.session_state.data_files = data_files
+    st.session_state.data_samples = data_samples
+    st.session_state.total_tokens = orch.total_tokens
+
+
+def run_planning():
+    """Phase 2: Generate analysis plan."""
+    orch = get_orchestrator()
+    plan = orch._run_planning_phase(
+        st.session_state.data_files,
+        st.session_state.data_samples,
+    )
+    if plan:
+        st.session_state.analysis_plan = plan.to_dict()
+        from atmix.prompts.planning import PlanningPrompts
+        st.session_state.plan_display = PlanningPrompts.format_plan_for_display(plan)
+        orch.analysis_plan = plan
+    st.session_state.total_tokens = orch.total_tokens
+    return plan is not None
+
+
+def run_analysis():
+    """Phase 3: Run all analyses."""
+    orch = get_orchestrator()
+    from atmix.prompts.planning import AnalysisPlan
+
+    plan = AnalysisPlan.from_dict(st.session_state.analysis_plan)
+    findings = orch._run_analysis_phase(plan, st.session_state.data_files)
+
+    st.session_state.findings = findings or []
+    orch.all_findings = findings
+
+    # Run validation
+    validation = orch._run_validation(findings, list(st.session_state.data_files.keys()))
+    st.session_state.validation_results = validation.to_dict() if validation else None
+
+    st.session_state.total_tokens = orch.total_tokens
+    return bool(findings)
+
+
+def run_synthesis():
+    """Phase 5: Synthesize report."""
+    orch = get_orchestrator()
+    from atmix.prompts.planning import AnalysisPlan
+
+    plan = AnalysisPlan.from_dict(st.session_state.analysis_plan)
+    synthesis = orch._run_synthesis_phase(st.session_state.findings, plan)
+
+    if synthesis:
+        st.session_state.synthesis_data = synthesis
+        orch.synthesis_data = synthesis
+
+    st.session_state.total_tokens = orch.total_tokens
+    return synthesis is not None
+
+
+def run_report_generation():
+    """Phase 6: Generate final reports."""
+    orch = get_orchestrator()
+    orch._generate_reports(st.session_state.synthesis_data)
+
+    # Load generated report
+    report_path = st.session_state.workspace_path / "output" / "Executive_Report.html"
+    if report_path.exists():
+        st.session_state.report_html = report_path.read_text()
+
+    st.session_state.total_tokens = orch.total_tokens
+
+
+def run_investigation():
+    """Generate investigation plan - questions and document requests from LLM."""
+    orch = get_orchestrator()
+    from atmix.engine.investigation import InvestigationEngine
+    from atmix.prompts.context_gathering import BusinessContext
+
+    # Build business context dict
+    ctx = st.session_state.context_answers.copy()
+    ctx["business_type"] = st.session_state.business_type
+
+    engine = InvestigationEngine(orch.client, orch.model)
+    plan = engine.analyze_investigation_needs(
+        findings=st.session_state.findings,
+        business_context=ctx,
+        available_data=list(st.session_state.data_files.keys()),
+    )
+
+    if plan:
+        st.session_state.investigation_plan = plan.to_dict()
+
+    st.session_state.total_tokens = orch.total_tokens
+    return plan is not None and not plan.is_empty
+
+
+def run_investigation_refinement():
+    """Refine findings based on user answers and new documents."""
+    orch = get_orchestrator()
+    from atmix.engine.investigation import InvestigationEngine
+
+    # Build business context dict
+    ctx = st.session_state.context_answers.copy()
+    ctx["business_type"] = st.session_state.business_type
+
+    # Process any uploaded documents
+    new_docs = {}
+    for doc in st.session_state.investigation_docs:
+        try:
+            if doc.name.endswith(".csv"):
+                content = pd.read_csv(doc).to_string()
+            elif doc.name.endswith((".xlsx", ".xls")):
+                content = pd.read_excel(doc).to_string()
+            else:
+                content = doc.read().decode("utf-8", errors="ignore")
+            new_docs[doc.name] = content[:5000]  # Limit size
+        except Exception as e:
+            new_docs[doc.name] = f"[Error reading: {e}]"
+
+    engine = InvestigationEngine(orch.client, orch.model)
+    result = engine.refine_findings(
+        original_findings=st.session_state.findings,
+        question_answers=st.session_state.investigation_answers,
+        new_documents=new_docs,
+        business_context=ctx,
+    )
+
+    if result and result.findings_changed:
+        # Update findings with refined versions
+        st.session_state.findings = result.updated_findings + result.new_findings
+
+    st.session_state.total_tokens = orch.total_tokens
+    return result
+
+
+# === UI Components ===
+
+def render_sidebar():
+    """Sidebar with progress."""
+    with st.sidebar:
+        st.title("📊 ATMIX Audit")
+        st.divider()
+
+        phases = [
+            (Phase.UPLOAD, "1. Upload Files"),
+            (Phase.CONTEXT, "2. Business Context"),
+            (Phase.DATA_GAPS, "3. Data Assessment"),
+            (Phase.PLAN_REVIEW, "4. Review Plan"),
+            (Phase.ANALYSIS_RUNNING, "5. Analysis"),
+            (Phase.FINDINGS_REVIEW, "6. Review Findings"),
+            (Phase.INVESTIGATION, "7. LLM Questions"),
+            (Phase.DRAFT_REVIEW, "8. Review Draft"),
+            (Phase.COMPLETE, "9. Complete"),
+        ]
+
+        current = st.session_state.phase
+        current_idx = next((i for i, (p, _) in enumerate(phases) if p == current), 0)
+
+        for i, (phase, name) in enumerate(phases):
+            if i < current_idx:
+                st.markdown(f"✅ ~~{name}~~")
+            elif phase == current:
+                st.markdown(f"**→ {name}**")
+            else:
+                st.markdown(f"○ {name}")
+
+        st.divider()
+
+        # Metrics
+        st.metric("Tokens", f"{st.session_state.total_tokens:,}")
+        if st.session_state.findings:
+            st.metric("Findings", len(st.session_state.findings))
+
+        st.divider()
+        if st.button("🔄 Start Over"):
+            reset_session()
+            st.rerun()
+
+
+def render_upload():
+    """Phase: Upload files."""
+    st.header("Step 1: Upload Financial Data")
+
+    st.markdown("""
+    Upload your financial files. Supported: **CSV**, **Excel**, **PDF**
+    """)
+
+    uploaded = st.file_uploader(
+        "Choose files",
+        type=["csv", "xlsx", "xls", "pdf"],
+        accept_multiple_files=True,
+    )
+
+    if uploaded:
+        st.success(f"{len(uploaded)} file(s) selected")
+
+        for f in uploaded:
+            size = f"{f.size/1024:.1f} KB"
+            with st.expander(f"📄 {f.name} ({size})"):
+                if f.name.endswith((".csv", ".xlsx", ".xls")):
+                    try:
+                        df = pd.read_csv(f) if f.name.endswith(".csv") else pd.read_excel(f)
+                        st.dataframe(df.head(10), use_container_width=True)
+                        f.seek(0)
+                    except Exception as e:
+                        st.warning(f"Preview error: {e}")
+
+        st.session_state.uploaded_files = uploaded
+
+        if st.button("Continue →", type="primary"):
+            # Create workspace and save files
+            temp_dir = tempfile.mkdtemp(prefix="atmix_")
+            workspace = Path(temp_dir)
+            input_dir = workspace / "input"
+            input_dir.mkdir(parents=True, exist_ok=True)
+
+            for f in uploaded:
+                (input_dir / f.name).write_bytes(f.getbuffer())
+
+            st.session_state.workspace_path = workspace
+            st.session_state.start_time = time.time()
+            st.session_state.phase = Phase.CONTEXT
+            st.rerun()
+
+
+def render_context():
+    """Phase: Gather business context."""
+    st.header("Step 2: Business Context")
+
+    # First run data ingestion
+    if not st.session_state.data_files:
+        with st.spinner("Loading your data files..."):
+            run_data_ingestion()
+
+    # Get context questions from LLM
+    if not st.session_state.context_questions:
+        with st.spinner("Analyzing files to generate questions..."):
+            run_context_gathering()
+
+    st.markdown("Please answer these questions about your business:")
+
+    with st.form("context_form"):
+        # Business type
+        business_type = st.selectbox(
+            "What type of business is this?",
+            ["", "E-commerce", "Professional Services", "Manufacturing",
+             "Retail", "SaaS", "Restaurant", "Healthcare", "Other"],
+        )
+
+        if business_type == "Other":
+            business_type = st.text_input("Specify:")
+
+        st.session_state.business_type = business_type
+
+        # Dynamic questions from LLM
+        answers = {}
+        for q in st.session_state.context_questions[:5]:  # Limit to 5
+            st.markdown(f"**{q['question']}**")
+            if q.get("why"):
+                st.caption(q["why"])
+
+            if q.get("options"):
+                answer = st.selectbox(
+                    f"Select for: {q['id'][:30]}",
+                    [""] + q["options"],
+                    key=f"q_{hash(q['id'])}",
+                    label_visibility="collapsed",
+                )
+            else:
+                answer = st.text_input(
+                    f"Answer: {q['id'][:30]}",
+                    key=f"q_{hash(q['id'])}",
+                    label_visibility="collapsed",
+                )
+            answers[q["id"]] = answer
+
+        # Notes
+        notes = st.text_area(
+            "Additional context (optional)",
+            placeholder="Any specific concerns or focus areas...",
+        )
+        answers["notes"] = notes
+
+        if st.form_submit_button("Continue →", type="primary"):
+            if not business_type:
+                st.error("Please select a business type")
+            else:
+                st.session_state.context_answers = answers
+                st.session_state.phase = Phase.DATA_GAPS
+                st.rerun()
+
+
+def render_data_gaps():
+    """Phase: Show data gaps."""
+    st.header("Step 3: Data Assessment")
+
+    if st.session_state.data_gaps is None:
+        with st.spinner("Analyzing data completeness..."):
+            run_gap_analysis()
+            run_data_prep()  # Also prep large files
+
+    gaps = st.session_state.data_gaps
+
+    if gaps and gaps.get("gaps"):
+        st.warning(f"Found {len(gaps['gaps'])} potential data gap(s)")
+
+        for gap in gaps["gaps"]:
+            desc = gap.get("description", str(gap))
+            with st.expander(f"⚠️ {desc}"):
+                st.write(gap.get("impact", "May affect analysis accuracy"))
+
+    if gaps and gaps.get("proceed_with_caveats"):
+        st.info("**Note:** Proceeding with available data may have limitations:")
+        for caveat in gaps["proceed_with_caveats"]:
+            st.markdown(f"- {caveat}")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Proceed with Available Data →", type="primary"):
+            st.session_state.phase = Phase.PLAN_REVIEW
+            st.rerun()
+    with col2:
+        if st.button("← Upload More Files"):
+            st.session_state.phase = Phase.UPLOAD
+            st.rerun()
+
+
+def render_plan_review():
+    """Gate 1: Review analysis plan."""
+    st.header("🚦 Gate 1: Analysis Plan Approval")
+
+    st.markdown("Review the proposed analysis plan. **Approval required to continue.**")
+
+    if st.session_state.analysis_plan is None:
+        with st.spinner("LLM creating analysis plan..."):
+            if not run_planning():
+                st.error("Failed to generate plan")
+                return
+
+    # Display plan
+    plan = st.session_state.analysis_plan
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Planned Analyses", len(plan.get("planned_analyses", [])))
+    with col2:
+        st.metric("Business Type", plan.get("business_type", "Unknown"))
+
+    st.markdown(f"**Assessment:** {plan.get('business_description', '')[:500]}")
+
+    st.subheader("Planned Analyses")
+    for i, analysis in enumerate(plan.get("planned_analyses", []), 1):
+        with st.expander(f"{i}. {analysis.get('name', 'Analysis')}"):
+            st.markdown(f"**Type:** {analysis.get('type', 'general')}")
+            if analysis.get("questions_to_answer"):
+                st.markdown("**Questions:**")
+                for q in analysis["questions_to_answer"]:
+                    st.markdown(f"- {q}")
+
+    st.divider()
+    st.subheader("Your Decision")
+
+    decision = st.radio(
+        "How would you like to proceed?",
+        ["Approve this plan", "Request modifications", "Cancel audit"],
+        key="plan_decision",
+    )
+
+    if decision == "Request modifications":
+        feedback = st.text_area("What modifications do you want?")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if decision == "Approve this plan":
+            if st.button("✅ Approve & Run Analysis", type="primary"):
+                st.session_state.phase = Phase.ANALYSIS_RUNNING
+                st.rerun()
+    with col2:
+        if decision == "Cancel audit":
+            if st.button("❌ Cancel"):
+                reset_session()
+                st.rerun()
+
+
+def render_analysis_running():
+    """Phase: Running analysis."""
+    st.header("Step 5: Running Analysis")
+
+    progress = st.progress(0, text="Starting analysis...")
+    status = st.empty()
+
+    status.info("🔄 LLM analyzing your financial data... This may take a few minutes.")
+
+    with st.spinner("Analyzing..."):
+        if run_analysis():
+            st.session_state.phase = Phase.FINDINGS_REVIEW
+        else:
+            st.session_state.phase = Phase.ERROR
+            st.session_state.error_message = "Analysis failed to produce findings"
+
+    st.rerun()
+
+
+def render_findings_review():
+    """Gate 2: Review findings."""
+    st.header("🚦 Gate 2: Findings Approval")
+
+    st.markdown("Review the analysis findings. **Approval required to continue.**")
+
+    findings = st.session_state.findings
+    validation = st.session_state.validation_results
+
+    # Summary metrics
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Total Findings", len(findings))
+    with col2:
+        if validation:
+            st.metric("Validation Score", f"{validation.get('overall_score', 0):.0%}")
+    with col3:
+        critical = len([f for f in findings if f.get("severity") == "critical"])
+        st.metric("Critical Issues", critical)
+
+    # Group by severity
+    severity_order = ["critical", "high", "medium", "low", "info"]
+    by_severity = {}
+    for f in findings:
+        sev = f.get("severity", "info")
+        by_severity.setdefault(sev, []).append(f)
+
+    for sev in severity_order:
+        if sev not in by_severity:
+            continue
+
+        icon = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢", "info": "🔵"}[sev]
+        count = len(by_severity[sev])
+
+        st.subheader(f"{icon} {sev.upper()} ({count})")
+
+        for f in by_severity[sev][:5]:  # Show top 5 per severity
+            with st.expander(f["title"]):
+                st.markdown(f["detail"])
+                if f.get("evidence"):
+                    st.caption(f"Evidence: {', '.join(f['evidence'][:3])}")
+
+        if count > 5:
+            st.caption(f"...and {count - 5} more {sev} findings")
+
+    st.divider()
+    st.subheader("Your Decision")
+
+    decision = st.radio(
+        "How would you like to proceed?",
+        ["Approve findings", "Request re-analysis", "Cancel audit"],
+        key="findings_decision",
+    )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if decision == "Approve findings":
+            if st.button("✅ Approve & Continue", type="primary"):
+                st.session_state.phase = Phase.INVESTIGATION
+                st.rerun()
+    with col2:
+        if decision == "Cancel audit":
+            if st.button("❌ Cancel"):
+                reset_session()
+                st.rerun()
+
+
+def render_investigation():
+    """Phase: LLM asks questions and requests documents."""
+    st.header("🔍 Investigation: LLM Questions")
+
+    st.markdown("""
+    The LLM has analyzed your data and has **questions** that would help improve the audit.
+    Answer what you can - you can skip questions you don't know.
+    """)
+
+    # Generate investigation plan if not done
+    if st.session_state.investigation_plan is None:
+        with st.spinner("LLM generating questions..."):
+            has_questions = run_investigation()
+            if not has_questions:
+                st.info("No investigation questions needed. Proceeding to synthesis.")
+                st.session_state.phase = Phase.SYNTHESIS_RUNNING
+                st.rerun()
+
+    plan = st.session_state.investigation_plan
+    if not plan:
+        st.session_state.phase = Phase.SYNTHESIS_RUNNING
+        st.rerun()
+        return
+
+    # Summary
+    if plan.get("summary"):
+        st.info(plan["summary"])
+
+    # Questions section
+    questions = plan.get("questions", [])
+    if questions:
+        st.subheader(f"📋 Questions for You ({len(questions)})")
+
+        # Sort by priority
+        priority_order = {"blocking": 0, "high": 1, "medium": 2, "low": 3}
+        sorted_questions = sorted(questions, key=lambda q: priority_order.get(q.get("priority", "medium"), 2))
+
+        answers = st.session_state.investigation_answers.copy()
+
+        for i, q in enumerate(sorted_questions):
+            priority = q.get("priority", "medium")
+            priority_icon = {"blocking": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(priority, "⚪")
+
+            with st.expander(f"{priority_icon} {q['question']}", expanded=(priority in ["blocking", "high"])):
+                if q.get("why_asking"):
+                    st.caption(f"Why we're asking: {q['why_asking']}")
+                if q.get("related_finding"):
+                    st.caption(f"Related to: {q['related_finding']}")
+
+                q_key = f"inv_q_{i}"
+                if q.get("options"):
+                    answer = st.selectbox(
+                        "Your answer:",
+                        ["(Skip this question)"] + q["options"] + ["Other..."],
+                        key=q_key,
+                    )
+                    if answer == "Other...":
+                        answer = st.text_input("Specify:", key=f"{q_key}_other")
+                    elif answer == "(Skip this question)":
+                        answer = ""
+                else:
+                    answer = st.text_area(
+                        "Your answer:",
+                        key=q_key,
+                        placeholder="Type your answer or leave blank to skip...",
+                    )
+
+                if answer and answer != "(Skip this question)":
+                    answers[q["question"]] = answer
+
+        st.session_state.investigation_answers = answers
+
+    # Document requests section
+    doc_requests = plan.get("document_requests", [])
+    if doc_requests:
+        st.subheader(f"📄 Document Requests ({len(doc_requests)})")
+
+        for d in doc_requests:
+            priority = d.get("priority", "medium")
+            priority_icon = {"blocking": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(priority, "⚪")
+
+            with st.expander(f"{priority_icon} {d.get('document_name', 'Document')}"):
+                st.markdown(d.get("description", ""))
+                st.caption(f"Why needed: {d.get('why_needed', '')}")
+                st.caption(f"How to get: {d.get('how_to_get', '')}")
+
+        uploaded_docs = st.file_uploader(
+            "Upload additional documents (optional)",
+            type=["csv", "xlsx", "xls", "pdf", "txt"],
+            accept_multiple_files=True,
+            key="investigation_uploader",
+        )
+        if uploaded_docs:
+            st.session_state.investigation_docs = uploaded_docs
+
+    # Additional analyses section (informational)
+    additional = plan.get("additional_analyses", [])
+    if additional:
+        st.subheader("🔬 Additional Analyses Possible")
+        for a in additional[:3]:
+            st.markdown(f"- **{a.get('name', 'Analysis')}**: {a.get('description', '')}")
+
+    st.divider()
+
+    # Action buttons
+    answered_count = len([a for a in st.session_state.investigation_answers.values() if a])
+    docs_count = len(st.session_state.investigation_docs)
+
+    st.markdown(f"**Answered:** {answered_count}/{len(questions)} questions")
+    if docs_count:
+        st.markdown(f"**Uploaded:** {docs_count} additional document(s)")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if st.button("✅ Submit Answers & Continue", type="primary"):
+            if answered_count > 0 or docs_count > 0:
+                with st.spinner("Refining findings with your answers..."):
+                    run_investigation_refinement()
+            st.session_state.phase = Phase.SYNTHESIS_RUNNING
+            st.rerun()
+
+    with col2:
+        if st.button("⏭️ Skip Investigation"):
+            st.session_state.phase = Phase.SYNTHESIS_RUNNING
+            st.rerun()
+
+    with col3:
+        if st.button("🔄 Ask More Questions"):
+            st.session_state.investigation_plan = None
+            st.rerun()
+
+
+def render_synthesis_running():
+    """Phase: Running synthesis."""
+    st.header("Step 7: Synthesizing Report")
+
+    with st.spinner("LLM synthesizing findings into report..."):
+        if run_synthesis():
+            st.session_state.phase = Phase.DRAFT_REVIEW
+        else:
+            st.session_state.phase = Phase.ERROR
+            st.session_state.error_message = "Synthesis failed"
+
+    st.rerun()
+
+
+def render_draft_review():
+    """Gate 3: Review draft report."""
+    st.header("🚦 Gate 3: Draft Report Approval")
+
+    st.markdown("Review the draft report. **Approval required to generate final report.**")
+
+    synthesis = st.session_state.synthesis_data
+
+    if synthesis:
+        # Executive summary
+        st.subheader("Executive Summary")
+        st.markdown(synthesis.get("executive_summary", "No summary available"))
+
+        # Key metrics
+        metrics = synthesis.get("metric_cards", [])
+        if metrics:
+            st.subheader("Key Metrics")
+            cols = st.columns(min(len(metrics), 4))
+            for i, m in enumerate(metrics[:4]):
+                with cols[i]:
+                    st.metric(m.get("title", "Metric"), m.get("value", "N/A"))
+
+        # Curated findings
+        curated = synthesis.get("curated_findings", [])
+        if curated:
+            st.subheader(f"Top {len(curated)} Findings")
+            for f in curated[:5]:
+                with st.expander(f"{f.get('rank', '?')}. {f.get('title', 'Finding')}"):
+                    st.markdown(f.get("narrative", f.get("detail", "")))
+
+        # Questions
+        questions = synthesis.get("management_questions", [])
+        if questions:
+            st.subheader("Questions for Management")
+            for q in questions[:5]:
+                st.markdown(f"- **{q.get('question', q)}**")
+
+    st.divider()
+    st.subheader("Your Decision")
+
+    decision = st.radio(
+        "How would you like to proceed?",
+        ["Approve and generate final report", "Request changes", "Cancel"],
+        key="draft_decision",
+    )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if decision == "Approve and generate final report":
+            if st.button("✅ Generate Final Report", type="primary"):
+                st.session_state.phase = Phase.GENERATING
+                st.rerun()
+    with col2:
+        if decision == "Cancel":
+            if st.button("❌ Cancel"):
+                reset_session()
+                st.rerun()
+
+
+def render_generating():
+    """Phase: Generate final reports."""
+    st.header("Generating Reports")
+
+    with st.spinner("Generating final HTML report..."):
+        run_report_generation()
+        st.session_state.phase = Phase.COMPLETE
+
+    st.rerun()
+
+
+def render_complete():
+    """Phase: Complete - show results."""
+    st.header("✅ Audit Complete!")
+
+    st.success("Your financial audit has been completed.")
+
+    # Metrics
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Findings", len(st.session_state.findings))
+    with col2:
+        st.metric("Tokens Used", f"{st.session_state.total_tokens:,}")
+    with col3:
+        if st.session_state.start_time:
+            duration = time.time() - st.session_state.start_time
+            st.metric("Duration", f"{duration:.0f}s")
+
+    # Report tabs
+    tab1, tab2 = st.tabs(["📄 View Report", "⬇️ Download"])
+
+    with tab1:
+        if st.session_state.report_html:
+            st.components.v1.html(st.session_state.report_html, height=800, scrolling=True)
+
+    with tab2:
+        if st.session_state.report_html:
+            st.download_button(
+                "Download HTML Report",
+                st.session_state.report_html,
+                f"ATMIX_Audit_{datetime.now().strftime('%Y%m%d')}.html",
+                "text/html",
+                type="primary",
+            )
+
+
+def render_error():
+    """Phase: Error."""
+    st.header("❌ Error")
+    st.error(st.session_state.error_message or "An error occurred")
+
+    if st.button("Start Over"):
+        reset_session()
+        st.rerun()
+
+
+# === Main ===
+
+def main():
+    init_session()
+
+    if not setup_api_key():
+        st.error("⚠️ ANTHROPIC_API_KEY not configured")
+        st.info("Add your API key in Streamlit secrets or environment variable")
+        st.stop()
+
+    render_sidebar()
+
+    phase = st.session_state.phase
+
+    if phase == Phase.UPLOAD:
+        render_upload()
+    elif phase == Phase.CONTEXT:
+        render_context()
+    elif phase == Phase.DATA_GAPS:
+        render_data_gaps()
+    elif phase == Phase.PLAN_REVIEW:
+        render_plan_review()
+    elif phase == Phase.ANALYSIS_RUNNING:
+        render_analysis_running()
+    elif phase == Phase.FINDINGS_REVIEW:
+        render_findings_review()
+    elif phase == Phase.INVESTIGATION:
+        render_investigation()
+    elif phase == Phase.SYNTHESIS_RUNNING:
+        render_synthesis_running()
+    elif phase == Phase.DRAFT_REVIEW:
+        render_draft_review()
+    elif phase == Phase.GENERATING:
+        render_generating()
+    elif phase == Phase.COMPLETE:
+        render_complete()
+    elif phase == Phase.ERROR:
+        render_error()
+
+
+if __name__ == "__main__":
+    main()
