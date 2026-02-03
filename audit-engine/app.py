@@ -396,42 +396,79 @@ def render_upload():
     Upload your financial files. Supported: **CSV**, **Excel**, **PDF**
     """)
 
-    uploaded = st.file_uploader(
-        "Choose files",
-        type=["csv", "xlsx", "xls", "pdf"],
-        accept_multiple_files=True,
-    )
+    try:
+        uploaded = st.file_uploader(
+            "Choose files",
+            type=["csv", "xlsx", "xls", "pdf"],
+            accept_multiple_files=True,
+        )
+    except Exception as e:
+        st.error(f"File uploader error: {e}")
+        return
 
     if uploaded:
         st.success(f"{len(uploaded)} file(s) selected")
 
+        # Show file list WITHOUT loading into pandas (memory safe)
         for f in uploaded:
-            size = f"{f.size/1024:.1f} KB"
-            with st.expander(f"📄 {f.name} ({size})"):
-                if f.name.endswith((".csv", ".xlsx", ".xls")):
-                    try:
-                        df = pd.read_csv(f) if f.name.endswith(".csv") else pd.read_excel(f)
+            try:
+                size_kb = f.size / 1024
+                size_str = f"{size_kb:.1f} KB" if size_kb < 1024 else f"{size_kb/1024:.1f} MB"
+                file_type = f.name.split('.')[-1].upper()
+                st.markdown(f"- 📄 **{f.name}** ({size_str}) - {file_type}")
+            except Exception as e:
+                st.markdown(f"- 📄 **{f.name}** (size unknown)")
+
+        # Optional preview for SMALL files only (< 1MB)
+        with st.expander("Preview files (optional)", expanded=False):
+            for f in uploaded:
+                try:
+                    if f.size > 1_000_000:  # > 1MB
+                        st.caption(f"{f.name}: Too large for preview")
+                        continue
+                    if f.name.endswith(".csv"):
+                        # Only read first 100 rows for preview
+                        df = pd.read_csv(f, nrows=100)
+                        st.caption(f"{f.name}:")
                         st.dataframe(df.head(10), use_container_width=True)
                         f.seek(0)
-                    except Exception as e:
-                        st.warning(f"Preview error: {e}")
+                    elif f.name.endswith((".xlsx", ".xls")):
+                        df = pd.read_excel(f, nrows=100)
+                        st.caption(f"{f.name}:")
+                        st.dataframe(df.head(10), use_container_width=True)
+                        f.seek(0)
+                    elif f.name.endswith(".pdf"):
+                        st.caption(f"{f.name}: PDF preview not available")
+                except Exception as e:
+                    st.caption(f"{f.name}: Preview error - {e}")
+                    try:
+                        f.seek(0)
+                    except:
+                        pass
 
         st.session_state.uploaded_files = uploaded
 
         if st.button("Continue →", type="primary"):
-            # Create workspace and save files
-            temp_dir = tempfile.mkdtemp(prefix="atmix_")
-            workspace = Path(temp_dir)
-            input_dir = workspace / "input"
-            input_dir.mkdir(parents=True, exist_ok=True)
+            with st.spinner("Saving files..."):
+                try:
+                    # Create workspace and save files
+                    temp_dir = tempfile.mkdtemp(prefix="atmix_")
+                    workspace = Path(temp_dir)
+                    input_dir = workspace / "input"
+                    input_dir.mkdir(parents=True, exist_ok=True)
 
-            for f in uploaded:
-                (input_dir / f.name).write_bytes(f.getbuffer())
+                    for f in uploaded:
+                        file_path = input_dir / f.name
+                        file_path.write_bytes(f.getbuffer())
+                        st.write(f"✓ Saved {f.name}")
 
-            st.session_state.workspace_path = workspace
-            st.session_state.start_time = time.time()
-            st.session_state.phase = Phase.CONTEXT
-            st.rerun()
+                    st.session_state.workspace_path = workspace
+                    st.session_state.start_time = time.time()
+                    st.session_state.phase = Phase.CONTEXT
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error saving files: {e}")
+                    return
 
 
 def render_context():
@@ -982,41 +1019,64 @@ def render_error():
 # === Main ===
 
 def main():
-    init_session()
+    # Debug: Show we reached main
+    debug_mode = os.environ.get("DEBUG", "").lower() == "true"
+
+    try:
+        init_session()
+    except Exception as e:
+        st.error(f"Init error: {e}")
+        st.stop()
 
     if not setup_api_key():
         st.error("⚠️ ANTHROPIC_API_KEY not configured")
         st.info("Add your API key in Streamlit secrets or environment variable")
         st.stop()
 
-    render_sidebar()
+    try:
+        render_sidebar()
+    except Exception as e:
+        st.error(f"Sidebar error: {e}")
 
     phase = st.session_state.phase
 
-    if phase == Phase.UPLOAD:
-        render_upload()
-    elif phase == Phase.CONTEXT:
-        render_context()
-    elif phase == Phase.DATA_GAPS:
-        render_data_gaps()
-    elif phase == Phase.PLAN_REVIEW:
-        render_plan_review()
-    elif phase == Phase.ANALYSIS_RUNNING:
-        render_analysis_running()
-    elif phase == Phase.FINDINGS_REVIEW:
-        render_findings_review()
-    elif phase == Phase.INVESTIGATION:
-        render_investigation()
-    elif phase == Phase.SYNTHESIS_RUNNING:
-        render_synthesis_running()
-    elif phase == Phase.DRAFT_REVIEW:
-        render_draft_review()
-    elif phase == Phase.GENERATING:
-        render_generating()
-    elif phase == Phase.COMPLETE:
-        render_complete()
-    elif phase == Phase.ERROR:
-        render_error()
+    # Debug: Show current phase
+    if debug_mode:
+        st.caption(f"🔧 Debug: Phase = {phase.value}")
+
+    # Render current phase with error handling
+    try:
+        if phase == Phase.UPLOAD:
+            render_upload()
+        elif phase == Phase.CONTEXT:
+            render_context()
+        elif phase == Phase.DATA_GAPS:
+            render_data_gaps()
+        elif phase == Phase.PLAN_REVIEW:
+            render_plan_review()
+        elif phase == Phase.ANALYSIS_RUNNING:
+            render_analysis_running()
+        elif phase == Phase.FINDINGS_REVIEW:
+            render_findings_review()
+        elif phase == Phase.INVESTIGATION:
+            render_investigation()
+        elif phase == Phase.SYNTHESIS_RUNNING:
+            render_synthesis_running()
+        elif phase == Phase.DRAFT_REVIEW:
+            render_draft_review()
+        elif phase == Phase.GENERATING:
+            render_generating()
+        elif phase == Phase.COMPLETE:
+            render_complete()
+        elif phase == Phase.ERROR:
+            render_error()
+    except Exception as e:
+        st.error(f"🚨 Render error in {phase.value}: {e}")
+        import traceback
+        st.code(traceback.format_exc())
+        if st.button("Reset App"):
+            reset_session()
+            st.rerun()
 
 
 if __name__ == "__main__":
