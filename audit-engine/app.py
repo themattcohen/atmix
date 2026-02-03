@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "1.3.0"  # Visible version for debugging
+__version__ = "1.4.0"  # Visible version for debugging
 
 import os
 import sys
@@ -403,51 +403,51 @@ def render_sidebar():
 
 def render_upload():
     """Phase: Upload files."""
-    st.write("📍 render_upload() called")  # Debug marker
+    st.write("📍 ENTER render_upload()")
 
     st.header("Step 1: Upload Financial Data")
-    st.markdown("Upload your financial files. Supported: **CSV**, **Excel**, **PDF**")
+    st.markdown("Upload your financial files: **CSV**, **Excel**, **PDF**")
 
-    st.write("📍 About to create file_uploader...")  # Debug marker
+    # Use a container to ensure content persists
+    upload_container = st.container()
 
-    uploaded = st.file_uploader(
-        "Choose files",
-        type=["csv", "xlsx", "xls", "pdf"],
-        accept_multiple_files=True,
-        key="main_uploader",  # Explicit key for stability
-    )
+    with upload_container:
+        st.write("📍 Creating file_uploader widget...")
 
-    st.write(f"📍 file_uploader returned: {type(uploaded)}, len={len(uploaded) if uploaded else 0}")  # Debug
+        uploaded = st.file_uploader(
+            "Choose files",
+            type=["csv", "xlsx", "xls", "pdf"],
+            accept_multiple_files=True,
+            key="main_uploader",
+        )
 
-    if uploaded and len(uploaded) > 0:
-        st.success(f"✓ {len(uploaded)} file(s) received")
+        st.write(f"📍 Uploader state: type={type(uploaded).__name__}, len={len(uploaded) if uploaded else 0}")
 
-        for i, f in enumerate(uploaded):
-            st.write(f"  {i+1}. {f.name}")
+        if uploaded and len(uploaded) > 0:
+            st.success(f"✓ {len(uploaded)} file(s) received")
 
-        if st.button("Continue →", type="primary", key="continue_btn"):
-            st.write("📍 Button clicked, creating workspace...")
+            for i, f in enumerate(uploaded):
+                st.write(f"  {i+1}. {f.name}")
 
-            temp_dir = tempfile.mkdtemp(prefix="atmix_")
-            workspace = Path(temp_dir)
-            input_dir = workspace / "input"
-            input_dir.mkdir(parents=True, exist_ok=True)
+            if st.button("Continue →", type="primary", key="continue_btn"):
+                with st.spinner("Saving files..."):
+                    temp_dir = tempfile.mkdtemp(prefix="atmix_")
+                    workspace = Path(temp_dir)
+                    input_dir = workspace / "input"
+                    input_dir.mkdir(parents=True, exist_ok=True)
 
-            for f in uploaded:
-                st.write(f"📍 Saving {f.name}...")
-                file_path = input_dir / f.name
-                file_path.write_bytes(f.getbuffer())
+                    for f in uploaded:
+                        file_path = input_dir / f.name
+                        file_path.write_bytes(f.getbuffer())
 
-            st.write("📍 All files saved, updating session state...")
-            st.session_state.workspace_path = workspace
-            st.session_state.start_time = time.time()
-            st.session_state.phase = Phase.CONTEXT
+                    st.session_state.workspace_path = workspace
+                    st.session_state.start_time = time.time()
+                    st.session_state.phase = Phase.CONTEXT
+                    st.rerun()
+        else:
+            st.info("👆 Select files above to begin")
 
-            st.write("📍 About to rerun...")
-            time.sleep(0.5)  # Brief pause so user can see the messages
-            st.rerun()
-    else:
-        st.info("👆 Select files above to begin")
+    st.write("📍 EXIT render_upload()")
 
 
 def render_context():
@@ -1017,11 +1017,23 @@ def main():
     except Exception as e:
         st.error(f"Sidebar error: {e}")
 
-    phase = st.session_state.phase
+    # DEBUG: Show phase info in main area
+    st.write("---")
+    st.write(f"🔧 DEBUG v{__version__}")
+    st.write(f"Session keys: {list(st.session_state.keys())}")
 
-    # Debug: Show current phase
-    if debug_mode:
-        st.caption(f"🔧 Debug: Phase = {phase.value}")
+    phase = st.session_state.phase
+    st.write(f"Phase type: {type(phase)}")
+    st.write(f"Phase value: {phase}")
+
+    # Check if phase is valid
+    try:
+        phase_value = phase.value if hasattr(phase, 'value') else str(phase)
+        st.write(f"Phase.value: {phase_value}")
+    except Exception as e:
+        st.error(f"Phase error: {e}")
+        phase = Phase.UPLOAD  # Reset to safe value
+        st.session_state.phase = phase
 
     # Render current phase with error handling
     try:
