@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "1.6.0"  # Better error handling + UI improvements
+__version__ = "1.7.0"  # Fix investigation + gate buttons
 
 import os
 import sys
@@ -305,13 +305,14 @@ def run_investigation():
     """Generate investigation plan - questions and document requests from LLM."""
     orch = get_orchestrator()
     from atmix.engine.investigation import InvestigationEngine
-    from atmix.prompts.context_gathering import BusinessContext
+    from atmix.engine.llm_orchestrator import LLMOrchestrator
 
     # Build business context dict
     ctx = st.session_state.context_answers.copy()
     ctx["business_type"] = st.session_state.business_type
 
-    engine = InvestigationEngine(orch.client, orch.model)
+    # Use the planning model for investigation (orch doesn't have .model attribute)
+    engine = InvestigationEngine(orch.client, LLMOrchestrator.MODEL_PLANNING)
     plan = engine.analyze_investigation_needs(
         findings=st.session_state.findings,
         business_context=ctx,
@@ -329,6 +330,7 @@ def run_investigation_refinement():
     """Refine findings based on user answers and new documents."""
     orch = get_orchestrator()
     from atmix.engine.investigation import InvestigationEngine
+    from atmix.engine.llm_orchestrator import LLMOrchestrator
 
     # Build business context dict
     ctx = st.session_state.context_answers.copy()
@@ -348,7 +350,7 @@ def run_investigation_refinement():
         except Exception as e:
             new_docs[doc.name] = f"[Error reading: {e}]"
 
-    engine = InvestigationEngine(orch.client, orch.model)
+    engine = InvestigationEngine(orch.client, LLMOrchestrator.MODEL_PLANNING)
     result = engine.refine_findings(
         original_findings=st.session_state.findings,
         question_answers=st.session_state.investigation_answers,
@@ -699,15 +701,24 @@ def render_plan_review():
     )
 
     if decision == "Request modifications":
-        feedback = st.text_area("What modifications do you want?")
+        feedback = st.text_area("What modifications do you want?", key="plan_modifications")
+        st.info("Note: Modifications will be noted but the current plan will proceed. Future versions will support plan regeneration.")
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if decision == "Approve this plan":
             if st.button("✅ Approve & Run Analysis", type="primary"):
                 st.session_state.phase = Phase.ANALYSIS_RUNNING
                 st.rerun()
     with col2:
+        if decision == "Request modifications":
+            if st.button("📝 Note & Proceed", type="primary"):
+                # Store modifications for context
+                if feedback:
+                    st.session_state.context_answers["plan_modifications"] = feedback
+                st.session_state.phase = Phase.ANALYSIS_RUNNING
+                st.rerun()
+    with col3:
         if decision == "Cancel audit":
             if st.button("❌ Cancel"):
                 reset_session()
@@ -792,13 +803,30 @@ def render_findings_review():
         key="findings_decision",
     )
 
-    col1, col2 = st.columns(2)
+    if decision == "Request re-analysis":
+        reanalysis_notes = st.text_area(
+            "What should be re-analyzed?",
+            key="reanalysis_notes",
+            placeholder="e.g., 'Focus more on cash flow patterns' or 'Check vendor payments in detail'"
+        )
+
+    col1, col2, col3 = st.columns(3)
     with col1:
         if decision == "Approve findings":
             if st.button("✅ Approve & Continue", type="primary"):
                 st.session_state.phase = Phase.INVESTIGATION
                 st.rerun()
     with col2:
+        if decision == "Request re-analysis":
+            if st.button("🔄 Re-run Analysis", type="primary"):
+                # Clear findings and go back to analysis
+                st.session_state.findings = []
+                st.session_state.validation_results = None
+                if reanalysis_notes:
+                    st.session_state.context_answers["reanalysis_notes"] = reanalysis_notes
+                st.session_state.phase = Phase.ANALYSIS_RUNNING
+                st.rerun()
+    with col3:
         if decision == "Cancel audit":
             if st.button("❌ Cancel"):
                 reset_session()
