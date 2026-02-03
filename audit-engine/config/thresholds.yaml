@@ -1,0 +1,21 @@
+# ATMIX Configuration - Thresholds and Limits
+
+analysis:
+  confidence_target: 0.85
+  max_iterations: 10
+  checkpoint_interval_seconds: 300
+
+agents:
+  max_parallel: 5
+  timeout_seconds: 120
+
+gaps:
+  max_unresolved_before_synthesis: 5
+  blocking_gap_max_attempts: 3
+
+questions:
+  batch_size: 10
+  priority_weights:
+    blocking: 1.0
+    important: 0.6
+    nice_to_have: 0.3

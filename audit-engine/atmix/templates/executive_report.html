@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ company_name }} - Executive Financial Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --danger: #EF4444;
+            --warning: #F97316;
+            --success: #22C55E;
+            --info: #06B6D4;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            color: var(--gray-400);
+            font-size: 1rem;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .header-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-300);
+        }
+
+        /* Metric Cards Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray-500);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .metric-card-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .metric-card-change.positive { color: var(--success); }
+        .metric-card-change.negative { color: var(--danger); }
+        .metric-card-change.neutral { color: var(--gray-500); }
+
+        /* Executive Narrative */
+        .executive-narrative {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .executive-narrative h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .executive-narrative p {
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+        }
+
+        .executive-narrative p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Findings Section */
+        .section {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h2 .count {
+            background: var(--gray-200);
+            color: var(--gray-700);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        /* Finding Cards */
+        .finding-card {
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .finding-card:hover {
+            border-color: var(--gray-300);
+        }
+
+        .finding-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .finding-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .finding-rank {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .severity-critical .finding-rank { background: var(--danger); color: white; }
+        .severity-high .finding-rank { background: var(--warning); color: white; }
+        .severity-medium .finding-rank { background: #EAB308; color: white; }
+        .severity-low .finding-rank { background: var(--success); color: white; }
+        .severity-info .finding-rank { background: var(--info); color: white; }
+
+        .finding-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 1rem;
+        }
+
+        .finding-badge {
+            display: inline-block;
+            font-size: 0.625rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            margin-left: 0.5rem;
+        }
+
+        .badge-critical { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-high { background: rgba(249, 115, 22, 0.1); color: var(--warning); }
+        .badge-medium { background: rgba(234, 179, 8, 0.1); color: #CA8A04; }
+        .badge-low { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+        .badge-info { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+
+        .finding-narrative {
+            color: var(--gray-700);
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .finding-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+
+        .finding-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .finding-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .trend-improving { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+        .trend-declining { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .trend-stable { background: rgba(107, 114, 128, 0.1); color: var(--gray-600); }
+
+        /* Questions Section */
+        .question-card {
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-priority {
+            display: inline-block;
+            font-size: 0.625rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .priority-blocking { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .priority-important { background: rgba(249, 115, 22, 0.1); color: var(--warning); }
+        .priority-nice_to_have { background: rgba(107, 114, 128, 0.1); color: var(--gray-600); }
+
+        .question-text {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-context {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .question-rationale {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: none;
+                padding: 0;
+            }
+
+            .metric-card, .section, .chart-card {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+
+            .header {
+                background: var(--gray-800);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>{{ company_name }}</h1>
+            <p class="subtitle">Executive Financial Report</p>
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2z"/>
+                    </svg>
+                    {{ analysis_date }}
+                </div>
+                <div class="header-meta-item">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1z"/>
+                    </svg>
+                    {{ total_findings }} Findings Analyzed
+                </div>
+                <div class="header-meta-item">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                    </svg>
+                    {{ synthesis_confidence }}% Confidence
+                </div>
+            </div>
+        </header>
+
+        <!-- Metric Cards -->
+        {% if metric_cards %}
+        <section class="metrics-grid">
+            {% for card in metric_cards %}
+            <div class="metric-card">
+                <div class="metric-card-title">{{ card.title }}</div>
+                <div class="metric-card-value">{{ card.value }}</div>
+                {% if card.change_direction %}
+                <div class="metric-card-change {{ card.change_direction }}">
+                    {% if card.change_direction == 'positive' %}
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+                    </svg>
+                    {% elif card.change_direction == 'negative' %}
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                    {% endif %}
+                    {{ card.change or '' }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Executive Narrative -->
+        {% if executive_narrative %}
+        <section class="executive-narrative">
+            <h2>Executive Summary</h2>
+            {% for paragraph in executive_narrative.split('\n\n') %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Charts -->
+        {% if charts %}
+        <section class="charts-section">
+            {% for chart in charts %}
+            <div class="chart-card">
+                <h3>{{ chart.title }}</h3>
+                <div class="chart-container">
+                    <canvas id="chart-{{ loop.index }}"></canvas>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Key Findings -->
+        <section class="section">
+            <h2>
+                Key Findings
+                <span class="count">{{ curated_findings|length }}</span>
+            </h2>
+            {% for finding in curated_findings %}
+            <div class="finding-card severity-{{ finding.severity }}">
+                <div class="finding-header">
+                    <div class="finding-rank">{{ finding.rank }}</div>
+                    <div>
+                        <span class="finding-title">{{ finding.title }}</span>
+                        <span class="finding-badge badge-{{ finding.severity }}">{{ finding.severity }}</span>
+                        {% if finding.trend %}
+                        <span class="finding-trend trend-{{ finding.trend }}">
+                            {% if finding.trend == 'improving' %}↑{% elif finding.trend == 'declining' %}↓{% else %}→{% endif %}
+                            {{ finding.trend }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <p class="finding-narrative">
+                    {% if finding.narrative %}{{ finding.narrative }}{% else %}{{ finding.detail }}{% endif %}
+                </p>
+                <div class="finding-meta">
+                    <span class="finding-meta-item">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7z"/>
+                        </svg>
+                        {{ finding.category|replace('_', ' ')|title }}
+                    </span>
+                    <span class="finding-meta-item">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg>
+                        {{ finding.source_agents|join(', ') or 'Multiple Sources' }}
+                    </span>
+                    <span class="finding-meta-item">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+                        {{ finding.evidence_strength|title }} Evidence
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Questions -->
+        {% if prioritized_questions %}
+        <section class="section">
+            <h2>
+                Open Questions
+                <span class="count">{{ prioritized_questions|length }}</span>
+            </h2>
+            {% for question in prioritized_questions[:10] %}
+            <div class="question-card">
+                <span class="question-priority priority-{{ question.original_priority }}">{{ question.original_priority|replace('_', ' ') }}</span>
+                <p class="question-text">{{ question.question }}</p>
+                <p class="question-context">{{ question.context }}</p>
+                {% if question.why_important %}
+                <p class="question-rationale">"{{ question.why_important }}"</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Generated by <strong>ATMIX</strong> AI Synthesis Engine</p>
+            <p>{{ analysis_date }}</p>
+        </footer>
+    </div>
+
+    <!-- Chart.js Initialization -->
+    {% if charts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartConfigs = {{ charts_json|safe }};
+
+            chartConfigs.forEach((config, index) => {
+                const ctx = document.getElementById('chart-' + (index + 1));
+                if (ctx) {
+                    // Process callback functions in options
+                    const processOptions = (obj) => {
+                        for (let key in obj) {
+                            if (typeof obj[key] === 'string' && obj[key].startsWith('function')) {
+                                try {
+                                    obj[key] = eval('(' + obj[key] + ')');
+                                } catch (e) {
+                                    console.warn('Could not eval function:', obj[key]);
+                                }
+                            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                processOptions(obj[key]);
+                            }
+                        }
+                    };
+
+                    if (config.options) {
+                        processOptions(config.options);
+                    }
+
+                    new Chart(ctx, {
+                        type: config.chart_type,
+                        data: {
+                            labels: config.labels,
+                            datasets: config.datasets
+                        },
+                        options: config.options || {}
+                    });
+                }
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
