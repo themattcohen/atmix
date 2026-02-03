@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "1.4.0"  # Visible version for debugging
+__version__ = "1.5.0"  # Fixed enum comparison issue
 
 import os
 import sys
@@ -64,7 +64,7 @@ def init_session():
     st.sidebar.write(f"🔄 Rerun #{st.session_state.rerun_count}")
 
     defaults = {
-        # Workflow
+        # Workflow - store enum object (we compare using .value)
         "phase": Phase.UPLOAD,
         "workspace_path": None,
 
@@ -1036,31 +1036,37 @@ def main():
         st.session_state.phase = phase
 
     # Render current phase with error handling
+    # NOTE: Compare using .value strings because enum objects don't survive Streamlit reruns
+    phase_str = phase.value if hasattr(phase, 'value') else str(phase)
+
     try:
-        if phase == Phase.UPLOAD:
+        if phase_str == "upload":
             render_upload()
-        elif phase == Phase.CONTEXT:
+        elif phase_str == "context":
             render_context()
-        elif phase == Phase.DATA_GAPS:
+        elif phase_str == "data_gaps":
             render_data_gaps()
-        elif phase == Phase.PLAN_REVIEW:
+        elif phase_str == "plan_review":
             render_plan_review()
-        elif phase == Phase.ANALYSIS_RUNNING:
+        elif phase_str == "analysis_running":
             render_analysis_running()
-        elif phase == Phase.FINDINGS_REVIEW:
+        elif phase_str == "findings_review":
             render_findings_review()
-        elif phase == Phase.INVESTIGATION:
+        elif phase_str == "investigation":
             render_investigation()
-        elif phase == Phase.SYNTHESIS_RUNNING:
+        elif phase_str == "synthesis_running":
             render_synthesis_running()
-        elif phase == Phase.DRAFT_REVIEW:
+        elif phase_str == "draft_review":
             render_draft_review()
-        elif phase == Phase.GENERATING:
+        elif phase_str == "generating":
             render_generating()
-        elif phase == Phase.COMPLETE:
+        elif phase_str == "complete":
             render_complete()
-        elif phase == Phase.ERROR:
+        elif phase_str == "error":
             render_error()
+        else:
+            st.error(f"Unknown phase: {phase_str}")
+            render_upload()  # Fallback
     except Exception as e:
         st.error(f"🚨 Render error in {phase.value}: {e}")
         import traceback
