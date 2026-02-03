@@ -139,6 +139,10 @@ def get_orchestrator():
         from atmix.engine.llm_orchestrator import LLMOrchestrator
         from atmix.prompts.context_gathering import BusinessContext
 
+        # Verify API key exists
+        if not os.environ.get("ANTHROPIC_API_KEY"):
+            raise ValueError("ANTHROPIC_API_KEY not found. Add it to Streamlit secrets.")
+
         # Build context
         context = BusinessContext()
         context.business_type = st.session_state.business_type
@@ -435,13 +439,29 @@ def render_context():
 
     # First run data ingestion
     if not st.session_state.data_files:
-        with st.spinner("Loading your data files..."):
+        status = st.status("Loading your data files...", expanded=True)
+        status.write("📂 Reading uploaded files...")
+        try:
             run_data_ingestion()
+            status.update(label="Files loaded!", state="complete")
+        except Exception as e:
+            status.update(label="Error loading files", state="error")
+            st.error(f"Failed to load files: {e}")
+            st.stop()
 
     # Get context questions from LLM
     if not st.session_state.context_questions:
-        with st.spinner("Analyzing files to generate questions..."):
+        status = st.status("Analyzing files with AI...", expanded=True)
+        status.write("🤖 Generating context questions...")
+        status.write("This may take 10-30 seconds...")
+        try:
             run_context_gathering()
+            status.update(label="Analysis complete!", state="complete")
+        except Exception as e:
+            status.update(label="Error during analysis", state="error")
+            st.error(f"API error: {e}")
+            st.info("Check that ANTHROPIC_API_KEY is set correctly in Streamlit secrets.")
+            st.stop()
 
     st.markdown("Please answer these questions about your business:")
 
@@ -501,9 +521,17 @@ def render_data_gaps():
     st.header("Step 3: Data Assessment")
 
     if st.session_state.data_gaps is None:
-        with st.spinner("Analyzing data completeness..."):
+        status = st.status("Analyzing data completeness...", expanded=True)
+        status.write("🔍 Checking for data gaps...")
+        try:
             run_gap_analysis()
+            status.write("📊 Preparing large files...")
             run_data_prep()  # Also prep large files
+            status.update(label="Assessment complete!", state="complete")
+        except Exception as e:
+            status.update(label="Error during assessment", state="error")
+            st.error(f"Analysis error: {e}")
+            st.stop()
 
     gaps = st.session_state.data_gaps
 
@@ -538,10 +566,19 @@ def render_plan_review():
     st.markdown("Review the proposed analysis plan. **Approval required to continue.**")
 
     if st.session_state.analysis_plan is None:
-        with st.spinner("LLM creating analysis plan..."):
+        status = st.status("Creating analysis plan...", expanded=True)
+        status.write("🤖 AI is planning the audit approach...")
+        status.write("This may take 30-60 seconds...")
+        try:
             if not run_planning():
+                status.update(label="Planning failed", state="error")
                 st.error("Failed to generate plan")
                 return
+            status.update(label="Plan ready!", state="complete")
+        except Exception as e:
+            status.update(label="Error creating plan", state="error")
+            st.error(f"Planning error: {e}")
+            return
 
     # Display plan
     plan = st.session_state.analysis_plan
@@ -592,17 +629,22 @@ def render_analysis_running():
     """Phase: Running analysis."""
     st.header("Step 5: Running Analysis")
 
-    progress = st.progress(0, text="Starting analysis...")
-    status = st.empty()
+    status = st.status("Running financial analysis...", expanded=True)
+    status.write("🤖 AI is analyzing your financial data...")
+    status.write("⏱️ This typically takes 2-5 minutes...")
 
-    status.info("🔄 LLM analyzing your financial data... This may take a few minutes.")
-
-    with st.spinner("Analyzing..."):
+    try:
         if run_analysis():
+            status.update(label="Analysis complete!", state="complete")
             st.session_state.phase = Phase.FINDINGS_REVIEW
         else:
+            status.update(label="Analysis failed", state="error")
             st.session_state.phase = Phase.ERROR
             st.session_state.error_message = "Analysis failed to produce findings"
+    except Exception as e:
+        status.update(label="Analysis error", state="error")
+        st.session_state.phase = Phase.ERROR
+        st.session_state.error_message = f"Analysis error: {e}"
 
     st.rerun()
 
