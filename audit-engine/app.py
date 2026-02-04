@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "1.7.0"  # Fix investigation + gate buttons
+__version__ = "2.0.0"  # Smart data architecture + pricing
 
 import os
 import sys
@@ -50,6 +50,7 @@ class Phase(Enum):
     DRAFT_REVIEW = "draft_review"         # Gate 3
     GENERATING = "generating"
     COMPLETE = "complete"
+    PRICING = "pricing"                   # Pricing quote generation
     ERROR = "error"
 
 
@@ -99,6 +100,11 @@ def init_session():
         # Output
         "report_html": None,
 
+        # Pricing
+        "pricing_quote": None,
+        "pricing_analysis": None,
+        "pricing_proposal": None,
+
         # Metrics
         "total_tokens": 0,
         "start_time": None,
@@ -108,6 +114,11 @@ def init_session():
         "orchestrator": None,
         "data_files": {},
         "data_samples": {},
+
+        # Smart Data Architecture
+        "data_catalog": None,  # Full dataset statistics
+        "data_frames": {},     # Raw DataFrames for extraction
+        "extract_service": None,  # On-demand extract service
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -172,12 +183,45 @@ def get_orchestrator():
 
 
 def run_data_ingestion():
-    """Phase 1: Ingest data files."""
+    """Phase 1: Ingest data files and build data catalog."""
     orch = get_orchestrator()
     data_files, data_samples = orch._ingest_data()
     st.session_state.data_files = data_files
     st.session_state.data_samples = data_samples
     st.session_state.total_tokens = orch.total_tokens
+
+    # Build data catalog for smart analysis
+    try:
+        from atmix.engine.data_catalog import DataCatalog
+        from atmix.engine.data_extract import DataExtractService
+
+        # Load DataFrames for catalog and extraction
+        data_frames = {}
+        workspace = st.session_state.workspace_path
+        if workspace:
+            input_dir = workspace / "input"
+            for filename in data_files.keys():
+                filepath = input_dir / filename
+                if filepath.exists():
+                    if filename.endswith(".csv"):
+                        data_frames[filename] = pd.read_csv(filepath)
+                    elif filename.endswith((".xlsx", ".xls")):
+                        data_frames[filename] = pd.read_excel(filepath)
+
+        if data_frames:
+            # Build catalog with full statistics
+            catalog = DataCatalog()
+            st.session_state.data_catalog = catalog.build_catalog(data_frames)
+            st.session_state.data_frames = data_frames
+
+            # Initialize extract service for on-demand queries
+            st.session_state.extract_service = DataExtractService(data_frames, max_rows=200)
+
+    except Exception as e:
+        # Non-fatal: catalog is optional enhancement
+        import logging
+        logging.warning(f"Could not build data catalog: {e}")
+
     return bool(data_files)
 
 
@@ -366,6 +410,58 @@ def run_investigation_refinement():
     return result
 
 
+def run_pricing_analysis():
+    """Generate pricing quote based on audit data."""
+    orch = get_orchestrator()
+    from atmix.engine.pricing import PricingEngine, ClientAnalysis, Quote
+
+    # Create pricing engine using the orchestrator's client
+    engine = PricingEngine(orch.client)
+
+    # Build user context from session state
+    user_context = st.session_state.context_answers.copy()
+    user_context["business_type"] = st.session_state.business_type
+
+    # Add relevant audit findings context
+    if st.session_state.findings:
+        # Extract key metrics from findings
+        critical_count = len([f for f in st.session_state.findings if f.get("severity") == "critical"])
+        high_count = len([f for f in st.session_state.findings if f.get("severity") == "high"])
+        user_context["audit_findings_critical"] = critical_count
+        user_context["audit_findings_high"] = high_count
+        user_context["total_audit_findings"] = len(st.session_state.findings)
+
+    # Analyze prospect using available data
+    analysis = engine.analyze_prospect(
+        data_files=st.session_state.data_files,
+        data_samples=st.session_state.data_samples,
+        user_context=user_context,
+    )
+    st.session_state.pricing_analysis = analysis.to_dict()
+
+    # Generate quote
+    quote = engine.generate_quote(analysis, user_context)
+    st.session_state.pricing_quote = quote.to_dict()
+
+    # Generate proposal markdown
+    company_name = user_context.get("company_name", user_context.get("business_name", "Prospect"))
+    if not company_name or company_name in ["", "Prospect"]:
+        company_name = f"{st.session_state.business_type} Business"
+
+    proposal = engine.generate_proposal_markdown(
+        quote=quote,
+        analysis=analysis,
+        company_name=company_name,
+        contact_name=user_context.get("contact_name"),
+    )
+    st.session_state.pricing_proposal = proposal
+
+    # Update token count
+    st.session_state.total_tokens += engine.total_tokens
+
+    return quote, analysis
+
+
 # === UI Components ===
 
 def render_sidebar():
@@ -385,6 +481,7 @@ def render_sidebar():
             (Phase.INVESTIGATION, "7. LLM Questions"),
             (Phase.DRAFT_REVIEW, "8. Review Draft"),
             (Phase.COMPLETE, "9. Complete"),
+            (Phase.PRICING, "10. Pricing Quote"),
         ]
 
         current = st.session_state.phase
@@ -468,9 +565,18 @@ def render_context():
     if not st.session_state.data_files:
         status = st.status("Loading your data files...", expanded=True)
         status.write("📂 Reading uploaded files...")
+        status.write("📊 Building data catalog...")
         try:
             run_data_ingestion()
-            status.update(label="Files loaded!", state="complete")
+
+            # Show catalog summary if available
+            catalog = st.session_state.get("data_catalog")
+            if catalog:
+                status.write(f"✓ Cataloged {len(catalog.file_catalogs)} files")
+                total_rows = sum(fc.row_count for fc in catalog.file_catalogs.values())
+                status.write(f"✓ Total: {total_rows:,} rows analyzed")
+
+            status.update(label="Files loaded & cataloged!", state="complete")
         except Exception as e:
             status.update(label="Error loading files", state="error")
             st.error(f"Failed to load files: {e}")
@@ -574,10 +680,28 @@ def render_data_gaps():
 
     gaps = st.session_state.data_gaps
 
-    # Show what data we have
-    st.subheader("📁 Available Data")
-    for filename in st.session_state.data_files.keys():
-        st.markdown(f"- ✓ {filename}")
+    # Show data catalog summary if available
+    catalog = st.session_state.get("data_catalog")
+    if catalog:
+        st.subheader("📊 Data Catalog Summary")
+        st.info("The LLM can see **full statistics** for all your data, enabling smarter analysis.")
+
+        # Show file summaries
+        for filename, file_cat in catalog.file_catalogs.items():
+            with st.expander(f"📄 {filename} ({file_cat.row_count:,} rows)"):
+                st.markdown(f"**Columns:** {', '.join(file_cat.columns)}")
+                if file_cat.date_range:
+                    st.markdown(f"**Date Range:** {file_cat.date_range.min_date} to {file_cat.date_range.max_date}")
+                if file_cat.numeric_summaries:
+                    for col, summary in list(file_cat.numeric_summaries.items())[:3]:
+                        st.markdown(f"**{col}:** sum={summary.sum:,.2f}, range={summary.min:,.2f} to {summary.max:,.2f}")
+                if file_cat.anomalies:
+                    st.warning(f"⚠️ {len(file_cat.anomalies)} potential anomalies detected")
+    else:
+        # Fallback: simple file list
+        st.subheader("📁 Available Data")
+        for filename in st.session_state.data_files.keys():
+            st.markdown(f"- ✓ {filename}")
 
     if gaps and gaps.get("gaps"):
         st.subheader("⚠️ Data Gaps Identified")
@@ -1084,6 +1208,158 @@ def render_complete():
                 type="primary",
             )
 
+    # Pricing quote section
+    st.divider()
+    st.subheader("💰 Generate Pricing Quote")
+    st.markdown("""
+    Based on the audit analysis, generate a pricing quote for bookkeeping services.
+    This uses the data and findings from the audit to recommend appropriate service tiers.
+    """)
+
+    if st.button("Generate Pricing Quote", type="primary", key="generate_pricing_btn"):
+        st.session_state.phase = Phase.PRICING
+        st.rerun()
+
+
+def render_pricing():
+    """Phase: Pricing quote display."""
+    st.header("💰 Pricing Quote")
+
+    # Generate pricing if not already done
+    if st.session_state.pricing_quote is None:
+        status = st.status("Generating pricing quote...", expanded=True)
+        status.write("🤖 Analyzing business needs...")
+        status.write("💵 Calculating recommended pricing...")
+
+        try:
+            quote, analysis = run_pricing_analysis()
+            status.update(label="Quote generated!", state="complete")
+        except Exception as e:
+            status.update(label="Error generating quote", state="error")
+            st.error(f"Pricing error: {e}")
+            import traceback
+            with st.expander("Error details"):
+                st.code(traceback.format_exc())
+            if st.button("← Back to Report"):
+                st.session_state.phase = Phase.COMPLETE
+                st.rerun()
+            return
+
+    # Load quote and analysis from session state
+    from atmix.engine.pricing import Quote, ClientAnalysis
+
+    quote = Quote.from_dict(st.session_state.pricing_quote)
+    analysis = ClientAnalysis.from_dict(st.session_state.pricing_analysis)
+
+    # Display tier recommendation
+    tier_colors = {
+        "Essential": "green",
+        "Professional": "blue",
+        "Elite": "violet",
+    }
+    tier_color = tier_colors.get(quote.recommended_tier, "gray")
+
+    st.markdown(f"### Recommended Tier: :{tier_color}[{quote.recommended_tier}]")
+
+    # Pricing metrics
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Monthly Fee", f"${quote.monthly_price:,}")
+    with col2:
+        st.metric("Annual Cost", f"${quote.annual_cost:,}")
+    with col3:
+        st.metric("First Month Total", f"${quote.total_first_month:,}")
+
+    # Rationale
+    st.subheader("Pricing Rationale")
+    st.info(quote.price_rationale)
+
+    # One-time fees
+    if quote.cleanup_fee or quote.setup_fee:
+        st.subheader("One-Time Fees")
+        fee_cols = st.columns(2)
+        with fee_cols[0]:
+            if quote.setup_fee:
+                st.metric("Setup Fee", f"${quote.setup_fee:,}")
+        with fee_cols[1]:
+            if quote.cleanup_fee:
+                st.metric("Catch-Up Bookkeeping", f"${quote.cleanup_fee:,}")
+                if analysis.months_behind:
+                    st.caption(f"{analysis.months_behind} months behind, ~{analysis.estimated_cleanup_hours} hours estimated")
+
+    # Included services
+    st.subheader("Included Services")
+    for service in quote.included_services:
+        st.markdown(f"- [x] {service}")
+
+    # Recommended add-ons
+    if quote.recommended_addons:
+        st.subheader("Recommended Add-Ons")
+        for addon_name in quote.recommended_addons:
+            st.markdown(f"- **{addon_name}**")
+        if quote.addon_rationale:
+            st.caption(quote.addon_rationale)
+
+    # Key factors
+    with st.expander("Key Pricing Factors"):
+        for factor in quote.key_factors:
+            st.markdown(f"- {factor}")
+
+    # Assumptions
+    if quote.assumptions:
+        with st.expander("Assumptions"):
+            for assumption in quote.assumptions:
+                st.markdown(f"- {assumption}")
+
+    # Confidence and validity
+    st.divider()
+    conf_col1, conf_col2 = st.columns(2)
+    with conf_col1:
+        confidence_pct = int(quote.confidence * 100)
+        if confidence_pct >= 80:
+            st.success(f"Confidence: {confidence_pct}%")
+        elif confidence_pct >= 60:
+            st.warning(f"Confidence: {confidence_pct}%")
+        else:
+            st.error(f"Confidence: {confidence_pct}% - Manual review recommended")
+    with conf_col2:
+        if quote.valid_until:
+            st.info(f"Valid Until: {quote.valid_until.strftime('%Y-%m-%d')}")
+
+    # Notes
+    if quote.notes:
+        st.caption(f"Notes: {quote.notes}")
+
+    # Download proposal
+    st.divider()
+    st.subheader("Download Proposal")
+
+    if st.session_state.pricing_proposal:
+        st.download_button(
+            "Download Proposal (Markdown)",
+            st.session_state.pricing_proposal,
+            f"ATMIX_Proposal_{datetime.now().strftime('%Y%m%d')}.md",
+            "text/markdown",
+            type="primary",
+        )
+
+        with st.expander("Preview Proposal"):
+            st.markdown(st.session_state.pricing_proposal)
+
+    # Navigation
+    st.divider()
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("← Back to Audit Report"):
+            st.session_state.phase = Phase.COMPLETE
+            st.rerun()
+    with col2:
+        if st.button("🔄 Regenerate Quote"):
+            st.session_state.pricing_quote = None
+            st.session_state.pricing_analysis = None
+            st.session_state.pricing_proposal = None
+            st.rerun()
+
 
 def render_error():
     """Phase: Error."""
@@ -1162,6 +1438,8 @@ def main():
             render_generating()
         elif phase_str == "complete":
             render_complete()
+        elif phase_str == "pricing":
+            render_pricing()
         elif phase_str == "error":
             render_error()
         else:
