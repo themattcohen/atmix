@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "2.0.0"  # Smart data architecture + pricing
+__version__ = "2.1.0"  # Data extract integration + atmix branding
 
 import os
 import sys
