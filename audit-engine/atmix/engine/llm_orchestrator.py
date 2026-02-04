@@ -1,4 +1,4 @@
-"""LLM-First Orchestrator for ATMIX v2.
+"""LLM-First Orchestrator for atmix v2.
 
 This orchestrator implements the 6-phase LLM-first workflow:
 1. Data Ingestion (Python) - Load and validate files
@@ -106,6 +106,8 @@ from .validation import QualityValidator, ValidationReport
 from .data_processor import DataProcessor, profile_workspace_files
 from .file_processors import FileIngestionManager, ContextDocument
 from .investigation import InvestigationEngine, InvestigationPlan, InvestigationResult
+from .data_extract import DataExtractService, ExtractRequest, ExtractResult, format_for_prompt
+from .data_catalog import DataCatalog, CatalogResult
 
 # Try to import anthropic
 try:
@@ -188,6 +190,14 @@ class LLMOrchestrator:
         # Context documents from PDFs and other non-tabular files
         self.context_documents: List[ContextDocument] = []
 
+        # Data catalog and extract service for on-demand data access
+        self.data_catalog: Optional[CatalogResult] = None
+        self.extract_service: Optional[DataExtractService] = None
+
+        # Configuration for extract-enabled analysis
+        self.enable_extracts = True  # Allow LLM to request data extracts
+        self.max_extract_rounds = 2  # Maximum rounds of extract requests per analysis
+
     def _init_client(self) -> bool:
         """Initialize Anthropic client."""
         if not ANTHROPIC_AVAILABLE:
@@ -216,7 +226,7 @@ class LLMOrchestrator:
 
         console.print("\n")
         console.print(Panel(
-            "[bold blue]ATMIX v2: LLM-First Financial Audit[/bold blue]\n\n"
+            "[bold blue]atmix v2: LLM-First Financial Audit[/bold blue]\n\n"
             "This audit uses LLM intelligence for:\n"
             "  • Understanding your business context\n"
             "  • Planning what analyses to run\n"
@@ -1012,6 +1022,253 @@ class LLMOrchestrator:
 
         return plan
 
+    def _init_extract_service(self, data_files: Dict[str, str]) -> None:
+        """Initialize the data extract service with loaded DataFrames.
+
+        Args:
+            data_files: Dict of filename -> file type description
+        """
+        # Load DataFrames for the extract service
+        dataframes: Dict[str, pd.DataFrame] = {}
+
+        # Load derived files first (processed versions of large files)
+        for derived_name, derived_path in self.derived_files.items():
+            try:
+                df = pd.read_csv(derived_path)
+                dataframes[derived_name] = df
+            except Exception:
+                pass
+
+        # Load original/small files
+        for filename in data_files:
+            if filename in dataframes:
+                continue
+
+            file_path = self._find_file(filename)
+            if file_path:
+                try:
+                    if file_path.suffix.lower() in ['.xlsx', '.xls']:
+                        df = pd.read_excel(file_path)
+                    else:
+                        df = pd.read_csv(file_path)
+                    dataframes[filename] = df
+                except Exception:
+                    pass
+
+        self.extract_service = DataExtractService(dataframes, max_rows=200)
+
+        # Also build the data catalog for context
+        catalog_builder = DataCatalog()
+        self.data_catalog = catalog_builder.build_catalog(dataframes)
+
+    def _parse_extract_requests(self, response_content: str) -> List[ExtractRequest]:
+        """Parse extract requests from LLM response.
+
+        Args:
+            response_content: Raw LLM response text
+
+        Returns:
+            List of ExtractRequest objects, empty if none found
+        """
+        requests = []
+
+        try:
+            # Parse the JSON response
+            json_data = _parse_llm_json(response_content)
+            if not json_data:
+                return requests
+
+            # Look for extract_requests in the response
+            extract_requests_raw = json_data.get("extract_requests", [])
+
+            for req_data in extract_requests_raw:
+                try:
+                    request = ExtractRequest(
+                        source_file=req_data.get("source_file", ""),
+                        extract_type=req_data.get("extract_type", "custom"),
+                        parameters=req_data.get("parameters", {}),
+                    )
+                    # Store the reason for logging
+                    request.reason = req_data.get("reason", "")
+                    requests.append(request)
+                except Exception as e:
+                    console.print(f"    [dim]Could not parse extract request: {e}[/dim]")
+
+        except Exception as e:
+            console.print(f"    [dim]Error parsing extract requests: {e}[/dim]")
+
+        return requests
+
+    def _execute_extracts(
+        self,
+        requests: List[ExtractRequest],
+    ) -> Dict[str, str]:
+        """Execute data extract requests and return formatted results.
+
+        Args:
+            requests: List of ExtractRequest objects
+
+        Returns:
+            Dict mapping request description to CSV data string
+        """
+        results: Dict[str, str] = {}
+
+        if not self.extract_service:
+            return results
+
+        for request in requests:
+            try:
+                result = self.extract_service.execute(request)
+
+                if result.success:
+                    # Create a descriptive key for this extract
+                    desc = f"{request.source_file} - {request.extract_type}"
+                    if hasattr(request, 'reason') and request.reason:
+                        desc += f" ({request.reason[:50]})"
+
+                    # Format the result for prompt inclusion
+                    results[desc] = format_for_prompt(result, max_lines=100)
+
+                    console.print(
+                        f"    [green]✓[/green] Extract: {request.extract_type} on "
+                        f"{request.source_file} -> {result.row_count} rows"
+                    )
+                else:
+                    console.print(
+                        f"    [yellow]⚠[/yellow] Extract failed: {result.error}"
+                    )
+
+            except Exception as e:
+                console.print(f"    [yellow]⚠[/yellow] Extract error: {e}")
+
+        return results
+
+    def _run_analysis_with_extracts(
+        self,
+        analysis: Dict[str, Any],
+        required_data: Dict[str, str],
+        business_context: str,
+        prior_summary: Optional[str],
+        progress_task: Any,
+    ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        """Run a single analysis with extract support.
+
+        Executes the analysis, checks for extract requests, fulfills them,
+        and continues analysis with the extracted data.
+
+        Args:
+            analysis: Analysis definition dict
+            required_data: Dict of filename -> CSV content
+            business_context: Business context string
+            prior_summary: Summary of prior findings
+            progress_task: Progress bar task handle
+
+        Returns:
+            Tuple of (findings, questions)
+        """
+        findings = []
+        questions = []
+
+        # Get data catalog summary if available
+        catalog_summary = None
+        if self.data_catalog:
+            catalog_summary = self.data_catalog.to_prompt_context()
+
+        # Create initial analysis prompt with extract capability
+        prompt = AnalysisPrompts.create_analysis_prompt(
+            analysis_name=analysis["name"],
+            analysis_type=analysis.get("type", "general"),
+            analysis_questions=analysis.get("questions_to_answer", []),
+            data_content=required_data,
+            prior_findings_summary=prior_summary,
+            business_context=business_context,
+            data_catalog_summary=catalog_summary,
+            enable_extracts=self.enable_extracts,
+        )
+
+        # First pass - may include extract requests
+        try:
+            response = self.client.messages.create(
+                model=self.MODEL_ANALYSIS,
+                max_tokens=4000,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            self.total_tokens += response.usage.input_tokens + response.usage.output_tokens
+
+            content = response.content[0].text.strip()
+            result = _parse_llm_json(content)
+
+            if not result:
+                return findings, questions
+
+            # Extract initial findings
+            initial_findings = result.get("findings", [])
+
+            # Check for extract requests
+            extract_requests = self._parse_extract_requests(content)
+
+            if extract_requests and self.enable_extracts:
+                console.print(f"    [blue]→[/blue] LLM requested {len(extract_requests)} data extracts")
+
+                # Execute extracts
+                extract_results = self._execute_extracts(extract_requests)
+
+                if extract_results:
+                    # Run continuation with extract results
+                    continuation_prompt = AnalysisPrompts.create_extract_continuation_prompt(
+                        analysis_name=analysis["name"],
+                        analysis_type=analysis.get("type", "general"),
+                        original_questions=analysis.get("questions_to_answer", []),
+                        extract_results=extract_results,
+                        partial_findings=initial_findings,
+                    )
+
+                    try:
+                        cont_response = self.client.messages.create(
+                            model=self.MODEL_ANALYSIS,
+                            max_tokens=4000,
+                            messages=[{"role": "user", "content": continuation_prompt}],
+                        )
+                        self.total_tokens += cont_response.usage.input_tokens + cont_response.usage.output_tokens
+
+                        cont_content = cont_response.content[0].text.strip()
+                        cont_result = _parse_llm_json(cont_content)
+
+                        if cont_result:
+                            # Use the refined findings from continuation
+                            findings = cont_result.get("findings", [])
+                        else:
+                            # Fall back to initial findings
+                            findings = initial_findings
+
+                    except Exception as e:
+                        console.print(f"    [yellow]⚠[/yellow] Continuation failed: {e}")
+                        findings = initial_findings
+                else:
+                    # No extracts succeeded, use initial findings
+                    findings = initial_findings
+            else:
+                # No extract requests, use initial findings
+                findings = initial_findings
+
+            # Add analysis source to findings
+            for finding in findings:
+                finding["analysis_source"] = analysis["name"]
+
+            # Collect follow-up questions
+            for finding in findings:
+                for q in finding.get("follow_up_questions", []):
+                    questions.append({
+                        "question": q,
+                        "source": finding.get("title", "Unknown"),
+                        "priority": "important",
+                    })
+
+        except Exception as e:
+            console.print(f"    [yellow]⚠[/yellow] Analysis failed: {e}")
+
+        return findings, questions
+
     def _run_analysis_phase(
         self,
         plan: AnalysisPlan,
@@ -1029,6 +1286,10 @@ class LLMOrchestrator:
         all_findings = []
         all_questions = []
         business_context = f"{plan.business_type}: {plan.business_description}"
+
+        # Initialize the extract service for on-demand data access
+        console.print("  [dim]Initializing data extract service...[/dim]")
+        self._init_extract_service(data_files)
 
         # Build list of files that have derived versions (skip raw large files)
         raw_files_with_derived = set()
@@ -1156,51 +1417,22 @@ class LLMOrchestrator:
                         for f in all_findings[-10:]
                     )
 
-                # Create and run analysis prompt
-                prompt = AnalysisPrompts.create_analysis_prompt(
-                    analysis_name=analysis["name"],
-                    analysis_type=analysis.get("type", "general"),
-                    analysis_questions=analysis.get("questions_to_answer", []),
-                    data_content=required_data,
-                    prior_findings_summary=prior_summary,
+                # Run analysis with extract support
+                findings, questions = self._run_analysis_with_extracts(
+                    analysis=analysis,
+                    required_data=required_data,
                     business_context=business_context,
+                    prior_summary=prior_summary,
+                    progress_task=task,
                 )
 
-                try:
-                    response = self.client.messages.create(
-                        model=self.MODEL_ANALYSIS,  # Sonnet for analysis execution
-                        max_tokens=4000,
-                        messages=[{"role": "user", "content": prompt}],
-                    )
-                    self.total_tokens += response.usage.input_tokens + response.usage.output_tokens
+                all_findings.extend(findings)
+                all_questions.extend(questions)
 
-                    content = response.content[0].text.strip()
-
-                    if "{" in content:
-                        json_str = content[content.index("{"):content.rindex("}") + 1]
-                        result = json.loads(json_str)
-
-                        # Extract findings
-                        for finding in result.get("findings", []):
-                            finding["analysis_source"] = analysis["name"]
-                            all_findings.append(finding)
-
-                        # Collect questions
-                        for finding in result.get("findings", []):
-                            for q in finding.get("follow_up_questions", []):
-                                all_questions.append({
-                                    "question": q,
-                                    "source": finding.get("title", "Unknown"),
-                                    "priority": "important",
-                                })
-
-                        console.print(
-                            f"  [green]✓[/green] {analysis['name']}: "
-                            f"{len(result.get('findings', []))} findings"
-                        )
-
-                except Exception as e:
-                    console.print(f"  [yellow]⚠[/yellow] {analysis['name']}: Failed - {e}")
+                console.print(
+                    f"  [green]✓[/green] {analysis['name']}: "
+                    f"{len(findings)} findings"
+                )
 
                 progress.remove_task(task)
 
@@ -1740,7 +1972,7 @@ class LLMOrchestrator:
         lines.extend([
             "---",
             "",
-            "*Generated by ATMIX v2 LLM-First Audit System*",
+            "*Generated by atmix v2 LLM-First Audit System*",
         ])
 
         return "\n".join(lines)

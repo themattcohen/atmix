@@ -1,4 +1,4 @@
-"""ATMIX Audit Engine - Interactive Streamlit Web Interface.
+"""atmix audit engine - Interactive Streamlit Web Interface.
 
 Full interactive workflow with approval gates matching the CLI experience.
 """
@@ -20,7 +20,7 @@ import streamlit as st
 
 # Page config must be first Streamlit command
 st.set_page_config(
-    page_title="ATMIX Audit Engine",
+    page_title="atmix audit engine",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -467,7 +467,7 @@ def run_pricing_analysis():
 def render_sidebar():
     """Sidebar with progress."""
     with st.sidebar:
-        st.title("📊 ATMIX Audit")
+        st.title("📊 atmix audit")
         st.caption(f"v{__version__}")
         st.divider()
 
@@ -1203,7 +1203,7 @@ def render_complete():
             st.download_button(
                 "Download HTML Report",
                 st.session_state.report_html,
-                f"ATMIX_Audit_{datetime.now().strftime('%Y%m%d')}.html",
+                f"atmix_audit_{datetime.now().strftime('%Y%m%d')}.html",
                 "text/html",
                 type="primary",
             )
@@ -1338,7 +1338,7 @@ def render_pricing():
         st.download_button(
             "Download Proposal (Markdown)",
             st.session_state.pricing_proposal,
-            f"ATMIX_Proposal_{datetime.now().strftime('%Y%m%d')}.md",
+            f"atmix_proposal_{datetime.now().strftime('%Y%m%d')}.md",
             "text/markdown",
             type="primary",
         )

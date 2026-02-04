@@ -1,4 +1,4 @@
-# ATMIX Configuration - Thresholds and Limits
+# atmix configuration - Thresholds and Limits
 
 analysis:
   confidence_target: 0.85

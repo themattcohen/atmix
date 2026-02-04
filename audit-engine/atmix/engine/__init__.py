@@ -1,4 +1,4 @@
-"""ATMIX Engine - Orchestration and state management."""
+"""atmix engine - Orchestration and state management."""
 
 from .session import Session
 from .checkpoint import CheckpointManager

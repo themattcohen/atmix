@@ -1,4 +1,4 @@
-# ATMIX v3: LLM-First Dynamic Architecture
+# atmix v3: LLM-First Dynamic Architecture
 
 ## Core Principle
 
@@ -15,7 +15,7 @@ The LLM is always in control. It can:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         ATMIX v3 - LLM-FIRST ENGINE                          │
+│                         atmix v3 - LLM-FIRST ENGINE                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  INPUTS                          LLM BRAIN                      OUTPUTS     │
