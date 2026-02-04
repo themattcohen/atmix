@@ -4,6 +4,17 @@ from .session import Session
 from .checkpoint import CheckpointManager
 from .llm_orchestrator import LLMOrchestrator
 from .data_engineer import DataEngineerAgent
+from .data_catalog import (
+    DataCatalog,
+    CatalogResult,
+    FileCatalog,
+    NumericSummary,
+    CategoricalSummary,
+    DateRangeSummary,
+    ColumnInfo,
+    Anomaly,
+    build_catalog_from_workspace,
+)
 from .gates import ApprovalGates, GateLogger, GateResult, GateDecision
 from .validation import QualityValidator, ValidationReport
 from .dynamic_tools import (
@@ -40,12 +51,30 @@ from .pricing import (
     ALLSOLUTIONS_TIERS,
     ALLSOLUTIONS_ADDONS,
 )
+from .data_extract import (
+    DataExtractService,
+    ExtractRequest,
+    ExtractResult,
+    ExtractType,
+    parse_natural_request,
+    format_for_prompt,
+)
 
 __all__ = [
     "Session",
     "CheckpointManager",
     "LLMOrchestrator",
     "DataEngineerAgent",
+    # Data catalog
+    "DataCatalog",
+    "CatalogResult",
+    "FileCatalog",
+    "NumericSummary",
+    "CategoricalSummary",
+    "DateRangeSummary",
+    "ColumnInfo",
+    "Anomaly",
+    "build_catalog_from_workspace",
     "ApprovalGates",
     "GateLogger",
     "GateResult",
@@ -80,4 +109,11 @@ __all__ = [
     "AddOnCategory",
     "ALLSOLUTIONS_TIERS",
     "ALLSOLUTIONS_ADDONS",
+    # Data extraction service
+    "DataExtractService",
+    "ExtractRequest",
+    "ExtractResult",
+    "ExtractType",
+    "parse_natural_request",
+    "format_for_prompt",
 ]
