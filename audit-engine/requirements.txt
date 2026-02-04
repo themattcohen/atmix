@@ -1,4 +1,4 @@
-# ATMIX - Audit Multi-Agent Intelligence eXtractor
+# atmix - Audit Multi-Agent Intelligence eXtractor
 # Python 3.11+
 
 # Core

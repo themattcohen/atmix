@@ -1,4 +1,4 @@
-"""Research engine for ATMIX v3.
+"""Research engine for atmix v3.
 
 Allows the LLM to research platforms, accounting practices, and
 answer questions via web search when it lacks knowledge.

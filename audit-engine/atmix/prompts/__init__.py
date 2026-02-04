@@ -1,4 +1,4 @@
-"""LLM prompts for the ATMIX v2 LLM-first architecture."""
+"""LLM prompts for the atmix v2 LLM-first architecture."""
 
 from .planning import PlanningPrompts
 from .analysis import AnalysisPrompts

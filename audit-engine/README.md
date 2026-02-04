@@ -1,4 +1,4 @@
-# ATMIX Audit Engine
+# atmix audit engine
 
 LLM-first financial audit system where Claude performs all analysis, planning, and synthesis. Python handles only I/O and orchestration.
 

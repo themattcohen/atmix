@@ -1,4 +1,4 @@
-"""Data models for ATMIX."""
+"""Data models for atmix."""
 
 from .findings import Finding, Gap, Question, AgentSuggestion, AgentResult
 from .state import SessionState, PhaseRecord, CheckpointData

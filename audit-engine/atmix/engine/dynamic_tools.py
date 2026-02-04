@@ -1,4 +1,4 @@
-"""Dynamic tool generation and execution for ATMIX v3.
+"""Dynamic tool generation and execution for atmix v3.
 
 The LLM can generate Python tools on-demand and optionally save them
 for future reuse. Tools are always optional - the LLM decides whether

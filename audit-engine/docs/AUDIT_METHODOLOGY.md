@@ -1,15 +1,15 @@
-# ATMIX Audit Methodology
+# atmix Audit Methodology
 ## Technical Documentation for Controllers and CFOs
 
-This document explains how ATMIX analyzes financial data and reaches conclusions. Each section describes what the system examines, how it interprets data, and what triggers specific findings.
+This document explains how atmix analyzes financial data and reaches conclusions. Each section describes what the system examines, how it interprets data, and what triggers specific findings.
 
 ---
 
 ## Overview: LLM-First Architecture
 
-ATMIX uses a fundamentally different approach from traditional rule-based audit software:
+atmix uses a fundamentally different approach from traditional rule-based audit software:
 
-| Traditional Software | ATMIX LLM-First |
+| Traditional Software | atmix LLM-First |
 |---------------------|-----------------|
 | Pre-defined rules match patterns | LLM understands context and meaning |
 | Fixed thresholds trigger alerts | Dynamic assessment based on business type |
@@ -376,7 +376,7 @@ Price within the tier range based on:
 
 ## Limitations and Caveats
 
-### What ATMIX Cannot Do
+### What atmix Cannot Do
 
 1. **Access live banking data** - Works only with provided exports
 2. **Verify physical inventory** - Cannot count or inspect goods
@@ -415,4 +415,4 @@ Price within the tier range based on:
 ---
 
 *Document Version: 3.0*
-*Generated for ATMIX v3 LLM-First Audit System*
+*Generated for atmix v3 LLM-First Audit System*

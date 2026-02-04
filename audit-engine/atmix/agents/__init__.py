@@ -1,4 +1,4 @@
-"""ATMIX Agents."""
+"""atmix agents."""
 
 from .base import BaseAgent, AnalysisContext
 
