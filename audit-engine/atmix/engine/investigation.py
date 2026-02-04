@@ -1,4 +1,4 @@
-"""Investigation engine for ATMIX v3.
+"""Investigation engine for atmix v3.
 
 Enables iterative analysis where the LLM can ask follow-up questions,
 request documents, and refine findings based on new information.

@@ -1,12 +1,12 @@
-# ATMIX v2: Audit Methodology for Financial Professionals
+# atmix v2: Audit Methodology for Financial Professionals
 
-A comprehensive guide for controllers, CFOs, and financial professionals explaining how the ATMIX v2 LLM-first audit system reaches its conclusions.
+A comprehensive guide for controllers, CFOs, and financial professionals explaining how the atmix v2 LLM-first audit system reaches its conclusions.
 
 ---
 
 ## Executive Overview
 
-ATMIX v2 is an AI-powered financial audit system that uses Claude (a large language model) to analyze your financial data. Unlike rule-based systems that apply rigid thresholds, ATMIX uses intelligent analysis that adapts to your specific business context.
+atmix v2 is an AI-powered financial audit system that uses Claude (a large language model) to analyze your financial data. Unlike rule-based systems that apply rigid thresholds, atmix uses intelligent analysis that adapts to your specific business context.
 
 **Key Principle**: The system asks questions first, analyzes second. Before crunching numbers, it needs to understand your business.
 
@@ -269,7 +269,7 @@ The system creates Chart.js configurations for:
 
 ## Business Type Adaptations
 
-ATMIX adapts its analysis based on your business type:
+atmix adapts its analysis based on your business type:
 
 ### E-Commerce
 
@@ -331,9 +331,9 @@ ATMIX adapts its analysis based on your business type:
 
 ## Threshold Philosophy
 
-Unlike rule-based systems with rigid thresholds, ATMIX uses **contextual assessment**:
+Unlike rule-based systems with rigid thresholds, atmix uses **contextual assessment**:
 
-| Approach | Rule-Based | ATMIX LLM-First |
+| Approach | Rule-Based | atmix LLM-First |
 |----------|------------|-----------------|
 | Current Ratio | "Flag if \< 1.0" | "Assess in context of industry, trend, and cash flow timing" |
 | Gross Margin | "Flag if \< 30%" | "Compare to stated business type norms; flag significant changes from trend" |
@@ -387,5 +387,5 @@ If any finding seems unclear or questionable, request additional detail or re-an
 
 ---
 
-*ATMIX v2: LLM-First Financial Audit System*
+*atmix v2: LLM-First Financial Audit System*
 *Designed for transparency and professional-grade financial analysis*

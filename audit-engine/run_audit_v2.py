@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ATMIX v2: LLM-First Financial Audit System.
+"""atmix v2: LLM-First Financial Audit System.
 
 This is the new CLI entry point for the LLM-first audit workflow.
 
@@ -61,7 +61,7 @@ console = Console()
     help="Enable verbose output",
 )
 def main(workspace: str, non_interactive: bool, context_file: str, resume: bool, verbose: bool):
-    """Run ATMIX v2 LLM-First Financial Audit.
+    """Run atmix v2 LLM-First Financial Audit.
 
     WORKSPACE is the path to the workspace directory containing financial data
     in the 'input' or 'cleaned' subdirectory.

@@ -1,6 +1,6 @@
 # On-Demand Data Extraction Architecture
 
-## Design Document: Handling Large Financial Datasets in ATMIX Audit Engine
+## Design Document: Handling Large Financial Datasets in atmix Audit Engine
 
 **Version:** 1.0
 **Date:** 2026-02-03
@@ -12,7 +12,7 @@
 
 ### 1.1 Existing Architecture
 
-The ATMIX audit engine currently handles large datasets through a **pre-processing approach** in Phase 1.5 (Data Preparation):
+The atmix audit engine currently handles large datasets through a **pre-processing approach** in Phase 1.5 (Data Preparation):
 
 ```
                      CURRENT DATA FLOW

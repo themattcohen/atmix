@@ -1,1 +1,1 @@
-"""ATMIX Tests."""
+"""atmix tests."""

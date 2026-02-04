@@ -1,4 +1,4 @@
-"""Pricing engine for ATMIX v3.
+"""Pricing engine for atmix v3.
 
 LLM-driven pricing recommendations based on AllSolutions Consulting tiers.
 The LLM analyzes the client profile and recommends appropriate pricing.

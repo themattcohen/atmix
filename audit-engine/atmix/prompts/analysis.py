@@ -1,7 +1,10 @@
 """LLM prompts for the analysis phase - where LLM performs actual data analysis."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..engine.data_catalog import CatalogResult
 
 
 @dataclass
@@ -81,6 +84,8 @@ class AnalysisPrompts:
         data_content: Dict[str, str],
         prior_findings_summary: Optional[str] = None,
         business_context: Optional[str] = None,
+        data_catalog_summary: Optional[str] = None,
+        enable_extracts: bool = False,
     ) -> str:
         """Create prompt for a specific analysis.
 
@@ -91,6 +96,8 @@ class AnalysisPrompts:
             data_content: Dict of filename -> file content (CSV as text)
             prior_findings_summary: Summary of findings from prior analyses
             business_context: Context about the business type and operations
+            data_catalog_summary: Summary of available data for extract requests
+            enable_extracts: Whether to enable data extract requests in output
 
         Returns:
             The analysis prompt to send to the LLM
@@ -121,17 +128,69 @@ The following findings have been identified in previous analyses:
 Consider how your analysis relates to or expands upon these findings.
 """
 
+        catalog_section = ""
+        if data_catalog_summary:
+            catalog_section = f"""
+## Data Catalog (Full Dataset Overview)
+
+The following summarizes ALL available data beyond what is shown in the samples above:
+
+{data_catalog_summary}
+"""
+
+        extract_instructions = ""
+        if enable_extracts:
+            extract_instructions = """
+## Data Extract Capability
+
+You can request additional data extracts to investigate specific patterns or anomalies.
+If the provided data samples are insufficient, include an "extract_requests" array in your response.
+
+Available extract types:
+- **filter**: Filter rows matching conditions
+  - Parameters: source_file, column, operator (>, <, >=, <=, ==, !=, contains, in), value
+- **top_n**: Get highest/lowest N values
+  - Parameters: source_file, column, n (number of rows), order (asc/desc)
+- **aggregate**: Group and summarize data
+  - Parameters: source_file, group_by (column list), agg (column: function mapping)
+  - Functions: sum, mean, min, max, count, median
+- **sample**: Random sample of rows
+  - Parameters: source_file, n (number of rows), method (random/stratified)
+
+Example extract_requests format:
+```json
+"extract_requests": [
+  {
+    "source_file": "transactions.csv",
+    "extract_type": "filter",
+    "parameters": {"column": "amount", "operator": ">", "value": 10000},
+    "reason": "Need to examine high-value transactions for revenue recognition"
+  },
+  {
+    "source_file": "gl_data.csv",
+    "extract_type": "top_n",
+    "parameters": {"column": "debit", "n": 20, "order": "desc"},
+    "reason": "Identify largest debit entries for materiality assessment"
+  }
+]
+```
+
+Only request extracts if you genuinely need more data to answer the analysis questions.
+The extract results will be provided in a follow-up, allowing you to refine your analysis.
+"""
+
         return f"""You are a senior financial analyst performing a detailed {analysis_type} analysis as part of a comprehensive financial audit.
 
 ## Analysis: {analysis_name}
 {context_section}
-## Raw Data
+## Raw Data (Samples)
 
 {data_section}
-{prior_section}
+{catalog_section}{prior_section}
 ## Questions to Answer
 
 {questions_section}
+{extract_instructions}
 
 ## Your Task
 
@@ -193,6 +252,88 @@ Respond with a JSON object in this exact structure:
 - **medium**: Important issue that should be addressed (e.g., declining margins, inefficiencies)
 - **low**: Minor issue or opportunity for improvement
 - **info**: Noteworthy observation without immediate concern
+
+IMPORTANT: Your response must be valid JSON. Do not include any text before or after the JSON object."""
+
+    @staticmethod
+    def create_extract_continuation_prompt(
+        analysis_name: str,
+        analysis_type: str,
+        original_questions: List[str],
+        extract_results: Dict[str, str],
+        partial_findings: Optional[List[Dict[str, Any]]] = None,
+    ) -> str:
+        """Create a continuation prompt with extract results.
+
+        This prompt is sent after the LLM has requested data extracts.
+        It provides the extracted data and asks the LLM to continue/refine analysis.
+
+        Args:
+            analysis_name: Name of the analysis being performed
+            analysis_type: Type of analysis
+            original_questions: The original analysis questions
+            extract_results: Dict of request_id/description -> extracted CSV data
+            partial_findings: Any findings from the initial analysis pass
+
+        Returns:
+            The continuation prompt
+        """
+        extract_section = "\n".join(
+            f"### Extract: {name}\n```csv\n{data}\n```"
+            for name, data in extract_results.items()
+        )
+
+        questions_section = "\n".join(f"- {q}" for q in original_questions)
+
+        partial_section = ""
+        if partial_findings:
+            partial_list = "\n".join(
+                f"- [{f.get('severity', 'info')}] {f.get('title', 'Unknown')}"
+                for f in partial_findings
+            )
+            partial_section = f"""
+## Your Initial Findings
+
+You previously identified these findings:
+
+{partial_list}
+
+Review and refine these findings based on the new data. Add new findings if warranted.
+"""
+
+        return f"""You are continuing your {analysis_type} analysis: {analysis_name}
+
+You previously requested additional data extracts. Here are the results:
+
+## Extracted Data
+
+{extract_section}
+{partial_section}
+## Original Questions to Answer
+
+{questions_section}
+
+## Your Task
+
+Using the extracted data, complete your analysis. Provide your response in the same JSON format as before:
+
+```json
+{{
+  "analysis_name": "{analysis_name}",
+  "analysis_type": "{analysis_type}",
+  "findings": [...],
+  "summary": "...",
+  "data_quality_issues": [...],
+  "suggested_follow_up": [...],
+  "overall_confidence": 0.85
+}}
+```
+
+Focus on:
+1. Incorporating insights from the extracted data into your findings
+2. Updating or refining any preliminary findings based on new evidence
+3. Providing specific source citations from the extracted data
+4. Noting any remaining data gaps that could not be filled
 
 IMPORTANT: Your response must be valid JSON. Do not include any text before or after the JSON object."""
 

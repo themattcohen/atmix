@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ATMIX v3: Client Pricing Quote Generator.
+"""atmix v3: Client Pricing Quote Generator.
 
 Analyzes prospect financial data and generates bookkeeping service quotes
 based on AllSolutions Consulting pricing tiers.
@@ -83,7 +83,7 @@ def main(workspace: str, output: str, company_name: str, verbose: bool):
 
     console.print("\n")
     console.print(Panel(
-        "[bold blue]ATMIX v3: Client Pricing Quote[/bold blue]\n\n"
+        "[bold blue]atmix v3: Client Pricing Quote[/bold blue]\n\n"
         "Analyzing prospect data to generate pricing recommendation\n"
         "based on AllSolutions Consulting service tiers.",
         title="Pricing Quote Generator",
