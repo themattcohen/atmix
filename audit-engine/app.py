@@ -689,14 +689,15 @@ def render_data_gaps():
         # Show file summaries
         for filename, file_cat in catalog.file_catalogs.items():
             with st.expander(f"📄 {filename} ({file_cat.row_count:,} rows)"):
-                st.markdown(f"**Columns:** {', '.join(file_cat.columns)}")
-                if file_cat.date_range:
-                    st.markdown(f"**Date Range:** {file_cat.date_range.min_date} to {file_cat.date_range.max_date}")
+                st.markdown(f"**Columns:** {', '.join(ci.name for ci in file_cat.column_info)}")
+                if file_cat.date_ranges:
+                    dr = file_cat.date_ranges[0]
+                    st.markdown(f"**Date Range:** {dr.min_date} to {dr.max_date}")
                 if file_cat.numeric_summaries:
-                    for col, summary in list(file_cat.numeric_summaries.items())[:3]:
-                        st.markdown(f"**{col}:** sum={summary.sum:,.2f}, range={summary.min:,.2f} to {summary.max:,.2f}")
-                if file_cat.anomalies:
-                    st.warning(f"⚠️ {len(file_cat.anomalies)} potential anomalies detected")
+                    for summary in file_cat.numeric_summaries[:3]:
+                        st.markdown(f"**{summary.column_name}:** sum={summary.sum_value:,.2f}, range={summary.min_value:,.2f} to {summary.max_value:,.2f}")
+                if file_cat.potential_anomalies:
+                    st.warning(f"⚠️ {len(file_cat.potential_anomalies)} potential anomalies detected")
     else:
         # Fallback: simple file list
         st.subheader("📁 Available Data")
