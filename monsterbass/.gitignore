@@ -1,0 +1,19 @@
+# OS
+.DS_Store
+
+# Shopify API credentials — never commit
+scripts/config.py
+.env
+
+# Raw API downloads
+shopify_raw/
+
+# Cleaned Shopify CSVs (regenerable from raw)
+shopify_cleaned/
+
+# Raw source Excel files (large, not needed in repo)
+*.xlsx
+*.zip
+
+# Bank statements (sensitive)
+statements/
