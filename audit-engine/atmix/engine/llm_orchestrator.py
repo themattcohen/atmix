@@ -1834,7 +1834,7 @@ class LLMOrchestrator:
         synthesis: Dict[str, Any],
         gate_result: GateResult,
     ) -> Dict[str, Any]:
-        """Regenerate parts of the synthesis based on feedback.
+        """Regenerate the synthesis based on user feedback.
 
         Args:
             synthesis: Current synthesis
@@ -1843,12 +1843,62 @@ class LLMOrchestrator:
         Returns:
             Updated synthesis
         """
-        # For now, just regenerate the whole thing with feedback incorporated
-        if gate_result.feedback:
-            console.print(f"  Regenerating with feedback: {gate_result.feedback}")
+        if not gate_result.feedback:
+            return synthesis
 
-        # Re-run synthesis (simplified - could be more targeted)
-        return synthesis  # TODO: Implement targeted regeneration
+        console.print(f"  Regenerating with feedback: {gate_result.feedback}")
+
+        prompt = f"""You are revising a financial audit synthesis based on reviewer feedback.
+
+## Current Synthesis
+
+```json
+{json.dumps(synthesis, indent=2)}
+```
+
+## Reviewer Feedback
+
+{gate_result.feedback}
+
+## Your Task
+
+Revise the synthesis to incorporate the reviewer's feedback. Maintain the same JSON structure.
+
+IMPORTANT:
+- Address every point in the feedback
+- Keep findings and insights that weren't mentioned in the feedback
+- Adjust executive summary, narratives, and priorities as needed
+- Preserve all chart configs unless feedback specifically requests changes
+- Maintain professional tone suitable for executive presentation
+
+Respond with the complete updated JSON object (same structure as input).
+IMPORTANT: Your response must be valid JSON. Do not include any text before or after the JSON object."""
+
+        for attempt in range(self.MAX_RETRIES):
+            try:
+                response = self.client.messages.create(
+                    model=self.MODEL_SYNTHESIS,
+                    max_tokens=8000,
+                    messages=[{"role": "user", "content": prompt}],
+                )
+                self.total_tokens += response.usage.input_tokens + response.usage.output_tokens
+
+                content = response.content[0].text.strip()
+                revised = _parse_llm_json(content)
+
+                if revised:
+                    console.print(f"  [green]✓[/green] Synthesis revised successfully")
+                    return revised
+                else:
+                    console.print(f"  [yellow]⚠[/yellow] Attempt {attempt + 1}: Could not parse revised synthesis JSON, retrying...")
+
+            except Exception as e:
+                console.print(f"  [yellow]⚠[/yellow] Attempt {attempt + 1} failed: {e}")
+                if attempt < self.MAX_RETRIES - 1:
+                    console.print("  Retrying...")
+
+        console.print("[yellow]Synthesis revision failed, keeping original[/yellow]")
+        return synthesis
 
     def _generate_reports(self, synthesis: Dict[str, Any]) -> None:
         """Phase 6: Generate final reports.
