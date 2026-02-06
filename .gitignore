@@ -43,3 +43,5 @@ venv/
 # Audit Engine
 audit-engine/workspaces/
 archive/
+
+.vercel
