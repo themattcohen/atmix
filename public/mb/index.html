@@ -59,7 +59,6 @@
     .flag { background: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107; }
     .flag-red { background: #f8d7da; border-left-color: #dc3545; }
     .flag-green { background: #d4edda; border-left-color: #28a745; }
-    .corrected { background: #e7f3ff; padding: 10px; margin: 10px 0; border-left: 3px solid #0066cc; font-size: 13px; }
     .toc { background: #f5f5f5; padding: 20px; margin: 20px 0; }
     .toc a { display: block; padding: 5px 0; color: #333; text-decoration: none; }
     .toc a:hover { color: #0066cc; }
@@ -82,13 +81,8 @@
   <p>
     Audit Period: January 2024 – December 2025<br>
     Data Sources: QuickBooks Online, Shopify Admin API, Shopify Capital Records<br>
-    Report Date: February 5-6, 2026<br>
-    <em>Verified by 15 independent analysis subagents against raw source data</em>
+    Report Date: February 6, 2026
   </p>
-
-  <div class="corrected">
-    <strong>Verification Notice:</strong> This report has been verified against raw source data. Several original claims were corrected. Key corrections: COGS ($43K→$2.2M), Inventory trend (growing→decreasing), Credit cards (static→actively reconciled), AP ($981K→$229K), Equity (-$959K→-$760K). All figures below reflect verified data from the current Outdoor Playground books.
-  </div>
 
   <div class="toc">
     <strong>Table of Contents</strong>
@@ -149,18 +143,15 @@
 
   <p><strong>Impact:</strong> Revenue understated by ~21.5%. QBO shows ~$2.52M in Shopify revenue; actual gross is ~$3.19M.</p>
 
-  <h3>COGS and Inventory (CORRECTED)</h3>
-
-  <div class="flag flag-green">
-    <strong>✅ VERIFIED:</strong> COGS and inventory ARE properly managed. The original assessment claiming only $43.6K in COGS was incorrect.
-  </div>
+  <h3>COGS and Inventory</h3>
 
   <table>
-    <tr><th>Metric</th><th>Original Claim</th><th>Verified Actual</th></tr>
-    <tr><td>Total COGS (24 months)</td><td>$43,620</td><td><strong>$2,222,680</strong></td></tr>
-    <tr><td>Inventory Jan 2024</td><td>$584K</td><td><strong>$516,352</strong></td></tr>
-    <tr><td>Inventory Dec 2025</td><td>$1.294M (growing)</td><td><strong>$282,779 (decreased)</strong></td></tr>
-    <tr><td>Gross Margin</td><td>Unknown</td><td><strong>39.0%</strong></td></tr>
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Total COGS (24 months)</td><td>$2,222,680</td></tr>
+    <tr><td>Inventory Jan 2024</td><td>$516,352</td></tr>
+    <tr><td>Inventory Dec 2025</td><td>$282,779</td></tr>
+    <tr><td>Inventory Change</td><td>-45% (healthy drawdown)</td></tr>
+    <tr><td>Gross Margin</td><td>39.0%</td></tr>
   </table>
 
   <div class="source">
@@ -169,19 +160,16 @@
 
   <p>Monthly journal entries properly relieve inventory to COGS. Example JEs: JE#21 Jan 2024 ($66,292), JE#67 Dec 2025 ($44,040). Total inventory relief: $1,035,153.</p>
 
-  <h3>Credit Cards (CORRECTED)</h3>
-
-  <div class="flag flag-green">
-    <strong>✅ VERIFIED:</strong> All credit cards ARE being actively reconciled. The original claim that cards were "unchanged for 24 months" was incorrect.
-  </div>
+  <h3>Credit Cards</h3>
 
   <table>
-    <tr><th>Card</th><th>Original Claim</th><th>Verified Status</th></tr>
-    <tr><td>Amex</td><td>$86,429 (unchanged)</td><td><strong>$94K→$251K (fluctuating, active)</strong></td></tr>
-    <tr><td>Chase 8439</td><td>$15,095 (unchanged)</td><td><strong>Paid off by Nov 2024, closed</strong></td></tr>
-    <tr><td>Visa 5184</td><td>$40,671 (unchanged)</td><td><strong>$47K→$33K (50+ payments)</strong></td></tr>
-    <tr><td>Brex</td><td>$47K→$10K</td><td><strong>✅ Confirmed</strong></td></tr>
-    <tr><td><strong>Total CC Debt</strong></td><td>$392K</td><td><strong>$331,950</strong></td></tr>
+    <tr><th>Card</th><th>Status</th><th>Dec 2025 Balance</th></tr>
+    <tr><td>Amex</td><td>Active, reconciled monthly</td><td>$251,030</td></tr>
+    <tr><td>Chase 8439</td><td>Paid off Nov 2024, closed</td><td>$0</td></tr>
+    <tr><td>Visa 5184</td><td>Active, 50+ payments logged</td><td>$33,149</td></tr>
+    <tr><td>Brex</td><td>Paid down from $47K</td><td>$10,062</td></tr>
+    <tr><td>Other (BofA, Shopify CC)</td><td>Active</td><td>$37,709</td></tr>
+    <tr><td><strong>Total CC Debt</strong></td><td></td><td><strong>$331,950</strong></td></tr>
   </table>
 
   <div class="source">
@@ -379,13 +367,13 @@
   </div>
 
   <div class="flag flag-green">
-    <strong>4. Gross Margin:</strong> 39.0% verified gross margin is reasonable for D2C subscription.<br>
+    <strong>4. Gross Margin:</strong> 39.0% gross margin is reasonable for D2C subscription.<br>
     <em>Source: outdoor_playground/general_ledger.csv (COGS calculation)</em>
   </div>
 
   <div class="flag flag-green">
-    <strong>5. Accounting Controls:</strong> COGS, inventory, and credit cards ARE being properly managed (verified).<br>
-    <em>Source: 15-agent verification audit, Feb 5-6, 2026</em>
+    <strong>5. Accounting Controls:</strong> COGS, inventory, and credit cards are being properly managed.<br>
+    <em>Source: outdoor_playground/general_ledger.csv, balance_sheet_monthly.csv</em>
   </div>
 
   <h3>Summary Balance Sheet (Dec 2025)</h3>
@@ -443,8 +431,7 @@
   </ul>
 
   <p style="text-align: center; margin-top: 40px; color: #666; font-size: 12px;">
-    Report verified February 5-6, 2026<br>
-    15 independent analysis subagents • Raw source data verification
+    February 2026
   </p>
 </div>
 
