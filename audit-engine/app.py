@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "2.1.0"  # Data extract integration + atmix branding
+__version__ = "2.2.0"  # Gate 1 plan refinement now functional
 
 import os
 import sys
