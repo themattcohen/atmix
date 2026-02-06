@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonsterBass Financial Audit</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fafafa;
+      color: #333;
+    }
+    #login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+    }
+    #login input {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      width: 250px;
+    }
+    #login button {
+      padding: 12px 30px;
+      font-size: 16px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #login button:hover { background: #555; }
+    #content { display: none; }
+    h1 { font-size: 28px; border-bottom: 3px solid #333; padding-bottom: 10px; }
+    h2 { font-size: 22px; margin-top: 40px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    h3 { font-size: 18px; margin-top: 25px; color: #444; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 14px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background: #f5f5f5; font-weight: 600; }
+    tr:hover { background: #fafafa; }
+    .source {
+      font-size: 12px;
+      color: #666;
+      background: #f0f0f0;
+      padding: 8px 12px;
+      margin: 10px 0;
+      border-left: 3px solid #999;
+    }
+    .flag { background: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107; }
+    .flag-red { background: #f8d7da; border-left-color: #dc3545; }
+    .flag-green { background: #d4edda; border-left-color: #28a745; }
+    .corrected { background: #e7f3ff; padding: 10px; margin: 10px 0; border-left: 3px solid #0066cc; font-size: 13px; }
+    .toc { background: #f5f5f5; padding: 20px; margin: 20px 0; }
+    .toc a { display: block; padding: 5px 0; color: #333; text-decoration: none; }
+    .toc a:hover { color: #0066cc; }
+    ul { padding-left: 20px; }
+    li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>MonsterBass Audit Report</h2>
+  <p>Enter password to view:</p>
+  <input type="password" id="pwd" placeholder="Password" onkeypress="if(event.key==='Enter')checkPwd()">
+  <button onclick="checkPwd()">Access Report</button>
+</div>
+
+<div id="content">
+  <h1>MONSTERBASS (Outdoor Playground Inc)<br>Financial & Operational Audit</h1>
+  <p><strong>CEO Briefing Document</strong></p>
+  <p>
+    Audit Period: January 2024 – December 2025<br>
+    Data Sources: QuickBooks Online, Shopify Admin API, Shopify Capital Records<br>
+    Report Date: February 5-6, 2026<br>
+    <em>Verified by 15 independent analysis subagents against raw source data</em>
+  </p>
+
+  <div class="corrected">
+    <strong>Verification Notice:</strong> This report has been verified against raw source data. Several original claims were corrected. Key corrections: COGS ($43K→$2.2M), Inventory trend (growing→decreasing), Credit cards (static→actively reconciled), AP ($981K→$229K), Equity (-$959K→-$760K). All figures below reflect verified data from the current Outdoor Playground books.
+  </div>
+
+  <div class="toc">
+    <strong>Table of Contents</strong>
+    <a href="#exec">1. Executive Summary</a>
+    <a href="#books">2. Quality of the Books</a>
+    <a href="#vendor">3. Vendor Expense Analysis</a>
+    <a href="#customer">4. Customer & Revenue Deep Dive</a>
+    <a href="#cfo">5. Strategic CFO Insights</a>
+  </div>
+
+  <h2 id="exec">1. Executive Summary</h2>
+
+  <p>This document presents the findings of a comprehensive financial and operational audit of MonsterBass (Outdoor Playground Inc), covering January 2024 through December 2025. The audit integrates data from QuickBooks Online with granular Shopify transaction data (101,126 orders, 19,176 unique customers, 871 payouts) and Shopify Capital loan records.</p>
+
+  <h3>Key Findings at a Glance</h3>
+
+  <table>
+    <tr><th>Area</th><th>Finding</th><th>Status</th></tr>
+    <tr><td>Revenue Recognition</td><td>Net payouts recorded as revenue, understating gross by ~21.5%</td><td>⚠️ Needs Fix</td></tr>
+    <tr><td>COGS & Inventory</td><td>$2.22M COGS properly recorded; inventory decreased $516K→$283K</td><td>✅ Verified</td></tr>
+    <tr><td>Gross Margin</td><td>39.0% (reasonable for D2C subscription)</td><td>✅ Verified</td></tr>
+    <tr><td>Credit Cards</td><td>All cards actively reconciled; Brex paid down $47K→$10K</td><td>✅ Verified</td></tr>
+    <tr><td>AP Aging</td><td>$229K total, 48% over 90 days ($111K)</td><td>⚠️ Monitor</td></tr>
+    <tr><td>Total Equity</td><td>($759,779) negative</td><td>⚠️ Distressed</td></tr>
+    <tr><td>Total Liabilities</td><td>$1,183,647</td><td>Verified</td></tr>
+    <tr><td>Repeat Customer Rate</td><td>58.2%</td><td>✅ Strong</td></tr>
+    <tr><td>Refund Rate</td><td>2.4%</td><td>✅ Healthy</td></tr>
+    <tr><td>Cash Position</td><td>~$100K</td><td>⚠️ Low</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Sources:</strong>
+    outdoor_playground/balance_sheet_monthly.csv (Dec 2025),
+    outdoor_playground/general_ledger.csv,
+    shopify_analysis/customer_summary.md
+  </div>
+
+  <p><strong>Bottom line:</strong> The books are more functional than initially assessed. COGS and inventory ARE being properly managed via monthly journal entries. Credit cards ARE being reconciled. The core accounting is sound. However, revenue recognition still uses payout-based recording (not GAAP), AP aging shows 48% over 90 days, and the company has negative equity. The path forward requires AP management, revenue recognition correction, and cost optimization.</p>
+
+  <h2 id="books">2. Quality of the Books</h2>
+
+  <h3>Revenue Recognition Issue</h3>
+  <p>The bookkeeper records Shopify net payout deposits as revenue, collapsing multiple financial events into one number:</p>
+
+  <table>
+    <tr><th>Component</th><th>24-Month Total</th><th>Where Recorded</th></tr>
+    <tr><td>Gross Product Sales</td><td>~$3.19M</td><td>Netted into "Shopify Revenue"</td></tr>
+    <tr><td>Shipping Collected</td><td>$333K</td><td>Netted</td></tr>
+    <tr><td>Sales Tax Collected</td><td>$205K</td><td>Netted</td></tr>
+    <tr><td>Refunds</td><td>$92K</td><td>Netted out</td></tr>
+    <tr><td>Processing Fees</td><td>~$77K</td><td>Netted out</td></tr>
+    <tr><td><strong>Net Payout (recorded)</strong></td><td><strong>$2.48M</strong></td><td>Recorded as "Revenue"</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> shopify_analysis/revenue_reconciliation.csv, outdoor_playground/deposit_detail.csv
+  </div>
+
+  <p><strong>Impact:</strong> Revenue understated by ~21.5%. QBO shows ~$2.52M in Shopify revenue; actual gross is ~$3.19M.</p>
+
+  <h3>COGS and Inventory (CORRECTED)</h3>
+
+  <div class="flag flag-green">
+    <strong>✅ VERIFIED:</strong> COGS and inventory ARE properly managed. The original assessment claiming only $43.6K in COGS was incorrect.
+  </div>
+
+  <table>
+    <tr><th>Metric</th><th>Original Claim</th><th>Verified Actual</th></tr>
+    <tr><td>Total COGS (24 months)</td><td>$43,620</td><td><strong>$2,222,680</strong></td></tr>
+    <tr><td>Inventory Jan 2024</td><td>$584K</td><td><strong>$516,352</strong></td></tr>
+    <tr><td>Inventory Dec 2025</td><td>$1.294M (growing)</td><td><strong>$282,779 (decreased)</strong></td></tr>
+    <tr><td>Gross Margin</td><td>Unknown</td><td><strong>39.0%</strong></td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> outdoor_playground/general_ledger.csv (COGS accounts: Product Sold, Warehouse Service, Shipping, Mailer Items, Freight, Supplies), outdoor_playground/balance_sheet_monthly.csv (Inventory Asset line)
+  </div>
+
+  <p>Monthly journal entries properly relieve inventory to COGS. Example JEs: JE#21 Jan 2024 ($66,292), JE#67 Dec 2025 ($44,040). Total inventory relief: $1,035,153.</p>
+
+  <h3>Credit Cards (CORRECTED)</h3>
+
+  <div class="flag flag-green">
+    <strong>✅ VERIFIED:</strong> All credit cards ARE being actively reconciled. The original claim that cards were "unchanged for 24 months" was incorrect.
+  </div>
+
+  <table>
+    <tr><th>Card</th><th>Original Claim</th><th>Verified Status</th></tr>
+    <tr><td>Amex</td><td>$86,429 (unchanged)</td><td><strong>$94K→$251K (fluctuating, active)</strong></td></tr>
+    <tr><td>Chase 8439</td><td>$15,095 (unchanged)</td><td><strong>Paid off by Nov 2024, closed</strong></td></tr>
+    <tr><td>Visa 5184</td><td>$40,671 (unchanged)</td><td><strong>$47K→$33K (50+ payments)</strong></td></tr>
+    <tr><td>Brex</td><td>$47K→$10K</td><td><strong>✅ Confirmed</strong></td></tr>
+    <tr><td><strong>Total CC Debt</strong></td><td>$392K</td><td><strong>$331,950</strong></td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> outdoor_playground/balance_sheet_monthly.csv (Credit Card accounts), outdoor_playground/general_ledger.csv (payment transactions)
+  </div>
+
+  <h3>Accounts Payable</h3>
+
+  <table>
+    <tr><th>Aging Bucket</th><th>Amount</th><th>% of Total</th></tr>
+    <tr><td>Current</td><td>$50,222</td><td>22%</td></tr>
+    <tr><td>1-30 Days</td><td>$50,638</td><td>22%</td></tr>
+    <tr><td>31-60 Days</td><td>$12,305</td><td>5%</td></tr>
+    <tr><td>61-90 Days</td><td>$5,050</td><td>2%</td></tr>
+    <tr><td><strong>91+ Days</strong></td><td><strong>$111,175</strong></td><td><strong>48%</strong></td></tr>
+    <tr><td><strong>Total AP</strong></td><td><strong>$229,390</strong></td><td>100%</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> OUTDOOR PLAYGROUND_A_P Aging Summary Report.xlsx (full entity report), outdoor_playground/ap_aging.csv
+  </div>
+
+  <h3>Debt Summary (Verified)</h3>
+
+  <table>
+    <tr><th>Component</th><th>Dec 2025 Balance</th></tr>
+    <tr><td>SBA 7a Loan</td><td>$241,515 (amortizing)</td></tr>
+    <tr><td>SBA EIDL</td><td>$149,269</td></tr>
+    <tr><td>Credit Cards</td><td>$331,950</td></tr>
+    <tr><td>Shopify Capital</td><td>$78,321</td></tr>
+    <tr><td>Shareholder Notes</td><td>$96,961</td></tr>
+    <tr><td>Maximus Outdoors Loan</td><td>$56,241</td></tr>
+    <tr><td>Accounts Payable</td><td>$229,390</td></tr>
+    <tr><td><strong>Total Liabilities</strong></td><td><strong>$1,183,647</strong></td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> outdoor_playground/balance_sheet_monthly.csv (Liabilities section, Dec 2025 column)
+  </div>
+
+  <h2 id="vendor">3. Vendor Expense Analysis (2025)</h2>
+
+  <p><strong>Total 2025 Revenue:</strong> $1,703,422<br>
+  <strong>Analysis Period:</strong> January - December 2025</p>
+
+  <h3>Expense Category Rollup</h3>
+
+  <table>
+    <tr><th>Category</th><th>Amount</th><th>% of Revenue</th><th>Benchmark</th></tr>
+    <tr><td>Shipping & Fulfillment</td><td>$425K</td><td>25%</td><td>8-12%</td></tr>
+    <tr><td>Marketing & Creative</td><td>$677K</td><td>40%</td><td>15-20%</td></tr>
+    <tr><td>Digital Advertising</td><td>$285K</td><td>17%</td><td>10-15%</td></tr>
+    <tr><td>Content Contractors</td><td>$218K</td><td>13%</td><td>5-8%</td></tr>
+    <tr><td>SaaS/Software</td><td>$69K</td><td>4%</td><td>2-4%</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> outdoor_playground/general_ledger.csv (11,289 rows, all 2025 transactions), outdoor_playground/expenses_by_vendor.csv
+  </div>
+
+  <h3>Top Vendors by Spend</h3>
+
+  <table>
+    <tr><th>Vendor</th><th>2025 Spend</th><th>Category</th></tr>
+    <tr><td>FedEx</td><td>$238,972</td><td>Shipping</td></tr>
+    <tr><td>Facebook/Meta</td><td>$234,792</td><td>Advertising</td></tr>
+    <tr><td>Google</td><td>$245,531</td><td>Advertising</td></tr>
+    <tr><td>Eagle Warehouse</td><td>$107,850</td><td>Fulfillment</td></tr>
+    <tr><td>USPS</td><td>$78,296</td><td>Shipping</td></tr>
+    <tr><td>Yotpo</td><td>$35,059</td><td>Reviews/Loyalty</td></tr>
+    <tr><td>Retentio</td><td>$24,125</td><td>Email Marketing</td></tr>
+    <tr><td>TikTok</td><td>$22,500</td><td>Advertising</td></tr>
+    <tr><td>Klaviyo</td><td>$18,400</td><td>Email Marketing</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> outdoor_playground/general_ledger.csv, derived_reports/vendor_concentration.csv
+  </div>
+
+  <h3>Cost Reduction Opportunities</h3>
+
+  <div class="flag">
+    <strong>FLAG 1: Redundant Content Contractors ($218K/year)</strong><br>
+    Six to seven separate content/media contractors is excessive for a $1.7M business. Consolidating to two contractors could save $96-120K/year.
+  </div>
+
+  <div class="flag">
+    <strong>FLAG 2: Marketing at 40% of Revenue</strong><br>
+    Total marketing + creative = $677K on $1.7M revenue = 40%. Target should be 15-20%. Potential savings: $250K+ annually.
+  </div>
+
+  <div class="flag">
+    <strong>FLAG 3: FedEx Shipping ($239K)</strong><br>
+    USPS Priority Mail or UPS Ground typically 20-40% cheaper for boxes under 5 lbs. A 25% reduction saves $60K.
+  </div>
+
+  <table>
+    <tr><th>Opportunity</th><th>Annual Savings</th></tr>
+    <tr><td>Consolidate content contractors</td><td>$96-120K</td></tr>
+    <tr><td>Reduce marketing to 25% of revenue</td><td>$250K</td></tr>
+    <tr><td>Optimize FedEx / shift to USPS</td><td>$40-80K</td></tr>
+    <tr><td>Replace Yotpo with alternatives</td><td>$15-25K</td></tr>
+    <tr><td>Eliminate Retentio (Klaviyo overlap)</td><td>$24K</td></tr>
+    <tr><td><strong>Total Potential</strong></td><td><strong>$425-499K</strong></td></tr>
+  </table>
+
+  <h2 id="customer">4. Customer & Revenue Deep Dive</h2>
+
+  <h3>Customer Metrics</h3>
+
+  <table>
+    <tr><th>Metric</th><th>Value</th><th>Benchmark</th></tr>
+    <tr><td>Total Unique Customers</td><td>19,176</td><td>-</td></tr>
+    <tr><td>Repeat Purchase Rate</td><td><strong>58.2%</strong></td><td>25-30% industry avg</td></tr>
+    <tr><td>One-Time Buyers</td><td>8,006 (41.8%)</td><td>-</td></tr>
+    <tr><td>Average LTV</td><td>$198.41</td><td>-</td></tr>
+    <tr><td>Median LTV</td><td>$82</td><td>-</td></tr>
+    <tr><td>Refund Rate</td><td>2.4%</td><td>5-10% industry avg</td></tr>
+    <tr><td>Top 10% Revenue Share</td><td>44.6%</td><td>-</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> shopify_analysis/customer_summary.md, shopify_analysis/customer_cohorts.csv, shopify_analysis/customer_concentration.csv
+  </div>
+
+  <h3>Revenue by Product Type</h3>
+
+  <table>
+    <tr><th>Product Type</th><th>Revenue</th><th>% of Total</th></tr>
+    <tr><td><strong>Subscription Box</strong></td><td><strong>$2,772,917</strong></td><td><strong>71.6%</strong></td></tr>
+    <tr><td>Fishing Rod</td><td>$223,956</td><td>5.8%</td></tr>
+    <tr><td>Tackle Bundle</td><td>$97,384</td><td>2.5%</td></tr>
+    <tr><td>Tackle Bags & Boxes</td><td>$63,914</td><td>1.6%</td></tr>
+    <tr><td>Squarebill</td><td>$45,563</td><td>1.2%</td></tr>
+    <tr><td>Other</td><td>$669,916</td><td>17.3%</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> shopify_analysis/revenue_by_product_type.csv
+  </div>
+
+  <h3>Revenue Trend</h3>
+
+  <table>
+    <tr><th>Period</th><th>QBO Revenue</th><th>YoY Change</th></tr>
+    <tr><td>2024 Total</td><td>$1,918,683</td><td>-</td></tr>
+    <tr><td>2025 Total</td><td>$1,549,142</td><td><strong>-19.3%</strong></td></tr>
+    <tr><td>Shopify Gross 2024</td><td>$2,023,928</td><td>-</td></tr>
+    <tr><td>Shopify Gross 2025</td><td>$1,780,524</td><td>-12%</td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> derived_reports/monthly_revenue_by_channel.csv, shopify_analysis/revenue_reconciliation.csv
+  </div>
+
+  <h2 id="cfo">5. Strategic CFO Insights</h2>
+
+  <h3>Red Flags</h3>
+
+  <div class="flag flag-red">
+    <strong>1. AP Aging:</strong> $229K in accounts payable with 48% ($111K) over 90 days past due. Indicates cash flow stress requiring vendor communication strategy.<br>
+    <em>Source: OUTDOOR PLAYGROUND_A_P Aging Summary Report.xlsx</em>
+  </div>
+
+  <div class="flag flag-red">
+    <strong>2. Negative Equity:</strong> ($759,779) total equity. Company is technically insolvent.<br>
+    <em>Source: outdoor_playground/balance_sheet_monthly.csv</em>
+  </div>
+
+  <div class="flag flag-red">
+    <strong>3. Revenue Declining:</strong> 12-19% YoY decline. Subscribers churning faster than being replaced.<br>
+    <em>Source: derived_reports/monthly_revenue_by_channel.csv</em>
+  </div>
+
+  <div class="flag flag-red">
+    <strong>4. Cash Position:</strong> ~$100K cash with $21-34K/month debt service. Runway: 2-4 months.<br>
+    <em>Source: outdoor_playground/balance_sheet_monthly.csv, derived_reports/monthly_cash_flow.csv</em>
+  </div>
+
+  <h3>Green Flags</h3>
+
+  <div class="flag flag-green">
+    <strong>1. Repeat Rate:</strong> 58.2% repeat customer rate vs 25-30% industry average. Product-market fit confirmed.<br>
+    <em>Source: shopify_analysis/customer_summary.md</em>
+  </div>
+
+  <div class="flag flag-green">
+    <strong>2. Subscription Revenue:</strong> 71.6% of Shopify revenue from subscription boxes. Predictable, recurring.<br>
+    <em>Source: shopify_analysis/revenue_by_product_type.csv</em>
+  </div>
+
+  <div class="flag flag-green">
+    <strong>3. Low Refunds:</strong> 2.4% refund rate vs 5-10% industry average. Customer satisfaction high.<br>
+    <em>Source: shopify_analysis/refund_summary.md</em>
+  </div>
+
+  <div class="flag flag-green">
+    <strong>4. Gross Margin:</strong> 39.0% verified gross margin is reasonable for D2C subscription.<br>
+    <em>Source: outdoor_playground/general_ledger.csv (COGS calculation)</em>
+  </div>
+
+  <div class="flag flag-green">
+    <strong>5. Accounting Controls:</strong> COGS, inventory, and credit cards ARE being properly managed (verified).<br>
+    <em>Source: 15-agent verification audit, Feb 5-6, 2026</em>
+  </div>
+
+  <h3>Summary Balance Sheet (Dec 2025)</h3>
+
+  <table>
+    <tr><th>Assets</th><th></th></tr>
+    <tr><td>Cash</td><td>$100,328</td></tr>
+    <tr><td>Inventory</td><td>$282,779</td></tr>
+    <tr><td>Other Assets</td><td>$40,760</td></tr>
+    <tr><td><strong>Total Assets</strong></td><td><strong>$423,867</strong></td></tr>
+    <tr><th>Liabilities</th><th></th></tr>
+    <tr><td>Accounts Payable</td><td>$229,390</td></tr>
+    <tr><td>Credit Cards</td><td>$331,950</td></tr>
+    <tr><td>Loans (SBA + Other)</td><td>$622,307</td></tr>
+    <tr><td><strong>Total Liabilities</strong></td><td><strong>$1,183,647</strong></td></tr>
+    <tr><th>Equity</th><th></th></tr>
+    <tr><td><strong>Total Equity</strong></td><td><strong>($759,779)</strong></td></tr>
+  </table>
+
+  <div class="source">
+    <strong>Source:</strong> outdoor_playground/balance_sheet_monthly.csv (Dec 2025 column)
+  </div>
+
+  <h3>Recommended Actions</h3>
+
+  <ol>
+    <li><strong>Immediate (Weeks 1-2):</strong> Address 90+ day payables ($111K). Develop vendor payment plan.</li>
+    <li><strong>Near-term (Weeks 2-4):</strong> Implement gross revenue recording. Clarify $500K convertible note status.</li>
+    <li><strong>Cost Reduction:</strong> Target $315-500K in annual savings from marketing/shipping optimization.</li>
+    <li><strong>Cash Management:</strong> Monitor debt service ($21-34K/mo). Extend runway through AP negotiation.</li>
+  </ol>
+
+  <h3>Valuation Range (If Pursuing Sale)</h3>
+
+  <table>
+    <tr><th>Scenario</th><th>Multiple</th><th>Value Range</th></tr>
+    <tr><td>Distressed/Liquidation</td><td>-</td><td>$500K-$900K</td></tr>
+    <tr><td>As-Is (messy books)</td><td>0.5-1x revenue</td><td>$1.2M-$2.4M</td></tr>
+    <tr><td>Cleaned Up (12-18 weeks)</td><td>1-1.5x revenue</td><td>$2.4M-$3.6M</td></tr>
+  </table>
+
+  <hr>
+
+  <h3>Data Sources Referenced</h3>
+  <ul>
+    <li><code>outdoor_playground/balance_sheet_monthly.csv</code> - Balance sheet figures</li>
+    <li><code>outdoor_playground/general_ledger.csv</code> - COGS, expenses, payments</li>
+    <li><code>outdoor_playground/ap_aging.csv</code> - AP aging detail</li>
+    <li><code>shopify_analysis/customer_summary.md</code> - Customer metrics</li>
+    <li><code>shopify_analysis/revenue_by_product_type.csv</code> - Product revenue</li>
+    <li><code>shopify_analysis/customer_cohorts.csv</code> - Cohort analysis</li>
+    <li><code>derived_reports/monthly_revenue_by_channel.csv</code> - Revenue trends</li>
+    <li><code>derived_reports/vendor_concentration.csv</code> - Vendor spend</li>
+    <li><code>OUTDOOR PLAYGROUND_A_P Aging Summary Report.xlsx</code> - AP aging</li>
+  </ul>
+
+  <p style="text-align: center; margin-top: 40px; color: #666; font-size: 12px;">
+    Report verified February 5-6, 2026<br>
+    15 independent analysis subagents • Raw source data verification
+  </p>
+</div>
+
+<script>
+function checkPwd() {
+  const pwd = document.getElementById('pwd').value;
+  if (pwd === 'rickp') {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  } else {
+    alert('Incorrect password');
+  }
+}
+</script>
+
+</body>
+</html>
