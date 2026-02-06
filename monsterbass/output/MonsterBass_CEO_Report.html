@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonsterBass Financial Quality Audit - CEO Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --critical: #dc2626;
+            --critical-bg: #fef2f2;
+            --critical-border: #fecaca;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --strategic: #059669;
+            --strategic-bg: #ecfdf5;
+            --strategic-border: #a7f3d0;
+            --info: #2563eb;
+            --info-bg: #eff6ff;
+            --info-border: #bfdbfe;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-left h2 {
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .header-right .date {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--critical);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .status-badge .pulse {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Executive Summary Card */
+        .exec-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--critical);
+        }
+
+        .exec-summary h3 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--gray-800);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-card.critical {
+            background: var(--critical-bg);
+            border: 1px solid var(--critical-border);
+        }
+
+        .metric-card .label {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .metric-card.critical .value {
+            color: var(--critical);
+        }
+
+        .metric-card .context {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* Section Styles */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--gray-800);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        /* Chart Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container h4 {
+            font-size: 1rem;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Finding Cards */
+        .findings-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .finding-card {
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid;
+        }
+
+        .finding-card.critical {
+            background: var(--critical-bg);
+            border-color: var(--critical);
+        }
+
+        .finding-card.warning {
+            background: var(--warning-bg);
+            border-color: var(--warning);
+        }
+
+        .finding-card.strategic {
+            background: var(--strategic-bg);
+            border-color: var(--strategic);
+        }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .finding-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--gray-800);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.critical {
+            background: var(--critical);
+            color: white;
+        }
+
+        .badge.warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .badge.strategic {
+            background: var(--strategic);
+            color: white;
+        }
+
+        .badge.high {
+            background: var(--gray-700);
+            color: white;
+        }
+
+        .badge.medium {
+            background: var(--gray-400);
+            color: white;
+        }
+
+        .badge.low {
+            background: var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .finding-content {
+            font-size: 0.95rem;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .finding-source {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            font-style: italic;
+        }
+
+        .finding-note {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        /* Questions List */
+        .questions-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .question-item {
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 3px solid var(--info);
+        }
+
+        .question-item.critical {
+            border-color: var(--critical);
+            background: var(--critical-bg);
+        }
+
+        .question-item.important {
+            border-color: var(--warning);
+            background: var(--warning-bg);
+        }
+
+        .question-item h5 {
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            margin-bottom: 8px;
+        }
+
+        .question-item p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        /* Document Checklist */
+        .doc-checklist {
+            display: grid;
+            gap: 12px;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 6px;
+        }
+
+        .doc-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .doc-content {
+            flex: 1;
+        }
+
+        .doc-name {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .doc-reason {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .priority-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .priority-label.week1 {
+            background: var(--critical);
+            color: white;
+        }
+
+        .priority-label.week2 {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Book Structure */
+        .book-structure {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            padding: 20px;
+            border-radius: 8px;
+            background: var(--gray-50);
+        }
+
+        .book-card.primary {
+            border: 2px solid var(--strategic);
+        }
+
+        .book-card.legacy {
+            border: 2px solid var(--gray-300);
+        }
+
+        .book-card h5 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .book-card ul {
+            margin-left: 20px;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        .book-card li {
+            margin-bottom: 6px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-800);
+            color: var(--gray-300);
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            font-size: 0.875rem;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .footer-label {
+            color: var(--gray-400);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                font-size: 12px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .section, .chart-container, .header, .exec-summary, .footer {
+                box-shadow: none;
+                border: 1px solid var(--gray-200);
+                page-break-inside: avoid;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .chart-wrapper {
+                height: 250px;
+            }
+
+            @page {
+                margin: 1cm;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .header-right {
+                text-align: left;
+            }
+
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .metric-card .value {
+                font-size: 1.25rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .finding-header {
+                flex-direction: column;
+            }
+        }
+
+        /* Utility Classes */
+        .text-critical { color: var(--critical); }
+        .text-warning { color: var(--warning); }
+        .text-strategic { color: var(--strategic); }
+        .mt-2 { margin-top: 8px; }
+        .mt-4 { margin-top: 16px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>MonsterBass</h1>
+                    <h2>Financial Quality Audit</h2>
+                </div>
+                <div class="header-right">
+                    <div class="date">January 31, 2025</div>
+                    <div class="status-badge">
+                        <span class="pulse"></span>
+                        DISTRESSED
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Executive Summary -->
+        <section class="exec-summary">
+            <h3>Executive Summary</h3>
+            <div class="metrics-grid">
+                <div class="metric-card critical">
+                    <div class="label">Cash Runway</div>
+                    <div class="value">&lt;1 Month</div>
+                    <div class="context">$100K cash vs $100K/mo burn</div>
+                </div>
+                <div class="metric-card critical">
+                    <div class="label">24-Month Loss</div>
+                    <div class="value">($530,682)</div>
+                    <div class="context">Accumulated deficit</div>
+                </div>
+                <div class="metric-card critical">
+                    <div class="label">Net Equity</div>
+                    <div class="value">($759,779)</div>
+                    <div class="context">Technically insolvent</div>
+                </div>
+                <div class="metric-card critical">
+                    <div class="label">Working Capital</div>
+                    <div class="value">$154K</div>
+                    <div class="context">Down 71% from $539K</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h4>Monthly Revenue by Channel</h4>
+                <div class="chart-wrapper">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h4>Working Capital Trend</h4>
+                <div class="chart-wrapper">
+                    <canvas id="workingCapitalChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h4>Monthly Cash Flow</h4>
+                <div class="chart-wrapper">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h4>Revenue Channel Mix (24-Month)</h4>
+                <div class="chart-wrapper">
+                    <canvas id="channelMixChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Findings -->
+        <section class="section">
+            <h3>Key Findings</h3>
+            <div class="findings-grid">
+                <!-- Critical Findings -->
+                <div class="finding-card critical">
+                    <div class="finding-header">
+                        <span class="finding-title">1. Cash Runway Under 30 Days</span>
+                        <div>
+                            <span class="badge critical">Critical</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Cash balance of $100,328 against monthly burn of approximately $100,000. Business cannot meet February obligations without intervention.
+                    </div>
+                    <div class="finding-source">Source: working_capital_trends.csv, monthly_cash_flow.csv</div>
+                </div>
+
+                <div class="finding-card critical">
+                    <div class="finding-header">
+                        <span class="finding-title">2. Working Capital Collapsed 71%</span>
+                        <div>
+                            <span class="badge critical">Critical</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Working capital dropped from $538,980 (Jan 2024) to $153,718 (Dec 2025) - a decline of $385,262. Cannot fund normal operations or inventory replenishment.
+                    </div>
+                    <div class="finding-source">Source: Calculated as Cash + Inventory - A/P from reconciled balance sheet</div>
+                </div>
+
+                <div class="finding-card critical">
+                    <div class="finding-header">
+                        <span class="finding-title">3. 48% of A/P Over 90 Days Past Due</span>
+                        <div>
+                            <span class="badge critical">Critical</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        $111,175 of $229,390 total A/P is 91+ days overdue. Vendors may demand COD terms or cease shipments.
+                    </div>
+                    <div class="finding-source">Source: outdoor_playground/ap_aging.csv (QBO aging report)</div>
+                </div>
+
+                <div class="finding-card critical">
+                    <div class="finding-header">
+                        <span class="finding-title">4. Negative Equity Position</span>
+                        <div>
+                            <span class="badge critical">Critical</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Total equity is ($759,779), deteriorated from ($467,856) in January 2024. Technically insolvent; cannot attract traditional financing.
+                    </div>
+                    <div class="finding-source">Source: balance_sheet_monthly.csv, December 2025</div>
+                </div>
+
+                <!-- Important Findings -->
+                <div class="finding-card warning">
+                    <div class="finding-header">
+                        <span class="finding-title">5. Revenue Declining 9.5% Year-Over-Year</span>
+                        <div>
+                            <span class="badge warning">Important</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        2024 revenue $1,912,530 vs 2025 revenue $1,730,279. Shrinking revenue base accelerates cash burn.
+                    </div>
+                    <div class="finding-source">Source: monthly_revenue_by_channel.csv (aggregated deposit records)</div>
+                </div>
+
+                <div class="finding-card warning">
+                    <div class="finding-header">
+                        <span class="finding-title">6. Gross Margin Below Viability (37%)</span>
+                        <div>
+                            <span class="badge warning">Important</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Gross margin 37.0% in 2025 (down from 40.8% in 2024), vs 50%+ benchmark for healthy D2C. Cannot achieve profitability at current margin levels.
+                    </div>
+                    <div class="finding-source">Source: P&L monthly data (Revenue - COGS)</div>
+                </div>
+
+                <div class="finding-card warning">
+                    <div class="finding-header">
+                        <span class="finding-title">7. Shipping Costs 18.8% of Revenue (2x Benchmark)</span>
+                        <div>
+                            <span class="badge warning">Important</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        FedEx alone is $502,413 (13.8% of revenue); total shipping/freight is $684,336. Each 5% reduction equals ~$182K annual savings.
+                    </div>
+                    <div class="finding-source">Source: vendor_concentration.csv, expenses_by_category.csv</div>
+                    <div class="finding-note">
+                        Note: Industry benchmark (8-10%) varies by business model and product type. Actual comparison requires similar D2C fishing gear companies.
+                    </div>
+                </div>
+
+                <div class="finding-card warning">
+                    <div class="finding-header">
+                        <span class="finding-title">8. Related Party Exposure ~$240,000</span>
+                        <div>
+                            <span class="badge warning">Important</span>
+                            <span class="badge medium">Medium Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Maximus Outdoors appears as vendor ($86,855 A/P), lender ($56,241), and shareholder notes ($96,961). Related party transactions face heavy due diligence scrutiny.
+                    </div>
+                    <div class="finding-source">Source: ap_aging.csv, debt_activity.csv, trial_balance.csv</div>
+                    <div class="finding-note">
+                        Note: Relationship structure unconfirmed. Total exposure is sum of identified amounts across books - needs verification from management.
+                    </div>
+                </div>
+
+                <!-- Strategic Findings -->
+                <div class="finding-card strategic">
+                    <div class="finding-header">
+                        <span class="finding-title">9. Credit Card Debt Increased 55%</span>
+                        <div>
+                            <span class="badge strategic">Strategic</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Credit card balances grew from $213,640 to $331,950 over 24 months. Approximately $66K annual interest drag at typical rates.
+                    </div>
+                    <div class="finding-source">Source: balance_sheet_monthly.csv (credit card liability accounts)</div>
+                    <div class="finding-note">
+                        Note: Interest estimate assumes 20% APR. Actual rates unknown - could be higher or lower depending on card terms.
+                    </div>
+                </div>
+
+                <div class="finding-card strategic">
+                    <div class="finding-header">
+                        <span class="finding-title">10. Consulting Spend at 11% of Revenue</span>
+                        <div>
+                            <span class="badge strategic">Strategic</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        $399,716 in consulting over 24 months (~$16,650/month). This is 2x typical benchmark (5-6%); ROI unclear from financial data alone.
+                    </div>
+                    <div class="finding-source">Source: vendor_concentration.csv, expenses_by_category.csv</div>
+                </div>
+
+                <div class="finding-card strategic">
+                    <div class="finding-header">
+                        <span class="finding-title">11. Amazon Channel Underutilized</span>
+                        <div>
+                            <span class="badge strategic">Strategic</span>
+                            <span class="badge high">High Confidence</span>
+                        </div>
+                    </div>
+                    <div class="finding-content">
+                        Amazon represents only 1.4% of revenue ($51,212 over 24 months). Typical D2C brands do 20-40% through Amazon - significant untapped growth opportunity with potentially lower CAC.
+                    </div>
+                    <div class="finding-source">Source: revenue_channel_summary.csv (deposit categorization)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Open Questions -->
+        <section class="section">
+            <h3>Open Questions Requiring Answers</h3>
+
+            <h4 class="text-critical mb-4 mt-4" style="font-size: 1rem;">Critical - Affects Cash/Survival</h4>
+            <div class="questions-list">
+                <div class="question-item critical">
+                    <h5>Q1. What is the relationship with Maximus Outdoors?</h5>
+                    <p><strong>Why it matters:</strong> Combined exposure of ~$240K (A/P + loan + shareholder notes). If related party, requires disclosure and arm's-length documentation. Some payments appear in both books - need to verify not double-paid.</p>
+                </div>
+                <div class="question-item critical">
+                    <h5>Q2. Is bridge financing available?</h5>
+                    <p><strong>Why it matters:</strong> Current runway is &lt;30 days. Without cash injection, cannot meet February payroll and vendor obligations. Shopify Capital is auto-debiting daily, accelerating cash depletion.</p>
+                </div>
+                <div class="question-item critical">
+                    <h5>Q3. What are the exact Shopify Capital terms?</h5>
+                    <p><strong>Why it matters:</strong> Balance dropped from $138K to $78K in 3 months (~$20K/month in auto-repayments). Need factor cost, daily withholding percentage, and payoff date for cash forecasting.</p>
+                </div>
+            </div>
+
+            <h4 class="text-warning mb-4 mt-4" style="font-size: 1rem;">Important - Affects Accuracy</h4>
+            <div class="questions-list">
+                <div class="question-item important">
+                    <h5>Q4. What are the shareholder notes terms ($96,961)?</h5>
+                    <p><strong>Why it matters:</strong> Need interest rate, maturity, subordination status for debt analysis. Undocumented related-party debt is a red flag for due diligence.</p>
+                </div>
+                <div class="question-item important">
+                    <h5>Q5. What is the "Executive Pay" line ($110,000 in equity)?</h5>
+                    <p><strong>Why it matters:</strong> If salary not taken, it understates P&L expenses. If deferred compensation, it's a liability. Classification affects profitability calculation.</p>
+                </div>
+                <div class="question-item important">
+                    <h5>Q6. Are SBA loan covenants being met?</h5>
+                    <p><strong>Why it matters:</strong> SBA7a ($241K) and EIDL ($149K) often have profitability or working capital covenants. May be in technical default with current financial position.</p>
+                </div>
+                <div class="question-item important">
+                    <h5>Q7. What inventory costing method is used?</h5>
+                    <p><strong>Why it matters:</strong> Inventory is $283K (67% of current assets). Method affects COGS calculation and margin accuracy. Investors will require documentation.</p>
+                </div>
+                <div class="question-item important">
+                    <h5>Q8. When was last physical inventory count?</h5>
+                    <p><strong>Why it matters:</strong> Book inventory ($283K primary vs $1.29M legacy) has significant discrepancy. Physical count required for verification.</p>
+                </div>
+            </div>
+
+            <h4 class="text-strategic mb-4 mt-4" style="font-size: 1rem;">Strategic - Affects Planning</h4>
+            <div class="questions-list">
+                <div class="question-item">
+                    <h5>Q9. What is the Science Convertible Note status?</h5>
+                    <p><strong>Why it matters:</strong> Legacy books show $500K convertible note. Affects total debt calculation and potential dilution if still outstanding.</p>
+                </div>
+                <div class="question-item">
+                    <h5>Q10. What is the Amazon channel strategy?</h5>
+                    <p><strong>Why it matters:</strong> Amazon is only 1.4% of revenue vs 20-40% typical. Represents significant untapped growth opportunity.</p>
+                </div>
+                <div class="question-item">
+                    <h5>Q11. What is the exit preference (turnaround vs sale)?</h5>
+                    <p><strong>Why it matters:</strong> Determines resource allocation, timeline, and immediate actions. Cannot proceed with strategic planning without clarity.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Document Requests -->
+        <section class="section">
+            <h3>Document Requests</h3>
+
+            <h4 style="font-size: 0.95rem; color: var(--critical); margin-bottom: 16px;">Immediate Priority (Week 1)</h4>
+            <div class="doc-checklist">
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Shopify Orders Export <span class="priority-label week1">Week 1</span></div>
+                        <div class="doc-reason">Required for SKU-level revenue analysis; enables product margin calculation with legacy cost data</div>
+                    </div>
+                </div>
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Shopify Payouts Report <span class="priority-label week1">Week 1</span></div>
+                        <div class="doc-reason">Required for Shopify-to-QBO deposit reconciliation; verifies revenue completeness</div>
+                    </div>
+                </div>
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Shopify Capital Agreement <span class="priority-label week1">Week 1</span></div>
+                        <div class="doc-reason">Required for cash flow forecasting; need factor rate, daily percentage, payoff terms</div>
+                    </div>
+                </div>
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Maximus Outdoors Documentation <span class="priority-label week1">Week 1</span></div>
+                        <div class="doc-reason">Required for related party due diligence; need loan agreements, payment terms, relationship disclosure</div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="font-size: 0.95rem; color: var(--warning); margin: 20px 0 16px;">Short-Term Priority (Week 2-3)</h4>
+            <div class="doc-checklist">
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">SBA Loan Agreements (7a + EIDL) <span class="priority-label week2">Week 2</span></div>
+                        <div class="doc-reason">Required for covenant compliance check; current financial position may trigger default provisions</div>
+                    </div>
+                </div>
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Shareholder Notes Documentation <span class="priority-label week2">Week 2</span></div>
+                        <div class="doc-reason">Required for debt analysis; need terms, interest rate, subordination status</div>
+                    </div>
+                </div>
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Physical Inventory Count <span class="priority-label week2">Week 2</span></div>
+                        <div class="doc-reason">Required for balance sheet verification; $283K asset needs physical confirmation</div>
+                    </div>
+                </div>
+                <div class="doc-item">
+                    <div class="doc-checkbox"></div>
+                    <div class="doc-content">
+                        <div class="doc-name">Science Convertible Note Agreement <span class="priority-label week2">Week 2</span></div>
+                        <div class="doc-reason">Required for cap table accuracy and total debt calculation</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Book Structure Explanation -->
+        <section class="section">
+            <h3>Two-Book Accounting Structure (Not a Problem)</h3>
+            <p style="margin-bottom: 20px; color: var(--gray-600);">
+                MonsterBass uses two QuickBooks books that serve different, complementary purposes. This is intentional and beneficial - not a red flag.
+            </p>
+            <div class="book-structure">
+                <div class="book-card primary">
+                    <h5 style="color: var(--strategic);">OUTDOOR PLAYGROUND (Primary)</h5>
+                    <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">Use for ALL financial reporting</p>
+                    <ul>
+                        <li>11,260 GL transactions</li>
+                        <li>Reconciled bank accounts</li>
+                        <li>Complete chart of accounts</li>
+                        <li>P&L, Balance Sheet, Cash Flow</li>
+                        <li>Tax reporting ready</li>
+                    </ul>
+                </div>
+                <div class="book-card legacy">
+                    <h5 style="color: var(--gray-600);">MONSTERBASS (Legacy)</h5>
+                    <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 12px;">Use for SKU cost data ONLY</p>
+                    <ul>
+                        <li>1,318 bills with product detail</li>
+                        <li>Product names with UPCs</li>
+                        <li>Unit costs per variant</li>
+                        <li>Historical vendor-product mapping</li>
+                        <li>NOT for financial statements</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="margin-top: 16px; font-size: 0.9rem; color: var(--gray-600); background: var(--gray-50); padding: 12px; border-radius: 6px;">
+                <strong>Key Point:</strong> The legacy books provide SKU-level detail that does NOT exist in the primary books. When combined with Shopify sales data, this enables product-level margin analysis. No consolidation is needed - they are different data types for different purposes.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-item">
+                    <span class="footer-label">Prepared By</span>
+                    <span>Financial Audit System</span>
+                </div>
+                <div class="footer-item">
+                    <span class="footer-label">Data Source</span>
+                    <span>QuickBooks Online (OUTDOOR PLAYGROUND)</span>
+                </div>
+                <div class="footer-item">
+                    <span class="footer-label">Pending Integration</span>
+                    <span>Shopify data export</span>
+                </div>
+                <div class="footer-item">
+                    <span class="footer-label">Report Date</span>
+                    <span>January 31, 2025</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Chart.js Configuration
+        Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#6b7280';
+
+        // Monthly Revenue Data
+        const months = ['Jan 24','Feb 24','Mar 24','Apr 24','May 24','Jun 24','Jul 24','Aug 24','Sep 24','Oct 24','Nov 24','Dec 24',
+                       'Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25'];
+
+        const amazonData = [867.57, 7.73, 1204.36, 2732.62, 2318.49, 3805.02, 557.10, 478.43, 1385.18, 1255.35, 1652.87, 5407.32,
+                           827.56, 164.85, 0, 1544.73, 333.41, 1839.68, 1000.92, 1162.95, 1055.70, 1967.09, 2053.42, 11937.13];
+        const paypalData = [25515.73, 19580.73, 25866.21, 28778.39, 18751.54, 25084.04, 23680.32, 14876.90, 17388.59, 16608.53, 15922.06, 20816.55,
+                           10962.43, 12355.57, 20714.07, 18382.42, 18306.98, 16894.10, 14191.45, 10863.39, 11197.18, 11859.34, 10906.94, 1891.14];
+        const retailData = [2444.50, 1840.90, 7459.00, 0, 1933.50, 0, 9607.38, 1107.53, 4142.21, 0, 0, 0,
+                           0, 0, 0, 0, 0, 3827.24, 2199.00, 297.67, 1547.73, 789.51, 2257.73, 0];
+        const shopifyData = [101097.75, 107402.26, 128363.44, 130857.15, 111544.84, 125927.83, 119242.76, 86138.83, 103276.02, 90562.98, 96735.19, 103592.53,
+                            79649.21, 82893.54, 118715.75, 109065.33, 108815.63, 125924.01, 122100.90, 100643.06, 82193.21, 74234.59, 95878.98, 111451.04];
+        const stripeData = [31925.44, 28277.22, 30907.80, 29186.02, 32369.97, 25952.85, 21401.97, 22640.62, 20640.00, 23671.67, 21628.17, 22262.62,
+                           19514.72, 12464.49, 20113.90, 20598.97, 19881.03, 18692.76, 18186.99, 15262.69, 14640.85, 15082.69, 12597.44, 15208.71];
+
+        // 1. Revenue by Channel (Stacked Bar)
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Shopify', data: shopifyData, backgroundColor: '#3b82f6', stack: 'stack0' },
+                    { label: 'Stripe', data: stripeData, backgroundColor: '#8b5cf6', stack: 'stack0' },
+                    { label: 'PayPal', data: paypalData, backgroundColor: '#06b6d4', stack: 'stack0' },
+                    { label: 'Amazon', data: amazonData, backgroundColor: '#f59e0b', stack: 'stack0' },
+                    { label: 'Retail', data: retailData, backgroundColor: '#10b981', stack: 'stack0' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45 } },
+                    y: { stacked: true, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' } }
+                }
+            }
+        });
+
+        // 2. Working Capital Trend (Line)
+        const workingCapitalData = [538980.45, 467608.09, 479572.91, 427336.06, 367857.84, 359477.69, 352296.23, 323705.03, 341697.92, 305998.71, 287227.74, 288023.37,
+                                    236448.70, 224997.03, 231095.28, 239269.38, 267665.72, 230946.31, 220838.63, 216250.36, 304872.34, 216941.33, 207864.48, 153718.00];
+
+        new Chart(document.getElementById('workingCapitalChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Working Capital',
+                    data: workingCapitalData,
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: 538980,
+                                yMax: 538980,
+                                borderColor: 'rgba(107, 114, 128, 0.5)',
+                                borderDash: [5, 5],
+                                borderWidth: 1
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45 } },
+                    y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' }, min: 0 }
+                }
+            }
+        });
+
+        // 3. Cash Flow by Month (Bar)
+        const netCashFlow = [-39087.07, -37770.90, 22353.93, -3676.77, -12604.42, 17036.38, 937.14, -28279.80, 21570.24, -21337.89, -4847.84, 43145.69,
+                            -43304.40, 4118.59, -2553.17, 1148.04, 18614.71, -19815.23, -17927.18, 9685.20, 91435.01, -86652.57, 16543.84, -27402.36];
+
+        new Chart(document.getElementById('cashFlowChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Net Cash Flow',
+                    data: netCashFlow,
+                    backgroundColor: netCashFlow.map(v => v >= 0 ? '#10b981' : '#dc2626'),
+                    borderRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxRotation: 45, minRotation: 45 } },
+                    y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' } }
+                }
+            }
+        });
+
+        // 4. Revenue Channel Mix (Doughnut)
+        new Chart(document.getElementById('channelMixChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Shopify (71.4%)', 'Stripe (14.6%)', 'PayPal (11.7%)', 'Amazon (1.3%)', 'Retail (1.1%)'],
+                datasets: [{
+                    data: [2516306.83, 513109.59, 411394.60, 45559.48, 39453.90],
+                    backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#f59e0b', '#10b981'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12, padding: 12, font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
