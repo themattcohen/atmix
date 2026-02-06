@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "2.2.0"  # Gate 1 plan refinement now functional
+__version__ = "2.3.0"  # All 3 approval gates now fully functional
 
 import os
 import sys
@@ -316,6 +316,30 @@ def refine_plan(feedback: str):
     st.session_state.total_tokens = orch.total_tokens
 
 
+def run_additional_analysis(feedback: str):
+    """Run targeted additional analysis based on user feedback at Gate 2."""
+    orch = get_orchestrator()
+    from atmix.engine.gates import GateResult, GateDecision
+
+    gate_result = GateResult(
+        decision=GateDecision.MODIFY,
+        approved=False,
+        feedback=feedback,
+    )
+    additional = orch._run_additional_analysis(gate_result, st.session_state.data_files)
+    if additional:
+        st.session_state.findings.extend(additional)
+        orch.all_findings = st.session_state.findings
+
+    # Re-validate with updated findings
+    validation = orch._run_validation(
+        st.session_state.findings, list(st.session_state.data_files.keys())
+    )
+    st.session_state.validation_results = validation.to_dict() if validation else None
+    st.session_state.total_tokens = orch.total_tokens
+    return bool(additional)
+
+
 def run_analysis():
     """Phase 3: Run all analyses."""
     orch = get_orchestrator()
@@ -333,6 +357,22 @@ def run_analysis():
 
     st.session_state.total_tokens = orch.total_tokens
     return bool(findings)
+
+
+def regenerate_synthesis(feedback: str):
+    """Regenerate synthesis based on user feedback at Gate 3."""
+    orch = get_orchestrator()
+    from atmix.engine.gates import GateResult, GateDecision
+
+    gate_result = GateResult(
+        decision=GateDecision.MODIFY,
+        approved=False,
+        feedback=feedback,
+    )
+    revised = orch._regenerate_synthesis(st.session_state.synthesis_data, gate_result)
+    st.session_state.synthesis_data = revised
+    orch.synthesis_data = revised
+    st.session_state.total_tokens = orch.total_tokens
 
 
 def run_synthesis():
@@ -969,14 +1009,23 @@ def render_findings_review():
                 st.rerun()
     with col2:
         if decision == "Request re-analysis":
-            if st.button("🔄 Re-run Analysis", type="primary"):
-                # Clear findings and go back to analysis
-                st.session_state.findings = []
-                st.session_state.validation_results = None
+            if st.button("🔄 Run Additional Analysis", type="primary"):
                 if reanalysis_notes:
-                    st.session_state.context_answers["reanalysis_notes"] = reanalysis_notes
-                st.session_state.phase = Phase.ANALYSIS_RUNNING
-                st.rerun()
+                    with st.status("Running targeted re-analysis...", expanded=True) as status:
+                        status.write("🤖 AI is analyzing the areas you requested...")
+                        try:
+                            found_new = run_additional_analysis(reanalysis_notes)
+                            if found_new:
+                                status.update(label="Additional analysis complete!", state="complete")
+                            else:
+                                status.update(label="No new findings from re-analysis", state="complete")
+                        except Exception as e:
+                            status.update(label="Re-analysis failed", state="error")
+                            st.error(f"Re-analysis error: {e}")
+                            return
+                    st.rerun()
+                else:
+                    st.warning("Please describe what should be re-analyzed.")
     with col3:
         if decision == "Cancel audit":
             if st.button("❌ Cancel"):
@@ -1177,13 +1226,36 @@ def render_draft_review():
         key="draft_decision",
     )
 
-    col1, col2 = st.columns(2)
+    if decision == "Request changes":
+        draft_feedback = st.text_area(
+            "What changes do you want to the draft?",
+            key="draft_feedback",
+            placeholder="e.g., 'Soften the tone on revenue findings' or 'Add more detail on vendor expenses'"
+        )
+
+    col1, col2, col3 = st.columns(3)
     with col1:
         if decision == "Approve and generate final report":
             if st.button("✅ Generate Final Report", type="primary"):
                 st.session_state.phase = Phase.GENERATING
                 st.rerun()
     with col2:
+        if decision == "Request changes":
+            if st.button("🔄 Revise Draft", type="primary"):
+                if draft_feedback:
+                    with st.status("Revising draft based on your feedback...", expanded=True) as status:
+                        status.write("🤖 AI is regenerating the synthesis...")
+                        try:
+                            regenerate_synthesis(draft_feedback)
+                            status.update(label="Draft revised!", state="complete")
+                        except Exception as e:
+                            status.update(label="Revision failed", state="error")
+                            st.error(f"Draft revision error: {e}")
+                            return
+                    st.rerun()
+                else:
+                    st.warning("Please describe what changes you want.")
+    with col3:
         if decision == "Cancel":
             if st.button("❌ Cancel"):
                 reset_session()
