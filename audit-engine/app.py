@@ -297,6 +297,25 @@ def run_planning():
         raise  # Re-raise so caller can display it
 
 
+def refine_plan(feedback: str):
+    """Refine the analysis plan based on user feedback."""
+    orch = get_orchestrator()
+    from atmix.prompts.planning import AnalysisPlan, PlanningPrompts
+    from atmix.engine.gates import GateResult, GateDecision
+
+    current_plan = AnalysisPlan.from_dict(st.session_state.analysis_plan)
+    gate_result = GateResult(
+        decision=GateDecision.MODIFY,
+        approved=False,
+        feedback=feedback,
+    )
+    refined = orch._refine_plan(current_plan, gate_result)
+    st.session_state.analysis_plan = refined.to_dict()
+    st.session_state.plan_display = PlanningPrompts.format_plan_for_display(refined)
+    orch.analysis_plan = refined
+    st.session_state.total_tokens = orch.total_tokens
+
+
 def run_analysis():
     """Phase 3: Run all analyses."""
     orch = get_orchestrator()
@@ -827,7 +846,6 @@ def render_plan_review():
 
     if decision == "Request modifications":
         feedback = st.text_area("What modifications do you want?", key="plan_modifications")
-        st.info("Note: Modifications will be noted but the current plan will proceed. Future versions will support plan regeneration.")
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -837,12 +855,20 @@ def render_plan_review():
                 st.rerun()
     with col2:
         if decision == "Request modifications":
-            if st.button("📝 Note & Proceed", type="primary"):
-                # Store modifications for context
+            if st.button("🔄 Refine Plan", type="primary"):
                 if feedback:
-                    st.session_state.context_answers["plan_modifications"] = feedback
-                st.session_state.phase = Phase.ANALYSIS_RUNNING
-                st.rerun()
+                    with st.status("Refining plan based on your feedback...", expanded=True) as status:
+                        status.write("🤖 AI is regenerating the analysis plan...")
+                        try:
+                            refine_plan(feedback)
+                            status.update(label="Plan refined!", state="complete")
+                        except Exception as e:
+                            status.update(label="Refinement failed", state="error")
+                            st.error(f"Plan refinement error: {e}")
+                            return
+                    st.rerun()
+                else:
+                    st.warning("Please describe what modifications you want.")
     with col3:
         if decision == "Cancel audit":
             if st.button("❌ Cancel"):
