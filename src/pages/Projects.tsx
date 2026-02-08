@@ -19,6 +19,15 @@ const projects: Project[] = [
     host: 'Streamlit Community Cloud',
     hostUrl: 'https://share.streamlit.io/',
   },
+  {
+    title: 'ice creamery',
+    description:
+      '120+ tested Ninja Creami recipes with full nutritional data, scoopability scores (FPDF/PAC), and scientific formulation. Searchable, filterable, and designed for making frozen desserts that actually work.',
+    url: '/creami',
+    lastUpdated: 'February 2026',
+    host: 'atmix.org',
+    hostUrl: 'https://atmix.org',
+  },
 ];
 
 export default function Projects() {
