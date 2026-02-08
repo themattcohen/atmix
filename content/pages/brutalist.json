@@ -93,6 +93,10 @@
       {
         "title": "Marketing Measurement Dashboard",
         "description": "Funnel tracking by lead source. Shows prospect behavior and quality to help allocate marketing spend."
+      },
+      {
+        "title": "Ice Creamery Recipe Database",
+        "description": "120+ tested Ninja Creami recipes with nutritional data, scoopability scores, and scientific formulation. Searchable and filterable. Because ice cream should be a solved problem."
       }
     ]
   },
