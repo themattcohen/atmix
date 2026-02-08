@@ -5,10 +5,14 @@
     <title>atmix.org - Matt Cohen, CPA</title>
     <script>
       // GitHub Pages SPA redirect solution
-      // Store the path and redirect to root so React Router can handle it
+      // Store the path and redirect to the correct SPA
       sessionStorage.redirect = location.href;
+      if (location.pathname.startsWith('/creami')) {
+        location.replace('/creami/');
+      } else {
+        location.replace('/');
+      }
     </script>
-    <meta http-equiv="refresh" content="0;URL='/'">
   </head>
   <body>
   </body>
