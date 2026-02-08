@@ -28,11 +28,22 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build root site
         run: npm run build
+
+      - name: Install creami-app dependencies
+        run: cd creami-app && npm ci
+
+      - name: Build creami-app
+        run: cd creami-app && npm run build
+
+      - name: Copy creami-app into dist
+        run: |
+          rm -rf dist/creami
+          cp -r creami-app/dist dist/creami
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
