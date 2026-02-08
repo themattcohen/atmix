@@ -3,7 +3,7 @@
 Full interactive workflow with approval gates matching the CLI experience.
 """
 
-__version__ = "2.3.0"  # All 3 approval gates now fully functional
+__version__ = "2.4.0"  # LLM transparency log + all 3 gates functional
 
 import os
 import sys
@@ -110,6 +110,10 @@ def init_session():
         "start_time": None,
         "error_message": None,
 
+        # LLM Transparency Log
+        "llm_call_log": [],
+        "show_llm_log": False,
+
         # Orchestrator instance (persisted)
         "orchestrator": None,
         "data_files": {},
@@ -157,6 +161,53 @@ def setup_api_key() -> bool:
 
 # === Orchestrator Integration ===
 
+def _wrap_client_for_logging(client):
+    """Wrap the Anthropic client to log all LLM calls to session state."""
+    original_create = client.messages.create
+
+    def logged_create(*args, **kwargs):
+        call_time = datetime.now()
+        # Extract prompt from messages
+        messages = kwargs.get("messages", [])
+        prompt_text = ""
+        for msg in messages:
+            content = msg.get("content", "")
+            if isinstance(content, str):
+                prompt_text += content
+            elif isinstance(content, list):
+                for block in content:
+                    if isinstance(block, dict) and block.get("type") == "text":
+                        prompt_text += block.get("text", "")
+
+        model = kwargs.get("model", "unknown")
+
+        # Call the real API
+        response = original_create(*args, **kwargs)
+
+        # Extract response text
+        response_text = ""
+        for block in response.content:
+            if hasattr(block, "text"):
+                response_text += block.text
+
+        # Log it
+        log_entry = {
+            "timestamp": call_time.strftime("%H:%M:%S"),
+            "model": model,
+            "prompt_preview": prompt_text[:500] + ("..." if len(prompt_text) > 500 else ""),
+            "prompt_full": prompt_text,
+            "response_preview": response_text[:500] + ("..." if len(response_text) > 500 else ""),
+            "response_full": response_text,
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+            "phase": st.session_state.phase.value if hasattr(st.session_state, "phase") else "unknown",
+        }
+        st.session_state.llm_call_log.append(log_entry)
+        return response
+
+    client.messages.create = logged_create
+
+
 def get_orchestrator():
     """Get or create orchestrator instance."""
     if st.session_state.orchestrator is None:
@@ -178,6 +229,9 @@ def get_orchestrator():
             predefined_context=context,
         )
         st.session_state.orchestrator._init_client()
+
+        # Wrap client for prompt/response logging
+        _wrap_client_for_logging(st.session_state.orchestrator.client)
 
     return st.session_state.orchestrator
 
@@ -565,6 +619,24 @@ def render_sidebar():
         if st.button("🔄 Start Over"):
             reset_session()
             st.rerun()
+
+        # LLM Transparency Log
+        log = st.session_state.llm_call_log
+        if log:
+            st.divider()
+            st.toggle("Show LLM Log", key="show_llm_log")
+            if st.session_state.show_llm_log:
+                st.caption(f"{len(log)} LLM call(s)")
+                for i, entry in enumerate(reversed(log)):
+                    idx = len(log) - i
+                    model_short = entry['model'].split('-')[1] if '-' in entry['model'] else entry['model']
+                    total_tokens = entry['input_tokens'] + entry['output_tokens']
+                    with st.expander(f"#{idx} {entry['timestamp']} · {model_short} · {total_tokens:,}t"):
+                        st.caption(f"Phase: {entry['phase']} | In: {entry['input_tokens']:,} | Out: {entry['output_tokens']:,}")
+                        st.markdown("**Prompt:**")
+                        st.code(entry["prompt_full"][:2000] + ("..." if len(entry["prompt_full"]) > 2000 else ""), language=None)
+                        st.markdown("**Response:**")
+                        st.code(entry["response_full"][:2000] + ("..." if len(entry["response_full"]) > 2000 else ""), language=None)
 
 
 def render_upload():
