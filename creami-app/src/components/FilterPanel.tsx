@@ -106,7 +106,7 @@ export default function FilterPanel({ recipes, filters, onFilterChange }: Filter
       </div>
 
       {/* Source Filter */}
-      {sources.length > 1 && (
+      {sources.length > 0 && (
         <div>
           <h3 className="text-sm font-semibold text-slate-700 mb-3">Source</h3>
           <div className="flex flex-wrap gap-2">
