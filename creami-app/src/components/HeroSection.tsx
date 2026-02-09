@@ -2,19 +2,21 @@ import { type Recipe } from '../lib/types';
 
 interface HeroSectionProps {
   recipes: Recipe[];
+  onQuickFilter?: (filterKey: string | null) => void;
+  activeFilter?: string | null;
 }
 
-export default function HeroSection({ recipes }: HeroSectionProps) {
+export default function HeroSection({ recipes, onQuickFilter, activeFilter }: HeroSectionProps) {
   const totalRecipes = recipes.length;
   const allTags = new Set(recipes.flatMap((r) => r.tags));
   const scoopable = recipes.filter((r) => r.isScoopable).length;
   const vegan = recipes.filter((r) => r.isVegan).length;
 
   const stats = [
-    { label: 'Recipes', value: totalRecipes, icon: '🍨' },
-    { label: 'Tags', value: allTags.size, icon: '🏷️' },
-    { label: 'Scoopable', value: scoopable, icon: '🥄' },
-    { label: 'Vegan', value: vegan, icon: '🌿' },
+    { label: 'Recipes', value: totalRecipes, icon: '🍨', filterKey: null as string | null },
+    { label: 'Tags', value: allTags.size, icon: '🏷️', filterKey: 'tags' as string | null },
+    { label: 'Scoopable', value: scoopable, icon: '🥄', filterKey: 'scoopable' },
+    { label: 'Vegan', value: vegan, icon: '🌿', filterKey: 'vegan' },
   ];
 
   return (
@@ -30,20 +32,34 @@ export default function HeroSection({ recipes }: HeroSectionProps) {
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-white rounded-xl border border-slate-200 p-4 text-center shadow-sm"
-            >
-              <span className="text-2xl mb-1 block">{stat.icon}</span>
-              <span className="text-2xl font-bold text-slate-900 block">
-                {stat.value}
-              </span>
-              <span className="text-xs text-slate-500 uppercase tracking-wide">
-                {stat.label}
-              </span>
-            </div>
-          ))}
+          {stats.map((stat) => {
+            const isActive = activeFilter === stat.filterKey ||
+              (stat.filterKey === null && !activeFilter);
+            return (
+              <button
+                key={stat.label}
+                type="button"
+                onClick={() => onQuickFilter?.(stat.filterKey)}
+                className={`rounded-xl border p-4 text-center shadow-sm transition-all cursor-pointer ${
+                  isActive && stat.filterKey !== null
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-105'
+                    : 'bg-white border-slate-200 hover:border-indigo-300 hover:shadow-md hover:-translate-y-0.5'
+                }`}
+              >
+                <span className="text-2xl mb-1 block">{stat.icon}</span>
+                <span className={`text-2xl font-bold block ${
+                  isActive && stat.filterKey !== null ? 'text-white' : 'text-slate-900'
+                }`}>
+                  {stat.value}
+                </span>
+                <span className={`text-xs uppercase tracking-wide ${
+                  isActive && stat.filterKey !== null ? 'text-indigo-100' : 'text-slate-500'
+                }`}>
+                  {stat.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

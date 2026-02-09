@@ -41,6 +41,7 @@ function applyFilters(recipes: Recipe[], filters: FilterState): Recipe[] {
     if (filters.maxKcal !== null && r.nutrition && r.nutrition.kcal > filters.maxKcal) return false;
     if (filters.minProtein !== null && r.nutrition && r.nutrition.protein < filters.minProtein) return false;
     if (filters.maxSugar !== null && r.nutrition && r.nutrition.sugar > filters.maxSugar) return false;
+    if (filters.source !== null && r.source !== filters.source) return false;
     return true;
   });
 }
@@ -70,16 +71,28 @@ export default function HomePage() {
 
   const [filters, setFilters] = useState<FilterState>(() => {
     const tagParam = searchParams.get('tag');
-    return tagParam
-      ? { ...EMPTY_FILTERS, tags: [tagParam] }
-      : EMPTY_FILTERS;
+    const qfParams = searchParams.getAll('qf');
+    const sourceParam = searchParams.get('source');
+    return {
+      ...EMPTY_FILTERS,
+      ...(tagParam ? { tags: [tagParam] } : {}),
+      ...(qfParams.length > 0 ? { quickFilters: qfParams } : {}),
+      ...(sourceParam ? { source: sourceParam } : {}),
+    };
   });
+
+  // Auto-open filter panel if URL has active filters
+  useEffect(() => {
+    const hasUrlFilters = searchParams.has('tag') || searchParams.has('qf') || searchParams.has('source');
+    if (hasUrlFilters) setShowFilters(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
     filters.tags.forEach((t) => params.append('tag', t));
     filters.quickFilters.forEach((f) => params.append('qf', f));
+    if (filters.source) params.set('source', filters.source);
     setSearchParams(params, { replace: true });
   }, [query, filters, setSearchParams]);
 
@@ -105,9 +118,45 @@ export default function HomePage() {
     setFilters(newFilters);
   }, []);
 
+  const handleHeroFilter = useCallback((filterKey: string | null) => {
+    if (filterKey === null) {
+      // "Recipes" clicked - clear all filters
+      setFilters(EMPTY_FILTERS);
+      setQuery('');
+      setShowFilters(false);
+    } else if (filterKey === 'tags') {
+      // "Tags" clicked - open filter panel
+      setShowFilters(true);
+    } else {
+      // Quick filter (scoopable, vegan) - toggle it
+      const isActive = filters.quickFilters.includes(filterKey);
+      if (isActive) {
+        setFilters({ ...EMPTY_FILTERS });
+        setShowFilters(false);
+      } else {
+        setFilters({ ...EMPTY_FILTERS, quickFilters: [filterKey] });
+        setShowFilters(true);
+      }
+    }
+  }, [filters.quickFilters]);
+
+  const activeHeroFilter = filters.quickFilters.length === 1 && filters.tags.length === 0
+    ? filters.quickFilters[0]
+    : null;
+
+  const activeFilterCount = filters.tags.length + filters.quickFilters.length +
+    (filters.source ? 1 : 0) +
+    (filters.maxKcal !== null ? 1 : 0) +
+    (filters.minProtein !== null ? 1 : 0) +
+    (filters.maxSugar !== null ? 1 : 0);
+
   return (
     <div>
-      <HeroSection recipes={allRecipes} />
+      <HeroSection
+        recipes={allRecipes}
+        onQuickFilter={handleHeroFilter}
+        activeFilter={activeHeroFilter}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
@@ -134,9 +183,9 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
                 Filters
-                {(filters.tags.length > 0 || filters.quickFilters.length > 0) && (
+                {activeFilterCount > 0 && (
                   <span className="bg-white text-indigo-600 rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">
-                    {filters.tags.length + filters.quickFilters.length}
+                    {activeFilterCount}
                   </span>
                 )}
               </button>
