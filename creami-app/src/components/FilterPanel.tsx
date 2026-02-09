@@ -76,6 +76,10 @@ export default function FilterPanel({ recipes, filters, onFilterChange }: Filter
     earthandoven: 'Earth and Oven',
     secretlyhealthy: 'Secretly Healthy Home',
     georgeats: 'George Eats',
+    bails: 'Basics with Bails',
+    clevenger: 'Lara Clevenger',
+    krolls: "Kroll's Korner",
+    ninja: 'SharkNinja Official',
   };
 
   const hasActiveFilters =

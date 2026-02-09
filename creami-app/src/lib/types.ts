@@ -27,7 +27,7 @@ export interface Recipe {
   id: string;
   name: string;
   slug: string;
-  source: "jhermann" | "fpf" | "reddit" | "tastytravelers" | "earthandoven" | "secretlyhealthy" | "georgeats";
+  source: "jhermann" | "fpf" | "reddit" | "tastytravelers" | "earthandoven" | "secretlyhealthy" | "georgeats" | "bails" | "clevenger" | "krolls" | "ninja";
   description: string;
   tags: string[];
   nutrition: Nutrition;
