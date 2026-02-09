@@ -125,6 +125,60 @@ BLOG_SOURCES: list[dict[str, Any]] = [
             r"healthy-ninja-creami-recipes/$",
         ],
     },
+    {
+        "name": "Basics with Bails",
+        "source_id": "bails",
+        "category_urls": [
+            "https://basicswithbails.com/tag/ninja-creami/",
+            "https://basicswithbails.com/tag/ninja-creami/page/2/",
+            "https://basicswithbails.com/tag/ninja-creami/page/3/",
+        ],
+        "link_pattern": r'href="(https://basicswithbails\.com/(?:popular|course|diet)/[a-z0-9-]+/[a-z0-9-]+/)"',
+        "exclude_patterns": [],
+    },
+    {
+        "name": "Lara Clevenger",
+        "source_id": "clevenger",
+        "category_urls": [
+            "https://laraclevenger.com/ninja-creami-recipes/",
+            "https://laraclevenger.com/category/cooking-method/ninja-creami/",
+        ],
+        "link_pattern": r'href="(https://laraclevenger\.com/[a-z0-9][a-z0-9-]+/)"',
+        "exclude_patterns": [
+            r"/ninja-creami-recipes/$",
+            r"/ninja-creami/$",
+            r"/category/",
+            r"/web-stories/",
+            r"/bonus-signup/",
+            r"/about-",
+            r"/contact/$",
+            r"/services/$",
+            r"/recipe-index/$",
+            r"/disclosure-policy/$",
+            r"/\d+-\w+-recipes-",
+            r"/\d+-\w+-dishes-",
+            r"/\d+-\w+-that-",
+            r"/\d+-\w+-so-",
+            r"/feed/$",
+            r"/wp-json/$",
+        ],
+    },
+    {
+        "name": "Krolls Korner",
+        "source_id": "krolls",
+        "category_urls": [
+            "https://krollskorner.com/?s=ninja+creami",
+            "https://krollskorner.com/page/2/?s=ninja+creami",
+        ],
+        "link_pattern": r'href="(https://krollskorner\.com/recipes/[a-z0-9/-]+/)"',
+        "exclude_patterns": [
+            r"/poll/",
+            r"/techniques/",
+            r"/chocolate-mug-cake/",
+            r"/browse-by-series/",
+            r"/creami-series/",
+        ],
+    },
 ]
 
 # HTTP config
