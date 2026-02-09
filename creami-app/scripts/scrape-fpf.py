@@ -250,40 +250,72 @@ def parse_ingredients_from_desc(desc: str) -> list[dict[str, Any]]:
 
 
 def parse_single_ingredient(text: str) -> dict[str, str] | None:
-    """Parse a single ingredient like '350g Fat Free High Protein Milk'."""
+    """Parse a single ingredient like '350g Fat Free High Protein Milk'.
+
+    FPF format examples:
+        350g Fat Free High Protein Milk
+        25g @Lakanto Monk Fruit sweetener
+        2.5g (½ tsp) vanilla bean paste (or extract)
+        1g (¼ tsp) xanthan gum
+        5g (1 tsp) cake batter extract
+        A pinch of salt
+        1 Vanilla Protein Shake (I like the ones from @Nurri)
+    """
     if not text:
         return None
 
-    # Remove parenthetical alternatives like "(can sub for ...)"
-    comment = ""
-    paren_match = re.search(r'\(([^)]+)\)', text)
-    if paren_match:
-        comment = paren_match.group(1)
-        text = text[:paren_match.start()].strip()
-
-    # Try to extract amount and unit
-    # Pattern: "350g", "45g", "10g (2 tbsp)", "1g (½ tsp)", "A pinch of"
     amount = ""
     unit = ""
     name = text
+    comment = ""
 
-    # Numeric amount with unit
-    m = re.match(r'^([\d.~½¼¾⅓⅔]+(?:\s*[-–]\s*[\d.]+)?)\s*([a-zA-Z]+)?\s+(.+)$', text)
-    if m:
-        amount = m.group(1).strip()
-        unit = (m.group(2) or "").strip()
-        name = m.group(3).strip()
+    # First, try the FPF-specific pattern:
+    #   <amount><unit> (<vol equivalent>) <ingredient name> (<comment>)
+    # e.g. "2.5g (½ tsp) vanilla bean paste (or extract)"
+    fpf_match = re.match(
+        r'^([\d.~½¼¾⅓⅔]+(?:\s*[-–]\s*[\d.]+)?)\s*([a-zA-Z]+)'  # amount + unit
+        r'\s+\([^)]*(?:tsp|tbsp|cup|scoop)[^)]*\)'               # (vol equivalent) - skip it
+        r'\s+(.+)$',                                               # ingredient name + rest
+        text,
+    )
+    if fpf_match:
+        amount = fpf_match.group(1).strip()
+        unit = fpf_match.group(2).strip()
+        rest = fpf_match.group(3).strip()
+        # Check for trailing comment parenthetical like "(or extract)"
+        cm = re.search(r'\(([^)]+)\)\s*$', rest)
+        if cm:
+            comment = cm.group(1)
+            rest = rest[:cm.start()].strip()
+        name = rest
     else:
-        # "A pinch of salt"
-        m2 = re.match(r'^(A\s+pinch\s+of)\s+(.+)$', text, re.IGNORECASE)
-        if m2:
-            amount = "1"
-            unit = "pinch"
-            name = m2.group(2).strip()
+        # Remove trailing comment parentheticals like "(can sub for ...)", "(Optional)"
+        # but NOT measurement equivalents like "(½ tsp)"
+        paren_match = re.search(r'\(([^)]+)\)\s*$', text)
+        if paren_match:
+            inner = paren_match.group(1)
+            is_measurement = bool(re.match(
+                r'^[\d.½¼¾⅓⅔/]+\s*(?:tsp|tbsp|cup|scoop|drops?)',
+                inner, re.IGNORECASE,
+            ))
+            if not is_measurement:
+                comment = inner
+                text = text[:paren_match.start()].strip()
+
+        # Numeric amount with unit: "350g Fat Free Milk", "45g sweetener"
+        m = re.match(r'^([\d.~½¼¾⅓⅔]+(?:\s*[-–]\s*[\d.]+)?)\s*([a-zA-Z]+)?\s+(.+)$', text)
+        if m:
+            amount = m.group(1).strip()
+            unit = (m.group(2) or "").strip()
+            name = m.group(3).strip()
         else:
-            # "The juice of 2 limes"
-            m3 = re.match(r'^(?:The\s+)?(.+?)(?:\s+of\s+)?(\d+\s+.+)$', text, re.IGNORECASE)
-            if not m3:
+            # "A pinch of salt"
+            m2 = re.match(r'^(A\s+pinch\s+of)\s+(.+)$', text, re.IGNORECASE)
+            if m2:
+                amount = "1"
+                unit = "pinch"
+                name = m2.group(2).strip()
+            else:
                 name = text
 
     return {
