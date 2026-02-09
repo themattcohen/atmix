@@ -326,22 +326,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -374,7 +374,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -603,10 +603,10 @@
             "comment": "or any sugar substitute"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -615,10 +615,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -664,7 +664,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -1039,10 +1039,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -1051,10 +1051,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -1087,7 +1087,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -1295,10 +1295,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -1307,16 +1307,16 @@
             "comment": "~100g"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "4g",
-            "comment": "2 tsp"
+            "amount": "4",
+            "unit": "g",
+            "name": "matcha",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
             "amount": "",
@@ -1331,10 +1331,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -1347,7 +1347,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -1556,10 +1556,10 @@
             "comment": "~100g"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -1568,10 +1568,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -1584,7 +1584,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -1637,10 +1637,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "10g",
-            "comment": "1 tbsp"
+            "amount": "10",
+            "unit": "g",
+            "name": "banana cream @jello pudding mix",
+            "comment": ""
           },
           {
             "amount": "30",
@@ -1649,16 +1649,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           }
         ]
       },
@@ -1666,10 +1666,10 @@
         "step": "Mix-ins",
         "items": [
           {
-            "amount": "",
-            "unit": "",
-            "name": "18g",
-            "comment": "6 tbsp"
+            "amount": "18",
+            "unit": "g",
+            "name": "Fat Free Reddiwhip",
+            "comment": "can sub with any whipped cream"
           },
           {
             "amount": "2",
@@ -2502,10 +2502,10 @@
             "comment": "optional"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "3g",
-            "comment": "½ tsp"
+            "amount": "3",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -2514,10 +2514,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -2542,7 +2542,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -2776,22 +2776,22 @@
             "comment": "~90g"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -2821,7 +2821,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -2872,28 +2872,28 @@
             "comment": "can sub with any 1:1 sugar substitute"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "3g",
-            "comment": "½ tsp"
+            "amount": "3",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -2920,7 +2920,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -2984,10 +2984,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -3001,7 +3001,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -3907,16 +3907,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "cake batter extract",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -3925,10 +3925,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -3943,7 +3943,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -3986,8 +3986,8 @@
           {
             "amount": "400",
             "unit": "g",
-            "name": "#drinkmilk50 Vanilla",
-            "comment": "or Original"
+            "name": "#drinkmilk50 Vanilla (or Original) Milk",
+            "comment": ""
           },
           {
             "amount": "40-45",
@@ -3996,28 +3996,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "cake batter extract",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -4031,7 +4031,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -4090,10 +4090,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -4140,7 +4140,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -4434,40 +4434,40 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "100g",
-            "comment": "1 medium sized"
+            "amount": "100",
+            "unit": "g",
+            "name": "(1 medium sized) carrot",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "0.5g",
-            "comment": " tsp"
+            "amount": "0.5",
+            "unit": "g",
+            "name": "pumpkin pie spice",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -4504,7 +4504,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -4556,10 +4556,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -4568,10 +4568,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -4581,8 +4581,8 @@
           {
             "amount": "20",
             "unit": "g",
-            "name": "chocolate chips",
-            "comment": "80 cal"
+            "name": "chocolate chips (80 cal) mixed with 3g of coconut oil",
+            "comment": "27 cal"
           }
         ]
       }
@@ -4597,7 +4597,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -4643,10 +4643,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "30-40g",
-            "comment": "1 cup"
+            "amount": "30-40",
+            "unit": "g",
+            "name": "cereal of choice",
+            "comment": ""
           },
           {
             "amount": "",
@@ -4661,10 +4661,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -4686,7 +4686,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -4744,16 +4744,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -4776,7 +4776,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -5013,16 +5013,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -5058,7 +5058,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -5630,10 +5630,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "22g",
-            "comment": "2 tbsp"
+            "amount": "22",
+            "unit": "g",
+            "name": "whipped (or regular) cream cheese",
+            "comment": ""
           },
           {
             "amount": "10",
@@ -5648,10 +5648,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -5665,10 +5665,10 @@
             "comment": "cream removed"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "10g",
-            "comment": "4 tbsp"
+            "amount": "10",
+            "unit": "g",
+            "name": "Fat Free Reddiwhip",
+            "comment": "or any whipped cream"
           },
           {
             "amount": "¼",
@@ -5677,10 +5677,10 @@
             "comment": "protein chocolate bar with 100 cal and 10g pro"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "10g",
-            "comment": "2 tsp"
+            "amount": "10",
+            "unit": "g",
+            "name": "Lakanto Chocolate Sauce",
+            "comment": ""
           }
         ]
       }
@@ -5696,7 +5696,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -5901,22 +5901,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -5943,7 +5943,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -5996,22 +5996,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6045,7 +6045,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6105,10 +6105,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6141,7 +6141,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6201,16 +6201,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6237,7 +6237,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6296,16 +6296,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -6319,7 +6319,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6389,10 +6389,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6418,7 +6418,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6483,10 +6483,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6500,10 +6500,10 @@
             "comment": "I used the old version so it was 50 calories and 5g of protein for this amount"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "12g",
-            "comment": "2 pieces"
+            "amount": "12",
+            "unit": "g",
+            "name": "(2 pieces) Rolos, chopped",
+            "comment": "or any chocolate covered caramels"
           },
           {
             "amount": "7",
@@ -6526,7 +6526,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6583,22 +6583,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6612,10 +6612,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "14g",
-            "comment": "½ serving"
+            "amount": "14",
+            "unit": "g",
+            "name": "(½ serving) chocolate covered pretzels",
+            "comment": ""
           }
         ]
       }
@@ -6632,7 +6632,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6689,10 +6689,10 @@
             "comment": "~100g"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -6701,10 +6701,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6737,7 +6737,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6788,34 +6788,34 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "0.5g",
-            "comment": " tsp"
+            "amount": "0.5",
+            "unit": "g",
+            "name": "butter extract",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2-3g",
-            "comment": "½ tsp"
+            "amount": "2-3",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6841,7 +6841,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -6893,28 +6893,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "3g",
-            "comment": "½ tsp"
+            "amount": "3",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -6942,7 +6942,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -7479,10 +7479,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -7491,16 +7491,16 @@
             "comment": "linked in bio - get 20 free cups using my link"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -7527,7 +7527,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -7587,16 +7587,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -7623,7 +7623,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -7682,16 +7682,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "0.5g",
-            "comment": " tsp"
+            "amount": "0.5",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -7705,7 +7705,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -7764,22 +7764,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -7787,10 +7787,10 @@
         "step": "Mix-ins",
         "items": [
           {
-            "amount": "",
-            "unit": "",
-            "name": "21g",
-            "comment": "3 mini bars"
+            "amount": "21",
+            "unit": "g",
+            "name": "(3 mini bars) Heath Bar",
+            "comment": "can sub with any chocolate covered toffee"
           }
         ]
       }
@@ -7805,7 +7805,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -8018,22 +8018,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -8048,7 +8048,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -8101,28 +8101,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "LorAnn’s Cookie Butter Emulsion",
+            "comment": "use code FPF15 to save!"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -8148,7 +8148,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -8201,22 +8201,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -8242,7 +8242,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -8294,22 +8294,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1-2",
@@ -8348,7 +8348,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -8412,10 +8412,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -8441,7 +8441,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -9279,16 +9279,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -9321,7 +9321,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": false,
     "isVegan": false,
     "isDraft": false,
@@ -9374,28 +9374,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "7g",
-            "comment": "1 tbsp"
+            "amount": "7",
+            "unit": "g",
+            "name": "vanilla pudding mix",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -9409,10 +9409,10 @@
             "comment": "3 mixed in, 1 crumbled on top"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "15g",
-            "comment": "1 tbsp"
+            "amount": "15",
+            "unit": "g",
+            "name": "Lakanto Chocolate Sauce",
+            "comment": ""
           }
         ]
       }
@@ -9430,7 +9430,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -9650,16 +9650,16 @@
             "comment": "I like the one from @Modern Mountain Baking Company"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -9687,7 +9687,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -9751,10 +9751,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -9767,7 +9767,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -9968,10 +9968,10 @@
             "comment": "optional"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -9980,10 +9980,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -10016,7 +10016,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -10408,16 +10408,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "nutmeg",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -10432,10 +10432,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "0.5g",
-            "comment": " tsp"
+            "amount": "0.5",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": "double this if you’re skipping the egg"
           }
         ]
       }
@@ -10449,7 +10449,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -10786,10 +10786,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -10833,7 +10833,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -11127,16 +11127,16 @@
             "comment": "or any sugar substitute"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "3g",
-            "comment": "½ tsp"
+            "amount": "3",
+            "unit": "g",
+            "name": "cake batter extract",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -11145,10 +11145,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -11174,7 +11174,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -11239,10 +11239,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "0.5g",
-            "comment": " tsp"
+            "amount": "0.5",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -11256,7 +11256,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -11309,10 +11309,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -11321,10 +11321,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -11346,8 +11346,8 @@
           {
             "amount": "",
             "unit": "",
-            "name": "",
-            "comment": "Optional"
+            "name": "(Optional) ½ tsp Christmas-themed sprinkles",
+            "comment": ""
           }
         ]
       }
@@ -11364,7 +11364,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -11865,10 +11865,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -11877,10 +11877,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -11907,7 +11907,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -12329,16 +12329,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -12354,8 +12354,8 @@
           {
             "amount": "",
             "unit": "",
-            "name": "Right before the Mix-In cycle, combine 15g of chocolate with 2g of coconut oil, melt in the microwave",
-            "comment": "30 sec intervals, stirring in between"
+            "name": "Right before the Mix-In cycle, combine 15g of chocolate with 2g of coconut oil, melt in the microwave (30 sec intervals, stirring in between), hollow out a hole in the center of the base, and pour in. After spinning on the Mix-In setting, it’ll turn into perfect, creamy chocolate chips.",
+            "comment": ""
           },
           {
             "amount": "2",
@@ -12390,7 +12390,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -12589,16 +12589,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "400",
@@ -12613,22 +12613,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -12660,7 +12660,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": false,
     "isVegan": false,
     "isDraft": false,
@@ -12711,10 +12711,10 @@
             "comment": "or any sugar substitute"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -12723,10 +12723,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -12752,7 +12752,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -12811,16 +12811,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -12835,7 +12835,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -12904,10 +12904,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -12932,7 +12932,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -12985,22 +12985,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "cake batter extract",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1-2",
@@ -13038,7 +13038,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -13091,22 +13091,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -13138,7 +13138,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -13190,22 +13190,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -13231,7 +13231,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -13290,16 +13290,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "pumpkin pie spice",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -13308,10 +13308,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -13337,7 +13337,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -13389,10 +13389,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "cake batter extract",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -13401,10 +13401,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1-2",
@@ -13443,7 +13443,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -13501,22 +13501,22 @@
             "comment": "Pro Tip: toast them for that campfire-esque flavor"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -13554,7 +13554,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -13857,10 +13857,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -13893,7 +13893,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -14194,16 +14194,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "",
             "unit": "",
-            "name": "",
-            "comment": "Optional"
+            "name": "(Optional) 5g (1 tsp) vanilla bean paste",
+            "comment": "or extract"
           }
         ]
       },
@@ -14213,8 +14213,8 @@
           {
             "amount": "15",
             "unit": "g",
-            "name": "chocolate chips",
-            "comment": "60 cal"
+            "name": "chocolate chips (60 cal) mixed with 2g of coconut oil",
+            "comment": "27 cal"
           },
           {
             "amount": "15",
@@ -14235,7 +14235,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -14781,10 +14781,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -14793,10 +14793,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -14804,16 +14804,16 @@
         "step": "Mix-ins",
         "items": [
           {
-            "amount": "",
-            "unit": "",
-            "name": "28g",
-            "comment": "1 small package"
+            "amount": "28",
+            "unit": "g",
+            "name": "(1 small package) Teddy Grahams",
+            "comment": "can sub for graham crackers"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "10g",
-            "comment": "2 tbsp"
+            "amount": "10",
+            "unit": "g",
+            "name": "Fat Free Reddiwhip",
+            "comment": "can sub with any whipped cream"
           }
         ]
       }
@@ -14830,7 +14830,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -15591,22 +15591,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -15645,7 +15645,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -15704,16 +15704,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -15727,7 +15727,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -15786,16 +15786,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -15809,7 +15809,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -15861,22 +15861,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -15890,7 +15890,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -16401,22 +16401,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1-2",
@@ -16454,7 +16454,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -16651,10 +16651,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "4g",
-            "comment": "2 tsp"
+            "amount": "4",
+            "unit": "g",
+            "name": "matcha",
+            "comment": "I like the one from matcha LOVE"
           },
           {
             "amount": "40-45",
@@ -16669,16 +16669,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "",
             "unit": "",
-            "name": "",
-            "comment": "Optional"
+            "name": "(Optional) 5g (1 tsp) vanilla bean paste",
+            "comment": "or extract"
           }
         ]
       },
@@ -16704,7 +16704,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -16757,28 +16757,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "4g",
-            "comment": "2 tsp"
+            "amount": "4",
+            "unit": "g",
+            "name": "@matcha LOVE Japanese Matcha powder",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -16792,7 +16792,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -16845,10 +16845,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
             "amount": "2-3",
@@ -16863,16 +16863,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -16887,7 +16887,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -16939,22 +16939,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -16971,7 +16971,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -17285,8 +17285,8 @@
           {
             "amount": "",
             "unit": "",
-            "name": "",
-            "comment": "5-6 drops"
+            "name": "(5-6 drops) drops peppermint extract",
+            "comment": ""
           },
           {
             "amount": "½",
@@ -17301,10 +17301,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "@bobsredmill  xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -17314,8 +17314,8 @@
           {
             "amount": "15",
             "unit": "g",
-            "name": "chocolate chips",
-            "comment": "60 cal"
+            "name": "chocolate chips (60 cal) mixed with 2g of coconut oil",
+            "comment": "27 cal"
           }
         ]
       }
@@ -17331,7 +17331,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -17385,10 +17385,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "",
@@ -17403,10 +17403,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -17433,7 +17433,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -17484,28 +17484,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "8g",
-            "comment": "½ tbsp"
+            "amount": "8",
+            "unit": "g",
+            "name": "Peanut Butter",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "16g",
-            "comment": "2 tbsp"
+            "amount": "16",
+            "unit": "g",
+            "name": "PB Fit",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -17537,7 +17537,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": false,
     "isVegan": false,
     "isDraft": false,
@@ -17595,28 +17595,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "18g",
-            "comment": "1 tbsp"
+            "amount": "18",
+            "unit": "g",
+            "name": "Nutella",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "hazelnut syrup",
+            "comment": "optional"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -17631,7 +17631,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -17677,22 +17677,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "butter extract",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -17725,7 +17725,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -17778,16 +17778,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "cinnamon",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -17796,10 +17796,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -17833,7 +17833,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -17890,10 +17890,10 @@
             "comment": "~100g"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -17902,10 +17902,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -17945,7 +17945,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -18268,10 +18268,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -18280,10 +18280,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -18309,7 +18309,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -18362,22 +18362,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla extract",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -18406,7 +18406,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -18459,10 +18459,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla extract",
+            "comment": ""
           },
           {
             "amount": "",
@@ -18483,16 +18483,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -18520,7 +18520,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -19262,34 +19262,34 @@
             "comment": "canned, fresh, or frozen"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "150g",
-            "comment": "1 small container"
+            "amount": "150",
+            "unit": "g",
+            "name": "(1 small container) high protein vanilla yogurt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "240g",
-            "comment": "1 cup"
+            "amount": "240",
+            "unit": "g",
+            "name": "Fat Free @fairlife Milk",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "25g",
-            "comment": "2 tbsp"
+            "amount": "25",
+            "unit": "g",
+            "name": "@Lakanto Monk Fruit sweetener",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -19305,7 +19305,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -19356,34 +19356,34 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "8g",
-            "comment": "½ tbsp"
+            "amount": "8",
+            "unit": "g",
+            "name": "Peanut Butter",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "16g",
-            "comment": "2 tbsp"
+            "amount": "16",
+            "unit": "g",
+            "name": "@PBfit",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -19408,7 +19408,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -19459,28 +19459,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "8g",
-            "comment": "½ tbsp"
+            "amount": "8",
+            "unit": "g",
+            "name": "Peanut Butter",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "16g",
-            "comment": "2 tbsp"
+            "amount": "16",
+            "unit": "g",
+            "name": "PB Fit",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "@bobsredmill xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -19514,7 +19514,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": false,
     "isVegan": false,
     "isDraft": false,
@@ -19566,28 +19566,28 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "8g",
-            "comment": "½ tbsp"
+            "amount": "8",
+            "unit": "g",
+            "name": "Peanut Butter",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "16g",
-            "comment": "2 tbsp"
+            "amount": "16",
+            "unit": "g",
+            "name": "@PBfit",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -19613,7 +19613,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -19670,16 +19670,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -19712,7 +19712,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -19903,10 +19903,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -19915,10 +19915,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -19951,7 +19951,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -20003,10 +20003,10 @@
             "comment": "or any sugar substitute"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "",
@@ -20021,10 +20021,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -20050,7 +20050,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -20114,10 +20114,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -20145,8 +20145,8 @@
           {
             "amount": "",
             "unit": "",
-            "name": "Right before the Mix-In cycle, combine 15g of chocolate with 2g of coconut oil, melt in the microwave",
-            "comment": "30 sec intervals, stirring in between"
+            "name": "Right before the Mix-In cycle, combine 15g of chocolate with 2g of coconut oil, melt in the microwave (30 sec intervals, stirring in between), hollow out a hole in the center of the base, and pour in. After spinning on the Mix-In setting, it’ll turn into perfect, creamy chocolate chips.",
+            "comment": ""
           }
         ]
       }
@@ -20163,7 +20163,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -20688,10 +20688,10 @@
             "comment": "optional"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "@Nielsen-Massey Vanillas vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -20700,10 +20700,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -20730,7 +20730,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -21210,22 +21210,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "@LorAnn Oils Cotton Candy flavoring",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -21239,7 +21239,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -21291,22 +21291,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -21346,7 +21346,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -21397,16 +21397,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt + an extra pinch",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -21430,7 +21430,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": false,
     "isVegan": false,
     "isDraft": false,
@@ -21489,22 +21489,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "30g",
-            "comment": "2 tbsp"
+            "amount": "30",
+            "unit": "g",
+            "name": "Pumpkin cream cheese",
+            "comment": "can sub with regular cream cheese + 5g brown sugar sweetener + a dash of cinnamon and pumpkin pie spice"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "pumpkin pie spice",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -21513,10 +21513,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -21542,7 +21542,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -21600,16 +21600,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "pumpkin pie spice",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -21618,10 +21618,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -21648,7 +21648,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -21903,22 +21903,22 @@
             "comment": "can sub with 1 shot of espresso or 1 tbsp of instant coffee"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2g",
-            "comment": "½ tsp"
+            "amount": "2",
+            "unit": "g",
+            "name": "pumpkin pie spice",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -21929,8 +21929,8 @@
           {
             "amount": "",
             "unit": "",
-            "name": "",
-            "comment": "Optional"
+            "name": "(Optional) A splash of coffee creamer",
+            "comment": "I like Trader Joe’s Brown Sugar creamer"
           }
         ]
       }
@@ -21944,7 +21944,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22149,10 +22149,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -22177,7 +22177,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22235,16 +22235,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -22269,7 +22269,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22321,16 +22321,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -22350,10 +22350,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "12g",
-            "comment": "2 pieces"
+            "amount": "12",
+            "unit": "g",
+            "name": "(2 pieces) Mini Rolos",
+            "comment": "or any chocolate covered caramels"
           },
           {
             "amount": "10",
@@ -22374,7 +22374,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22426,22 +22426,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -22450,9 +22450,9 @@
         "items": [
           {
             "amount": "1",
-            "unit": "",
-            "name": "package",
-            "comment": "49g"
+            "unit": "package",
+            "name": "(49g) @Quest Nutrition Peanut Butter Candies (can sub with @Reeses Pieces",
+            "comment": ""
           }
         ]
       }
@@ -22467,7 +22467,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22525,16 +22525,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -22549,7 +22549,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22613,10 +22613,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -22648,7 +22648,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -22699,22 +22699,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "2.5g",
-            "comment": "½ tsp"
+            "amount": "2.5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -22728,10 +22728,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "18g",
-            "comment": "3 tbsp"
+            "amount": "18",
+            "unit": "g",
+            "name": "marshmallow creme",
+            "comment": "same thing as Marshmallow fluff"
           },
           {
             "amount": "10",
@@ -22753,7 +22753,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -23391,10 +23391,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -23403,10 +23403,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -23445,7 +23445,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -23498,16 +23498,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -23534,7 +23534,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -23586,16 +23586,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1.5g",
-            "comment": "½ tsp"
+            "amount": "1.5",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -23604,9 +23604,9 @@
         "items": [
           {
             "amount": "1",
-            "unit": "",
-            "name": "serving",
-            "comment": "5 pieces"
+            "unit": "serving",
+            "name": "(5 pieces) @Hershey’s Rolos, chopped",
+            "comment": "can sub with any kind of caramel filled chocolate"
           }
         ]
       }
@@ -23621,7 +23621,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -24167,16 +24167,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt + an extra pinch",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
             "amount": "1",
@@ -24196,7 +24196,7 @@
     "directions": [],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -24691,10 +24691,10 @@
             "comment": "350-400ml"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "22g",
-            "comment": "2 tbsp"
+            "amount": "22",
+            "unit": "g",
+            "name": "whipped (or regular) cream cheese",
+            "comment": "can sub with 1 tbsp cheesecake jello pudding mix"
           },
           {
             "amount": "20-25",
@@ -24709,10 +24709,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -24745,7 +24745,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -25215,22 +25215,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "30g",
-            "comment": "2 tbsp"
+            "amount": "30",
+            "unit": "g",
+            "name": "@Ghiradelli Chocolate White Chocolate chips",
+            "comment": ""
           },
           {
             "amount": "¼",
@@ -25260,7 +25260,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -25319,10 +25319,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -25340,7 +25340,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -25840,10 +25840,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -25883,7 +25883,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -25940,10 +25940,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "@NielsenMassey vanilla bean paste",
+            "comment": "or extract"
           },
           {
             "amount": "1",
@@ -25952,10 +25952,10 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "@bobsredmill xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -25975,10 +25975,10 @@
             "comment": "mix in all but one - save one bean, chop it up finely and top with it at the end"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "15g",
-            "comment": "1 tbsp"
+            "amount": "15",
+            "unit": "g",
+            "name": "@LakantoOfficial Chocolate Sauce",
+            "comment": "can sub with any sugar-free chocolate syrup except Hershey’s - it sucks"
           }
         ]
       }
@@ -25994,7 +25994,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -26689,22 +26689,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -26726,8 +26726,8 @@
           {
             "amount": "15",
             "unit": "g",
-            "name": "chocolate chips",
-            "comment": "60 cal"
+            "name": "chocolate chips (60 cal) mixed with 2g of coconut oil",
+            "comment": "27 cal"
           }
         ]
       }
@@ -26744,7 +26744,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -27445,16 +27445,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -27468,7 +27468,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -27612,22 +27612,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -27649,8 +27649,8 @@
           {
             "amount": "½",
             "unit": "of",
-            "name": "a @Prime Bites Protein Treats Brownie",
-            "comment": "ideally one of the blondie-style flavors"
+            "name": "a @Prime Bites Protein Treats Brownie (ideally one of the blondie-style flavors), chopped",
+            "comment": ""
           }
         ]
       }
@@ -27665,7 +27665,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -27877,22 +27877,22 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "5g",
-            "comment": "1 tsp"
+            "amount": "5",
+            "unit": "g",
+            "name": "vanilla bean paste",
+            "comment": "or extract"
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       }
@@ -27906,7 +27906,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
@@ -28698,16 +28698,16 @@
             "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "salt",
+            "comment": ""
           },
           {
-            "amount": "",
-            "unit": "",
-            "name": "1g",
-            "comment": "¼ tsp"
+            "amount": "1",
+            "unit": "g",
+            "name": "xanthan gum",
+            "comment": ""
           }
         ]
       },
@@ -28733,7 +28733,7 @@
     ],
     "images": [],
     "rating": null,
-    "isScoopable": false,
+    "isScoopable": true,
     "isLight": true,
     "isVegan": false,
     "isDraft": false,
