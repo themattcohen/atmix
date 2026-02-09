@@ -71,6 +71,11 @@ export default function FilterPanel({ recipes, filters, onFilterChange }: Filter
   const SOURCE_LABELS: Record<string, string> = {
     jhermann: 'jhermann/ice-creamery',
     fpf: 'FitnessProductFinder (YouTube)',
+    reddit: 'r/ninjacreami (Reddit)',
+    tastytravelers: 'The Tasty Travelers',
+    earthandoven: 'Earth and Oven',
+    secretlyhealthy: 'Secretly Healthy Home',
+    georgeats: 'George Eats',
   };
 
   const hasActiveFilters =
