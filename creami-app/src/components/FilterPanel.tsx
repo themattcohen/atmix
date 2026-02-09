@@ -6,6 +6,7 @@ export interface FilterState {
   minProtein: number | null;
   maxSugar: number | null;
   quickFilters: string[];
+  source: string | null;
 }
 
 export const EMPTY_FILTERS: FilterState = {
@@ -14,6 +15,7 @@ export const EMPTY_FILTERS: FilterState = {
   minProtein: null,
   maxSugar: null,
   quickFilters: [],
+  source: null,
 };
 
 const QUICK_FILTERS = [
@@ -32,6 +34,13 @@ interface FilterPanelProps {
 }
 
 export default function FilterPanel({ recipes, filters, onFilterChange }: FilterPanelProps) {
+  // Get unique sources with counts
+  const sourceCounts = new Map<string, number>();
+  recipes.forEach((r) => {
+    sourceCounts.set(r.source, (sourceCounts.get(r.source) || 0) + 1);
+  });
+  const sources = [...sourceCounts.entries()].sort((a, b) => b[1] - a[1]);
+
   // Get all tags sorted by frequency
   const tagCounts = new Map<string, number>();
   recipes.forEach((r) => r.tags.forEach((t) => {
@@ -59,12 +68,18 @@ export default function FilterPanel({ recipes, filters, onFilterChange }: Filter
     onFilterChange({ ...filters, quickFilters: newFilters });
   };
 
+  const SOURCE_LABELS: Record<string, string> = {
+    jhermann: 'jhermann/ice-creamery',
+    fpf: 'FitnessProductFinder (YouTube)',
+  };
+
   const hasActiveFilters =
     filters.tags.length > 0 ||
     filters.quickFilters.length > 0 ||
     filters.maxKcal !== null ||
     filters.minProtein !== null ||
-    filters.maxSugar !== null;
+    filters.maxSugar !== null ||
+    filters.source !== null;
 
   return (
     <div className="space-y-6">
@@ -89,6 +104,40 @@ export default function FilterPanel({ recipes, filters, onFilterChange }: Filter
           ))}
         </div>
       </div>
+
+      {/* Source Filter */}
+      {sources.length > 1 && (
+        <div>
+          <h3 className="text-sm font-semibold text-slate-700 mb-3">Source</h3>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onFilterChange({ ...filters, source: null })}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
+                filters.source === null
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300'
+              }`}
+            >
+              All ({recipes.length})
+            </button>
+            {sources.map(([source, count]) => (
+              <button
+                key={source}
+                type="button"
+                onClick={() => onFilterChange({ ...filters, source: filters.source === source ? null : source })}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
+                  filters.source === source
+                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300'
+                }`}
+              >
+                {SOURCE_LABELS[source] || source} ({count})
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Nutrition Filters */}
       <div>
