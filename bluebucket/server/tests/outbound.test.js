@@ -20,10 +20,10 @@ process.env.BUSINESS_TZ = 'America/Denver';
 process.env.OUTBOUND_CALLING_ENABLED = 'true';
 process.env.OUTBOUND_CALL_DELAY = '5'; // Short delay for testing
 
-// Mock date-fns-tz to handle v2/v3 API differences
+// Mock date-fns-tz (v2 API: utcToZonedTime / zonedTimeToUtc)
 jest.mock('date-fns-tz', () => ({
-  toZonedTime: jest.fn((date) => date),
-  fromZonedTime: jest.fn((date) => date),
+  utcToZonedTime: jest.fn((date) => date),
+  zonedTimeToUtc: jest.fn((date) => date),
   formatInTimeZone: jest.fn(() => '2026-02-11 10:00 AM MST'),
 }));
 

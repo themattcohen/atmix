@@ -6,7 +6,7 @@
  */
 
 const { format, addDays, parseISO, startOfDay, setHours, setMinutes } = require('date-fns');
-const { toZonedTime, fromZonedTime } = require('date-fns-tz');
+const { utcToZonedTime: toZonedTime, zonedTimeToUtc: fromZonedTime } = require('date-fns-tz');
 const config = require('../config');
 const { query: jobberQuery } = require('../jobber/client');
 const { GET_VISITS, GET_USERS } = require('../jobber/queries');

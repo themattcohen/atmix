@@ -13,7 +13,7 @@
  */
 
 const { format, addDays, parseISO, startOfWeek, addWeeks } = require('date-fns');
-const { toZonedTime, fromZonedTime } = require('date-fns-tz');
+const { utcToZonedTime: toZonedTime, zonedTimeToUtc: fromZonedTime } = require('date-fns-tz');
 const config = require('../config');
 const redis = require('../redis');
 const { query: jobberQuery } = require('../jobber/client');

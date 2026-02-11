@@ -343,9 +343,7 @@ function startServer() {
 
   const port = config.port;
 
-  app.listen(port, () => {
-    const outboundStatus = outboundCaller.getStatus();
-
+  app.listen(port, async () => {
     console.log('');
     console.log('='.repeat(50));
     console.log('  Blue Bucket Voice Agent Server');
@@ -369,12 +367,19 @@ function startServer() {
     console.log(`    Redis URL:        ${config.redis.url ? 'configured' : 'NOT SET'}`);
     console.log(`    Retell Secret:    ${config.retell.webhookSecret ? 'configured' : 'NOT SET'}`);
     console.log('');
-    console.log('  Outbound Calling:');
-    console.log(`    Enabled:     ${outboundStatus.enabled ? 'YES' : 'NO'}`);
-    console.log(`    Retell API:  ${outboundStatus.retellConfigured.isReady ? 'configured' : 'NOT SET'}`);
-    console.log(`    Twilio:      ${outboundStatus.twilioConfigured.isReady ? 'configured' : 'NOT SET'}`);
-    console.log(`    Call Delay:  ${outboundStatus.callDelay}s`);
-    console.log(`    Call Hours:  ${outboundStatus.callingHours.start}:00 - ${outboundStatus.callingHours.end}:00 ${outboundStatus.callingHours.timezone}`);
+
+    try {
+      const outboundStatus = await outboundCaller.getStatus();
+      console.log('  Outbound Calling:');
+      console.log(`    Enabled:     ${outboundStatus.enabled ? 'YES' : 'NO'}`);
+      console.log(`    Retell API:  ${outboundStatus.retellConfigured?.isReady ? 'configured' : 'NOT SET'}`);
+      console.log(`    Twilio:      ${outboundStatus.twilioConfigured?.isReady ? 'configured' : 'NOT SET'}`);
+      console.log(`    Call Delay:  ${outboundStatus.callDelay}s`);
+      console.log(`    Call Hours:  ${outboundStatus.callingHours.start}:00 - ${outboundStatus.callingHours.end}:00 ${outboundStatus.callingHours.timezone}`);
+    } catch (err) {
+      console.warn('  Outbound Calling: status unavailable -', err.message);
+    }
+
     console.log('='.repeat(50));
     console.log('');
   });
