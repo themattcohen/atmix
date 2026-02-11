@@ -1,0 +1,13 @@
+{
+  "source": "podcast",
+  "version": "1.0.0",
+  "last_updated": null,
+  "processed_ids": [],
+  "failed_ids": [],
+  "pending_ids": [],
+  "metadata": {
+    "feed_url": null,
+    "podcast_name": null,
+    "extraction_method": "rss_feed"
+  }
+}

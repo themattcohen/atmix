@@ -1,0 +1,20 @@
+{
+  "document_id": "blog_0642e27a6564",
+  "total_chunks": 1,
+  "chunks": [
+    {
+      "chunk_id": "chunk_9f6498cb_0000",
+      "document_id": "blog_0642e27a6564",
+      "content": "How to Draft An Effective Privacy Policy Dec 13 Written By Thomas Codevilla How I Start Drafting Privacy Policies (and I draft a lot of them). Make sure you have an accurate data map covering all personal information collected by the business, why it’s collected, what the business and its service providers do with it, who has access to it, how it’s shared, stored, and deleted. Do this not just for the client but its parent company and affiliates. Based on that data map, check which privacy laws apply. Over 25,000 consumers? Check for state privacy law applicability. Over $25m in revenue? Check California Consumer Privacy Act applicability. Child data? COPPA. Credit checks? FCRA. Health Data? HIPAA and Washington My Health My Data. Biometrics or AI? Colorado or Illinois. Text messaging and email marketing? CAN-SPAM. EU Data? GDPR. Financial data and accounts? GLBA. AI? Check California, Colorado , and the EU AI Act. And so on. Each applicable law and why it applies is now a section of your checklist. For each applicable law, check the regulations on what a privacy notice needs to contain. CCPA’s list is exhaustive, and GLBA’s is cryptic. That’s ok. List each requirement in your checklist. Use a free tool like Ghostery to see what cookies the site places. Check these against your privacy policy or cookie policy. Now check whether applicable privacy law cares about giving the consumer an opt-out or opt-in. Go through the current privacy policy and check it against what’s on your list. Then check what’s missing based on the data map. Schedule a call with your client to talk through what you’ve found. This is to soften the blow of potential red ink and double-check that you haven’t missed any big PI issues. Draft. Ditch the “we may” and old-school generic “we use everything for everything” language- try to draw a straight, plain-language line from where the data is collected to how it’s used, shared, transformed, and ultimately deleted. Can’t figure out how to phrase something? Resist the urge to copy from the big boys’ privacy policies- they could be wrong or Check for consistency across other policies and terms, like Terms of Use, Cookie Policy, EULA, and MSA. Profit ? Just kidding, keep drafting... Need assistance with this? Email Thomas Codevilla at: codevilla@skandslegal.com for help ensuring your organization is prepared for data privacy planning. Thomas Codevilla",
+      "index": 0,
+      "start_char": 0,
+      "end_char": 2407,
+      "total_chunks": 1,
+      "word_count": 397,
+      "context": {
+        "preceding_text": "",
+        "following_text": ""
+      }
+    }
+  ]
+}

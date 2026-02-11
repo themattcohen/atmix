@@ -1,0 +1,327 @@
+{
+  "report_metadata": {
+    "report_id": "quality_report_2026-01-26",
+    "generated_at": "2026-01-26T12:00:00.000000",
+    "validator_version": "1.0.0",
+    "documents_path": "/Users/matt/Documents/someday/data/normalized/documents/",
+    "total_documents_expected": 20,
+    "total_documents_found": 20
+  },
+  "validation_summary": {
+    "overall_status": "PASSED_WITH_WARNINGS",
+    "documents_validated": 20,
+    "documents_passed": 20,
+    "documents_with_warnings": 7,
+    "documents_failed": 0,
+    "pass_rate": 1.0,
+    "average_quality_score": 0.77
+  },
+  "field_validation": {
+    "required_fields_check": {
+      "status": "PASSED",
+      "fields_checked": ["id", "source", "source_type", "title", "content", "content.text", "metadata", "metadata.url", "metadata.author", "metadata.word_count", "metadata.language", "extraction", "extraction.extracted_at", "extraction.extractor_version", "extraction.quality_score"],
+      "all_documents_have_required_fields": true,
+      "missing_fields_by_document": {}
+    },
+    "optional_fields_check": {
+      "content.summary": {
+        "present_count": 0,
+        "null_count": 20,
+        "coverage": 0.0
+      },
+      "content.key_topics": {
+        "present_count": 20,
+        "empty_array_count": 20,
+        "coverage": 0.0
+      },
+      "metadata.published_date": {
+        "present_count": 13,
+        "null_count": 7,
+        "coverage": 0.65
+      }
+    }
+  },
+  "id_pattern_validation": {
+    "status": "PASSED",
+    "expected_pattern": "blog_[0-9a-f]{12}",
+    "pattern_description": "blog_ prefix followed by 12 hexadecimal characters",
+    "documents_matching_pattern": 20,
+    "documents_not_matching": 0,
+    "all_ids": [
+      "blog_0642e27a6564",
+      "blog_9307005bd7ac",
+      "blog_39cc35d9226a",
+      "blog_7b37307a614f",
+      "blog_4a943f03e389",
+      "blog_36f26bce4b69",
+      "blog_9e9bfc1fc55f",
+      "blog_3a87d3ef1f75",
+      "blog_20e2aca50329",
+      "blog_ee800b441a91",
+      "blog_4ca82f5338b5",
+      "blog_856c0c9d481a",
+      "blog_41615cd16431",
+      "blog_fc4def561d6c",
+      "blog_1617791c7833",
+      "blog_cdd06520a2d7",
+      "blog_09a0e684cfe3",
+      "blog_e69b7922f20b",
+      "blog_ffec5d101366",
+      "blog_56394dd6b326"
+    ],
+    "unique_id_check": {
+      "status": "PASSED",
+      "duplicates_found": 0
+    }
+  },
+  "url_validation": {
+    "status": "PASSED",
+    "total_urls": 20,
+    "valid_urls": 20,
+    "invalid_urls": 0,
+    "url_pattern_analysis": {
+      "base_domain": "skandslegal.com",
+      "uses_https": true,
+      "all_urls_well_formed": true
+    },
+    "urls_validated": [
+      {"id": "blog_0642e27a6564", "url": "https://www.skandslegal.com/sks-blog/2024/12/13/how-to-draft-a-privacy-policy-for-your-organization", "valid": true},
+      {"id": "blog_9307005bd7ac", "url": "https://www.skandslegal.com/sks-blog/2024/4/23/navigating-the-business-sale-diligence-process-a-concise-guide", "valid": true},
+      {"id": "blog_39cc35d9226a", "url": "https://www.skandslegal.com/sks-blog/2024/12/4/corporate-transparency-act-boi-reporting-requirement-blocked-nationwide", "valid": true},
+      {"id": "blog_7b37307a614f", "url": "https://www.skandslegal.com/sks-blog/2024/12/13/embracing-the-virginia-model-of-privacy-legislation", "valid": true},
+      {"id": "blog_4a943f03e389", "url": "https://www.skandslegal.com/sks-blog/2024/11/22/5-changes-to-become-compliant-data-protection-addendum", "valid": true},
+      {"id": "blog_36f26bce4b69", "url": "https://www.skandslegal.com/sks-blog/2024/12/06/how-to-avoid-a-data-breach-in-your-company", "valid": true},
+      {"id": "blog_9e9bfc1fc55f", "url": "https://www.skandslegal.com/sks-blog/2024/2/14/5ex2fq6mkbjie564di8i508rzqnl0j", "valid": true},
+      {"id": "blog_3a87d3ef1f75", "url": "https://www.skandslegal.com/sks-blog/retain-employees-after-buying-accounting-firm", "valid": true},
+      {"id": "blog_20e2aca50329", "url": "https://www.skandslegal.com/sks-blog/zero-percent-seller-financing-loi-mistake", "valid": true},
+      {"id": "blog_ee800b441a91", "url": "https://www.skandslegal.com/sks-blog/2024/10/22/colorado-privacy-act-biometrics-and-child-data", "valid": true},
+      {"id": "blog_4ca82f5338b5", "url": "https://www.skandslegal.com/sks-blog/accounting-firm-loi-ghosted", "valid": true},
+      {"id": "blog_856c0c9d481a", "url": "https://www.skandslegal.com/sks-blog/2024/11/22/3-reasons-why-you-need-to-map-your-data", "valid": true},
+      {"id": "blog_41615cd16431", "url": "https://www.skandslegal.com/sks-blog/purchase-agreement-buying-accounting-firm", "valid": true},
+      {"id": "blog_fc4def561d6c", "url": "https://www.skandslegal.com/sks-blog/2024/12/24/boi-reporting-is-back-in-time-for-christmas", "valid": true},
+      {"id": "blog_1617791c7833", "url": "https://www.skandslegal.com/sks-blog/cpa-firm-sale-90-day-consent-rule-vs-irc-7216", "valid": true},
+      {"id": "blog_cdd06520a2d7", "url": "https://www.skandslegal.com/sks-blog/mafia-framework-loi-business-buying", "valid": true},
+      {"id": "blog_09a0e684cfe3", "url": "https://www.skandslegal.com/sks-blog/2024/12/06/breaking-down-the-saas-master-services-agreement", "valid": true},
+      {"id": "blog_e69b7922f20b", "url": "https://www.skandslegal.com/sks-blog/closing-mechanics-accounting-firm-sale", "valid": true},
+      {"id": "blog_ffec5d101366", "url": "https://www.skandslegal.com/sks-blog/2024/4/24/what-does-the-ftcs-vote-to-ban-non-competes-mean-for-my-deal", "valid": true},
+      {"id": "blog_56394dd6b326", "url": "https://www.skandslegal.com/sks-blog/2024/4/29/update-on-the-corporate-transparency-act-in-mid-2024", "valid": true}
+    ]
+  },
+  "word_count_validation": {
+    "status": "PASSED",
+    "acceptable_range": {
+      "minimum": 100,
+      "maximum": 2000
+    },
+    "statistics": {
+      "min_word_count": 272,
+      "max_word_count": 907,
+      "average_word_count": 533,
+      "median_word_count": 524,
+      "standard_deviation": 187.6
+    },
+    "documents_within_range": 20,
+    "documents_below_minimum": 0,
+    "documents_above_maximum": 0,
+    "word_count_distribution": {
+      "0-299": 3,
+      "300-499": 7,
+      "500-699": 5,
+      "700-899": 4,
+      "900+": 1
+    },
+    "word_counts_by_document": [
+      {"id": "blog_0642e27a6564", "word_count": 397, "status": "OK"},
+      {"id": "blog_9307005bd7ac", "word_count": 453, "status": "OK"},
+      {"id": "blog_39cc35d9226a", "word_count": 293, "status": "OK"},
+      {"id": "blog_7b37307a614f", "word_count": 279, "status": "OK"},
+      {"id": "blog_4a943f03e389", "word_count": 286, "status": "OK"},
+      {"id": "blog_36f26bce4b69", "word_count": 320, "status": "OK"},
+      {"id": "blog_9e9bfc1fc55f", "word_count": 690, "status": "OK"},
+      {"id": "blog_3a87d3ef1f75", "word_count": 630, "status": "OK"},
+      {"id": "blog_20e2aca50329", "word_count": 648, "status": "OK"},
+      {"id": "blog_ee800b441a91", "word_count": 748, "status": "OK"},
+      {"id": "blog_4ca82f5338b5", "word_count": 728, "status": "OK"},
+      {"id": "blog_856c0c9d481a", "word_count": 305, "status": "OK"},
+      {"id": "blog_41615cd16431", "word_count": 810, "status": "OK"},
+      {"id": "blog_fc4def561d6c", "word_count": 272, "status": "OK"},
+      {"id": "blog_1617791c7833", "word_count": 907, "status": "OK"},
+      {"id": "blog_cdd06520a2d7", "word_count": 580, "status": "OK"},
+      {"id": "blog_09a0e684cfe3", "word_count": 495, "status": "OK"},
+      {"id": "blog_e69b7922f20b", "word_count": 775, "status": "OK"},
+      {"id": "blog_ffec5d101366", "word_count": 567, "status": "OK"},
+      {"id": "blog_56394dd6b326", "word_count": 484, "status": "OK"}
+    ]
+  },
+  "quality_score_distribution": {
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "statistics": {
+      "min_score": 0.64,
+      "max_score": 0.91,
+      "average_score": 0.77,
+      "median_score": 0.77,
+      "standard_deviation": 0.10
+    },
+    "tier_distribution": {
+      "excellent": {
+        "range": "0.85-1.0",
+        "count": 6,
+        "percentage": 30.0,
+        "document_ids": [
+          "blog_9e9bfc1fc55f",
+          "blog_ee800b441a91",
+          "blog_4ca82f5338b5",
+          "blog_41615cd16431",
+          "blog_1617791c7833",
+          "blog_e69b7922f20b"
+        ]
+      },
+      "good": {
+        "range": "0.70-0.84",
+        "count": 7,
+        "percentage": 35.0,
+        "document_ids": [
+          "blog_0642e27a6564",
+          "blog_9307005bd7ac",
+          "blog_3a87d3ef1f75",
+          "blog_20e2aca50329",
+          "blog_cdd06520a2d7",
+          "blog_09a0e684cfe3",
+          "blog_ffec5d101366"
+        ]
+      },
+      "acceptable": {
+        "range": "0.50-0.69",
+        "count": 7,
+        "percentage": 35.0,
+        "document_ids": [
+          "blog_39cc35d9226a",
+          "blog_7b37307a614f",
+          "blog_4a943f03e389",
+          "blog_36f26bce4b69",
+          "blog_856c0c9d481a",
+          "blog_fc4def561d6c",
+          "blog_56394dd6b326"
+        ]
+      },
+      "poor": {
+        "range": "0.0-0.49",
+        "count": 0,
+        "percentage": 0.0,
+        "document_ids": []
+      }
+    },
+    "scores_by_document": [
+      {"id": "blog_0642e27a6564", "quality_score": 0.70, "tier": "good"},
+      {"id": "blog_9307005bd7ac", "quality_score": 0.73, "tier": "good"},
+      {"id": "blog_39cc35d9226a", "quality_score": 0.65, "tier": "acceptable"},
+      {"id": "blog_7b37307a614f", "quality_score": 0.64, "tier": "acceptable"},
+      {"id": "blog_4a943f03e389", "quality_score": 0.64, "tier": "acceptable"},
+      {"id": "blog_36f26bce4b69", "quality_score": 0.66, "tier": "acceptable"},
+      {"id": "blog_9e9bfc1fc55f", "quality_score": 0.85, "tier": "excellent"},
+      {"id": "blog_3a87d3ef1f75", "quality_score": 0.82, "tier": "good"},
+      {"id": "blog_20e2aca50329", "quality_score": 0.82, "tier": "good"},
+      {"id": "blog_ee800b441a91", "quality_score": 0.87, "tier": "excellent"},
+      {"id": "blog_4ca82f5338b5", "quality_score": 0.86, "tier": "excellent"},
+      {"id": "blog_856c0c9d481a", "quality_score": 0.65, "tier": "acceptable"},
+      {"id": "blog_41615cd16431", "quality_score": 0.90, "tier": "excellent"},
+      {"id": "blog_fc4def561d6c", "quality_score": 0.64, "tier": "acceptable"},
+      {"id": "blog_1617791c7833", "quality_score": 0.91, "tier": "excellent"},
+      {"id": "blog_cdd06520a2d7", "quality_score": 0.79, "tier": "good"},
+      {"id": "blog_09a0e684cfe3", "quality_score": 0.75, "tier": "good"},
+      {"id": "blog_e69b7922f20b", "quality_score": 0.89, "tier": "excellent"},
+      {"id": "blog_ffec5d101366", "quality_score": 0.78, "tier": "good"},
+      {"id": "blog_56394dd6b326", "quality_score": 0.74, "tier": "good"}
+    ]
+  },
+  "author_analysis": {
+    "unique_authors": 2,
+    "author_distribution": {
+      "Thomas Codevilla": {
+        "document_count": 10,
+        "percentage": 50.0,
+        "average_quality_score": 0.72,
+        "average_word_count": 430
+      },
+      "Sara Sharp": {
+        "document_count": 10,
+        "percentage": 50.0,
+        "average_quality_score": 0.81,
+        "average_word_count": 636
+      }
+    }
+  },
+  "content_analysis": {
+    "source_consistency": {
+      "status": "PASSED",
+      "unique_sources": ["skandslegal_blog"],
+      "all_documents_same_source": true
+    },
+    "source_type_consistency": {
+      "status": "PASSED",
+      "unique_source_types": ["blog_article"],
+      "all_documents_same_type": true
+    },
+    "language_consistency": {
+      "status": "PASSED",
+      "languages_found": ["en"],
+      "primary_language": "en",
+      "all_documents_english": true
+    }
+  },
+  "issues_found": [
+    {
+      "severity": "WARNING",
+      "category": "missing_optional_field",
+      "description": "7 documents have null published_date",
+      "affected_documents": [
+        "blog_3a87d3ef1f75",
+        "blog_20e2aca50329",
+        "blog_4ca82f5338b5",
+        "blog_41615cd16431",
+        "blog_1617791c7833",
+        "blog_cdd06520a2d7",
+        "blog_e69b7922f20b"
+      ],
+      "recommendation": "Consider extracting published dates from content or URL patterns if available"
+    },
+    {
+      "severity": "INFO",
+      "category": "empty_optional_field",
+      "description": "All 20 documents have null content.summary",
+      "affected_documents": "all",
+      "recommendation": "Consider generating AI summaries for enhanced searchability"
+    },
+    {
+      "severity": "INFO",
+      "category": "empty_optional_field",
+      "description": "All 20 documents have empty key_topics arrays",
+      "affected_documents": "all",
+      "recommendation": "Consider extracting key topics using NLP for improved categorization"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "action": "Populate missing published_date fields",
+      "rationale": "7 documents (35%) lack publication dates, affecting temporal analysis and sorting",
+      "effort_estimate": "LOW"
+    },
+    {
+      "priority": "LOW",
+      "action": "Generate content summaries",
+      "rationale": "Summaries would improve searchability and provide quick document previews",
+      "effort_estimate": "MEDIUM"
+    },
+    {
+      "priority": "LOW",
+      "action": "Extract key topics",
+      "rationale": "Topic extraction would enable better categorization and filtering",
+      "effort_estimate": "MEDIUM"
+    }
+  ],
+  "validation_complete": true
+}

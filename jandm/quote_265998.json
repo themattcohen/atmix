@@ -1,0 +1,216 @@
+{
+  "header": {
+    "quote_number": "265998",
+    "date": "6/18/2025",
+    "time": "3:32:21 PM",
+    "items_count": 19,
+    "page_count": 3,
+    "prepared_by": "M H",
+    "code": "4788",
+    "ref": "QUOTE",
+    "terms": "NET 30"
+  },
+  "from": {
+    "attention": "",
+    "company": "J and M Aircraft",
+    "address_lines": [
+      "7021 RADFORD AVE",
+      "NORTH HOLLYWOOD, CA 91605",
+      "USA"
+    ],
+    "phone": "818-982-9030",
+    "fax": "818-503-9247",
+    "email": "QUOTES@JANDM-AIRCRAFT.COM",
+    "contact": ""
+  },
+  "to": {
+    "attention": "DAMIEN DOLLE",
+    "company": "AIR FRANCE",
+    "address_lines": [
+      "COMPTABILITE FOURNISSEURS SOGARIS BT 2 ZONE FRET 5",
+      "SERVICE DB.LF RUE DE LA BELLE BORNE",
+      "CS30003 93290 TREMBLAY",
+      "PARAY VIEILLE POSTE 91550 FRANCE"
+    ],
+    "phone": "331 7437 6290",
+    "fax": "331-417-5 8307",
+    "email": "dadolle@airfrance.fr",
+    "contact": "DAMIEN DOLLE"
+  },
+  "ship_to": {
+    "attention": "DAMIEN DOLLE ATTN: DAMIEN DOLLE",
+    "company": "AIR FRANCE AIR FRANCE",
+    "address_lines": [
+      "COMPTABILITE FOURNISSEURS SOGARIS BT 2 ZONE FRET 5",
+      "SERVICE DB.LF RUE DE LA BELLE BORNE",
+      "CS30003 93290 TREMBLAY",
+      "PARAY VIEILLE POSTE 91550 FRANCE"
+    ],
+    "phone": "",
+    "fax": "",
+    "email": "",
+    "contact": ""
+  },
+  "line_items": [
+    {
+      "item_num": 1,
+      "part_number": "2ASPPSV08",
+      "description": "SLEEVE",
+      "cd": "NE",
+      "qty": 5.0,
+      "unit_price": 50.0,
+      "line_amt": 250.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 2,
+      "part_number": "ASPFPV08-09",
+      "description": "PIN",
+      "cd": "NE",
+      "qty": 6.0,
+      "unit_price": 40.0,
+      "line_amt": 240.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 3,
+      "part_number": "ASPFSV08",
+      "description": "SLEEVE",
+      "cd": "NE",
+      "qty": 6.0,
+      "unit_price": 28.0,
+      "line_amt": 168.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 5,
+      "part_number": "HL12V8-10",
+      "description": "HI-LOK PIN",
+      "cd": "NE",
+      "qty": 225.0,
+      "unit_price": 4.35,
+      "line_amt": 978.75,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 7,
+      "part_number": "HL13VAZ8-15",
+      "description": "HI-LOK PIN",
+      "cd": "NE",
+      "qty": 3.0,
+      "unit_price": 35.0,
+      "line_amt": 105.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 8,
+      "part_number": "HL13VAZ8-16",
+      "description": "HI-LOK PIN",
+      "cd": "NE",
+      "qty": 5.0,
+      "unit_price": 24.0,
+      "line_amt": 120.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 9,
+      "part_number": "HL13VAZ8-18",
+      "description": "HI-LOK PIN",
+      "cd": "NE",
+      "qty": 2.0,
+      "unit_price": 60.0,
+      "line_amt": 120.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 11,
+      "part_number": "HL13VAZ8-8",
+      "description": "HI-LOK PIN",
+      "cd": "NE",
+      "qty": 6.0,
+      "unit_price": 20.0,
+      "line_amt": 120.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 12,
+      "part_number": "M83413-8H007LL",
+      "description": "JUMPER CABLE",
+      "cd": "NE",
+      "qty": 2.0,
+      "unit_price": 50.0,
+      "line_amt": 100.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 15,
+      "part_number": "NAS1123E11",
+      "description": "SCREW",
+      "cd": "NE",
+      "qty": 12.0,
+      "unit_price": 15.0,
+      "line_amt": 180.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 16,
+      "part_number": "NAS1123E17",
+      "description": "SCREW",
+      "cd": "NE",
+      "qty": 12.0,
+      "unit_price": 15.0,
+      "line_amt": 180.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 17,
+      "part_number": "NAS1802-5-16",
+      "description": "SCREW",
+      "cd": "NE",
+      "qty": 5.0,
+      "unit_price": 20.0,
+      "line_amt": 100.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 18,
+      "part_number": "NAS7203U10",
+      "description": "BOLT",
+      "cd": "NE",
+      "qty": 12.0,
+      "unit_price": 13.0,
+      "line_amt": 156.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    },
+    {
+      "item_num": 19,
+      "part_number": "NAS7603U6",
+      "description": "BOLT",
+      "cd": "NE",
+      "qty": 10.0,
+      "unit_price": 10.0,
+      "line_amt": 100.0,
+      "delivery_terms": "1-2 WEEKS",
+      "notes": ""
+    }
+  ],
+  "totals": {
+    "subtotal": 2917.75,
+    "misc_charge": 0.0,
+    "freight": 0.0,
+    "total": 2917.75
+  }
+}

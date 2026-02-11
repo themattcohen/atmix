@@ -1,0 +1,20 @@
+{
+  "document_id": "blog_36f26bce4b69",
+  "total_chunks": 1,
+  "chunks": [
+    {
+      "chunk_id": "chunk_7c00d7aa_0000",
+      "document_id": "blog_36f26bce4b69",
+      "content": "How to Avoid a Data Breach in Your Organization Dec 6 Written By Thomas Codevilla My all-time favorite breach involved a charismatic founder who thought he was too smart for cybersecurity requirements. He stored raw credit card data, unencrypted, in a Google sheet shared with contractors. His business was making too much money and confirmation bias is a hell of a drug. He made political taunts and managed to piss off the wrong part of the internet- the part that knew how to code. So, inevitably, he got breached and his investors started asking harder questions, like where the money for internal cyber improvements had gone. It did not end well. The Kemper Sports breach reminded me of that founder: more than 140 golf courses, private clubs, sports venues, and destination resorts nationwide storing customers' names and Social Security numbers, unencrypted and mostly unwatched. What I would tell those founders: Map Your Data. If you don’t know where your data is, you can’t protect it. Beware of individual departments maintaining their own little fiefdoms. Get Cyber Insurance. I don’t even sell cyber insurance and I’m plugging it. No serious company will give you their PI without seeing a cyber COI. Avoid Radioactive Personal Information. For the vast majority of businesses, there is no reason to collect or store customer social security numbers, government IDs, financial data, and other sensitive information. There’s usually a safer alternative. Train Incident Response. You know that one guy in IT who knows where all the bodies are buried? Imagine someone gets his password and he’s out of the office. Could your organization survive? Would you even notice a breach before it was too late? This is the point of an incident response plan and yearly training. I promise I won’t make it boring. Need assistance with this? Email Thomas Codevilla at: codevilla@skandslegal.com for help ensuring your organization is prepared for a data breach. Thomas Codevilla",
+      "index": 0,
+      "start_char": 0,
+      "end_char": 1977,
+      "total_chunks": 1,
+      "word_count": 320,
+      "context": {
+        "preceding_text": "",
+        "following_text": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+# Sara Sharp Knowledge Base - Content Source Configuration
+# This file defines all content sources for extraction and centralization
+
+youtube:
+  channel_url: "https://www.youtube.com/@dealmakerseta"
+  channel_id: "@dealmakerseta"
+  include_auto_captions: true
+  preferred_language: "en"
+  rate_limit_seconds: 2
+  timeout_seconds: 120
+
+blog:
+  base_url: "https://www.skandslegal.com/sks-blog"
+  user_agent: "SaraSharpKnowledgeBot/1.0"
+  timeout_seconds: 30
+  min_word_count: 100
+
+podcast:
+  feeds:
+    - name: "Dealmakers Podcast"
+      url: ""  # To be discovered
+    - name: "Acquisitive Podcast"
+      url: ""  # To be discovered
+  transcription_method: "whisper-api"
+
+book:
+  supported_formats: ["pdf"]
+  chapter_patterns:
+    - "^Chapter\\s+\\d+"
+    - "^CHAPTER\\s+\\d+"
+    - "^Part\\s+\\d+"
+
+linkedin:
+  export_formats: ["csv", "json"]
+  profile_url: "https://www.linkedin.com/in/sara-sharp-9a2a98b"
+
+deal_academy:
+  base_url: "https://www.dealacademy.org"
+  platform: "teachable"
+
+media:
+  search_queries:
+    - "site:usnews.com sara sharp attorney"
+    - "site:businessinsider.com sara sharp"
+    - "site:yahoo.com/finance sara sharp"
+    - "site:gobankingrates.com sara sharp"

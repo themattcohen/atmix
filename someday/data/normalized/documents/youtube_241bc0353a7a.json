@@ -1,0 +1,42 @@
+{
+  "id": "youtube_241bc0353a7a",
+  "source": "youtube",
+  "source_type": "video_transcript",
+  "title": "Weekend Wine Down Ep 1: Good Deals are MADE",
+  "content": {
+    "text": "I'm Sarah Sharp and I'm an attorney who helps people buy and sell accounting practices. This is my end of the week. It is the weekly one down. Now I have this bottle and I'm told from the internet, dry, harmonious, velvety, mouth feel. So we'll see if that's the case. I am told by people who love me that I open wine, like an insane monkey. But it might depends. There's often somebody else around who's open the wine. It doesn't spill at the time. Stress testing, whether it's a velvety mouth feel. This has been an interesting week because I have had about 22 different calls, about 19 of those. Give your take one or two. It was a buyer of an accounting practice or a potential, hopeful buyer of the accounting practice. It's just a handful of potential sellers. So it's certainly a letter of intense season. When you talk to that many buyers and sellers of similar things each week, you can't help but establish trends. So as I think about the week, I'm going to think about the trends I saw. Yeah, I get it. I could see, I can see velvety, dry, harmonious, velvety, mouth feel. Band name, called it. This week, the theme that really stuck out to me in talking to L.A.'s people is how a good deal is made, not found. It's very easy when there aren't as many targets at the beginning of this season. As you know, very seasonal accounting practice buyouts, quiet during tax season until April, pretty quiet until mid late May, start to heat up lots of offers, May, June, lots of closing, starting in July, August, then September 15th, October 15th, tax deadlines start to scare people off and then you're straight into the holidays after the holidays, you're into the next tax season. So we're really in the middle of it. You're in the couple month window of trying to get your practice sold or find one to buy. At first, there's not so many listed and there's a lot of buyers waiting in the wings. So that has seemed true this week especially, although there are more listings coming on. And then there's this bias that I encounter over and over again where people are used to looking at listings and the listings have an asking price and the listings have these qualities that they like to look at and they think that's a good firm. That's a bad firm. This is a cloud based firm and it's got a huge profit margin and this firm is super remote and it's all physically located and maybe it has a different client mix that I'm not as crazy about. And so I think this one's a good deal, this one's a bad deal. That is not strictly speaking true because there are two parts for a good deal. There's the quality of the company you're trying to buy and there's the terms by which you're going to buy it. And both of those have to work together for a deal to be good. So for instance, really, really, really good firm that has enormous profit margin, great culture, remote, the owner works on the business, not in the business. Which I think I should play probably a drinking game for every time somebody says they're working on the business and not in the business. That was twice. So let me do that now. Anyways. So I think that's one of the things that you know, have broad appeal. It doesn't mean it's a good deal. It might be a good firm, but if you're going to pay 10 times what the market would bring for it, it won't cash flow and it'll bankrupt you and it's a bad deal. So good firm, bad terms, bad deal. Not so good at firm with the right terms can also be a really good deal. So I'm always quoting my grandmother and saying there's a lid for every pot and that is true in this instance because if you have the right terms, even a firm that is not as sought after because of the client mix or because it's super local, it's paper based, any, any feature that you don't want, you can correct for with the right terms and your letter of intent and your transaction documents. So obviously, if you take that to the extremes, it is true. If you paid $0 for a firm that has any amount of profit and any type of client list, that's typically going to be a good deal. Good terms really make it a good deal. Don't get myopic. Don't get too focused on the nature of the target itself because it has to be viewed in conjunction with the terms that you're planning to buy with. That's something that I've seen a lot best week. I hope it resonates. I hope it's helpful. Have a good weekend.",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.youtube.com/watch?v=csIoWCXhXsE",
+    "author": "Sara Sharp's Dealmakers",
+    "published_date": "2024-06-20",
+    "duration_seconds": 316,
+    "word_count": 831,
+    "language": "en",
+    "source_specific": {
+      "video_id": "csIoWCXhXsE",
+      "channel_id": "UCnLI19Jb9TJ88WuMKUJZRiw",
+      "duration_seconds": 316,
+      "view_count": 148,
+      "like_count": 6,
+      "caption_type": "whisper",
+      "caption_language": "en",
+      "playlist_id": null,
+      "playlist_position": null
+    }
+  },
+  "extraction": {
+    "extracted_at": "2026-01-27T02:05:38.494961+00:00",
+    "extractor_version": "1.0.0",
+    "raw_file_path": "data/raw/youtube/transcripts/yt_csIoWCXhXsE.json",
+    "quality_score": 0.783
+  },
+  "rag": {
+    "chunk_count": 0,
+    "chunk_ids": [],
+    "embedding_model": null,
+    "last_embedded_at": null
+  }
+}

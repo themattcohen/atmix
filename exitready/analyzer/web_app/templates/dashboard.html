@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+
+{% block title %}Financial Dashboard - Accounting Analyzer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-chart-bar"></i> Financial Dashboard
+        </h1>
+        
+        <!-- View Toggle -->
+        <div class="d-flex justify-content-center mb-4">
+            <div class="financial-toggle">
+                <button class="btn btn-primary active" id="originalViewBtn">Original</button>
+                <button class="btn btn-outline-primary" id="adjustedViewBtn">Adjusted</button>
+            </div>
+        </div>
+
+        <!-- Financial Statements Row -->
+        <div class="row">
+            <!-- P&L Statement -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line"></i> Profit & Loss Statement
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="plStatement" class="financial-statement">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                                <p>Loading P&L data...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balance Sheet -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-balance-scale"></i> Balance Sheet
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="balanceSheet" class="financial-statement">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                                <p>Loading Balance Sheet data...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add-backs Section (for adjusted view) -->
+        <div class="row mt-4" id="addbacksSection" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calculator"></i> Add-backs Configuration
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Select transactions to add back for adjusted financials:</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>One-Time Expenses</h6>
+                                <div id="oneTimeExpenses" class="addback-list">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Owner Adjustments</h6>
+                                <div id="ownerAdjustments" class="addback-list">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Non-Recurring Revenue</h6>
+                                <div id="nonRecurringRevenue" class="addback-list">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="/mapping/{{ session_id }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Mapping
+            </a>
+            <a href="/analysis/{{ session_id }}" class="btn btn-success">
+                <i class="fas fa-microscope"></i> Continue to Analysis
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const sessionId = '{{ session_id }}';
+    let currentView = 'original';
+
+    // Toggle view handlers
+    $('#originalViewBtn').on('click', function() {
+        currentView = 'original';
+        $(this).addClass('active').removeClass('btn-outline-primary').addClass('btn-primary');
+        $('#adjustedViewBtn').removeClass('active').removeClass('btn-primary').addClass('btn-outline-primary');
+        $('#addbacksSection').hide();
+        loadFinancials();
+    });
+
+    $('#adjustedViewBtn').on('click', function() {
+        currentView = 'adjusted';
+        $(this).addClass('active').removeClass('btn-outline-primary').addClass('btn-primary');
+        $('#originalViewBtn').removeClass('active').removeClass('btn-primary').addClass('btn-outline-primary');
+        $('#addbacksSection').show();
+        loadFinancials();
+    });
+
+    // Load financial data
+    async function loadFinancials() {
+        try {
+            // Load P&L
+            const plResponse = await $.get(`/api/financials/pl/${sessionId}?adjusted=${currentView === 'adjusted'}`);
+            renderPL(plResponse.data);
+
+            // Load Balance Sheet
+            const bsResponse = await $.get(`/api/financials/bs/${sessionId}?adjusted=${currentView === 'adjusted'}`);
+            renderBS(bsResponse.data);
+
+        } catch (error) {
+            console.error('Failed to load financials:', error);
+            accountingAnalyzer.showToast('Failed to load financial data', 'danger');
+        }
+    }
+
+    // Render P&L Statement
+    function renderPL(data) {
+        if (!data || Object.keys(data).length === 0) {
+            $('#plStatement').html(`
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-chart-line fa-3x mb-3"></i>
+                    <p>No P&L data available</p>
+                </div>
+            `);
+            return;
+        }
+
+        const html = `
+            <div class="financial-statement-header">
+                <h6 class="mb-3">Profit & Loss Statement</h6>
+                <p class="text-muted small mb-3">Period: ${data.period || 'Current'}</p>
+            </div>
+            
+            <div class="financial-table">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr class="revenue-section">
+                            <td class="section-header"><strong>REVENUE</strong></td>
+                            <td class="amount text-right"><strong>${data.revenue?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="expense-section">
+                            <td class="section-header"><strong>COST OF GOODS SOLD</strong></td>
+                            <td class="amount text-right"><strong>${data.cogs?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="total-label"><strong>GROSS PROFIT</strong></td>
+                            <td class="total-amount text-right"><strong>${data.gross_profit?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="expense-section">
+                            <td class="section-header"><strong>OPERATING EXPENSES</strong></td>
+                            <td class="amount text-right"><strong>${data.operating_expenses?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="income-section">
+                            <td class="section-header"><strong>OTHER INCOME</strong></td>
+                            <td class="amount text-right"><strong>${data.other_income?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="expense-section">
+                            <td class="section-header"><strong>OTHER EXPENSES</strong></td>
+                            <td class="amount text-right"><strong>${data.other_expenses?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="net-income-row ${(data.net_income?.value || 0) >= 0 ? 'positive' : 'negative'}">
+                            <td class="net-income-label"><strong>NET INCOME</strong></td>
+                            <td class="net-income-amount text-right"><strong>${data.net_income?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="export-buttons mt-3">
+                <button class="btn btn-outline-primary btn-sm" onclick="exportPL()">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+            </div>
+        `;
+        
+        $('#plStatement').html(html);
+    }
+
+    // Render Balance Sheet
+    function renderBS(data) {
+        if (!data || Object.keys(data).length === 0) {
+            $('#balanceSheet').html(`
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-balance-scale fa-3x mb-3"></i>
+                    <p>No Balance Sheet data available</p>
+                </div>
+            `);
+            return;
+        }
+
+        const isBalanced = data.is_balanced;
+        const balanceClass = isBalanced ? 'balanced' : 'unbalanced';
+        
+        const html = `
+            <div class="financial-statement-header">
+                <h6 class="mb-3">Balance Sheet</h6>
+                <p class="text-muted small mb-3">Period: ${data.period || 'Current'}</p>
+            </div>
+            
+            <div class="financial-table">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr class="asset-section">
+                            <td class="section-header"><strong>ASSETS</strong></td>
+                            <td class="amount text-right"><strong>${data.assets?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="total-label"><strong>TOTAL ASSETS</strong></td>
+                            <td class="total-amount text-right"><strong>${data.total_assets?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="liability-section">
+                            <td class="section-header"><strong>LIABILITIES</strong></td>
+                            <td class="amount text-right"><strong>${data.liabilities?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="equity-section">
+                            <td class="section-header"><strong>EQUITY</strong></td>
+                            <td class="amount text-right"><strong>${data.equity_base?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="equity-section">
+                            <td class="indent-1">Retained Earnings</td>
+                            <td class="amount text-right">${data.retained_earnings?.formatted || '$0.00'}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="total-label"><strong>TOTAL EQUITY</strong></td>
+                            <td class="total-amount text-right"><strong>${data.total_equity?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        <tr class="spacer-row">
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="final-total-row ${balanceClass}">
+                            <td class="final-total-label"><strong>TOTAL LIABILITIES + EQUITY</strong></td>
+                            <td class="final-total-amount text-right"><strong>${data.total_liabilities_and_equity?.formatted || '$0.00'}</strong></td>
+                        </tr>
+                        ${!isBalanced ? `
+                        <tr class="balance-check-row text-danger">
+                            <td class="balance-check-label"><small>Balance Check Difference</small></td>
+                            <td class="balance-check-amount text-right"><small>${data.balance_check?.formatted || '$0.00'}</small></td>
+                        </tr>
+                        ` : ''}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="export-buttons mt-3">
+                <button class="btn btn-outline-success btn-sm" onclick="exportBS()">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+            </div>
+        `;
+        
+        $('#balanceSheet').html(html);
+    }
+
+    // Export functions
+    window.exportPL = function() {
+        window.open(`/api/financials/export/pl/${sessionId}?adjusted=${currentView === 'adjusted'}`, '_blank');
+    };
+
+    window.exportBS = function() {
+        window.open(`/api/financials/export/bs/${sessionId}?adjusted=${currentView === 'adjusted'}`, '_blank');
+    };
+
+    // Load add-backs transactions
+    async function loadAddbacks() {
+        try {
+            const response = await $.get(`/api/financials/transactions/${sessionId}`);
+            renderAddbacks(response);
+        } catch (error) {
+            console.error('Failed to load add-backs:', error);
+        }
+    }
+
+    // Render add-backs section
+    function renderAddbacks(data) {
+        // One-time expenses
+        const oneTimeHtml = data.one_time_expenses.map(transaction => `
+            <div class="form-check mb-2">
+                <input class="form-check-input addback-checkbox" type="checkbox" 
+                       id="one_time_${transaction.transaction_id}" 
+                       data-category="one_time" 
+                       data-transaction-id="${transaction.transaction_id}">
+                <label class="form-check-label" for="one_time_${transaction.transaction_id}">
+                    <div class="transaction-item">
+                        <div class="transaction-desc">${transaction.description}</div>
+                        <div class="transaction-details">
+                            <small class="text-muted">${transaction.date} • ${transaction.account_name}</small>
+                            <span class="transaction-amount">${transaction.formatted_amount}</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        `).join('');
+
+        // Owner adjustments
+        const ownerHtml = data.owner_adjustments.map(transaction => `
+            <div class="form-check mb-2">
+                <input class="form-check-input addback-checkbox" type="checkbox" 
+                       id="owner_${transaction.transaction_id}" 
+                       data-category="owner_adj" 
+                       data-transaction-id="${transaction.transaction_id}">
+                <label class="form-check-label" for="owner_${transaction.transaction_id}">
+                    <div class="transaction-item">
+                        <div class="transaction-desc">${transaction.description}</div>
+                        <div class="transaction-details">
+                            <small class="text-muted">${transaction.date} • ${transaction.account_name}</small>
+                            <span class="transaction-amount">${transaction.formatted_amount}</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        `).join('');
+
+        // Non-recurring revenue
+        const nonRecurringHtml = data.non_recurring_revenue.map(transaction => `
+            <div class="form-check mb-2">
+                <input class="form-check-input addback-checkbox" type="checkbox" 
+                       id="non_recurring_${transaction.transaction_id}" 
+                       data-category="non_recurring" 
+                       data-transaction-id="${transaction.transaction_id}">
+                <label class="form-check-label" for="non_recurring_${transaction.transaction_id}">
+                    <div class="transaction-item">
+                        <div class="transaction-desc">${transaction.description}</div>
+                        <div class="transaction-details">
+                            <small class="text-muted">${transaction.date} • ${transaction.account_name}</small>
+                            <span class="transaction-amount">${transaction.formatted_amount}</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        `).join('');
+
+        $('#oneTimeExpenses').html(oneTimeHtml || '<p class="text-muted">No one-time expenses found</p>');
+        $('#ownerAdjustments').html(ownerHtml || '<p class="text-muted">No owner adjustments found</p>');
+        $('#nonRecurringRevenue').html(nonRecurringHtml || '<p class="text-muted">No non-recurring revenue found</p>');
+
+        // Add event listeners for checkboxes
+        $('.addback-checkbox').on('change', function() {
+            updateAddbacks();
+        });
+    }
+
+    // Update add-backs and refresh financials
+    async function updateAddbacks() {
+        const selectedAddbacks = {
+            one_time: [],
+            owner_adj: [],
+            non_recurring: []
+        };
+
+        $('.addback-checkbox:checked').each(function() {
+            const category = $(this).data('category');
+            const transactionId = $(this).data('transaction-id');
+            selectedAddbacks[category].push(transactionId);
+        });
+
+        try {
+            await $.post(`/api/financials/addbacks/${sessionId}`, selectedAddbacks);
+            // Refresh financials if in adjusted view
+            if (currentView === 'adjusted') {
+                loadFinancials();
+            }
+        } catch (error) {
+            console.error('Failed to update add-backs:', error);
+        }
+    }
+
+    // Load add-backs when adjusted view is shown
+    $('#adjustedViewBtn').on('click', function() {
+        loadAddbacks();
+    });
+
+    // Initialize
+    loadFinancials();
+});
+</script>
+{% endblock %}

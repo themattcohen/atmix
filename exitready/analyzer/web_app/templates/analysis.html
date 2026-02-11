@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}Comprehensive Analysis - Accounting Analyzer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Phase Navigation Sidebar -->
+    <div class="col-md-3">
+        <div class="phase-nav sticky-top">
+            <h5 class="mb-3">Analysis Phases</h5>
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="#phase1" data-phase="1">
+                    <i class="fas fa-chart-line"></i> Revenue Analysis
+                </a>
+                <a class="nav-link" href="#phase2" data-phase="2">
+                    <i class="fas fa-user-shield"></i> Client Risk Analysis
+                </a>
+                <a class="nav-link" href="#phase3" data-phase="3">
+                    <i class="fas fa-money-check-alt"></i> Collections Analysis
+                </a>
+                <a class="nav-link" href="#phase4" data-phase="4">
+                    <i class="fas fa-cogs"></i> Operational Analysis
+                </a>
+                <a class="nav-link" href="#phase5" data-phase="5">
+                    <i class="fas fa-exclamation-triangle"></i> Fraud Analysis
+                </a>
+            </nav>
+            
+            <hr class="my-4">
+            
+            <div class="mb-3">
+                <h6>Summary</h6>
+                <div class="small text-muted">
+                    <div>Total Flags: <span class="badge bg-secondary" id="totalFlags">0</span></div>
+                    <div>High Risk: <span class="badge bg-danger" id="highRiskCount">0</span></div>
+                    <div>Medium Risk: <span class="badge bg-warning" id="mediumRiskCount">0</span></div>
+                    <div>Low Risk: <span class="badge bg-success" id="lowRiskCount">0</span></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary w-100" id="exportAnalysisBtn">
+                <i class="fas fa-download"></i> Export Analysis
+            </button>
+        </div>
+    </div>
+    
+    <!-- Analysis Content -->
+    <div class="col-md-9">
+        <h1 class="mb-4">
+            <i class="fas fa-microscope"></i> Comprehensive Analysis Results
+        </h1>
+        
+        <!-- Analysis Overview -->
+        <div class="alert alert-info mb-4">
+            <h5><i class="fas fa-info-circle"></i> Analysis Complete</h5>
+            <p class="mb-0">
+                Your financial data has been analyzed across 5 comprehensive phases. 
+                Review the findings below and pay special attention to high-risk items that may require immediate action.
+            </p>
+        </div>
+        
+        <!-- Analysis Content Area -->
+        <div id="analysisContent">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="mt-3">Loading analysis results...</h5>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="mt-5 d-flex justify-content-between">
+            <a href="/dashboard/{{ session_id }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <button class="btn btn-success" id="newAnalysisBtn">
+                <i class="fas fa-plus"></i> Start New Analysis
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Export Analysis</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select export format:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exportFormat" id="exportExcel" value="excel" checked>
+                    <label class="form-check-label" for="exportExcel">
+                        Excel Report (.xlsx)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exportFormat" id="exportPdf" value="pdf">
+                    <label class="form-check-label" for="exportPdf">
+                        PDF Report
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmExportBtn">Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const sessionId = '{{ session_id }}';
+    let currentPhase = 1;
+    let allAnalysisData = {};
+
+    // Phase navigation
+    $('.phase-nav .nav-link').on('click', function(e) {
+        e.preventDefault();
+        $('.phase-nav .nav-link').removeClass('active');
+        $(this).addClass('active');
+        currentPhase = $(this).data('phase');
+        displayPhaseAnalysis(currentPhase);
+    });
+
+    // Load all analysis data
+    async function loadAnalysisData() {
+        try {
+            // Load overview
+            const overviewResponse = await $.get(`/api/analysis/overview/${sessionId}`);
+            allAnalysisData = overviewResponse;
+            
+            // Update summary counts
+            const summary = overviewResponse.summary;
+            $('#totalFlags').text(summary.total);
+            $('#highRiskCount').text(summary.high);
+            $('#mediumRiskCount').text(summary.medium);
+            $('#lowRiskCount').text(summary.low);
+            
+            // Display first phase by default
+            displayPhaseAnalysis(1);
+            
+        } catch (error) {
+            console.error('Failed to load analysis:', error);
+            accountingAnalyzer.showToast('Failed to load analysis data', 'danger');
+            $('#analysisContent').html(`
+                <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Error Loading Analysis</h5>
+                    <p>Failed to load analysis data. Please try refreshing the page or contact support.</p>
+                </div>
+            `);
+        }
+    }
+
+    // Display phase analysis with real data
+    async function displayPhaseAnalysis(phaseId) {
+        try {
+            // Show loading spinner
+            $('#analysisContent').html(`
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="mt-3">Loading phase analysis...</h5>
+                </div>
+            `);
+
+            // Load phase-specific data
+            const phaseResponse = await $.get(`/api/analysis/phase/${sessionId}/${phaseId}`);
+            const phaseData = phaseResponse;
+
+            // Build phase content
+            let phaseHtml = `
+                <div class="phase-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="mb-2">${phaseData.explanation.title}</h2>
+                            <p class="text-muted mb-0">${phaseData.explanation.description}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-danger">${phaseData.high_risk_count} High</span>
+                                <span class="badge bg-warning">${phaseData.medium_risk_count} Medium</span>
+                                <span class="badge bg-success">${phaseData.low_risk_count} Low</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search flags...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="severityFilter">
+                                <option value="">All Severities</option>
+                                <option value="High">High Risk</option>
+                                <option value="Medium">Medium Risk</option>
+                                <option value="Low">Low Risk</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-primary" onclick="exportPhaseAnalysis(${phaseId})">
+                                <i class="fas fa-download"></i> Export Phase
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5>Key Metrics Analyzed</h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                ${phaseData.explanation.metrics.map(metric => `
+                                    <span class="badge bg-light text-dark">${metric}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Results -->
+                    <div id="phaseResults">
+            `;
+
+            // Display flags
+            if (phaseData.flags && phaseData.flags.length > 0) {
+                phaseData.flags.forEach(flag => {
+                    const severityClass = flag.severity.toLowerCase() === 'high' ? 'analysis-severity-high' : 
+                                        flag.severity.toLowerCase() === 'medium' ? 'analysis-severity-medium' : 'analysis-severity-low';
+                    const badgeClass = flag.severity.toLowerCase() === 'high' ? 'bg-danger' : 
+                                      flag.severity.toLowerCase() === 'medium' ? 'bg-warning' : 'bg-success';
+                    
+                    phaseHtml += `
+                        <div class="analysis-card card ${severityClass} mb-3" data-severity="${flag.severity}" data-flag="${flag.flag}">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex justify-content-between align-items-start">
+                                    <span>
+                                        <span class="badge ${badgeClass} me-2">${flag.severity} Risk</span>
+                                        ${flag.flag}
+                                    </span>
+                                    ${flag.amount ? `<span class="text-muted small">${formatCurrency(flag.amount)}</span>` : ''}
+                                </h5>
+                                <div class="card-text">
+                                    <div class="mb-2">
+                                        <strong>Details:</strong> ${flag.detail}
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Impact:</strong> ${flag.impact}
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Recommended Action:</strong> ${flag.action}
+                                    </div>
+                                    ${flag.period ? `<div class="text-muted small">Period: ${flag.period}</div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                phaseHtml += `
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle"></i> No Issues Found</h5>
+                        <p>No red flags were identified in this analysis phase. This is a positive indicator for your business.</p>
+                    </div>
+                `;
+            }
+
+            phaseHtml += `
+                    </div>
+                </div>
+            `;
+
+            $('#analysisContent').html(phaseHtml);
+
+            // Add search functionality
+            $('#searchInput').on('input', function() {
+                filterFlags();
+            });
+
+            $('#severityFilter').on('change', function() {
+                filterFlags();
+            });
+
+        } catch (error) {
+            console.error('Failed to load phase analysis:', error);
+            $('#analysisContent').html(`
+                <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Error Loading Phase</h5>
+                    <p>Failed to load phase analysis. Please try again.</p>
+                </div>
+            `);
+        }
+    }
+
+    // Filter flags based on search and severity
+    function filterFlags() {
+        const searchTerm = $('#searchInput').val().toLowerCase();
+        const severity = $('#severityFilter').val();
+
+        $('.analysis-card').each(function() {
+            const flagText = $(this).data('flag').toLowerCase();
+            const flagSeverity = $(this).data('severity');
+            const matchesSearch = !searchTerm || flagText.includes(searchTerm);
+            const matchesSeverity = !severity || flagSeverity === severity;
+
+            if (matchesSearch && matchesSeverity) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    // Format currency
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        }).format(amount);
+    }
+
+    // Export phase analysis
+    window.exportPhaseAnalysis = function(phaseId) {
+        accountingAnalyzer.showToast('Exporting phase analysis...', 'info');
+        window.open(`/api/analysis/export/${sessionId}?format=excel&phase=${phaseId}`, '_blank');
+    };
+
+    // Export functionality
+    $('#exportAnalysisBtn').on('click', function() {
+        const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+        exportModal.show();
+    });
+
+    $('#confirmExportBtn').on('click', function() {
+        const format = $('input[name="exportFormat"]:checked').val();
+        accountingAnalyzer.showToast(`Exporting analysis as ${format.toUpperCase()}...`, 'info');
+        // Implement actual export functionality
+        bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+    });
+
+    // New analysis button
+    $('#newAnalysisBtn').on('click', function() {
+        if (confirm('Start a new analysis? This will return you to the upload page.')) {
+            window.location.href = '/';
+        }
+    });
+
+    // Initialize
+    loadAnalysisData();
+});
+</script>
+{% endblock %}

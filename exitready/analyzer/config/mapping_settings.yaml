@@ -1,0 +1,15 @@
+# Chart of Accounts Mapping Settings
+
+# Fuzzy matching threshold (0-100)
+fuzzy_threshold: 60
+
+# Strict mode - if true, will raise error on unmapped accounts
+strict_mode: false
+
+# Logging settings
+logging_level: INFO
+
+# File paths
+standard_coa_path: data/input/standard_coa.csv
+user_overrides_path: data/input/user_overrides.csv
+unmapped_report_path: data/output/unmapped_accounts.csv 

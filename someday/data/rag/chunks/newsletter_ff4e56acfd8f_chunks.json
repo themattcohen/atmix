@@ -1,0 +1,20 @@
+{
+  "document_id": "newsletter_ff4e56acfd8f",
+  "total_chunks": 1,
+  "chunks": [
+    {
+      "chunk_id": "chunk_3905f371_0000",
+      "document_id": "newsletter_ff4e56acfd8f",
+      "content": "96 Why Your Next Deal Could Be Killed By a Data Breach Hi Sara, Let’s talk about something way scarier than IRS audits, angry clients, or even running out of LaCroix at the office: data breaches. I recently sat down with my colleague Tom Codevilla, who’s our in-house privacy law guru, and we got real about the mess that can follow when small businesses get too relaxed about compliance—especially in the age of offshoring and automating everything. What triggered this discussion? It all started with Section 7216—an IRS rule that applies to tax preparers and requires explicit client consent before you share tax data with contractors. Sounds simple. It’s not. The rule is specific. And it has criminal penalties. (Yes, it talks about prison time. For real.) But here’s the kicker: Even if 7216 doesn’t apply to you, there are a whole slew of other privacy laws that might. State laws. Federal laws. International laws (hello GDPR). It’s a buffet of liability. Offshoring? Read This Twice. Thinking of sending work to a third-party provider in another country? You need a contract. One that protects you. One that holds them responsible if they mess up. And one that complies with your clients’ privacy obligations—not just your own. Why This Matters for M&A Even if you’ve skated by without an incident, here’s where it catches up to you: when you try to sell. Buyers will dig into your data practices. If you’ve been winging it? Expect price reductions, insurance headaches, expensive indemnification carveouts, and in worst-case scenarios, canceled deals. And if there’s a data breach… That’s when things really go off the rails: Expensive credit monitoring costs Mandatory AG notifications Disgruntled clients (with lawyers) And months of distraction from actually running your business One client lost their deal entirely after a breach. Another had to recreate years of client files from scratch. If that doesn’t make your palms sweat, I don’t know what will. Simple Steps That Save Deals Here’s your “not getting sued” starter pack: Use data minimization: Only share what’s needed Implement least-access policies: Keep sensitive info on a need-to-know basis Audit your contractors: Regularly and in writing Get tailored cyber insurance: Generic policies don’t cut it Train your team: Social engineering scams are real, and your receptionist is a prime target The truth is, none of this is optional anymore. Privacy is part of business. Period. Want to listen to the full episode with Tom? Click here to tune in. To staying out of the orange jumpsuit club, Sara Sharp Partner, SK&S Law Group Founder, Deal Academy For more helpful lessons from Deal Academy, check out our Dealmakers Youtube Channel where you'll find Sara's Weekly Wine Down, where she talks about what she's seen in the industry this week and interviews with M&A Experts and Dealmakers. You can check out some recent Dealmakers YouTube videos by clicking the images below. Copyright © 2025 Someday Consultants, All rights reserved. Our e-mail address is: info@dealacademy.org Want to change how you receive these emails? You can unsubscribe from this list.",
+      "index": 0,
+      "start_char": 0,
+      "end_char": 3132,
+      "total_chunks": 1,
+      "word_count": 508,
+      "context": {
+        "preceding_text": "",
+        "following_text": ""
+      }
+    }
+  ]
+}

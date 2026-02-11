@@ -1,0 +1,20 @@
+{
+  "document_id": "blog_856c0c9d481a",
+  "total_chunks": 1,
+  "chunks": [
+    {
+      "chunk_id": "chunk_7f1d2324_0000",
+      "document_id": "blog_856c0c9d481a",
+      "content": "The importance of mapping the data in your organization. Nov 22 Written By Thomas Codevilla The first thing I do with a new privacy client is map their data. We map information like: what personal information do you have, why do you have it, who do you get it from, who can see it, and how is it stored and deleted? No matter what privacy law you’re trying to comply with, your policies need to match your practices. Why? Three Reasons Why You Need to Map Your Data Your Business Suffers A Data Breach If your business suffers a data breach and you don’t know where to look to stop the bleeding, you could be underwater before you have time to call your insurance broker to ask if your General Liability policy covers cyber errors and omissions (it doesn’t). You’re Looking For Funding (Or an Acquisition) If you’re looking for funding or acquisition , one of your first calls will be from a very patient, very thorough associate asking you all the questions about your privacy compliance you were too busy with while you were building your product. If you can’t answer their questions, expect a significant purchase price reduction from your buyer or investor based on privacy risk. You Land a Big Client With Special Data Privacy Needs Trying to land a big client with special data privacy needs (HIPAA, CCPA, GDPR, Geofencing, Consumer Health Data)? Your privacy policy and security documentation have to be up to date- you can’t backfill it after you make the sale, and data mapping has to be done beforehand. So, map your data, or let me work it out with a spreadsheet and your head of engineering. Need assistance with this? Email Thomas Codevilla at: codevilla@skandslegal.com for help ensuring your organization is mapping their data properly. Thomas Codevilla",
+      "index": 0,
+      "start_char": 0,
+      "end_char": 1768,
+      "total_chunks": 1,
+      "word_count": 305,
+      "context": {
+        "preceding_text": "",
+        "following_text": ""
+      }
+    }
+  ]
+}

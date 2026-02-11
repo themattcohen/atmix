@@ -1,0 +1,57 @@
+{
+  "contacts": {
+    "last_sync": null,
+    "last_cursor": null,
+    "total_synced": 0,
+    "last_error": null
+  },
+  "opportunities": {
+    "last_sync": "2026-01-27T21:34:12.748452Z",
+    "last_cursor": null,
+    "total_synced": 2,
+    "last_error": null
+  },
+  "newsletters": {
+    "last_sync": null,
+    "total_synced": 0,
+    "last_error": null
+  },
+  "errors": [
+    {
+      "timestamp": "2026-01-27T21:32:02.571485Z",
+      "entity": "opportunities",
+      "error": "400 Client Error: Bad Request for url: https://api.baserow.io/api/database/rows/table/817373/",
+      "context": {
+        "opportunity_id": "d2rfqLzzfxGtAv7NWYQp",
+        "name": "Dushyant2"
+      }
+    },
+    {
+      "timestamp": "2026-01-27T21:32:11.500462Z",
+      "entity": "opportunities",
+      "error": "400 Client Error: Bad Request for url: https://api.baserow.io/api/database/rows/table/817373/",
+      "context": {
+        "opportunity_id": "l2QgvCtOvcjq1LxwsIwO",
+        "name": "Dushyant TEST"
+      }
+    },
+    {
+      "timestamp": "2026-01-27T21:33:19.612978Z",
+      "entity": "opportunities",
+      "error": "400 Client Error: Bad Request for url: https://api.baserow.io/api/database/rows/table/817373/",
+      "context": {
+        "opportunity_id": "d2rfqLzzfxGtAv7NWYQp",
+        "name": "Dushyant2"
+      }
+    },
+    {
+      "timestamp": "2026-01-27T21:33:28.426742Z",
+      "entity": "opportunities",
+      "error": "400 Client Error: Bad Request for url: https://api.baserow.io/api/database/rows/table/817373/",
+      "context": {
+        "opportunity_id": "l2QgvCtOvcjq1LxwsIwO",
+        "name": "Dushyant TEST"
+      }
+    }
+  ]
+}

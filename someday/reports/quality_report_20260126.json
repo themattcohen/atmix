@@ -1,0 +1,103 @@
+{
+  "summary": {
+    "total_documents": 3,
+    "passed": 1,
+    "failed": 2,
+    "pass_rate": 33.33
+  },
+  "quality_distribution": {
+    "min": 0.2,
+    "max": 0.721,
+    "mean": 0.44,
+    "buckets": {
+      "excellent (0.8-1.0)": 0,
+      "good (0.6-0.8)": 1,
+      "fair (0.4-0.6)": 1,
+      "poor (0.0-0.4)": 1
+    }
+  },
+  "duplicates_detected": 0,
+  "duplicates": [],
+  "documents": [
+    {
+      "document_id": "doc-003-short",
+      "file_path": "/Users/matt/Documents/someday/data/normalized/documents/test/invalid_short_content.json",
+      "valid": false,
+      "quality_score": 0.4,
+      "word_count": 4,
+      "error_count": 1,
+      "warning_count": 0,
+      "errors": [
+        {
+          "code": "E012",
+          "message": "Content too short: 4 words (minimum: 50)",
+          "field": "content.text",
+          "severity": "error"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "document_id": "doc-002-missing",
+      "file_path": "/Users/matt/Documents/someday/data/normalized/documents/test/invalid_missing_fields.json",
+      "valid": false,
+      "quality_score": 0.2,
+      "word_count": 0,
+      "error_count": 5,
+      "warning_count": 0,
+      "errors": [
+        {
+          "code": "E011",
+          "message": "Missing required field: source_type",
+          "field": "source_type",
+          "severity": "error"
+        },
+        {
+          "code": "E011",
+          "message": "Missing required field: content.text",
+          "field": "content.text",
+          "severity": "error"
+        },
+        {
+          "code": "E011",
+          "message": "Missing required field: extraction.extracted_at",
+          "field": "extraction.extracted_at",
+          "severity": "error"
+        },
+        {
+          "code": "E012",
+          "message": "Content too short: 0 words (minimum: 50)",
+          "field": "content.text",
+          "severity": "error"
+        },
+        {
+          "code": "E020",
+          "message": "Below minimum quality score: 0.20 (minimum: 0.3)",
+          "field": null,
+          "severity": "error"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "document_id": "doc-001-valid",
+      "file_path": "/Users/matt/Documents/someday/data/normalized/documents/test/valid_doc.json",
+      "valid": true,
+      "quality_score": 0.721,
+      "word_count": 88,
+      "error_count": 0,
+      "warning_count": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "validation_timestamp": "2026-01-26T11:46:28.892825",
+  "config_used": {
+    "min_word_count": 50,
+    "max_word_count": 50000,
+    "min_quality_score": 0.3,
+    "similarity_threshold": 0.85,
+    "id_pattern": "^[a-zA-Z0-9_-]+$",
+    "date_pattern": "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?)?$"
+  }
+}

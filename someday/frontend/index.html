@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sara Sharp Knowledge Base</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --text-secondary: #666;
+            --border: #e0e0e0;
+            --accent: #2563eb;
+            --surface: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1a1a;
+            --text: #f0f0f0;
+            --text-secondary: #999;
+            --border: #333;
+            --accent: #3b82f6;
+            --surface: #252525;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .examples {
+            margin-bottom: 30px;
+        }
+
+        .examples p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .example-btn {
+            display: inline-block;
+            padding: 8px 14px;
+            margin: 4px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .example-btn:hover {
+            border-color: var(--accent);
+            background: var(--bg);
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .status.loading { background: #fef3c7; color: #92400e; }
+        .status.success { background: #d1fae5; color: #065f46; }
+        .status.error { background: #fee2e2; color: #991b1b; }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .result-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: var(--surface);
+            transition: all 0.2s;
+        }
+
+        .result-card:hover {
+            border-color: var(--accent);
+        }
+
+        .result-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .source-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .source-badge.youtube {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .source-badge.blog {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .score {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .result-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h2 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">SS</div>
+                <h1>Sara Sharp Knowledge Base</h1>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        </header>
+
+        <div class="search-box">
+            <input
+                type="text"
+                class="search-input"
+                id="search-input"
+                placeholder="Ask anything about M&A, valuations, deals..."
+                onkeypress="if(event.key==='Enter') search(this.value)"
+            >
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-source="all" onclick="setFilter('all')">All Sources</button>
+            <button class="filter-btn" data-source="youtube" onclick="setFilter('youtube')">YouTube</button>
+            <button class="filter-btn" data-source="blog" onclick="setFilter('blog')">Blog</button>
+        </div>
+
+        <div id="status" class="status loading">Connecting to knowledge base...</div>
+
+        <div class="examples" id="examples">
+            <p>Try an example:</p>
+            <button class="example-btn" onclick="search('How do I value an accounting practice?')">How do I value an accounting practice?</button>
+            <button class="example-btn" onclick="search('What should be in a letter of intent?')">What should be in a letter of intent?</button>
+            <button class="example-btn" onclick="search('SBA loan requirements')">SBA loan requirements</button>
+            <button class="example-btn" onclick="search('Due diligence checklist')">Due diligence checklist</button>
+        </div>
+
+        <div id="results"></div>
+
+        <footer>
+            <span id="stats">Loading stats...</span>
+        </footer>
+    </div>
+
+    <script>
+        const API = 'http://127.0.0.1:8000';
+        let currentSource = 'all';
+        let searchTimeout = null;
+
+        // Theme
+        function toggleTheme() {
+            const current = document.documentElement.dataset.theme;
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.theme = next;
+            localStorage.setItem('theme', next);
+        }
+
+        // Apply saved theme
+        const savedTheme = localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = savedTheme;
+
+        // Filter
+        function setFilter(source) {
+            currentSource = source;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.source === source);
+            });
+            const query = document.getElementById('search-input').value;
+            if (query.trim()) search(query);
+        }
+
+        // Debounced search on input
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            if (query) {
+                searchTimeout = setTimeout(() => search(query), 300);
+            } else {
+                document.getElementById('results').innerHTML = '';
+                document.getElementById('examples').style.display = 'block';
+            }
+        });
+
+        // Search
+        async function search(query) {
+            document.getElementById('search-input').value = query;
+            document.getElementById('examples').style.display = 'none';
+            document.getElementById('results').innerHTML = '<div class="status loading">Searching...</div>';
+
+            try {
+                const response = await fetch(API + '/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, top_k: 10, source: currentSource })
+                });
+
+                if (!response.ok) throw new Error('Search failed');
+
+                const data = await response.json();
+
+                if (data.results.length === 0) {
+                    document.getElementById('results').innerHTML = `
+                        <div class="empty-state">
+                            <h2>No results found</h2>
+                            <p>Try a different search query or remove filters.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                document.getElementById('results').innerHTML = `
+                    <div class="results-header">
+                        <span>${data.total_results} results</span>
+                        <span>${data.query_time_ms.toFixed(0)}ms</span>
+                    </div>
+                    ${data.results.map(r => `
+                        <div class="result-card">
+                            <div class="result-meta">
+                                <span class="source-badge ${r.source_type}">${r.source_type === 'youtube' ? 'YouTube' : 'Blog'}</span>
+                                <span class="score">Score: ${r.score.toFixed(3)}</span>
+                            </div>
+                            <div class="result-title">${escapeHtml(r.title || 'Untitled')}</div>
+                            <div class="result-content">${escapeHtml(r.content.substring(0, 350))}...</div>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (err) {
+                document.getElementById('results').innerHTML = `
+                    <div class="status error">Error: ${err.message}</div>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Check API and load stats
+        async function init() {
+            try {
+                const health = await fetch(API + '/api/health').then(r => r.json());
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').textContent =
+                    `Connected: ${health.total_chunks} chunks indexed`;
+
+                const stats = await fetch(API + '/api/stats').then(r => r.json());
+                const sources = Object.entries(stats.sources)
+                    .map(([k, v]) => `${v} ${k}`)
+                    .join(' · ');
+                document.getElementById('stats').textContent =
+                    `${stats.total_chunks} chunks · ${stats.total_documents} documents · ${sources}`;
+
+                // Hide status after 2 seconds
+                setTimeout(() => {
+                    document.getElementById('status').style.display = 'none';
+                }, 2000);
+            } catch (err) {
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').textContent =
+                    'Cannot connect to API. Is the server running?';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

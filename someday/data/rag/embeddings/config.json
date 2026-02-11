@@ -1,0 +1,11 @@
+{
+  "model_name": "all-MiniLM-L6-v2",
+  "embedding_dim": 384,
+  "total_embeddings": 642,
+  "source_types": [
+    "blog",
+    "youtube",
+    "unknown"
+  ],
+  "document_count": 154
+}

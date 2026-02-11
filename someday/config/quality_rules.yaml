@@ -1,0 +1,37 @@
+# Sara Sharp Knowledge Base - Quality Rules Configuration
+# Defines validation, scoring, chunking, and deduplication rules
+
+extraction_validation:
+  min_word_count: 50
+  max_word_count: 50000
+  min_title_length: 5
+  required_fields:
+    - id
+    - source
+    - source_type
+    - title
+    - content.text
+    - extraction.extracted_at
+
+quality_scoring:
+  weights:
+    content_length: 0.20
+    completeness: 0.25
+    language_quality: 0.20
+    metadata_richness: 0.15
+    uniqueness: 0.20
+  minimum_score: 0.5
+  target_score: 0.75
+
+chunking:
+  target_size_words: 800
+  min_size_words: 100
+  max_size_words: 1200
+  overlap_words: 150
+  respect_sentence_boundaries: true
+  respect_paragraph_boundaries: true
+
+deduplication:
+  exact_match: true
+  similarity_threshold: 0.85
+  similarity_algorithm: "sequence_matcher"

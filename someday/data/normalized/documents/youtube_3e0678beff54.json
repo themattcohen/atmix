@@ -1,0 +1,42 @@
+{
+  "id": "youtube_3e0678beff54",
+  "source": "youtube",
+  "source_type": "video_transcript",
+  "title": "Weekend Wine Down Ep 2",
+  "content": {
+    "text": "This is Dealmakers Weekly Wine Down. I'm Sarah Sharp. I'm a deal attorney who specializes in accounting practice buyouts. This is where I open a bottle of wine at the end of my week and discuss some of the things that I had the good fortune of learning this week. So this week, the bottle of wine is Henri Shamblou, Cromat de Bourgion, nailed it. I'm sure that that was butchered. Brute rosé. So it's almost like an orange wine you can see, but it's got sparkles. So the tasting notes on the internet indicate it is long crisp zesty and luxurious. We'll see if that's accurate. This week, a lot of the feedback I've heard has related to employment matters. Every year, I follow up with people on how they're closing what how their first tax season went after I helped somebody buy an accounting practice. Sometimes people are really busy, so it's hard to always hear back, but I had the good fortune this week if you're coming back from a few clients for in prior years. And I always say, is there anything that you learned after closing that you wish you had known prior to closing that I can tell people about that I can learn from things that I can do better. This week, a lot of the stories circulated around the employee culture that people bought into. So when you're buying into a company, it can be really hard to know what kind of culture that is because you don't get to meet with the employees until after closing a lot of times, and it's not like a quantitative number you can ask. So how do you evaluate that? Is there a deal where their culture is so bad and so broken you wouldn't want to buy it, even if it's quite profitable? There probably is. There's probably one that is so extreme that you think I would rather not buy into that than have to get in there and correct it. So how do you evaluate that? I think that you can certainly extrapolate a lot of information on the smaller sub five million dollar businesses from the personality of the owner you're interacting with. So very important if there's a broker involved to get straight through to the seller, have a lot of discussions with them. As you know, I'm always hammering the drum of put everything you can in a letter of intent. One of the reasons that it's good to put all of your deal terms in the letter of intent is then they get negotiated and you have a little back and forth with the other side, right? That can tell you a lot. The way somebody acts in negotiations is incredibly revealing and it's good information to have before you go too far because if somebody gets really angry or is acting really unprofessional or dishonest, then walk away. That's not the company to buy. Nobody has a gun to your head to force you to buy this business. Also, it is indicative of probably a really hard place for employees to work. So what quantitative measures can you ask about that will give you some kind of read into employee culture? Average lifespan of an employee, right? Personnel files. What does turnover like? It's quite helpful. But for these small companies, a lot of people have been there for a long time and they might not be turning over, but it doesn't necessarily mean that they're happy at work or that it's a productive environment that would fit well with other companies. It could still be really problematic. I will say some indications that I've seen of good culture on the front end during the diligence process include I'm thinking of Wendy all where the seller put together the diligence request was please name your employees how much they make, how much they work, and a couple of other specific quantitative features. And he did, but on the spreadsheet, he added a column that taught all about the great strengths that each employee brought to the equation. And there wasn't asked about, but it really struck me as admirable that he saw a spreadsheet and questions about numbers related to his workers and thought this doesn't show the whole picture. I have to add stuff because I want you to know that it was all very, very complimentary to so the way it was written was Susan has an extraordinary organizational ability. We would be lost without and you know is incredibly personable. So many of our clients adore her. It was really, really revealing of what I suspect was a really, really healthy work culture for that target. So that might be a move for the diligence process is to ask about the strengths of a person's employees and it's not so that you can find out the strengths of the employees. It's so that you can determine how the owner views his or her workers and that should tell you something about the culture. So maybe you buy a company you step into it and you slowly or immediately learn that the employee culture is not what you hoped it would be. It's not the end of the world that can happen a lot and I've gotten this phone calls over and over again across years and years of practicing law and there are a lot of interventions that you can use to correct a corporate culture. There's a lot of great coaching resources. I'm thinking of you see P.I. specific ones because I do so much accounting. Oh gosh there's so many Brian I'm on Douglas Slavell. Amen and I think Slavell. Douglas tell me if I name it said your name wrong. Great coaches who can help correct that kind of thing and get in there and kind of give you some really reasonable real-time feedback of how to adjust culture post-closing and then you know patients and intentionality I think are necessary to overcome kind of right the ship if you're going that direction. So those are just some thoughts from this week having had a lot of folks who encountered employee cultures that were not what they hoped they would be after closing and figuring out what are ways prior to closing that you could possibly address that. But look out for it ask questions. Hopefully the sellers let you meet the employees and you can get a sense of it but if not you know it's not the is not the death knell of your company acquisition you can still turn it around after day one. This has been my weekly wind down. I forgot to drink this a couple of times so I'm going to do it now. Chris long luxurious and zesty. It was a great week. I'm always glad to hear from everybody. So if I've helped you buy yourself a business reach out I'd love to hear how it's going. I really would that's pretty much my favorite time of any day my favorite meetings or hearing how the post-closing process is going and learning from it. So this is weekly wind down. If you find this helpful please like and subscribe, give us comments whatever platform we're on and do whatever makes sense. See you next week.",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.youtube.com/watch?v=PLLgBpBcS94",
+    "author": "Sara Sharp's Dealmakers",
+    "published_date": "2024-06-27",
+    "duration_seconds": 419,
+    "word_count": 1232,
+    "language": "en",
+    "source_specific": {
+      "video_id": "PLLgBpBcS94",
+      "channel_id": "UCnLI19Jb9TJ88WuMKUJZRiw",
+      "duration_seconds": 419,
+      "view_count": 55,
+      "like_count": 6,
+      "caption_type": "whisper",
+      "caption_language": "en",
+      "playlist_id": null,
+      "playlist_position": null
+    }
+  },
+  "extraction": {
+    "extracted_at": "2026-01-27T02:05:38.144052+00:00",
+    "extractor_version": "1.0.0",
+    "raw_file_path": "data/raw/youtube/transcripts/yt_PLLgBpBcS94.json",
+    "quality_score": 0.783
+  },
+  "rag": {
+    "chunk_count": 0,
+    "chunk_ids": [],
+    "embedding_model": null,
+    "last_embedded_at": null
+  }
+}

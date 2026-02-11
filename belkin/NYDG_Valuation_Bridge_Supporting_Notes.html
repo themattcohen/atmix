@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYDG Valuation Bridge - Supporting Notes</title>
+    <style>
+        :root {
+            --primary: #1B4332;
+            --secondary: #2E86AB;
+            --accent: #E94F37;
+            --bg: #FAFAFA;
+            --text: #1a1a1a;
+            --border: #e0e0e0;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        
+        h2 {
+            color: var(--secondary);
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            color: var(--primary);
+            margin-top: 30px;
+            font-size: 1.2em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        thead tr {
+            background: var(--primary);
+        }
+        
+        th {
+            color: white;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        tr:last-child td { border-bottom: none; }
+        
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        
+        tbody tr:hover { background: #e8f4f8; }
+        
+        td strong, th strong { color: var(--primary); }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        blockquote {
+            border-left: 4px solid var(--secondary);
+            margin: 20px 0;
+            padding: 15px 20px;
+            background: #e8f4f8;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95em;
+        }
+        
+        blockquote strong { color: var(--secondary); }
+        
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin: 40px 0;
+        }
+        
+        ul, ol {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        /* Highlight key numbers */
+        td:last-child {
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        
+        /* Print styles */
+        @media print {
+            body { max-width: none; padding: 20px; }
+            h2 { page-break-before: auto; }
+            table { page-break-inside: avoid; }
+        }
+        
+        @media (max-width: 600px) {
+            body { padding: 20px 15px; }
+            table { font-size: 0.9em; }
+            th, td { padding: 10px 12px; }
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h1>NYDG Valuation Bridge: Supporting Calculations &amp; Footnotes</h1>
+<h2>Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Original FMV (4/30/25)</strong></td>
+<td>$11,100,000</td>
+</tr>
+<tr>
+<td><strong>Adjusted MBO Price</strong></td>
+<td>$6,500,000</td>
+</tr>
+<tr>
+<td><strong>Reduction</strong></td>
+<td>$4,600,000 (41%)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Waterfall Bridge Detail</h2>
+<h3>Step 1: Original FMV — $11.10M</h3>
+<p><strong>Source</strong>: WR Valuation Report dated June 25, 2025, effective April 30, 2025</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Guideline Transaction Method (50%)</td>
+<td>$11.89M EV</td>
+</tr>
+<tr>
+<td>Discounted Cash Flow Method (50%)</td>
+<td>$14.25M EV</td>
+</tr>
+<tr>
+<td>Weighted Enterprise Value</td>
+<td>$13.07M</td>
+</tr>
+<tr>
+<td>Less: Interest-Bearing Debt</td>
+<td>$(1.97M)</td>
+</tr>
+<tr>
+<td><strong>Equity Value (FMV)</strong></td>
+<td><strong>$11.10M</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Basis</strong>: 2024 revenue of $10.81M, EBITDA of $2.13M (19.7% margin)</p>
+<hr />
+<h3>Step 2: Less Belkin's Book — ($4.44M)</h3>
+<p><strong>The Core Adjustment</strong></p>
+<p>Dr. Daniel Belkin-Holland generated <strong>$5.45M in billings</strong> in 2025, representing <strong>39.7% of total practice revenue</strong>.¹</p>
+<p>This revenue is <strong>not transferable</strong> — it belongs to Belkin, not the practice. If Belkin walks away tomorrow and opens a competing practice, these patients follow him.²</p>
+<p><strong>Calculation</strong>:</p>
+<pre><code>Belkin's share of practice value = 40% × $11.1M = $4.44M
+</code></pre>
+<p><strong>Alternative calculation (EBITDA-based)</strong>:</p>
+<pre><code>Belkin's attributed EBITDA = $5.45M × 21% margin = $1.14M
+At 5.5x multiple = $6.3M enterprise value
+Less proportional debt = $6.3M × (1.97/13.07) = $0.95M
+Belkin's equity portion = $5.35M
+</code></pre>
+<p>Both methods yield similar results ($4.4M - $5.4M). We use the conservative $4.44M.</p>
+<blockquote>
+<p><strong>¹</strong> Per 2025 P&amp;L provided by practice; Belkin billings confirmed at $5,450,000</p>
+<p><strong>² Patient Portability</strong>: In dermatology, 70-85% of patients follow their physician when the physician relocates within the same metropolitan area. Source: Medical Group Management Association (MGMA) surveys; American Academy of Dermatology practice transition studies.</p>
+</blockquote>
+<hr />
+<h3>Step 3: Debt Payoff Adjustment — ($0.23M)</h3>
+<p><strong>Original Valuation Debt</strong>: $1,970,000 (as of April 2025)</p>
+<p><strong>Current Debt (Dec 2025)</strong>: $2,205,200
+- BofA Loan (Long-term): $2,112,474
+- BofA Loan (Short-term): $92,726</p>
+<p><strong>Adjustment</strong>: $(2.20M - $1.97M) = <strong>$(0.23M)</strong></p>
+<p>The debt has increased slightly since valuation date, reducing equity value.³</p>
+<blockquote>
+<p><strong>³</strong> Per NYDG Balance Sheet dated December 31, 2025</p>
+</blockquote>
+<hr />
+<h3>Step 4: Add Infrastructure &amp; Systems — $0.75M</h3>
+<p><strong>What Belkin Avoids by Buying (vs. Starting Fresh)</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Estimated Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Leasehold improvements</td>
+<td>$250,000 - $400,000</td>
+</tr>
+<tr>
+<td>Medical equipment</td>
+<td>$150,000 - $250,000</td>
+</tr>
+<tr>
+<td>IT systems, EMR setup</td>
+<td>$50,000 - $75,000</td>
+</tr>
+<tr>
+<td>Staff recruitment &amp; training</td>
+<td>$75,000 - $100,000</td>
+</tr>
+<tr>
+<td>Working capital (startup)</td>
+<td>$100,000 - $150,000</td>
+</tr>
+<tr>
+<td>Licensing, credentialing delays</td>
+<td>$50,000 - $75,000</td>
+</tr>
+<tr>
+<td><strong>Total Startup Cost Avoided</strong></td>
+<td><strong>$675,000 - $1,050,000</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Midpoint</strong>: $750,000 added to value⁴</p>
+<blockquote>
+<p><strong>⁴</strong> Startup cost estimates based on MGMA practice startup surveys and NYC commercial real estate buildout costs for medical space. Assumes Class A Manhattan location comparable to current NYDG space.</p>
+</blockquote>
+<hr />
+<h3>Step 5: Less Colbert Patient Retention Risk — ($0.68M)</h3>
+<p><strong>The Transition Problem</strong>:</p>
+<p>Dr. David Colbert is the founder and namesake of the practice. His personal brand drives a portion of patient volume that may not transfer to new ownership.</p>
+<p><strong>Colbert-Attributed Revenue Estimate</strong>: ~$5.6M (based on compensation structure)⁵</p>
+<p><strong>Retention Scenarios</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Retention Rate</th>
+<th>Revenue Retained</th>
+<th>Value Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best Case</td>
+<td>70%</td>
+<td>$3.92M</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Base Case</td>
+<td>50%</td>
+<td>$2.80M</td>
+<td>($0.68M)</td>
+</tr>
+<tr>
+<td>Worst Case</td>
+<td>30%</td>
+<td>$1.68M</td>
+<td>($1.36M)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>We apply base case</strong>: ($0.68M) reduction⁶</p>
+<blockquote>
+<p><strong>⁵</strong> Colbert's 2025 salary shows only $88,982, indicating he is taking owner distributions rather than salary. His patient production is estimated at the residual after Belkin ($5.45M), Glick (~$2.1M), and Celebi (~$590K) are removed from total revenue.</p>
+<p><strong>⁶</strong> 50% retention assumes: (a) Colbert provides 12-month transition period; (b) Colbert signs reasonable non-compete; (c) Practice retains brand name during transition. Lower retention if any of these conditions are not met.</p>
+</blockquote>
+<hr />
+<h3>Step 6: Adjusted MBO Price — $6.50M</h3>
+<p><strong>Final Calculation</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Adjustment</th>
+<th>Running Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Original FMV</td>
+<td>—</td>
+<td>$11.10M</td>
+</tr>
+<tr>
+<td>Less: Belkin's Book</td>
+<td>$(4.44M)</td>
+<td>$6.66M</td>
+</tr>
+<tr>
+<td>Less: Debt Adjustment</td>
+<td>$(0.23M)</td>
+<td>$6.43M</td>
+</tr>
+<tr>
+<td>Add: Infrastructure</td>
+<td>$0.75M</td>
+<td>$7.18M</td>
+</tr>
+<tr>
+<td>Less: Retention Risk</td>
+<td>$(0.68M)</td>
+<td>$6.50M</td>
+</tr>
+<tr>
+<td><strong>Adjusted MBO Price</strong></td>
+<td>—</td>
+<td><strong>$6.50M</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Sensitivity Analysis</h2>
+<h3>What If Belkin's Book is Worth More/Less?</h3>
+<table>
+<thead>
+<tr>
+<th>Belkin % of Value</th>
+<th>Adjustment</th>
+<th>MBO Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>35%</td>
+<td>$(3.89M)</td>
+<td>$7.05M</td>
+</tr>
+<tr>
+<td><strong>40% (Base)</strong></td>
+<td><strong>$(4.44M)</strong></td>
+<td><strong>$6.50M</strong></td>
+</tr>
+<tr>
+<td>45%</td>
+<td>$(5.00M)</td>
+<td>$5.94M</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>$(5.55M)</td>
+<td>$5.39M</td>
+</tr>
+</tbody>
+</table>
+<h3>What If Colbert Patients Stay/Leave?</h3>
+<table>
+<thead>
+<tr>
+<th>Retention Rate</th>
+<th>Adjustment</th>
+<th>MBO Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>70% (Best)</td>
+<td>$0</td>
+<td>$7.18M</td>
+</tr>
+<tr>
+<td><strong>50% (Base)</strong></td>
+<td><strong>$(0.68M)</strong></td>
+<td><strong>$6.50M</strong></td>
+</tr>
+<tr>
+<td>30% (Worst)</td>
+<td>$(1.36M)</td>
+<td>$5.82M</td>
+</tr>
+</tbody>
+</table>
+<h3>Combined Sensitivity Matrix</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Colbert 30%</th>
+<th>Colbert 50%</th>
+<th>Colbert 70%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Belkin 35%</strong></td>
+<td>$6.37M</td>
+<td>$7.05M</td>
+<td>$7.73M</td>
+</tr>
+<tr>
+<td><strong>Belkin 40%</strong></td>
+<td>$5.82M</td>
+<td><strong>$6.50M</strong></td>
+<td>$7.18M</td>
+</tr>
+<tr>
+<td><strong>Belkin 45%</strong></td>
+<td>$5.26M</td>
+<td>$5.94M</td>
+<td>$6.62M</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Range</strong>: $5.3M - $7.7M depending on assumptions</p>
+<hr />
+<h2>Fair Value Range</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Price</th>
+<th>When Appropriate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Floor</strong></td>
+<td>$5.50M</td>
+<td>Weak Colbert transition, aggressive negotiation</td>
+</tr>
+<tr>
+<td><strong>Target</strong></td>
+<td>$6.50M</td>
+<td>Base case assumptions</td>
+</tr>
+<tr>
+<td><strong>Ceiling</strong></td>
+<td>$7.50M</td>
+<td>Strong transition, goodwill premium</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Comparison to Original Valuation</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Original FMV</th>
+<th>Adjusted MBO</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Equity Value</td>
+<td>$11.10M</td>
+<td>$6.50M</td>
+<td>$(4.60M)</td>
+</tr>
+<tr>
+<td>Implied Revenue Multiple</td>
+<td>1.03x</td>
+<td>0.60x</td>
+<td>(0.43x)</td>
+</tr>
+<tr>
+<td>Implied EBITDA Multiple</td>
+<td>5.2x</td>
+<td>3.1x</td>
+<td>(2.1x)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The reduced multiples reflect reality</strong>: Belkin is not buying the full practice — he's buying the <strong>non-Belkin portion</strong> plus infrastructure.</p>
+<hr />
+<h2>Key Assumptions Summary</h2>
+<ol>
+<li><strong>Belkin's patients follow him</strong> if he leaves (industry standard)</li>
+<li><strong>Belkin generates 40% of revenue</strong> (confirmed: $5.45M of $13.73M)</li>
+<li><strong>Debt is paid at closing</strong> by seller from proceeds</li>
+<li><strong>Colbert provides transition support</strong> (12 months assumed)</li>
+<li><strong>Other providers (Glick, Celebi) remain</strong> post-acquisition</li>
+<li><strong>Lease terms are favorable</strong> and transferable</li>
+</ol>
+<hr />
+<h2>Negotiating Implications</h2>
+<p><strong>Belkin's Position</strong>:
+- Practice is worth $5-6M more with him than without him
+- Can credibly threaten to walk and start competing practice
+- Has full information asymmetry advantage
+- Should open at $5.5M, expect to settle at $6-7M</p>
+<p><strong>Colbert's Position</strong>:
+- Knows Belkin is best buyer (maximizes value)
+- External buyer would pay even less ($4-5M without Belkin)
+- Has leverage via real estate (if owned separately)
+- Should accept $6-7M as fair outcome</p>
+<p><strong>Likely Settlement Zone</strong>: $6.0M - $7.0M</p>
+<hr />
+<p><em>Supporting calculations prepared January 2026</em>
+<em>Based on WR Valuation Report (6/25/25), NYDG financials (2025), and industry benchmarks</em></p>
+    <footer>
+        <p>Document generated January 2026 | Confidential - For Internal Use Only</p>
+    </footer>
+</body>
+</html>

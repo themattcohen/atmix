@@ -1,0 +1,753 @@
+/* Custom CSS for Accounting Analyzer Web App */
+
+/* Global Styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* File Upload Area */
+.file-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 0.375rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.file-upload-area:hover {
+    border-color: #0d6efd;
+    background-color: #f0f7ff;
+}
+
+.file-upload-area.dragover {
+    border-color: #0d6efd;
+    background-color: #e3f2fd;
+}
+
+/* Confidence Badges */
+.confidence-badge {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.confidence-high {
+    background-color: #198754;
+    color: white;
+}
+
+.confidence-medium {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.confidence-low {
+    background-color: #dc3545;
+    color: white;
+}
+
+.confidence-manual {
+    background-color: #0dcaf0;
+    color: #000;
+}
+
+/* Mapping Table */
+.mapping-table {
+    font-size: 0.95rem;
+}
+
+.mapping-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.mapping-table .form-select {
+    font-size: 0.875rem;
+}
+
+/* Financial Dashboard */
+.financial-toggle {
+    display: inline-flex;
+    background-color: #e9ecef;
+    border-radius: 0.375rem;
+    padding: 0.25rem;
+}
+
+.financial-toggle .btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 1rem;
+    border: none;
+}
+
+.financial-statement {
+    background-color: white;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.financial-line-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.financial-line-item:last-child {
+    border-bottom: none;
+}
+
+.financial-line-item.total {
+    font-weight: 600;
+    border-top: 2px solid #dee2e6;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+}
+
+.financial-line-item.subtotal {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Financial Statement Table Styling */
+.financial-statement-header {
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.financial-table {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.financial-table table {
+    margin-bottom: 0;
+}
+
+.financial-table tbody tr {
+    border: none;
+}
+
+.financial-table .section-header {
+    font-weight: 600;
+    color: #495057;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.financial-table .amount {
+    font-weight: 500;
+    color: #212529;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.financial-table .indent-1 {
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.financial-table .spacer-row {
+    height: 0.5rem;
+}
+
+.financial-table .spacer-row td {
+    border: none;
+    padding: 0.25rem 0;
+}
+
+/* P&L Specific Styling */
+.financial-table .revenue-section {
+    background-color: #f8f9fa;
+}
+
+.financial-table .expense-section {
+    background-color: #fff5f5;
+}
+
+.financial-table .income-section {
+    background-color: #f0f9ff;
+}
+
+.financial-table .total-row {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.financial-table .total-label,
+.financial-table .total-amount {
+    font-weight: 600;
+    color: #495057;
+}
+
+.financial-table .net-income-row {
+    border-top: 2px solid #495057;
+    border-bottom: 2px solid #495057;
+    background-color: #f8f9fa;
+}
+
+.financial-table .net-income-row.positive {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.financial-table .net-income-row.negative {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+}
+
+.financial-table .net-income-label,
+.financial-table .net-income-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #212529;
+}
+
+/* Balance Sheet Specific Styling */
+.financial-table .asset-section {
+    background-color: #e3f2fd;
+}
+
+.financial-table .liability-section {
+    background-color: #fff3e0;
+}
+
+.financial-table .equity-section {
+    background-color: #f3e5f5;
+}
+
+.financial-table .final-total-row {
+    border-top: 2px solid #495057;
+    border-bottom: 2px solid #495057;
+    background-color: #f8f9fa;
+}
+
+.financial-table .final-total-row.balanced {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+.financial-table .final-total-row.unbalanced {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+}
+
+.financial-table .final-total-label,
+.financial-table .final-total-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #212529;
+}
+
+.financial-table .balance-check-row {
+    background-color: #f8d7da;
+    font-style: italic;
+}
+
+.financial-table .balance-check-label,
+.financial-table .balance-check-amount {
+    color: #721c24;
+}
+
+/* Add-backs Section Styling */
+.addback-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+}
+
+.transaction-item {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: white;
+    margin-bottom: 0.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.transaction-desc {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.transaction-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-amount {
+    font-weight: 600;
+    color: #dc3545;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.form-check-input:checked ~ .form-check-label .transaction-item {
+    background-color: #e3f2fd;
+    border-color: #0d6efd;
+}
+
+.form-check-input:checked ~ .form-check-label .transaction-amount {
+    color: #0d6efd;
+}
+
+/* Export Buttons */
+.export-buttons {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1rem;
+    text-align: center;
+}
+
+.export-buttons .btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 1rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.export-buttons .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.export-buttons .btn i {
+    margin-right: 0.5rem;
+}
+
+/* Responsive Financial Tables */
+@media (max-width: 768px) {
+    .financial-table {
+        font-size: 0.8rem;
+    }
+    
+    .financial-table .amount {
+        font-size: 0.8rem;
+    }
+    
+    .financial-table .net-income-label,
+    .financial-table .net-income-amount,
+    .financial-table .final-total-label,
+    .financial-table .final-total-amount {
+        font-size: 0.9rem;
+    }
+    
+    .addback-list {
+        max-height: 300px;
+    }
+    
+    .transaction-item {
+        padding: 0.375rem;
+    }
+}
+
+/* Analysis Cards */
+.analysis-card {
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease;
+}
+
+.analysis-card:hover {
+    transform: translateY(-2px);
+}
+
+.analysis-severity-high {
+    border-left: 4px solid #dc3545;
+}
+
+.analysis-severity-medium {
+    border-left: 4px solid #ffc107;
+}
+
+.analysis-severity-low {
+    border-left: 4px solid #28a745;
+}
+
+/* Analysis Page Specific Styling */
+.phase-content {
+    padding: 0;
+}
+
+.phase-content h2 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.phase-content .text-muted {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Search and Filter Section */
+.input-group .input-group-text {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.input-group .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Key Metrics Section */
+.badge.bg-light {
+    border: 1px solid #dee2e6;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Enhanced Analysis Cards */
+.analysis-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.analysis-card .card-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.analysis-card .card-text > div {
+    margin-bottom: 0.75rem;
+}
+
+.analysis-card .card-text strong {
+    color: #212529;
+    font-weight: 600;
+}
+
+.analysis-card .badge {
+    font-size: 0.8rem;
+    padding: 0.375rem 0.75rem;
+    font-weight: 500;
+}
+
+/* Currency formatting */
+.text-muted.small {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Phase Summary Badges */
+.d-flex.gap-2 {
+    gap: 0.5rem;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 0.375rem 0.75rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+}
+
+/* Alert Styling for No Issues */
+.alert-success {
+    border-color: #28a745;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-success h5 {
+    color: #155724;
+    margin-bottom: 0.5rem;
+}
+
+.alert-success .fas {
+    color: #28a745;
+}
+
+/* Analysis Error States */
+.alert-danger {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-danger h5 {
+    color: #721c24;
+    margin-bottom: 0.5rem;
+}
+
+.alert-danger .fas {
+    color: #dc3545;
+}
+
+/* Export Button Styling */
+.btn-outline-primary {
+    border-color: #0d6efd;
+    color: #0d6efd;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Analysis Layout */
+@media (max-width: 768px) {
+    .phase-content .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .phase-content .text-right {
+        text-align: left !important;
+    }
+    
+    .analysis-card .card-title {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+    }
+    
+    .analysis-card .card-title span:last-child {
+        margin-top: 0.5rem;
+    }
+    
+    .d-flex.gap-2 {
+        flex-wrap: wrap;
+    }
+    
+    .badge.bg-light {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Loading State for Analysis */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #0d6efd;
+}
+
+/* Sticky Phase Navigation */
+.phase-nav {
+    position: sticky;
+    top: 1rem;
+    z-index: 10;
+    background-color: white;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    padding: 1.5rem;
+}
+
+.phase-nav h5 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.phase-nav .nav-link {
+    color: #6c757d;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.phase-nav .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+    transform: translateX(2px);
+}
+
+.phase-nav .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: 500;
+}
+
+.phase-nav .nav-link.active:hover {
+    background-color: #0b5ed7;
+    transform: translateX(0);
+}
+
+.phase-nav .nav-link i {
+    width: 1.25rem;
+    text-align: center;
+}
+
+/* Summary Section in Sidebar */
+.phase-nav hr {
+    border-color: #dee2e6;
+    margin: 1.5rem 0;
+}
+
+.phase-nav h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.phase-nav .small {
+    line-height: 1.8;
+}
+
+.phase-nav .small > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.phase-nav .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* Export Button in Sidebar */
+.phase-nav .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.phase-nav .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.phase-nav .btn-primary i {
+    margin-right: 0.5rem;
+}
+
+/* Phase Navigation */
+.phase-nav {
+    background-color: white;
+    border-radius: 0.375rem;
+    padding: 1rem;
+}
+
+.phase-nav .nav-link {
+    color: #495057;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.phase-nav .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+}
+
+.phase-nav .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Loading States */
+.skeleton {
+    background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive Tables */
+@media (max-width: 768px) {
+    .table-responsive-stack tr {
+        display: block;
+        border: 1px solid #dee2e6;
+        margin-bottom: 10px;
+    }
+    
+    .table-responsive-stack td {
+        display: block;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    
+    .table-responsive-stack td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        text-align: left;
+        font-weight: 600;
+    }
+}
+
+/* Utility Classes */
+.text-monospace {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+    
+    body {
+        background-color: white;
+    }
+}

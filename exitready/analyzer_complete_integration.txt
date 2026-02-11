@@ -1,0 +1,10 @@
+=================================================================================
+ANALYZER COMPLETE CODEBASE FOR INTEGRATION INTO EXITREADY
+=================================================================================
+
+This file contains the entire analyzer codebase organized for integration.
+Each file is clearly marked with separators for easy extraction.
+
+=================================================================================
+FILE: analyzer/chart_mapper.py
+=================================================================================

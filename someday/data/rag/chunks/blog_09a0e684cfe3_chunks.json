@@ -1,0 +1,20 @@
+{
+  "document_id": "blog_09a0e684cfe3",
+  "total_chunks": 1,
+  "chunks": [
+    {
+      "chunk_id": "chunk_fd03aeb1_0000",
+      "document_id": "blog_09a0e684cfe3",
+      "content": "Breaking Down The SaaS Master Services Agreement Jan 3 Written By Thomas Codevilla The first time I tackled a lengthy SaaS Master Services Agreement (MSA), it felt like reading a legal Ambien prescription—dense, repetitive, and designed to knock you out cold. Over the years, I’ve learned that MSAs aren’t just about legalese; they’re a mix of business reality, negotiation strategy, and practical risk management. Whether it’s ensuring the terms match the actual services provided, carving out data privacy provisions that reflect modern regulations, or negotiating fair liability limits, every clause matters. In this post, I’ll break down the key elements of SaaS MSAs into digestible chunks, showing you how to make these contracts work for your business—without the drowsiness. Business Reality Does this contract reflect the reality of the services performed? In other words, is this cloud SaaS on an old hosted SaaS form? Does the form assume the customer will own the software when they’re just getting a license? Do business and payment terms reflect your client’s deal? Leverage How much leverage does your client have to negotiate? This will dictate whether I go full Biglaw on minutiae or just hit the biggest issues. IP Think about six buckets, three for each client and customer: pre-existing IP, IP created during the agreement, and IP after termination. The agreement should say what goes in each. Data Privacy Usually, it has its own addendum with 12 pages of language related to an outdated understanding of the CCPA or GDPR. It’s important to carve out the specific uses and restrictions for the use of PII/personal data/customer data under the Agreement. Ask how much exposure your client could have in a data breach. Work directly from current regulations, not old forms, and you will amaze opposing counsel. Battle of the Forms Yeah, enormous public customer, I know you have a super detailed Statement of Work that has five levels of availability and service credits. But my client isn’t IBM and doesn’t have 24/7 support for their widget, so how about you talk with my client’s project lead and see if you can live with our SOW/SLA, ok? Super. Limitation of Liability Confidentiality, Indemnity: 90% of the time, these are either missing or one-sided. Make them mutual (if it benefits your client), and add a supercap for sensitive issues if things get sticky. My client isn’t taking on unlimited liability for a $100k software license, thank you very much. Blocking & Tackling These are the basics - defined terms, breach and cure, notice, term and termination, payment terms, entities, and signatories, all the things that make a contract actually useful and enforceable. Don’t try to do this at the same time as higher-level stuff- you’ll catch more if you put the contract down for a few hours minimum and re-read it with a clear head. Need assistance with this? If it feels like YOU just took an Ambien, I can help. Email Thomas Codevilla at: codevilla@skandslegal.com . Thomas Codevilla",
+      "index": 0,
+      "start_char": 0,
+      "end_char": 3016,
+      "total_chunks": 1,
+      "word_count": 495,
+      "context": {
+        "preceding_text": "",
+        "following_text": ""
+      }
+    }
+  ]
+}

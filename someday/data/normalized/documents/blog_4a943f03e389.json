@@ -1,0 +1,23 @@
+{
+  "id": "blog_4a943f03e389",
+  "source": "skandslegal_blog",
+  "source_type": "blog_article",
+  "title": "How to meet Data Protection Addendum Criteria, 100% of the time.",
+  "content": {
+    "text": "How to meet Data Protection Addendum Criteria, 100% of the time. Nov 29 Written By Thomas Codevilla A common ask from my SaaS clients is to look over a Data Protection Addendum (DPA) to see if their system meets the DPA\u2019s criteria out of the box. 100% of the time, it doesn\u2019t. Company DPAs are meant to be overprotective, it\u2019s on the attorney and company working together to make the contract reflect reality. Here are 5 of my most common changes to big company DPAs Consent for Collection Make sure your data provider reps and warrants that it has the right to give you the data AND that the consumers or data subjects have been properly notified. Data Minimization Before receiving data, always question its necessity. You don\u2019t want HIPAA-regulated data or sensitive private information unless it\u2019s absolutely necessary. Make sure it\u2019s clear what you will and won\u2019t process. De-Identification When processing data at scale , consider requesting de-identified (including differentially private) and hashed personal information from the provider; it reduces your liability in the event of a breach and, when done properly and documented on the back end, reduces your compliance workload. Third-Party Access I get it- as a small business, you\u2019re often relying on third party service providers to host or provide key aspects of your processing. Make sure your DPA allows for processing by those third parties. Data Breach Liability Big company DPAs put all the cost and responsibility of a data breach on you by default, even if it isn\u2019t your fault. Limit your liability to your statutory responsibilities under data privacy law. Need assistance with this? Email Thomas Codevilla at: codevilla@skandslegal.com for help ensuring your system meets DPA criteria. Thomas Codevilla",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.skandslegal.com/sks-blog/2024/11/22/5-changes-to-become-compliant-data-protection-addendum",
+    "author": "Thomas Codevilla",
+    "word_count": 286,
+    "language": "en",
+    "published_date": "2024-11-22"
+  },
+  "extraction": {
+    "extracted_at": "2026-01-26T18:24:34.941956",
+    "extractor_version": "1.0.0-migrated",
+    "quality_score": 0.64
+  }
+}

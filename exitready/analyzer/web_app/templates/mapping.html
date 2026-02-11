@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Chart of Accounts Mapping - Accounting Analyzer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-project-diagram"></i> Chart of Accounts Mapping
+        </h1>
+        
+        <!-- Mapping Summary -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Accounts</h5>
+                        <h2 class="text-primary" id="totalAccounts">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">High Confidence</h5>
+                        <h2 class="text-success" id="highConfidence">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Medium Confidence</h5>
+                        <h2 class="text-warning" id="mediumConfidence">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Low/Unmapped</h5>
+                        <h2 class="text-danger" id="lowConfidence">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> Instructions</h5>
+            <p class="mb-0">
+                Review the suggested account mappings below. The system has automatically matched your accounts 
+                to standard categories using fuzzy logic. You can modify any mapping by selecting a different 
+                category from the dropdown. Focus on accounts with low confidence scores or those marked as "Unmapped".
+            </p>
+        </div>
+
+        <!-- Mapping Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Account Mappings</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mapping-table mb-0" id="mappingTable">
+                        <thead>
+                            <tr>
+                                <th>Original Account</th>
+                                <th>Confidence</th>
+                                <th>Mapped To</th>
+                                <th>Modified</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mappingTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+            <button class="btn btn-secondary" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <div>
+                <button class="btn btn-outline-primary me-2" id="saveChangesBtn">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <button class="btn btn-success" id="confirmMappingsBtn">
+                    <i class="fas fa-check"></i> Confirm Mappings & Continue
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 id="loadingMessage">Loading mappings...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const sessionId = '{{ session_id }}';
+    let mappings = [];
+    let standardAccounts = [];
+    let modifiedMappings = {};
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+    // Load standard accounts for dropdown
+    async function loadStandardAccounts() {
+        try {
+            const response = await $.get('/api/mapping/standard-accounts');
+            standardAccounts = response;
+        } catch (error) {
+            console.error('Failed to load standard accounts:', error);
+            alert('Failed to load standard accounts');
+        }
+    }
+
+    // Load mapping suggestions
+    async function loadMappings() {
+        try {
+            const response = await $.get(`/api/mapping/suggestions/${sessionId}`);
+            mappings = response.mappings;
+            
+            // Update summary counts
+            $('#totalAccounts').text(response.mappings.length);
+            $('#highConfidence').text(response.high_confidence_count);
+            $('#mediumConfidence').text(response.medium_confidence_count);
+            $('#lowConfidence').text(response.low_confidence_count + response.unmapped_count);
+            
+            // Render table
+            renderMappingTable();
+            
+        } catch (error) {
+            console.error('Failed to load mappings:', error);
+            alert('Failed to load mappings');
+        }
+    }
+
+    // Render mapping table
+    function renderMappingTable() {
+        const tbody = $('#mappingTableBody');
+        tbody.empty();
+        
+        mappings.forEach((mapping, index) => {
+            const percentage = Math.round(mapping.confidence_score * 100);
+            const confidenceBadge = `<span class="badge bg-success">${percentage}%</span>`;
+            const isModified = mapping.is_user_modified || modifiedMappings[mapping.original_account];
+            
+            const row = $(`
+                <tr>
+                    <td>${mapping.original_account}</td>
+                    <td>${confidenceBadge}</td>
+                    <td>
+                        <select class="form-select form-select-sm mapping-select" 
+                                data-account="${mapping.original_account}" 
+                                data-index="${index}">
+                            <option value="">-- Select Account --</option>
+                        </select>
+                    </td>
+                    <td>
+                        ${isModified ? '<span class="badge bg-info">Modified</span>' : ''}
+                    </td>
+                </tr>
+            `);
+            
+            tbody.append(row);
+            
+            // Populate dropdown with all standard accounts
+            const select = row.find('.mapping-select');
+            populateAccountDropdown(select, mapping.suggested_mapping);
+        });
+        
+        // Attach change handlers
+        $('.mapping-select').on('change', handleMappingChange);
+    }
+
+    // Get confidence badge HTML
+    function getConfidenceBadge(level, score) {
+        const percentage = Math.round(score * 100);
+        const classes = {
+            'high': 'confidence-high',
+            'medium': 'confidence-medium',
+            'low': 'confidence-low',
+            'manual': 'confidence-manual'
+        };
+        
+        return `<span class="badge confidence-badge ${classes[level]}">${percentage}%</span>`;
+    }
+
+    // Populate account dropdown
+    function populateAccountDropdown(select, currentValue) {
+        // Group accounts by category
+        const grouped = {};
+        standardAccounts.forEach(account => {
+            if (!grouped[account.category]) {
+                grouped[account.category] = [];
+            }
+            grouped[account.category].push(account);
+        });
+        
+        // Add options grouped by category
+        Object.keys(grouped).sort().forEach(category => {
+            const optgroup = $(`<optgroup label="${category}">`);
+            
+            grouped[category].forEach(account => {
+                const option = $(`<option value="${account.account_name}">${account.account_name}</option>`);
+                if (account.account_name === currentValue) {
+                    option.prop('selected', true);
+                }
+                optgroup.append(option);
+            });
+            
+            select.append(optgroup);
+        });
+        
+        // Add "Unmapped" option
+        const unmappedOption = $('<option value="Unmapped">Unmapped</option>');
+        if (currentValue === 'Unmapped') {
+            unmappedOption.prop('selected', true);
+        }
+        select.append(unmappedOption);
+    }
+
+    // Handle mapping change
+    function handleMappingChange(e) {
+        const account = $(e.target).data('account');
+        const newMapping = $(e.target).val();
+        const index = $(e.target).data('index');
+        
+        if (newMapping) {
+            modifiedMappings[account] = newMapping;
+            mappings[index].suggested_mapping = newMapping;
+            mappings[index].is_user_modified = true;
+            
+            // Update modified badge
+            $(e.target).closest('tr').find('td:last').html('<span class="badge bg-info">Modified</span>');
+        }
+    }
+
+    // Save changes
+    $('#saveChangesBtn').on('click', async function() {
+        if (Object.keys(modifiedMappings).length === 0) {
+            alert('No changes to save');
+            return;
+        }
+        
+        const updates = Object.entries(modifiedMappings).map(([account, mapping]) => ({
+            original_account: account,
+            new_mapping: mapping
+        }));
+        
+        try {
+            loadingModal.show();
+            await $.ajax({
+                url: `/api/mapping/update-bulk/${sessionId}`,
+                type: 'POST',
+                data: JSON.stringify({ mappings: updates }),
+                contentType: 'application/json'
+            });
+            
+            alert('Mappings saved successfully');
+            modifiedMappings = {};
+            
+        } catch (error) {
+            console.error('Failed to save mappings:', error);
+            alert('Failed to save mappings');
+        } finally {
+            loadingModal.hide();
+        }
+    });
+
+    // Confirm mappings and continue
+    $('#confirmMappingsBtn').on('click', async function() {
+        // First save any pending changes
+        if (Object.keys(modifiedMappings).length > 0) {
+            await $('#saveChangesBtn').click();
+        }
+        
+        try {
+            loadingModal.show();
+            $('#loadingMessage').text('Confirming mappings...');
+            
+            const response = await $.ajax({
+                url: `/api/mapping/confirm/${sessionId}`,
+                type: 'POST',
+                data: JSON.stringify({ confirm: true }),
+                contentType: 'application/json',
+                timeout: 30000  // 30 second timeout
+            });
+            
+            // Always hide modal first
+            loadingModal.hide();
+            
+            if (response.success) {
+                // Show success message with toast instead of alert
+                if (window.accountingAnalyzer && window.accountingAnalyzer.showToast) {
+                    window.accountingAnalyzer.showToast('Mappings confirmed successfully! Redirecting...', 'success');
+                } else {
+                    console.log('Mappings confirmed successfully');
+                }
+                
+                // Redirect immediately without delay
+                window.location.href = `/dashboard/${sessionId}`;
+            } else {
+                // Show error message
+                const errorMsg = response.message || 'Unknown error occurred';
+                if (window.accountingAnalyzer && window.accountingAnalyzer.showToast) {
+                    window.accountingAnalyzer.showToast('Failed to confirm mappings: ' + errorMsg, 'danger');
+                } else {
+                    alert('Failed to confirm mappings: ' + errorMsg);
+                }
+            }
+            
+        } catch (error) {
+            console.error('Failed to confirm mappings:', error);
+            
+            // Ensure modal is hidden
+            loadingModal.hide();
+            
+            // Show error message
+            const errorMsg = error.responseJSON?.detail || error.message || 'Network error occurred';
+            if (window.accountingAnalyzer && window.accountingAnalyzer.showToast) {
+                window.accountingAnalyzer.showToast('Failed to confirm mappings: ' + errorMsg, 'danger');
+            } else {
+                alert('Failed to confirm mappings: ' + errorMsg);
+            }
+        }
+    });
+
+    // Initialize
+    async function init() {
+        await loadStandardAccounts();
+        await loadMappings();
+    }
+
+    init();
+});
+</script>
+{% endblock %}

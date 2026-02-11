@@ -1,0 +1,42 @@
+{
+  "id": "youtube_07b2bd5b9fe3",
+  "source": "youtube",
+  "source_type": "video_transcript",
+  "title": "What Actually Happens on CLOSING DAY 🤔| Buying and Selling Businesses Explained",
+  "content": {
+    "text": "If you're buying or selling and accounting practice and you really need to get your story straight on what your closing mechanics are as students possible, your agreements are all going to be written assuming a certain plan for closing and a lot of times I find that the sellers and the buyers and the lawyers have it all got their story straight on how they want closing the look. I want to talk about the different ways that you can find your agreements in the different order you can do things. I'm Sarah Sharp. I help people buy and sell at accounting practices. Nationwide I see a lot of deals that people will close their deals. The most kind of basic way that you imagine it if you're me is a simultaneous sign-in close. That's kind of the bread and butter of an agreement. That contemplates more of an old school approach where you have all of your documents written so that everything once it's signed is effective. There is no difference between a closing date and an effective date and a signature date. They're all the same. So you've got to be very careful not to sign anything in advance because as soon as you sign it your pot committed. That is absolutely fine. It gets really challenging or impossible if you have to have a tax clearance from a particular state agency in advance because they demand that you submit a signed purchase agreement before they will give you clearance to close. That kicks it or if you have a bank you usually the bank will want a signed purchase agreement before they will schedule your closing date. For that reason I do almost most as a delayed sign-in close. So my goal continues to be and I sometimes achieve it and sometimes don't in anticlimactic closing. So in order to effectuate that as soon as the parties are set on their purchase agreement I really want them to sign it and just be dead my bed. You can do that as long as your agreements are written for it. As long as your agreements contemplate the parties will sign this when they can and that closing will happen at a future date when they decide and there is always needs to be some out that can happen in between those two points under certain circumstances. In my agreement I call those conditions precedent and they always include at least one thing which is financing. When the pandemic rolled through there were a lot of letters of intent out and a lot of people who were really close to closing their deals only to find out that their particular financing source whether it was SBA or another bank loan got frozen or pulled pretty much right on the courthouse steps. If those folks had signed an agreement without a contingency related to financing they found themselves in a situation where they were contractually obligated to pay millions of dollars to somebody with no way to finance and support that contractual obligation. There's a really sticky time for a lot of people. So in any event if you're getting bank financing you rely on that to close the deal you're going to want to go ahead and sign it but make sure that you have a condition precedent that talks about how you get out of the deal if you don't get financing. Other parties will want different things. Sometimes the sellers say I'm going to put a deadline on this. The condition precedent is everything closes and I get a wire transfer and no later than December 1st because I want to know if this isn't happening so I can send out my engagement letters to my new clients and get ready for a tax season. That's a very reasonable request as well. So you really want to figure out okay let's assume we signed the purchase agreement we're all locked in. We've known no obligation. You're sitting there as counter parties with no obligation to enter into the contract and effectuate this transaction and then you take that off the table entirely and you have very much an obligation to move forward with the deal with certain limited exceptions. That is my preference most of the time not always but it's important to know that upfront because your documents have to be completely different if you're planning to assign and have a delay closing. So then what is closing if you've already signed a purchase agreement right? Well closing is where the money gets transferred and really important specific documents are signed the day of actual closing. Usually I want my promise where you know my bill of sale, my assignment and assumption and a closing certificate at least to be signed the day of actual closing not that early or signature date of the purchase agreement. We get the purchase agreement off the table and then the day that the wire transfer is made that's when you're signing your note and because it's a negotiable instrument like a check you don't want to just sign that if it's not effective yet so your note your bill of sale same thing right? It's something that shows legal ownership is transferred and the same with the assignment and assumption and a closing certificate exists for this context because what a closing certificate it does is say hey I'm the seller everything I promised and the original purchase remains true as of today this day of closing and so it pulls all those reps and warranties that maybe were made a month and a half ago when you sign the agreement and up through the closing date so that's what stretches that out and make sure that you don't have any gaps and the promises and the coverage that you got in those promises and the purchase agreement. So for me that is the best closing mechanic but there are situations in which simultaneous sign and close make more sense and there's circumstances in which signing the agreements but holding the signatures and escrow makes sense. So if you have ever heard of this let's hold the signatures and escrow I misunderstood it the first couple of times I heard it before I was a lawyer even as a baby lawyer and there is no escrow or title agency related to this legal fiction of holding signatures and escrow it is just we all agree that something is gonna happen a certain way. So we'll sign the agreement and say we're gonna hold the signatures and escrow pending everybody's subsequent release of those signatures from escrow and all that really means is these are not effective until everybody by email later says okay we released from escrow and these are effective. It's a little bit janky and I certainly wouldn't do it in a situation where there's likely to be contested accounts of things and you want to get everything in writing but if you're really having trouble going pencils down on some of these agreements a promise to hold the signatures and escrow can be a really powerful way to give the other side the assurance that they can just say okay we are to terms on this agreement let's go ahead and put it aside for now and move on to the next of the 200 things on our checklist and if you found this helpful please like and subscribe and take a look at our next video in diminification or the anatomy of a purchase agreement.",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.youtube.com/watch?v=1E8bEaTWizw",
+    "author": "Sara Sharp's Dealmakers",
+    "published_date": "2025-01-26",
+    "duration_seconds": 360,
+    "word_count": 1271,
+    "language": "en",
+    "source_specific": {
+      "video_id": "1E8bEaTWizw",
+      "channel_id": "UCnLI19Jb9TJ88WuMKUJZRiw",
+      "duration_seconds": 360,
+      "view_count": 150,
+      "like_count": 2,
+      "caption_type": "whisper",
+      "caption_language": "en",
+      "playlist_id": null,
+      "playlist_position": null
+    }
+  },
+  "extraction": {
+    "extracted_at": "2026-01-27T02:05:38.519421+00:00",
+    "extractor_version": "1.0.0",
+    "raw_file_path": "data/raw/youtube/transcripts/yt_1E8bEaTWizw.json",
+    "quality_score": 0.783
+  },
+  "rag": {
+    "chunk_count": 0,
+    "chunk_ids": [],
+    "embedding_model": null,
+    "last_embedded_at": null
+  }
+}

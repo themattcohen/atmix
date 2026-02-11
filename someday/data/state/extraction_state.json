@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-01-26T19:30:00Z",
+  "sources": {
+    "youtube": {
+      "status": "pending",
+      "last_extraction": null,
+      "total_items": 0,
+      "pending_items": 100,
+      "failed_items": 0,
+      "state_file": "youtube_state.json"
+    },
+    "blog": {
+      "status": "active",
+      "last_extraction": "2026-01-26T19:30:00Z",
+      "total_items": 20,
+      "pending_items": 0,
+      "failed_items": 0,
+      "documents_normalized": 20,
+      "state_file": "blog_state.json"
+    },
+    "podcast": {
+      "status": "pending",
+      "last_extraction": null,
+      "total_items": 0,
+      "pending_items": 50,
+      "failed_items": 0,
+      "state_file": "podcast_state.json"
+    },
+    "book": {
+      "status": "blocked",
+      "blocked_reason": "Awaiting PDF file from user",
+      "state_file": "book_state.json"
+    },
+    "linkedin": {
+      "status": "blocked",
+      "blocked_reason": "Requires manual data export from user",
+      "state_file": "linkedin_state.json"
+    },
+    "deal_academy": {
+      "status": "blocked",
+      "blocked_reason": "Requires Teachable credentials from user",
+      "state_file": "deal_academy_state.json"
+    },
+    "media": {
+      "status": "pending",
+      "last_extraction": null,
+      "total_items": 0,
+      "pending_items": 0,
+      "failed_items": 0,
+      "state_file": "media_state.json"
+    },
+    "newsletter": {
+      "status": "blocked",
+      "blocked_reason": "Requires GHL export file or API credentials from user",
+      "last_extraction": null,
+      "total_items": 0,
+      "pending_items": 0,
+      "failed_items": 0,
+      "state_file": "newsletter_state.json"
+    }
+  },
+  "pipeline": {
+    "last_normalization": "2026-01-26T19:30:00Z",
+    "last_chunking": "2026-01-26T19:30:00Z",
+    "last_embedding": null,
+    "documents_normalized": 20,
+    "chunks_created": 22,
+    "embeddings_computed": 0
+  }
+}

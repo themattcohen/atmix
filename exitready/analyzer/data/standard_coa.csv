@@ -1,0 +1,156 @@
+category,account_name,account_number
+Closing Accounts,Income Summary,9000
+Closing Accounts,Suspense Account,9100
+Closing Accounts,Rounding Differences,9200
+Closing Accounts,Clearing Account,9999
+Cost of Services,Subcontractor Costs,5000
+Cost of Services,Third-party Tax Software,5010
+Cost of Services,Research & Reference Materials,5020
+Cost of Services,Client Reimbursable Expenses,5030
+Current Assets,Cash - Operating Account,1000
+Current Assets,Cash - Payroll Account,1010
+Current Assets,Cash - Trust Account,1020
+Current Assets,Petty Cash,1030
+Current Assets,Accounts Receivable - Trade,1100
+Current Assets,Accounts Receivable - Employee Advances,1110
+Current Assets,Allowance for Doubtful Accounts,1120
+Current Assets,Prepaid Expenses,1150
+Current Assets,Prepaid Insurance,1160
+Current Assets,Prepaid Rent,1170
+Current Assets,Work in Progress,1180
+Current Liabilities,Accounts Payable - Trade,2000
+Current Liabilities,Accounts Payable - Credit Cards,2010
+Current Liabilities,Accrued Expenses,2020
+Current Liabilities,Accrued Payroll,2030
+Current Liabilities,Accrued Payroll Taxes,2040
+Current Liabilities,Accrued Benefits,2050
+Current Liabilities,Client Deposits/Retainers,2060
+Current Liabilities,Sales Tax Payable,2070
+Current Liabilities,Payroll Tax Liabilities,2080
+Current Liabilities,Income Tax Payable,2090
+Fixed Assets,Office Equipment,1200
+Fixed Assets,Computer Equipment,1210
+Fixed Assets,Software,1220
+Fixed Assets,Furniture & Fixtures,1230
+Fixed Assets,Leasehold Improvements,1240
+Fixed Assets,Accumulated Depreciation - Equipment,1250
+Fixed Assets,Accumulated Depreciation - Computer,1260
+Fixed Assets,Accumulated Depreciation - Furniture,1270
+Long-term Liabilities,Notes Payable - Bank,2200
+Long-term Liabilities,Equipment Loans,2210
+Long-term Liabilities,Line of Credit,2220
+Long-term Liabilities,Deferred Tax Liability,2300
+Operating Expenses,Rent Expense,6200
+Operating Expenses,Utilities,6210
+Operating Expenses,Telephone/Internet,6220
+Operating Expenses,Insurance - General Liability,6230
+Operating Expenses,Insurance - Professional Liability,6240
+Operating Expenses,Insurance - Property,6250
+Operating Expenses,Office Supplies,6300
+Operating Expenses,Computer Supplies,6310
+Operating Expenses,Printing & Reproduction,6320
+Operating Expenses,Postage & Shipping,6330
+Operating Expenses,Professional Development,6400
+Operating Expenses,Continuing Education,6410
+Operating Expenses,Professional Memberships,6420
+Operating Expenses,Subscriptions & Publications,6430
+Operating Expenses,Conference & Seminar Fees,6440
+Operating Expenses,Technology Expenses,6500
+Operating Expenses,Software Licenses,6510
+Operating Expenses,Computer Maintenance,6520
+Operating Expenses,Website & Domain Costs,6530
+Operating Expenses,IT Support Services,6540
+Operating Expenses,Marketing & Business Development,6600
+Operating Expenses,Advertising,6610
+Operating Expenses,Networking Events,6620
+Operating Expenses,Client Entertainment,6630
+Operating Expenses,Promotional Materials,6640
+Operating Expenses,Travel & Transportation,6700
+Operating Expenses,Meals (Business),6710
+Operating Expenses,Lodging,6720
+Operating Expenses,Airfare,6730
+Operating Expenses,Auto Expenses,6740
+Operating Expenses,Parking & Tolls,6750
+Operating Expenses,Professional Services,6800
+Operating Expenses,Legal Fees,6810
+Operating Expenses,Accounting Fees,6820
+Operating Expenses,Consulting Fees,6830
+Operating Expenses,Tax Preparation Fees,6840
+Operating Expenses,Administrative Expenses,6900
+Operating Expenses,Bank Charges,6910
+Operating Expenses,Credit Card Fees,6920
+Operating Expenses,Office Cleaning,6930
+Operating Expenses,Security Services,6940
+Operating Expenses,Equipment Rental/Lease,6950
+Other Assets,Security Deposits,1400
+Other Assets,Long-term Investments,1410
+Other Assets,Deferred Tax Asset,1450
+Other Expenses,Depreciation Expense,7000
+Other Expenses,Amortization Expense,7010
+Other Expenses,Interest Expense,7100
+Other Expenses,Bank Loan Interest,7110
+Other Expenses,Credit Card Interest,7120
+Other Expenses,Equipment Loan Interest,7130
+Other Expenses,Bad Debt Expense,7200
+Other Expenses,Penalties & Fines,7300
+Other Expenses,Charitable Contributions,7400
+Other Expenses,Miscellaneous Expenses,7500
+Other Revenue,Training & Education Revenue,4500
+Other Revenue,Speaking Fees,4510
+Other Revenue,Referral Fees Received,4520
+Other Revenue,Other Income,4900
+Other Revenue,Interest Income,4910
+Other Revenue,Late Fees/Finance Charges,4920
+Partner/Owner Equity,Partner Capital - Smith,3000
+Partner/Owner Equity,Partner Capital - Johnson,3010
+Partner/Owner Equity,Partner Capital - Brown,3020
+Partner/Owner Equity,Partner Distributions,3100
+Partner/Owner Equity,Partner Distributions - Johnson,3110
+Partner/Owner Equity,Partner Distributions - Brown,3120
+Partner/Owner Equity,Retained Earnings,3150
+Partner/Owner Equity,Current Year Earnings,3160
+Personnel Costs,Salaries & Wages - Partners,6000
+Personnel Costs,Salaries & Wages - Managers,6010
+Personnel Costs,Salaries & Wages - Staff,6020
+Personnel Costs,Salaries & Wages - Administrative,6030
+Personnel Costs,Overtime Pay,6040
+Personnel Costs,Bonus Compensation,6050
+Personnel Costs,Commission Expense,6060
+Personnel Costs,Payroll Taxes,6100
+Personnel Costs,FICA/Medicare,6110
+Personnel Costs,Federal Unemployment,6120
+Personnel Costs,State Unemployment,6130
+Personnel Costs,Workers Compensation,6140
+Personnel Costs,Employee Benefits,6150
+Personnel Costs,Health Insurance,6160
+Personnel Costs,Dental Insurance,6170
+Personnel Costs,Life Insurance,6180
+Personnel Costs,Retirement Plan Contributions,6190
+Service Revenue,Tax Preparation Revenue,4000
+Service Revenue,Individual Tax Returns,4010
+Service Revenue,Business Tax Returns,4020
+Service Revenue,Quarterly Estimated Payments,4030
+Service Revenue,Tax Planning Services,4040
+Service Revenue,IRS Representation,4050
+Service Revenue,Bookkeeping Revenue,4100
+Service Revenue,Monthly Bookkeeping,4110
+Service Revenue,Catch-up Bookkeeping,4120
+Service Revenue,Financial Statement Preparation,4130
+Service Revenue,Bank Reconciliation Services,4140
+Service Revenue,Payroll Services Revenue,4200
+Service Revenue,Payroll Processing,4210
+Service Revenue,Payroll Tax Filings,4220
+Service Revenue,Workers Comp Audits,4230
+Service Revenue,Advisory/Consulting Revenue,4300
+Service Revenue,Business Consulting,4310
+Service Revenue,Financial Planning,4320
+Service Revenue,Entity Selection,4330
+Service Revenue,Business Valuations,4340
+Service Revenue,Audit & Review Revenue,4400
+Service Revenue,Audit Services,4410
+Service Revenue,Review Services,4420
+Service Revenue,Compilation Services,4430
+Tax-Related Accounts,Federal Income Tax Expense,8000
+Tax-Related Accounts,State Income Tax Expense,8010
+Tax-Related Accounts,Estimated Tax Payments,8020
+Tax-Related Accounts,Tax Refunds Receivable,8030

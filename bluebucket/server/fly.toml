@@ -1,0 +1,32 @@
+# Fly.io deployment configuration
+# Deploy with: fly deploy
+
+app = "bluebucket-server"
+primary_region = "den"  # Denver - closest to your business
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  BUSINESS_TZ = "America/Denver"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"  # Auto-stop when idle to save resources
+  auto_start_machines = true
+  min_machines_running = 0  # Allow all machines to stop when idle
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  timeout = "5s"
+  path = "/health"
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1

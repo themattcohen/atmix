@@ -1,0 +1,15 @@
+{
+  "source": "linkedin",
+  "version": "1.0.0",
+  "last_updated": null,
+  "processed_ids": [],
+  "failed_ids": [],
+  "pending_ids": [],
+  "metadata": {
+    "export_path": null,
+    "profile_url": null,
+    "extraction_method": "manual_export",
+    "blocked": true,
+    "blocked_reason": "Requires manual data export from user"
+  }
+}

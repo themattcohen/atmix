@@ -1,0 +1,267 @@
+{
+  "extracted_at": "2026-01-27T13:23:26.768254",
+  "total_newsletters": 68,
+  "newly_extracted": 43,
+  "skipped_existing": 25,
+  "errors": 0,
+  "newsletters": [
+    {
+      "id": "newsletter_5b3d36f22dbe",
+      "subject": "The Sneaky Clause That Can Sink Your Deal",
+      "date": "2025-07-29T14:31:31.865Z",
+      "word_count": 314
+    },
+    {
+      "id": "newsletter_587eb08d7818",
+      "subject": "The Problem with \u201cPassive Income\u201d Plumbing Companies",
+      "date": "2025-07-22T14:31:23.443Z",
+      "word_count": 439
+    },
+    {
+      "id": "newsletter_0e583ac591dd",
+      "subject": "The Side Letter: Secret Weapon or Legal Landmine?",
+      "date": "2025-07-15T14:31:11.670Z",
+      "word_count": 433
+    },
+    {
+      "id": "newsletter_53fcc245d669",
+      "subject": "Thinking about firing someone post-close? Read this first.",
+      "date": "2025-07-08T14:40:49.007Z",
+      "word_count": 326
+    },
+    {
+      "id": "newsletter_40e667b0f3d3",
+      "subject": " The End of the Family Business (and What That Means for Your Deal)",
+      "date": "2025-07-01T14:32:14.638Z",
+      "word_count": 576
+    },
+    {
+      "id": "newsletter_3c53d0ca12fe",
+      "subject": "What Really Happens If You Default on an SBA Loan (and Why It\u2019s Not as Scary as You Think)",
+      "date": "2025-06-24T14:31:19.360Z",
+      "word_count": 548
+    },
+    {
+      "id": "newsletter_58f4257dd591",
+      "subject": "Why That 0% Interest Offer Could Backfire\u2014Big Time",
+      "date": "2025-06-17T14:31:16.009Z",
+      "word_count": 486
+    },
+    {
+      "id": "newsletter_56b8dfc08a97",
+      "subject": "Promissory Notes: Boring Name, Sexy Deal Tool",
+      "date": "2025-06-10T14:31:31.678Z",
+      "word_count": 446
+    },
+    {
+      "id": "newsletter_fdadec9e5e53",
+      "subject": "The #1 Reason Your LOIs Keep Getting Rejected",
+      "date": "2025-06-03T14:31:40.811Z",
+      "word_count": 390
+    },
+    {
+      "id": "newsletter_b44aa5ef0072",
+      "subject": " Want to Limit Risk? Start with This One Contract Clause.",
+      "date": "2025-05-27T14:32:12.586Z",
+      "word_count": 376
+    },
+    {
+      "id": "newsletter_d12a1a9d9ae0",
+      "subject": "Make Them an Offer They Can\u2019t Refuse ",
+      "date": "2025-05-20T16:06:56.895Z",
+      "word_count": 502
+    },
+    {
+      "id": "newsletter_458ed72f93c6",
+      "subject": "Want to make sellers run for the hills? Put this in your offer.",
+      "date": "2025-05-09T14:30:51.833Z",
+      "word_count": 444
+    },
+    {
+      "id": "newsletter_90b1277b9846",
+      "subject": " The Hidden Deal Killer You\u2019re Probably Ignoring",
+      "date": "2025-05-02T14:31:10.276Z",
+      "word_count": 451
+    },
+    {
+      "id": "newsletter_6846c399d711",
+      "subject": "The SBA Just Rolled Over on Rollover Equity",
+      "date": "2025-04-28T14:31:24.458Z",
+      "word_count": 400
+    },
+    {
+      "id": "newsletter_374765f7f848",
+      "subject": "The Hidden Culture Clues Buyers Miss (And Why They Matter)",
+      "date": "2025-04-18T14:31:10.623Z",
+      "word_count": 530
+    },
+    {
+      "id": "newsletter_cb08615f2d82",
+      "subject": "Make This Your Last Miserable Tax Season Ever",
+      "date": "2025-04-14T21:31:07.539Z",
+      "word_count": 575
+    },
+    {
+      "id": "newsletter_2c1dfca0d726",
+      "subject": "The One Due Diligence Mistake That Could Tank Your Business Acquisition",
+      "date": "2025-04-11T17:06:59.958Z",
+      "word_count": 476
+    },
+    {
+      "id": "newsletter_d502e4a15639",
+      "subject": "How to Buy a Business with $0 Down (No, Really)",
+      "date": "2025-04-04T14:31:28.757Z",
+      "word_count": 477
+    },
+    {
+      "id": "newsletter_1124ba7fac9e",
+      "subject": "How Skipping a Lawyer Cost This Buyer Big Time",
+      "date": "2025-03-28T14:32:07.210Z",
+      "word_count": 394
+    },
+    {
+      "id": "newsletter_69f486368ceb",
+      "subject": "Want to Sell Your Firm? Here\u2019s What It\u2019s Actually Worth",
+      "date": "2025-03-21T14:32:16.084Z",
+      "word_count": 543
+    },
+    {
+      "id": "newsletter_7f4b398b27a3",
+      "subject": " Make This Your Last Tax Season Ever - Start the Process of Selling Now",
+      "date": "2025-03-14T14:02:03.769Z",
+      "word_count": 658
+    },
+    {
+      "id": "newsletter_0b7b858c7479",
+      "subject": "Selling Your Business? Don\u2019t Let Diligence Exhaust You",
+      "date": "2025-03-07T15:31:26.015Z",
+      "word_count": 592
+    },
+    {
+      "id": "newsletter_1a7adcf4f9ca",
+      "subject": "The Final Act in the BOI Saga",
+      "date": "2025-03-03T17:50:28.640Z",
+      "word_count": 319
+    },
+    {
+      "id": "newsletter_55dae9558121",
+      "subject": "Good Firms vs. Good Deals \u2013 They\u2019re Not the Same (and Why That Matters)",
+      "date": "2025-02-28T15:31:40.873Z",
+      "word_count": 519
+    },
+    {
+      "id": "newsletter_d1e4687d047d",
+      "subject": "The BOI Reporting Saga Continues\u2014Here\u2019s What You Need to Know This Time",
+      "date": "2025-02-24T16:31:50.238Z",
+      "word_count": 265
+    },
+    {
+      "id": "newsletter_80e962a79144",
+      "subject": "The 7 Things You Must Check in a Purchase Agreement Before Buying an Accounting Firm",
+      "date": "2025-02-21T15:31:40.214Z",
+      "word_count": 743
+    },
+    {
+      "id": "newsletter_0bf4c3db8867",
+      "subject": "The #1 Closing Mistake That Could Wreck Your Deal (And How to Avoid It)",
+      "date": "2025-02-14T16:07:54.649Z",
+      "word_count": 614
+    },
+    {
+      "id": "newsletter_823a45a24c02",
+      "subject": "Why Your Letters of Intent Are Being Ignored",
+      "date": "2025-02-07T15:07:03.464Z",
+      "word_count": 558
+    },
+    {
+      "id": "newsletter_84fd7524b3d6",
+      "subject": "Selling Your Accounting Practice? Don\u2019t Overlook This Crucial Step",
+      "date": "2025-01-31T16:31:27.039Z",
+      "word_count": 514
+    },
+    {
+      "id": "newsletter_14e687de9514",
+      "subject": "Don\u2019t Let Red Lines Derail Your Deal",
+      "date": "2025-01-24T19:00:07.581Z",
+      "word_count": 383
+    },
+    {
+      "id": "newsletter_ec150d131fa8",
+      "subject": "What You Need to Know About Accounting Practice Deals - From the Trenches!",
+      "date": "2025-01-17T16:02:09.542Z",
+      "word_count": 420
+    },
+    {
+      "id": "newsletter_c95bef7a7c39",
+      "subject": "Is Your Non-Compete Worthless? Here's How to Fix It",
+      "date": "2024-12-27T16:03:33.103Z",
+      "word_count": 433
+    },
+    {
+      "id": "newsletter_6d72e71224e4",
+      "subject": "BOI Reporting is Back in Time for Christmas",
+      "date": "2024-12-24T17:48:34.800Z",
+      "word_count": 310
+    },
+    {
+      "id": "newsletter_f2eca0a9c6ab",
+      "subject": "One Thing You Shouldn\u2019t Skip in Your Diligence Checklist",
+      "date": "2024-12-20T16:02:44.103Z",
+      "word_count": 518
+    },
+    {
+      "id": "newsletter_7a61c49945a9",
+      "subject": " The Real Truth Behind the Buying \"Boring\" Businesses Clickbait",
+      "date": "2024-12-13T17:03:39.500Z",
+      "word_count": 713
+    },
+    {
+      "id": "newsletter_2b749739e0cd",
+      "subject": "Breaking News",
+      "date": "2024-12-04T21:59:50.642Z",
+      "word_count": 322
+    },
+    {
+      "id": "newsletter_d8857e7d4753",
+      "subject": "The Stages of a Good Deal",
+      "date": "2024-10-10T22:00:30.526Z",
+      "word_count": 899
+    },
+    {
+      "id": "newsletter_549f3d518b43",
+      "subject": "Not getting your LOIs accepted? my thoughts inside",
+      "date": "2024-08-26T18:30:21.456Z",
+      "word_count": 367
+    },
+    {
+      "id": "newsletter_42ffb594f60a",
+      "subject": "Things can be different.",
+      "date": "2024-08-16T21:05:04.898Z",
+      "word_count": 171
+    },
+    {
+      "id": "newsletter_5f68847bb93e",
+      "subject": "A quick favor, please.",
+      "date": "2024-08-09T21:00:18.559Z",
+      "word_count": 149
+    },
+    {
+      "id": "newsletter_bd2411634c05",
+      "subject": "Don't mess this up.",
+      "date": "2024-08-01T14:05:39.286Z",
+      "word_count": 528
+    },
+    {
+      "id": "newsletter_f79f5afaf406",
+      "subject": "Accounting Practice Buyout Themes This Week on Dealmakers Weekly Wine Down",
+      "date": "2024-07-03T16:01:49.130Z",
+      "word_count": 108
+    },
+    {
+      "id": "newsletter_9f82f75066b7",
+      "subject": "What does the FTC's Ban on Non-Competes Mean for My Deal?",
+      "date": "2024-04-24T17:07:59.069Z",
+      "word_count": 123
+    }
+  ]
+}

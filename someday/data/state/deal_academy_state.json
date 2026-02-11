@@ -1,0 +1,15 @@
+{
+  "source": "deal_academy",
+  "version": "1.0.0",
+  "last_updated": null,
+  "processed_ids": [],
+  "failed_ids": [],
+  "pending_ids": [],
+  "metadata": {
+    "platform": "teachable",
+    "course_ids": [],
+    "extraction_method": "api_or_scraping",
+    "blocked": true,
+    "blocked_reason": "Requires Teachable credentials from user"
+  }
+}

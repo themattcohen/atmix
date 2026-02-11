@@ -1,0 +1,15 @@
+{
+  "source": "book",
+  "version": "1.0.0",
+  "last_updated": null,
+  "processed_ids": [],
+  "failed_ids": [],
+  "pending_ids": [],
+  "metadata": {
+    "pdf_path": null,
+    "title": null,
+    "extraction_method": "pdf_extraction",
+    "blocked": true,
+    "blocked_reason": "Awaiting PDF file from user"
+  }
+}

@@ -1,0 +1,416 @@
+# Sara Sharp Knowledge Base - JSON Schemas
+# Unified document and chunk schemas for data centralization
+
+# =============================================================================
+# UNIFIED DOCUMENT SCHEMA
+# =============================================================================
+# All extracted content is normalized to this structure before storage
+
+unified_document:
+  type: object
+  required:
+    - id
+    - source
+    - source_type
+    - title
+    - content
+    - extraction
+  properties:
+    # Unique identifier (format: {source_type}_{source_id}_{hash})
+    id:
+      type: string
+      pattern: "^[a-z]+_[a-zA-Z0-9_-]+_[a-f0-9]{8}$"
+      examples:
+        - "youtube_abc123_4f5e6d7c"
+        - "blog_sks-blog-post-title_a1b2c3d4"
+        - "book_chapter-1_9e8f7a6b"
+
+    # Original source URL or path
+    source:
+      type: string
+      description: "Full URL or file path to original content"
+
+    # Content source category
+    source_type:
+      type: string
+      enum:
+        - youtube
+        - blog
+        - podcast
+        - book
+        - linkedin
+        - deal_academy
+        - media
+        - other
+
+    # Document title
+    title:
+      type: string
+      minLength: 5
+      maxLength: 500
+
+    # Content block
+    content:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: "Full extracted text content"
+        html:
+          type: string
+          description: "Original HTML if available"
+        format:
+          type: string
+          enum: [plain, markdown, html]
+          default: plain
+
+    # Source-specific metadata
+    metadata:
+      type: object
+      properties:
+        # Common fields
+        author:
+          type: string
+        publish_date:
+          type: string
+          format: date
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        language:
+          type: string
+          default: "en"
+
+        # YouTube-specific
+        youtube:
+          type: object
+          properties:
+            video_id:
+              type: string
+            channel_name:
+              type: string
+            duration_seconds:
+              type: integer
+            view_count:
+              type: integer
+            like_count:
+              type: integer
+            transcript_type:
+              type: string
+              enum: [manual, auto, whisper]
+
+        # Blog-specific
+        blog:
+          type: object
+          properties:
+            category:
+              type: string
+            reading_time_minutes:
+              type: integer
+            featured_image:
+              type: string
+
+        # Podcast-specific
+        podcast:
+          type: object
+          properties:
+            episode_number:
+              type: integer
+            season_number:
+              type: integer
+            audio_url:
+              type: string
+            duration_seconds:
+              type: integer
+            guests:
+              type: array
+              items:
+                type: string
+
+        # Book-specific
+        book:
+          type: object
+          properties:
+            book_title:
+              type: string
+            chapter_number:
+              type: integer
+            chapter_title:
+              type: string
+            page_start:
+              type: integer
+            page_end:
+              type: integer
+            isbn:
+              type: string
+
+        # LinkedIn-specific
+        linkedin:
+          type: object
+          properties:
+            post_type:
+              type: string
+              enum: [post, article, comment]
+            engagement:
+              type: object
+              properties:
+                likes:
+                  type: integer
+                comments:
+                  type: integer
+                shares:
+                  type: integer
+
+        # Deal Academy-specific
+        deal_academy:
+          type: object
+          properties:
+            course_name:
+              type: string
+            module_name:
+              type: string
+            lesson_name:
+              type: string
+            lesson_order:
+              type: integer
+
+        # Media appearance-specific
+        media:
+          type: object
+          properties:
+            publication:
+              type: string
+            article_type:
+              type: string
+              enum: [interview, quote, feature, mention]
+            journalist:
+              type: string
+
+    # Extraction metadata
+    extraction:
+      type: object
+      required:
+        - extracted_at
+        - extractor_version
+      properties:
+        extracted_at:
+          type: string
+          format: date-time
+        extractor_version:
+          type: string
+        extraction_method:
+          type: string
+        raw_content_hash:
+          type: string
+          description: "SHA-256 hash of original content for deduplication"
+        word_count:
+          type: integer
+        character_count:
+          type: integer
+
+    # Quality metrics
+    quality:
+      type: object
+      properties:
+        overall_score:
+          type: number
+          minimum: 0
+          maximum: 1
+        component_scores:
+          type: object
+          properties:
+            content_length:
+              type: number
+            completeness:
+              type: number
+            language_quality:
+              type: number
+            metadata_richness:
+              type: number
+            uniqueness:
+              type: number
+        validation_errors:
+          type: array
+          items:
+            type: string
+        validated_at:
+          type: string
+          format: date-time
+
+
+# =============================================================================
+# CHUNK SCHEMA
+# =============================================================================
+# Processed chunks ready for RAG/embedding
+
+chunk:
+  type: object
+  required:
+    - chunk_id
+    - document_id
+    - text
+    - position
+  properties:
+    # Unique chunk identifier
+    chunk_id:
+      type: string
+      pattern: "^[a-z]+_[a-zA-Z0-9_-]+_[a-f0-9]{8}_chunk_\\d{4}$"
+      examples:
+        - "youtube_abc123_4f5e6d7c_chunk_0001"
+        - "blog_post-title_a1b2c3d4_chunk_0012"
+
+    # Reference to parent document
+    document_id:
+      type: string
+
+    # Chunk text content
+    text:
+      type: string
+      minLength: 50
+      maxLength: 8000
+
+    # Position within document
+    position:
+      type: object
+      required:
+        - index
+        - total_chunks
+      properties:
+        index:
+          type: integer
+          minimum: 0
+        total_chunks:
+          type: integer
+          minimum: 1
+        start_char:
+          type: integer
+        end_char:
+          type: integer
+        start_word:
+          type: integer
+        end_word:
+          type: integer
+
+    # Inherited metadata (denormalized for retrieval)
+    context:
+      type: object
+      properties:
+        source_type:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        publish_date:
+          type: string
+        source_url:
+          type: string
+
+    # Chunk-specific metadata
+    chunk_metadata:
+      type: object
+      properties:
+        word_count:
+          type: integer
+        has_overlap:
+          type: boolean
+        overlap_words:
+          type: integer
+        section_heading:
+          type: string
+          description: "Nearest heading if detected"
+
+    # Embedding information (populated after vectorization)
+    embedding:
+      type: object
+      properties:
+        model:
+          type: string
+          examples:
+            - "text-embedding-3-small"
+            - "text-embedding-3-large"
+        dimensions:
+          type: integer
+        vector:
+          type: array
+          items:
+            type: number
+          description: "Embedding vector (stored separately in vector DB)"
+        embedded_at:
+          type: string
+          format: date-time
+
+
+# =============================================================================
+# EXTRACTION REPORT SCHEMA
+# =============================================================================
+# Summary of extraction run
+
+extraction_report:
+  type: object
+  required:
+    - report_id
+    - started_at
+    - completed_at
+    - source_type
+    - summary
+  properties:
+    report_id:
+      type: string
+    started_at:
+      type: string
+      format: date-time
+    completed_at:
+      type: string
+      format: date-time
+    source_type:
+      type: string
+    summary:
+      type: object
+      properties:
+        total_items_found:
+          type: integer
+        items_extracted:
+          type: integer
+        items_skipped:
+          type: integer
+        items_failed:
+          type: integer
+        total_word_count:
+          type: integer
+        average_quality_score:
+          type: number
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          item_id:
+            type: string
+          error_type:
+            type: string
+          error_message:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+    quality_distribution:
+      type: object
+      properties:
+        excellent:
+          type: integer
+          description: "Score >= 0.9"
+        good:
+          type: integer
+          description: "Score >= 0.75"
+        acceptable:
+          type: integer
+          description: "Score >= 0.5"
+        poor:
+          type: integer
+          description: "Score < 0.5"

@@ -1,0 +1,23 @@
+{
+  "id": "blog_fc4def561d6c",
+  "source": "skandslegal_blog",
+  "source_type": "blog_article",
+  "title": "BOI Reporting is Back in time for Christmas",
+  "content": {
+    "text": "BOI Reporting is Back in time for Christmas Dec 24 Written By Sara Sharp Just when you thought your Christmas list couldn\u2019t get any longer, FinCen steps in to help. As of December 23, 2024, the U.S. Fifth Circuit Court of Appeals in Texas Top Cop Shop, Inc. v. Garland, 5th Cir. Appeal No. 24-40792 (Dec. 23, 2024), has reversed the U.S. District Court and dissolved the preliminary injunction. Don\u2019t worry, in their generous wisdom, the powers that be have lso granted us a 12-day extension so BOI filings are now due by January 13, 2025. The Fifth Circuit's opinion is short to the point of adorableness and you can read it for yourself here . The most annoying portion of the Fifth Circuit's opinion is the discussion that the Corporate Transparency Act, which gives rise to the FINCEN BOI requirements, is very likely a constitutional exercise of Congress' powers under the Commerce Clause. Since we\u2019ve all been waiting and wondering whether this whole thing will be ultimately be found constitutional, the review of this little post-it note size opinion is revealing (okay it\u2019s 7 pages long, but that\u2019s very short for these things). Basically noting that the CTA operates to gather information to fight money laundering, the financing of terrorism, tax fraud and other crimes, this opinion indicates the US Supreme Court may in fact find that the BOI reporting is safely considered a proper exercise of the Commerce Clause powers. In short, a classic Happy Holidays from the Federal Government. Sara Sharp I am a lawyer who advises investors and businesses in their day-to-day decision-making and through corporate transactions. https://skandslegal.com/sara-sharp",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.skandslegal.com/sks-blog/2024/12/24/boi-reporting-is-back-in-time-for-christmas",
+    "author": "Sara Sharp",
+    "word_count": 272,
+    "language": "en",
+    "published_date": "2024-12-24"
+  },
+  "extraction": {
+    "extracted_at": "2026-01-26T18:24:38.599103",
+    "extractor_version": "1.0.0-migrated",
+    "quality_score": 0.64
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "newsletter_ff4e56acfd8f",
+  "source": "ghl_newsletter",
+  "source_type": "newsletter",
+  "title": "Why Your Next Deal Could Be Killed By a Data Breach",
+  "content": {
+    "text": "96\n\n Why Your Next Deal Could Be Killed By a Data Breach\nHi Sara,\nLet\u2019s talk about something way scarier than IRS audits, angry clients, or even running out of LaCroix at the office: data breaches.\nI recently sat down with my colleague Tom Codevilla, who\u2019s our in-house privacy law guru, and we got real about the mess that can follow when small businesses get too relaxed about compliance\u2014especially in the age of offshoring and automating everything.\nWhat triggered this discussion?\nIt all started with Section 7216\u2014an IRS rule that applies to tax preparers and requires explicit client consent before you share tax data with contractors. Sounds simple. It\u2019s not. The rule is specific. And it has criminal penalties. (Yes, it talks about prison time. For real.)\nBut here\u2019s the kicker: Even if 7216 doesn\u2019t apply to you, there are a whole slew of other privacy laws that might. State laws. Federal laws. International laws (hello GDPR). It\u2019s a buffet of liability.\nOffshoring? Read This Twice.\nThinking of sending work to a third-party provider in another country? You need a contract. One that protects you. One that holds them responsible if they mess up. And one that complies with your clients\u2019 privacy obligations\u2014not just your own.\nWhy This Matters for M&A\nEven if you\u2019ve skated by without an incident, here\u2019s where it catches up to you: when you try to sell. Buyers will dig into your data practices. If you\u2019ve been winging it? Expect price reductions, insurance headaches, expensive indemnification carveouts, and in worst-case scenarios, canceled deals.\nAnd if there\u2019s a data breach\u2026\nThat\u2019s when things really go off the rails:\nExpensive credit monitoring costs\n\nMandatory AG notifications\n\nDisgruntled clients (with lawyers)\n\nAnd months of distraction from actually running your business\n\nOne client lost their deal entirely after a breach. Another had to recreate years of client files from scratch. If that doesn\u2019t make your palms sweat, I don\u2019t know what will.\nSimple Steps That Save Deals\nHere\u2019s your \u201cnot getting sued\u201d starter pack:\nUse data minimization: Only share what\u2019s needed\n\nImplement least-access policies: Keep sensitive info on a need-to-know basis\n\nAudit your contractors: Regularly and in writing\n\nGet tailored cyber insurance: Generic policies don\u2019t cut it\n\nTrain your team: Social engineering scams are real, and your receptionist is a prime target\n\nThe truth is, none of this is optional anymore. Privacy is part of business. Period.\nWant to listen to the full episode with Tom? Click here to tune in.\nTo staying out of the orange jumpsuit club,\nSara Sharp\nPartner, SK&S Law Group\nFounder, Deal Academy\n\n For more helpful lessons from Deal Academy, check out our Dealmakers Youtube Channel where you'll find Sara's Weekly Wine Down, where she talks about what she's seen in the industry this week and interviews with M&A Experts and Dealmakers.\nYou can check out some recent Dealmakers YouTube videos by clicking the images below.\n\n Copyright \u00a9 2025\u00a0 Someday Consultants, All rights reserved. \n\n Our e-mail address is:\ninfo@dealacademy.org\n\n Want to change how you receive these emails?\n You can unsubscribe from this list.",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": null,
+    "author": "Sara Sharp",
+    "word_count": 508,
+    "language": "en",
+    "published_date": "2025-08-12",
+    "ghl_message_id": "f5bqQo0flPn5ipSXk4rS"
+  },
+  "extraction": {
+    "extracted_at": "2026-01-27T13:20:56.109762",
+    "extractor_version": "1.0.0",
+    "quality_score": 0.9
+  }
+}

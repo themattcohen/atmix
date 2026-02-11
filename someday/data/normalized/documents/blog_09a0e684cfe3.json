@@ -1,0 +1,23 @@
+{
+  "id": "blog_09a0e684cfe3",
+  "source": "skandslegal_blog",
+  "source_type": "blog_article",
+  "title": "Breaking Down The SaaS Master Services Agreement",
+  "content": {
+    "text": "Breaking Down The SaaS Master Services Agreement Jan 3 Written By Thomas Codevilla The first time I tackled a lengthy SaaS Master Services Agreement (MSA), it felt like reading a legal Ambien prescription\u2014dense, repetitive, and designed to knock you out cold. Over the years, I\u2019ve learned that MSAs aren\u2019t just about legalese; they\u2019re a mix of business reality, negotiation strategy, and practical risk management. Whether it\u2019s ensuring the terms match the actual services provided, carving out data privacy provisions that reflect modern regulations, or negotiating fair liability limits, every clause matters. In this post, I\u2019ll break down the key elements of SaaS MSAs into digestible chunks, showing you how to make these contracts work for your business\u2014without the drowsiness. Business Reality Does this contract reflect the reality of the services performed? In other words, is this cloud SaaS on an old hosted SaaS form? Does the form assume the customer will own the software when they\u2019re just getting a license? Do business and payment terms reflect your client\u2019s deal? Leverage How much leverage does your client have to negotiate? This will dictate whether I go full Biglaw on minutiae or just hit the biggest issues. IP Think about six buckets, three for each client and customer: pre-existing IP, IP created during the agreement, and IP after termination. The agreement should say what goes in each. Data Privacy Usually, it has its own addendum with 12 pages of language related to an outdated understanding of the CCPA or GDPR. It\u2019s important to carve out the specific uses and restrictions for the use of PII/personal data/customer data under the Agreement. Ask how much exposure your client could have in a data breach. Work directly from current regulations, not old forms, and you will amaze opposing counsel. Battle of the Forms Yeah, enormous public customer, I know you have a super detailed Statement of Work that has five levels of availability and service credits. But my client isn\u2019t IBM and doesn\u2019t have 24/7 support for their widget, so how about you talk with my client\u2019s project lead and see if you can live with our SOW/SLA, ok? Super. Limitation of Liability Confidentiality, Indemnity: 90% of the time, these are either missing or one-sided. Make them mutual (if it benefits your client), and add a supercap for sensitive issues if things get sticky. My client isn\u2019t taking on unlimited liability for a $100k software license, thank you very much. Blocking & Tackling These are the basics - defined terms, breach and cure, notice, term and termination, payment terms, entities, and signatories, all the things that make a contract actually useful and enforceable. Don\u2019t try to do this at the same time as higher-level stuff- you\u2019ll catch more if you put the contract down for a few hours minimum and re-read it with a clear head. Need assistance with this? If it feels like YOU just took an Ambien, I can help. Email Thomas Codevilla at: codevilla@skandslegal.com . Thomas Codevilla",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.skandslegal.com/sks-blog/2024/12/06/breaking-down-the-saas-master-services-agreement",
+    "author": "Thomas Codevilla",
+    "word_count": 495,
+    "language": "en",
+    "published_date": "2024-12-06"
+  },
+  "extraction": {
+    "extracted_at": "2026-01-26T18:24:39.531921",
+    "extractor_version": "1.0.0-migrated",
+    "quality_score": 0.75
+  }
+}

@@ -1,0 +1,28 @@
+# Railway Deployment - Ignore List
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Node modules
+node_modules/
+
+# Output/temp files
+output/
+*.log
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+
+# Docs (not needed for runtime)
+docs/*.zip
+
+# Large model files (downloaded at runtime)
+*.pt
+*.bin

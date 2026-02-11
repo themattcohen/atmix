@@ -1,0 +1,18 @@
+# SaraBot Railway Deployment - Minimal Dependencies
+
+# RAG Core
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.0
+numpy>=1.21.0,<2.0.0
+
+# API Server
+fastapi>=0.100.0
+uvicorn>=0.20.0
+pydantic>=2.0.0
+
+# Claude API
+anthropic>=0.18.0
+
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.28.0

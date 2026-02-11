@@ -1,0 +1,138 @@
+=================================================================================
+ANALYZER COMPLETE CODEBASE FOR INTEGRATION INTO EXITREADY
+=================================================================================
+
+This file contains the entire analyzer codebase organized for integration.
+Each file is clearly marked with separators for easy extraction.
+
+=================================================================================
+FILE: analyzer/chart_mapper.py
+=================================================================================
+import pandas as pd
+from fuzzywuzzy import fuzz
+import re
+import os
+from pathlib import Path
+
+class ChartMapper:
+    """Maps client chart of accounts to standardized accounting firm COA"""
+
+    def __init__(self):
+        # Get the project root directory
+        self.project_root = Path(__file__).parent
+        self.standard_coa = self._get_standard_coa()
+        self.df_override = self._load_overrides()
+
+    def _get_standard_coa(self):
+        path = self.project_root / "data" / "standard_coa.csv"
+        df = pd.read_csv(path)
+        df["account_name"] = df["account_name"].str.strip().str.lower()
+        return df
+
+    def _load_overrides(self):
+        path = self.project_root / "data" / "coa_user_overrides.csv"
+        if path.exists():
+            df = pd.read_csv(path)
+            df["account_name"] = df["account_name"].str.strip().str.lower()
+            df["user_mapped_account_name"] = df["user_mapped_account_name"].str.strip().str.lower()
+            return df
+        return pd.DataFrame(columns=["account_number", "account_name", "user_mapped_account_name"])
+
+    def _clean_account_name(self, name):
+        name = name.lower()
+        name = re.sub(r'[^a-z0-9\s]', '', name)
+        name = re.sub(r'\b(revenue|costs?|expenses?|expense|fees?|services?|income|other|direct|operating|nonoperating|category|account|licenses?)\b', '', name)
+        name = re.sub(r'\s+', ' ', name).strip()
+        return name
+
+    def map_to_standard(self, gl_data):
+        print("   Analyzing client chart of accounts...")
+        unique_accounts = gl_data[["account_number", "account_name"]].drop_duplicates()
+        unique_accounts["account_number"] = unique_accounts["account_number"].astype(str)
+        unique_accounts["account_name"] = unique_accounts["account_name"].astype(str)
+
+        print(f"      Found {len(unique_accounts)} unique accounts to map")
+        mapping = {}
+        unmapped_accounts = []
+
+        for _, row in unique_accounts.iterrows():
+            acct_num = row["account_number"]
+            acct_name = row["account_name"].strip()
+            acct_name_clean = acct_name.lower()
+
+            override_row = self.df_override[self.df_override["account_name"] == acct_name_clean]
+            if not override_row.empty:
+                std_name = override_row.iloc[0]["user_mapped_account_name"]
+                std_match = self.standard_coa[self.standard_coa["account_name"] == std_name]
+                if not std_match.empty:
+                    match = std_match.iloc[0]
+                    mapping[acct_num] = {
+                        "original_name": acct_name,
+                        "standard_account": match["account_number"],
+                        "standard_name": match["account_name"].title(),
+                        "category": match["category"],
+                        "confidence": 100,
+                    }
+                    continue
+
+            best_match = self._find_best_match(acct_name)
+            if best_match:
+                match = best_match
+                mapping[acct_num] = {
+                    "original_name": acct_name,
+                    "standard_account": match["account"],
+                    "standard_name": match["name"],
+                    "category": match["category"],
+                    "confidence": match["confidence"],
+                }
+            else:
+                unmapped_accounts.append({"account_number": acct_num, "account_name": acct_name})
+                mapping[acct_num] = {
+                    "original_name": acct_name,
+                    "standard_account": None,
+                    "standard_name": None,
+                    "category": "Unmapped",
+                    "confidence": 0,
+                }
+
+        mapped_count = len([m for m in mapping.values() if m["standard_account"]])
+        print(f"      Mapped {mapped_count}/{len(unique_accounts)} accounts to standard COA")
+        if unmapped_accounts:
+            print(f"WARNING  {len(unmapped_accounts)} accounts could not be mapped automatically:")
+            for acc in unmapped_accounts[:5]:
+                print(f"         * {acc['account_number']}: {acc['account_name']}")
+            if len(unmapped_accounts) > 5:
+                print(f"         * ... and {len(unmapped_accounts) - 5} more")
+            output_path = self.project_root / "output" / "unmapped_accounts.csv"
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            pd.DataFrame(unmapped_accounts).to_csv(output_path, index=False)
+            raise Exception(
+                f"\U0001f6d1 Unmapped accounts found!\n"
+                f"→ Please open the generated CSV in the 'output' directory.\n"
+                f"→ Fill in the 'user_mapped_account_name' column with a valid name from standard_coa.csv.\n"
+                f"→ Save it as data/coa_user_overrides.csv and rerun the analyzer."
+            )
+
+        return mapping
+
+    def _find_best_match(self, account_name):
+        name_clean = account_name.lower().strip()
+        best_match = None
+        best_score = 0
+
+        for _, row in self.standard_coa.iterrows():
+            fuzzy_score = fuzz.partial_ratio(name_clean, row["account_name"])
+            if fuzzy_score > best_score and fuzzy_score > 80:
+                best_score = fuzzy_score
+                best_match = {
+                    "account": row["account_number"],
+                    "name": row["account_name"].title(),
+                    "category": row["category"],
+                    "confidence": best_score,
+                }
+
+        return best_match
+
+=================================================================================
+FILE: analyzer/data_processor.py
+=================================================================================

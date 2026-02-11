@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.venv
+venv
+
+# IDE
+.vscode
+.idea
+
+# Logs and temp
+*.log
+*.tmp
+nul
+
+# Large unnecessary files
+*.mp3
+*.mp4
+*.wav
+docs/
+reports/
+.playwright-mcp/
+
+# Environment (Railway has its own)
+.env
+.env.*

@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block title %}Column Mapping - Accounting Analyzer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <h1 class="mb-4">
+            <i class="fas fa-columns"></i> Map Your Excel Columns
+        </h1>
+        
+        <!-- Instructions -->
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> Column Mapping</h5>
+            <p class="mb-0">
+                Map the columns from your Excel file to the required fields. We've detected your columns and made suggestions.
+                Please review and adjust the mappings as needed.
+            </p>
+        </div>
+
+        <!-- File Info -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-file-excel"></i> <span id="fileName">File Information</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Rows:</strong> <span id="rowCount">0</span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Columns Detected:</strong> <span id="columnCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column Mapping Form -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Required Field Mappings</h5>
+            </div>
+            <div class="card-body">
+                <form id="columnMappingForm">
+                    <div class="row">
+                        <!-- Date Column -->
+                        <div class="col-md-6 mb-3">
+                            <label for="dateColumn" class="form-label">
+                                <span class="badge bg-danger">Required</span> Date Column
+                            </label>
+                            <select class="form-select" id="dateColumn" name="date_column" required>
+                                <option value="">-- Select Date Column --</option>
+                            </select>
+                            <div class="form-text">Column containing transaction dates</div>
+                        </div>
+
+                        <!-- Amount Column -->
+                        <div class="col-md-6 mb-3">
+                            <label for="amountColumn" class="form-label">
+                                <span class="badge bg-danger">Required</span> Amount Column
+                            </label>
+                            <select class="form-select" id="amountColumn" name="amount_column" required>
+                                <option value="">-- Select Amount Column --</option>
+                            </select>
+                            <div class="form-text">
+                                Column containing transaction amounts. If you have separate debit/credit columns, 
+                                we'll handle that below.
+                            </div>
+                        </div>
+
+                        <!-- Account Name Column -->
+                        <div class="col-md-6 mb-3">
+                            <label for="accountColumn" class="form-label">
+                                <span class="badge bg-warning">Recommended</span> Account Name Column
+                            </label>
+                            <select class="form-select" id="accountColumn" name="account_column">
+                                <option value="">-- Select Account Column --</option>
+                            </select>
+                            <div class="form-text">Column containing account names for mapping</div>
+                        </div>
+
+                        <!-- Description Column -->
+                        <div class="col-md-6 mb-3">
+                            <label for="descriptionColumn" class="form-label">
+                                <span class="badge bg-info">Optional</span> Description Column
+                            </label>
+                            <select class="form-select" id="descriptionColumn" name="description_column">
+                                <option value="">-- Select Description Column --</option>
+                            </select>
+                            <div class="form-text">Column containing transaction descriptions</div>
+                        </div>
+
+                        <!-- Reference Column -->
+                        <div class="col-md-6 mb-3">
+                            <label for="referenceColumn" class="form-label">
+                                <span class="badge bg-info">Optional</span> Reference Column
+                            </label>
+                            <select class="form-select" id="referenceColumn" name="reference_column">
+                                <option value="">-- Select Reference Column --</option>
+                            </select>
+                            <div class="form-text">Column containing reference numbers or IDs</div>
+                        </div>
+                    </div>
+
+                    <!-- Debit/Credit Handling -->
+                    <div class="mt-4">
+                        <h6>Amount Handling</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="amountType" id="singleAmount" value="single" checked>
+                            <label class="form-check-label" for="singleAmount">
+                                Single Amount Column (positive/negative values)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="amountType" id="separateAmounts" value="separate">
+                            <label class="form-check-label" for="separateAmounts">
+                                Separate Debit and Credit Columns
+                            </label>
+                        </div>
+                        
+                        <!-- Separate Debit/Credit Options -->
+                        <div id="separateAmountOptions" class="mt-3" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="debitColumn" class="form-label">Debit Column</label>
+                                    <select class="form-select" id="debitColumn" name="debit_column">
+                                        <option value="">-- Select Debit Column --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="creditColumn" class="form-label">Credit Column</label>
+                                    <select class="form-select" id="creditColumn" name="credit_column">
+                                        <option value="">-- Select Credit Column --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Data Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm" id="dataPreview">
+                        <thead>
+                            <tr id="previewHeaders">
+                                <!-- Headers will be populated by JavaScript -->
+                            </tr>
+                        </thead>
+                        <tbody id="previewBody">
+                            <!-- Preview rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 d-flex justify-content-between">
+            <button class="btn btn-secondary" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-success" id="confirmMappingBtn">
+                <i class="fas fa-check"></i> Confirm Mapping & Continue
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 id="loadingMessage">Processing mapping...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    const sessionId = '{{ session_id }}';
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    let fileData = {};
+
+    // Load file data and populate form
+    async function loadFileData() {
+        try {
+            const response = await $.get(`/api/upload/column-info/${sessionId}`);
+            fileData = response;
+            
+            // Update file info
+            $('#fileName').text(fileData.filename);
+            $('#rowCount').text(fileData.row_count);
+            $('#columnCount').text(fileData.columns.length);
+            
+            // Populate column dropdowns
+            populateColumnDropdowns(fileData.columns);
+            
+            // Auto-suggest mappings
+            autoSuggestMappings(fileData.columns);
+            
+            // Show preview
+            showDataPreview(fileData.preview_data, fileData.columns);
+            
+        } catch (error) {
+            console.error('Failed to load file data:', error);
+            accountingAnalyzer.showToast('Failed to load file data', 'danger');
+        }
+    }
+
+    // Populate all column dropdown options
+    function populateColumnDropdowns(columns) {
+        const dropdowns = ['dateColumn', 'amountColumn', 'accountColumn', 'descriptionColumn', 'referenceColumn', 'debitColumn', 'creditColumn'];
+        
+        dropdowns.forEach(dropdownId => {
+            const select = $(`#${dropdownId}`);
+            select.empty().append('<option value="">-- Select Column --</option>');
+            
+            columns.forEach(column => {
+                select.append(`<option value="${column}">${column}</option>`);
+            });
+        });
+    }
+
+    // Auto-suggest mappings based on column names
+    function autoSuggestMappings(columns) {
+        const suggestions = {
+            date: ['date', 'transaction_date', 'trans_date', 'posting_date'],
+            amount: ['amount', 'total', 'net_amount'],
+            account: ['account', 'account_name', 'account_number', 'gl_account'],
+            description: ['description', 'memo', 'narration', 'details'],
+            reference: ['reference', 'ref', 'reference_number', 'transaction_id'],
+            debit: ['debit', 'debit_amount', 'dr'],
+            credit: ['credit', 'credit_amount', 'cr']
+        };
+
+        // Auto-select best matches
+        Object.keys(suggestions).forEach(field => {
+            const fieldColumn = field === 'account' ? 'accountColumn' : 
+                               field === 'description' ? 'descriptionColumn' :
+                               field === 'reference' ? 'referenceColumn' :
+                               field + 'Column';
+            
+            const bestMatch = findBestMatch(columns, suggestions[field]);
+            if (bestMatch) {
+                $(`#${fieldColumn}`).val(bestMatch);
+            }
+        });
+
+        // Check if we have separate debit/credit columns
+        const hasDebit = findBestMatch(columns, suggestions.debit);
+        const hasCredit = findBestMatch(columns, suggestions.credit);
+        
+        if (hasDebit && hasCredit) {
+            $('#separateAmounts').prop('checked', true);
+            $('#separateAmountOptions').show();
+            $('#debitColumn').val(hasDebit);
+            $('#creditColumn').val(hasCredit);
+            $('#amountColumn').val(''); // Clear single amount
+        }
+    }
+
+    // Find best column name match
+    function findBestMatch(columns, keywords) {
+        for (let keyword of keywords) {
+            const match = columns.find(col => col.toLowerCase().includes(keyword.toLowerCase()));
+            if (match) return match;
+        }
+        return null;
+    }
+
+    // Show data preview
+    function showDataPreview(previewData, columns) {
+        const headerRow = $('#previewHeaders');
+        const bodyContainer = $('#previewBody');
+        
+        // Clear existing content
+        headerRow.empty();
+        bodyContainer.empty();
+        
+        // Add headers
+        columns.forEach(column => {
+            headerRow.append(`<th>${column}</th>`);
+        });
+        
+        // Add preview rows (first 5 rows)
+        previewData.slice(0, 5).forEach(row => {
+            const rowHtml = columns.map(column => `<td>${row[column] || ''}</td>`).join('');
+            bodyContainer.append(`<tr>${rowHtml}</tr>`);
+        });
+    }
+
+    // Handle amount type radio button change
+    $('input[name="amountType"]').change(function() {
+        if ($(this).val() === 'separate') {
+            $('#separateAmountOptions').show();
+            $('#amountColumn').val('').prop('required', false);
+            $('#debitColumn, #creditColumn').prop('required', true);
+        } else {
+            $('#separateAmountOptions').hide();
+            $('#amountColumn').prop('required', true);
+            $('#debitColumn, #creditColumn').val('').prop('required', false);
+        }
+    });
+
+    // Confirm mapping
+    $('#confirmMappingBtn').on('click', async function() {
+        const formData = new FormData($('#columnMappingForm')[0]);
+        const mapping = {};
+        
+        // Collect form data
+        for (let [key, value] of formData.entries()) {
+            if (value) mapping[key] = value;
+        }
+        
+        // Validate required fields
+        const amountType = $('input[name="amountType"]:checked').val();
+        if (!mapping.date_column) {
+            accountingAnalyzer.showToast('Please select a date column', 'warning');
+            return;
+        }
+        
+        if (amountType === 'single' && !mapping.amount_column) {
+            accountingAnalyzer.showToast('Please select an amount column', 'warning');
+            return;
+        }
+        
+        if (amountType === 'separate' && (!mapping.debit_column || !mapping.credit_column)) {
+            accountingAnalyzer.showToast('Please select both debit and credit columns', 'warning');
+            return;
+        }
+
+        try {
+            loadingModal.show();
+            $('#loadingMessage').text('Applying column mapping...');
+            
+            const response = await $.ajax({
+                url: `/api/upload/apply-mapping/${sessionId}`,
+                type: 'POST',
+                data: JSON.stringify({
+                    column_mapping: mapping,
+                    amount_type: amountType
+                }),
+                contentType: 'application/json'
+            });
+            
+            if (response.success) {
+                accountingAnalyzer.showToast('Column mapping applied successfully', 'success');
+                // Redirect to mapping page
+                setTimeout(() => {
+                    window.location.href = `/mapping/${sessionId}`;
+                }, 1000);
+            }
+            
+        } catch (error) {
+            console.error('Failed to apply mapping:', error);
+            accountingAnalyzer.showToast('Failed to apply column mapping', 'danger');
+            loadingModal.hide();
+        }
+    });
+
+    // Initialize
+    loadFileData();
+});
+</script>
+{% endblock %}

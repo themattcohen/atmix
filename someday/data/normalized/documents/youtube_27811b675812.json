@@ -1,0 +1,42 @@
+{
+  "id": "youtube_27811b675812",
+  "source": "youtube",
+  "source_type": "video_transcript",
+  "title": "Why \"Survival\" is VITAL to your business deal",
+  "content": {
+    "text": "Survival. Survival of the fittest. Survival is a really epic term to be associated with what is just a standard very boring legally used snippet in a contract. But it's very important. I was the name indicates survival may be one of the more important terms in the contract or things that you're looking at in your life. So if you want to understand it, this is the video for you buckle up. My name is Sarah Sharp. I'm a deal attorney who helps people buy and sell businesses every single day. I also am the founder of dealacademy.org. Check it out. It's got videos for and courses for how to become kind of the expert on your deal and all the aspects of the deal process. If you are so deep in the deal process that you're looking at the contractual term of survival, you're probably at the point of a purchase agreement. And you may wonder whether or not it's significant or how to negotiate it. I'll tell you what I normally see. First of all, I often see no mention of the contractual term of survival in a purchase agreement. And that is as the great for the buyer. I'm bad for the seller. So whichever one you are, take that position to heart. So if you're the seller, you do not want your representations and warranties that you're making in your contract to be infinite. Absent something to the contrary, like a survival period that says these reps and warranties only survive for X amount of time. Absent that you are making somewhat infinite representations. They're still probably going to be limited by the statute of limitations for breach of contract that applies in your jurisdiction. So you know, they're not infinite infinite, but they're going to be a lot longer. And the way statute of limitations works is there's different. Those are when you can't bring a claim anymore. And the statute of limitations for each different type of claim can be different. So what really winds up happening is you have this bundle of a contractual claim that you could sue somebody for or torts or whatever. And as time moves on, things start falling off. So you might have, if you were at the third year, then you did it the six month mark. And you might have none left at the seventh year versus, you know, at the third year. So you kind of, you have to view it as a bundle where you're dropping bundles of sticks as you go along. And it's always going to be better as the buyer to make your claim sooner because that just ensures that you have more claims to make more breach of contract type claims more torts that you can leverage in a lawsuit. So that is survival. And a nutshell is artificially limiting that and saying, okay, well, the representations warranties, we're not going to make them survive for this, you know, nebulous, stachial notations that then we'll have to argue applies or doesn't apply. Instead, we're going to all contractually agree that these reps only survive for 24 months, 12 months, six months, 18 months. I've seen all of those 36 months. Some period of time. And what that means as the buyer is you've got to definitely take a look at that. If I'm a buyer and I know that I might have a breach of contract claim where I'm anticipating, I want to keep myself available and keep those claims available to be made as long as possible, I'm going to want at least probably a year and a couple of months to be able to bring a claim. Because a lot of times you haven't really seen the whole business until you've done an entire annual cycle. So if you've done an entire year of running the business, at that point, you've probably interacted with each vendor. You've probably interacted with each client or customer if they have ongoing customer bases. So if that's a case, theoretically, you're the most likely at that point to have determined something that wouldn't bleed you to believe there was a breach of contract. So at the 12 month mark, you might have figured it out. You're not going to be able to get it together to file a lawsuit within 12 months, most likely. So usually, I'm going to want at least 18 months if I'm the buyer because I want to have had a year to uncover a breach of contract or a breach of representation or just the outright lie. I'm going to want a year and I'm going to want some time to be able to figure out what I'm going to do about it. I are a lawyer, maybe negotiate something and you know, realize you're not going to be able to settle it. So I would prefer 18 months. I'm the seller for the same exact reason. I'm going to want 12 months because I don't want them to have the time to get it together to suit. Usually survival is for that kind of article three and article four representations and warranties. Typically, it does not apply to the covenants because they have their own little timeline that they exist on. You know, if you're making a non-compete, you won't compete for five years from closing, that's the timeline. But it says reps and warranties, which should be pretty robust on the seller's behalf and they don't want to have unlimited infinite liability for those. So it's a reasonable term. From both sides, you need to consider what timeline would make actual sense for you and you want to make sure that if your contract doesn't say anything about that, that in your the seller, you probably want to like start discussions on limiting survival. If it doesn't say anything about that at all and you're the buyer and there's no issue, that might be fine for you. So that's how you navigate survival in a purchase agreement. And if you found this valuable at all, please like and subscribe, check out dealacademy.org and send it to your friends and family, do whatever engage with the content. Thank you very much.",
+    "summary": null,
+    "key_topics": []
+  },
+  "metadata": {
+    "url": "https://www.youtube.com/watch?v=_9d6IJgTOS8",
+    "author": "Sara Sharp's Dealmakers",
+    "published_date": "2025-08-05",
+    "duration_seconds": 304,
+    "word_count": 1046,
+    "language": "en",
+    "source_specific": {
+      "video_id": "_9d6IJgTOS8",
+      "channel_id": "UCnLI19Jb9TJ88WuMKUJZRiw",
+      "duration_seconds": 304,
+      "view_count": 46,
+      "like_count": 1,
+      "caption_type": "whisper",
+      "caption_language": "en",
+      "playlist_id": null,
+      "playlist_position": null
+    }
+  },
+  "extraction": {
+    "extracted_at": "2026-01-27T02:05:38.556361+00:00",
+    "extractor_version": "1.0.0",
+    "raw_file_path": "data/raw/youtube/transcripts/yt__9d6IJgTOS8.json",
+    "quality_score": 0.783
+  },
+  "rag": {
+    "chunk_count": 0,
+    "chunk_ids": [],
+    "embedding_model": null,
+    "last_embedded_at": null
+  }
+}

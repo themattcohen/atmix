@@ -1,0 +1,46 @@
+{
+  "last_updated": "2026-01-27T02:06:06.763277+00:00",
+  "pipeline_version": "1.0.0",
+  "summary": {
+    "total_documents": 83,
+    "total_chunks": 489,
+    "sources": {
+      "youtube": {
+        "raw_files": 63,
+        "normalized_documents": 63,
+        "chunks": 469
+      },
+      "blog": {
+        "raw_files": 21,
+        "normalized_documents": 20,
+        "chunks": 20
+      }
+    }
+  },
+  "processing_history": [
+    {
+      "timestamp": "2026-01-27T02:06:06.763526+00:00",
+      "operation": "normalize_youtube",
+      "input_count": 63,
+      "output_count": 63,
+      "errors": 0
+    },
+    {
+      "timestamp": "2026-01-27T02:06:06.763532+00:00",
+      "operation": "chunk_all",
+      "input_count": 83,
+      "output_count": 489,
+      "errors": 0
+    }
+  ],
+  "quality_metrics": {
+    "avg_words_per_chunk": null,
+    "documents_with_quality_score": 83
+  },
+  "chunk_config": {
+    "chunk_size": 800,
+    "overlap": 150,
+    "context_chars": 200,
+    "min_chunk_size": 50
+  }
+}

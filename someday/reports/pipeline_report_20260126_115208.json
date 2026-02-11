@@ -1,0 +1,77 @@
+{
+  "summary": {
+    "started_at": "2026-01-26T18:52:08.365259+00:00",
+    "completed_at": "2026-01-26T18:52:08.375890+00:00",
+    "total_duration_seconds": 0.01,
+    "overall_success": true,
+    "stages_completed": 4,
+    "stages_failed": 0
+  },
+  "stages": [
+    {
+      "stage": "extract",
+      "success": true,
+      "started_at": "2026-01-26T18:52:08.366089+00:00",
+      "completed_at": "2026-01-26T18:52:08.366197+00:00",
+      "duration_seconds": 0.0,
+      "items_processed": 0,
+      "items_failed": 0,
+      "errors": [],
+      "details": {
+        "dry_run": true
+      }
+    },
+    {
+      "stage": "normalize",
+      "success": true,
+      "started_at": "2026-01-26T18:52:08.371128+00:00",
+      "completed_at": "2026-01-26T18:52:08.371262+00:00",
+      "duration_seconds": 0.0,
+      "items_processed": 0,
+      "items_failed": 0,
+      "errors": [],
+      "details": {
+        "dry_run": true
+      }
+    },
+    {
+      "stage": "chunk",
+      "success": true,
+      "started_at": "2026-01-26T18:52:08.372004+00:00",
+      "completed_at": "2026-01-26T18:52:08.372126+00:00",
+      "duration_seconds": 0.0,
+      "items_processed": 0,
+      "items_failed": 0,
+      "errors": [],
+      "details": {
+        "dry_run": true
+      }
+    },
+    {
+      "stage": "validate",
+      "success": true,
+      "started_at": "2026-01-26T18:52:08.374771+00:00",
+      "completed_at": "2026-01-26T18:52:08.374848+00:00",
+      "duration_seconds": 0.0,
+      "items_processed": 0,
+      "items_failed": 0,
+      "errors": [],
+      "details": {
+        "dry_run": true
+      }
+    }
+  ],
+  "config_used": {
+    "stage": "all",
+    "sources": [
+      "youtube",
+      "blog",
+      "podcast",
+      "media"
+    ],
+    "skip_blocked": true,
+    "parallel": false,
+    "dry_run": true
+  },
+  "checkpoint": null
+}

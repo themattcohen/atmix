@@ -1,0 +1,29 @@
+# Central thresholds for all phases.
+# Edit the numbers to tune sensitivity; no code changes required.
+# ---------------------------------------------------------------------
+phase1:
+  revenue_concentration_warning: 0.30   # 30 % of revenue in top‑1 client
+  revenue_concentration_critical: 0.50
+
+phase2:
+  collection_days_warning: 50
+  collection_days_critical: 75
+
+phase3:
+  over_60_pct_warning: 0.25
+  over_60_pct_critical: 0.40
+
+phase4:
+  opex_growth_warning_pct: 0.20   # >20 % MoM growth in OpEx
+
+phase5:
+  round_dollar_threshold: 0.95    # ≥95 % of JE values are round numbers
+  duplicate_txn_seconds: 2        # same amount/desc within 2 s
+
+# Churn analysis thresholds
+churn:
+  logo_churn_warn: 0.05   # 5 %
+  logo_churn_crit: 0.10   # 10 %
+  mrr_churn_warn:  0.04
+  mrr_churn_crit:  0.08
+  seasonality_ratio: 0.80   # ≥80 % of revenue occurs in the same 6 months YoY

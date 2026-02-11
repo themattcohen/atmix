@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYDG Acquisition - Phased Buy-In Structure</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin: 50px 0 25px 0;
+            color: #fff;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+            color: #00d9ff;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 0 10px 0;
+            color: #a78bfa;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #8892b0;
+            margin-bottom: 5px;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            color: #5a6a8a;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #c8d0e0;
+        }
+
+        .critical-box {
+            background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+            border-left: 4px solid #ef4444;
+            padding: 25px 30px;
+            margin: 25px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border-left: 4px solid #00d9ff;
+            padding: 25px 30px;
+            margin: 25px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .highlight-box.green {
+            border-left-color: #4ade80;
+        }
+
+        .highlight-box.purple {
+            border-left-color: #a78bfa;
+        }
+
+        .highlight-box.yellow {
+            border-left-color: #fbbf24;
+        }
+
+        .highlight-box h4 {
+            margin-top: 0;
+            color: inherit;
+        }
+
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .phase-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .phase-card.phase-1 {
+            border-left: 4px solid #4ade80;
+        }
+
+        .phase-card.phase-2 {
+            border-left: 4px solid #fbbf24;
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .phase-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .phase-1 .phase-title { color: #4ade80; }
+        .phase-2 .phase-title { color: #fbbf24; }
+
+        .phase-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .mechanic-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .mechanic-card .how-it-works {
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .mechanic-card .net-impact {
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .mechanic-card .example {
+            background: rgba(167, 139, 250, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8892b0;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .option-card.recommended {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.05);
+        }
+
+        .option-card.recommended::before {
+            content: 'BEST VALUE';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .option-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .option-name {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .option-a .option-name { color: #f87171; }
+        .option-b .option-name { color: #fbbf24; }
+        .option-c .option-name { color: #4ade80; }
+
+        .headline-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .option-a .headline-price { color: #f87171; }
+        .option-b .headline-price { color: #fbbf24; }
+        .option-c .headline-price { color: #4ade80; }
+
+        .ev-note {
+            font-size: 0.8rem;
+            color: #8892b0;
+            margin-top: 5px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-row.section-header {
+            background: rgba(255,255,255,0.03);
+            margin: 10px -10px;
+            padding: 8px 10px;
+            border-radius: 4px;
+        }
+
+        .metric-label {
+            color: #8892b0;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .metric-value.deductible {
+            color: #a78bfa;
+        }
+
+        .metric-value.highlight {
+            color: #4ade80;
+            font-size: 1.1rem;
+        }
+
+        .summary-box {
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .summary-box .big-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .summary-box .label {
+            color: #4ade80;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8892b0;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        th:not(:first-child), td:not(:first-child) {
+            text-align: right;
+        }
+
+        td {
+            color: #c8d0e0;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .row-header {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .row-indent {
+            padding-left: 30px;
+            color: #8892b0;
+        }
+
+        .row-total {
+            background: rgba(74, 222, 128, 0.08);
+            font-weight: 600;
+        }
+
+        .row-total td {
+            color: #4ade80;
+        }
+
+        .row-deductible {
+            background: rgba(167, 139, 250, 0.05);
+        }
+
+        .row-deductible td {
+            color: #a78bfa;
+        }
+
+        .row-phase {
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .col-a { color: #f87171 !important; }
+        .col-b { color: #fbbf24 !important; }
+        .col-c { color: #4ade80 !important; font-weight: 600; }
+
+        .formula {
+            font-family: 'Monaco', 'Consolas', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .formula .comment {
+            color: #6b7280;
+        }
+
+        .formula .number {
+            color: #4ade80;
+        }
+
+        .formula .operator {
+            color: #f87171;
+        }
+
+        .formula .result {
+            color: #00d9ff;
+            font-weight: 600;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        .timeline-item {
+            text-align: center;
+            padding: 10px;
+            min-width: 120px;
+        }
+
+        .timeline-item.active {
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 8px;
+        }
+
+        .timeline-year {
+            font-weight: 600;
+            color: #00d9ff;
+            font-size: 0.9rem;
+        }
+
+        .timeline-event {
+            font-size: 0.8rem;
+            color: #8892b0;
+            margin-top: 5px;
+        }
+
+        .timeline-amount {
+            font-weight: 600;
+            color: #4ade80;
+            margin-top: 5px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .comparison-box h4 {
+            margin-top: 0;
+        }
+
+        .icon-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .chart-wrapper {
+            height: 350px;
+            position: relative;
+        }
+
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            columns: 2;
+        }
+
+        .toc li {
+            padding: 8px 0;
+        }
+
+        .toc a {
+            color: #8892b0;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: #00d9ff;
+        }
+
+        .bottom-line {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(0, 217, 255, 0.1) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            margin-top: 50px;
+        }
+
+        .bottom-line h3 {
+            margin-top: 0;
+            color: #fff;
+        }
+
+        .bottom-line .highlight-stat {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: rgba(74, 222, 128, 0.2);
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #5a6a8a;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .options-grid, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            .toc ul {
+                columns: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NYDG Acquisition Analysis</h1>
+            <p class="subtitle">Phased Buy-In Structure with Tax Optimization</p>
+            <p class="date">January 28, 2026 | Confidential - Internal Use Only</p>
+        </header>
+
+        <div class="critical-box">
+            <h4 style="color: #fca5a5; margin-top: 0;">Key Structure: Phased Acquisition (Not 100% Upfront)</h4>
+            <p style="color: #fecaca;">
+                This is a <strong>phased buy-in</strong>, not a single purchase. Belkin acquires 40% initially,
+                with call options to purchase additional tranches over 6-10 years.
+            </p>
+            <p style="color: #fecaca; margin-bottom: 0;">
+                <strong>Phase 1:</strong> 40% ownership at closing | <strong>Phase 2:</strong> Call options for remaining 60% over Years 3-10
+            </p>
+        </div>
+
+        <div class="highlight-box">
+            <h4>The Core Strategy</h4>
+            <p>
+                Dr. Colbert cares about the <strong>headline enterprise value</strong> - the number he can say his practice sold for.
+                We care about the <strong>after-tax present value</strong> - what we actually pay in today's dollars after tax benefits.
+            </p>
+            <p style="margin-bottom: 0;">
+                By structuring with phased acquisitions, tax-deductible payments, extended timelines, and 0% interest periods,
+                we can offer a $10M headline while paying an effective ~$5-6M after-tax. <strong>That's 50-60 cents on the dollar.</strong>
+            </p>
+        </div>
+
+        <div class="toc">
+            <h3>Contents</h3>
+            <ul>
+                <li><a href="#structure">1. The Phased Structure Explained</a></li>
+                <li><a href="#options">2. Three Options Overview</a></li>
+                <li><a href="#mechanics">3. Deal Mechanics & Tax Optimization</a></li>
+                <li><a href="#optionc">4. Option C Deep Dive</a></li>
+                <li><a href="#pv">5. Present Value Calculations</a></li>
+                <li><a href="#cashflow">6. Complete Cash Flow Timeline</a></li>
+                <li><a href="#comparison">7. Side-by-Side Comparison</a></li>
+                <li><a href="#recommendation">8. Recommendation</a></li>
+            </ul>
+        </div>
+
+        <!-- SECTION 1: STRUCTURE EXPLAINED -->
+        <h2 id="structure">1. The Phased Structure Explained</h2>
+
+        <p>
+            Following the model in the existing LOI, this is a <strong>management buyout (MBO)</strong> where Belkin acquires
+            ownership in phases, not all at once. This is critical for understanding the true economics.
+        </p>
+
+        <div class="phase-card phase-1">
+            <div class="phase-header">
+                <div>
+                    <div class="phase-title">Phase 1: Initial 40% Purchase</div>
+                    <div style="color: #8892b0; font-size: 0.9rem;">At Closing</div>
+                </div>
+                <div class="phase-amount">40% Ownership</div>
+            </div>
+
+            <p>Belkin acquires 40% of the practice at closing through:</p>
+            <ul style="margin-left: 20px; color: #c8d0e0;">
+                <li><strong>Down Payment:</strong> 10% of the 40% purchase price (cash at closing)</li>
+                <li><strong>Seller Note:</strong> 90% financed over 7-10 years</li>
+                <li><strong>0% Interest Period:</strong> First 3-5 years</li>
+                <li><strong>Balloon Payment:</strong> Remaining principal at end of note term</li>
+            </ul>
+
+            <p style="margin-top: 15px; margin-bottom: 0;">
+                <strong>Example (Option C at $10M valuation):</strong> 40% = $4,000,000 purchase price.
+                Down payment of $400,000, seller note of $3,600,000.
+            </p>
+        </div>
+
+        <div class="phase-card phase-2">
+            <div class="phase-header">
+                <div>
+                    <div class="phase-title">Phase 2: Path to 100% Ownership</div>
+                    <div style="color: #8892b0; font-size: 0.9rem;">Years 3-10+</div>
+                </div>
+                <div class="phase-amount">+60% via Call Options</div>
+            </div>
+
+            <p>Belkin has <strong>call options</strong> (right but not obligation) to acquire additional tranches at the <strong>original enterprise valuation</strong>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Option Window</th>
+                        <th>Tranche</th>
+                        <th>Cumulative</th>
+                        <th>Terms</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Years 3-4</td>
+                        <td>10%</td>
+                        <td>50%</td>
+                        <td>Same structure as Phase 1</td>
+                    </tr>
+                    <tr>
+                        <td>Years 5-6</td>
+                        <td>10%</td>
+                        <td>60%</td>
+                        <td>Same structure</td>
+                    </tr>
+                    <tr>
+                        <td>Years 7-8</td>
+                        <td>20%</td>
+                        <td>80%</td>
+                        <td>Same structure</td>
+                    </tr>
+                    <tr>
+                        <td>Year 10 / Retirement</td>
+                        <td>Final 20%</td>
+                        <td>100%</td>
+                        <td>Mandatory buyout</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 15px; margin-bottom: 0;">
+                <strong>Key Benefit:</strong> The valuation is LOCKED at the original enterprise value. If the practice grows,
+                Belkin captures 100% of the upside on future tranches.
+            </p>
+        </div>
+
+        <h3>Tax-Deductible Overlay Payments</h3>
+
+        <p>
+            In addition to the equity purchase, we structure tax-deductible payments that run <strong>alongside</strong> the phased acquisition.
+            These are NOT part of the equity purchase - they're separate service agreements:
+        </p>
+
+        <div class="comparison-grid">
+            <div class="comparison-box">
+                <h4 style="color: #a78bfa;">Consulting Fees</h4>
+                <p><strong>$100K-$150K/year for 5-6 years</strong></p>
+                <p>For advisory services, patient introductions, strategic guidance. 100% deductible to the practice in year paid.</p>
+            </div>
+            <div class="comparison-box">
+                <h4 style="color: #60a5fa;">Non-Compete Payment</h4>
+                <p><strong>$100K-$150K/year for 5 years</strong></p>
+                <p>For agreeing not to practice within 10 miles. Amortized over 15 years (Section 197).</p>
+            </div>
+            <div class="comparison-box">
+                <h4 style="color: #34d399;">Transition Services</h4>
+                <p><strong>$100K-$150K/year for 3-5 years</strong></p>
+                <p>For patient handoffs, staff training, knowledge transfer. 100% deductible in year paid.</p>
+            </div>
+            <div class="comparison-box">
+                <h4 style="color: #fbbf24;">Why This Matters</h4>
+                <p><strong>Tax savings of 40%</strong></p>
+                <p>$2.4M in deductible payments = ~$960K tax savings. Colbert receives the full amount; Belkin's net cost is 60%.</p>
+            </div>
+        </div>
+
+        <!-- SECTION 2: THREE OPTIONS -->
+        <h2 id="options">2. Three Options Overview</h2>
+
+        <div class="options-grid">
+            <!-- Option A -->
+            <div class="option-card option-a">
+                <div class="option-header">
+                    <div class="option-name">Option A: Aggressive</div>
+                    <div class="headline-price">$6.5M</div>
+                    <div class="ev-note">Enterprise Value</div>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #4ade80;">PHASE 1: 40% Purchase</span>
+                    <span class="metric-value">$2,600,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Down Payment (10%)</span>
+                    <span class="metric-value">$260,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Seller Note</span>
+                    <span class="metric-value">$2,340,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Note Term / 0% Period</span>
+                    <span class="metric-value">10yr / 5yr</span>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #fbbf24;">PHASE 2: Remaining 60%</span>
+                    <span class="metric-value">$3,900,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Paid over</span>
+                    <span class="metric-value">Years 4-12</span>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #a78bfa;">TAX-DEDUCTIBLE</span>
+                    <span class="metric-value deductible">$1,100,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Consulting</span>
+                    <span class="metric-value deductible">$400,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Non-Compete</span>
+                    <span class="metric-value deductible">$350,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Transition Services</span>
+                    <span class="metric-value deductible">$350,000</span>
+                </div>
+
+                <div class="summary-box" style="background: rgba(248, 113, 113, 0.1);">
+                    <span class="label" style="color: #f87171;">Total After-Tax PV</span>
+                    <div class="big-number" style="color: #f87171;">~$4.2M</div>
+                    <span class="label" style="color: #f87171;">$0.64 per $1 headline</span>
+                </div>
+            </div>
+
+            <!-- Option B -->
+            <div class="option-card option-b">
+                <div class="option-header">
+                    <div class="option-name">Option B: Balanced</div>
+                    <div class="headline-price">$8.0M</div>
+                    <div class="ev-note">Enterprise Value (Current LOI)</div>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #4ade80;">PHASE 1: 40% Purchase</span>
+                    <span class="metric-value">$3,200,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Down Payment (10%)</span>
+                    <span class="metric-value">$320,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Seller Note</span>
+                    <span class="metric-value">$2,880,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Note Term / 0% Period</span>
+                    <span class="metric-value">7yr / 3yr</span>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #fbbf24;">PHASE 2: Remaining 60%</span>
+                    <span class="metric-value">$4,800,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Paid over</span>
+                    <span class="metric-value">Years 3-10</span>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #a78bfa;">TAX-DEDUCTIBLE</span>
+                    <span class="metric-value deductible">$1,600,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Consulting</span>
+                    <span class="metric-value deductible">$600,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Non-Compete</span>
+                    <span class="metric-value deductible">$500,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Transition Services</span>
+                    <span class="metric-value deductible">$500,000</span>
+                </div>
+
+                <div class="summary-box" style="background: rgba(251, 191, 36, 0.1);">
+                    <span class="label" style="color: #fbbf24;">Total After-Tax PV</span>
+                    <div class="big-number" style="color: #fbbf24;">~$5.3M</div>
+                    <span class="label" style="color: #fbbf24;">$0.66 per $1 headline</span>
+                </div>
+            </div>
+
+            <!-- Option C -->
+            <div class="option-card option-c recommended">
+                <div class="option-header">
+                    <div class="option-name">Option C: Premium</div>
+                    <div class="headline-price">$10.0M</div>
+                    <div class="ev-note">Enterprise Value</div>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #4ade80;">PHASE 1: 40% Purchase</span>
+                    <span class="metric-value">$4,000,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Down Payment (10%)</span>
+                    <span class="metric-value">$400,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Seller Note</span>
+                    <span class="metric-value">$3,600,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Note Term / 0% Period</span>
+                    <span class="metric-value highlight">10yr / 5yr</span>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #fbbf24;">PHASE 2: Remaining 60%</span>
+                    <span class="metric-value">$6,000,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Paid over</span>
+                    <span class="metric-value">Years 4-12</span>
+                </div>
+
+                <div class="metric-row section-header">
+                    <span class="metric-label" style="color: #a78bfa;">TAX-DEDUCTIBLE</span>
+                    <span class="metric-value deductible">$2,150,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Consulting</span>
+                    <span class="metric-value deductible">$750,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Non-Compete</span>
+                    <span class="metric-value deductible">$700,000</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Transition Services</span>
+                    <span class="metric-value deductible">$700,000</span>
+                </div>
+
+                <div class="summary-box">
+                    <span class="label">Total After-Tax PV</span>
+                    <div class="big-number">~$6.1M</div>
+                    <span class="label">$0.61 per $1 headline</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: MECHANICS -->
+        <h2 id="mechanics">3. Deal Mechanics & Tax Optimization</h2>
+
+        <p>Six mechanisms work together to reduce the true cost while maximizing Colbert's headline number:</p>
+
+        <!-- Mechanic 1 -->
+        <div class="mechanic-card">
+            <div class="icon-row">
+                <span class="icon">📊</span>
+                <h3 style="margin: 0;">Mechanic #1: Phased Acquisition (40% Now, 60% Later)</h3>
+            </div>
+
+            <div class="how-it-works">
+                <span class="label">How It Works</span>
+                <p style="margin-bottom: 0;">
+                    Instead of buying 100% at closing, Belkin acquires 40% initially. The remaining 60% is purchased via call options
+                    over the next 6-10 years at the <strong>original valuation</strong>. Each subsequent tranche has its own seller note.
+                </p>
+            </div>
+
+            <div class="example">
+                <span class="label">Example: Option C ($10M Enterprise Value)</span>
+                Phase 1 (Closing): 40% = <span class="number">$4,000,000</span><br>
+                Year 4-5: +10% = <span class="number">$1,000,000</span><br>
+                Year 6-7: +10% = <span class="number">$1,000,000</span><br>
+                Year 8-9: +20% = <span class="number">$2,000,000</span><br>
+                Year 10+: +20% = <span class="number">$2,000,000</span><br>
+                <span class="comment">// Total: $10,000,000 but paid over 12+ years</span>
+            </div>
+
+            <div class="net-impact">
+                <span class="label">Net Impact</span>
+                <p style="margin-bottom: 0;">
+                    <strong>Time value of money:</strong> $2M paid in Year 10 is worth only ~$926K in today's dollars (at 8% discount).
+                    The later the payment, the lower the present value cost to Belkin.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mechanic 2 -->
+        <div class="mechanic-card">
+            <div class="icon-row">
+                <span class="icon">💼</span>
+                <h3 style="margin: 0;">Mechanic #2: Tax-Deductible Consulting Fees</h3>
+            </div>
+
+            <div class="how-it-works">
+                <span class="label">How It Works</span>
+                <p style="margin-bottom: 0;">
+                    Colbert provides advisory services during transition - patient introductions, strategic guidance, brand management.
+                    <strong>For Belkin:</strong> 100% deductible business expense in year paid.
+                    <strong>For Colbert:</strong> Ordinary income (higher tax rate than capital gains, but spread over years).
+                </p>
+            </div>
+
+            <div class="example">
+                <span class="label">Example: Option C Consulting</span>
+                Consulting: $125,000/year x 6 years = <span class="number">$750,000</span><br>
+                Tax savings @ 40%: $750,000 x 0.40 = <span class="number">$300,000</span><br>
+                <span class="result">Effective cost to Belkin: $450,000 (60%)</span>
+            </div>
+
+            <div class="net-impact">
+                <span class="label">Net Impact</span>
+                <p style="margin-bottom: 0;">
+                    Colbert receives $750K. Belkin's after-tax cost is $450K. <strong>Immediate tax benefit</strong> vs. 15-year
+                    amortization if it were part of purchase price.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mechanic 3 -->
+        <div class="mechanic-card">
+            <div class="icon-row">
+                <span class="icon">🚫</span>
+                <h3 style="margin: 0;">Mechanic #3: Non-Compete Payment</h3>
+            </div>
+
+            <div class="how-it-works">
+                <span class="label">How It Works</span>
+                <p style="margin-bottom: 0;">
+                    Payment to Colbert for agreeing not to practice dermatology within 10 miles for 5 years.
+                    <strong>Tax treatment:</strong> Amortized over 15 years under Section 197 (slower benefit than consulting,
+                    but well-documented for IRS purposes).
+                </p>
+            </div>
+
+            <div class="example">
+                <span class="label">Example: Option C Non-Compete</span>
+                Non-Compete: $140,000/year x 5 years = <span class="number">$700,000</span><br>
+                Amortization: $700,000 / 15 years = <span class="number">$46,667/year deduction</span><br>
+                Annual tax savings: $46,667 x 0.40 = <span class="number">$18,667/year</span><br>
+                <span class="comment">// PV of 15-year tax savings: ~$140,000</span>
+            </div>
+
+            <div class="net-impact">
+                <span class="label">Net Impact</span>
+                <p style="margin-bottom: 0;">
+                    Effective cost: $700K - $140K tax benefit = <strong>$560K</strong>. Slightly less efficient than consulting
+                    due to slower amortization, but highly defensible allocation.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mechanic 4 -->
+        <div class="mechanic-card">
+            <div class="icon-row">
+                <span class="icon">🤝</span>
+                <h3 style="margin: 0;">Mechanic #4: Transition Services Agreement</h3>
+            </div>
+
+            <div class="how-it-works">
+                <span class="label">How It Works</span>
+                <p style="margin-bottom: 0;">
+                    Payment for specific deliverables: patient introductions, referral source handoffs, staff training,
+                    EHR system guidance, vendor relationships. <strong>100% deductible as business expense</strong> in year paid.
+                </p>
+            </div>
+
+            <div class="example">
+                <span class="label">Example: Option C Transition Services</span>
+                Transition: $140,000/year x 5 years = <span class="number">$700,000</span><br>
+                Tax savings @ 40%: $700,000 x 0.40 = <span class="number">$280,000</span><br>
+                <span class="result">Effective cost to Belkin: $420,000 (60%)</span>
+            </div>
+
+            <div class="net-impact">
+                <span class="label">Net Impact</span>
+                <p style="margin-bottom: 0;">
+                    Combined with consulting: $1,450,000 in deductible services, effective cost of ~$870,000.
+                    <strong>Colbert gets the full amount; Belkin pays 60%.</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Mechanic 5 -->
+        <div class="mechanic-card">
+            <div class="icon-row">
+                <span class="icon">📉</span>
+                <h3 style="margin: 0;">Mechanic #5: Zero-Interest Periods on Seller Notes</h3>
+            </div>
+
+            <div class="how-it-works">
+                <span class="label">How It Works</span>
+                <p style="margin-bottom: 0;">
+                    Each seller note carries 0% interest for the first 3-5 years, then steps up to AFR (~4.5%).
+                    Legal under IRC Section 1274 for seller-financed acquisitions. Belkin gets <strong>interest-free financing</strong>
+                    during the critical stabilization period.
+                </p>
+            </div>
+
+            <div class="example">
+                <span class="label">Example: Option C Phase 1 Note ($3.6M)</span>
+                Years 1-5 @ 0%: All payments go to <span class="number">principal reduction</span><br>
+                Years 6-10 @ 4.5%: Interest begins accruing<br>
+                Interest avoided in Years 1-5: <span class="number">~$650,000</span><br>
+                <span class="comment">// vs. market rate financing at 7-8%</span>
+            </div>
+
+            <div class="net-impact">
+                <span class="label">Net Impact</span>
+                <p style="margin-bottom: 0;">
+                    ~$650K+ in interest savings over the life of the note. Plus, payments in Years 6-10 have lower
+                    present value than Years 1-5.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mechanic 6 -->
+        <div class="mechanic-card">
+            <div class="icon-row">
+                <span class="icon">📅</span>
+                <h3 style="margin: 0;">Mechanic #6: Extended Amortization with Balloon</h3>
+            </div>
+
+            <div class="how-it-works">
+                <span class="label">How It Works</span>
+                <p style="margin-bottom: 0;">
+                    Notes are amortized over 20-25 years but due in 7-10 years, creating a balloon payment.
+                    This keeps annual payments manageable while deferring a large portion to the end when it's worth less in today's dollars.
+                </p>
+            </div>
+
+            <div class="example">
+                <span class="label">Example: Option C Phase 1 Note Comparison</span>
+                10-year full amortization: <span class="number">$360,000/year</span><br>
+                25-year amortization: <span class="number">$144,000/year</span> + $2.6M balloon at Year 10<br>
+                Annual cash flow savings: <span class="number">$216,000/year for 10 years</span>
+            </div>
+
+            <div class="net-impact">
+                <span class="label">Net Impact</span>
+                <p style="margin-bottom: 0;">
+                    The $2.6M balloon at Year 10 is worth only ~$1.2M in present value (at 8% discount).
+                    <strong>You effectively pay 46 cents on the dollar for the balloon.</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- SECTION 4: OPTION C DEEP DIVE -->
+        <h2 id="optionc">4. Option C Deep Dive: $10M Enterprise Value</h2>
+
+        <div class="highlight-box green">
+            <h4 style="color: #4ade80;">Why Option C is Recommended</h4>
+            <p>
+                <strong>For Colbert:</strong> "$10 million" is a legacy-defining number. It validates his life's work.
+                Add $2.15M in consulting/non-compete/transition payments = <strong>$12.15M total headline</strong>.
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>For Belkin:</strong> Despite the higher headline, the after-tax present value is only ~$6.1M -
+                that's <strong>$0.61 per $1 of headline</strong>, better efficiency than Option B.
+            </p>
+        </div>
+
+        <h3>Phase 1: Initial 40% Purchase Structure</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Amount</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-header">40% of $10,000,000</td>
+                    <td>$4,000,000</td>
+                    <td>Equity purchase price</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Down Payment (10%)</td>
+                    <td>$400,000</td>
+                    <td>Cash at closing</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Seller Note</td>
+                    <td>$3,600,000</td>
+                    <td>Financed over 10 years</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Seller Note Terms (Phase 1)</h4>
+        <ul style="margin-left: 20px; color: #c8d0e0;">
+            <li><strong>Term:</strong> 10 years</li>
+            <li><strong>Interest:</strong> 0% Years 1-5, AFR (4.5%) Years 6-10</li>
+            <li><strong>Amortization:</strong> 25-year schedule (low annual payments)</li>
+            <li><strong>Balloon:</strong> ~$2,604,000 at Year 10</li>
+            <li><strong>Security:</strong> Belkin's 40% equity interest</li>
+            <li><strong>Offset:</strong> Payments can come from Belkin's share of distributions</li>
+        </ul>
+
+        <h4>Phase 1 Note Payment Schedule</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Annual Payment</th>
+                    <th>Interest</th>
+                    <th>Principal</th>
+                    <th>Ending Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>$144,000</td>
+                    <td>$0</td>
+                    <td>$144,000</td>
+                    <td>$3,456,000</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>$144,000</td>
+                    <td>$0</td>
+                    <td>$144,000</td>
+                    <td>$3,312,000</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>$144,000</td>
+                    <td>$0</td>
+                    <td>$144,000</td>
+                    <td>$3,168,000</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>$144,000</td>
+                    <td>$0</td>
+                    <td>$144,000</td>
+                    <td>$3,024,000</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>$144,000</td>
+                    <td>$0</td>
+                    <td>$144,000</td>
+                    <td>$2,880,000</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>$180,000</td>
+                    <td>$130,000</td>
+                    <td>$50,000</td>
+                    <td>$2,830,000</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>$180,000</td>
+                    <td>$127,000</td>
+                    <td>$53,000</td>
+                    <td>$2,777,000</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>$180,000</td>
+                    <td>$125,000</td>
+                    <td>$55,000</td>
+                    <td>$2,722,000</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>$180,000</td>
+                    <td>$122,000</td>
+                    <td>$58,000</td>
+                    <td>$2,664,000</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>$180,000</td>
+                    <td>$120,000</td>
+                    <td>$60,000</td>
+                    <td>$2,604,000</td>
+                </tr>
+                <tr class="row-total">
+                    <td>Balloon</td>
+                    <td>$2,604,000</td>
+                    <td>-</td>
+                    <td>$2,604,000</td>
+                    <td>$0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="formula">
+            <span class="comment">// Phase 1 Total Cash to Colbert</span><br>
+            Down payment: <span class="number">$400,000</span><br>
+            Years 1-5 payments: 5 x $144,000 = <span class="number">$720,000</span><br>
+            Years 6-10 payments: 5 x $180,000 = <span class="number">$900,000</span><br>
+            Balloon: <span class="number">$2,604,000</span><br>
+            <span class="operator">Total Phase 1:</span> <span class="result">$4,624,000</span> (includes ~$624K interest)
+        </div>
+
+        <h3>Phase 2: Path to 100% Ownership</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Option Window</th>
+                    <th>Tranche</th>
+                    <th>Price</th>
+                    <th>Down (10%)</th>
+                    <th>Seller Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Year 4-5</td>
+                    <td>10%</td>
+                    <td>$1,000,000</td>
+                    <td>$100,000</td>
+                    <td>$900,000</td>
+                </tr>
+                <tr>
+                    <td>Year 6-7</td>
+                    <td>10%</td>
+                    <td>$1,000,000</td>
+                    <td>$100,000</td>
+                    <td>$900,000</td>
+                </tr>
+                <tr>
+                    <td>Year 8-9</td>
+                    <td>20%</td>
+                    <td>$2,000,000</td>
+                    <td>$200,000</td>
+                    <td>$1,800,000</td>
+                </tr>
+                <tr>
+                    <td>Year 10+</td>
+                    <td>Final 20%</td>
+                    <td>$2,000,000</td>
+                    <td>$200,000</td>
+                    <td>$1,800,000</td>
+                </tr>
+                <tr class="row-total">
+                    <td>Total Phase 2</td>
+                    <td>60%</td>
+                    <td>$6,000,000</td>
+                    <td>$600,000</td>
+                    <td>$5,400,000</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            Each subsequent tranche uses the same seller note structure: 10% down, 10-year term, 0% for first 5 years,
+            25-year amortization with balloon. This creates overlapping payment streams.
+        </p>
+
+        <h3>Tax-Deductible Overlay (Option C)</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Payment Type</th>
+                    <th>Annual</th>
+                    <th>Years</th>
+                    <th>Total</th>
+                    <th>Tax Benefit</th>
+                    <th>Net Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-deductible">
+                    <td>Consulting Fees</td>
+                    <td>$125,000</td>
+                    <td>6</td>
+                    <td>$750,000</td>
+                    <td>$300,000</td>
+                    <td>$450,000</td>
+                </tr>
+                <tr class="row-deductible">
+                    <td>Non-Compete</td>
+                    <td>$140,000</td>
+                    <td>5</td>
+                    <td>$700,000</td>
+                    <td>$140,000*</td>
+                    <td>$560,000</td>
+                </tr>
+                <tr class="row-deductible">
+                    <td>Transition Services</td>
+                    <td>$140,000</td>
+                    <td>5</td>
+                    <td>$700,000</td>
+                    <td>$280,000</td>
+                    <td>$420,000</td>
+                </tr>
+                <tr class="row-total">
+                    <td>Total Deductible</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$2,150,000</td>
+                    <td>$720,000</td>
+                    <td>$1,430,000</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #8892b0;">*Non-compete amortized over 15 years; PV of tax benefit shown</p>
+
+        <!-- SECTION 5: PV CALCULATIONS -->
+        <h2 id="pv">5. Present Value Calculations</h2>
+
+        <div class="highlight-box purple">
+            <h4>The PV Formula</h4>
+            <p><strong>PV = Future Payment / (1 + r)^n</strong></p>
+            <p>Where r = discount rate (8%) and n = years from now</p>
+            <p style="margin-bottom: 0;">
+                Example: $100,000 paid in Year 5 = $100,000 / (1.08)^5 = <strong>$68,058 in today's dollars</strong>
+            </p>
+        </div>
+
+        <h3>Option C: Complete Present Value Analysis</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Nominal</th>
+                    <th>Timing</th>
+                    <th>PV Factor</th>
+                    <th>Present Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-phase">
+                    <td colspan="5" style="text-align: left; font-weight: 600; color: #4ade80;">PHASE 1: 40% Purchase</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Down Payment</td>
+                    <td>$400,000</td>
+                    <td>Year 0</td>
+                    <td>1.000</td>
+                    <td>$400,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Note Payments Y1-5</td>
+                    <td>$720,000</td>
+                    <td>Years 1-5</td>
+                    <td>3.993*</td>
+                    <td>$575,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Note Payments Y6-10</td>
+                    <td>$900,000</td>
+                    <td>Years 6-10</td>
+                    <td>2.547*</td>
+                    <td>$458,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Balloon</td>
+                    <td>$2,604,000</td>
+                    <td>Year 10</td>
+                    <td>0.463</td>
+                    <td>$1,206,000</td>
+                </tr>
+                <tr style="background: rgba(74, 222, 128, 0.05);">
+                    <td class="row-header">Phase 1 Subtotal</td>
+                    <td>$4,624,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td style="color: #4ade80;">$2,639,000</td>
+                </tr>
+
+                <tr class="row-phase">
+                    <td colspan="5" style="text-align: left; font-weight: 600; color: #fbbf24;">PHASE 2: Subsequent Tranches (60%)</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">10% tranche (Y4-5)</td>
+                    <td>$1,000,000</td>
+                    <td>Y4-14</td>
+                    <td>~0.65 avg</td>
+                    <td>$650,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">10% tranche (Y6-7)</td>
+                    <td>$1,000,000</td>
+                    <td>Y6-16</td>
+                    <td>~0.55 avg</td>
+                    <td>$550,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">20% tranche (Y8-9)</td>
+                    <td>$2,000,000</td>
+                    <td>Y8-18</td>
+                    <td>~0.50 avg</td>
+                    <td>$1,000,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Final 20% (Y10+)</td>
+                    <td>$2,000,000</td>
+                    <td>Y10-20</td>
+                    <td>~0.40 avg</td>
+                    <td>$800,000</td>
+                </tr>
+                <tr style="background: rgba(251, 191, 36, 0.05);">
+                    <td class="row-header">Phase 2 Subtotal</td>
+                    <td>$6,000,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td style="color: #fbbf24;">$3,000,000</td>
+                </tr>
+
+                <tr class="row-phase">
+                    <td colspan="5" style="text-align: left; font-weight: 600; color: #a78bfa;">TAX-DEDUCTIBLE PAYMENTS</td>
+                </tr>
+                <tr class="row-deductible">
+                    <td class="row-indent">Consulting (after-tax)</td>
+                    <td>$450,000</td>
+                    <td>Y1-6</td>
+                    <td>3.75*</td>
+                    <td>$338,000</td>
+                </tr>
+                <tr class="row-deductible">
+                    <td class="row-indent">Non-Compete (after-tax)</td>
+                    <td>$560,000</td>
+                    <td>Y1-5</td>
+                    <td>3.99*</td>
+                    <td>$447,000</td>
+                </tr>
+                <tr class="row-deductible">
+                    <td class="row-indent">Transition (after-tax)</td>
+                    <td>$420,000</td>
+                    <td>Y1-5</td>
+                    <td>3.99*</td>
+                    <td>$335,000</td>
+                </tr>
+                <tr style="background: rgba(167, 139, 250, 0.05);">
+                    <td class="row-header">Deductible Subtotal (After-Tax)</td>
+                    <td>$1,430,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td style="color: #a78bfa;">$1,120,000</td>
+                </tr>
+
+                <tr class="row-total">
+                    <td class="row-header">TOTAL NOMINAL</td>
+                    <td>$12,054,000</td>
+                    <td colspan="2">-</td>
+                    <td>-</td>
+                </tr>
+                <tr class="row-total">
+                    <td class="row-header">TOTAL AFTER-TAX PV</td>
+                    <td>-</td>
+                    <td colspan="2">-</td>
+                    <td>$6,759,000</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #8892b0;">*Annuity factors for payments spread across years at 8% discount rate</p>
+
+        <div class="formula">
+            <span class="comment">// Option C: Efficiency Summary</span><br>
+            Total headline to Colbert: <span class="number">$10,000,000</span> (EV) + <span class="number">$2,150,000</span> (deductible) = <span class="number">$12,150,000</span><br>
+            After-tax present value: <span class="number">$6,759,000</span><br>
+            <span class="operator">Effective cost per $1 of headline:</span> <span class="result">$0.56</span><br><br>
+            <span class="comment">// Or measuring against EV only:</span><br>
+            Cost per $1 of $10M EV: <span class="result">$0.68</span>
+        </div>
+
+        <div class="chart-container">
+            <h3>Present Value by Phase</h3>
+            <div class="chart-wrapper">
+                <canvas id="pvChart"></canvas>
+            </div>
+        </div>
+
+        <!-- SECTION 6: CASH FLOW -->
+        <h2 id="cashflow">6. Complete Cash Flow Timeline</h2>
+
+        <p>This shows Belkin's actual cash outflows year-by-year for Option C, including all phases and deductible payments:</p>
+
+        <h3>Option C: Year-by-Year Cash Flow (Assuming All Options Exercised)</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Phase 1 Note</th>
+                    <th>Consulting</th>
+                    <th>Non-Compete</th>
+                    <th>Transition</th>
+                    <th>Tranche Payments</th>
+                    <th>Total Out</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-header">0 (Close)</td>
+                    <td>$400,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$400,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">1</td>
+                    <td>$144,000</td>
+                    <td>$125,000</td>
+                    <td>$140,000</td>
+                    <td>$140,000</td>
+                    <td>-</td>
+                    <td>$549,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">2</td>
+                    <td>$144,000</td>
+                    <td>$125,000</td>
+                    <td>$140,000</td>
+                    <td>$140,000</td>
+                    <td>-</td>
+                    <td>$549,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">3</td>
+                    <td>$144,000</td>
+                    <td>$125,000</td>
+                    <td>$140,000</td>
+                    <td>$140,000</td>
+                    <td>-</td>
+                    <td>$549,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">4</td>
+                    <td>$144,000</td>
+                    <td>$125,000</td>
+                    <td>$140,000</td>
+                    <td>$140,000</td>
+                    <td>$100,000 (10% down)</td>
+                    <td>$649,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">5</td>
+                    <td>$144,000</td>
+                    <td>$125,000</td>
+                    <td>$140,000</td>
+                    <td>$140,000</td>
+                    <td>$36,000 (10% note)</td>
+                    <td>$585,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">6</td>
+                    <td>$180,000</td>
+                    <td>$125,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$136,000*</td>
+                    <td>$441,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">7</td>
+                    <td>$180,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$172,000*</td>
+                    <td>$352,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">8</td>
+                    <td>$180,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$252,000*</td>
+                    <td>$432,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">9</td>
+                    <td>$180,000</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$288,000*</td>
+                    <td>$468,000</td>
+                </tr>
+                <tr style="background: rgba(248, 113, 113, 0.1);">
+                    <td class="row-header">10</td>
+                    <td>$2,784,000**</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$524,000*</td>
+                    <td>$3,308,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">11-15</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>~$400K/yr*</td>
+                    <td>~$2,000,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">16-20</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>Balloons*</td>
+                    <td>~$3,000,000</td>
+                </tr>
+                <tr class="row-total">
+                    <td class="row-header">TOTAL</td>
+                    <td>$4,624,000</td>
+                    <td>$750,000</td>
+                    <td>$700,000</td>
+                    <td>$700,000</td>
+                    <td>~$6,800,000</td>
+                    <td>~$13,574,000</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #8892b0;">
+            *Includes payments on 10%, 10%, 20%, and 20% tranches with overlapping notes<br>
+            **Includes final payment + balloon on Phase 1 note
+        </p>
+
+        <div class="highlight-box">
+            <h4>Funding the Payments</h4>
+            <p>
+                <strong>Source:</strong> Belkin's share of practice distributions. With 40% ownership of a practice
+                earning ~$2.9M EBITDA, Belkin's annual distributions are ~$800K-1.2M.
+            </p>
+            <p>
+                <strong>Coverage:</strong> Years 1-5 cash needs of $549K-649K are comfortably covered by distributions.
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>Year 10 Balloon ($2.78M):</strong> Options include refinancing, practice cash reserves, SBA loan,
+                or renegotiation. By Year 10, Belkin owns 80-100% with significant equity to borrow against.
+            </p>
+        </div>
+
+        <!-- SECTION 7: COMPARISON -->
+        <h2 id="comparison">7. Side-by-Side Comparison</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th class="col-a">Option A ($6.5M)</th>
+                    <th class="col-b">Option B ($8.0M)</th>
+                    <th class="col-c">Option C ($10.0M)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-header">Enterprise Value</td>
+                    <td class="col-a">$6,500,000</td>
+                    <td class="col-b">$8,000,000</td>
+                    <td class="col-c">$10,000,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">Tax-Deductible Payments</td>
+                    <td>$1,100,000</td>
+                    <td>$1,600,000</td>
+                    <td>$2,150,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">Total Headline to Colbert</td>
+                    <td class="col-a">$7,600,000</td>
+                    <td class="col-b">$9,600,000</td>
+                    <td class="col-c">$12,150,000</td>
+                </tr>
+                <tr style="background: rgba(74, 222, 128, 0.05);">
+                    <td colspan="4" style="font-weight: 600; color: #4ade80;">PHASE 1 (40%)</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Purchase Price</td>
+                    <td>$2,600,000</td>
+                    <td>$3,200,000</td>
+                    <td>$4,000,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Down Payment</td>
+                    <td>$260,000</td>
+                    <td>$320,000</td>
+                    <td>$400,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Note Term</td>
+                    <td>10 years</td>
+                    <td>7 years</td>
+                    <td>10 years</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">0% Interest Period</td>
+                    <td>5 years</td>
+                    <td>3 years</td>
+                    <td>5 years</td>
+                </tr>
+                <tr style="background: rgba(251, 191, 36, 0.05);">
+                    <td colspan="4" style="font-weight: 600; color: #fbbf24;">PHASE 2 (60%)</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Total Phase 2</td>
+                    <td>$3,900,000</td>
+                    <td>$4,800,000</td>
+                    <td>$6,000,000</td>
+                </tr>
+                <tr>
+                    <td class="row-indent">Paid Over</td>
+                    <td>Years 4-12</td>
+                    <td>Years 3-10</td>
+                    <td>Years 4-12</td>
+                </tr>
+                <tr style="background: rgba(167, 139, 250, 0.05);">
+                    <td colspan="4" style="font-weight: 600; color: #a78bfa;">ECONOMICS</td>
+                </tr>
+                <tr>
+                    <td class="row-header">Total Nominal Paid</td>
+                    <td>~$8,200,000</td>
+                    <td>~$10,400,000</td>
+                    <td>~$13,600,000</td>
+                </tr>
+                <tr class="row-total">
+                    <td class="row-header">After-Tax Present Value</td>
+                    <td class="col-a">~$4,200,000</td>
+                    <td class="col-b">~$5,300,000</td>
+                    <td class="col-c">~$6,100,000</td>
+                </tr>
+                <tr>
+                    <td class="row-header">PV per $1 of EV</td>
+                    <td class="col-a">$0.65</td>
+                    <td class="col-b">$0.66</td>
+                    <td class="col-c">$0.61</td>
+                </tr>
+                <tr class="row-total">
+                    <td class="row-header">PV per $1 Total Headline</td>
+                    <td class="col-a">$0.55</td>
+                    <td class="col-b">$0.55</td>
+                    <td class="col-c">$0.50</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="chart-container">
+            <h3>Cost Efficiency: Headline vs. After-Tax PV</h3>
+            <div class="chart-wrapper">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="comparison-box">
+                <h4 style="color: #f87171;">Option A: Aggressive</h4>
+                <p><strong>Pros:</strong></p>
+                <ul style="margin-left: 20px; color: #c8d0e0;">
+                    <li>Lowest absolute cost (~$4.2M PV)</li>
+                    <li>Smallest down payment ($260K)</li>
+                    <li>Most cash flow preservation</li>
+                </ul>
+                <p><strong>Cons:</strong></p>
+                <ul style="margin-left: 20px; color: #c8d0e0;">
+                    <li>Colbert may feel undervalued</li>
+                    <li>Could damage relationship</li>
+                    <li>Less negotiating room</li>
+                </ul>
+            </div>
+            <div class="comparison-box">
+                <h4 style="color: #fbbf24;">Option B: Balanced (Current LOI)</h4>
+                <p><strong>Pros:</strong></p>
+                <ul style="margin-left: 20px; color: #c8d0e0;">
+                    <li>Reasonable headline ($8M)</li>
+                    <li>Shorter Phase 1 term (7 years)</li>
+                    <li>Middle-ground approach</li>
+                </ul>
+                <p><strong>Cons:</strong></p>
+                <ul style="margin-left: 20px; color: #c8d0e0;">
+                    <li>Shorter 0% period (3 years)</li>
+                    <li>Less efficient than Option C</li>
+                    <li>Neither bold nor premium</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight-box green">
+            <h4 style="color: #4ade80;">Option C: Premium - Why It Wins</h4>
+            <p>
+                <strong>Best cost efficiency:</strong> $0.50 per dollar of total headline - better than both alternatives.
+            </p>
+            <p>
+                <strong>Maximum deductions:</strong> $2.15M in tax-advantaged payments = ~$860K in tax savings.
+            </p>
+            <p>
+                <strong>Psychology:</strong> "$10 million enterprise value" is a legacy-defining number for Colbert.
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>Negotiating position:</strong> Lead with Option C; if pushback, Option B becomes an attractive "concession."
+            </p>
+        </div>
+
+        <!-- SECTION 8: RECOMMENDATION -->
+        <h2 id="recommendation">8. Recommendation</h2>
+
+        <div class="mechanic-card" style="border-color: #4ade80;">
+            <h3 style="color: #4ade80; margin-top: 0;">Lead with Option C ($10M Enterprise Value)</h3>
+
+            <h4>Opening Position</h4>
+            <p>
+                "David, we've looked hard at the numbers. The practice had an exceptional 2025 - $13.7 million in revenue,
+                27% growth. Your brand and the team you've built deserve recognition. We're prepared to value the practice
+                at <strong>$10 million</strong>."
+            </p>
+
+            <h4>Structure the Pitch</h4>
+            <ul style="margin-left: 20px; color: #c8d0e0;">
+                <li><strong>Phase 1:</strong> "I'll acquire 40% now - $4 million - with a $400K down payment and seller financing."</li>
+                <li><strong>Path to 100%:</strong> "Over the next 6-10 years, I'll acquire the remaining 60% at the same $10M valuation."</li>
+                <li><strong>Consulting:</strong> "We'll also pay you $125K/year for 6 years for advisory services - that's $750K additional."</li>
+                <li><strong>Non-Compete & Transition:</strong> "Plus $140K/year each for non-compete and transition services."</li>
+                <li><strong>Total:</strong> "All in, you're receiving over $12 million for your life's work."</li>
+            </ul>
+
+            <h4>Key Talking Points</h4>
+            <ul style="margin-left: 20px; color: #c8d0e0;">
+                <li><strong>Tax benefit:</strong> "The installment structure saves you roughly $400K+ in taxes vs. a cash deal."</li>
+                <li><strong>Income stream:</strong> "You'll receive $400K-550K/year for the first five years."</li>
+                <li><strong>Premium:</strong> "This is well above what any outside buyer would pay - they'd need employment guarantees from me."</li>
+                <li><strong>Involvement:</strong> "The consulting arrangement keeps you earning and engaged as long as you'd like."</li>
+            </ul>
+
+            <h4>If He Pushes Back on Terms</h4>
+            <ul style="margin-left: 20px; color: #c8d0e0;">
+                <li>Reduce Phase 1 note term from 10 to 8 years</li>
+                <li>Increase Y1-3 annual payments slightly</li>
+                <li>Reduce 0% period from 5 to 4 years</li>
+            </ul>
+
+            <h4>Hold Firm On</h4>
+            <ul style="margin-left: 20px; color: #c8d0e0;">
+                <li>Phased structure (40% now, 60% via options)</li>
+                <li>Fixed valuation for all tranches ($10M)</li>
+                <li>Extended amortization with balloons</li>
+                <li>Offset rights (payments from distributions)</li>
+            </ul>
+
+            <h4>Fallback Position</h4>
+            <p>
+                If he rejects the structure, move to Option B ($8M) as a "concession":
+                "If you need a simpler structure with a shorter timeline, we can do $8 million with a 7-year Phase 1 term."
+            </p>
+        </div>
+
+        <div class="bottom-line">
+            <h3>The Bottom Line</h3>
+            <p>
+                Option C gives Colbert a <strong>$10M enterprise valuation</strong> plus <strong>$2.15M in additional payments</strong>.
+                <br>He can tell people he sold his practice for <strong>$12+ million</strong>.
+            </p>
+            <p>
+                Your after-tax present value cost is approximately <strong>$6.1 million</strong>.
+            </p>
+            <div class="highlight-stat">
+                $12.15M headline = $6.1M after-tax PV = 50 cents on the dollar
+            </div>
+        </div>
+
+        <footer>
+            <p>Prepared by Cohen Advisory | January 28, 2026</p>
+            <p>Confidential - For Internal Use Only</p>
+            <p style="margin-top: 15px; font-size: 0.8rem;">
+                Present value calculations use 8% discount rate. Tax benefits assume ~40% combined federal/state rate.
+                Phase 2 tranches assume options are exercised; actual timing may vary.
+                Consult tax and legal advisors before finalizing any structure.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#8892b0';
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+        // PV by Phase Chart
+        const pvCtx = document.getElementById('pvChart').getContext('2d');
+        new Chart(pvCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Option A ($6.5M)', 'Option B ($8.0M)', 'Option C ($10.0M)'],
+                datasets: [
+                    {
+                        label: 'Phase 1 (40%) PV',
+                        data: [1.7, 2.1, 2.6],
+                        backgroundColor: 'rgba(74, 222, 128, 0.7)',
+                        borderColor: '#4ade80',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'Phase 2 (60%) PV',
+                        data: [1.9, 2.4, 3.0],
+                        backgroundColor: 'rgba(251, 191, 36, 0.7)',
+                        borderColor: '#fbbf24',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'Tax-Deductible (After-Tax) PV',
+                        data: [0.6, 0.8, 1.1],
+                        backgroundColor: 'rgba(167, 139, 250, 0.7)',
+                        borderColor: '#a78bfa',
+                        borderWidth: 1,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { padding: 15, usePointStyle: true }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(1) + 'M'
+                        }
+                    }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false } },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        max: 8,
+                        ticks: { callback: v => '$' + v + 'M' },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    }
+                }
+            }
+        });
+
+        // Efficiency Chart
+        const efficiencyCtx = document.getElementById('efficiencyChart').getContext('2d');
+        new Chart(efficiencyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Option A', 'Option B', 'Option C'],
+                datasets: [
+                    {
+                        label: 'Total Headline ($M)',
+                        data: [7.6, 9.6, 12.15],
+                        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'After-Tax PV ($M)',
+                        data: [4.2, 5.3, 6.1],
+                        backgroundColor: ['rgba(248, 113, 113, 0.6)', 'rgba(251, 191, 36, 0.6)', 'rgba(74, 222, 128, 0.6)'],
+                        borderColor: ['#f87171', '#fbbf24', '#4ade80'],
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Cost per $1 Headline',
+                        data: [0.55, 0.55, 0.50],
+                        type: 'line',
+                        borderColor: '#00d9ff',
+                        backgroundColor: '#00d9ff',
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#00d9ff',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { padding: 15, usePointStyle: true }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 14,
+                        position: 'left',
+                        ticks: { callback: v => '$' + v + 'M' },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        max: 1,
+                        position: 'right',
+                        ticks: { callback: v => '$' + v.toFixed(2) },
+                        grid: { display: false }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
