@@ -6,10 +6,11 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "node tests/handlers.test.js",
-    "test:api": "node tests/api.test.js",
-    "test:outbound": "node tests/outbound.test.js",
-    "test:all": "npm run test && npm run test:outbound && npm run test:api",
+    "test": "jest",
+    "test:unit": "jest tests/handlers.test.js",
+    "test:integration": "jest tests/api.test.js",
+    "test:outbound": "jest tests/outbound.test.js",
+    "test:all": "jest --verbose",
     "docker:build": "docker build -t bluebucket-server .",
     "docker:run": "docker-compose up",
     "docker:dev": "docker-compose up --build"
@@ -30,6 +31,7 @@
     "twilio": "^4.23.0"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.0.2"
   },
   "engines": {

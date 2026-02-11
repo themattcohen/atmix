@@ -11,6 +11,7 @@ const config = require('../config');
 const redis = require('../redis');
 const outboundCaller = require('../services/outboundCaller');
 const { validateJobberMiddleware } = require('../utils/validators');
+const { normalizePhone } = require('../utils/phone');
 
 const router = express.Router();
 
@@ -77,42 +78,6 @@ function verifyJobberSignature(req, res, next) {
 }
 
 // ============================================
-// Phone Number Normalization
-// ============================================
-
-/**
- * Normalize phone number to E.164 format.
- * Handles common US phone number formats.
- *
- * @param {string} phone - Raw phone number string.
- * @returns {string|null} Normalized phone number or null if invalid.
- */
-function normalizePhoneNumber(phone) {
-  if (!phone) {
-    return null;
-  }
-
-  // Remove all non-digit characters
-  const digits = phone.replace(/\D/g, '');
-
-  // Handle different formats
-  if (digits.length === 10) {
-    // US number without country code
-    return `+1${digits}`;
-  } else if (digits.length === 11 && digits.startsWith('1')) {
-    // US number with country code
-    return `+${digits}`;
-  } else if (digits.length > 10) {
-    // Assume already has country code
-    return `+${digits}`;
-  }
-
-  // Invalid phone number
-  console.warn(`[JOBBER] Invalid phone number format: ${phone}`);
-  return null;
-}
-
-// ============================================
 // Request Data Extraction
 // ============================================
 
@@ -152,10 +117,10 @@ function extractRequestData(payload) {
       const primaryPhone = client.phones.find(p => p.primary);
       const phone = primaryPhone || client.phones[0];
       if (phone) {
-        data.phone = normalizePhoneNumber(phone.number);
+        data.phone = normalizePhone(phone.number);
       }
     } else if (client.phone) {
-      data.phone = normalizePhoneNumber(client.phone);
+      data.phone = normalizePhone(client.phone);
     }
 
     // Build client name

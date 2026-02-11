@@ -15,8 +15,14 @@ const REQUIRED_VARS = {
   core: ['JOBBER_CLIENT_ID', 'JOBBER_CLIENT_SECRET'],
   redis: ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],
   security: ['RETELL_WEBHOOK_SECRET'],
-  // Outbound calling requires these (warn if missing, don't block startup)
-  // outbound: ['RETELL_API_KEY', 'RETELL_AGENT_ID', 'TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_PHONE_NUMBER'],
+};
+
+/**
+ * Optional but recommended environment variables.
+ * Missing vars log warnings but never block startup.
+ */
+const RECOMMENDED_VARS = {
+  outbound: ['RETELL_API_KEY', 'RETELL_AGENT_ID', 'TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_PHONE_NUMBER'],
 };
 
 /**
@@ -149,15 +155,17 @@ const config = {
 };
 
 /**
- * Validates required configuration variables.
+ * Validates required configuration variables and config values.
  * In development: logs warnings for missing vars.
  * In production: exits process if required vars are missing.
  *
- * @returns {boolean} True if all required vars are present, false otherwise.
+ * @returns {boolean} True if all required vars are present and values are valid.
  */
 function validateConfig() {
   const missing = [];
+  const invalid = [];
 
+  // Check required environment variables
   for (const [category, vars] of Object.entries(REQUIRED_VARS)) {
     for (const varName of vars) {
       if (!process.env[varName]) {
@@ -166,24 +174,96 @@ function validateConfig() {
     }
   }
 
-  if (missing.length === 0) {
-    return true;
+  // Check recommended (optional) environment variables
+  const missingRecommended = [];
+  for (const [category, vars] of Object.entries(RECOMMENDED_VARS)) {
+    for (const varName of vars) {
+      if (!process.env[varName]) {
+        missingRecommended.push({ category, varName });
+      }
+    }
   }
 
-  const message = missing
-    .map(({ category, varName }) => `  - ${varName} (${category})`)
-    .join('\n');
-
-  if (config.isProduction) {
-    console.error('[CONFIG] FATAL: Missing required environment variables:\n' + message);
-    console.error('[CONFIG] Server cannot start in production without these variables.');
-    process.exit(1);
-  } else {
-    console.warn('[CONFIG] WARNING: Missing environment variables (not enforced in development):\n' + message);
-    console.warn('[CONFIG] Some features may not work correctly.');
+  if (missingRecommended.length > 0) {
+    const recMessage = missingRecommended
+      .map(({ category, varName }) => `  - ${varName} (${category})`)
+      .join('\n');
+    console.warn('[CONFIG] Recommended environment variables not set (some features may be limited):\n' + recMessage);
   }
 
-  return false;
+  // Validate config values
+  if (config.port < 1 || config.port > 65535 || isNaN(config.port)) {
+    invalid.push('PORT must be a number between 1 and 65535');
+  }
+
+  // Validate timezone by attempting to use it
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: config.businessTz });
+  } catch {
+    invalid.push(`BUSINESS_TZ "${config.businessTz}" is not a valid timezone`);
+  }
+
+  // Validate outbound calling hours
+  const { startHour, endHour } = config.outboundCalling;
+  if (startHour < 0 || startHour > 23 || isNaN(startHour)) {
+    invalid.push('OUTBOUND_START_HOUR must be between 0 and 23');
+  }
+  if (endHour < 0 || endHour > 23 || isNaN(endHour)) {
+    invalid.push('OUTBOUND_END_HOUR must be between 0 and 23');
+  }
+  if (startHour >= endHour) {
+    invalid.push(`OUTBOUND_START_HOUR (${startHour}) must be less than OUTBOUND_END_HOUR (${endHour})`);
+  }
+
+  // Validate team capacity
+  if (config.business.teamCapacity <= 0 || isNaN(config.business.teamCapacity)) {
+    invalid.push('TEAM_CAPACITY must be greater than 0');
+  }
+
+  // Validate pricing values
+  if (config.pricing.basePerBedroom <= 0) {
+    invalid.push('PRICE_PER_BEDROOM must be greater than 0');
+  }
+  if (config.pricing.basePerBathroom <= 0) {
+    invalid.push('PRICE_PER_BATHROOM must be greater than 0');
+  }
+  if (config.pricing.baseSqftRate <= 0) {
+    invalid.push('PRICE_SQFT_RATE must be greater than 0');
+  }
+  if (config.pricing.minimumPrice <= 0) {
+    invalid.push('PRICE_MINIMUM must be greater than 0');
+  }
+
+  // Report invalid values
+  if (invalid.length > 0) {
+    const invalidMessage = invalid.map(msg => `  - ${msg}`).join('\n');
+    if (config.isProduction) {
+      console.error('[CONFIG] FATAL: Invalid configuration values:\n' + invalidMessage);
+      process.exit(1);
+    } else {
+      console.warn('[CONFIG] WARNING: Invalid configuration values:\n' + invalidMessage);
+    }
+  }
+
+  // Report missing required vars
+  if (missing.length > 0) {
+    const message = missing
+      .map(({ category, varName }) => `  - ${varName} (${category})`)
+      .join('\n');
+
+    if (config.isProduction) {
+      console.error('[CONFIG] FATAL: Missing required environment variables:\n' + message);
+      console.error('[CONFIG] Server cannot start in production without these variables.');
+      process.exit(1);
+    } else {
+      console.warn('[CONFIG] WARNING: Missing environment variables (not enforced in development):\n' + message);
+      console.warn('[CONFIG] Some features may not work correctly.');
+    }
+
+    return false;
+  }
+
+  return invalid.length === 0;
 }
 
 /**

@@ -9,6 +9,7 @@
  */
 
 const express = require('express');
+const crypto = require('crypto');
 const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -70,13 +71,24 @@ app.use(express.json({
 app.use(express.urlencoded({ extended: true }));
 
 // ============================================
+// Request Tracing Middleware
+// ============================================
+
+// Add trace ID to all requests (before logger so it appears in logs)
+app.use((req, res, next) => {
+  req.traceId = req.headers['x-trace-id'] || crypto.randomUUID();
+  res.setHeader('X-Trace-Id', req.traceId);
+  next();
+});
+
+// ============================================
 // Logging Middleware
 // ============================================
 
 // Morgan request logging
 const logFormat = config.isDevelopment
   ? 'dev'
-  : ':remote-addr - :method :url :status :response-time ms';
+  : ':remote-addr - :method :url :status :response-time ms [:req[x-trace-id]]';
 
 app.use(morgan(logFormat, {
   // Skip health check logging to reduce noise
@@ -264,7 +276,7 @@ app.get('/health', async (req, res) => {
     health.services.jobber_token = tokenStatus.authorized ? 'valid' : 'missing';
 
     // Check outbound calling status
-    const outboundStatus = outboundCaller.getStatus();
+    const outboundStatus = await outboundCaller.getStatus();
     health.services.outbound_calling = outboundStatus.enabled && outboundStatus.retellConfigured.isReady && outboundStatus.twilioConfigured.isReady
       ? 'ready'
       : outboundStatus.enabled

@@ -44,7 +44,6 @@ async function store(callSid, context) {
 
   console.log(`[CALL_CONTEXT] Stored context for ${callSid}`, {
     requestId: context.requestId,
-    customerName: context.customerName,
   });
 }
 

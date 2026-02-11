@@ -54,6 +54,7 @@ async function handleCheckAvailability({
     const startDate = parsePreferredDate(preferred_date, today, timezone);
     if (!startDate) {
       return {
+        success: false,
         available: false,
         error: 'Could not understand the requested date',
         message: 'Please provide a specific date like "January 20th" or "next Tuesday"',
@@ -64,6 +65,7 @@ async function handleCheckAvailability({
     const minBookingDate = addDays(today, 1); // Minimum 24 hours notice
     if (startDate < minBookingDate) {
       return {
+        success: true,
         available: false,
         error: 'Date too soon',
         message: 'We need at least 24 hours notice for bookings. What about tomorrow or later this week?',
@@ -130,6 +132,7 @@ async function handleCheckAvailability({
       const nextAvailable = findNextAvailableDate(endDate, timezone);
 
       return {
+        success: true,
         available: false,
         message: 'No availability in the requested timeframe',
         next_available: format(nextAvailable, 'EEEE, MMMM do'),
@@ -155,6 +158,7 @@ async function handleCheckAvailability({
     message += ' Which works better for you?';
 
     return {
+      success: true,
       available: true,
       slots: formattedSlots,
       total_slots: slots.length,
@@ -164,6 +168,7 @@ async function handleCheckAvailability({
   } catch (error) {
     console.error('[CheckAvailability] Error checking availability:', error.message);
     return {
+      success: false,
       available: false,
       error: 'Unable to check availability at this time',
       message: 'Let me connect you with our team to find the best time.',

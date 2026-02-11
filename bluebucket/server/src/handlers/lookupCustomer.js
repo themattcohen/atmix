@@ -9,6 +9,7 @@ const config = require('../config');
 const { getPhoneMapping } = require('../redis');
 const { query: jobberQuery } = require('../jobber/client');
 const { GET_REQUEST, GET_CLIENT } = require('../jobber/queries');
+const { normalizePhone } = require('../utils/phone');
 
 // Simple in-memory rate limiter for customer lookups
 const lookupRateMap = new Map();
@@ -32,38 +33,6 @@ function isRateLimited(key) {
 
   entry.count += 1;
   return entry.count > RATE_LIMIT_MAX;
-}
-
-/**
- * Normalize phone number to consistent format for lookup.
- * Removes all non-digit characters and ensures proper format.
- *
- * @param {string} phone - Phone number in any format
- * @returns {string} Normalized phone number
- */
-function normalizePhone(phone) {
-  if (!phone) return '';
-
-  // Remove all non-digit characters
-  let digits = phone.replace(/\D/g, '');
-
-  // Handle US numbers without country code
-  if (digits.length === 10) {
-    digits = '1' + digits;
-  }
-
-  // Remove leading 1 if present for consistent storage
-  if (digits.length === 11 && digits.startsWith('1')) {
-    // Keep the +1 prefix for E.164
-    return '+' + digits;
-  }
-
-  // Add + prefix if not present
-  if (!digits.startsWith('+')) {
-    return '+' + digits;
-  }
-
-  return digits;
 }
 
 /**
@@ -108,7 +77,7 @@ async function handleLookupCustomer({ phone_number }, callMetadata = {}) {
     // Normalize the phone number
     const normalizedPhone = normalizePhone(phone_number);
 
-    if (!normalizedPhone || normalizedPhone.length < 10) {
+    if (!normalizedPhone) {
       console.log('[LookupCustomer] Invalid phone number format');
       return {
         found: false,
@@ -276,5 +245,4 @@ function formatAddress(address) {
 
 module.exports = {
   handleLookupCustomer,
-  normalizePhone,
 };

@@ -20,6 +20,33 @@ process.env.BUSINESS_TZ = 'America/Denver';
 process.env.OUTBOUND_CALLING_ENABLED = 'true';
 process.env.OUTBOUND_CALL_DELAY = '5'; // Short delay for testing
 
+// Mock date-fns-tz to handle v2/v3 API differences
+jest.mock('date-fns-tz', () => ({
+  toZonedTime: jest.fn((date) => date),
+  fromZonedTime: jest.fn((date) => date),
+  formatInTimeZone: jest.fn(() => '2026-02-11 10:00 AM MST'),
+}));
+
+// Mock Redis to avoid real connections
+jest.mock('../src/redis', () => ({
+  get: jest.fn().mockResolvedValue(null),
+  set: jest.fn().mockResolvedValue('OK'),
+  del: jest.fn().mockResolvedValue(1),
+  exists: jest.fn().mockResolvedValue(false),
+  ping: jest.fn().mockResolvedValue(true),
+  storePhoneMapping: jest.fn().mockResolvedValue('OK'),
+  getPhoneMapping: jest.fn().mockResolvedValue(null),
+  deletePhoneMapping: jest.fn().mockResolvedValue(1),
+  storeTokens: jest.fn().mockResolvedValue('OK'),
+  getTokens: jest.fn().mockResolvedValue(null),
+  deleteTokens: jest.fn().mockResolvedValue(1),
+  storeCallState: jest.fn().mockResolvedValue('OK'),
+  getCallState: jest.fn().mockResolvedValue(null),
+  deleteCallState: jest.fn().mockResolvedValue(1),
+  healthCheck: jest.fn().mockResolvedValue({ status: 'healthy' }),
+  KEYS: { PHONE_MAPPING: 'phone:', TOKENS: 'jobber:tokens', CALL_STATE: 'call:' },
+}));
+
 const config = require('../src/config');
 const twilioClient = require('../src/twilio/client');
 
@@ -27,229 +54,124 @@ const twilioClient = require('../src/twilio/client');
 // Configuration Tests
 // ============================================
 
-console.log('\n=== Configuration Tests ===\n');
+describe('Configuration', () => {
+  test('Retell API key loaded correctly', () => {
+    expect(config.retell.apiKey).toBe('test_retell_api_key');
+  });
 
-let passed = 0;
-let failed = 0;
+  test('Retell agent ID loaded correctly', () => {
+    expect(config.retell.agentId).toBe('test_agent_id');
+  });
 
-// Test 1: Retell config loaded
-if (config.retell.apiKey === 'test_retell_api_key') {
-  console.log('  ✓ Retell API key loaded correctly');
-  passed++;
-} else {
-  console.log('  ✗ Retell API key not loaded');
-  failed++;
-}
+  test('Twilio account SID loaded correctly', () => {
+    expect(config.twilio.accountSid).toBe('test_twilio_sid');
+  });
 
-// Test 2: Retell agent ID loaded
-if (config.retell.agentId === 'test_agent_id') {
-  console.log('  ✓ Retell agent ID loaded correctly');
-  passed++;
-} else {
-  console.log('  ✗ Retell agent ID not loaded');
-  failed++;
-}
+  test('Twilio phone number loaded correctly', () => {
+    expect(config.twilio.phoneNumber).toBe('+17201234567');
+  });
 
-// Test 3: Twilio config loaded
-if (config.twilio.accountSid === 'test_twilio_sid') {
-  console.log('  ✓ Twilio account SID loaded correctly');
-  passed++;
-} else {
-  console.log('  ✗ Twilio account SID not loaded');
-  failed++;
-}
+  test('Webhook URL loaded correctly', () => {
+    expect(config.webhookUrl).toBe('https://test.example.com');
+  });
 
-// Test 4: Twilio phone number loaded
-if (config.twilio.phoneNumber === '+17201234567') {
-  console.log('  ✓ Twilio phone number loaded correctly');
-  passed++;
-} else {
-  console.log('  ✗ Twilio phone number not loaded');
-  failed++;
-}
+  test('Outbound calling enabled', () => {
+    expect(config.outboundCalling.enabled).toBe(true);
+  });
 
-// Test 5: Webhook URL loaded
-if (config.webhookUrl === 'https://test.example.com') {
-  console.log('  ✓ Webhook URL loaded correctly');
-  passed++;
-} else {
-  console.log('  ✗ Webhook URL not loaded');
-  failed++;
-}
+  test('Call delay configured (5s)', () => {
+    expect(config.outboundCalling.callDelay).toBe(5);
+  });
 
-// Test 6: Outbound calling enabled
-if (config.outboundCalling.enabled === true) {
-  console.log('  ✓ Outbound calling enabled');
-  passed++;
-} else {
-  console.log('  ✗ Outbound calling not enabled');
-  failed++;
-}
-
-// Test 7: Call delay configured
-if (config.outboundCalling.callDelay === 5) {
-  console.log('  ✓ Call delay configured (5s)');
-  passed++;
-} else {
-  console.log(`  ✗ Call delay unexpected: ${config.outboundCalling.callDelay}`);
-  failed++;
-}
-
-// Test 8: SIP domain configured
-if (config.retell.sipDomain === '5t4n6j0wnrl.sip.livekit.cloud') {
-  console.log('  ✓ SIP domain configured correctly');
-  passed++;
-} else {
-  console.log('  ✗ SIP domain not configured');
-  failed++;
-}
+  test('SIP domain configured correctly', () => {
+    expect(config.retell.sipDomain).toBe('5t4n6j0wnrl.sip.livekit.cloud');
+  });
+});
 
 // ============================================
 // TwiML Generation Tests
 // ============================================
 
-console.log('\n=== TwiML Generation Tests ===\n');
+describe('TwiML Generation', () => {
+  const testCallId = 'call_test_12345';
+  let twiml;
 
-// Test 9: TwiML generation
-const testCallId = 'call_test_12345';
-const twiml = twilioClient.generateRetellConnectTwiML(testCallId);
+  beforeAll(() => {
+    twiml = twilioClient.generateRetellConnectTwiML(testCallId);
+  });
 
-if (twiml.includes('<?xml version="1.0"')) {
-  console.log('  ✓ TwiML has XML declaration');
-  passed++;
-} else {
-  console.log('  ✗ TwiML missing XML declaration');
-  failed++;
-}
+  test('has XML declaration', () => {
+    expect(twiml).toContain('<?xml version="1.0"');
+  });
 
-// Test 10: TwiML has Response element
-if (twiml.includes('<Response>') && twiml.includes('</Response>')) {
-  console.log('  ✓ TwiML has Response element');
-  passed++;
-} else {
-  console.log('  ✗ TwiML missing Response element');
-  failed++;
-}
+  test('has Response element', () => {
+    expect(twiml).toContain('<Response>');
+    expect(twiml).toContain('</Response>');
+  });
 
-// Test 11: TwiML has Dial element
-if (twiml.includes('<Dial>') && twiml.includes('</Dial>')) {
-  console.log('  ✓ TwiML has Dial element');
-  passed++;
-} else {
-  console.log('  ✗ TwiML missing Dial element');
-  failed++;
-}
+  test('has Dial element', () => {
+    expect(twiml).toContain('<Dial>');
+    expect(twiml).toContain('</Dial>');
+  });
 
-// Test 12: TwiML has correct SIP endpoint
-const expectedSip = `sip:${testCallId}@${config.retell.sipDomain}`;
-if (twiml.includes(expectedSip)) {
-  console.log('  ✓ TwiML has correct SIP endpoint');
-  passed++;
-} else {
-  console.log('  ✗ TwiML has incorrect SIP endpoint');
-  console.log(`    Expected: ${expectedSip}`);
-  failed++;
-}
+  test('has correct SIP endpoint', () => {
+    const expectedSip = `sip:${testCallId}@${config.retell.sipDomain}`;
+    expect(twiml).toContain(expectedSip);
+  });
+});
 
 // ============================================
 // Configuration Check Tests
 // ============================================
 
-console.log('\n=== Configuration Check Tests ===\n');
+describe('Configuration Checks', () => {
+  test('Twilio configuration check passes', () => {
+    const twilioConfig = twilioClient.checkConfiguration();
+    expect(twilioConfig.accountSid).toBe(true);
+    expect(twilioConfig.authToken).toBe(true);
+    expect(twilioConfig.phoneNumber).toBe(true);
+  });
 
-// Test 13: Twilio configuration check
-const twilioConfig = twilioClient.checkConfiguration();
-if (twilioConfig.accountSid === true && twilioConfig.authToken === true && twilioConfig.phoneNumber === true) {
-  console.log('  ✓ Twilio configuration check passes');
-  passed++;
-} else {
-  console.log('  ✗ Twilio configuration check failed:', twilioConfig);
-  failed++;
-}
-
-// Test 14: Twilio ready status
-if (twilioConfig.isReady === true) {
-  console.log('  ✓ Twilio is ready');
-  passed++;
-} else {
-  console.log('  ✗ Twilio not ready');
-  failed++;
-}
+  test('Twilio is ready', () => {
+    const twilioConfig = twilioClient.checkConfiguration();
+    expect(twilioConfig.isReady).toBe(true);
+  });
+});
 
 // ============================================
 // Outbound Caller Service Tests
 // ============================================
 
-console.log('\n=== Outbound Caller Service Tests ===\n');
+describe('Outbound Caller Service', () => {
+  const outboundCaller = require('../src/services/outboundCaller');
 
-// Import after config is set
-const outboundCaller = require('../src/services/outboundCaller');
+  test('reports enabled', async () => {
+    const status = await outboundCaller.getStatus();
+    expect(status.enabled).toBe(true);
+  });
 
-// Test 15: Get status
-const status = outboundCaller.getStatus();
-if (status.enabled === true) {
-  console.log('  ✓ Outbound caller reports enabled');
-  passed++;
-} else {
-  console.log('  ✗ Outbound caller reports disabled');
-  failed++;
-}
+  test('has calling hours configured', async () => {
+    const status = await outboundCaller.getStatus();
+    expect(status.callingHours).toBeDefined();
+    expect(status.callingHours.start).toBeDefined();
+    expect(status.callingHours.end).toBeDefined();
+  });
 
-// Test 16: Status has calling hours
-if (status.callingHours && status.callingHours.start && status.callingHours.end) {
-  console.log(`  ✓ Calling hours configured (${status.callingHours.start}:00 - ${status.callingHours.end}:00)`);
-  passed++;
-} else {
-  console.log('  ✗ Calling hours not configured');
-  failed++;
-}
+  test('has rate limit configured', async () => {
+    const status = await outboundCaller.getStatus();
+    expect(status.rateLimit).toBeDefined();
+    expect(typeof status.rateLimit.max).toBe('number');
+  });
 
-// Test 17: Status has rate limit
-if (status.rateLimit && typeof status.rateLimit.max === 'number') {
-  console.log(`  ✓ Rate limit configured (${status.rateLimit.max} calls/hour)`);
-  passed++;
-} else {
-  console.log('  ✗ Rate limit not configured');
-  failed++;
-}
+  test('isWithinCallingHours function exists', () => {
+    expect(typeof outboundCaller.isWithinCallingHours).toBe('function');
+  });
 
-// Test 18: isWithinCallingHours function exists
-if (typeof outboundCaller.isWithinCallingHours === 'function') {
-  console.log('  ✓ isWithinCallingHours function exists');
-  passed++;
-} else {
-  console.log('  ✗ isWithinCallingHours function missing');
-  failed++;
-}
+  test('triggerLeadCall function exists', () => {
+    expect(typeof outboundCaller.triggerLeadCall).toBe('function');
+  });
 
-// Test 19: triggerLeadCall function exists
-if (typeof outboundCaller.triggerLeadCall === 'function') {
-  console.log('  ✓ triggerLeadCall function exists');
-  passed++;
-} else {
-  console.log('  ✗ triggerLeadCall function missing');
-  failed++;
-}
-
-// Test 20: scheduleCall function exists
-if (typeof outboundCaller.scheduleCall === 'function') {
-  console.log('  ✓ scheduleCall function exists');
-  passed++;
-} else {
-  console.log('  ✗ scheduleCall function missing');
-  failed++;
-}
-
-// ============================================
-// Summary
-// ============================================
-
-console.log('\n=== Test Results ===\n');
-console.log(`  Passed: ${passed}`);
-console.log(`  Failed: ${failed}`);
-console.log(`  Total:  ${passed + failed}`);
-console.log('');
-
-if (failed > 0) {
-  process.exit(1);
-}
+  test('scheduleCall function exists', () => {
+    expect(typeof outboundCaller.scheduleCall).toBe('function');
+  });
+});

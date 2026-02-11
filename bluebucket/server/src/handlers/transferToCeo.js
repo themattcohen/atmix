@@ -68,6 +68,7 @@ async function handleTransferToCeo({
     if (!ceoPhone) {
       console.error('[TransferToCeo] CEO phone number not configured');
       return {
+        success: false,
         transfer_initiated: false,
         error: 'Transfer configuration error',
         message: 'I apologize, but I\'m unable to transfer you right now. ' +
@@ -100,6 +101,7 @@ async function handleTransferToCeo({
     });
 
     return {
+      success: true,
       transfer_initiated: true,
       transfer_to: ceoPhone,
       transfer_type: 'warm',
@@ -119,6 +121,7 @@ async function handleTransferToCeo({
     console.error('[TransferToCeo] Error preparing transfer:', error.message);
 
     return {
+      success: false,
       transfer_initiated: false,
       error: 'Transfer preparation failed',
       message: 'I\'m having trouble connecting you with our owner. ' +

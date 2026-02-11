@@ -7,6 +7,7 @@
 
 const { Redis } = require('@upstash/redis');
 const config = require('./config');
+const { maskPhone } = require('./utils/phone');
 
 /**
  * Redis key prefixes for organized storage.
@@ -158,7 +159,7 @@ async function storePhoneMapping(phone, data) {
     updatedAt: new Date().toISOString(),
   };
 
-  console.log(`[REDIS] Storing phone mapping for ${phone}`);
+  console.log(`[REDIS] Storing phone mapping for ${maskPhone(phone)}`);
   return await set(key, payload, config.phoneMappingTtl);
 }
 
@@ -177,7 +178,7 @@ async function getPhoneMapping(phone) {
   const data = await get(key);
 
   if (data) {
-    console.log(`[REDIS] Found phone mapping for ${phone}`);
+    console.log(`[REDIS] Found phone mapping for ${maskPhone(phone)}`);
   }
 
   return data;
@@ -195,7 +196,7 @@ async function deletePhoneMapping(phone) {
   }
 
   const key = KEYS.PHONE_MAPPING + phone;
-  console.log(`[REDIS] Deleting phone mapping for ${phone}`);
+  console.log(`[REDIS] Deleting phone mapping for ${maskPhone(phone)}`);
   return await del(key);
 }
 

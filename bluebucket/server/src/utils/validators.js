@@ -164,19 +164,126 @@ const validateJobberMiddleware = createValidationMiddleware(
 );
 
 // ============================================
+// Handler Input Schemas
+// ============================================
+
+/**
+ * Schema for calculateQuote handler input.
+ */
+const calculateQuoteSchema = Joi.object({
+  bedrooms: Joi.number().integer().min(0).max(20).default(0),
+  bathrooms: Joi.number().min(0).max(20).default(0),
+  square_feet: Joi.number().integer().min(0).max(50000).default(0),
+  sqft: Joi.number().integer().min(0).max(50000),
+  frequency: Joi.string().valid('one-time', 'weekly', 'bi-weekly', 'biweekly', 'monthly').default('one-time').insensitive(),
+  add_ons: Joi.array().items(Joi.string().max(50)).max(10).default([]),
+  addOns: Joi.array().items(Joi.string().max(50)).max(10),
+  condition: Joi.string().valid('standard', 'dirty', 'veryDirty', 'extreme').default('standard'),
+  serviceType: Joi.string().max(100),
+  service_type: Joi.string().max(100),
+}).unknown(true);
+
+/**
+ * Schema for bookAppointment handler input.
+ */
+const bookAppointmentSchema = Joi.object({
+  property_id: Joi.string().required(),
+  request_id: Joi.string().allow('', null),
+  customer_name: Joi.string().max(200).required(),
+  customer_phone: Joi.string().max(30),
+  appointment_date: Joi.string().required(),
+  appointment_time: Joi.string().required(),
+  service_type: Joi.string().max(100).default('House Cleaning'),
+  quoted_price: Joi.number().min(0).max(100000),
+  estimated_hours: Joi.number().min(1).max(24).default(3),
+  special_instructions: Joi.string().max(1000).allow('', null),
+  date: Joi.string(),
+  time: Joi.string(),
+  customerName: Joi.string().max(200),
+  address: Joi.string().max(500),
+  estimatedPrice: Joi.number(),
+}).unknown(true);
+
+/**
+ * Schema for checkAvailability handler input.
+ */
+const checkAvailabilitySchema = Joi.object({
+  preferred_date: Joi.string().max(100).allow('', null),
+  preferred_time: Joi.string().max(50).allow('', null),
+  service_duration_hours: Joi.number().min(1).max(24).default(3),
+  preferredDate: Joi.string().max(100),
+}).unknown(true);
+
+/**
+ * Schema for transferToCeo handler input.
+ */
+const transferToCeoSchema = Joi.object({
+  reason: Joi.string().max(200).required(),
+  context_summary: Joi.string().max(2000).allow('', null),
+  customer_name: Joi.string().max(200).allow('', null),
+  customer_phone: Joi.string().max(30).allow('', null),
+  property_details: Joi.string().max(500).allow('', null),
+  quoted_price: Joi.number().min(0).max(100000).allow(null),
+  urgency: Joi.string().valid('low', 'medium', 'high').default('medium'),
+}).unknown(true);
+
+/**
+ * Schema for lookupCustomer handler input.
+ */
+const lookupCustomerSchema = Joi.object({
+  phone_number: Joi.string().max(30),
+  phone: Joi.string().max(30),
+}).unknown(true);
+
+/**
+ * Validate handler input against a schema.
+ *
+ * @param {Object} args - The handler arguments to validate.
+ * @param {Joi.Schema} schema - The Joi schema to validate against.
+ * @returns {Object} Result with { valid: boolean, value?: Object, error?: string }
+ */
+function validateHandlerInput(args, schema) {
+  const { error, value } = schema.validate(args || {}, {
+    abortEarly: false,
+    stripUnknown: false,
+  });
+
+  if (error) {
+    const errorMessages = error.details.map(detail => detail.message).join('; ');
+    return {
+      valid: false,
+      error: errorMessages,
+    };
+  }
+
+  return {
+    valid: true,
+    value,
+  };
+}
+
+// ============================================
 // Exports
 // ============================================
 
 module.exports = {
-  // Schemas
+  // Webhook schemas
   retellWebhookSchema,
   jobberWebhookSchema,
   jobberWebhookEventSchema,
+
+  // Handler input schemas
+  calculateQuoteSchema,
+  bookAppointmentSchema,
+  checkAvailabilitySchema,
+  transferToCeoSchema,
+  lookupCustomerSchema,
 
   // Validation functions
   validatePayload,
   validateRetellPayload,
   validateJobberPayload,
+  validateHandlerInput,
 
   // Middleware
   validateRetellMiddleware,

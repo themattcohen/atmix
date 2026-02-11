@@ -2,14 +2,21 @@
  * Blue Bucket Server - Retell Webhook Handler
  *
  * Handles incoming function calls from Retell AI voice agent.
- * Routes function requests to appropriate handlers and returns
- * responses in Retell's expected format.
+ * Routes function requests to modular handlers via routeFunctionCall
+ * and adapts responses to Retell's expected format.
  */
 
 const express = require('express');
 const crypto = require('crypto');
 const config = require('../config');
-const handlers = require('../handlers');
+const {
+  routeFunctionCall,
+  handleCalculateQuote,
+  handleLookupCustomer,
+  handleCheckAvailability,
+  handleBookAppointment,
+  handleTransferToCeo,
+} = require('../handlers');
 const { validateRetellMiddleware } = require('../utils/validators');
 
 const router = express.Router();
@@ -78,20 +85,57 @@ function verifyRetellSignature(req, res, next) {
 }
 
 // ============================================
-// Function Handler Mapping
+// Available Functions (for health check)
+// ============================================
+
+const AVAILABLE_FUNCTIONS = [
+  'lookup_customer',
+  'calculate_quote',
+  'check_availability',
+  'book_appointment',
+  'transfer_to_ceo',
+];
+
+// ============================================
+// Response Adapter
 // ============================================
 
 /**
- * Map of Retell function names to handler functions.
- * Add new functions here as they are defined in Retell dashboard.
+ * Adapt modular handler responses to Retell's expected format.
+ *
+ * Retell expects: { result: "spoken text for AI agent" }
+ * Modular handlers return: { success, message, data?, error? }
+ *
+ * This adapter extracts the spoken text and includes structured data
+ * for non-Retell consumers.
+ *
+ * @param {string} functionName - Name of the executed function
+ * @param {Object} handlerResult - Raw result from modular handler
+ * @returns {Object} Retell-compatible response with { result, ...structuredData }
  */
-const FUNCTION_HANDLERS = {
-  lookup_customer: handlers.lookupCustomer,
-  calculate_quote: handlers.calculateQuote,
-  check_availability: handlers.checkAvailability,
-  book_appointment: handlers.bookAppointment,
-  transfer_to_ceo: handlers.transferToCeo,
-};
+function formatRetellResponse(functionName, handlerResult) {
+  // If handler already has a `result` string (legacy format), pass through
+  if (typeof handlerResult.result === 'string') {
+    return handlerResult;
+  }
+
+  // Extract spoken text from standardized `message` field
+  const spokenText = handlerResult.message || 'I encountered an issue. Let me try something else.';
+
+  // Build Retell response with spoken text + full structured data
+  const response = {
+    result: spokenText,
+    ...handlerResult,
+  };
+
+  // For transfer_to_ceo, Retell needs transfer_number at top level
+  if (handlerResult.transfer_initiated && handlerResult.transfer_to) {
+    response.transfer_number = handlerResult.transfer_to;
+    response.result = 'transfer_initiated';
+  }
+
+  return response;
+}
 
 // ============================================
 // Webhook Endpoint
@@ -111,7 +155,7 @@ const FUNCTION_HANDLERS = {
  * }
  *
  * Response format (success):
- * { "result": "..." }
+ * { "result": "spoken text", ...structuredData }
  *
  * Response format (error):
  * { "result": "I'm having trouble with that right now." }
@@ -134,16 +178,6 @@ router.post('/webhook/retell', verifyRetellSignature, validateRetellMiddleware, 
     });
   }
 
-  // Find the appropriate handler
-  const handler = FUNCTION_HANDLERS[function_name];
-
-  if (!handler) {
-    console.error(`[RETELL] Unknown function: ${function_name}`);
-    return res.status(400).json({
-      result: "I'm not sure how to help with that. Is there something else I can assist you with?",
-    });
-  }
-
   try {
     // Build metadata object for handlers that need it
     const metadata = {
@@ -151,12 +185,16 @@ router.post('/webhook/retell', verifyRetellSignature, validateRetellMiddleware, 
       ...call_metadata,
     };
 
-    // Execute the handler
-    const result = await handler(args || {}, metadata);
+    // Route to modular handler via centralized router
+    const handlerResult = await routeFunctionCall(function_name, args || {}, metadata);
+
+    // Adapt response for Retell format
+    const result = formatRetellResponse(function_name, handlerResult);
 
     const duration = Date.now() - startTime;
     console.log(`[RETELL] Function ${function_name} completed in ${duration}ms:`, {
       call_id,
+      success: handlerResult.success,
       result_preview: typeof result.result === 'string'
         ? result.result.substring(0, 100) + '...'
         : result,
@@ -191,7 +229,7 @@ router.get('/webhook/retell/health', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    functions: Object.keys(FUNCTION_HANDLERS),
+    functions: AVAILABLE_FUNCTIONS,
   });
 });
 

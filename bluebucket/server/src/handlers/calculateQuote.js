@@ -63,6 +63,7 @@ async function handleCalculateQuote({
       return {
         success: false,
         error: 'Please provide valid property details (bedrooms, bathrooms, or square footage)',
+        message: 'I need some details about the property to calculate a quote. How many bedrooms and bathrooms does it have?',
       };
     }
 
@@ -163,17 +164,36 @@ async function handleCalculateQuote({
 
     console.log('[CalculateQuote] Quote calculated:', { total: quote.total, frequency: quote.frequency });
 
+    // Build spoken message for AI agent
+    let message = `For a ${beds}-bedroom, ${baths}-bathroom home`;
+    if (sqft > 0) {
+      message += ` at ${sqft.toLocaleString()} square feet`;
+    }
+    if (discountReason) {
+      message += ` with ${formatFrequency(frequency).toLowerCase()} service, the total would be $${roundToTwo(total)} per visit with our recurring discount`;
+    } else {
+      message += `, the total would be $${roundToTwo(total)}`;
+    }
+    if (addOnDetails.length > 0) {
+      const addOnNames = addOnDetails.map((a) => a.name.toLowerCase());
+      message += `, including ${addOnNames.join(' and ')}`;
+    }
+    message += `. This is an estimate - the final price may adjust based on property condition.`;
+
     return {
       success: true,
+      data: { quote, breakdown, notes },
       quote,
       breakdown,
       notes,
+      message,
     };
   } catch (error) {
     console.error('[CalculateQuote] Error calculating quote:', error.message);
     return {
       success: false,
       error: 'Unable to calculate quote at this time',
+      message: 'I\'m having trouble calculating your quote right now. Can you tell me more about the property?',
       details: error.message,
     };
   }

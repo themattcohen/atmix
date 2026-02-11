@@ -16,6 +16,7 @@ const config = require('../config');
 const redis = require('../redis');
 const retell = require('../retell/outbound');
 const twilio = require('../twilio/client');
+const { maskPhone } = require('../utils/phone');
 const { toZonedTime, fromZonedTime } = require('date-fns-tz');
 const { addDays } = require('date-fns');
 const availabilityEncoder = require('./availabilityEncoder');
@@ -116,7 +117,7 @@ async function checkRateLimit() {
 async function executeOutboundCall(leadData) {
   const { phone, requestId, propertyId, customerName, source, address } = leadData;
 
-  console.log(`[OUTBOUND] Executing call to ${phone} (${customerName || 'Unknown'})`);
+  console.log(`[OUTBOUND] Executing call to ${maskPhone(phone)} (${customerName || 'Unknown'})`);
 
   // Check rate limit (async - Redis-backed)
   if (!(await checkRateLimit())) {
@@ -214,7 +215,7 @@ async function executeOutboundCall(leadData) {
       twilioCallSid: twilioResult.callSid,
     };
   } catch (error) {
-    console.error(`[OUTBOUND] Call failed for ${phone}:`, error.message);
+    console.error(`[OUTBOUND] Call failed for ${maskPhone(phone)}:`, error.message);
 
     // Store failed attempt
     await storeCallRecord({
@@ -273,7 +274,7 @@ async function scheduleCall(leadData, delayMs) {
   const scheduleId = `${leadData.phone}-${Date.now()}`;
   const scheduledFor = new Date(Date.now() + delay).toISOString();
 
-  console.log(`[OUTBOUND] Scheduling call to ${leadData.phone} in ${delay / 1000}s (ID: ${scheduleId})`);
+  console.log(`[OUTBOUND] Scheduling call to ${maskPhone(leadData.phone)} in ${delay / 1000}s (ID: ${scheduleId})`);
 
   // Store in Redis for distributed state and recovery
   try {
@@ -377,7 +378,7 @@ async function storeCallRecord(record) {
 async function triggerLeadCall(leadData) {
   // Check if outbound calling is enabled
   if (!config.outboundCalling.enabled) {
-    console.log(`[OUTBOUND] Outbound calling disabled - skipping call to ${leadData.phone}`);
+    console.log(`[OUTBOUND] Outbound calling disabled - skipping call to ${maskPhone(leadData.phone)}`);
     return { scheduled: false, reason: 'Outbound calling disabled' };
   }
 
