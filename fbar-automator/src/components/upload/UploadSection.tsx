@@ -25,6 +25,7 @@ interface UploadResponse {
 
 interface StatusResponse {
   processingStatus: string
+  processingError?: string
 }
 
 const POLL_INTERVAL_MS = 3000
@@ -67,7 +68,7 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
         } else if (data.processingStatus === "FAILED") {
           updateFile(uploadId, {
             status: "error",
-            error: "Extraction failed",
+            error: data.processingError || "Extraction failed",
           })
           pollTimersRef.current.delete(uploadId)
         } else if (Date.now() - startTime > POLL_TIMEOUT_MS) {
@@ -102,7 +103,7 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
       updateFile(uploadId, { status: "uploading", progress: 10 })
 
       const formData = new FormData()
-      formData.append("file", file)
+      formData.append("files", file)
       formData.append("filingYearId", filingYearId)
 
       try {

@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
   // 1. Route protection: Check authentication for protected routes
   // ---------------------------------------------------------------------------
 
-  const protectedRoutes = ["/dashboard", "/clients", "/settings"]
+  const protectedRoutes = ["/", "/dashboard", "/clients", "/settings"]
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   )

@@ -57,6 +57,7 @@ export async function GET(_request: Request, context: RouteContext) {
           clientId: summary.client.id,
           clientLastName: summary.client.lastName,
         },
+        ipAddress: null,
       },
     })
 

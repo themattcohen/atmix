@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { redirect } from "next/navigation"
+import { redirect, notFound } from "next/navigation"
 import { ArrowLeft, FileWarning } from "lucide-react"
 import { Header } from "@/components/layout/Header"
 import { Card, CardContent } from "@/components/ui/Card"
@@ -33,13 +33,32 @@ interface StatementWithExtraction {
 export default async function ReviewPage({ params }: ReviewPageProps) {
   const { clientId, filingYear } = await params
   const session = await auth()
-  if (!session?.user?.practiceId) redirect("/login")
+  if (!session?.user?.practiceId) {
+    redirect("/login")
+  }
+
+  const practiceId = session.user.practiceId
+  const calendarYear = parseInt(filingYear, 10)
+  if (isNaN(calendarYear)) {
+    notFound()
+  }
+
+  // Verify client ownership
+  const client = await prisma.client.findFirst({
+    where: { id: clientId, practiceId },
+    select: { id: true },
+  })
+  if (!client) {
+    notFound()
+  }
 
   // Find the filing year record for this client
-  const filingYearRecord = await prisma.filingYear.findFirst({
+  const filingYearRecord = await prisma.filingYear.findUnique({
     where: {
-      clientId,
-      calendarYear: parseInt(filingYear, 10),
+      clientId_calendarYear: {
+        clientId,
+        calendarYear,
+      },
     },
   })
 

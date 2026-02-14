@@ -109,7 +109,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
         ipAddress:
           request.headers.get("x-forwarded-for") ||
           request.headers.get("x-real-ip") ||
-          undefined,
+          null,
       },
     })
 
