@@ -1,0 +1,328 @@
+// FBAR Automator - Prisma Schema
+// Multi-tenant SaaS for processing foreign bank statements into FBAR-ready data
+// PostgreSQL 16
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  ADMIN
+  PREPARER
+  REVIEWER
+
+  @@map("user_role")
+}
+
+enum ClientType {
+  INDIVIDUAL
+  ENTITY
+
+  @@map("client_type")
+}
+
+enum TINType {
+  SSN
+  ITIN
+  EIN
+  FOREIGN_TIN
+
+  @@map("tin_type")
+}
+
+enum AccountType {
+  BANK
+  SECURITIES
+  OTHER
+
+  @@map("account_type")
+}
+
+enum OwnershipType {
+  FINANCIAL_INTEREST
+  SIGNATURE_AUTHORITY
+  BOTH
+
+  @@map("ownership_type")
+}
+
+enum FilingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  REVIEWED
+  EXPORTED
+  FILED
+
+  @@map("filing_status")
+}
+
+enum FilingType {
+  ORIGINAL
+  AMENDED
+
+  @@map("filing_type")
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+
+  @@map("processing_status")
+}
+
+enum ExchangeRateSource {
+  TREASURY
+  MANUAL
+
+  @@map("exchange_rate_source")
+}
+
+// ---------------------------------------------------------------------------
+// Models
+// ---------------------------------------------------------------------------
+
+/// Multi-tenant organization (accounting/tax practice)
+model Practice {
+  id        String   @id @default(uuid()) @map("id")
+  name      String   @map("name")
+  address   Json?    @map("address")
+  ein       String?  @map("ein")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users     User[]
+  clients   Client[]
+  auditLogs AuditLog[]
+
+  @@map("practices")
+}
+
+/// Authenticated user within a practice
+model User {
+  id            String    @id @default(uuid()) @map("id")
+  practiceId    String    @map("practice_id")
+  email         String    @unique @map("email")
+  name          String    @map("name")
+  passwordHash  String    @map("password_hash")
+  role          UserRole  @map("role")
+  mfaSecret     String?   @map("mfa_secret")
+  mfaEnabled    Boolean   @default(false) @map("mfa_enabled")
+  emailVerified DateTime? @map("email_verified")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  practice             Practice            @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  assignedFilingYears  FilingYear[]        @relation("AssignedPreparer")
+  reviewedFilingYears  FilingYear[]        @relation("FilingReviewer")
+  reviewedAccountYears ReviewedAccountYear[]
+  auditLogs            AuditLog[]
+
+  @@index([practiceId])
+  @@map("users")
+}
+
+/// Client (individual or entity) who holds foreign accounts
+model Client {
+  id              String      @id @default(uuid()) @map("id")
+  practiceId      String      @map("practice_id")
+  type            ClientType  @map("type")
+  lastName        String      @map("last_name")
+  firstName       String?     @map("first_name")
+  tin             String?     @map("tin")
+  tinType         TINType?    @map("tin_type")
+  dateOfBirth     DateTime?   @map("date_of_birth")
+  usAddress       Json?       @map("us_address")
+  mailingAddress  Json?       @map("mailing_address")
+  spouseClientId  String?     @unique @map("spouse_client_id")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  practice        Practice         @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  spouse          Client?          @relation("SpouseRelation", fields: [spouseClientId], references: [id], onDelete: SetNull)
+  spouseOf        Client?          @relation("SpouseRelation")
+  foreignAccounts ForeignAccount[]
+  filingYears     FilingYear[]
+
+  @@index([practiceId])
+  @@map("clients")
+}
+
+/// A foreign financial account held by a client
+model ForeignAccount {
+  id                        String        @id @default(uuid()) @map("id")
+  clientId                  String        @map("client_id")
+  accountNumber             String        @map("account_number")
+  accountType               AccountType   @map("account_type")
+  accountTypeDescription    String?       @map("account_type_description")
+  institutionName           String        @map("institution_name")
+  institutionAddressStreet  String?       @map("institution_address_street")
+  institutionAddressCity    String?       @map("institution_address_city")
+  institutionAddressState   String?       @map("institution_address_state")
+  institutionAddressCountry String?       @map("institution_address_country")
+  institutionAddressPostal  String?       @map("institution_address_postal")
+  isJointlyOwned            Boolean       @default(false) @map("is_jointly_owned")
+  jointOwnerCount           Int           @default(0) @map("joint_owner_count")
+  ownershipType             OwnershipType @map("ownership_type")
+  isActive                  Boolean       @default(true) @map("is_active")
+  createdAt                 DateTime      @default(now()) @map("created_at")
+  updatedAt                 DateTime      @updatedAt @map("updated_at")
+
+  client              Client                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  statements          Statement[]
+  reviewedAccountYears ReviewedAccountYear[]
+
+  @@index([clientId])
+  @@map("foreign_accounts")
+}
+
+/// A tax filing year for a client (one FBAR per client per year)
+model FilingYear {
+  id                 String       @id @default(uuid()) @map("id")
+  clientId           String       @map("client_id")
+  calendarYear       Int          @map("calendar_year")
+  status             FilingStatus @default(NOT_STARTED) @map("status")
+  filingType         FilingType   @default(ORIGINAL) @map("filing_type")
+  has25PlusAccounts  Boolean      @default(false) @map("has_25_plus_accounts")
+  assignedPreparerId String?      @map("assigned_preparer_id")
+  reviewedById       String?      @map("reviewed_by_id")
+  reviewedAt         DateTime?    @map("reviewed_at")
+  exportedAt         DateTime?    @map("exported_at")
+  filedAt            DateTime?    @map("filed_at")
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+
+  client             Client                @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  assignedPreparer   User?                 @relation("AssignedPreparer", fields: [assignedPreparerId], references: [id], onDelete: SetNull)
+  reviewedBy         User?                 @relation("FilingReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  statements         Statement[]
+  reviewedAccountYears ReviewedAccountYear[]
+
+  @@unique([clientId, calendarYear])
+  @@index([assignedPreparerId])
+  @@index([status])
+  @@map("filing_years")
+}
+
+/// An uploaded bank statement document
+model Statement {
+  id                    String           @id @default(uuid()) @map("id")
+  filingYearId          String           @map("filing_year_id")
+  foreignAccountId      String?          @map("foreign_account_id")
+  filePath              String           @map("file_path")
+  fileName              String           @map("file_name")
+  fileType              String           @map("file_type")
+  fileSizeBytes         Int              @map("file_size_bytes")
+  pageCount             Int?             @map("page_count")
+  processingStatus      ProcessingStatus @default(PENDING) @map("processing_status")
+  processingStartedAt   DateTime?        @map("processing_started_at")
+  processingCompletedAt DateTime?        @map("processing_completed_at")
+  processingError       String?          @map("processing_error")
+  llmModelUsed          String?          @map("llm_model_used")
+  llmTokensUsed         Int?             @map("llm_tokens_used")
+  createdAt             DateTime         @default(now()) @map("created_at")
+
+  filingYear     FilingYear      @relation(fields: [filingYearId], references: [id], onDelete: Cascade)
+  foreignAccount ForeignAccount? @relation(fields: [foreignAccountId], references: [id], onDelete: SetNull)
+  extractedData  ExtractedData?
+
+  @@index([filingYearId])
+  @@index([processingStatus])
+  @@index([filingYearId, processingStatus])
+  @@map("statements")
+}
+
+/// LLM-extracted data from a bank statement
+model ExtractedData {
+  id                   String    @id @default(uuid()) @map("id")
+  statementId          String    @unique @map("statement_id")
+  rawLlmResponse       Json      @map("raw_llm_response")
+  bankName             String?   @map("bank_name")
+  bankAddress          Json?     @map("bank_address")
+  accountNumber        String?   @map("account_number")
+  accountTypeDetected  String?   @map("account_type_detected")
+  currencyCode         String?   @map("currency_code")
+  balances             Json?     @map("balances")
+  maxBalanceLocal      Decimal?  @map("max_balance_local") @db.Decimal(18, 2)
+  maxBalanceDate       DateTime? @map("max_balance_date")
+  statementPeriodStart DateTime? @map("statement_period_start")
+  statementPeriodEnd   DateTime? @map("statement_period_end")
+  confidenceScores     Json?     @map("confidence_scores")
+  extractionWarnings   Json?     @map("extraction_warnings")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  statement Statement @relation(fields: [statementId], references: [id], onDelete: Cascade)
+
+  @@map("extracted_data")
+}
+
+/// Reviewer-confirmed account data for a specific filing year
+model ReviewedAccountYear {
+  id                     String              @id @default(uuid()) @map("id")
+  foreignAccountId       String              @map("foreign_account_id")
+  filingYearId           String              @map("filing_year_id")
+  maxValueLocal          Decimal?            @map("max_value_local") @db.Decimal(18, 2)
+  currencyCode           String?             @map("currency_code")
+  exchangeRate           Decimal?            @map("exchange_rate") @db.Decimal(12, 6)
+  exchangeRateSource     ExchangeRateSource? @map("exchange_rate_source")
+  manualRateJustification String?            @map("manual_rate_justification")
+  maxValueUsd            Decimal?            @map("max_value_usd") @db.Decimal(18, 2)
+  isValueUnknown         Boolean             @default(false) @map("is_value_unknown")
+  reviewedById           String?             @map("reviewed_by_id")
+  reviewedAt             DateTime?           @map("reviewed_at")
+  corrections            Json?               @map("corrections")
+  createdAt              DateTime            @default(now()) @map("created_at")
+  updatedAt              DateTime            @updatedAt @map("updated_at")
+
+  foreignAccount ForeignAccount @relation(fields: [foreignAccountId], references: [id], onDelete: Cascade)
+  filingYear     FilingYear     @relation(fields: [filingYearId], references: [id], onDelete: Cascade)
+  reviewedBy     User?          @relation(fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@unique([foreignAccountId, filingYearId])
+  @@index([filingYearId])
+  @@map("reviewed_account_years")
+}
+
+/// Treasury exchange rates (Dec 31 rates for FBAR conversion)
+model ExchangeRate {
+  id           String   @id @default(uuid()) @map("id")
+  currencyCode String   @map("currency_code")
+  countryName  String   @map("country_name")
+  rate         Decimal  @map("rate") @db.Decimal(12, 6)
+  recordDate   DateTime @map("record_date")
+  source       String   @default("treasury_api") @map("source")
+  fetchedAt    DateTime @map("fetched_at")
+
+  @@unique([currencyCode, recordDate])
+  @@map("exchange_rates")
+}
+
+/// Immutable audit log for SOC 2 compliance
+model AuditLog {
+  id         String   @id @default(uuid()) @map("id")
+  userId     String?  @map("user_id")
+  practiceId String?  @map("practice_id")
+  action     String   @map("action")
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  metadata   Json?    @map("metadata")
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  practice Practice? @relation(fields: [practiceId], references: [id], onDelete: SetNull)
+
+  @@index([practiceId, createdAt])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
