@@ -76,7 +76,7 @@ export function Sidebar({ user }: SidebarProps) {
             {user.name}
           </p>
           <p className="truncate text-xs text-gray-400">
-            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+            {user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()}
           </p>
         </div>
         <button

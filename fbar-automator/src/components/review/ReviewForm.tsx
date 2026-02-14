@@ -31,11 +31,19 @@ interface ReviewFormProps {
   statementId: string
   accounts: ExtractedAccount[]
   onApprove: (
-    accountIndex: number,
-    corrections: Record<string, unknown>
+    foreignAccountId: string,
+    maxValueLocal: number,
+    currencyCode: string,
+    corrections: Record<string, { original: unknown; corrected: unknown }>
   ) => Promise<void>
   onRejectReExtract: (statementId: string) => Promise<void>
   className?: string
+  foreignAccounts: Array<{
+    id: string
+    accountNumber: string
+    institutionName: string
+  }>
+  filingYearId: string
 }
 
 type ConfidenceLevel = "high" | "medium" | "low"
@@ -141,11 +149,19 @@ interface AccountSectionProps {
   account: ExtractedAccount
   accountIndex: number
   onApprove: (
-    accountIndex: number,
-    corrections: Record<string, unknown>
+    foreignAccountId: string,
+    maxValueLocal: number,
+    currencyCode: string,
+    corrections: Record<string, { original: unknown; corrected: unknown }>
   ) => Promise<void>
   onRejectReExtract: (statementId: string) => Promise<void>
   statementId: string
+  foreignAccounts: Array<{
+    id: string
+    accountNumber: string
+    institutionName: string
+  }>
+  filingYearId: string
 }
 
 const ACCOUNT_TYPE_OPTIONS: { value: string; label: string }[] = [
@@ -160,6 +176,8 @@ function AccountSection({
   onApprove,
   onRejectReExtract,
   statementId,
+  foreignAccounts,
+  filingYearId,
 }: AccountSectionProps) {
   // Editable field state -- initialized from extracted values
   const [bankName, setBankName] = useState(account.bank_name ?? "")
@@ -248,12 +266,28 @@ function AccountSection({
   const handleApprove = async () => {
     setIsApproving(true)
     try {
-      // Convert corrections map to simple {field: correctedValue} for the API
-      const correctionPayload: Record<string, unknown> = {}
-      for (const [field, entry] of Object.entries(corrections)) {
-        correctionPayload[field] = entry.corrected
+      // Match extracted account to ForeignAccount by account number
+      const matchedAccount = foreignAccounts.find(
+        (fa) => fa.accountNumber === accountNumber
+      )
+
+      if (!matchedAccount) {
+        console.error(
+          `No ForeignAccount found matching account number: ${accountNumber}`
+        )
+        alert(
+          `Cannot approve: No matching account found for account number ${accountNumber}`
+        )
+        return
       }
-      await onApprove(accountIndex, correctionPayload)
+
+      // Send corrections in the {original, corrected} format
+      await onApprove(
+        matchedAccount.id,
+        maxBalanceAmount,
+        currency,
+        corrections
+      )
     } finally {
       setIsApproving(false)
     }
@@ -608,6 +642,8 @@ export function ReviewForm({
   onApprove,
   onRejectReExtract,
   className,
+  foreignAccounts,
+  filingYearId,
 }: ReviewFormProps) {
   if (accounts.length === 0) {
     return (
@@ -632,6 +668,8 @@ export function ReviewForm({
           onApprove={onApprove}
           onRejectReExtract={onRejectReExtract}
           statementId={statementId}
+          foreignAccounts={foreignAccounts}
+          filingYearId={filingYearId}
         />
       ))}
     </div>

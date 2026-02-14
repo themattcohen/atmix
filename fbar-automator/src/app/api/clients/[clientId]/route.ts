@@ -53,6 +53,11 @@ function maskTIN(tin: string | null): string | null {
   return `***-**-${digits.slice(-4)}`
 }
 
+function maskAccountNumber(accountNumber: string): string {
+  if (accountNumber.length <= 4) return accountNumber
+  return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4)
+}
+
 async function getAuthorizedClient(clientId: string, practiceId: string) {
   return prisma.client.findFirst({
     where: { id: clientId, practiceId },
@@ -117,7 +122,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
       spouseClientId: client.spouseClientId,
       foreignAccounts: client.foreignAccounts.map((fa) => ({
         id: fa.id,
-        accountNumber: fa.accountNumber,
+        accountNumber: maskAccountNumber(fa.accountNumber),
         accountType: fa.accountType,
         accountTypeDescription: fa.accountTypeDescription,
         institutionName: fa.institutionName,

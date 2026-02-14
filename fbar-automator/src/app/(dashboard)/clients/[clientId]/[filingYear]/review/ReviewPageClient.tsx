@@ -1,11 +1,26 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { FileText, ChevronDown } from "lucide-react"
+import dynamic from "next/dynamic"
+import { FileText, ChevronDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ReviewForm } from "@/components/review/ReviewForm"
-import { DocumentViewer } from "@/components/review/DocumentViewer"
 import type { ExtractedAccount } from "@/types/extraction"
+
+const DocumentViewer = dynamic(
+  () =>
+    import("@/components/review/DocumentViewer").then(
+      (mod) => mod.DocumentViewer
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex min-h-[600px] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    ),
+  }
+)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,6 +39,12 @@ interface ReviewPageClientProps {
   statements: StatementWithExtraction[]
   clientId: string
   filingYear: string
+  filingYearId: string
+  foreignAccounts: Array<{
+    id: string
+    accountNumber: string
+    institutionName: string
+  }>
 }
 
 // ---------------------------------------------------------------------------
@@ -34,6 +55,8 @@ export function ReviewPageClient({
   statements,
   clientId,
   filingYear,
+  filingYearId,
+  foreignAccounts,
 }: ReviewPageClientProps) {
   const [activeStatementIndex, setActiveStatementIndex] = useState(0)
   const [selectorOpen, setSelectorOpen] = useState(false)
@@ -41,18 +64,22 @@ export function ReviewPageClient({
   const activeStatement = statements[activeStatementIndex]
 
   const handleApprove = useCallback(
-    async (accountIndex: number, corrections: Record<string, unknown>) => {
+    async (
+      foreignAccountId: string,
+      maxValueLocal: number,
+      currencyCode: string,
+      corrections: Record<string, { original: unknown; corrected: unknown }>
+    ) => {
       const response = await fetch(
-        `/api/accounts/${activeStatement.id}/review`,
+        `/api/accounts/${foreignAccountId}/review`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            statementId: activeStatement.id,
-            accountIndex,
+            filingYearId,
+            maxValueLocal,
+            currencyCode,
             corrections,
-            clientId,
-            filingYear,
           }),
         }
       )
@@ -63,7 +90,7 @@ export function ReviewPageClient({
         throw new Error(message)
       }
     },
-    [activeStatement, clientId, filingYear]
+    [filingYearId]
   )
 
   const handleRejectReExtract = useCallback(
@@ -173,6 +200,8 @@ export function ReviewPageClient({
             accounts={activeStatement.accounts}
             onApprove={handleApprove}
             onRejectReExtract={handleRejectReExtract}
+            foreignAccounts={foreignAccounts}
+            filingYearId={filingYearId}
           />
         </div>
       </div>

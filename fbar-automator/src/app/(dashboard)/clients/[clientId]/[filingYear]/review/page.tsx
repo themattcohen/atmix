@@ -71,6 +71,12 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     )
   }
 
+  // Fetch client's foreign accounts for matching
+  const foreignAccounts = await prisma.foreignAccount.findMany({
+    where: { clientId },
+    select: { id: true, accountNumber: true, institutionName: true },
+  })
+
   // Fetch completed statements with extracted data - use select for efficiency
   const statements = await prisma.statement.findMany({
     where: {
@@ -149,6 +155,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               statements={statementData}
               clientId={clientId}
               filingYear={filingYear}
+              filingYearId={filingYearRecord.id}
+              foreignAccounts={foreignAccounts}
             />
           </div>
         ) : (

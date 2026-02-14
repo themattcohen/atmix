@@ -26,7 +26,7 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
       updateFile(uploadId, { status: "uploading", progress: 10 })
 
       const formData = new FormData()
-      formData.append("file", file)
+      formData.append("files", file)
       formData.append("filingYearId", filingYearId)
       formData.append("clientId", clientId)
 

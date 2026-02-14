@@ -71,7 +71,7 @@ export default async function FilingYearPage({
   if (!session?.user?.practiceId) redirect("/login")
 
   const practiceId = session.user.practiceId
-  const role = session.user.role
+  const role = session.user.role || "PREPARER"
   const calendarYear = parseInt(filingYear, 10)
 
   if (isNaN(calendarYear)) notFound()

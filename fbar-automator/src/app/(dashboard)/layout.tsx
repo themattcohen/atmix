@@ -16,7 +16,7 @@ export default async function DashboardLayout({
         user={{
           name: session.user.name || "",
           email: session.user.email || "",
-          role: session.user.role || "preparer",
+          role: session.user.role || "PREPARER",
         }}
       />
       <main className="ml-64 min-h-screen p-8">{children}</main>

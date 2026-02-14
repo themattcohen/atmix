@@ -15,10 +15,8 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString()
+// Use local copy — avoids webpack import.meta.url issues
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
 const ZOOM_STEP = 0.25
 const ZOOM_MIN = 0.5
