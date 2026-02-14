@@ -23,12 +23,10 @@ export function middleware(request: NextRequest) {
   // 1. Route protection: Check authentication for protected routes
   // ---------------------------------------------------------------------------
 
-  const protectedRoutes = ["/", "/dashboard", "/clients", "/settings"]
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  )
+  const publicPaths = ["/api/auth", "/api/health", "/login", "/register"]
+  const isPublicRoute = publicPaths.some((p) => pathname.startsWith(p))
 
-  if (isProtectedRoute) {
+  if (!isPublicRoute) {
     // Check for NextAuth session token cookie
     const sessionToken =
       request.cookies.get("next-auth.session-token")?.value ||
@@ -83,6 +81,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/dashboard/:path*",
     "/clients/:path*",
     "/settings/:path*",

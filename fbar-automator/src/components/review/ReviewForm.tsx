@@ -112,6 +112,8 @@ function formatCurrency(amount: number): string {
   }).format(amount)
 }
 
+const normalizeAccountNum = (s: string) => s.replace(/[\s\-\.\/]/g, "").toUpperCase()
+
 // ---------------------------------------------------------------------------
 // Field label component with optional confidence badge and modified indicator
 // ---------------------------------------------------------------------------
@@ -271,14 +273,13 @@ function AccountSection({
     try {
       // Match extracted account to ForeignAccount by account number
       const matchedAccount = foreignAccounts.find(
-        (fa) => fa.accountNumber === accountNumber
+        (fa) => normalizeAccountNum(fa.accountNumber) === normalizeAccountNum(accountNumber)
       )
 
       if (!matchedAccount) {
         setErrorMessage(
           `No matching foreign account found for account number "${accountNumber}". ` +
-          `Please ensure the account has been added to the client's foreign accounts first. ` +
-          `Available accounts: ${foreignAccounts.map((fa) => fa.accountNumber).join(", ") || "none"}`
+          `Please ensure the account has been added to the client's foreign accounts first.`
         )
         return
       }

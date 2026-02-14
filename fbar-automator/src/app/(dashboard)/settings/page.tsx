@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { Header } from "@/components/layout/Header"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { safeDecrypt } from "@/lib/encryption"
 import { SettingsClient } from "./SettingsClient"
 
 // ---------------------------------------------------------------------------
@@ -57,11 +58,18 @@ export default async function SettingsPage() {
   const isAdmin = session.user.role === "ADMIN"
   const hasApiKey = !!process.env.ANTHROPIC_API_KEY
 
+  let displayEin: string | null = null
+  if (practice.ein) {
+    const decrypted = safeDecrypt(practice.ein)
+    const digits = decrypted.replace(/\D/g, "")
+    displayEin = digits.length >= 4 ? `**-***${digits.slice(-4)}` : "****"
+  }
+
   const practiceData: PracticeData = {
     id: practice.id,
     name: practice.name,
     address: practice.address as PracticeData["address"],
-    ein: practice.ein,
+    ein: displayEin,
   }
 
   const teamMembers: TeamMember[] = users.map((u) => ({

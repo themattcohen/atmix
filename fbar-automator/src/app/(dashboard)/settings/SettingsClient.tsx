@@ -68,6 +68,7 @@ function PracticeSection({
   const [state, setState] = useState(practice.address?.state || "")
   const [zip, setZip] = useState(practice.address?.zip || "")
   const [ein, setEin] = useState(practice.ein || "")
+  const [einModified, setEinModified] = useState(false)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{
     type: "success" | "error"
@@ -85,7 +86,7 @@ function PracticeSection({
         body: JSON.stringify({
           name,
           address: { street, city, state, zip },
-          ein: ein || null,
+          ...(einModified ? { ein: ein || null } : {}),
         }),
       })
 
@@ -184,7 +185,10 @@ function PracticeSection({
             <Input
               id="practice-ein"
               value={ein}
-              onChange={(e) => setEin(e.target.value)}
+              onChange={(e) => {
+                setEin(e.target.value)
+                setEinModified(true)
+              }}
               disabled={!isAdmin}
               placeholder="XX-XXXXXXX"
               className="mt-1 max-w-xs"

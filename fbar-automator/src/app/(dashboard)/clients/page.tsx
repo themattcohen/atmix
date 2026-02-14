@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { safeDecrypt } from "@/lib/encryption"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -170,7 +171,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                               : "Entity"}
                           </td>
                           <td className="px-6 py-4 font-mono text-gray-600">
-                            {maskTIN(client.tin) ?? "-"}
+                            {maskTIN(client.tin ? safeDecrypt(client.tin) : null) ?? "-"}
                           </td>
                           <td className="px-6 py-4 text-gray-600">
                             {client._count.foreignAccounts}

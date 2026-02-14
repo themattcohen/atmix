@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { safeDecrypt } from "@/lib/encryption"
 import { AddAccountForm } from "./AddAccountForm"
 import { AddFilingYearForm } from "./AddFilingYearForm"
 
@@ -24,6 +25,11 @@ function maskTIN(tin: string | null): string | null {
   const digits = tin.replace(/\D/g, "")
   if (digits.length < 4) return "****"
   return `***-**-${digits.slice(-4)}`
+}
+
+function maskAccountNumber(num: string): string {
+  if (num.length <= 4) return num
+  return "*".repeat(num.length - 4) + num.slice(-4)
 }
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
@@ -127,7 +133,7 @@ export default async function ClientDetailPage({
                 <CardTitle>{displayName}</CardTitle>
                 <p className="text-sm text-gray-500">
                   {client.type === "INDIVIDUAL" ? "Individual" : "Entity"}
-                  {client.tinType && ` | ${client.tinType}: ${maskTIN(client.tin)}`}
+                  {client.tinType && ` | ${client.tinType}: ${maskTIN(client.tin ? safeDecrypt(client.tin) : null)}`}
                 </p>
               </div>
             </div>
@@ -189,7 +195,7 @@ export default async function ClientDetailPage({
                             {account.institutionName}
                           </td>
                           <td className="py-2 pr-4 font-mono text-gray-600">
-                            {account.accountNumber}
+                            {maskAccountNumber(account.accountNumber)}
                           </td>
                           <td className="py-2 pr-4 text-gray-600">
                             {account.accountType}

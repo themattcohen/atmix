@@ -178,6 +178,12 @@ export async function submitForReview(
     include: { client: { include: { foreignAccounts: true } } },
   })
 
+  if (!["NOT_STARTED", "IN_PROGRESS"].includes(filingYear.status)) {
+    throw new Error(
+      `Cannot submit for review: filing status is "${filingYear.status}", expected "NOT_STARTED" or "IN_PROGRESS"`
+    )
+  }
+
   // Get active accounts for this client
   const activeAccounts = filingYear.client.foreignAccounts.filter(
     (fa) => fa.isActive

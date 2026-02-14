@@ -131,15 +131,23 @@ export async function PUT(request: NextRequest) {
     const data = parsed.data
     const { id: userId, practiceId } = session.user
 
-    // C-2: Encrypt the EIN before storing
-    const encryptedEin = data.ein ? encrypt(data.ein) : null
+    // C-2: Encrypt the EIN before storing.
+    // If ein is undefined (not sent) or matches the masked pattern, skip update.
+    const maskedPattern = /^\*\*-\*\*\*\d{4}$/
+    let einUpdate: string | null | undefined = undefined // undefined = skip
+    if (data.ein !== undefined && data.ein !== null && !maskedPattern.test(data.ein)) {
+      einUpdate = encrypt(data.ein)
+    } else if (data.ein === null) {
+      einUpdate = null // explicitly clearing EIN
+    }
+    // else: ein was undefined or matched mask → einUpdate stays undefined → Prisma skips
 
     const practice = await prisma.practice.update({
       where: { id: practiceId },
       data: {
         name: data.name,
         address: data.address ?? undefined,
-        ein: encryptedEin,
+        ein: einUpdate,
       },
     })
 
@@ -153,7 +161,7 @@ export async function PUT(request: NextRequest) {
         metadata: {
           name: data.name,
           addressUpdated: !!data.address,
-          einUpdated: data.ein !== null,
+          einUpdated: einUpdate !== undefined,
         },
         ipAddress:
           request.headers.get("x-forwarded-for") ||
@@ -163,9 +171,9 @@ export async function PUT(request: NextRequest) {
 
     // M-7: Return masked EIN in response
     let maskedEin: string | null = null
-    if (encryptedEin) {
+    if (practice.ein) {
       try {
-        const decryptedEin = safeDecrypt(encryptedEin)
+        const decryptedEin = safeDecrypt(practice.ein)
         if (decryptedEin.length >= 4) {
           const last4 = decryptedEin.slice(-4)
           maskedEin = `**-***${last4}`

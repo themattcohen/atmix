@@ -252,7 +252,7 @@ export default async function ExportPage({ params }: ExportPageProps) {
                 <ExportDownloadButtons
                   filingYearId={filingYearRecord.id}
                   type="csv"
-                  isReady={true}
+                  isReady={isExportReady}
                 />
               </div>
             </CardContent>
@@ -307,7 +307,7 @@ export default async function ExportPage({ params }: ExportPageProps) {
                 <ExportDownloadButtons
                   filingYearId={filingYearRecord.id}
                   type="pdf"
-                  isReady={true}
+                  isReady={isExportReady}
                 />
               </div>
             </CardContent>

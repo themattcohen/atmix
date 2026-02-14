@@ -14,27 +14,25 @@ import { validateExtractionResult } from "@/lib/validation"
 // Hoisted shared mocks — survive vi.mock hoisting and module resets
 // ---------------------------------------------------------------------------
 
-const { mockCreate, mockGetFileBuffer } = vi.hoisted(() => ({
-  mockCreate: vi.fn(),
-  mockGetFileBuffer: vi.fn(),
-}))
-
-vi.mock("@anthropic-ai/sdk", () => {
+const { mockCreate, mockGetFileBuffer, MockAnthropic } = vi.hoisted(() => {
+  const mockCreate = vi.fn()
+  const mockGetFileBuffer = vi.fn()
   const MockAnthropic = vi.fn().mockImplementation(() => ({
-    messages: {
-      create: mockCreate,
-    },
+    messages: { create: mockCreate },
   }))
-  // Attach APIError as a static property like the real SDK
-  (MockAnthropic as any).APIError = class APIError extends Error {
+  ;(MockAnthropic as any).APIError = class APIError extends Error {
     status: number
     constructor(status: number, message: string) {
       super(message)
       this.status = status
     }
   }
-  return { default: MockAnthropic }
+  return { mockCreate, mockGetFileBuffer, MockAnthropic }
 })
+
+vi.mock("@anthropic-ai/sdk", () => ({
+  default: MockAnthropic,
+}))
 
 vi.mock("@/lib/s3", () => ({
   getFileBuffer: mockGetFileBuffer,
