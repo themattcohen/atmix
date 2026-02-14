@@ -203,9 +203,11 @@ function AccountSection({
   // Collapse state for balance table
   const [balancesOpen, setBalancesOpen] = useState(false)
 
-  // Loading states
+  // Loading & result states
   const [isApproving, setIsApproving] = useState(false)
   const [isRejecting, setIsRejecting] = useState(false)
+  const [isApproved, setIsApproved] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   // Build corrections map by comparing current state to originals
   const buildCorrections = useCallback((): CorrectionMap => {
@@ -265,6 +267,7 @@ function AccountSection({
 
   const handleApprove = async () => {
     setIsApproving(true)
+    setErrorMessage(null)
     try {
       // Match extracted account to ForeignAccount by account number
       const matchedAccount = foreignAccounts.find(
@@ -272,11 +275,10 @@ function AccountSection({
       )
 
       if (!matchedAccount) {
-        console.error(
-          `No ForeignAccount found matching account number: ${accountNumber}`
-        )
-        alert(
-          `Cannot approve: No matching account found for account number ${accountNumber}`
+        setErrorMessage(
+          `No matching foreign account found for account number "${accountNumber}". ` +
+          `Please ensure the account has been added to the client's foreign accounts first. ` +
+          `Available accounts: ${foreignAccounts.map((fa) => fa.accountNumber).join(", ") || "none"}`
         )
         return
       }
@@ -287,6 +289,11 @@ function AccountSection({
         maxBalanceAmount,
         currency,
         corrections
+      )
+      setIsApproved(true)
+    } catch (err) {
+      setErrorMessage(
+        err instanceof Error ? err.message : "Approval failed. Please try again."
       )
     } finally {
       setIsApproving(false)
@@ -593,6 +600,34 @@ function AccountSection({
           </div>
         )}
 
+        {/* Success Banner */}
+        {isApproved && (
+          <div
+            className="rounded-md border border-green-300 bg-green-50 p-3"
+            role="status"
+          >
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-600" aria-hidden="true" />
+              <p className="text-sm font-medium text-green-800">
+                Account approved successfully
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Error Banner */}
+        {errorMessage && (
+          <div
+            className="rounded-md border border-red-300 bg-red-50 p-3"
+            role="alert"
+          >
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-600" aria-hidden="true" />
+              <p className="text-sm text-red-800">{errorMessage}</p>
+            </div>
+          </div>
+        )}
+
         {/* Correction Count & Actions */}
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
           <div className="text-sm text-gray-500">
@@ -610,7 +645,7 @@ function AccountSection({
               variant="outline"
               size="sm"
               onClick={handleReject}
-              disabled={isRejecting || isApproving}
+              disabled={isRejecting || isApproving || isApproved}
               className="border-red-300 text-red-700 hover:bg-red-50"
             >
               <RotateCcw className="mr-1.5 h-4 w-4" aria-hidden="true" />
@@ -619,11 +654,11 @@ function AccountSection({
             <Button
               size="sm"
               onClick={handleApprove}
-              disabled={isApproving || isRejecting}
-              className="bg-green-600 text-white hover:bg-green-700"
+              disabled={isApproving || isRejecting || isApproved}
+              className={isApproved ? "bg-green-700 text-white" : "bg-green-600 text-white hover:bg-green-700"}
             >
               <Check className="mr-1.5 h-4 w-4" aria-hidden="true" />
-              {isApproving ? "Approving..." : "Approve Account"}
+              {isApproved ? "Approved" : isApproving ? "Approving..." : "Approve Account"}
             </Button>
           </div>
         </div>
