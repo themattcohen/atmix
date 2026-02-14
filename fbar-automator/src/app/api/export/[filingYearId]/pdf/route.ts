@@ -6,6 +6,7 @@
 // practice documentation and internal review.
 //
 // Authorization: authenticated user whose practice owns the filing year.
+// Filing status must be REVIEWED, EXPORTED, or FILED.
 // Audit: creates a WORKPAPER_PDF_EXPORTED audit log entry on success.
 // ---------------------------------------------------------------------------
 
@@ -35,10 +36,21 @@ export async function GET(_request: Request, context: RouteContext) {
       session.user.practiceId
     )
 
-    // 3. Generate PDF workpaper with pre-fetched data
+    // 3. Status check: only export reviewed/approved filings
+    const allowedStatuses = ["REVIEWED", "EXPORTED", "FILED"]
+    if (!allowedStatuses.includes(summary.filingYear.status)) {
+      return new Response(
+        JSON.stringify({
+          error: `Cannot export PDF: filing status is "${summary.filingYear.status}". Filing must be in REVIEWED, EXPORTED, or FILED status.`,
+        }),
+        { status: 409, headers: { "Content-Type": "application/json" } }
+      )
+    }
+
+    // 4. Generate PDF workpaper with pre-fetched data
     const buffer = await generateWorkpaperPdf(filingYearId, summary)
 
-    // 4. Create audit log entry
+    // 5. Create audit log entry
     const clientLastName = summary.client.lastName.replace(
       /[^a-zA-Z0-9]/g,
       "_"
@@ -61,7 +73,7 @@ export async function GET(_request: Request, context: RouteContext) {
       },
     })
 
-    // 5. Return PDF download
+    // 6. Return PDF download
     const filename = `fbar_workpaper_${year}_${clientLastName}.pdf`
 
     return new Response(new Uint8Array(buffer), {

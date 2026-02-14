@@ -64,8 +64,8 @@ export async function GET(request: NextRequest) {
 
     const { practiceId } = session.user
     const search = request.nextUrl.searchParams.get("search")
-    const page = parseInt(request.nextUrl.searchParams.get("page") || "1", 10)
-    const pageSize = parseInt(request.nextUrl.searchParams.get("pageSize") || "20", 10)
+    const page = Math.max(parseInt(request.nextUrl.searchParams.get("page") || "1", 10), 1)
+    const pageSize = Math.min(Math.max(parseInt(request.nextUrl.searchParams.get("pageSize") || "20", 10), 1), 100)
 
     const where = {
       practiceId,
@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    prisma.auditLog.create({
+    await prisma.auditLog.create({
       data: {
         userId,
         practiceId,
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
           request.headers.get("x-real-ip") ??
           null,
       },
-    }).catch(console.error)
+    })
 
     return NextResponse.json(
       {

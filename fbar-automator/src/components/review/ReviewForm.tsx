@@ -209,6 +209,7 @@ function AccountSection({
   const [isApproving, setIsApproving] = useState(false)
   const [isRejecting, setIsRejecting] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
+  const [reExtractRequested, setReExtractRequested] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   // Build corrections map by comparing current state to originals
@@ -303,8 +304,14 @@ function AccountSection({
 
   const handleReject = async () => {
     setIsRejecting(true)
+    setErrorMessage(null)
     try {
       await onRejectReExtract(statementId)
+      setReExtractRequested(true)
+    } catch (err) {
+      setErrorMessage(
+        err instanceof Error ? err.message : "Re-extraction request failed. Please try again."
+      )
     } finally {
       setIsRejecting(false)
     }
@@ -616,6 +623,21 @@ function AccountSection({
           </div>
         )}
 
+        {/* Re-extraction Requested Banner */}
+        {reExtractRequested && (
+          <div
+            className="rounded-md border border-blue-300 bg-blue-50 p-3"
+            role="status"
+          >
+            <div className="flex items-center gap-2">
+              <RotateCcw className="h-5 w-5 text-blue-600" aria-hidden="true" />
+              <p className="text-sm font-medium text-blue-800">
+                Re-extraction requested. The statement will be reprocessed.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Error Banner */}
         {errorMessage && (
           <div
@@ -646,7 +668,7 @@ function AccountSection({
               variant="outline"
               size="sm"
               onClick={handleReject}
-              disabled={isRejecting || isApproving || isApproved}
+              disabled={isRejecting || isApproving || isApproved || reExtractRequested}
               className="border-red-300 text-red-700 hover:bg-red-50"
             >
               <RotateCcw className="mr-1.5 h-4 w-4" aria-hidden="true" />
@@ -655,7 +677,7 @@ function AccountSection({
             <Button
               size="sm"
               onClick={handleApprove}
-              disabled={isApproving || isRejecting || isApproved}
+              disabled={isApproving || isRejecting || isApproved || reExtractRequested}
               className={isApproved ? "bg-green-700 text-white" : "bg-green-600 text-white hover:bg-green-700"}
             >
               <Check className="mr-1.5 h-4 w-4" aria-hidden="true" />

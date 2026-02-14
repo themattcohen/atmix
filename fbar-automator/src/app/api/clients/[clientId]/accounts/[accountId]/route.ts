@@ -201,7 +201,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       data: updateData,
     })
 
-    prisma.auditLog.create({
+    await prisma.auditLog.create({
       data: {
         userId,
         practiceId,
@@ -218,7 +218,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
           request.headers.get("x-real-ip") ??
           null,
       },
-    }).catch(console.error)
+    })
 
     return NextResponse.json({
       id: updated.id,
@@ -276,7 +276,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       where: { id: accountId },
     })
 
-    prisma.auditLog.create({
+    await prisma.auditLog.create({
       data: {
         userId,
         practiceId,
@@ -293,7 +293,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
           request.headers.get("x-real-ip") ??
           null,
       },
-    }).catch(console.error)
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {

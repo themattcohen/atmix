@@ -309,6 +309,9 @@ export default async function FilingYearPage({
           isFullyReviewed={progress.isFullyReviewed}
           isReadyForReview={progress.isReadyForReview}
           userRole={role}
+          totalStatements={progress.totalStatements}
+          pendingStatements={progress.pendingStatements}
+          failedStatements={progress.failedStatements}
         />
 
         {/* Quick Links */}

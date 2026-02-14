@@ -11,6 +11,9 @@ interface FilingActionsProps {
   isFullyReviewed: boolean
   isReadyForReview: boolean
   userRole: string | undefined
+  totalStatements: number
+  pendingStatements: number
+  failedStatements: number
 }
 
 export function FilingActions({
@@ -19,6 +22,9 @@ export function FilingActions({
   isFullyReviewed,
   isReadyForReview,
   userRole,
+  totalStatements,
+  pendingStatements,
+  failedStatements,
 }: FilingActionsProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -137,8 +143,13 @@ export function FilingActions({
 
       {showSubmitForReview && !isReadyForReview && (
         <p className="mt-2 text-xs text-gray-500">
-          All statements must be processed and all accounts reviewed before
-          submitting for review.
+          {totalStatements === 0
+            ? "Upload and process at least one statement before submitting for review."
+            : failedStatements > 0
+              ? `${failedStatements} statement(s) failed processing. Reprocess or remove them before submitting.`
+              : pendingStatements > 0
+                ? `${pendingStatements} statement(s) still processing. Please wait for completion.`
+                : "All statements must be processed before submitting for review."}
         </p>
       )}
     </div>

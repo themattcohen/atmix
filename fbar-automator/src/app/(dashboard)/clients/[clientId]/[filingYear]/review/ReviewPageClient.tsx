@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
 import { FileText, ChevronDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -58,6 +59,7 @@ export function ReviewPageClient({
   filingYearId,
   foreignAccounts,
 }: ReviewPageClientProps) {
+  const router = useRouter()
   const [activeStatementIndex, setActiveStatementIndex] = useState(0)
   const [selectorOpen, setSelectorOpen] = useState(false)
 
@@ -109,8 +111,10 @@ export function ReviewPageClient({
           data?.error ?? `Re-extraction request failed (${response.status})`
         throw new Error(message)
       }
+
+      router.refresh()
     },
-    []
+    [router]
   )
 
   return (

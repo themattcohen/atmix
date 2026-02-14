@@ -92,7 +92,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
 
   // Fetch client's foreign accounts for matching
   const foreignAccounts = await prisma.foreignAccount.findMany({
-    where: { clientId },
+    where: { clientId, isActive: true },
     select: { id: true, accountNumber: true, institutionName: true },
   })
 

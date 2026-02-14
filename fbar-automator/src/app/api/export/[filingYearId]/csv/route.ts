@@ -6,6 +6,7 @@
 //   ?type=accounts           Simplified account list for tax preparer workpapers
 //
 // Authorization: authenticated user whose practice owns the filing year.
+// Filing status must be REVIEWED, EXPORTED, or FILED.
 // ---------------------------------------------------------------------------
 
 import { NextRequest } from "next/server"
@@ -34,7 +35,18 @@ export async function GET(request: NextRequest, context: RouteContext) {
       session.user.practiceId
     )
 
-    // 3. Determine export type from query params
+    // 3. Status check: only export reviewed/approved filings
+    const allowedStatuses = ["REVIEWED", "EXPORTED", "FILED"]
+    if (!allowedStatuses.includes(summary.filingYear.status)) {
+      return new Response(
+        JSON.stringify({
+          error: `Cannot export CSV: filing status is "${summary.filingYear.status}". Filing must be in REVIEWED, EXPORTED, or FILED status.`,
+        }),
+        { status: 409, headers: { "Content-Type": "application/json" } }
+      )
+    }
+
+    // 4. Determine export type from query params
     const { searchParams } = new URL(request.url)
     const exportType = searchParams.get("type") ?? "fbar"
 
@@ -45,19 +57,19 @@ export async function GET(request: NextRequest, context: RouteContext) {
       )
     }
 
-    // 4. Generate CSV with pre-fetched data
+    // 5. Generate CSV with pre-fetched data
     const csv =
       exportType === "fbar"
         ? await generateFBARCsv(filingYearId, summary)
         : await generateAccountsCsv(filingYearId, summary)
 
-    // 5. Build filename
+    // 6. Build filename
     const lastName = summary.client.lastName.replace(/[^a-zA-Z0-9]/g, "_")
     const year = summary.filingYear.calendarYear
     const suffix = exportType === "accounts" ? "_accounts" : ""
     const filename = `fbar_${lastName}_${year}${suffix}.csv`
 
-    // 6. Return CSV download
+    // 7. Return CSV download
     return new Response(csv, {
       headers: {
         "Content-Type": "text/csv",

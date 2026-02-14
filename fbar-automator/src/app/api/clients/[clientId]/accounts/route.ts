@@ -173,7 +173,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       },
     })
 
-    prisma.auditLog.create({
+    await prisma.auditLog.create({
       data: {
         userId,
         practiceId,
@@ -192,7 +192,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
           request.headers.get("x-real-ip") ??
           null,
       },
-    }).catch(console.error)
+    })
 
     return NextResponse.json(
       {

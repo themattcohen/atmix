@@ -9,6 +9,7 @@
 // ---------------------------------------------------------------------------
 
 import { prisma } from "@/lib/db"
+import { safeDecrypt } from "@/lib/encryption"
 import type { FilingYear, Prisma } from "@prisma/client"
 
 // ---------------------------------------------------------------------------
@@ -98,9 +99,9 @@ export async function getFilingProgress(
       where: { clientId: filingYear.clientId, isActive: true },
     }),
 
-    // Count reviewed account years for this filing year
+    // Count reviewed account years for this filing year (active accounts only)
     prisma.reviewedAccountYear.count({
-      where: { filingYearId },
+      where: { filingYearId, foreignAccount: { isActive: true } },
     }),
 
     // Count statements grouped by processing status
@@ -206,8 +207,12 @@ export async function submitForReview(
   if (unreviewedAccounts.length > 0) {
     const unreviewedDetails = unreviewedAccounts
       .map(
-        (fa) =>
-          `${fa.institutionName} (${fa.accountNumber})`
+        (fa) => {
+          const masked = fa.accountNumber.length > 4
+            ? "*".repeat(fa.accountNumber.length - 4) + fa.accountNumber.slice(-4)
+            : fa.accountNumber
+          return `${fa.institutionName} (${masked})`
+        }
       )
       .join(", ")
     throw new Error(
@@ -489,7 +494,7 @@ export async function getReviewSummary(
       id: filingYear.client.id,
       firstName: filingYear.client.firstName,
       lastName: filingYear.client.lastName,
-      tin: filingYear.client.tin,
+      tin: filingYear.client.tin ? safeDecrypt(filingYear.client.tin) : null,
       tinType: filingYear.client.tinType,
     },
     accounts,
