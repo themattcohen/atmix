@@ -595,12 +595,6 @@ function TeamSection({
 // ---------------------------------------------------------------------------
 
 function DangerZoneSection() {
-  function handleExportAll() {
-    alert(
-      "Export All Data: This feature will generate a complete data export. Contact your system administrator for large exports."
-    )
-  }
-
   return (
     <Card className="border-red-200">
       <CardHeader>
@@ -618,14 +612,14 @@ function DangerZoneSection() {
               </p>
               <p className="mt-1 text-xs text-gray-500">
                 Download a complete export of all practice data including
-                clients, filings, and accounts.
+                clients, filings, and accounts. (Coming soon)
               </p>
             </div>
             <Button
               variant="outline"
               size="sm"
-              onClick={handleExportAll}
-              className="flex-shrink-0"
+              disabled
+              className="flex-shrink-0 cursor-not-allowed"
             >
               Export All Data
             </Button>

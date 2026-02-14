@@ -22,6 +22,8 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   interface JWT {
     userId: string
+    email: string
+    name: string
     role: string
     practiceId: string
   }
@@ -89,6 +91,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // On initial sign-in, `user` is the object returned by `authorize`.
       if (user) {
         token.userId = user.id as string
+        token.email = user.email as string
+        token.name = user.name as string
         token.role = (user as Record<string, unknown>).role as string
         token.practiceId = (user as Record<string, unknown>).practiceId as string
       }
@@ -97,6 +101,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     async session({ session, token }) {
       session.user.id = token.userId as string
+      session.user.email = token.email as string
+      session.user.name = token.name as string
       session.user.role = token.role as string
       session.user.practiceId = token.practiceId as string
       return session

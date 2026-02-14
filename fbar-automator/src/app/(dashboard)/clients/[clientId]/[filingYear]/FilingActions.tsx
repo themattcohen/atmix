@@ -35,11 +35,7 @@ export function FilingActions({
     setSuccess(null)
 
     try {
-      const res = await fetch(endpoint, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filingYearId }),
-      })
+      const res = await fetch(endpoint, { method })
 
       const data = await res.json()
 

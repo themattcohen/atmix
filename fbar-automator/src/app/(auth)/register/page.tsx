@@ -35,8 +35,17 @@ export default function RegisterPage() {
     if (!emailRegex.test(formData.email)) {
       return "Please enter a valid email address."
     }
-    if (formData.password.length < 8) {
-      return "Password must be at least 8 characters."
+    if (formData.password.length < 12) {
+      return "Password must be at least 12 characters."
+    }
+    if (!/[A-Z]/.test(formData.password)) {
+      return "Password must contain at least one uppercase letter."
+    }
+    if (!/[a-z]/.test(formData.password)) {
+      return "Password must contain at least one lowercase letter."
+    }
+    if (!/[0-9]/.test(formData.password)) {
+      return "Password must contain at least one number."
     }
     if (formData.password !== formData.confirmPassword) {
       return "Passwords do not match."
@@ -172,7 +181,7 @@ export default function RegisterPage() {
             value={formData.password}
             onChange={(e) => updateField("password", e.target.value)}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-            placeholder="Minimum 8 characters"
+            placeholder="Minimum 12 characters"
           />
         </div>
 

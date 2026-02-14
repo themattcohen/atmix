@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { DropZone } from "@/components/upload/DropZone"
 import { UploadProgress, type UploadingFile } from "@/components/upload/UploadProgress"
 
@@ -9,8 +10,30 @@ interface UploadSectionProps {
   filingYearId: string
 }
 
+interface StatementResult {
+  id: string
+  fileName: string
+  fileType: string
+  fileSizeBytes: number
+  processingStatus: string
+}
+
+interface UploadResponse {
+  uploaded: StatementResult[]
+  errors: Array<{ fileName: string; error: string }>
+}
+
+interface StatusResponse {
+  processingStatus: string
+}
+
+const POLL_INTERVAL_MS = 3000
+const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
+
 export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
+  const router = useRouter()
+  const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
 
   const updateFile = useCallback(
     (id: string, updates: Partial<UploadingFile>) => {
@@ -21,14 +44,66 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
     []
   )
 
+  const pollStatementStatus = useCallback(
+    async (statementId: string, uploadId: string, startTime: number) => {
+      try {
+        const response = await fetch(`/api/statements/${statementId}/status`)
+
+        if (!response.ok) {
+          updateFile(uploadId, {
+            status: "error",
+            error: "Failed to check processing status",
+          })
+          pollTimersRef.current.delete(uploadId)
+          return
+        }
+
+        const data: StatusResponse = await response.json()
+
+        if (data.processingStatus === "COMPLETED") {
+          updateFile(uploadId, { status: "completed" })
+          pollTimersRef.current.delete(uploadId)
+          router.refresh()
+        } else if (data.processingStatus === "FAILED") {
+          updateFile(uploadId, {
+            status: "error",
+            error: "Extraction failed",
+          })
+          pollTimersRef.current.delete(uploadId)
+        } else if (Date.now() - startTime > POLL_TIMEOUT_MS) {
+          updateFile(uploadId, {
+            status: "error",
+            error: "Processing timeout (5 minutes)",
+          })
+          pollTimersRef.current.delete(uploadId)
+        } else {
+          // Still processing, continue polling
+          const timer = setTimeout(
+            () => pollStatementStatus(statementId, uploadId, startTime),
+            POLL_INTERVAL_MS
+          )
+          pollTimersRef.current.set(uploadId, timer)
+        }
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to check status"
+        updateFile(uploadId, {
+          status: "error",
+          error: message,
+        })
+        pollTimersRef.current.delete(uploadId)
+      }
+    },
+    [updateFile, router]
+  )
+
   const uploadFile = useCallback(
     async (file: File, uploadId: string) => {
       updateFile(uploadId, { status: "uploading", progress: 10 })
 
       const formData = new FormData()
-      formData.append("files", file)
+      formData.append("file", file)
       formData.append("filingYearId", filingYearId)
-      formData.append("clientId", clientId)
 
       try {
         updateFile(uploadId, { progress: 30 })
@@ -52,7 +127,26 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
           return
         }
 
-        updateFile(uploadId, { status: "processing", progress: 100 })
+        const data: UploadResponse = await response.json()
+
+        if (data.uploaded && data.uploaded.length > 0) {
+          const statementId = data.uploaded[0].id
+          updateFile(uploadId, { status: "processing", progress: 100 })
+
+          // Start polling for completion
+          const startTime = Date.now()
+          const timer = setTimeout(
+            () => pollStatementStatus(statementId, uploadId, startTime),
+            POLL_INTERVAL_MS
+          )
+          pollTimersRef.current.set(uploadId, timer)
+        } else {
+          updateFile(uploadId, {
+            status: "error",
+            progress: 100,
+            error: "Upload succeeded but no statement ID returned",
+          })
+        }
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Network error during upload"
@@ -63,7 +157,7 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
         })
       }
     },
-    [clientId, filingYearId, updateFile]
+    [filingYearId, updateFile, pollStatementStatus]
   )
 
   const handleFilesAccepted = useCallback(
@@ -85,6 +179,14 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
     },
     [uploadFile]
   )
+
+  // Cleanup polling timers on unmount
+  useEffect(() => {
+    return () => {
+      pollTimersRef.current.forEach((timer) => clearTimeout(timer))
+      pollTimersRef.current.clear()
+    }
+  }, [])
 
   const isUploading = files.some(
     (f) => f.status === "uploading" || f.status === "pending"

@@ -18,9 +18,11 @@ export interface StatementSummary {
 
 interface FileListProps {
   statements: StatementSummary[]
+  clientId: string
+  filingYear: string
 }
 
-export function FileList({ statements }: FileListProps) {
+export function FileList({ statements, clientId, filingYear }: FileListProps) {
   return (
     <Card>
       <CardHeader>
@@ -80,7 +82,12 @@ export function FileList({ statements }: FileListProps) {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {statements.map((statement) => (
-                  <StatementRow key={statement.id} statement={statement} />
+                  <StatementRow
+                    key={statement.id}
+                    statement={statement}
+                    clientId={clientId}
+                    filingYear={filingYear}
+                  />
                 ))}
               </tbody>
             </table>
@@ -91,7 +98,15 @@ export function FileList({ statements }: FileListProps) {
   )
 }
 
-function StatementRow({ statement }: { statement: StatementSummary }) {
+function StatementRow({
+  statement,
+  clientId,
+  filingYear,
+}: {
+  statement: StatementSummary
+  clientId: string
+  filingYear: string
+}) {
   const isImage = ["image/jpeg", "image/png", "image/heic", "image/tiff"].includes(
     statement.fileType
   )
@@ -130,7 +145,7 @@ function StatementRow({ statement }: { statement: StatementSummary }) {
         {formatDate(statement.createdAt)}
       </td>
       <td className="py-3">
-        <Link href={`#review-${statement.id}`}>
+        <Link href={`/clients/${clientId}/${filingYear}/review`}>
           <Button variant="ghost" size="sm">
             View
           </Button>
