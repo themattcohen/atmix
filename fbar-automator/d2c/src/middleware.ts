@@ -12,6 +12,8 @@ const publicPaths = [
   "/reset-password",
   "/privacy",
   "/terms",
+  "/new",
+  "/v3",
 ];
 
 export default auth((req) => {
@@ -21,7 +23,7 @@ export default auth((req) => {
   if (publicPaths.some((p) => pathname === p)) return NextResponse.next();
 
   // Allow API auth routes and Stripe webhooks
-  if (pathname.startsWith("/api/auth/") || pathname === "/api/stripe/webhook") {
+  if (pathname.startsWith("/api/auth/") || pathname === "/api/stripe/webhook" || pathname === "/api/health") {
     return NextResponse.next();
   }
 
