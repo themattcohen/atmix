@@ -40,13 +40,14 @@ export async function uploadFile(
   body: Buffer,
   contentType: string
 ): Promise<void> {
+  const isMinIO = (process.env.S3_ENDPOINT || "").includes("minio") || (process.env.S3_ENDPOINT || "").includes("9000")
   await getS3Client().send(
     new PutObjectCommand({
       Bucket: BUCKET,
       Key: key,
       Body: body,
       ContentType: contentType,
-      ServerSideEncryption: "AES256",
+      ...(isMinIO ? {} : { ServerSideEncryption: "AES256" as const }),
     })
   )
 }
@@ -56,7 +57,18 @@ export async function getFileUrl(key: string, expiresIn = 900): Promise<string> 
     Bucket: BUCKET,
     Key: key,
   })
-  return getSignedUrl(getS3Client(), command, { expiresIn })
+  let url = await getSignedUrl(getS3Client(), command, { expiresIn })
+
+  // Presigned URLs contain the S3_ENDPOINT hostname. Inside Docker this is
+  // "minio:9000" which the browser can't reach. Replace with the public
+  // endpoint so the browser can fetch the file directly.
+  const publicEndpoint = process.env.S3_PUBLIC_ENDPOINT
+  const internalEndpoint = process.env.S3_ENDPOINT
+  if (publicEndpoint && internalEndpoint && url.startsWith(internalEndpoint)) {
+    url = publicEndpoint + url.slice(internalEndpoint.length)
+  }
+
+  return url
 }
 
 export async function getFileBuffer(key: string): Promise<Buffer> {

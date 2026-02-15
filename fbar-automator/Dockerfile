@@ -7,6 +7,9 @@ WORKDIR /app
 
 COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
 
+# Create public/ so postinstall can copy pdf.worker.min.mjs
+RUN mkdir -p public
+
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
@@ -71,3 +74,23 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
+
+# ---- Stage 4: Extraction worker ----
+FROM node:20-alpine AS worker
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy full node_modules (worker needs tsx, bullmq, prisma, aws-sdk, anthropic, etc.)
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 worker
+USER worker
+
+CMD ["node_modules/.bin/tsx", "src/workers/extract.ts"]

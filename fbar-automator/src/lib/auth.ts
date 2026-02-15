@@ -34,6 +34,7 @@ declare module "@auth/core/jwt" {
 // ---------------------------------------------------------------------------
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       name: "credentials",
@@ -111,15 +112,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   cookies: {
     sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-next-auth.session-token"
-          : "next-auth.session-token",
+      name: "next-auth.session-token",
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NEXTAUTH_URL?.startsWith("https://") ?? false,
       },
     },
   },

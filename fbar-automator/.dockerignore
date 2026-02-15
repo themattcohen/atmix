@@ -59,6 +59,9 @@ jest.config.*
 .gitlab-ci.yml
 .circleci
 
+# Stale/generated directories
+d2c
+
 # Misc
 scripts
 .husky

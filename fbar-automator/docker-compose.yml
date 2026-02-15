@@ -10,6 +10,11 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=postgresql://fbar:fbar_local_dev@postgres:5432/fbar_automator
+      - REDIS_URL=redis://redis:6379
+      - S3_ENDPOINT=http://minio:9000
+      - S3_PUBLIC_ENDPOINT=http://localhost:9000
     depends_on:
       postgres:
         condition: service_healthy
@@ -28,6 +33,31 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: worker
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://fbar:fbar_local_dev@postgres:5432/fbar_automator
+      - REDIS_URL=redis://redis:6379
+      - S3_ENDPOINT=http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
     restart: unless-stopped
 
   postgres:
