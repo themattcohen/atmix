@@ -18,8 +18,9 @@ function getS3Credentials() {
   }
 }
 
-// Lazy-initialized S3 client (prevents build-time credential check)
+// Lazy-initialized S3 clients (prevents build-time credential check)
 let _s3Client: S3Client | null = null
+let _s3PublicClient: S3Client | null = null
 
 function getS3Client(): S3Client {
   if (!_s3Client) {
@@ -31,6 +32,22 @@ function getS3Client(): S3Client {
     })
   }
   return _s3Client
+}
+
+// Separate client for presigned URLs — uses browser-accessible endpoint
+// so the HMAC signature matches the hostname the browser will use.
+function getS3PublicClient(): S3Client {
+  const publicEndpoint = process.env.S3_PUBLIC_ENDPOINT
+  if (!publicEndpoint) return getS3Client()
+  if (!_s3PublicClient) {
+    _s3PublicClient = new S3Client({
+      region: process.env.S3_REGION || "us-east-1",
+      endpoint: publicEndpoint,
+      forcePathStyle: true,
+      credentials: getS3Credentials(),
+    })
+  }
+  return _s3PublicClient
 }
 
 const BUCKET = process.env.S3_BUCKET || "fbar-statements"
@@ -57,18 +74,9 @@ export async function getFileUrl(key: string, expiresIn = 900): Promise<string> 
     Bucket: BUCKET,
     Key: key,
   })
-  let url = await getSignedUrl(getS3Client(), command, { expiresIn })
-
-  // Presigned URLs contain the S3_ENDPOINT hostname. Inside Docker this is
-  // "minio:9000" which the browser can't reach. Replace with the public
-  // endpoint so the browser can fetch the file directly.
-  const publicEndpoint = process.env.S3_PUBLIC_ENDPOINT
-  const internalEndpoint = process.env.S3_ENDPOINT
-  if (publicEndpoint && internalEndpoint && url.startsWith(internalEndpoint)) {
-    url = publicEndpoint + url.slice(internalEndpoint.length)
-  }
-
-  return url
+  // Use the public client so the presigned URL signature matches the
+  // browser-accessible hostname (localhost:9000 instead of minio:9000).
+  return getSignedUrl(getS3PublicClient(), command, { expiresIn })
 }
 
 export async function getFileBuffer(key: string): Promise<Buffer> {
