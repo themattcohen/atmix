@@ -1,0 +1,69 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import crypto from "crypto";
+import { sendPasswordResetEmail } from "@/lib/email";
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { email } = body;
+
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    // Always return success to prevent email enumeration
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
+
+    if (user) {
+      // Generate reset token (raw token to send in email)
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      // Hash token before storing in database
+      const hashedToken = crypto
+        .createHash("sha256")
+        .update(rawToken)
+        .digest("hex");
+
+      // Store hashed token in database
+      await prisma.passwordResetToken.create({
+        data: {
+          userId: user.id,
+          token: hashedToken,
+          expiresAt,
+        },
+      });
+
+      // Send email with raw token (don't block on failure)
+      const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${rawToken}`;
+      try {
+        await sendPasswordResetEmail(
+          email,
+          user.firstName || "there",
+          resetUrl
+        );
+      } catch (emailError) {
+        console.error("Failed to send password reset email:", emailError);
+        // Continue — don't reveal email sending failure to client
+      }
+    }
+
+    // Always return success message
+    return NextResponse.json({
+      message:
+        "If an account exists with that email, we've sent password reset instructions.",
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
+      { status: 500 }
+    );
+  }
+}
