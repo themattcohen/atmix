@@ -3,8 +3,9 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
-import { FileText, ChevronDown, Loader2 } from "lucide-react"
+import { FileText, ChevronDown, Loader2, CheckCircle, AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/Button"
 import { ReviewForm } from "@/components/review/ReviewForm"
 import type { ExtractedAccount } from "@/types/extraction"
 
@@ -62,6 +63,13 @@ export function ReviewPageClient({
   const router = useRouter()
   const [activeStatementIndex, setActiveStatementIndex] = useState(0)
   const [selectorOpen, setSelectorOpen] = useState(false)
+  const [approveAllLoading, setApproveAllLoading] = useState(false)
+  const [approveAllProgress, setApproveAllProgress] = useState({ current: 0, total: 0 })
+  const [approveAllResult, setApproveAllResult] = useState<{
+    approved: number
+    skipped: number
+    failed: number
+  } | null>(null)
 
   const activeStatement = statements[activeStatementIndex]
 
@@ -91,8 +99,10 @@ export function ReviewPageClient({
         const message = data?.error ?? `Approval failed (${response.status})`
         throw new Error(message)
       }
+
+      router.refresh()
     },
-    [filingYearId]
+    [filingYearId, router]
   )
 
   const handleRejectReExtract = useCallback(
@@ -116,6 +126,59 @@ export function ReviewPageClient({
     },
     [router]
   )
+
+  const allExtractedAccounts = statements.flatMap((s) => s.accounts)
+
+  const handleApproveAll = useCallback(async () => {
+    const allExtracted = statements.flatMap((s) => s.accounts)
+
+    if (allExtracted.length === 0) return
+
+    setApproveAllLoading(true)
+    setApproveAllResult(null)
+    setApproveAllProgress({ current: 0, total: allExtracted.length })
+
+    let approved = 0
+    let skipped = 0
+    let failed = 0
+
+    for (let i = 0; i < allExtracted.length; i++) {
+      const extracted = allExtracted[i]
+      setApproveAllProgress({ current: i + 1, total: allExtracted.length })
+
+      // Match extracted account to foreign account by last 4 digits of account number.
+      // foreignAccounts have MASKED numbers (last 4 only), extracted have full numbers.
+      const extractedLast4 = extracted.account_number.slice(-4)
+      const matched = foreignAccounts.find((fa) => {
+        const faLast4 = fa.accountNumber.replace(/\*/g, "").slice(-4)
+        return faLast4 === extractedLast4
+      })
+
+      if (!matched) {
+        skipped++
+        console.warn(
+          `Approve All: no match for extracted account ending in ...${extractedLast4}`
+        )
+        continue
+      }
+
+      try {
+        await handleApprove(
+          matched.id,
+          extracted.max_balance.amount,
+          extracted.currency,
+          {} // No corrections for bulk approve
+        )
+        approved++
+      } catch (error) {
+        console.error(`Approve All: failed for account ${matched.id}:`, error)
+        failed++
+      }
+    }
+
+    setApproveAllLoading(false)
+    setApproveAllResult({ approved, skipped, failed })
+  }, [statements, foreignAccounts, handleApprove])
 
   return (
     <div className="space-y-4">
@@ -182,6 +245,61 @@ export function ReviewPageClient({
                 </li>
               ))}
             </ul>
+          )}
+        </div>
+      )}
+
+      {/* Approve All Section */}
+      {allExtractedAccounts.length > 1 && (
+        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-900">Batch Approval</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Approve all {allExtractedAccounts.length} extracted accounts at once.
+                Accounts are matched by last 4 digits of account number.
+              </p>
+            </div>
+            <Button
+              onClick={handleApproveAll}
+              disabled={approveAllLoading || allExtractedAccounts.length === 0}
+              className="flex-shrink-0"
+            >
+              {approveAllLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Approving {approveAllProgress.current} of {approveAllProgress.total}...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Approve All
+                </>
+              )}
+            </Button>
+          </div>
+
+          {approveAllResult && (
+            <div className="mt-3 flex items-center gap-4 text-xs">
+              {approveAllResult.approved > 0 && (
+                <span className="flex items-center gap-1 text-green-700">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  {approveAllResult.approved} approved
+                </span>
+              )}
+              {approveAllResult.skipped > 0 && (
+                <span className="flex items-center gap-1 text-yellow-700">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  {approveAllResult.skipped} skipped (no match)
+                </span>
+              )}
+              {approveAllResult.failed > 0 && (
+                <span className="flex items-center gap-1 text-red-700">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  {approveAllResult.failed} failed
+                </span>
+              )}
+            </div>
           )}
         </div>
       )}

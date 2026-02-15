@@ -3,8 +3,6 @@ import { redirect, notFound } from "next/navigation"
 import {
   ArrowLeft,
   Eye,
-  Building2,
-  User,
   Calendar,
 } from "lucide-react"
 import { Header } from "@/components/layout/Header"
@@ -13,6 +11,8 @@ import { Button } from "@/components/ui/Button"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { safeDecrypt } from "@/lib/encryption"
+import { ClientInfoCard } from "./ClientInfoCard"
+import { AccountsTable } from "./AccountsTable"
 import { AddAccountForm } from "./AddAccountForm"
 import { AddFilingYearForm } from "./AddFilingYearForm"
 
@@ -28,7 +28,7 @@ function maskTIN(tin: string | null): string | null {
 }
 
 function maskAccountNumber(num: string): string {
-  if (num.length <= 4) return num
+  if (num.length <= 4) return "****"
   return "*".repeat(num.length - 4) + num.slice(-4)
 }
 
@@ -101,9 +101,7 @@ export default async function ClientDetailPage({
     zip?: string
   } | null
 
-  const displayName = client.firstName
-    ? `${client.firstName} ${client.lastName}`
-    : client.lastName
+  const activeAccountCount = client.foreignAccounts.filter((a) => a.isActive).length
 
   return (
     <>
@@ -119,54 +117,20 @@ export default async function ClientDetailPage({
         </Link>
 
         {/* Client Info */}
-        <Card className="mt-6">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-                {client.type === "INDIVIDUAL" ? (
-                  <User className="h-5 w-5 text-gray-600" />
-                ) : (
-                  <Building2 className="h-5 w-5 text-gray-600" />
-                )}
-              </div>
-              <div>
-                <CardTitle>{displayName}</CardTitle>
-                <p className="text-sm text-gray-500">
-                  {client.type === "INDIVIDUAL" ? "Individual" : "Entity"}
-                  {client.tinType && ` | ${client.tinType}: ${maskTIN(client.tin ? safeDecrypt(client.tin) : null)}`}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-sm">
-              {client.dateOfBirth && (
-                <div>
-                  <dt className="font-medium text-gray-500">Date of Birth</dt>
-                  <dd className="mt-1 text-gray-900">
-                    {new Date(client.dateOfBirth).toLocaleDateString("en-US")}
-                  </dd>
-                </div>
-              )}
-              {usAddress && (usAddress.street || usAddress.city) && (
-                <div>
-                  <dt className="font-medium text-gray-500">US Address</dt>
-                  <dd className="mt-1 text-gray-900">
-                    {usAddress.street && <>{usAddress.street}<br /></>}
-                    {usAddress.city && <>{usAddress.city}, </>}
-                    {usAddress.state} {usAddress.zip}
-                  </dd>
-                </div>
-              )}
-              <div>
-                <dt className="font-medium text-gray-500">Foreign Accounts</dt>
-                <dd className="mt-1 text-gray-900">
-                  {client.foreignAccounts.filter((a) => a.isActive).length} active
-                </dd>
-              </div>
-            </dl>
-          </CardContent>
-        </Card>
+        <ClientInfoCard
+          clientId={clientId}
+          isAdmin={session.user.role === "ADMIN"}
+          client={{
+            type: client.type as "INDIVIDUAL" | "ENTITY",
+            lastName: client.lastName,
+            firstName: client.firstName,
+            tinType: client.tinType,
+            maskedTin: maskTIN(client.tin ? safeDecrypt(client.tin) : null),
+            dateOfBirth: client.dateOfBirth ? client.dateOfBirth.toISOString() : null,
+            usAddress: usAddress,
+            activeAccountCount,
+          }}
+        />
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           {/* Foreign Accounts */}
@@ -177,48 +141,19 @@ export default async function ClientDetailPage({
             </CardHeader>
             <CardContent>
               {client.foreignAccounts.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead>
-                      <tr className="border-b border-gray-200 text-gray-500">
-                        <th className="pb-2 pr-4 font-medium">Institution</th>
-                        <th className="pb-2 pr-4 font-medium">Account #</th>
-                        <th className="pb-2 pr-4 font-medium">Type</th>
-                        <th className="pb-2 pr-4 font-medium">Country</th>
-                        <th className="pb-2 font-medium">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {client.foreignAccounts.map((account) => (
-                        <tr key={account.id}>
-                          <td className="py-2 pr-4 font-medium text-gray-900">
-                            {account.institutionName}
-                          </td>
-                          <td className="py-2 pr-4 font-mono text-gray-600">
-                            {maskAccountNumber(account.accountNumber)}
-                          </td>
-                          <td className="py-2 pr-4 text-gray-600">
-                            {account.accountType}
-                          </td>
-                          <td className="py-2 pr-4 text-gray-600">
-                            {account.institutionAddressCountry || "-"}
-                          </td>
-                          <td className="py-2">
-                            <span
-                              className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                                account.isActive
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-gray-100 text-gray-500"
-                              }`}
-                            >
-                              {account.isActive ? "Active" : "Inactive"}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <AccountsTable
+                  clientId={clientId}
+                  isAdmin={session.user.role === "ADMIN"}
+                  accounts={client.foreignAccounts.map((account) => ({
+                    id: account.id,
+                    accountNumber: maskAccountNumber(account.accountNumber),
+                    accountType: account.accountType,
+                    institutionName: account.institutionName,
+                    institutionAddressCountry: account.institutionAddressCountry,
+                    ownershipType: account.ownershipType,
+                    isActive: account.isActive,
+                  }))}
+                />
               ) : (
                 <p className="text-sm text-gray-500">
                   No foreign accounts yet. Add accounts to begin FBAR filing.
@@ -296,4 +231,3 @@ export default async function ClientDetailPage({
     </>
   )
 }
-

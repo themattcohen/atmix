@@ -196,29 +196,30 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       updateData.ownershipType = data.ownershipType
     if (data.isActive !== undefined) updateData.isActive = data.isActive
 
-    const updated = await prisma.foreignAccount.update({
-      where: { id: accountId },
-      data: updateData,
-    })
-
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "ACCOUNT_UPDATED",
-        entityType: "ForeignAccount",
-        entityId: accountId,
-        metadata: {
-          clientId,
-          updatedFields: Object.keys(data),
-          accountNumber: maskAccountNumber(updated.accountNumber),
+    const [updated] = await prisma.$transaction([
+      prisma.foreignAccount.update({
+        where: { id: accountId },
+        data: updateData,
+      }),
+      prisma.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "ACCOUNT_UPDATED",
+          entityType: "ForeignAccount",
+          entityId: accountId,
+          metadata: {
+            clientId,
+            updatedFields: Object.keys(data),
+            accountNumber: maskAccountNumber(existing.accountNumber),
+          },
+          ipAddress:
+            request.headers.get("x-forwarded-for") ??
+            request.headers.get("x-real-ip") ??
+            null,
         },
-        ipAddress:
-          request.headers.get("x-forwarded-for") ??
-          request.headers.get("x-real-ip") ??
-          null,
-      },
-    })
+      }),
+    ])
 
     return NextResponse.json({
       id: updated.id,
@@ -260,6 +261,13 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id: userId, practiceId } = session.user
     const { clientId, accountId } = await context.params
 
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Only administrators can delete accounts." },
+        { status: 403 }
+      )
+    }
+
     const existing = await getAuthorizedAccount(
       accountId,
       clientId,
@@ -272,28 +280,29 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       )
     }
 
-    await prisma.foreignAccount.delete({
-      where: { id: accountId },
-    })
-
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "ACCOUNT_DELETED",
-        entityType: "ForeignAccount",
-        entityId: accountId,
-        metadata: {
-          clientId,
-          institutionName: existing.institutionName,
-          accountNumber: maskAccountNumber(existing.accountNumber),
+    await prisma.$transaction([
+      prisma.foreignAccount.delete({
+        where: { id: accountId },
+      }),
+      prisma.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "ACCOUNT_DELETED",
+          entityType: "ForeignAccount",
+          entityId: accountId,
+          metadata: {
+            clientId,
+            institutionName: existing.institutionName,
+            accountNumber: maskAccountNumber(existing.accountNumber),
+          },
+          ipAddress:
+            request.headers.get("x-forwarded-for") ??
+            request.headers.get("x-real-ip") ??
+            null,
         },
-        ipAddress:
-          request.headers.get("x-forwarded-for") ??
-          request.headers.get("x-real-ip") ??
-          null,
-      },
-    })
+      }),
+    ])
 
     return NextResponse.json({ success: true })
   } catch (error) {

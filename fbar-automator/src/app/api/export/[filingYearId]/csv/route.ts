@@ -11,6 +11,7 @@
 
 import { NextRequest } from "next/server"
 import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/db"
 import { getFilingYearWithFullData } from "@/lib/approval"
 import { generateFBARCsv, generateAccountsCsv } from "@/lib/export/csv"
 
@@ -63,13 +64,30 @@ export async function GET(request: NextRequest, context: RouteContext) {
         ? await generateFBARCsv(filingYearId, summary)
         : await generateAccountsCsv(filingYearId, summary)
 
-    // 6. Build filename
+    // 6. Audit log for CSV export
+    await prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        practiceId: session.user.practiceId,
+        action: "FILING_EXPORTED_CSV",
+        entityType: "FilingYear",
+        entityId: filingYearId,
+        metadata: {
+          exportType,
+          calendarYear: summary.filingYear.calendarYear,
+          clientLastName: summary.client.lastName,
+          accountCount: summary.accounts.length,
+        },
+      },
+    })
+
+    // 7. Build filename
     const lastName = summary.client.lastName.replace(/[^a-zA-Z0-9]/g, "_")
     const year = summary.filingYear.calendarYear
     const suffix = exportType === "accounts" ? "_accounts" : ""
     const filename = `fbar_${lastName}_${year}${suffix}.csv`
 
-    // 7. Return CSV download
+    // 8. Return CSV download
     return new Response(csv, {
       headers: {
         "Content-Type": "text/csv",

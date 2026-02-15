@@ -7,6 +7,12 @@ import { deleteFile } from "@/lib/s3"
 // Helpers
 // ---------------------------------------------------------------------------
 
+function maskAccountNumber(accountNumber: string | null): string | null {
+  if (!accountNumber) return null
+  if (accountNumber.length <= 4) return "****"
+  return "*".repeat(accountNumber.length - 4) + accountNumber.slice(-4)
+}
+
 type RouteContext = { params: Promise<{ statementId: string }> }
 
 /**
@@ -58,7 +64,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       ? {
           id: statement.extractedData.id,
           bankName: statement.extractedData.bankName,
-          accountNumber: statement.extractedData.accountNumber,
+          accountNumber: maskAccountNumber(statement.extractedData.accountNumber),
           accountTypeDetected: statement.extractedData.accountTypeDetected,
           currencyCode: statement.extractedData.currencyCode,
           maxBalanceLocal: statement.extractedData.maxBalanceLocal?.toString() ?? null,
@@ -81,7 +87,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       processingStatus: statement.processingStatus,
       processingStartedAt: statement.processingStartedAt,
       processingCompletedAt: statement.processingCompletedAt,
-      processingError: statement.processingError,
+      processingError: statement.processingError ? "Processing encountered an error. Contact support for details." : null,
       llmModelUsed: statement.llmModelUsed,
       llmTokensUsed: statement.llmTokensUsed,
       createdAt: statement.createdAt,
@@ -110,6 +116,13 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id: userId, practiceId } = session.user
     const { statementId } = await context.params
 
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Only administrators can delete statements." },
+        { status: 403 }
+      )
+    }
+
     const statement = await getAuthorizedStatement(statementId, practiceId)
 
     if (!statement) {
@@ -133,29 +146,29 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       console.error(`Failed to delete S3 object "${statement.filePath}":`, s3Error)
     }
 
-    // Delete the Statement record (cascades to ExtractedData via Prisma schema)
-    await prisma.statement.delete({
-      where: { id: statementId },
-    })
-
-    // Create audit log entry
+    // Delete the Statement record + audit log atomically
     const ipAddress = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? null
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "STATEMENT_DELETED",
-        entityType: "Statement",
-        entityId: statementId,
-        metadata: {
-          fileName: statement.fileName,
-          fileType: statement.fileType,
-          fileSizeBytes: statement.fileSizeBytes,
-          filingYearId: statement.filingYearId,
+    await prisma.$transaction([
+      prisma.statement.delete({
+        where: { id: statementId },
+      }),
+      prisma.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "STATEMENT_DELETED",
+          entityType: "Statement",
+          entityId: statementId,
+          metadata: {
+            fileName: statement.fileName,
+            fileType: statement.fileType,
+            fileSizeBytes: statement.fileSizeBytes,
+            filingYearId: statement.filingYearId,
+          },
+          ipAddress,
         },
-        ipAddress,
-      },
-    })
+      }),
+    ])
 
     return NextResponse.json({ success: true })
   } catch (error) {

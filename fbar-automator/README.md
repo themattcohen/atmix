@@ -149,7 +149,7 @@ open http://localhost:3000
 
 # 7. Login with demo credentials (if seeded)
 # Email: admin@demo.com
-# Password: demo123
+# Password: admin123
 ```
 
 ### Verify Services

@@ -3,6 +3,7 @@ import { z } from "zod"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { encrypt, safeDecrypt } from "@/lib/encryption"
+import { validateTinFormat } from "@/lib/validation"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -54,7 +55,7 @@ function maskTIN(tin: string | null): string | null {
 }
 
 function maskAccountNumber(accountNumber: string): string {
-  if (accountNumber.length <= 4) return accountNumber
+  if (accountNumber.length <= 4) return "****"
   return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4)
 }
 
@@ -198,6 +199,31 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     }
 
     const data = parsed.data
+
+    // Validate TIN format
+    if (data.tin && data.tinType) {
+      const tinError = validateTinFormat(data.tin, data.tinType)
+      if (tinError) {
+        return NextResponse.json(
+          { error: `TIN validation failed: ${tinError}` },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Validate spouseClientId belongs to same practice
+    if (data.spouseClientId) {
+      const spouseClient = await prisma.client.findFirst({
+        where: { id: data.spouseClientId, practiceId },
+      })
+      if (!spouseClient) {
+        return NextResponse.json(
+          { error: "Spouse client not found in your practice." },
+          { status: 404 }
+        )
+      }
+    }
+
     const updateData: Record<string, unknown> = {}
     if (data.type !== undefined) updateData.type = data.type
     if (data.lastName !== undefined) updateData.lastName = data.lastName
@@ -214,27 +240,28 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     if (data.spouseClientId !== undefined)
       updateData.spouseClientId = data.spouseClientId
 
-    const updated = await prisma.client.update({
-      where: { id: clientId },
-      data: updateData,
-    })
-
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "CLIENT_UPDATED",
-        entityType: "Client",
-        entityId: clientId,
-        metadata: {
-          updatedFields: Object.keys(data),
+    const [updated] = await prisma.$transaction([
+      prisma.client.update({
+        where: { id: clientId },
+        data: updateData,
+      }),
+      prisma.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "CLIENT_UPDATED",
+          entityType: "Client",
+          entityId: clientId,
+          metadata: {
+            updatedFields: Object.keys(data),
+          },
+          ipAddress:
+            request.headers.get("x-forwarded-for") ??
+            request.headers.get("x-real-ip") ??
+            null,
         },
-        ipAddress:
-          request.headers.get("x-forwarded-for") ??
-          request.headers.get("x-real-ip") ??
-          null,
-      },
-    })
+      }),
+    ])
 
     return NextResponse.json({
       id: updated.id,
@@ -274,6 +301,13 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id: userId, practiceId } = session.user
     const { clientId } = await context.params
 
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Only administrators can delete clients." },
+        { status: 403 }
+      )
+    }
+
     const existing = await getAuthorizedClient(clientId, practiceId)
     if (!existing) {
       return NextResponse.json(
@@ -284,28 +318,29 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
     // Hard delete with cascade (Prisma schema has onDelete: Cascade for
     // foreignAccounts and filingYears)
-    await prisma.client.delete({
-      where: { id: clientId },
-    })
-
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "CLIENT_DELETED",
-        entityType: "Client",
-        entityId: clientId,
-        metadata: {
-          lastName: existing.lastName,
-          firstName: existing.firstName,
-          type: existing.type,
+    await prisma.$transaction([
+      prisma.client.delete({
+        where: { id: clientId, practiceId },
+      }),
+      prisma.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "CLIENT_DELETED",
+          entityType: "Client",
+          entityId: clientId,
+          metadata: {
+            lastName: existing.lastName,
+            firstName: existing.firstName,
+            type: existing.type,
+          },
+          ipAddress:
+            request.headers.get("x-forwarded-for") ??
+            request.headers.get("x-real-ip") ??
+            null,
         },
-        ipAddress:
-          request.headers.get("x-forwarded-for") ??
-          request.headers.get("x-real-ip") ??
-          null,
-      },
-    })
+      }),
+    ])
 
     return NextResponse.json({ success: true })
   } catch (error) {

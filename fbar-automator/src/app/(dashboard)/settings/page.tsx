@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import { Header } from "@/components/layout/Header"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
@@ -93,6 +94,31 @@ export default async function SettingsPage() {
           hasApiKey={hasApiKey}
           currentUserId={session.user.id}
         />
+      </div>
+
+      {/* More Settings */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">More Settings</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Link
+            href="/settings/exchange-rates"
+            className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:bg-gray-50"
+          >
+            <h3 className="text-sm font-medium text-gray-900">Exchange Rates</h3>
+            <p className="mt-1 text-xs text-gray-500">
+              View and sync Treasury exchange rates for FBAR USD conversion.
+            </p>
+          </Link>
+          <Link
+            href="/settings/data-retention"
+            className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:bg-gray-50"
+          >
+            <h3 className="text-sm font-medium text-gray-900">Data Retention</h3>
+            <p className="mt-1 text-xs text-gray-500">
+              Configure data retention policies and automatic cleanup schedules.
+            </p>
+          </Link>
+        </div>
       </div>
     </>
   )

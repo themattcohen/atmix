@@ -1,3 +1,10 @@
+// NOTE: In-memory rate limiter. Works for single-instance deployments.
+// For multi-instance, migrate to Redis. IMPORTANT: Next.js middleware runs
+// in Edge Runtime — ioredis requires Node.js runtime and won't work here.
+// Options for production: (a) @upstash/redis (Edge-compatible),
+// (b) move rate limiting to API route handlers (Node.js runtime),
+// (c) keep in-memory for single-instance. Current choice: (c).
+// ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // In-memory rate limiter with sliding window algorithm
 // ---------------------------------------------------------------------------

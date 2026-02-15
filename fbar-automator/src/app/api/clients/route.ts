@@ -3,6 +3,7 @@ import { z } from "zod"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { encrypt, safeDecrypt } from "@/lib/encryption"
+import { validateTinFormat } from "@/lib/validation"
 
 // ---------------------------------------------------------------------------
 // Validation
@@ -174,38 +175,66 @@ export async function POST(request: NextRequest) {
 
     const data = parsed.data
 
-    const client = await prisma.client.create({
-      data: {
-        practiceId,
-        type: data.type,
-        lastName: data.lastName,
-        firstName: data.firstName ?? null,
-        tin: data.tin ? encrypt(data.tin) : null,
-        tinType: data.tinType ?? null,
-        dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
-        usAddress: data.usAddress ?? undefined,
-        mailingAddress: data.mailingAddress ?? undefined,
-        spouseClientId: data.spouseClientId ?? null,
-      },
-    })
+    // Validate TIN format
+    if (data.tin && data.tinType) {
+      const tinError = validateTinFormat(data.tin, data.tinType)
+      if (tinError) {
+        return NextResponse.json(
+          { error: `TIN validation failed: ${tinError}` },
+          { status: 400 }
+        )
+      }
+    }
 
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "CLIENT_CREATED",
-        entityType: "Client",
-        entityId: client.id,
-        metadata: {
-          type: client.type,
-          lastName: client.lastName,
-          firstName: client.firstName,
+    // Validate spouseClientId belongs to same practice
+    if (data.spouseClientId) {
+      const spouseClient = await prisma.client.findFirst({
+        where: { id: data.spouseClientId, practiceId },
+      })
+      if (!spouseClient) {
+        return NextResponse.json(
+          { error: "Spouse client not found in your practice." },
+          { status: 404 }
+        )
+      }
+    }
+
+    const client = await prisma.$transaction(async (tx) => {
+      const newClient = await tx.client.create({
+        data: {
+          practiceId,
+          type: data.type,
+          lastName: data.lastName,
+          firstName: data.firstName ?? null,
+          tin: data.tin ? encrypt(data.tin) : null,
+          tinType: data.tinType ?? null,
+          dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
+          usAddress: data.usAddress ?? undefined,
+          mailingAddress: data.mailingAddress ?? undefined,
+          spouseClientId: data.spouseClientId ?? null,
         },
-        ipAddress:
-          request.headers.get("x-forwarded-for") ??
-          request.headers.get("x-real-ip") ??
-          null,
-      },
+      })
+
+      await tx.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "CLIENT_CREATED",
+          entityType: "Client",
+          entityId: newClient.id,
+          metadata: {
+            type: newClient.type,
+            lastName: newClient.lastName,
+            firstName: newClient.firstName,
+          },
+          ipAddress:
+            request.headers.get("x-forwarded-for") ??
+            request.headers.get("x-real-ip") ??
+            null,
+        },
+      })
+
+      return newClient
     })
 
     return NextResponse.json(

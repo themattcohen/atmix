@@ -18,6 +18,19 @@ export function middleware(request: NextRequest) {
     "camera=(), microphone=(), geolocation=()"
   )
   response.headers.set("X-DNS-Prefetch-Control", "off")
+  response.headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+  )
+
+  // HSTS: enforce HTTPS in production (skip for localhost development)
+  const host = request.headers.get("host") || ""
+  if (!host.startsWith("localhost") && !host.startsWith("127.0.0.1")) {
+    response.headers.set(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains"
+    )
+  }
 
   // ---------------------------------------------------------------------------
   // 1. Route protection: Check authentication for protected routes
@@ -52,7 +65,9 @@ export function middleware(request: NextRequest) {
       tier = "upload"
     }
 
-    // Get IP address from x-forwarded-for header or fallback to localhost
+    // WARNING: x-forwarded-for can be spoofed. In production behind a trusted
+    // reverse proxy (nginx/ALB), configure the proxy to strip/overwrite this
+    // header. For single-instance deployments, this is acceptable.
     const forwardedFor = request.headers.get("x-forwarded-for")
     const ip = forwardedFor?.split(",")[0]?.trim() || "127.0.0.1"
 

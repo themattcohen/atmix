@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Plus, X, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
+import { COUNTRY_CODES } from "@/types/fincen"
 
 interface AddAccountFormProps {
   clientId: string
@@ -137,12 +138,19 @@ export function AddAccountForm({ clientId }: AddAccountFormProps) {
             <label className="block text-xs font-medium text-gray-600 mb-1">
               Country
             </label>
-            <Input
+            <select
               value={country}
               onChange={(e) => setCountry(e.target.value)}
-              placeholder="e.g. Switzerland"
-              className="h-8 text-sm"
-            />
+              className="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
+              aria-label="Country"
+            >
+              <option value="">Select country</option>
+              {Object.entries(COUNTRY_CODES).map(([code, name]) => (
+                <option key={code} value={code}>
+                  {code} — {name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">

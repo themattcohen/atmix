@@ -139,33 +139,37 @@ export async function POST(request: NextRequest) {
     const temporaryPassword = generateTemporaryPassword()
     const passwordHash = await bcrypt.hash(temporaryPassword, 12)
 
-    const user = await prisma.user.create({
-      data: {
-        practiceId,
-        email: data.email.toLowerCase().trim(),
-        name: data.name,
-        passwordHash,
-        role: data.role,
-      },
-    })
-
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        practiceId,
-        action: "TEAM_MEMBER_CREATED",
-        entityType: "User",
-        entityId: user.id,
-        metadata: {
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          invitedBy: userId,
+    const user = await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          practiceId,
+          email: data.email.toLowerCase().trim(),
+          name: data.name,
+          passwordHash,
+          role: data.role,
         },
-        ipAddress:
-          request.headers.get("x-forwarded-for") ||
-          request.headers.get("x-real-ip"),
-      },
+      })
+
+      await tx.auditLog.create({
+        data: {
+          userId,
+          practiceId,
+          action: "TEAM_MEMBER_CREATED",
+          entityType: "User",
+          entityId: newUser.id,
+          metadata: {
+            email: newUser.email,
+            name: newUser.name,
+            role: newUser.role,
+            invitedBy: userId,
+          },
+          ipAddress:
+            request.headers.get("x-forwarded-for") ||
+            request.headers.get("x-real-ip"),
+        },
+      })
+
+      return newUser
     })
 
     return NextResponse.json(
@@ -174,7 +178,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         name: user.name,
         role: user.role,
-        temporaryPassword,
+        ...(process.env.NODE_ENV === "development" ? { temporaryPassword } : {}),
       },
       { status: 201 }
     )

@@ -342,3 +342,59 @@ export function formatValidationSummary(result: ValidationResult): string {
 
   return lines.join("\n")
 }
+
+// ---------------------------------------------------------------------------
+// TIN format validation
+// ---------------------------------------------------------------------------
+
+/**
+ * Validates a TIN (Taxpayer Identification Number) format based on its type.
+ * Returns an error message string if invalid, or null if valid.
+ *
+ * - SSN: 9 digits, cannot start with "9" or "000"
+ * - EIN: 9 digits
+ * - ITIN: 9 digits, must start with "9"
+ * - FOREIGN_TIN: no format constraint (any non-empty string)
+ */
+export function validateTinFormat(tin: string, tinType: string): string | null {
+  if (!tin || !tinType) return null
+
+  // Strip non-digit characters for format checking
+  const digits = tin.replace(/\D/g, "")
+
+  switch (tinType) {
+    case "SSN":
+      if (digits.length !== 9) {
+        return "SSN must be exactly 9 digits."
+      }
+      if (digits.startsWith("9")) {
+        return "SSN cannot start with 9 (that indicates an ITIN)."
+      }
+      if (digits.startsWith("000")) {
+        return "SSN cannot start with 000."
+      }
+      return null
+
+    case "EIN":
+      if (digits.length !== 9) {
+        return "EIN must be exactly 9 digits."
+      }
+      return null
+
+    case "ITIN":
+      if (digits.length !== 9) {
+        return "ITIN must be exactly 9 digits."
+      }
+      if (!digits.startsWith("9")) {
+        return "ITIN must start with 9."
+      }
+      return null
+
+    case "FOREIGN_TIN":
+      // No format constraint for foreign TINs
+      return null
+
+    default:
+      return `Unknown TIN type: ${tinType}`
+  }
+}

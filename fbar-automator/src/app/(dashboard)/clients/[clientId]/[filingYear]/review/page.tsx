@@ -168,6 +168,34 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           Back to Filing Year {filingYear}
         </Link>
 
+        {/* Navigation Tabs */}
+        <div className="mt-6 border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8" aria-label="Filing year tabs">
+            {[
+              { label: "Overview", href: `/clients/${clientId}/${filingYear}` },
+              { label: "Upload", href: `/clients/${clientId}/${filingYear}/upload` },
+              { label: "Review", href: `/clients/${clientId}/${filingYear}/review` },
+              { label: "Export", href: `/clients/${clientId}/${filingYear}/export` },
+            ].map((tab) => {
+              const isActive = tab.label === "Review"
+              return (
+                <Link
+                  key={tab.label}
+                  href={tab.href}
+                  className={`whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "border-gray-900 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {tab.label}
+                </Link>
+              )
+            })}
+          </nav>
+        </div>
+
         {hasStatements ? (
           <div className="mt-6">
             <ReviewPageClient

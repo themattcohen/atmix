@@ -78,8 +78,10 @@ export async function POST(request: NextRequest, context: RouteContext) {
   } catch (error) {
     console.error("POST /api/filing-years/[filingYearId]/approve error:", error)
 
-    // Return 400 with error message for validation/business logic errors
-    if (error instanceof Error) {
+    // Only forward known business-logic error messages to the client.
+    // Prisma/DB errors may contain internal details that should not be exposed.
+    const KNOWN_PREFIXES = ["Cannot submit", "Cannot approve", "Cannot mark", "Filing year", "User does not"]
+    if (error instanceof Error && KNOWN_PREFIXES.some((p) => error.message.startsWith(p))) {
       return NextResponse.json(
         { error: error.message },
         { status: 400 }

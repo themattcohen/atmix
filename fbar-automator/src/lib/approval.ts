@@ -461,7 +461,9 @@ export async function getReviewSummary(
     orderBy: { foreignAccount: { institutionName: "asc" } },
   })
 
-  // Map reviewed account years to the summary structure
+  // Intentionally unmasked — consumed by CSV/XML/PDF export modules
+  // (via getFilingYearWithFullData) that require real account numbers
+  // for FinCEN compliance. Mask at API response boundary, not service layer.
   const accounts = reviewedAccountYears.map((ray) => ({
     foreignAccountId: ray.foreignAccountId,
     institutionName: ray.foreignAccount.institutionName,
@@ -494,6 +496,7 @@ export async function getReviewSummary(
       id: filingYear.client.id,
       firstName: filingYear.client.firstName,
       lastName: filingYear.client.lastName,
+      // Decrypted for export — FinCEN XML requires unmasked TIN
       tin: filingYear.client.tin ? safeDecrypt(filingYear.client.tin) : null,
       tinType: filingYear.client.tinType,
     },
@@ -511,6 +514,10 @@ export async function getReviewSummary(
  * Fetches a filing year with full review data, verifying it belongs to the
  * specified practice. This is the single source of data for all export
  * operations, eliminating redundant DB queries.
+ *
+ * NOTE: The returned data includes unmasked account numbers because this
+ * function feeds all export routes (CSV, XML, PDF) which require real
+ * account numbers for FinCEN Form 114 compliance.
  *
  * @param filingYearId - The filing year to fetch
  * @param practiceId - The practice that must own the filing year

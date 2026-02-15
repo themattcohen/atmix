@@ -76,13 +76,20 @@ export default function NewClientPage() {
     setErrors({})
     setGlobalError(null)
 
+    // Cross-validate TIN and TIN Type: if one is provided, both must be
+    if ((tin && !tinType) || (!tin && tinType)) {
+      setGlobalError("Both TIN and TIN Type must be provided together.")
+      setIsSubmitting(false)
+      return
+    }
+
     const payload: Record<string, unknown> = {
       type,
       lastName,
       firstName: firstName || null,
       tin: tin || null,
       tinType: tinType || null,
-      dateOfBirth: dateOfBirth ? new Date(dateOfBirth).toISOString() : null,
+      dateOfBirth: dateOfBirth ? new Date(dateOfBirth + "T00:00:00.000Z").toISOString() : null,
     }
 
     // Only include address objects if any field is filled

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import {
+  DollarSign,
   FileText,
   LayoutDashboard,
   Users,
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/settings/exchange-rates", label: "Exchange Rates", icon: DollarSign },
 ]
 
 export function Sidebar({ user }: SidebarProps) {

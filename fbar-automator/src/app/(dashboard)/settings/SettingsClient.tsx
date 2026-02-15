@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   Building2,
   Key,
+  Lock,
   Users,
   AlertTriangle,
   CheckCircle,
@@ -62,6 +64,7 @@ function PracticeSection({
   practice: PracticeData
   isAdmin: boolean
 }) {
+  const router = useRouter()
   const [name, setName] = useState(practice.name)
   const [street, setStreet] = useState(practice.address?.street || "")
   const [city, setCity] = useState(practice.address?.city || "")
@@ -96,6 +99,7 @@ function PracticeSection({
       }
 
       setMessage({ type: "success", text: "Practice settings saved." })
+      router.refresh()
     } catch (error) {
       setMessage({
         type: "error",
@@ -595,6 +599,167 @@ function TeamSection({
 }
 
 // ---------------------------------------------------------------------------
+// Password Change Section
+// ---------------------------------------------------------------------------
+
+function PasswordChangeSection() {
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState<{
+    type: "success" | "error"
+    text: string
+  } | null>(null)
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault()
+    setMessage(null)
+
+    if (newPassword !== confirmPassword) {
+      setMessage({ type: "error", text: "New passwords do not match." })
+      return
+    }
+
+    if (newPassword.length < 12) {
+      setMessage({
+        type: "error",
+        text: "New password must be at least 12 characters.",
+      })
+      return
+    }
+
+    setSaving(true)
+
+    try {
+      const response = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || "Failed to change password.")
+      }
+
+      setMessage({ type: "success", text: "Password changed successfully." })
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
+      })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Lock className="h-5 w-5 text-gray-500" />
+          Change Password
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleChangePassword} className="space-y-4">
+          <div>
+            <label
+              htmlFor="current-password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Current Password
+            </label>
+            <Input
+              id="current-password"
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+              className="mt-1 max-w-sm"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="new-password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              New Password
+            </label>
+            <Input
+              id="new-password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              minLength={12}
+              className="mt-1 max-w-sm"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirm-password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm New Password
+            </label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={12}
+              className="mt-1 max-w-sm"
+            />
+          </div>
+
+          {message && (
+            <div
+              className={`flex items-center gap-2 rounded-md p-3 text-sm ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-800"
+                  : "bg-red-50 text-red-800"
+              }`}
+              role="alert"
+            >
+              {message.type === "success" ? (
+                <CheckCircle className="h-4 w-4 flex-shrink-0" />
+              ) : (
+                <XCircle className="h-4 w-4 flex-shrink-0" />
+              )}
+              {message.text}
+            </div>
+          )}
+
+          <div className="pt-2">
+            <Button
+              type="submit"
+              disabled={saving || !currentPassword || !newPassword || !confirmPassword}
+            >
+              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Change Password
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Danger Zone Section
 // ---------------------------------------------------------------------------
 
@@ -665,6 +830,7 @@ export function SettingsClient({
         isAdmin={isAdmin}
         currentUserId={currentUserId}
       />
+      <PasswordChangeSection />
       {isAdmin && <DangerZoneSection />}
     </div>
   )
