@@ -17,7 +17,7 @@ import type { ExtractionResult, ExtractionResponse } from "@/types/extraction"
 // ---------------------------------------------------------------------------
 
 const MODEL = "claude-sonnet-4-5-20250929"
-const MAX_TOKENS = 4096
+const MAX_TOKENS = 16384
 
 /**
  * Supported media types mapped from common file extensions.
@@ -243,6 +243,9 @@ export async function extractFromStatement(
       ],
     })
 
+    // ----- Check for truncated response --------------------------------------
+    const wasResponseTruncated = response.stop_reason === "max_tokens"
+
     // ----- Extract text from response ----------------------------------------
     const textBlock = response.content.find((block) => block.type === "text")
     if (!textBlock || textBlock.type !== "text") {
@@ -263,6 +266,18 @@ export async function extractFromStatement(
       (response.usage?.output_tokens ?? 0)
 
     const result = parseExtractionResponse(textBlock.text)
+
+    if (wasResponseTruncated) {
+      // Add truncation warning to each extracted account
+      if (result.accounts) {
+        for (const account of result.accounts) {
+          account.warnings = account.warnings || []
+          account.warnings.push(
+            "Response may be incomplete due to document complexity. Some balances may be missing."
+          )
+        }
+      }
+    }
 
     const elapsed = Date.now() - startTime
     console.log(

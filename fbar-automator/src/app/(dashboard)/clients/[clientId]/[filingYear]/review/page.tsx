@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/Card"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import type { ExtractionResult, ExtractedAccount } from "@/types/extraction"
+import { consolidateAccounts } from "@/lib/consolidation"
+import type { StatementWithExtraction } from "@/lib/consolidation"
 import { ReviewPageClient } from "./ReviewPageClient"
 
 // ---------------------------------------------------------------------------
@@ -14,15 +16,6 @@ import { ReviewPageClient } from "./ReviewPageClient"
 
 interface ReviewPageProps {
   params: Promise<{ clientId: string; filingYear: string }>
-}
-
-interface StatementWithExtraction {
-  id: string
-  fileName: string
-  fileType: string
-  filePath: string
-  presignedUrl: string
-  accounts: ExtractedAccount[]
 }
 
 // ---------------------------------------------------------------------------
@@ -148,6 +141,19 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     }
   })
 
+  // Consolidate accounts across all statements
+  const consolidatedAccounts = consolidateAccounts(
+    statementData,
+    foreignAccounts,
+    calendarYear
+  )
+
+  // Build presigned URL map for drill-down document viewing
+  const presignedUrlMap: Record<string, string> = {}
+  for (const stmt of statementData) {
+    presignedUrlMap[stmt.id] = stmt.presignedUrl
+  }
+
   const hasStatements = statementData.length > 0
 
   return (
@@ -197,6 +203,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         {hasStatements ? (
           <div className="mt-6">
             <ReviewPageClient
+              consolidatedAccounts={consolidatedAccounts}
+              presignedUrlMap={presignedUrlMap}
               statements={statementData}
               clientId={clientId}
               filingYear={filingYear}
