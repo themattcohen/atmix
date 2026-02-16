@@ -625,8 +625,8 @@ describe("Extraction Pipeline Integration", () => {
     it("rejects unsupported file types before calling Claude", async () => {
 
       const extraction = await extractFromStatement(
-        "uploads/client-123/statement.xlsx",
-        "xlsx"
+        "uploads/client-123/statement.docx",
+        "docx"
       )
 
       expect(extraction.success).toBe(false)

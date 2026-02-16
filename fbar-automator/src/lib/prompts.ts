@@ -8,7 +8,9 @@
 
 export const EXTRACTION_SYSTEM_PROMPT = `You are a financial document data extraction system specialized in foreign bank statements for FBAR (FinCEN Form 114) reporting.
 
-You will be given images of foreign bank statements. Your job is to extract specific data fields from each statement and return them as structured JSON.
+You will be given foreign bank statements in various formats (PDF documents, images, or tabular data from CSV/Excel files).
+For tabular data, the content will be provided as text with column headers and data rows.
+Your job is to extract specific data fields from each statement and return them as structured JSON.
 
 IMPORTANT RULES:
 - Extract exactly what is shown on the document. Do not infer or calculate values not explicitly present.

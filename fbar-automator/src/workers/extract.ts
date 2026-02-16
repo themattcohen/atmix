@@ -14,7 +14,6 @@ import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/db"
 import { getRedisConnection } from "@/lib/redis"
 import { extractFromStatement } from "@/lib/extraction"
-import { isTabularFileType, extractFromTabularFile } from "@/lib/tabular-extraction"
 import type { ExtractionJobData } from "@/lib/queue"
 import type { ExtractionResponse, ExtractionResult, ExtractedAccount } from "@/types/extraction"
 
@@ -90,14 +89,8 @@ async function processExtractionJob(
 
   await job.updateProgress(10)
 
-  // 2. Run extraction (LLM for images/PDFs, programmatic for CSV/Excel)
-  let response: ExtractionResponse
-
-  if (isTabularFileType(fileType)) {
-    response = await extractFromTabularFile(filePath, fileType, job.data.fileName ?? "unknown")
-  } else {
-    response = await extractFromStatement(filePath, fileType)
-  }
+  // 2. Run unified AI extraction (all file types go through Claude)
+  const response: ExtractionResponse = await extractFromStatement(filePath, fileType)
 
   await job.updateProgress(60)
 

@@ -7,6 +7,7 @@
 // ---------------------------------------------------------------------------
 
 import Anthropic from "@anthropic-ai/sdk"
+import * as XLSX from "xlsx"
 import { getFileBuffer } from "./s3"
 import { EXTRACTION_SYSTEM_PROMPT, EXTRACTION_USER_PROMPT } from "./prompts"
 import type { ExtractionResult, ExtractionResponse } from "@/types/extraction"
@@ -31,6 +32,8 @@ const MEDIA_TYPE_MAP: Record<string, string> = {
   tiff: "image/tiff",
   tif: "image/tiff",
   bmp: "image/bmp",
+  csv: "text/csv",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 }
 
 // ---------------------------------------------------------------------------
@@ -114,6 +117,27 @@ function parseExtractionResponse(text: string): ExtractionResult {
   }
 }
 
+/**
+ * Converts a CSV buffer to a labelled text representation for Claude.
+ */
+function convertCsvToText(buffer: Buffer): string {
+  return `CSV Bank Statement Data:\n\n${buffer.toString("utf-8")}`
+}
+
+/**
+ * Converts an Excel buffer to a labelled text representation for Claude.
+ * Each sheet is converted to CSV format and included with a sheet name header.
+ */
+function convertExcelToText(buffer: Buffer): string {
+  const workbook = XLSX.read(buffer, { type: "buffer", cellDates: true })
+  const sections: string[] = []
+  for (const name of workbook.SheetNames) {
+    const csv = XLSX.utils.sheet_to_csv(workbook.Sheets[name], { blankrows: false })
+    if (csv.trim()) sections.push(`Sheet: ${name}\n${csv}`)
+  }
+  return `Excel Bank Statement Data:\n\n${sections.join("\n\n")}`
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -160,32 +184,43 @@ export async function extractFromStatement(
       }
     }
 
-    const base64Data = fileBuffer.toString("base64")
-
     // ----- Build content block -----------------------------------------------
     const isPdf = mediaType === "application/pdf"
+    const isTabular = mediaType === "text/csv" ||
+      mediaType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
-    const documentContentBlock: Anthropic.Messages.ContentBlockParam = isPdf
-      ? {
-          type: "document",
-          source: {
-            type: "base64",
-            media_type: "application/pdf",
-            data: base64Data,
-          },
-        }
-      : {
-          type: "image",
-          source: {
-            type: "base64",
-            media_type: mediaType as
-              | "image/jpeg"
-              | "image/png"
-              | "image/gif"
-              | "image/webp",
-            data: base64Data,
-          },
-        }
+    let documentContentBlock: Anthropic.Messages.ContentBlockParam
+
+    if (isTabular) {
+      const textContent = mediaType === "text/csv"
+        ? convertCsvToText(fileBuffer)
+        : convertExcelToText(fileBuffer)
+      documentContentBlock = { type: "text", text: textContent }
+    } else if (isPdf) {
+      const base64Data = fileBuffer.toString("base64")
+      documentContentBlock = {
+        type: "document",
+        source: {
+          type: "base64",
+          media_type: "application/pdf",
+          data: base64Data,
+        },
+      }
+    } else {
+      const base64Data = fileBuffer.toString("base64")
+      documentContentBlock = {
+        type: "image",
+        source: {
+          type: "base64",
+          media_type: mediaType as
+            | "image/jpeg"
+            | "image/png"
+            | "image/gif"
+            | "image/webp",
+          data: base64Data,
+        },
+      }
+    }
 
     // ----- Call Claude API ---------------------------------------------------
     const anthropic = getAnthropicClient()
