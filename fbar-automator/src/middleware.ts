@@ -18,9 +18,11 @@ export function middleware(request: NextRequest) {
     "camera=(), microphone=(), geolocation=()"
   )
   response.headers.set("X-DNS-Prefetch-Control", "off")
+  // Allow S3/MinIO origin in CSP for PDF and image fetching
+  const s3Origin = process.env.S3_PUBLIC_ENDPOINT || ""
   response.headers.set(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+    `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: ${s3Origin}; font-src 'self'; connect-src 'self' ${s3Origin}; worker-src 'self' blob:; frame-ancestors 'none'`
   )
 
   // HSTS: enforce HTTPS in production (skip for localhost development)

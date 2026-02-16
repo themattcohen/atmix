@@ -1,0 +1,32 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 776 >>
+stream
+BT /F1 10 Tf 12 TL 50 750 Td (FOREIGN BANK ACCOUNT STATEMENT) Tj T* () Tj T* (Bank: Deutsche Bank AG) Tj T* (Branch: Frankfurt Main Office) Tj T* (Country: Germany) Tj T* () Tj T* (Account Holder: John Doe) Tj T* (Account Number: DE89370400440532013000) Tj T* (Account Type: Savings) Tj T* (Currency: EUR) Tj T* () Tj T* (Statement Period: January 1, 2024 - December 31, 2024) Tj T* () Tj T* (Transaction Summary:) Tj T* (  Opening Balance \(Jan 1\):     EUR 98,234.12) Tj T* (  Total Deposits:              EUR 45,678.90) Tj T* (  Total Withdrawals:           EUR 18,480.35) Tj T* (  Closing Balance \(Dec 31\):    EUR 125,432.67) Tj T* () Tj T* (Maximum Account Value in 2024: EUR 125,432.67) Tj T* () Tj T* (Joint Account: No) Tj T* (Account Owner: John Doe \(100%\)) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001068 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1136
+%%EOF

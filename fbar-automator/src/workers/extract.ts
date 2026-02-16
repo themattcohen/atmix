@@ -14,8 +14,9 @@ import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/db"
 import { getRedisConnection } from "@/lib/redis"
 import { extractFromStatement } from "@/lib/extraction"
+import { isTabularFileType, extractFromTabularFile } from "@/lib/tabular-extraction"
 import type { ExtractionJobData } from "@/lib/queue"
-import type { ExtractionResult, ExtractedAccount } from "@/types/extraction"
+import type { ExtractionResponse, ExtractionResult, ExtractedAccount } from "@/types/extraction"
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -72,7 +73,7 @@ async function processExtractionJob(
   status: string
   accountsFound: number
 }> {
-  const { statementId, filePath, fileType } = job.data
+  const { statementId, filingYearId, filePath, fileType } = job.data
 
   console.log(
     `[Worker] Processing extraction for statement: ${statementId} (${fileType})`
@@ -89,8 +90,14 @@ async function processExtractionJob(
 
   await job.updateProgress(10)
 
-  // 2. Run LLM extraction
-  const response = await extractFromStatement(filePath, fileType)
+  // 2. Run extraction (LLM for images/PDFs, programmatic for CSV/Excel)
+  let response: ExtractionResponse
+
+  if (isTabularFileType(fileType)) {
+    response = await extractFromTabularFile(filePath, fileType, job.data.fileName ?? "unknown")
+  } else {
+    response = await extractFromStatement(filePath, fileType)
+  }
 
   await job.updateProgress(60)
 
@@ -202,6 +209,58 @@ async function processExtractionJob(
           primaryAccount.warnings as unknown as Prisma.InputJsonValue,
       },
     })
+
+    // 5b. Auto-create ForeignAccount records from extraction results.
+    //     The Approve Account flow requires a pre-existing ForeignAccount to
+    //     link to, so we create one for each extracted account that doesn't
+    //     already exist for this client.
+    const filingYear = await tx.filingYear.findUnique({
+      where: { id: filingYearId },
+      select: { clientId: true },
+    })
+
+    if (filingYear) {
+      for (const account of result.accounts) {
+        if (!account.account_number) continue
+
+        // Check if account already exists for this client
+        const existing = await tx.foreignAccount.findFirst({
+          where: {
+            clientId: filingYear.clientId,
+            accountNumber: account.account_number,
+          },
+        })
+
+        if (!existing) {
+          // Map extraction account_type to Prisma AccountType enum
+          const accountTypeMap: Record<string, "BANK" | "SECURITIES" | "OTHER"> = {
+            bank: "BANK",
+            securities: "SECURITIES",
+            other: "OTHER",
+          }
+
+          await tx.foreignAccount.create({
+            data: {
+              clientId: filingYear.clientId,
+              accountNumber: account.account_number,
+              accountType: accountTypeMap[account.account_type] ?? "BANK",
+              accountTypeDescription: account.account_type_description ?? null,
+              institutionName: account.bank_name ?? "Unknown Institution",
+              institutionAddressStreet: account.bank_address?.street ?? null,
+              institutionAddressCity: account.bank_address?.city ?? null,
+              institutionAddressState: account.bank_address?.state_province ?? null,
+              institutionAddressCountry: account.bank_address?.country ?? null,
+              institutionAddressPostal: account.bank_address?.postal_code ?? null,
+              ownershipType: "FINANCIAL_INTEREST",
+            },
+          })
+
+          console.log(
+            `[Worker] Auto-created ForeignAccount for client ${filingYear.clientId}, account ${account.account_number}`
+          )
+        }
+      }
+    }
 
     await job.updateProgress(90)
 

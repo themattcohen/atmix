@@ -5,7 +5,6 @@ import { Header } from "@/components/layout/Header"
 import { Card, CardContent } from "@/components/ui/Card"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { getFileUrl } from "@/lib/s3"
 import type { ExtractionResult, ExtractedAccount } from "@/types/extraction"
 import { ReviewPageClient } from "./ReviewPageClient"
 
@@ -118,37 +117,36 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     orderBy: { createdAt: "asc" },
   })
 
-  // Build statement data with presigned URLs and parsed accounts
-  const statementData: StatementWithExtraction[] = await Promise.all(
-    statements.map(async (stmt) => {
-      const presignedUrl = await getFileUrl(stmt.filePath)
+  // Build statement data with file URLs and parsed accounts
+  const statementData: StatementWithExtraction[] = statements.map((stmt) => {
+    // Use API proxy route instead of presigned URLs to avoid CORS issues
+    const fileUrl = `/api/files/${encodeURIComponent(stmt.filePath)}`
 
-      // Parse accounts from the raw LLM response stored in extractedData
-      let accounts: ExtractedAccount[] = []
-      if (stmt.extractedData?.rawLlmResponse) {
-        try {
-          const raw = stmt.extractedData.rawLlmResponse as unknown
-          // rawLlmResponse is the full ExtractionResult JSON
-          const extraction = raw as ExtractionResult
-          if (extraction.accounts && Array.isArray(extraction.accounts)) {
-            accounts = extraction.accounts
-          }
-        } catch {
-          // If parsing fails, leave accounts empty -- the ReviewForm will
-          // show an empty state for this statement.
+    // Parse accounts from the raw LLM response stored in extractedData
+    let accounts: ExtractedAccount[] = []
+    if (stmt.extractedData?.rawLlmResponse) {
+      try {
+        const raw = stmt.extractedData.rawLlmResponse as unknown
+        // rawLlmResponse is the full ExtractionResult JSON
+        const extraction = raw as ExtractionResult
+        if (extraction.accounts && Array.isArray(extraction.accounts)) {
+          accounts = extraction.accounts
         }
+      } catch {
+        // If parsing fails, leave accounts empty -- the ReviewForm will
+        // show an empty state for this statement.
       }
+    }
 
-      return {
-        id: stmt.id,
-        fileName: stmt.fileName,
-        fileType: stmt.fileType,
-        filePath: stmt.filePath,
-        presignedUrl,
-        accounts,
-      }
-    })
-  )
+    return {
+      id: stmt.id,
+      fileName: stmt.fileName,
+      fileType: stmt.fileType,
+      filePath: stmt.filePath,
+      presignedUrl: fileUrl,
+      accounts,
+    }
+  })
 
   const hasStatements = statementData.length > 0
 

@@ -69,7 +69,19 @@ function getAnthropicClient(): Anthropic {
  */
 function resolveMediaType(fileType: string): string | undefined {
   const normalized = fileType.toLowerCase().replace(/^\./, "")
-  return MEDIA_TYPE_MAP[normalized]
+
+  // Direct match by extension (e.g. "pdf", "jpeg")
+  if (MEDIA_TYPE_MAP[normalized]) {
+    return MEDIA_TYPE_MAP[normalized]
+  }
+
+  // Match by MIME type (e.g. "application/pdf", "image/jpeg")
+  const mimeValues = Object.values(MEDIA_TYPE_MAP)
+  if (mimeValues.includes(normalized)) {
+    return normalized
+  }
+
+  return undefined
 }
 
 // ---------------------------------------------------------------------------

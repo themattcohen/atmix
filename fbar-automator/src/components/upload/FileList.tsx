@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { FileText, Image, FolderOpen } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { FileText, Image, FolderOpen, Trash2, Table } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
@@ -20,9 +22,10 @@ interface FileListProps {
   statements: StatementSummary[]
   clientId: string
   filingYear: string
+  isAdmin?: boolean
 }
 
-export function FileList({ statements, clientId, filingYear }: FileListProps) {
+export function FileList({ statements, clientId, filingYear, isAdmin = false }: FileListProps) {
   return (
     <Card>
       <CardHeader>
@@ -87,6 +90,7 @@ export function FileList({ statements, clientId, filingYear }: FileListProps) {
                     statement={statement}
                     clientId={clientId}
                     filingYear={filingYear}
+                    isAdmin={isAdmin}
                   />
                 ))}
               </tbody>
@@ -102,21 +106,52 @@ function StatementRow({
   statement,
   clientId,
   filingYear,
+  isAdmin,
 }: {
   statement: StatementSummary
   clientId: string
   filingYear: string
+  isAdmin: boolean
 }) {
+  const router = useRouter()
+  const [deleting, setDeleting] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+
   const isImage = ["image/jpeg", "image/png", "image/heic", "image/tiff"].includes(
     statement.fileType
   )
+  const isTabular = ["text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"].includes(
+    statement.fileType
+  )
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/statements/${statement.id}`, {
+        method: "DELETE",
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        alert(data?.error ?? "Failed to delete statement.")
+        return
+      }
+      router.refresh()
+    } catch {
+      alert("Failed to delete statement. Please try again.")
+    } finally {
+      setDeleting(false)
+      setShowConfirm(false)
+    }
+  }
 
   return (
     <tr className="group">
       <td className="py-3 pr-4">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100">
-            {isImage ? (
+            {isTabular ? (
+              <Table className="h-4 w-4 text-gray-500" aria-hidden="true" />
+            ) : isImage ? (
               <Image className="h-4 w-4 text-gray-500" aria-hidden="true" />
             ) : (
               <FileText className="h-4 w-4 text-gray-500" aria-hidden="true" />
@@ -145,11 +180,50 @@ function StatementRow({
         {formatDate(statement.createdAt)}
       </td>
       <td className="py-3">
-        <Link href={`/clients/${clientId}/${filingYear}/review`}>
-          <Button variant="ghost" size="sm">
-            View
-          </Button>
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link href={`/clients/${clientId}/${filingYear}/review`}>
+            <Button variant="ghost" size="sm">
+              View
+            </Button>
+          </Link>
+          {isAdmin && (
+            <>
+              {showConfirm ? (
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleDelete}
+                    disabled={deleting || statement.processingStatus === "PROCESSING"}
+                  >
+                    {deleting ? "Deleting..." : "Confirm"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowConfirm(false)}
+                    disabled={deleting}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowConfirm(true)}
+                  disabled={statement.processingStatus === "PROCESSING"}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  title={
+                    statement.processingStatus === "PROCESSING"
+                      ? "Cannot delete while processing"
+                      : "Delete statement"
+                  }
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </td>
     </tr>
   )
@@ -222,6 +296,8 @@ function formatFileType(mimeType: string): string {
     "image/png": "PNG",
     "image/heic": "HEIC",
     "image/tiff": "TIFF",
+    "text/csv": "CSV",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "Excel",
   }
   return map[mimeType] ?? mimeType.split("/").pop()?.toUpperCase() ?? "Unknown"
 }

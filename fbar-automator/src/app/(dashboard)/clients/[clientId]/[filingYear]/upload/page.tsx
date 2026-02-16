@@ -122,15 +122,15 @@ export default async function UploadPage({ params }: UploadPageProps) {
               </h2>
               <p className="mt-1 text-sm text-gray-500">
                 Upload foreign bank statements for {filingYear} filing year.
-                Supported formats: PDF, JPEG, PNG, HEIC, and TIFF.
+                Supported formats: PDF, CSV, Excel, JPEG, PNG, HEIC, and TIFF.
               </p>
             </div>
 
-            <UploadSection clientId={clientId} filingYearId={filingYearId} />
+            <UploadSection clientId={clientId} filingYearId={filingYearId} existingFileNames={existingStatements.map((s) => s.fileName)} />
           </section>
 
           <section>
-            <FileList statements={existingStatements} clientId={clientId} filingYear={filingYear} />
+            <FileList statements={existingStatements} clientId={clientId} filingYear={filingYear} isAdmin={session.user.role === "ADMIN"} />
           </section>
         </div>
       </div>

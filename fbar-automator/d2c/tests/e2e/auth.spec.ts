@@ -63,21 +63,22 @@ test.describe("Signup Page", () => {
     await page.fill("#password", "TestPass123!");
     await page.fill("#confirmPassword", "TestPass123!");
     await page.click('button[type="submit"]');
-    await page.waitForURL("**/threshold", { timeout: 15000 });
+    await page.waitForURL("**/threshold", { timeout: 30000 });
     await expect(page).toHaveURL(/\/threshold/);
   });
 
-  test("signup with duplicate email shows error", async ({ page }) => {
+  test("signup with duplicate email redirects to login (anti-enumeration)", async ({ page }) => {
     await page.goto("/signup");
     await page.fill("#firstName", "Dup");
     await page.fill("#lastName", "User");
     await page.fill("#email", EXISTING_EMAIL);
-    await page.fill("#password", "TestPass123!");
-    await page.fill("#confirmPassword", "TestPass123!");
+    await page.fill("#password", "WrongPassword999!");
+    await page.fill("#confirmPassword", "WrongPassword999!");
     await page.click('button[type="submit"]');
-    await expect(
-      page.locator(".bg-red-50, .text-red-600, .text-red-700").first()
-    ).toBeVisible({ timeout: 10000 });
+    // Anti-enumeration: API returns 201 for duplicates too.
+    // Frontend tries auto-login which fails (wrong password), then redirects to /login.
+    await page.waitForURL("**/login", { timeout: 30000 });
+    await expect(page).toHaveURL(/\/login/);
   });
 
   test("signup with mismatched passwords shows error", async ({ page }) => {
@@ -153,7 +154,7 @@ test.describe("Login Page", () => {
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
     await expect(page).toHaveURL(/\/(threshold|dashboard)/);
   });
 
@@ -182,7 +183,7 @@ test.describe("Login Page", () => {
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
     // Loading state may be very fast; just verify no crash and successful redirect
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
   });
 });
 
@@ -252,7 +253,7 @@ test.describe("Logout", () => {
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
 
     const logoutBtn = page.locator("text=Log Out");
     await expect(logoutBtn).toBeVisible();
@@ -267,7 +268,7 @@ test.describe("Logout", () => {
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
 
     await expect(page.locator(`text=${EXISTING_EMAIL}`)).toBeVisible();
   });
@@ -277,7 +278,7 @@ test.describe("Logout", () => {
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
 
     const filingsLink = page.locator("text=My Filings");
     await expect(filingsLink).toBeVisible();

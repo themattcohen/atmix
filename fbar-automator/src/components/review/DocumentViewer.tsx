@@ -42,7 +42,25 @@ export function DocumentViewer({
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  const isPdf = fileType === "application/pdf"
+  // Normalize legacy bare-extension values to MIME types
+  const MIME_NORMALIZE: Record<string, string> = {
+    pdf: "application/pdf",
+    jpeg: "image/jpeg",
+    jpg: "image/jpeg",
+    png: "image/png",
+    heic: "image/heic",
+    tiff: "image/tiff",
+    tif: "image/tiff",
+  }
+
+  const normalizedFileType = MIME_NORMALIZE[fileType.toLowerCase()] ?? fileType
+  const isPdf = normalizedFileType === "application/pdf"
+  const TABULAR_TYPES = new Set([
+    "text/csv",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-excel",
+  ])
+  const isTabular = TABULAR_TYPES.has(normalizedFileType)
 
   const onDocumentLoadSuccess = useCallback(
     ({ numPages: total }: { numPages: number }) => {
@@ -164,7 +182,26 @@ export function DocumentViewer({
 
       {/* Document area */}
       <div className="flex-1 overflow-auto bg-gray-100">
-        {isPdf ? (
+        {isTabular ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="rounded-full bg-blue-100 p-3">
+              <FileText className="h-6 w-6 text-blue-500" aria-hidden="true" />
+            </div>
+            <p className="mt-3 text-sm font-medium text-gray-700">
+              Spreadsheet files cannot be previewed.
+            </p>
+            <p className="mt-1 text-xs text-gray-500">
+              The extracted data is shown in the review panel.
+            </p>
+            <a
+              href={fileUrl}
+              download={fileName}
+              className="mt-4 inline-flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              Download {fileName}
+            </a>
+          </div>
+        ) : isPdf ? (
           <div className="flex justify-center p-4">
             <Document
               file={fileUrl}

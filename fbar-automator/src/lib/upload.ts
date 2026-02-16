@@ -7,6 +7,8 @@ const ALLOWED_TYPES = new Set([
   "image/png",
   "image/heic",
   "image/tiff",
+  "text/csv",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ])
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
@@ -20,6 +22,9 @@ const MAGIC_BYTES: Record<string, Buffer[]> = {
     Buffer.from([0x49, 0x49, 0x2A, 0x00]), // Little-endian
     Buffer.from([0x4D, 0x4D, 0x00, 0x2A]), // Big-endian
   ],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+    Buffer.from([0x50, 0x4B, 0x03, 0x04]),  // PK (ZIP signature)
+  ],
 }
 
 interface UploadResult {
@@ -29,9 +34,21 @@ interface UploadResult {
   fileSizeBytes: number
 }
 
+function normalizeMimeType(file: { name: string; type: string }): string {
+  const ext = file.name.split(".").pop()?.toLowerCase()
+  if (ext === "csv" && (file.type === "text/plain" || file.type === "application/octet-stream" || !file.type)) {
+    return "text/csv"
+  }
+  if (ext === "xlsx" && (file.type === "application/octet-stream" || !file.type)) {
+    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  }
+  return file.type
+}
+
 export function validateFile(file: { name: string; type: string; size: number }): string | null {
-  if (!ALLOWED_TYPES.has(file.type)) {
-    return `File type "${file.type}" is not supported. Accepted: PDF, JPEG, PNG, HEIC, TIFF.`
+  const mimeType = normalizeMimeType(file)
+  if (!ALLOWED_TYPES.has(mimeType)) {
+    return `File type "${file.type}" is not supported. Accepted: PDF, JPEG, PNG, HEIC, TIFF, CSV, Excel (.xlsx).`
   }
   if (file.size > MAX_FILE_SIZE) {
     return `File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds the 50MB limit.`
@@ -45,6 +62,10 @@ export function validateFile(file: { name: string; type: string; size: number })
 function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
   // Skip validation for HEIC (uses ISO BMFF container format, complex to validate)
   if (mimeType === "image/heic") {
+    return true
+  }
+
+  if (mimeType === "text/csv") {
     return true
   }
 
@@ -70,22 +91,23 @@ export async function processUpload(
   const error = validateFile(file)
   if (error) throw new Error(error)
 
+  const normalizedType = normalizeMimeType(file)
   const extension = file.name.split(".").pop()?.toLowerCase() || "pdf"
   const key = `${practiceId}/${filingYearId}/${randomUUID()}.${extension}`
 
   const buffer = Buffer.from(await file.arrayBuffer())
 
   // Validate file content matches declared MIME type
-  if (!validateMagicBytes(buffer, file.type)) {
-    throw new Error(`File content does not match declared type "${file.type}". Possible file corruption or spoofing.`)
+  if (!validateMagicBytes(buffer, normalizedType)) {
+    throw new Error(`File content does not match declared type "${normalizedType}". Possible file corruption or spoofing.`)
   }
 
-  await uploadFile(key, buffer, file.type)
+  await uploadFile(key, buffer, normalizedType)
 
   return {
     key,
     fileName: file.name,
-    fileType: extension,
+    fileType: normalizedType,
     fileSizeBytes: file.size,
   }
 }

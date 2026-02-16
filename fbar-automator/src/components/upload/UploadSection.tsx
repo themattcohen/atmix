@@ -8,6 +8,7 @@ import { UploadProgress, type UploadingFile } from "@/components/upload/UploadPr
 interface UploadSectionProps {
   clientId: string
   filingYearId: string
+  existingFileNames?: string[]
 }
 
 interface StatementResult {
@@ -31,7 +32,7 @@ interface StatusResponse {
 const POLL_INTERVAL_MS = 3000
 const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
 
-export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
+export function UploadSection({ clientId, filingYearId, existingFileNames = [] }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
   const router = useRouter()
   const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
@@ -163,7 +164,36 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
 
   const handleFilesAccepted = useCallback(
     (acceptedFiles: File[]) => {
-      const newFiles: UploadingFile[] = acceptedFiles.map((file) => ({
+      // Check for duplicates against existing statements
+      const existingNamesLower = new Set(existingFileNames.map((n) => n.toLowerCase()))
+      // Also check against files already in the current upload batch
+      const currentNamesLower = new Set(files.map((f) => f.name.toLowerCase()))
+
+      const duplicates: File[] = []
+      const uniqueFiles: File[] = []
+
+      for (const file of acceptedFiles) {
+        const nameLower = file.name.toLowerCase()
+        if (existingNamesLower.has(nameLower) || currentNamesLower.has(nameLower)) {
+          duplicates.push(file)
+        } else {
+          uniqueFiles.push(file)
+          currentNamesLower.add(nameLower) // prevent intra-batch duplicates
+        }
+      }
+
+      // Add duplicate files as immediate errors
+      const dupEntries: UploadingFile[] = duplicates.map((file) => ({
+        id: `${file.name}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        name: file.name,
+        size: file.size,
+        status: "error" as const,
+        progress: 100,
+        error: `"${file.name}" has already been uploaded.`,
+      }))
+
+      // Create entries for unique files
+      const newFiles: UploadingFile[] = uniqueFiles.map((file) => ({
         id: `${file.name}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name: file.name,
         size: file.size,
@@ -171,14 +201,14 @@ export function UploadSection({ clientId, filingYearId }: UploadSectionProps) {
         progress: 0,
       }))
 
-      setFiles((prev) => [...prev, ...newFiles])
+      setFiles((prev) => [...prev, ...dupEntries, ...newFiles])
 
       newFiles.forEach((uploadFile_entry, index) => {
-        const file = acceptedFiles[index]
+        const file = uniqueFiles[index]
         uploadFile(file, uploadFile_entry.id)
       })
     },
-    [uploadFile]
+    [uploadFile, existingFileNames, files]
   )
 
   // Cleanup polling timers on unmount

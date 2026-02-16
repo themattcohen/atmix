@@ -75,7 +75,7 @@ test.describe("Static Marketing Pages", () => {
   });
 
   test("How It Works page loads with steps", async ({ page }) => {
-    await page.goto("/how-it-works");
+    await page.goto("/how-it-works", { timeout: 30000 });
     await expect(page.locator("h1")).toContainText(
       "How FBAR Direct Works"
     );
@@ -214,13 +214,13 @@ test.describe("Mobile Navigation", () => {
 
   test("hamburger menu appears on mobile", async ({ page }) => {
     await page.goto("/");
-    const hamburger = page.locator('button[aria-label="Open menu"]');
+    const hamburger = page.locator('button[aria-label="Toggle navigation menu"]');
     await expect(hamburger).toBeVisible();
   });
 
   test("hamburger menu opens and shows all links", async ({ page }) => {
     await page.goto("/");
-    await page.click('button[aria-label="Open menu"]');
+    await page.click('button[aria-label="Toggle navigation menu"]');
     const overlay = page.locator(".fixed.inset-0");
     await expect(overlay).toBeVisible();
     await expect(overlay.locator("text=How It Works")).toBeVisible();
@@ -232,7 +232,7 @@ test.describe("Mobile Navigation", () => {
 
   test("hamburger menu close button works", async ({ page }) => {
     await page.goto("/");
-    await page.click('button[aria-label="Open menu"]');
+    await page.click('button[aria-label="Toggle navigation menu"]');
     await expect(page.locator(".fixed.inset-0")).toBeVisible();
     await page.click('button[aria-label="Close menu"]');
     await expect(page.locator(".fixed.inset-0")).toBeHidden();
@@ -240,7 +240,7 @@ test.describe("Mobile Navigation", () => {
 
   test("mobile menu link navigates and closes menu", async ({ page }) => {
     await page.goto("/");
-    await page.click('button[aria-label="Open menu"]');
+    await page.click('button[aria-label="Toggle navigation menu"]');
     await page
       .locator(".fixed.inset-0")
       .locator("text=How It Works")

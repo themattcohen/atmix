@@ -79,7 +79,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 5. Collect files from the form data
+    // 5. Check for duplicate filenames
+    const existingStatements = await prisma.statement.findMany({
+      where: { filingYearId },
+      select: { fileName: true },
+    })
+    const existingNames = new Set(
+      existingStatements.map((s) => s.fileName.toLowerCase())
+    )
+
+    // 6. Collect files from the form data
     const files = formData.getAll("files")
     if (files.length === 0) {
       return NextResponse.json(
@@ -97,12 +106,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 6. Process each file in parallel
+    // 7. Process each file in parallel
     const uploaded: StatementResult[] = []
     const errors: UploadError[] = []
 
     const results = await Promise.allSettled(
       fileEntries.map(async (file) => {
+        // Check for duplicate filename
+        if (existingNames.has(file.name.toLowerCase())) {
+          return {
+            success: false,
+            fileName: file.name,
+            error: `A file named "${file.name}" has already been uploaded for this filing year.`,
+          }
+        }
+
         // 6a. Validate the file before attempting upload
         const validationError = validateFile(file)
         if (validationError) {
@@ -132,6 +150,7 @@ export async function POST(request: NextRequest) {
             practiceId,
             filePath: uploadResult.key,
             fileType: uploadResult.fileType,
+            fileName: uploadResult.fileName,
           })
 
           // 6e. Create audit log entry
@@ -188,7 +207,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 7. Return results
+    // 8. Return results
     const status = uploaded.length > 0 ? 200 : 400
     return NextResponse.json({ uploaded, errors }, { status })
   } catch (error) {

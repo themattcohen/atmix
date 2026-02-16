@@ -11,6 +11,8 @@ const ACCEPTED_FILE_TYPES: Record<string, string[]> = {
   "image/png": [".png"],
   "image/heic": [".heic"],
   "image/tiff": [".tif", ".tiff"],
+  "text/csv": [".csv"],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
 }
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
@@ -100,7 +102,7 @@ export function DropZone({ onFilesAccepted, disabled = false }: DropZoneProps) {
                 or drag and drop
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                PDF, JPEG, PNG, HEIC, or TIFF up to 50MB each
+                PDF, JPEG, PNG, HEIC, TIFF, CSV, or Excel (.xlsx) up to 50MB each
               </p>
             </>
           )}

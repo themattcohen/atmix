@@ -41,6 +41,7 @@ export interface ExtractionJobData {
   practiceId: string
   filePath: string
   fileType: string
+  fileName?: string
   pageCount?: number
 }
 
