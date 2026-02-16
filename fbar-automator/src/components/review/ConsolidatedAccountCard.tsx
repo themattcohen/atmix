@@ -368,7 +368,7 @@ export function ConsolidatedAccountCard({
             >
               <span>
                 Balance History ({account.allBalances.length} entries from{" "}
-                {account.coverage.totalStatements} statements)
+                {account.coverage.totalStatements} {account.coverage.totalStatements === 1 ? "statement" : "statements"})
               </span>
               {balancesOpen ? (
                 <ChevronUp className="h-4 w-4" aria-hidden="true" />
@@ -450,7 +450,7 @@ export function ConsolidatedAccountCard({
               aria-controls="consolidated-statements"
             >
               <span>
-                Source Statements ({account.sourceStatements.length} files)
+                Source Statements ({account.sourceStatements.length} {account.sourceStatements.length === 1 ? "file" : "files"})
               </span>
               {statementsOpen ? (
                 <ChevronUp className="h-4 w-4" aria-hidden="true" />
