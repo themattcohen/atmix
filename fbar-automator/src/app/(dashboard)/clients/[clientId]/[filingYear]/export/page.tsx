@@ -14,6 +14,7 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { getFilingProgress } from "@/lib/approval"
 import { ExportDownloadButtons } from "./ExportDownloadButtons"
+import { FilingActions } from "../FilingActions"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -55,6 +56,8 @@ export default async function ExportPage({ params }: ExportPageProps) {
   const { clientId, filingYear } = await params
   const session = await auth()
   if (!session?.user?.practiceId) redirect("/login")
+
+  const userRole = session.user.role || "PREPARER"
 
   // Fetch the filing year record
   const filingYearRecord = await prisma.filingYear.findFirst({
@@ -223,6 +226,17 @@ export default async function ExportPage({ params }: ExportPageProps) {
                 </div>
               </div>
             )}
+
+            <FilingActions
+              filingYearId={filingYearRecord.id}
+              status={progress.status}
+              isFullyReviewed={progress.isFullyReviewed}
+              isReadyForReview={progress.isReadyForReview}
+              userRole={userRole}
+              totalStatements={progress.totalStatements}
+              pendingStatements={progress.pendingStatements}
+              failedStatements={progress.failedStatements}
+            />
 
             {isExportReady && (
               <div className="mt-4 flex items-center gap-2 rounded-md bg-green-50 p-3 text-sm text-green-800">

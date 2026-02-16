@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { safeDecrypt } from "@/lib/encryption"
+import { DeleteClientButton } from "./DeleteClientButton"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -98,6 +99,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
 
   const hasClients = clients.length > 0
   const totalPages = Math.ceil(total / pageSize)
+  const isAdmin = session.user.role === "ADMIN"
 
   return (
     <>
@@ -193,12 +195,20 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                             )}
                           </td>
                           <td className="px-6 py-4">
-                            <Link href={`/clients/${client.id}`}>
-                              <Button variant="ghost" size="sm">
-                                <Eye className="mr-1 h-4 w-4" />
-                                View
-                              </Button>
-                            </Link>
+                            <div className="flex items-center gap-1">
+                              <Link href={`/clients/${client.id}`}>
+                                <Button variant="ghost" size="sm">
+                                  <Eye className="mr-1 h-4 w-4" />
+                                  View
+                                </Button>
+                              </Link>
+                              {isAdmin && (
+                                <DeleteClientButton
+                                  clientId={client.id}
+                                  clientName={`${client.lastName}${client.firstName ? `, ${client.firstName}` : ""}`}
+                                />
+                              )}
+                            </div>
                           </td>
                         </tr>
                       )

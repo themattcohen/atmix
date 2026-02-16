@@ -130,11 +130,11 @@ export default function NewClientPage() {
       }
 
       router.push(`/clients/${data.id}`)
+      return
     } catch {
       setGlobalError("Network error. Please try again.")
-    } finally {
-      setIsSubmitting(false)
     }
+    setIsSubmitting(false)
   }
 
   function fieldError(name: string) {
