@@ -8,12 +8,18 @@ import { maskTIN, formatDate } from "@/lib/utils";
 import type { AccountDisplay, UserProfile } from "@/types";
 import Link from "next/link";
 
+interface FilingInfo {
+  id: string;
+  calendarYear: number;
+  status: string;
+}
+
 export default function ReviewPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [accounts, setAccounts] = useState<AccountDisplay[]>([]);
-  const [filing, setFiling] = useState<{ id: string; calendarYear: number; status: string } | null>(null);
+  const [filing, setFiling] = useState<FilingInfo | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -24,9 +30,9 @@ export default function ReviewPage() {
         const filingData = await filingRes.json();
 
         let year = new Date().getFullYear() - 1;
-        let activeFiling = null;
+        let activeFiling: FilingInfo | null = null;
         if (filingData.data?.length > 0) {
-          const active = filingData.data.find((f: any) =>
+          const active = filingData.data.find((f: FilingInfo) =>
             ["IN_PROGRESS", "REVIEWED", "SIGNED", "PAID"].includes(f.status)
           );
           if (active) {
@@ -67,7 +73,7 @@ export default function ReviewPage() {
       case "REVIEWED":
       case "IN_PROGRESS":
       default:
-        return { label: "Everything Looks Correct — Continue to Sign", path: "/sign" };
+        return { label: "Everything Looks Correct \u2014 Continue to Sign", path: "/sign" };
     }
   };
 
@@ -79,8 +85,10 @@ export default function ReviewPage() {
   if (loading) {
     return (
       <WizardLayout currentStep={4}>
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+        <div className="flex justify-center py-12" aria-label="Loading review page">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
         </div>
       </WizardLayout>
     );
@@ -91,76 +99,82 @@ export default function ReviewPage() {
 
   return (
     <WizardLayout currentStep={4} onPrevious="/accounts">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto print:max-w-full">
         <h1 className="text-2xl font-bold text-navy-900 mb-2">Review Your FBAR</h1>
-        <p className="text-gray-600 mb-8">Please verify all information is correct before signing.</p>
+        <p className="text-gray-600 mb-8 print:mb-4">Please verify all information is correct before signing.</p>
 
-        {error && <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6">{error}</div>}
+        {error && <div role="alert" className="bg-red-50 text-red-700 p-4 rounded-md mb-6 print:hidden">{error}</div>}
 
         {/* Personal Information */}
-        <section className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <section className="bg-white rounded-lg shadow-sm border p-6 mb-6 print:shadow-none print:border-gray-300" aria-labelledby="personal-info-heading">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-navy-900">Personal Information</h2>
-            <Link href="/personal" className="text-sm text-navy-900 hover:underline">Edit</Link>
+            <h2 id="personal-info-heading" className="text-lg font-semibold text-navy-900">Personal Information</h2>
+            <Link href="/personal" className="text-sm text-navy-900 hover:underline print:hidden">Edit</Link>
           </div>
           {user && (
-            <div className="grid grid-cols-2 gap-y-3 text-sm">
+            <dl className="grid grid-cols-2 gap-y-3 text-sm">
               <div>
-                <span className="text-gray-500">Name</span>
-                <p className="font-medium">{[user.firstName, user.middleName, user.lastName].filter(Boolean).join(" ")}</p>
+                <dt className="text-gray-500">Name</dt>
+                <dd className="font-medium">{[user.firstName, user.middleName, user.lastName].filter(Boolean).join(" ")}</dd>
               </div>
               <div>
-                <span className="text-gray-500">TIN</span>
-                <p className="font-medium">{user.tinLast4 ? maskTIN(user.tinLast4) : "Not provided"} ({user.tinType})</p>
+                <dt className="text-gray-500">TIN</dt>
+                <dd className="font-medium">{user.tinLast4 ? maskTIN(user.tinLast4) : "Not provided"} ({user.tinType})</dd>
               </div>
               <div>
-                <span className="text-gray-500">Date of Birth</span>
-                <p className="font-medium">{user.dateOfBirth ? formatDate(user.dateOfBirth) : "Not provided"}</p>
+                <dt className="text-gray-500">Date of Birth</dt>
+                <dd className="font-medium">{user.dateOfBirth ? formatDate(user.dateOfBirth) : "Not provided"}</dd>
               </div>
               <div>
-                <span className="text-gray-500">Address</span>
-                <p className="font-medium">
+                <dt className="text-gray-500">Address</dt>
+                <dd className="font-medium">
                   {user.usAddress
                     ? `${user.usAddress.street}, ${user.usAddress.city}, ${user.usAddress.state} ${user.usAddress.zip}`
                     : "Not provided"}
-                </p>
+                </dd>
               </div>
-            </div>
+              {user.phone && (
+                <div>
+                  <dt className="text-gray-500">Phone</dt>
+                  <dd className="font-medium">{user.phone}</dd>
+                </div>
+              )}
+            </dl>
           )}
         </section>
 
         {/* Filing Information */}
-        <section className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <h2 className="text-lg font-semibold text-navy-900 mb-4">Filing Information</h2>
-          <div className="grid grid-cols-2 gap-y-3 text-sm">
+        <section className="bg-white rounded-lg shadow-sm border p-6 mb-6 print:shadow-none print:border-gray-300" aria-labelledby="filing-info-heading">
+          <h2 id="filing-info-heading" className="text-lg font-semibold text-navy-900 mb-4">Filing Information</h2>
+          <dl className="grid grid-cols-2 gap-y-3 text-sm">
             <div>
-              <span className="text-gray-500">Calendar Year</span>
-              <p className="font-medium">{filing?.calendarYear || new Date().getFullYear() - 1}</p>
+              <dt className="text-gray-500">Calendar Year</dt>
+              <dd className="font-medium">{filing?.calendarYear || new Date().getFullYear() - 1}</dd>
             </div>
             <div>
-              <span className="text-gray-500">Filing Type</span>
-              <p className="font-medium">Original</p>
+              <dt className="text-gray-500">Filing Type</dt>
+              <dd className="font-medium">Original</dd>
             </div>
             <div>
-              <span className="text-gray-500">Number of Accounts</span>
-              <p className="font-medium">{accounts.length}</p>
+              <dt className="text-gray-500">Number of Accounts</dt>
+              <dd className="font-medium">{accounts.length}</dd>
             </div>
-          </div>
+          </dl>
         </section>
 
         {/* Foreign Accounts */}
-        <section className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <section className="bg-white rounded-lg shadow-sm border p-6 mb-6 print:shadow-none print:border-gray-300" aria-labelledby="accounts-heading">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-navy-900">Foreign Accounts</h2>
-            <Link href="/accounts" className="text-sm text-navy-900 hover:underline">Edit</Link>
+            <h2 id="accounts-heading" className="text-lg font-semibold text-navy-900">Foreign Accounts</h2>
+            <Link href="/accounts" className="text-sm text-navy-900 hover:underline print:hidden">Edit</Link>
           </div>
           <ReviewTable accounts={accounts} />
         </section>
 
         {/* Actions */}
-        <div className="space-y-3">
+        <div className="space-y-3 print:hidden">
           {!canContinue && (
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-md mb-4 text-sm">
+            <div role="alert" className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-md mb-4 text-sm">
               Add at least one foreign account to continue.
             </div>
           )}

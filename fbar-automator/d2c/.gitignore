@@ -26,6 +26,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
 
 # vercel
 .vercel
@@ -34,6 +35,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# playwright
+# test artifacts
 /test-results/
 /playwright-report/
+*.mjs
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Planning docs
+PLAN-*.md
+
+# Status docs
+D2C-STATUS.md

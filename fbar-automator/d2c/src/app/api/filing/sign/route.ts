@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { signatureSchema } from "@/lib/validation";
 import { generateForm114a } from "@/lib/form114a";
-import { safeDecrypt } from "@/lib/encryption";
+import { encrypt, safeDecrypt } from "@/lib/encryption";
 
 export async function POST(req: NextRequest) {
   try {
@@ -75,6 +75,7 @@ export async function POST(req: NextRequest) {
     // Generate Form 114a PDF
     const tinLast4 = user.tin ? safeDecrypt(user.tin).slice(-4) : "0000";
     const { key: form114aUrl } = await generateForm114a({
+      userId: session.user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       tinLast4,
@@ -86,17 +87,27 @@ export async function POST(req: NextRequest) {
       signatureIp: ip,
     });
 
-    // Update filing year
-    await prisma.filingYear.update({
-      where: { id: filingYearId },
+    // Encrypt signature data at rest
+    const encryptedSignature = encrypt(signatureData);
+
+    // Update filing year with userId defense-in-depth
+    const updated = await prisma.filingYear.updateMany({
+      where: { id: filingYearId, userId: session.user.id },
       data: {
         status: "SIGNED",
         signedAt: new Date(),
         signatureIp: ip,
-        signatureData: { type: signatureType, value: signatureData },
+        signatureData: { type: signatureType, value: encryptedSignature },
         form114aUrl,
       },
     });
+
+    if (updated.count === 0) {
+      return NextResponse.json(
+        { error: "Filing could not be updated" },
+        { status: 409 }
+      );
+    }
 
     return NextResponse.json({ success: true, data: { form114aUrl } });
   } catch (error) {

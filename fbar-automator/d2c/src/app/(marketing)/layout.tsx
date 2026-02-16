@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 export default function MarketingLayout({
   children,
@@ -9,11 +9,46 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+    hamburgerButtonRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Focus the first focusable element in the mobile menu
+    const firstFocusable = mobileMenuRef.current?.querySelector<HTMLElement>(
+      "a, button, input, [tabindex]:not([tabindex='-1'])"
+    );
+    firstFocusable?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-navy-900 focus:font-semibold"
+      >
+        Skip to main content
+      </a>
       <header className="bg-white border-b border-gray-200">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <nav aria-label="Main navigation" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold text-navy-900">
             FBAR Direct
           </Link>
@@ -54,11 +89,13 @@ export default function MarketingLayout({
 
           {/* Mobile Hamburger Button */}
           <button
+            ref={hamburgerButtonRef}
             onClick={() => setMobileMenuOpen(true)}
             className="md:hidden p-2 text-gray-600 hover:text-navy-900"
-            aria-label="Open menu"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
@@ -67,16 +104,16 @@ export default function MarketingLayout({
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-white md:hidden">
+        <div ref={mobileMenuRef} role="dialog" aria-label="Navigation menu" className="fixed inset-0 z-50 bg-white md:hidden">
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-4 h-16 border-b border-gray-200">
               <span className="text-xl font-bold text-navy-900">FBAR Direct</span>
               <button
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
                 className="p-2 text-gray-600 hover:text-navy-900"
                 aria-label="Close menu"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -85,35 +122,35 @@ export default function MarketingLayout({
               <Link
                 href="/how-it-works"
                 className="block py-3 text-lg text-gray-600 hover:text-navy-900"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
                 How It Works
               </Link>
               <Link
                 href="/pricing"
                 className="block py-3 text-lg text-gray-600 hover:text-navy-900"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
                 Pricing
               </Link>
               <Link
                 href="/about"
                 className="block py-3 text-lg text-gray-600 hover:text-navy-900"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
                 About
               </Link>
               <Link
                 href="/login"
                 className="block py-3 text-lg text-gray-600 hover:text-navy-900"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
                 Log In
               </Link>
               <Link
                 href="/signup"
                 className="block px-4 py-3 mt-4 bg-gold-500 text-navy-900 rounded-md text-lg font-semibold hover:bg-gold-600 transition-colors text-center"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
                 Start Filing
               </Link>
@@ -122,7 +159,7 @@ export default function MarketingLayout({
         </div>
       )}
 
-      <main className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1">{children}</main>
 
       <footer className="bg-navy-950 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

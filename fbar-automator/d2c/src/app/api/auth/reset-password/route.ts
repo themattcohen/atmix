@@ -2,25 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { z } from "zod";
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { token, password } = body;
 
-    if (!token || typeof token !== "string") {
+    const parsed = resetPasswordSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Token is required" },
+        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
-
-    if (!password || typeof password !== "string" || password.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
-        { status: 400 }
-      );
-    }
+    const { token, password } = parsed.data;
 
     // Hash the token before database lookup
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex");

@@ -7,23 +7,50 @@ import { AccountForm } from "@/components/forms/AccountForm";
 import { AccountEditForm } from "@/components/forms/AccountEditForm";
 import type { AccountDisplay } from "@/types";
 
+function AccountSkeleton() {
+  return (
+    <div className="bg-white rounded-lg shadow-sm border p-4 flex justify-between items-center animate-pulse">
+      <div className="flex-1">
+        <div className="h-5 bg-gray-200 rounded w-40 mb-2" />
+        <div className="h-4 bg-gray-200 rounded w-64" />
+      </div>
+      <div className="flex gap-2">
+        <div className="h-5 bg-gray-200 rounded w-8" />
+        <div className="h-5 bg-gray-200 rounded w-12" />
+      </div>
+    </div>
+  );
+}
+
 export default function AccountsPage() {
   const router = useRouter();
   const [accounts, setAccounts] = useState<AccountDisplay[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [calendarYear, setCalendarYear] = useState<number>(new Date().getFullYear() - 1);
 
   const loadData = async () => {
     try {
+      setError("");
       // First fetch the active filing to get the correct calendar year
       const filingRes = await fetch("/api/filing");
+      if (filingRes.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+      if (!filingRes.ok) {
+        setError("Failed to load filing data. Please try again.");
+        setLoading(false);
+        return;
+      }
       const filingData = await filingRes.json();
 
       let year = new Date().getFullYear() - 1;
       if (filingData.data?.length > 0) {
-        const active = filingData.data.find((f: any) =>
+        const active = filingData.data.find((f: { status: string; calendarYear: number }) =>
           ["IN_PROGRESS", "REVIEWED"].includes(f.status)
         );
         if (active) {
@@ -34,10 +61,19 @@ export default function AccountsPage() {
 
       // Now fetch accounts using the correct year
       const res = await fetch(`/api/accounts?calendarYear=${year}`);
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+      if (!res.ok) {
+        setError("Failed to load accounts. Please try again.");
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
       if (data.data) setAccounts(data.data);
     } catch {
-      console.error("Failed to load data");
+      setError("Unable to connect to the server. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -46,12 +82,21 @@ export default function AccountsPage() {
   useEffect(() => { loadData(); }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this account?")) return;
+    if (!confirm("Are you sure you want to delete this account? This action cannot be undone.")) return;
+    setDeleteError("");
     try {
-      await fetch(`/api/accounts/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/accounts/${id}`, { method: "DELETE" });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+      if (!res.ok) {
+        setDeleteError("Failed to delete account. Please try again.");
+        return;
+      }
       setAccounts((prev) => prev.filter((a) => a.id !== id));
     } catch {
-      console.error("Failed to delete account");
+      setDeleteError("Failed to delete account. Please try again.");
     }
   };
 
@@ -71,9 +116,35 @@ export default function AccountsPage() {
         <h1 className="text-2xl font-bold text-navy-900 mb-2">Foreign Accounts</h1>
         <p className="text-gray-600 mb-8">Add all foreign financial accounts for the calendar year.</p>
 
+        {error && (
+          <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6" role="alert">
+            <p>{error}</p>
+            <button
+              onClick={() => { setError(""); setLoading(true); loadData(); }}
+              className="mt-2 text-sm underline hover:no-underline"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
+        {deleteError && (
+          <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6" role="alert">
+            <p>{deleteError}</p>
+            <button
+              onClick={() => setDeleteError("")}
+              className="mt-2 text-sm underline hover:no-underline"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+          <div className="space-y-4" aria-label="Loading accounts">
+            <AccountSkeleton />
+            <AccountSkeleton />
+            <AccountSkeleton />
           </div>
         ) : (
           <>
@@ -102,12 +173,14 @@ export default function AccountsPage() {
                         <button
                           onClick={() => setEditingId(account.id)}
                           className="text-sm text-navy-900 hover:text-navy-700"
+                          aria-label={`Edit ${account.institutionName} account`}
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(account.id)}
                           className="text-sm text-red-600 hover:text-red-800"
+                          aria-label={`Delete ${account.institutionName} account`}
                         >
                           Delete
                         </button>
@@ -120,12 +193,21 @@ export default function AccountsPage() {
 
             {/* Empty state */}
             {accounts.length === 0 && !showForm && (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center mb-6">
-                <p className="text-gray-700 mb-2">
-                  You need to add at least one foreign account to continue your filing.
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center mb-6">
+                <svg
+                  className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                </svg>
+                <p className="text-gray-700 font-medium mb-2">
+                  No accounts added yet
                 </p>
                 <p className="text-sm text-gray-600">
-                  Click the button below to add your first account.
+                  Add your first foreign financial account to continue your FBAR filing.
                 </p>
               </div>
             )}

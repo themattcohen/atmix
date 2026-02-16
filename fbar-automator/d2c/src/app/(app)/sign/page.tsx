@@ -4,13 +4,27 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 
+interface FilingData {
+  id: string;
+  calendarYear: number;
+  accountCount: number;
+  status: string;
+}
+
+interface UserData {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+}
+
 export default function SignPage() {
   const router = useRouter();
+  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [typedName, setTypedName] = useState("");
-  const [userName, setUserName] = useState({ firstName: "", lastName: "", middleName: "" });
+  const [userName, setUserName] = useState<UserData>({ firstName: "", lastName: "", middleName: "" });
   const [filing, setFiling] = useState<{ id: string; calendarYear: number; accountCount: number } | null>(null);
 
   useEffect(() => {
@@ -33,19 +47,21 @@ export default function SignPage() {
 
         if (filingData.data?.length > 0) {
           // Check if already signed - redirect to payment
-          const signedFiling = filingData.data.find((f: any) => f.status === "SIGNED");
+          const signedFiling = filingData.data.find((f: FilingData) => f.status === "SIGNED");
           if (signedFiling) {
             router.push("/payment");
             return;
           }
 
           const activeFiling = filingData.data.find(
-            (f: any) => f.status === "REVIEWED" || f.status === "IN_PROGRESS"
+            (f: FilingData) => f.status === "REVIEWED" || f.status === "IN_PROGRESS"
           );
           if (activeFiling) setFiling(activeFiling);
         }
       } catch {
         setError("Failed to load data");
+      } finally {
+        setInitialLoading(false);
       }
     }
     loadData();
@@ -90,18 +106,29 @@ export default function SignPage() {
 
   return (
     <WizardLayout currentStep={5} onPrevious="/review">
+    {initialLoading ? (
+      <div className="flex justify-center py-12" aria-label="Loading signing page">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+    ) : (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold text-navy-900 mb-2">Sign Form 114a</h1>
       <p className="text-gray-600 mb-6">
-        Authorize FBAR Direct to electronically file your FBAR on your behalf.
+        By signing below, you certify that the information in your FBAR filing is true and correct.
+        You also authorize FBAR Direct to electronically file your FBAR on your behalf.
       </p>
 
       {error && (
-        <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6">{error}</div>
+        <div role="alert" className="bg-red-50 text-red-700 p-4 rounded-md mb-6">
+          <p className="font-medium">Error</p>
+          <p>{error}</p>
+        </div>
       )}
 
       {filing && (
-        <div className="bg-gray-50 rounded-lg p-4 mb-6 text-sm">
+        <div className="bg-gray-50 rounded-lg p-4 mb-6 text-sm" aria-label="Filing summary">
           <p className="font-medium text-navy-900">Filing Summary</p>
           <p className="text-gray-600">Calendar Year: {filing.calendarYear}</p>
           <p className="text-gray-600">Accounts: {filing.accountCount}</p>
@@ -127,32 +154,44 @@ export default function SignPage() {
           </p>
         </div>
 
-        <label className="flex items-start gap-3 mb-6 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-1 h-4 w-4 rounded border-gray-300 text-navy-900 focus:ring-navy-900"
-          />
-          <span className="text-sm text-gray-700">
-            I have read and agree to the above authorization statement. I certify that
-            the information in my FBAR is true and correct to the best of my knowledge.
-          </span>
-        </label>
+        <fieldset className="mb-6">
+          <legend className="sr-only">Certification agreement</legend>
+          <label htmlFor="agree-checkbox" className="flex items-start gap-3 cursor-pointer">
+            <input
+              id="agree-checkbox"
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-navy-900 focus:ring-navy-900"
+              aria-describedby="agree-description"
+            />
+            <span id="agree-description" className="text-sm text-gray-700">
+              I have read and agree to the above authorization statement. I certify that
+              the information in my FBAR is true and correct to the best of my knowledge.
+            </span>
+          </label>
+        </fieldset>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="typed-signature" className="block text-sm font-medium text-gray-700 mb-2">
             Type your full legal name as it appears on your filing
           </label>
           <input
+            id="typed-signature"
             type="text"
             value={typedName}
             onChange={(e) => setTypedName(e.target.value)}
             placeholder={expectedName || "First Last"}
             className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent font-mono text-lg"
+            aria-label="Typed signature"
+            aria-describedby="signature-hint"
+            aria-invalid={typedName.length > 0 && !nameMatches ? "true" : undefined}
           />
+          <p id="signature-hint" className="text-gray-500 text-xs mt-1">
+            Your typed name serves as your electronic signature.
+          </p>
           {typedName && !nameMatches && (
-            <p className="text-amber-600 text-xs mt-1">
+            <p className="text-amber-600 text-xs mt-1" role="alert">
               Name must match: {expectedName}
             </p>
           )}
@@ -163,10 +202,22 @@ export default function SignPage() {
         onClick={handleSign}
         disabled={loading || !agreed || !nameMatches || !filing}
         className="w-full py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg"
+        aria-busy={loading}
       >
-        {loading ? "Signing..." : "Sign and Continue to Payment"}
+        {loading ? (
+          <span className="inline-flex items-center gap-2">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Signing...
+          </span>
+        ) : (
+          "Sign and Continue to Payment"
+        )}
       </button>
     </div>
+    )}
     </WizardLayout>
   );
 }

@@ -38,8 +38,8 @@ export const usAddressSchema = z.object({
   street: z.string().min(1, "Street address is required"),
   street2: z.string().optional(),
   city: z.string().min(1, "City is required"),
-  state: z.string().length(2, "State is required"),
-  zip: z.string().regex(/^\d{5}(-\d{4})?$/, "Valid ZIP code required"),
+  state: z.string().length(2, "Please select a state"),
+  zip: z.string().regex(/^\d{5}(-\d{4})?$/, "Please enter a valid ZIP code (e.g. 12345 or 12345-6789)"),
 });
 
 export const personalInfoSchema = z.object({
@@ -47,11 +47,11 @@ export const personalInfoSchema = z.object({
   lastName: z.string().min(1, "Last name is required").max(100),
   middleName: z.string().max(100).optional(),
   suffix: z.string().max(10).optional(),
-  tin: z.string().regex(/^\d{3}-?\d{2}-?\d{4}$/, "Valid SSN or ITIN required"),
+  tin: z.string().regex(/^\d{3}-?\d{2}-?\d{4}$/, "Please enter a valid SSN (e.g. 123-45-6789) or ITIN"),
   tinType: z.enum(["SSN", "ITIN"]),
-  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date format: YYYY-MM-DD"),
+  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Please enter a valid date (YYYY-MM-DD)"),
   usAddress: usAddressSchema,
-  phone: z.string().regex(/^\+?[\d\s()-]{7,20}$/, "Valid phone number required").optional().or(z.literal("")),
+  phone: z.string().regex(/^\+?[\d\s()-]{7,20}$/, "Please enter a valid phone number").optional().or(z.literal("")),
 });
 
 export const foreignAccountSchema = z.object({
@@ -59,9 +59,9 @@ export const foreignAccountSchema = z.object({
   accountNumber: z.string().min(1, "Account number is required").max(50),
   accountType: z.enum(["BANK", "SECURITIES", "OTHER"]),
   ownershipType: z.enum(["FINANCIAL_INTEREST", "SIGNATURE_AUTHORITY", "BOTH"]),
-  countryCode: z.string().length(2, "Country code must be 2 letters"),
-  currencyCode: z.string().length(3, "Currency code must be 3 letters"),
-  maxValueLocal: z.number().positive("Maximum value must be positive"),
+  countryCode: z.string().length(2, "Please select a country"),
+  currencyCode: z.string().length(3, "Please select a currency"),
+  maxValueLocal: z.number().positive("Please enter the maximum account value (must be greater than 0)"),
   isJointAccount: z.boolean(),
   jointOwnerInfo: z.string().max(500).optional(),
   calendarYear: z.number().int().min(2010).max(2030),
@@ -87,12 +87,12 @@ export const signatureSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  email: z.string().email("Valid email required"),
+  email: z.string().email("Please enter a valid email address"),
   password: z.string()
     .min(8, "Password must be at least 8 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[0-9]/, "Password must contain at least one number"),
-  confirmPassword: z.string(),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -101,9 +101,23 @@ export const signupSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.string().email("Valid email required"),
+  email: z.string().email("Please enter a valid email address"),
   password: z.string().min(1, "Password is required"),
 });
+
+// Shared password requirements (used by signup and reset-password)
+export const passwordSchema = z.string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[0-9]/, "Password must contain at least one number");
+
+// Schema for updating personal info (TIN is optional if already saved)
+export const personalInfoUpdateSchema = personalInfoSchema.extend({
+  tin: z.string().regex(/^\d{3}-?\d{2}-?\d{4}$/, "Please enter a valid SSN (e.g. 123-45-6789) or ITIN").optional().or(z.literal("")),
+});
+
+// Export type
+export type PersonalInfoUpdateInput = z.infer<typeof personalInfoUpdateSchema>;
 
 // Inferred types
 export type PersonalInfoInput = z.infer<typeof personalInfoSchema>;

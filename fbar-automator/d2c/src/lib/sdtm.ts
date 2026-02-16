@@ -17,6 +17,34 @@ export interface AcknowledgementResult {
 
 const isSandbox = () => process.env.SDTM_SANDBOX_MODE === "true";
 
+function getSFTPConnectConfig(): Record<string, unknown> {
+  const config: Record<string, unknown> = {
+    host: process.env.SDTM_HOST,
+    port: parseInt(process.env.SDTM_PORT || "22"),
+    username: process.env.SDTM_USERNAME,
+  };
+
+  const keyPath = process.env.SDTM_PRIVATE_KEY_PATH;
+  if (keyPath) {
+    config.privateKey = fs.readFileSync(keyPath);
+  }
+
+  const hostKey = process.env.SDTM_HOST_KEY;
+  if (hostKey) {
+    config.hostVerifier = (key: Buffer) => {
+      const matches = key.toString("base64") === hostKey;
+      if (!matches) {
+        console.error("[SDTM] SFTP host key mismatch — possible MITM attack");
+      }
+      return matches;
+    };
+  } else {
+    console.warn("[SDTM] SFTP_HOST_KEY not set — skipping host key verification (unsafe for production)");
+  }
+
+  return config;
+}
+
 export async function submitBatch(
   xmlContent: string,
   batchId: string
@@ -63,18 +91,7 @@ export async function submitBatch(
       resolve({ success: false, batchId, remoteFilePath, error: connErr.message });
     });
 
-    const connectConfig: Record<string, unknown> = {
-      host: process.env.SDTM_HOST,
-      port: parseInt(process.env.SDTM_PORT || "22"),
-      username: process.env.SDTM_USERNAME,
-    };
-
-    const keyPath = process.env.SDTM_PRIVATE_KEY_PATH;
-    if (keyPath) {
-      connectConfig.privateKey = fs.readFileSync(keyPath);
-    }
-
-    conn.connect(connectConfig);
+    conn.connect(getSFTPConnectConfig());
   });
 }
 
@@ -160,17 +177,6 @@ export async function checkAcknowledgement(
       resolve({ status: "pending" });
     });
 
-    const connectConfig: Record<string, unknown> = {
-      host: process.env.SDTM_HOST,
-      port: parseInt(process.env.SDTM_PORT || "22"),
-      username: process.env.SDTM_USERNAME,
-    };
-
-    const keyPath = process.env.SDTM_PRIVATE_KEY_PATH;
-    if (keyPath) {
-      connectConfig.privateKey = fs.readFileSync(keyPath);
-    }
-
-    conn.connect(connectConfig);
+    conn.connect(getSFTPConnectConfig());
   });
 }

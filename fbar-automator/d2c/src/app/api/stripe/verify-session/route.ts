@@ -1,0 +1,47 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+
+export async function GET(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const sessionId = req.nextUrl.searchParams.get("session_id");
+    if (!sessionId) {
+      return NextResponse.json({ error: "session_id is required" }, { status: 400 });
+    }
+
+    // Check if the payment has been processed by the webhook
+    const payment = await prisma.payment.findFirst({
+      where: {
+        userId: session.user.id,
+        stripeSessionId: sessionId,
+      },
+      select: { status: true, filingYearId: true },
+    });
+
+    if (!payment) {
+      return NextResponse.json({ data: { status: "pending" } });
+    }
+
+    // Also fetch filing status if payment is found
+    const filing = await prisma.filingYear.findFirst({
+      where: { id: payment.filingYearId, userId: session.user.id },
+      select: { id: true, status: true },
+    });
+
+    return NextResponse.json({
+      data: {
+        status: payment.status.toLowerCase(),
+        filingId: filing?.id || null,
+        filingStatus: filing?.status || null,
+      },
+    });
+  } catch (error) {
+    console.error("Verify session error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

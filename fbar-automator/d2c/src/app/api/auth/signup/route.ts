@@ -15,24 +15,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, password, firstName, lastName } = parsed.data;
+    const { email: rawEmail, password, firstName, lastName } = parsed.data;
+    const email = rawEmail.toLowerCase().trim();
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return NextResponse.json(
-        { error: "An account with this email already exists" },
-        { status: 409 }
-      );
-    }
-
+    // Always hash password to prevent timing-based enumeration
     const passwordHash = await bcrypt.hash(password, 12);
 
-    const user = await prisma.user.create({
-      data: { email, passwordHash, firstName, lastName },
-    });
+    try {
+      await prisma.user.create({
+        data: { email, passwordHash, firstName, lastName },
+      });
+    } catch (err: unknown) {
+      // Unique constraint = email exists. Fall through to return same response
+      if (err instanceof Error && err.message.includes("Unique constraint")) {
+        // Intentionally swallowed — anti-enumeration
+      } else {
+        throw err; // Re-throw unexpected errors to be caught by outer catch
+      }
+    }
 
+    // Always return identical response regardless of whether user was created or already existed
     return NextResponse.json(
-      { success: true, data: { id: user.id, email: user.email } },
+      { message: "Check your email to continue." },
       { status: 201 }
     );
   } catch (error) {

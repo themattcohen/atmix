@@ -23,6 +23,23 @@ function getS3Client(): S3Client {
   return s3Client;
 }
 
+let s3PublicClient: S3Client | null = null;
+
+function getS3PublicClient(): S3Client {
+  if (!s3PublicClient) {
+    s3PublicClient = new S3Client({
+      endpoint: process.env.S3_PUBLIC_ENDPOINT || process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION || "us-east-1",
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY || "",
+        secretAccessKey: process.env.S3_SECRET_KEY || "",
+      },
+      forcePathStyle: true,
+    });
+  }
+  return s3PublicClient;
+}
+
 const getBucket = () => process.env.S3_BUCKET || "fbar-direct";
 
 export async function uploadFile(
@@ -58,7 +75,7 @@ export async function getPresignedUrl(
   expiresIn: number = 3600
 ): Promise<string> {
   return getSignedUrl(
-    getS3Client(),
+    getS3PublicClient(),
     new GetObjectCommand({
       Bucket: getBucket(),
       Key: key,

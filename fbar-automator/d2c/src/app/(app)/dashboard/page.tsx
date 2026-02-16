@@ -28,10 +28,12 @@ export default function DashboardPage() {
 
   const getStatusBadge = (status: string) => {
     const badges: Record<string, { label: string; className: string }> = {
+      NOT_STARTED: { label: "Not Started", className: "bg-gray-100 text-gray-800" },
       IN_PROGRESS: { label: "In Progress", className: "bg-blue-100 text-blue-800" },
       REVIEWED: { label: "Ready to Sign", className: "bg-purple-100 text-purple-800" },
       SIGNED: { label: "Signed", className: "bg-indigo-100 text-indigo-800" },
       PAID: { label: "Processing", className: "bg-yellow-100 text-yellow-800" },
+      SUBMITTING: { label: "Submitting", className: "bg-yellow-100 text-yellow-800" },
       SUBMITTED: { label: "Submitted", className: "bg-orange-100 text-orange-800" },
       ACCEPTED: { label: "Filed", className: "bg-green-100 text-green-800" },
       REJECTED: { label: "Needs Attention", className: "bg-red-100 text-red-800" },
@@ -47,13 +49,18 @@ export default function DashboardPage() {
 
   const getActionButton = (filing: FilingDisplay) => {
     const actions: Record<string, { label: string; path: string; className: string }> = {
+      NOT_STARTED: {
+        label: "Continue Filing",
+        path: "/threshold",
+        className: "bg-navy-900 text-white hover:bg-navy-800",
+      },
       IN_PROGRESS: {
         label: "Resume Filing",
-        path: "/personal",
+        path: filing.accountCount > 0 ? "/review" : "/personal",
         className: "bg-navy-900 text-white hover:bg-navy-800",
       },
       REVIEWED: {
-        label: "Continue to Sign",
+        label: "Review & Sign",
         path: "/sign",
         className: "bg-navy-900 text-white hover:bg-navy-800",
       },
@@ -63,6 +70,11 @@ export default function DashboardPage() {
         className: "bg-gold-500 text-navy-900 hover:bg-gold-600",
       },
       PAID: {
+        label: "View Confirmation",
+        path: "/confirmation",
+        className: "bg-blue-600 text-white hover:bg-blue-700",
+      },
+      SUBMITTING: {
         label: "View Status",
         path: "/confirmation",
         className: "bg-blue-600 text-white hover:bg-blue-700",

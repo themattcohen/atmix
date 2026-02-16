@@ -30,6 +30,7 @@ export async function GET() {
         lastName: user.lastName,
         middleName: user.middleName,
         suffix: user.suffix,
+        hasTin: !!user.tin,
         tinLast4: decryptedTin ? decryptedTin.slice(-4) : null,
         tinType: user.tinType,
         dateOfBirth: user.dateOfBirth?.toISOString().split("T")[0] || null,
@@ -62,7 +63,8 @@ export async function PUT(req: NextRequest) {
 
     const { firstName, lastName, middleName, suffix, tin, tinType, dateOfBirth, usAddress, phone } = parsed.data;
 
-    const user = await prisma.user.update({
+    // Use updateMany with userId filter for defense-in-depth
+    const result = await prisma.user.updateMany({
       where: { id: session.user.id },
       data: {
         firstName,
@@ -77,17 +79,17 @@ export async function PUT(req: NextRequest) {
       },
     });
 
-    const decryptedTin = safeDecrypt(user.tin || "");
+    if (result.count === 0) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     return NextResponse.json({
       success: true,
       data: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        tinLast4: decryptedTin ? decryptedTin.slice(-4) : null,
-        tinType: user.tinType,
+        firstName,
+        lastName,
+        tinLast4: tin.replace(/-/g, "").slice(-4),
+        tinType,
       },
     });
   } catch (error) {

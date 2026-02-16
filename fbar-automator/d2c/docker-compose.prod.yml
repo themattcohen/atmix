@@ -130,12 +130,6 @@ services:
       - log_disconnections=on
       - -c
       - log_lock_waits=on
-      - -c
-      - ssl=on
-      - -c
-      - ssl_cert_file=/var/lib/postgresql/server.crt
-      - -c
-      - ssl_key_file=/var/lib/postgresql/server.key
     volumes:
       - pgdata_prod:/var/lib/postgresql/data
     networks:

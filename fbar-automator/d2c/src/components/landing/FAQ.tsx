@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -32,23 +32,36 @@ export function FAQ() {
     },
   ];
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const toggleFAQ = useCallback((index: number) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  }, []);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleFAQ(index);
+    }
+  }, [toggleFAQ]);
 
   return (
-    <section className="bg-gray-50 py-20 px-4">
+    <section className="bg-gray-50 py-20 px-4" aria-labelledby="faq-heading">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold text-navy-900 text-center mb-12">Frequently Asked Questions</h2>
-        <div className="space-y-4">
+        <h2 id="faq-heading" className="text-3xl font-bold text-navy-900 text-center mb-12">Frequently Asked Questions</h2>
+        <div className="space-y-4" role="list">
           {faqs.map((faq, index) => (
-            <div key={faq.q} className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div key={faq.q} className="bg-white rounded-lg shadow-sm overflow-hidden" role="listitem">
               <button
+                id={`faq-question-${index}`}
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-inset"
               >
                 <h3 className="text-lg font-semibold text-navy-900">{faq.q}</h3>
                 <svg
+                  aria-hidden="true"
+                  focusable="false"
                   className={`w-5 h-5 text-gray-600 transition-transform ${
                     openIndex === index ? "rotate-180" : ""
                   }`}
@@ -60,6 +73,10 @@ export function FAQ() {
                 </svg>
               </button>
               <div
+                id={`faq-answer-${index}`}
+                role="region"
+                aria-labelledby={`faq-question-${index}`}
+                hidden={openIndex !== index}
                 className={`overflow-hidden transition-all duration-300 ${
                   openIndex === index ? "max-h-96" : "max-h-0"
                 }`}

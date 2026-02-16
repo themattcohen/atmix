@@ -2,6 +2,7 @@ import { jsPDF } from "jspdf";
 import { uploadFile } from "@/lib/s3";
 
 export interface Form114aData {
+  userId: string;
   firstName: string;
   lastName: string;
   tinLast4: string;
@@ -112,7 +113,7 @@ export async function generateForm114a(data: Form114aData): Promise<{ buffer: Bu
   const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
 
   // Upload to S3
-  const key = `form114a/${data.calendarYear}/${Date.now()}_form114a.pdf`;
+  const key = `form114a/${data.userId}/${data.calendarYear}/${Date.now()}_form114a.pdf`;
   await uploadFile(key, pdfBuffer, "application/pdf");
 
   return { buffer: pdfBuffer, key };

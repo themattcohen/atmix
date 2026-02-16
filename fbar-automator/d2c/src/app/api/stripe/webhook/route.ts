@@ -35,6 +35,28 @@ export async function POST(req: NextRequest) {
           break;
         }
 
+        // Status guard: verify filing is in an appropriate state before processing payment
+        const filing = await prisma.filingYear.findFirst({
+          where: { id: filingYearId, userId },
+          select: { status: true },
+        });
+
+        if (!filing) {
+          console.error(`Webhook: filing ${filingYearId} not found for user ${userId}`);
+          break;
+        }
+
+        if (filing.status === "PAID" || filing.status === "SUBMITTED") {
+          // Already processed — idempotent skip
+          console.warn(`Webhook: filing ${filingYearId} already in ${filing.status} state, skipping`);
+          break;
+        }
+
+        if (filing.status !== "SIGNED" && filing.status !== "IN_PROGRESS") {
+          console.warn(`Webhook: filing ${filingYearId} in unexpected state ${filing.status}, skipping payment`);
+          break;
+        }
+
         // Update payment
         await prisma.payment.updateMany({
           where: { userId, filingYearId, status: "PENDING" },
@@ -96,6 +118,19 @@ export async function POST(req: NextRequest) {
               });
             }
           }
+        }
+
+        // Revert filing status to SIGNED if it was advanced to PAID
+        // (only if payment failed before completion)
+        if (paymentIntent.metadata?.userId && paymentIntent.metadata?.filingYearId) {
+          await prisma.filingYear.updateMany({
+            where: {
+              id: paymentIntent.metadata.filingYearId,
+              userId: paymentIntent.metadata.userId,
+              status: "PAID", // Only revert if still in PAID state
+            },
+            data: { status: "SIGNED" },
+          });
         }
 
         break;

@@ -9,6 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // V3 governmental design tokens
+        "gov-blue": "#1a4480",
+        "gov-blue-dark": "#0b2d5b",
+        "gov-blue-light": "#2e6bb0",
+        "text-primary": "#1b1b1b",
+        "text-secondary": "#5c5c5c",
+        "bg-gray": "#f0f0f0",
+        "bg-light": "#f5f7fa",
+        "border-gray": "#d9d9d9",
+        "alert-bg": "#fef3cd",
+        "alert-border": "#b58b00",
+        "trust-green": "#2e7d32",
         // USWDS-inspired navy/white/gold palette
         navy: {
           50: "#e8edf3",
@@ -78,6 +90,11 @@ const config: Config = {
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
         serif: ["var(--font-merriweather)", "Georgia", "serif"],
+        heading: ["var(--font-merriweather)", "serif"],
+        body: ["'Source Sans Pro'", "Inter", "system-ui", "sans-serif"],
+      },
+      maxWidth: {
+        doc: "960px",
       },
     },
   },

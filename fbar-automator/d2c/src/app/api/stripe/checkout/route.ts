@@ -15,40 +15,85 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "filingYearId is required" }, { status: 400 });
     }
 
-    // Verify filing year belongs to user and is in SIGNED status
-    const filingYear = await prisma.filingYear.findFirst({
-      where: { id: filingYearId, userId: session.user.id },
-    });
-
-    if (!filingYear) {
-      return NextResponse.json({ error: "Filing year not found" }, { status: 404 });
-    }
-
-    if (filingYear.status !== "SIGNED") {
-      return NextResponse.json(
-        { error: "Filing must be signed before payment" },
-        { status: 400 }
-      );
-    }
-
-    // Create payment record only if no PENDING payment exists
-    const existingPending = await prisma.payment.findFirst({
-      where: { userId: session.user.id, filingYearId, status: "PENDING" },
-    });
-
-    if (!existingPending) {
-      await prisma.payment.create({
-        data: {
-          userId: session.user.id,
-          filingYearId,
-          amount: 59.0,
-          currency: "usd",
-          status: "PENDING",
-        },
+    // Use a transaction to atomically check status and create checkout
+    const result = await prisma.$transaction(async (tx) => {
+      // Verify filing year belongs to user
+      const filingYear = await tx.filingYear.findFirst({
+        where: { id: filingYearId, userId: session.user.id },
       });
+
+      if (!filingYear) {
+        return { error: "Filing year not found", status: 404 } as const;
+      }
+
+      // Guard: filing must be in SIGNED status — reject if already paid or later
+      if (["PAID", "SUBMITTING", "SUBMITTED", "ACCEPTED"].includes(filingYear.status)) {
+        return {
+          error: "Payment has already been completed for this filing",
+          status: 409,
+          redirect: "/confirmation",
+        } as const;
+      }
+
+      if (filingYear.status !== "SIGNED") {
+        return {
+          error: "Filing must be signed before payment",
+          status: 400,
+        } as const;
+      }
+
+      // Check for existing completed payment
+      const existingCompleted = await tx.payment.findFirst({
+        where: { userId: session.user.id, filingYearId, status: "COMPLETED" },
+      });
+
+      if (existingCompleted) {
+        return {
+          error: "Payment has already been completed for this filing",
+          status: 409,
+          redirect: "/confirmation",
+        } as const;
+      }
+
+      // Check for existing pending payment with a Stripe session
+      const existingPending = await tx.payment.findFirst({
+        where: { userId: session.user.id, filingYearId, status: "PENDING", stripeSessionId: { not: null } },
+      });
+
+      if (existingPending) {
+        return {
+          error: "A payment is already in progress. Please complete or cancel the existing checkout.",
+          status: 409,
+        } as const;
+      }
+
+      // Create or reuse payment record
+      let payment = await tx.payment.findFirst({
+        where: { userId: session.user.id, filingYearId, status: "PENDING" },
+      });
+
+      if (!payment) {
+        payment = await tx.payment.create({
+          data: {
+            userId: session.user.id,
+            filingYearId,
+            amount: 59.0,
+            currency: "usd",
+            status: "PENDING",
+          },
+        });
+      }
+
+      return { success: true, payment } as const;
+    });
+
+    if ("error" in result) {
+      const response: Record<string, unknown> = { error: result.error };
+      if ("redirect" in result) response.redirect = result.redirect;
+      return NextResponse.json(response, { status: result.status });
     }
 
-    // Create Stripe checkout session
+    // Create Stripe checkout session (outside transaction — external API call)
     const url = await createCheckoutSession(
       session.user.id,
       filingYearId,

@@ -1,0 +1,16 @@
+node_modules
+.next
+.env
+.env.local
+.env.production
+*.md
+.git
+tests
+__tests__
+playwright-report
+test-results
+*.test.*
+*.spec.*
+*.mjs
+D2C-STATUS.md
+E2E-TEST-PLAN.md

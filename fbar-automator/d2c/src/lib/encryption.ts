@@ -40,6 +40,7 @@ export function safeDecrypt(encrypted: string | null | undefined): string {
   try {
     return decrypt(encrypted);
   } catch {
+    console.warn("Decryption failed — may indicate key rotation or data corruption");
     return "";
   }
 }

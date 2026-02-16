@@ -12,9 +12,17 @@ interface WizardLayoutProps {
 export function WizardLayout({ currentStep, children, onPrevious }: WizardLayoutProps) {
   return (
     <div>
+      {/* Skip to content link for keyboard/screen reader users */}
+      <a
+        href="#wizard-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-md focus:ring-2 focus:ring-navy-900"
+      >
+        Skip to content
+      </a>
+
       {/* Progress indicator */}
-      <nav className="mb-8">
-        <ol className="flex items-center justify-between">
+      <nav aria-label="Filing progress" className="mb-8">
+        <ol className="flex items-center justify-between" role="list">
           {WIZARD_STEPS.map((step, index) => {
             const stepNum = index + 1;
             const isCompleted = stepNum < currentStep;
@@ -30,6 +38,7 @@ export function WizardLayout({ currentStep, children, onPrevious }: WizardLayout
                       ? "bg-navy-900 text-white"
                       : "bg-gray-200 text-gray-500"
                   }`}
+                  aria-hidden="true"
                 >
                   {isCompleted ? (
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -43,6 +52,7 @@ export function WizardLayout({ currentStep, children, onPrevious }: WizardLayout
                   className={`mt-1 text-xs md:text-sm ${
                     isCurrent ? "text-navy-900 font-medium" : "text-gray-500"
                   }`}
+                  aria-hidden="true"
                 >
                   {step.label}
                 </span>
@@ -50,14 +60,23 @@ export function WizardLayout({ currentStep, children, onPrevious }: WizardLayout
             );
 
             return (
-              <li key={step.key} className="flex items-center flex-1 last:flex-none">
+              <li
+                key={step.key}
+                className="flex items-center flex-1 last:flex-none"
+                role="listitem"
+                aria-current={isCurrent ? "step" : undefined}
+                aria-label={`Step ${stepNum} of ${WIZARD_STEPS.length}: ${step.label}${isCompleted ? " (completed)" : isCurrent ? " (current)" : ""}`}
+              >
                 {isCompleted ? (
-                  <Link href={step.path}>{stepIndicator}</Link>
+                  <Link href={step.path} aria-label={`Go back to step ${stepNum}: ${step.label} (completed)`}>
+                    {stepIndicator}
+                  </Link>
                 ) : (
                   stepIndicator
                 )}
                 {index < WIZARD_STEPS.length - 1 && (
                   <div
+                    aria-hidden="true"
                     className={`flex-1 h-0.5 mx-2 ${
                       stepNum < currentStep ? "bg-green-500" : "bg-gray-200"
                     }`}
@@ -70,7 +89,9 @@ export function WizardLayout({ currentStep, children, onPrevious }: WizardLayout
       </nav>
 
       {/* Page content */}
-      {children}
+      <main id="wizard-content" role="main">
+        {children}
+      </main>
 
       {/* Previous button */}
       {currentStep > 1 && onPrevious && (
@@ -78,8 +99,9 @@ export function WizardLayout({ currentStep, children, onPrevious }: WizardLayout
           <Link
             href={onPrevious}
             className="inline-flex items-center gap-2 text-navy-900 hover:text-navy-700 font-medium"
+            aria-label={`Go back to previous step`}
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Previous

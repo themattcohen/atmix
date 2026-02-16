@@ -23,6 +23,50 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Filing year not found" }, { status: 404 });
     }
 
+    // Idempotency: if already submitted or beyond, return success without re-submitting
+    if (["SUBMITTED", "SUBMITTING", "ACCEPTED", "REJECTED"].includes(filingYear.status)) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          batchId: filingYear.sdtmBatchId,
+          alreadySubmitted: true,
+          submittedAt: filingYear.submittedAt?.toISOString() || null,
+        },
+      });
+    }
+
+    // Atomic transition: PAID → SUBMITTING (prevents concurrent submissions)
+    const locked = await prisma.filingYear.updateMany({
+      where: { id: filingYearId, userId: session.user.id, status: "PAID" },
+      data: { status: "SUBMITTING" },
+    });
+
+    if (locked.count === 0) {
+      // Race condition: someone else changed the status between the check above and now
+      // Re-check current state
+      const current = await prisma.filingYear.findFirst({
+        where: { id: filingYearId, userId: session.user.id },
+        select: { status: true, sdtmBatchId: true, submittedAt: true },
+      });
+
+      if (current && ["SUBMITTED", "SUBMITTING", "ACCEPTED", "REJECTED"].includes(current.status)) {
+        // Another request already started/completed submission — idempotent success
+        return NextResponse.json({
+          success: true,
+          data: {
+            batchId: current.sdtmBatchId,
+            alreadySubmitted: true,
+            submittedAt: current.submittedAt?.toISOString() || null,
+          },
+        });
+      }
+
+      return NextResponse.json(
+        { error: "Filing is not in a state that allows submission" },
+        { status: 409 }
+      );
+    }
+
     // Generate FinCEN XML
     const xml = await generateFincenXml(filingYearId);
 
@@ -33,15 +77,20 @@ export async function POST(req: NextRequest) {
     const result = await submitBatch(xml, batchId);
 
     if (!result.success) {
+      // Revert status back to PAID on failure (only from SUBMITTING)
+      await prisma.filingYear.updateMany({
+        where: { id: filingYearId, userId: session.user.id, status: "SUBMITTING" },
+        data: { status: "PAID" },
+      });
       return NextResponse.json(
         { error: "Submission failed", details: result.error },
         { status: 500 }
       );
     }
 
-    // Update filing year atomically to prevent double-submission
-    const updated = await prisma.filingYear.updateMany({
-      where: { id: filingYearId, userId: session.user.id, status: "PAID" },
+    // Atomic transition: SUBMITTING → SUBMITTED with submission details
+    await prisma.filingYear.updateMany({
+      where: { id: filingYearId, userId: session.user.id, status: "SUBMITTING" },
       data: {
         status: "SUBMITTED",
         sdtmSubmissionId: result.remoteFilePath,
@@ -49,13 +98,6 @@ export async function POST(req: NextRequest) {
         submittedAt: new Date(),
       },
     });
-
-    if (updated.count === 0) {
-      return NextResponse.json(
-        { error: "Filing is not in a state that allows submission" },
-        { status: 409 }
-      );
-    }
 
     // Send submission confirmation email
     const user = await prisma.user.findUnique({ where: { id: session.user.id } });
