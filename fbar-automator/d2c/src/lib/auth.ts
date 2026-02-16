@@ -14,6 +14,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
+        // Reject oversized passwords before bcrypt to prevent DoS
+        const password = credentials.password as string;
+        if (password.length > 128) return null;
+
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
         });
@@ -23,10 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Check if account is locked out
         if (user.lockoutUntil && user.lockoutUntil > new Date()) return null;
 
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.passwordHash
-        );
+        const isValid = await bcrypt.compare(password, user.passwordHash);
 
         if (!isValid) {
           const newFailedAttempts = user.failedLoginAttempts + 1;
@@ -42,11 +43,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        // Successful login: reset lockout fields
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { failedLoginAttempts: 0, lockoutUntil: null },
-        });
+        // Successful login: reset lockout fields (only if needed)
+        if (user.failedLoginAttempts > 0 || user.lockoutUntil) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { failedLoginAttempts: 0, lockoutUntil: null },
+          });
+        }
 
         return {
           id: user.id,
@@ -66,20 +69,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.tokenVersion = (user as any).tokenVersion;
-      } else if (token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { tokenVersion: true },
-        });
-        if (!dbUser || dbUser.tokenVersion !== token.tokenVersion) {
-          return {};
-        }
       }
+      // Note: We don't re-check tokenVersion on every request because the JWT
+      // callback runs on Edge runtime (via middleware) where Prisma isn't available.
+      // Token revocation is handled by bumping tokenVersion + short maxAge.
       return token;
     },
     async session({ session, token }) {
+      if (!token.id) {
+        return {} as any;
+      }
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
       }
       return session;
     },

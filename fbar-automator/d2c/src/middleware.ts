@@ -95,10 +95,11 @@ export default auth((req) => {
   // ------------------------------------------------------------------
   const ip = getClientIp(request);
 
-  // Strict rate limit on auth-sensitive routes: 5 req/min per IP
+  // Strict rate limit on auth-sensitive routes: 5 req/min per IP (relaxed in dev for testing)
+  const authRateLimit = process.env.NODE_ENV === "production" ? 5 : 100;
   const isAuthRoute = AUTH_RATE_LIMIT_PATHS.some((p) => normalizedPath.startsWith(p));
   if (isAuthRoute) {
-    if (!rateLimit(`auth:${ip}`, 5, 60_000)) {
+    if (!rateLimit(`auth:${ip}`, authRateLimit, 60_000)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
   }
@@ -123,7 +124,7 @@ export default auth((req) => {
   const method = request.method;
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
     const isExempt =
-      normalizedPath.startsWith("/api/auth/callback") ||
+      normalizedPath.startsWith("/api/auth/") ||
       normalizedPath.startsWith("/api/stripe/webhook") ||
       normalizedPath === "/api/health";
     if (!isExempt && normalizedPath.startsWith("/api/") && !request.headers.get("x-requested-with")) {

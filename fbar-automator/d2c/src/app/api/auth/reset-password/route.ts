@@ -3,13 +3,11 @@ import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { z } from "zod";
+import { passwordSchema } from "@/lib/validation";
 
 const resetPasswordSchema = z.object({
-  token: z.string().min(1, "Token is required"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
+  token: z.string().min(1, "Token is required").max(128),
+  password: passwordSchema,
 });
 
 export async function POST(req: NextRequest) {

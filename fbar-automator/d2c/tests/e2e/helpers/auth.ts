@@ -121,3 +121,17 @@ export async function completeSigning(
   // Wait for redirect to /payment
   await page.waitForURL('**/payment', { timeout: 15000 });
 }
+
+/**
+ * Reset lockout state for a test user.
+ * Only works in non-production environments.
+ */
+export async function resetLockout(
+  request: import("@playwright/test").APIRequestContext,
+  email = "debug@example.com"
+) {
+  await request.post("/api/test/reset-lockout", {
+    headers: { "x-requested-with": "playwright" },
+    data: { email },
+  });
+}

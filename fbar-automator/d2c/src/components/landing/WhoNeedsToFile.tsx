@@ -1,35 +1,74 @@
 export function WhoNeedsToFile() {
   return (
-    <section className="bg-gray-50 py-20 px-4" aria-labelledby="who-files-heading">
-      <div className="max-w-4xl mx-auto">
-        <h2 id="who-files-heading" className="text-3xl font-bold text-navy-900 text-center mb-8">Who Needs to File an FBAR?</h2>
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <p className="text-gray-700 mb-6">
-            You must file an FBAR (FinCEN Form 114) if you are a U.S. person and:
-          </p>
-          <ul className="space-y-4" role="list">
-            <li className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-              </svg>
-              <span className="text-gray-700">
-                You had a <strong>financial interest in</strong> or <strong>signature authority over</strong> at least one foreign financial account
-              </span>
+    <section
+      id="who-must-file"
+      className="w-full bg-white py-10 px-4 border-b border-border-gray"
+    >
+      <div className="max-w-doc mx-auto text-left">
+        <h2 className="text-2xl font-heading font-bold text-gov-blue mb-4">
+          Who must file an FBAR?
+        </h2>
+
+        <p className="text-text-primary mb-6 leading-relaxed max-w-[700px]">
+          The Bank Secrecy Act requires you to file an FBAR if you have a
+          financial interest in, or signature authority over, foreign financial
+          accounts and the aggregate value of these accounts exceeds $10,000 at
+          any time during the calendar year.
+        </p>
+
+        <div className="mb-8">
+          <h3 className="text-lg font-bold text-gov-blue mb-3">
+            Filing Requirements
+          </h3>
+          <ul className="list-disc pl-5 space-y-2 text-text-primary">
+            <li>
+              <strong>Citizens &amp; Residents:</strong> United States citizens,
+              Green Card holders, and resident aliens.
             </li>
-            <li className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-              </svg>
-              <span className="text-gray-700">
-                The <strong>aggregate value</strong> of ALL foreign accounts exceeded <strong>$10,000</strong> at any time during the calendar year
-              </span>
+            <li>
+              <strong>Aggregate Value &gt; $10,000:</strong> If the total value
+              of all foreign accounts combined exceeded $10,000 at any point
+              during the calendar year.
+            </li>
+            <li>
+              <strong>Entities:</strong> Corporations, partnerships, LLCs,
+              trusts, and estates formed under US laws.
+            </li>
+            <li>
+              <strong>Signature Authority:</strong> Anyone with authority to
+              control the disposition of assets in a foreign account.
             </li>
           </ul>
-          <aside className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-md" role="note">
-            <p className="text-sm text-amber-800">
-              <strong>Penalties for non-filing:</strong> Up to $12,909 per violation for non-willful violations. Willful violations can result in penalties up to $129,210 or 50% of the account balance, whichever is greater.
-            </p>
-          </aside>
+        </div>
+
+        <div className="bg-alert-bg border-l-4 border-alert-border p-4 mb-8 max-w-[700px]">
+          <h3 className="font-bold text-gov-blue mb-1 text-sm">
+            Penalties for Failure to File
+          </h3>
+          <p className="text-sm text-text-primary mb-1">
+            Failure to file an FBAR when required can result in significant
+            civil and criminal penalties. Civil penalties for non-willful
+            violations can exceed $16,000 per violation. Willful violations can
+            result in penalties of $100,000 or 50% of the account balance,
+            whichever is greater.
+          </p>
+          <p className="text-xs text-text-secondary italic">
+            Source: 31 USC 5321
+          </p>
+        </div>
+
+        <hr className="border-t border-gray-200 mb-8" />
+
+        <div>
+          <h3 className="text-lg font-heading font-bold text-gov-blue mb-2">
+            &ldquo;United States Person&rdquo; Definition
+          </h3>
+          <p className="text-text-primary leading-relaxed max-w-[700px]">
+            A United States person includes a citizen or resident of the United
+            States, a domestic partnership, a domestic corporation, and a
+            domestic estate or trust. This definition applies regardless of
+            where the person lives or where the business is located.
+          </p>
         </div>
       </div>
     </section>

@@ -174,6 +174,7 @@ function ResetPasswordForm() {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               minLength={8}
+              maxLength={128}
             />
             <p className="text-xs text-gray-500 mt-1">
               Must be at least 8 characters
@@ -195,6 +196,7 @@ function ResetPasswordForm() {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               minLength={8}
+              maxLength={128}
             />
           </div>
 

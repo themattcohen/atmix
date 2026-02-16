@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { Menu, X, Flag } from "lucide-react";
+import { DeadlineBanner } from "@/components/landing/DeadlineBanner";
 
 export default function MarketingLayout({
   children,
@@ -28,7 +30,6 @@ export default function MarketingLayout({
 
     document.addEventListener("keydown", handleKeyDown);
 
-    // Focus the first focusable element in the mobile menu
     const firstFocusable = mobileMenuRef.current?.querySelector<HTMLElement>(
       "a, button, input, [tabindex]:not([tabindex='-1'])"
     );
@@ -40,183 +41,302 @@ export default function MarketingLayout({
   }, [mobileMenuOpen, closeMobileMenu]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col font-body text-text-primary">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-navy-900 focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-white focus:px-4 focus:py-2 focus:shadow-lg focus:text-gov-blue focus:font-semibold"
       >
         Skip to main content
       </a>
-      <header className="bg-white border-b border-gray-200">
-        <nav aria-label="Main navigation" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-navy-900">
-            FBAR Direct
-          </Link>
+
+      {/* USWDS-style Official Site Banner */}
+      <div className="w-full bg-gov-blue-dark py-1 px-4">
+        <div className="max-w-doc mx-auto flex items-center">
+          <Flag className="h-3 w-3 text-gray-400 mr-2 flex-shrink-0" aria-hidden="true" />
+          <span className="text-xs text-gray-300">
+            FBAR Direct is not a government website.{" "}
+            <Link href="/about" className="underline hover:text-white">
+              Learn more about our FinCEN registration.
+            </Link>
+          </span>
+        </div>
+      </div>
+
+      <DeadlineBanner />
+
+      <header className="w-full bg-white border-b border-border-gray relative z-40">
+        <nav
+          aria-label="Main navigation"
+          className="max-w-doc mx-auto px-4 h-auto md:h-24 flex items-center justify-between py-4 md:py-0"
+        >
+          {/* Logo Area */}
+          <div className="flex flex-col items-start">
+            <Link
+              href="/"
+              className="font-heading font-bold text-2xl text-gov-blue leading-tight mb-1"
+            >
+              FBAR Direct
+            </Link>
+            <span className="text-xs text-text-secondary">
+              FinCEN-Registered BSA E-Filing Institution
+            </span>
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link
-              href="/how-it-works"
-              className="text-sm text-gray-600 hover:text-navy-900"
+          <div className="hidden md:flex items-center space-x-6">
+            <a
+              href="/#who-must-file"
+              className="text-gov-blue text-sm font-semibold hover:underline"
             >
-              How It Works
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-sm text-gray-600 hover:text-navy-900"
+              Who Must File
+            </a>
+            <a
+              href="/#how-to-file"
+              className="text-gov-blue text-sm font-semibold hover:underline"
+            >
+              How to File
+            </a>
+            <a
+              href="/#pricing"
+              className="text-gov-blue text-sm font-semibold hover:underline"
             >
               Pricing
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm text-gray-600 hover:text-navy-900"
+            </a>
+            <a
+              href="/#faq"
+              className="text-gov-blue text-sm font-semibold hover:underline"
             >
-              About
-            </Link>
+              FAQ
+            </a>
             <Link
               href="/login"
-              className="text-sm text-gray-600 hover:text-navy-900"
+              className="text-gov-blue text-sm font-semibold hover:underline ml-4"
             >
               Log In
             </Link>
             <Link
               href="/signup"
-              className="px-4 py-2 bg-gold-500 text-navy-900 rounded-md text-sm font-semibold hover:bg-gold-600 transition-colors"
+              className="bg-gov-blue hover:bg-gov-blue-dark text-white font-semibold text-sm px-4 py-2 transition-colors ml-4"
             >
-              Start Filing
+              Begin Filing
             </Link>
           </div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Menu Button */}
           <button
             ref={hamburgerButtonRef}
             onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden p-2 text-gray-600 hover:text-navy-900"
+            className="md:hidden text-gov-blue p-2"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
-            <svg className="w-6 h-6" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
         </nav>
       </header>
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div ref={mobileMenuRef} role="dialog" aria-label="Navigation menu" className="fixed inset-0 z-50 bg-white md:hidden">
+        <div
+          ref={mobileMenuRef}
+          role="dialog"
+          aria-label="Navigation menu"
+          className="fixed inset-0 z-50 bg-white md:hidden"
+        >
           <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between px-4 h-16 border-b border-gray-200">
-              <span className="text-xl font-bold text-navy-900">FBAR Direct</span>
+            <div className="flex items-center justify-between px-4 h-16 border-b border-border-gray">
+              <span className="font-heading font-bold text-xl text-gov-blue">
+                FBAR Direct
+              </span>
               <button
                 onClick={closeMobileMenu}
-                className="p-2 text-gray-600 hover:text-navy-900"
+                className="p-2 text-gov-blue"
                 aria-label="Close menu"
               >
-                <svg className="w-6 h-6" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="h-6 w-6" aria-hidden="true" />
               </button>
             </div>
             <div className="flex-1 px-4 py-8 space-y-4">
-              <Link
-                href="/how-it-works"
-                className="block py-3 text-lg text-gray-600 hover:text-navy-900"
+              <a
+                href="/#who-must-file"
+                className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100"
                 onClick={closeMobileMenu}
               >
-                How It Works
-              </Link>
-              <Link
-                href="/pricing"
-                className="block py-3 text-lg text-gray-600 hover:text-navy-900"
+                Who Must File
+              </a>
+              <a
+                href="/#how-to-file"
+                className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100"
+                onClick={closeMobileMenu}
+              >
+                How to File
+              </a>
+              <a
+                href="/#pricing"
+                className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100"
                 onClick={closeMobileMenu}
               >
                 Pricing
-              </Link>
-              <Link
-                href="/about"
-                className="block py-3 text-lg text-gray-600 hover:text-navy-900"
+              </a>
+              <a
+                href="/#faq"
+                className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100"
                 onClick={closeMobileMenu}
               >
-                About
-              </Link>
+                FAQ
+              </a>
               <Link
                 href="/login"
-                className="block py-3 text-lg text-gray-600 hover:text-navy-900"
+                className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100"
                 onClick={closeMobileMenu}
               >
                 Log In
               </Link>
               <Link
                 href="/signup"
-                className="block px-4 py-3 mt-4 bg-gold-500 text-navy-900 rounded-md text-lg font-semibold hover:bg-gold-600 transition-colors text-center"
+                className="block bg-gov-blue hover:bg-gov-blue-dark text-white font-semibold text-sm px-4 py-3 text-center w-full mt-2"
                 onClick={closeMobileMenu}
               >
-                Start Filing
+                Begin Filing
               </Link>
             </div>
           </div>
         </div>
       )}
 
-      <main id="main-content" className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
 
-      <footer className="bg-navy-950 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <footer className="w-full bg-gov-blue-dark text-white py-10 px-4">
+        <div className="max-w-doc mx-auto text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {/* Brand Column */}
             <div>
-              <h3 className="text-lg font-bold mb-4">FBAR Direct</h3>
-              <p className="text-gray-300 text-sm">
-                The trustworthy, affordable way to file your FBAR.
+              <h3 className="font-heading font-bold text-lg text-white mb-2">
+                FBAR Direct
+              </h3>
+              <p className="text-sm text-gray-300 mb-3">
+                Secure, simplified electronic filing for FinCEN Form 114.
+              </p>
+              <p className="text-xs text-gray-400">
+                FinCEN-Registered BSA E-Filing Institution
               </p>
             </div>
+
+            {/* Links Column */}
             <div>
-              <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-gray-400">
-                Resources
+              <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">
+                Site Links
               </h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/how-it-works" className="text-gray-300 hover:text-white">
-                    How It Works
-                  </Link>
+                  <a
+                    href="/#who-must-file"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    Who Must File
+                  </a>
                 </li>
                 <li>
-                  <Link href="/pricing" className="text-gray-300 hover:text-white">
+                  <a
+                    href="/#how-to-file"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    How to File
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#pricing"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
                     Pricing
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#faq"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    FAQ
+                  </a>
+                </li>
+                <li>
+                  <Link
+                    href="/login"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    Log In
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-gray-300 hover:text-white">
-                    About Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold uppercase tracking-wider mb-4 text-gray-400">
-                Legal
-              </h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/privacy" className="text-gray-300 hover:text-white">
+                  <Link
+                    href="/privacy"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="text-gray-300 hover:text-white">
+                  <Link
+                    href="/terms"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
                     Terms of Service
                   </Link>
                 </li>
               </ul>
             </div>
+
+            {/* Resources Column */}
+            <div>
+              <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">
+                External Resources
+              </h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a
+                    href="https://www.fincen.gov"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    FinCEN.gov
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    IRS FBAR Reference Guide
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://bsaefiling.fincen.treas.gov/main.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-300 hover:text-white hover:underline"
+                  >
+                    BSA E-Filing System
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-800">
-            <p className="text-xs text-gray-400 text-center">
-              FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S.
-              government agency. FBAR Direct is a FinCEN-registered BSA E-Filing
-              institution.
+
+          <div className="border-t border-gray-700 pt-6">
+            <p className="text-sm text-gray-400 mb-4 leading-relaxed max-w-[800px]">
+              FBAR Direct is not a government agency. FBAR Direct is a registered
+              BSA E-Filing institution authorized to submit FinCEN Form 114 on
+              behalf of filers. Filing through FBAR Direct does not constitute
+              legal or tax advice.
             </p>
-            <p className="text-xs text-gray-500 text-center mt-2">
+            <p className="text-sm text-gray-400">
               &copy; {new Date().getFullYear()} FBAR Direct. All rights reserved.
             </p>
           </div>

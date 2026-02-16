@@ -1,90 +1,77 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 
-export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+interface FAQItemProps {
+  question: string;
+  answer: string;
+}
 
-  const faqs = [
-    {
-      q: "What is an FBAR?",
-      a: "FBAR stands for Report of Foreign Bank and Financial Accounts (FinCEN Form 114). If you're a U.S. person with foreign financial accounts whose aggregate value exceeded $10,000 at any time during the calendar year, you must file an FBAR with FinCEN.",
-    },
-    {
-      q: "When is the FBAR deadline?",
-      a: "The FBAR is due April 15, with an automatic extension to October 15. No extension request is needed — the extension is automatic.",
-    },
-    {
-      q: "Is FBAR Direct affiliated with the government?",
-      a: "No. FBAR Direct is a private, FinCEN-registered BSA E-Filing institution. We are not affiliated with the IRS, FinCEN, or any U.S. government agency. We submit your FBAR electronically through FinCEN's official BSA E-Filing System.",
-    },
-    {
-      q: "How do I know my data is secure?",
-      a: "We use AES-256-GCM encryption for all sensitive data (SSN, account numbers), SSL/TLS for data in transit, and submit directly through FinCEN's secure SDTM channel. We never store unencrypted PII.",
-    },
-    {
-      q: "What if my filing is rejected?",
-      a: "If FinCEN rejects your filing, we'll notify you immediately, help resolve the issue, and resubmit at no additional charge.",
-    },
-    {
-      q: "Can I file for previous years?",
-      a: "Yes. You can file FBARs for previous calendar years. If you haven't filed for past years, filing now may help reduce potential penalties.",
-    },
-  ];
-
-  const toggleFAQ = useCallback((index: number) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  }, []);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggleFAQ(index);
-    }
-  }, [toggleFAQ]);
+function FAQItem({ question, answer }: FAQItemProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section className="bg-gray-50 py-20 px-4" aria-labelledby="faq-heading">
-      <div className="max-w-3xl mx-auto">
-        <h2 id="faq-heading" className="text-3xl font-bold text-navy-900 text-center mb-12">Frequently Asked Questions</h2>
-        <div className="space-y-4" role="list">
-          {faqs.map((faq, index) => (
-            <div key={faq.q} className="bg-white rounded-lg shadow-sm overflow-hidden" role="listitem">
-              <button
-                id={`faq-question-${index}`}
-                aria-expanded={openIndex === index}
-                aria-controls={`faq-answer-${index}`}
-                onClick={() => toggleFAQ(index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-inset"
-              >
-                <h3 className="text-lg font-semibold text-navy-900">{faq.q}</h3>
-                <svg
-                  aria-hidden="true"
-                  focusable="false"
-                  className={`w-5 h-5 text-gray-600 transition-transform ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div
-                id={`faq-answer-${index}`}
-                role="region"
-                aria-labelledby={`faq-question-${index}`}
-                hidden={openIndex !== index}
-                className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? "max-h-96" : "max-h-0"
-                }`}
-              >
-                <p className="px-6 pb-4 text-gray-600">{faq.a}</p>
-              </div>
-            </div>
-          ))}
+    <div className="border-b border-border-gray">
+      <button
+        className="w-full py-3 flex items-start justify-between text-left focus:outline-none group"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+      >
+        <span className="text-base font-bold text-gov-blue pr-4">
+          {question}
+        </span>
+        {isOpen ? (
+          <Minus className="h-4 w-4 text-gov-blue flex-shrink-0 mt-1" aria-hidden="true" />
+        ) : (
+          <Plus className="h-4 w-4 text-gov-blue flex-shrink-0 mt-1" aria-hidden="true" />
+        )}
+      </button>
+      {isOpen && (
+        <div className="pb-4 text-text-primary text-sm leading-relaxed max-w-[700px]">
+          {answer}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function FAQ() {
+  return (
+    <section
+      id="faq"
+      className="w-full bg-white py-10 px-4 border-b border-border-gray"
+    >
+      <div className="max-w-doc mx-auto text-left">
+        <h2 className="text-2xl font-heading font-bold text-gov-blue mb-6">
+          Frequently asked questions
+        </h2>
+
+        <div className="border-t border-border-gray">
+          <FAQItem
+            question="What is an FBAR?"
+            answer="The Report of Foreign Bank and Financial Accounts (FBAR), or FinCEN Form 114, is a report required by the Bank Secrecy Act. It must be filed by United States persons who have a financial interest in or signature authority over foreign financial accounts if the aggregate value of the foreign financial accounts exceeds $10,000 at any time during the calendar year."
+          />
+          <FAQItem
+            question="When is the FBAR deadline?"
+            answer="The FBAR must be filed electronically with FinCEN by April 15 of each year. However, FinCEN grants an automatic extension to October 15 each year. You do not need to request this extension; it is automatic."
+          />
+          <FAQItem
+            question="Is FBAR Direct a government agency?"
+            answer="No. FBAR Direct is a private tax technology company and a FinCEN-registered BSA E-Filing institution. We are authorized to transmit FinCEN Form 114 on behalf of filers through the BSA E-Filing System. We are not the Department of the Treasury or FinCEN."
+          />
+          <FAQItem
+            question="How is my data protected?"
+            answer="We utilize bank-grade 256-bit SSL encryption for all data transmission. Your data is encrypted at rest and submitted directly to FinCEN's secure BSA E-Filing system. We do not share your personal or financial data with any third parties other than FinCEN."
+          />
+          <FAQItem
+            question="Can I file for previous years?"
+            answer="Yes. If you are filing late for previous years, you can select the specific calendar year you are filing for within our system. The system will prompt you to provide a reason for late filing, which is required by FinCEN."
+          />
+          <FAQItem
+            question="What happens if my filing is rejected?"
+            answer="In the rare event that FinCEN rejects a filing (usually due to formatting issues with specific foreign addresses), we will notify you immediately with the specific error code. You can correct the information and resubmit through our platform at no additional cost."
+          />
         </div>
       </div>
     </section>

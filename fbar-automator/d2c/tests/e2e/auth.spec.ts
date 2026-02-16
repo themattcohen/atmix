@@ -1,7 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, request as playwrightRequest } from "@playwright/test";
+import { resetLockout } from "./helpers/auth";
 
 const EXISTING_EMAIL = "debug@example.com";
 const EXISTING_PASSWORD = "Debug123!";
+const LOCKOUT_TEST_EMAIL = "lockout-test@example.com";
 
 // ---------------------------------------------------------------------------
 // Signup Page
@@ -72,7 +74,7 @@ test.describe("Signup Page", () => {
     await page.goto("/signup");
     await page.fill("#firstName", "Dup");
     await page.fill("#lastName", "User");
-    await page.fill("#email", EXISTING_EMAIL);
+    await page.fill("#email", LOCKOUT_TEST_EMAIL);
     await page.fill("#password", "WrongPassword999!");
     await page.fill("#confirmPassword", "WrongPassword999!");
     await page.click('button[type="submit"]');
@@ -113,6 +115,15 @@ test.describe("Signup Page", () => {
 // Login Page
 // ---------------------------------------------------------------------------
 test.describe("Login Page", () => {
+  test.beforeEach(async () => {
+    // Reset lockout state for debug user to prevent test pollution
+    const request = await playwrightRequest.newContext({
+      baseURL: "http://localhost:3001",
+    });
+    await resetLockout(request, EXISTING_EMAIL);
+    await request.dispose();
+  });
+
   test("loads with email and password fields", async ({ page }) => {
     await page.goto("/login");
     await expect(page.locator("h1")).toContainText("Sign in");
@@ -161,13 +172,20 @@ test.describe("Login Page", () => {
 
   test("login with wrong password shows error", async ({ page }) => {
     await page.goto("/login");
-    await page.fill("#email", EXISTING_EMAIL);
+    await page.fill("#email", LOCKOUT_TEST_EMAIL);
     await page.fill("#password", "WrongPassword999!");
     await page.click('button[type="submit"]');
     await expect(page.locator(".bg-red-50")).toBeVisible({ timeout: 10000 });
     await expect(
       page.locator("text=Invalid email or password")
     ).toBeVisible();
+
+    // Clean up lockout state for this test user
+    const request = await playwrightRequest.newContext({
+      baseURL: "http://localhost:3001",
+    });
+    await resetLockout(request, LOCKOUT_TEST_EMAIL);
+    await request.dispose();
   });
 
   test("login with non-existent email shows error", async ({ page }) => {

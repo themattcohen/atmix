@@ -87,27 +87,29 @@ export const signatureSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address").max(254),
   password: z.string()
     .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must not exceed 128 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[0-9]/, "Password must contain at least one number"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  confirmPassword: z.string().min(1, "Please confirm your password").max(128),
+  firstName: z.string().min(1, "First name is required").max(100),
+  lastName: z.string().min(1, "Last name is required").max(100),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
 });
 
 export const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email("Please enter a valid email address").max(254),
+  password: z.string().min(1, "Password is required").max(128),
 });
 
 // Shared password requirements (used by signup and reset-password)
 export const passwordSchema = z.string()
   .min(8, "Password must be at least 8 characters")
+  .max(128, "Password must not exceed 128 characters")
   .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
   .regex(/[0-9]/, "Password must contain at least one number");
 

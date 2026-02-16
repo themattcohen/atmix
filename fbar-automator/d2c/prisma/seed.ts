@@ -22,6 +22,20 @@ async function main() {
   });
   console.log(`  User: ${user.email} (${user.id})`);
 
+  // Lockout test user for negative testing (wrong passwords, signup attempts)
+  const negativeTestHash = await bcrypt.hash("NegTest123!", 12);
+  const lockoutUser = await prisma.user.upsert({
+    where: { email: "lockout-test@example.com" },
+    update: {},
+    create: {
+      email: "lockout-test@example.com",
+      passwordHash: negativeTestHash,
+      firstName: "Lockout",
+      lastName: "Tester",
+    },
+  });
+  console.log(`  Lockout test user: ${lockoutUser.email} (${lockoutUser.id})`);
+
   // -------------------------------------------------------------------------
   // 2. Sample Filing (IN_PROGRESS for current-1 year)
   // -------------------------------------------------------------------------

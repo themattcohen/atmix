@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+  variable: "--font-merriweather"
+});
 
 export const metadata: Metadata = {
-  title: "FBAR Direct — File Your FBAR in 10 Minutes",
+  title: "FBAR Direct — Report of Foreign Bank and Financial Accounts",
   description:
-    "The trustworthy, affordable way to file your Report of Foreign Bank and Financial Accounts (FBAR/FinCEN Form 114). FinCEN-registered BSA E-Filer. $59 flat fee.",
+    "Securely file your FBAR (FinCEN Form 114) online. FinCEN-registered BSA E-Filing institution. AES-256 encryption. $59 per filing.",
   keywords: [
     "FBAR",
     "FinCEN Form 114",
@@ -25,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.variable} ${merriweather.variable} ${inter.className}`}>{children}</body>
     </html>
   );
 }

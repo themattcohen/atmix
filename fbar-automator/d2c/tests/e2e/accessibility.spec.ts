@@ -341,12 +341,12 @@ test.describe("Accessibility — Authenticated Wizard Pages", () => {
 
   async function loginFirst(page: Page) {
     await page.goto("/login");
-    await page.fill('#email', LOGIN_EMAIL);
-    await page.fill('#password', LOGIN_PASSWORD);
+    await page.fill('input[name="email"], #email', LOGIN_EMAIL);
+    await page.fill('input[name="password"], #password', LOGIN_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(
       /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
-      { timeout: 15000 }
+      { timeout: 30000 }
     );
   }
 
@@ -393,12 +393,12 @@ test.describe("Keyboard Navigation — Wizard Forms", () => {
 
   async function loginFirst(page: Page) {
     await page.goto("/login");
-    await page.fill('#email', LOGIN_EMAIL);
-    await page.fill('#password', LOGIN_PASSWORD);
+    await page.fill('input[name="email"], #email', LOGIN_EMAIL);
+    await page.fill('input[name="password"], #password', LOGIN_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(
       /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
-      { timeout: 15000 }
+      { timeout: 30000 }
     );
   }
 

@@ -1,25 +1,40 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="bg-navy-900 text-white py-20 px-4">
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          File Your FBAR in 10 Minutes
+    <section className="w-full bg-white py-12 px-4 border-b border-border-gray">
+      <div className="max-w-doc mx-auto text-left">
+        <h1 className="text-3xl md:text-4xl font-heading font-bold text-gov-blue mb-4">
+          Report of Foreign Bank and Financial Accounts
         </h1>
-        <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          The trustworthy, affordable way to file your Report of Foreign Bank
-          and Financial Accounts. FinCEN-registered. $59 flat fee. No surprises.
+
+        <hr className="border-t border-gray-200 mb-6 w-full" />
+
+        <p className="text-lg text-text-secondary mb-6 font-body font-semibold">
+          FinCEN Form 114 — Electronic Filing Service
         </p>
-        <Link
-          href="/signup"
-          className="inline-block px-8 py-4 bg-gold-500 text-navy-900 rounded-md text-lg font-bold hover:bg-gold-600 transition-colors"
-        >
-          Start Filing Now
-        </Link>
-        <p className="mt-4 text-sm text-gray-400">
-          No credit card required to start. Pay only when you file.
-        </p>
+
+        <div className="max-w-[640px] mb-8">
+          <p className="text-base text-text-primary leading-relaxed">
+            File your FBAR electronically through our FinCEN-registered BSA
+            E-Filing system. Your data is encrypted end-to-end and submitted
+            directly to FinCEN. This service is authorized for use by United
+            States persons required to file FinCEN Form 114.
+          </p>
+        </div>
+
+        <div className="flex flex-col items-start space-y-3">
+          <Link
+            href="/signup"
+            className="bg-gov-blue hover:bg-gov-blue-dark text-white font-semibold text-base px-6 py-2.5 transition-colors inline-flex items-center"
+          >
+            Begin Filing <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+          </Link>
+          <span className="text-[13px] text-text-secondary">
+            No account required to check if you need to file.
+          </span>
+        </div>
       </div>
     </section>
   );

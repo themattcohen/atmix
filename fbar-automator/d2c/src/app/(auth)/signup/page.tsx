@@ -148,6 +148,7 @@ export default function SignupPage() {
               value={form.password}
               onChange={(e) => updateField("password", e.target.value)}
               required
+              maxLength={128}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -168,6 +169,7 @@ export default function SignupPage() {
               value={form.confirmPassword}
               onChange={(e) => updateField("confirmPassword", e.target.value)}
               required
+              maxLength={128}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
             />
             {errors.confirmPassword?.map((e, i) => (
