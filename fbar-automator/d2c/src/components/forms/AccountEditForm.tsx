@@ -58,7 +58,7 @@ export function AccountEditForm({ account, calendarYear, onSuccess, onCancel }: 
 
       const res = await fetch(`/api/accounts/${account.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify(payload),
       });
 

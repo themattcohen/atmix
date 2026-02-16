@@ -79,7 +79,7 @@ export default function SignPage() {
     try {
       const res = await fetch("/api/filing/sign", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify({
           filingYearId: filing.id,
           fullName: typedName.trim(),

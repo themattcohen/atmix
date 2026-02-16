@@ -122,7 +122,7 @@ export default function PersonalPage() {
     try {
       const res = await fetch("/api/user", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify(form),
       });
 

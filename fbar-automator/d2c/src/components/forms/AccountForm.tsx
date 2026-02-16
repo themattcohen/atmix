@@ -39,7 +39,7 @@ export function AccountForm({ calendarYear, onSaved, onCancel }: AccountFormProp
     try {
       const res = await fetch("/api/accounts", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify({
           ...form,
           maxValueLocal: parseFloat(form.maxValueLocal),

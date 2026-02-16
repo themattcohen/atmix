@@ -85,7 +85,7 @@ export default function AccountsPage() {
     if (!confirm("Are you sure you want to delete this account? This action cannot be undone.")) return;
     setDeleteError("");
     try {
-      const res = await fetch(`/api/accounts/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/accounts/${id}`, { method: "DELETE", headers: { "X-Requested-With": "XMLHttpRequest" } });
       if (res.status === 401) {
         window.location.href = "/login";
         return;

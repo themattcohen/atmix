@@ -24,7 +24,7 @@ export default function ThresholdPage() {
     try {
       const res = await fetch("/api/filing", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
         body: JSON.stringify({ calendarYear }),
       });
 

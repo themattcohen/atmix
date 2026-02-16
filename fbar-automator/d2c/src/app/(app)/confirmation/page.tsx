@@ -166,7 +166,7 @@ function ConfirmationContent() {
         try {
           const res = await fetch("/api/sdtm/submit", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
             body: JSON.stringify({ filingYearId: filing.id }),
           });
 
