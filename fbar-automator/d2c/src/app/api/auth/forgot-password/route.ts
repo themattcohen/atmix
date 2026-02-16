@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
           resetUrl
         );
       } catch (emailError) {
-        console.error("Failed to send password reset email:", emailError);
+        console.error("Failed to send password reset email:", emailError instanceof Error ? emailError.message : "Unknown error");
         // Continue — don't reveal email sending failure to client
       }
     }
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         "If an account exists with that email, we've sent password reset instructions.",
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    console.error("Forgot password error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json(
       { error: "An unexpected error occurred" },
       { status: 500 }

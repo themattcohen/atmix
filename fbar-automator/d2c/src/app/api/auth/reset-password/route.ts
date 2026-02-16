@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     await prisma.$transaction([
       prisma.user.update({
         where: { id: resetToken.userId },
-        data: { passwordHash },
+        data: { passwordHash, tokenVersion: { increment: 1 } },
       }),
       prisma.passwordResetToken.update({
         where: { id: resetToken.id },
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       message: "Password reset successfully",
     });
   } catch (error) {
-    console.error("Reset password error:", error);
+    console.error("Reset password error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json(
       { error: "An unexpected error occurred" },
       { status: 500 }

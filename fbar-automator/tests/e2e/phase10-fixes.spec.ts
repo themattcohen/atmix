@@ -15,6 +15,7 @@ import path from "path"
  */
 
 const TEST_PDF = path.resolve(__dirname, "../fixtures/test-statement.pdf")
+const TEST_CSV = path.resolve(__dirname, "../fixtures/simple-statement.csv")
 
 // Seeded admin credentials (from prisma/seed.ts)
 const ADMIN_EMAIL = "admin@demo.com"
@@ -317,9 +318,9 @@ test.describe.serial("Phase 10 Fixes", () => {
     }
 
     if (!extractionCompleted) {
-      test.skip(
+      test.fail(
         true,
-        "Extraction did not complete — requires worker + ANTHROPIC_API_KEY"
+        "PDF extraction requires worker + ANTHROPIC_API_KEY — use CSV test 5a instead"
       )
       await page.close()
       return
@@ -342,6 +343,64 @@ test.describe.serial("Phase 10 Fixes", () => {
     await page.close()
   })
 
+  test("5a — CSV extraction completes and data visible on review page", async () => {
+    test.setTimeout(120000)
+    const page = await sharedContext.newPage()
+
+    await page.goto(uploadPageUrl)
+    await page.waitForLoadState("networkidle")
+
+    // Upload CSV file
+    const fileInput = page.locator('input[aria-label="File upload input"]')
+    await fileInput.setInputFiles(TEST_CSV)
+
+    // Wait for upload to finish
+    await expect(page.getByText("simple-statement.csv").first()).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText("Uploading")).not.toBeVisible({ timeout: 60000 })
+
+    // Reload to get server-rendered data
+    await page.reload()
+    await page.waitForLoadState("networkidle")
+
+    await expect(
+      page.locator("table").getByText("simple-statement.csv")
+    ).toBeVisible({ timeout: 15000 })
+
+    // CSV extraction uses programmatic path — should complete quickly without ANTHROPIC_API_KEY
+    // Poll for extraction to complete
+    let extractionCompleted = false
+    const maxWaitMs = 60_000
+    const pollIntervalMs = 3_000
+    const start = Date.now()
+
+    while (Date.now() - start < maxWaitMs) {
+      const completedBadge = page.locator("table").getByText("Completed")
+      if (await completedBadge.isVisible().catch(() => false)) {
+        extractionCompleted = true
+        break
+      }
+      const failedBadge = page.locator("table").getByText("Failed")
+      if (await failedBadge.isVisible().catch(() => false)) {
+        break
+      }
+      await page.waitForTimeout(pollIntervalMs)
+      await page.reload()
+      await page.waitForLoadState("networkidle")
+    }
+
+    expect(extractionCompleted).toBe(true)
+
+    // Navigate to review page
+    const reviewUrl = uploadPageUrl.replace("/upload", "/review")
+    await page.goto(reviewUrl)
+    await page.waitForLoadState("networkidle")
+
+    // Verify extracted account data is visible
+    await expect(page.getByText("CH93")).toBeVisible({ timeout: 10000 })
+
+    await page.close()
+  })
+
   test("6 — ForeignAccount auto-created + Approve works (extraction-dependent)", async () => {
     const page = await sharedContext.newPage()
 
@@ -357,9 +416,9 @@ test.describe.serial("Phase 10 Fixes", () => {
     const isCompleted = await completedBadge.isVisible().catch(() => false)
 
     if (!isCompleted) {
-      test.skip(
+      test.fail(
         true,
-        "Extraction did not complete — requires worker + ANTHROPIC_API_KEY"
+        "PDF extraction requires worker + ANTHROPIC_API_KEY — use CSV test 6a instead"
       )
       await page.close()
       return
@@ -381,6 +440,32 @@ test.describe.serial("Phase 10 Fixes", () => {
       await expect(page.locator('[role="alert"]')).not.toBeVisible({
         timeout: 5000,
       })
+    }
+
+    await page.close()
+  })
+
+  test("6a — ForeignAccount auto-created from CSV extraction", async () => {
+    test.setTimeout(60000)
+    const page = await sharedContext.newPage()
+
+    // Navigate to review page (CSV was uploaded in test 5a)
+    const reviewUrl = uploadPageUrl.replace("/upload", "/review")
+    await page.goto(reviewUrl)
+    await page.waitForLoadState("networkidle")
+
+    // Verify account data from CSV is visible
+    await expect(page.getByText("CH93")).toBeVisible({ timeout: 10000 })
+
+    // Look for CHF currency
+    await expect(page.getByText("CHF")).toBeVisible({ timeout: 5000 })
+
+    // Look for an approve button and test it if present
+    const approveBtn = page.getByRole("button", { name: /approve/i })
+    if (await approveBtn.isVisible().catch(() => false)) {
+      await approveBtn.click()
+      // Verify no error after approval
+      await expect(page.locator('[role="alert"]')).not.toBeVisible({ timeout: 5000 })
     }
 
     await page.close()

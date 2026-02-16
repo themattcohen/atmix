@@ -24,7 +24,7 @@ async function loginAndCreateClient(page: any) {
 }
 
 test.describe("Upload and Review", () => {
-  test("should show upload page with dropzone", async ({ page }) => {
+  test("should create client successfully", async ({ page }) => {
     await loginAndCreateClient(page)
     // Navigate to a filing year upload page - need to create filing year first
     // This test verifies the upload UI renders correctly
@@ -32,7 +32,7 @@ test.describe("Upload and Review", () => {
     await expect(page.locator("text=Client Information")).toBeVisible()
   })
 
-  test("should show review page", async ({ page }) => {
+  test("should show filing years list", async ({ page }) => {
     await loginAndCreateClient(page)
     // Verify the review page renders (even without data)
     await expect(page.locator("text=Filing Years")).toBeVisible()
@@ -46,7 +46,7 @@ test.describe("Upload and Review", () => {
     await expect(page.locator("text=Team Members")).toBeVisible()
   })
 
-  test("should show export page placeholder when not ready", async ({ page }) => {
+  test("should navigate to settings page", async ({ page }) => {
     await loginAndCreateClient(page)
     // Export pages require filing year context
     // This test verifies the settings page and navigation work correctly

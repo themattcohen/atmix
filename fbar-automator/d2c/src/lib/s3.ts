@@ -72,7 +72,7 @@ export async function downloadFile(key: string): Promise<Buffer> {
 
 export async function getPresignedUrl(
   key: string,
-  expiresIn: number = 3600
+  expiresIn: number = 300
 ): Promise<string> {
   return getSignedUrl(
     getS3PublicClient(),

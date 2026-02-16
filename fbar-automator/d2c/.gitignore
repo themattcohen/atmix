@@ -50,3 +50,6 @@ PLAN-*.md
 
 # Status docs
 D2C-STATUS.md
+
+# Playwright auth state
+tests/e2e/.auth/

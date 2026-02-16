@@ -45,7 +45,7 @@ export async function GET() {
 
     return NextResponse.json({ data: filingData });
   } catch (error) {
-    console.error("Filing list error:", error);
+    console.error("Filing list error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Filing create error:", error);
+    console.error("Filing create error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

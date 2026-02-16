@@ -20,17 +20,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user) return null;
 
+        // Check if account is locked out
+        if (user.lockoutUntil && user.lockoutUntil > new Date()) return null;
+
         const isValid = await bcrypt.compare(
           credentials.password as string,
           user.passwordHash
         );
 
-        if (!isValid) return null;
+        if (!isValid) {
+          const newFailedAttempts = user.failedLoginAttempts + 1;
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              failedLoginAttempts: newFailedAttempts,
+              ...(newFailedAttempts >= 5
+                ? { lockoutUntil: new Date(Date.now() + 15 * 60 * 1000) }
+                : {}),
+            },
+          });
+          return null;
+        }
+
+        // Successful login: reset lockout fields
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { failedLoginAttempts: 0, lockoutUntil: null },
+        });
 
         return {
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
+          tokenVersion: user.tokenVersion,
         };
       },
     }),
@@ -43,6 +65,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.tokenVersion = (user as any).tokenVersion;
+      } else if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { tokenVersion: true },
+        });
+        if (!dbUser || dbUser.tokenVersion !== token.tokenVersion) {
+          return {};
+        }
       }
       return token;
     },

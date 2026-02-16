@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ data });
   } catch (error) {
-    console.error("Accounts list error:", error);
+    console.error("Accounts list error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Account create error:", error);
+    console.error("Account create error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

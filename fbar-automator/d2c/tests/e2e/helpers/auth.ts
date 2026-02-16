@@ -97,3 +97,27 @@ export async function addForeignAccount(
   await page.locator("button:has-text('Save Account')").click();
   await page.waitForSelector(`text=${bankName}`, { timeout: 10000 });
 }
+
+/**
+ * Complete the signing step on /sign page.
+ * Assumes the user is already on /sign and has personal info (firstName, lastName) set.
+ * The typed name must match firstName + " " + lastName (or firstName + middleName + lastName).
+ */
+export async function completeSigning(
+  page: Page,
+  firstName = "Test",
+  lastName = "User"
+) {
+  // Check the "I agree" checkbox
+  await page.locator('#agree-checkbox').check();
+
+  // Type the full legal name (must match what the sign page expects)
+  const fullName = `${firstName} ${lastName}`;
+  await page.locator('#typed-signature').fill(fullName);
+
+  // Click "Sign and Continue to Payment"
+  await page.locator('button:has-text("Sign and Continue to Payment")').click();
+
+  // Wait for redirect to /payment
+  await page.waitForURL('**/payment', { timeout: 15000 });
+}

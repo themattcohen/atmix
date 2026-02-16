@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
             bsaId: ack.bsaId,
           });
         } catch (emailError) {
-          console.error("Failed to send confirmation email:", emailError);
+          console.error("Failed to send confirmation email:", emailError instanceof Error ? emailError.message : "Unknown error");
         }
       }
     } else if (ack.status === "rejected") {
@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
             reason: ack.rejectionReason || "Unknown reason",
           });
         } catch (emailError) {
-          console.error("Failed to send rejection email:", emailError);
+          console.error("Failed to send rejection email:", emailError instanceof Error ? emailError.message : "Unknown error");
         }
       }
     }
@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("SDTM status error:", error);
+    console.error("SDTM status error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

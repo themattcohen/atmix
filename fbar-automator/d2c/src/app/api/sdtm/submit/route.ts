@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
           calendarYear: filingYear.calendarYear,
         });
       } catch (emailError) {
-        console.error("Failed to send submission email:", emailError);
+        console.error("Failed to send submission email:", emailError instanceof Error ? emailError.message : "Unknown error");
         // Don't block the submission on email failure
       }
     }
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
       data: { batchId, submittedAt: new Date().toISOString() },
     });
   } catch (error) {
-    console.error("SDTM submit error:", error);
+    console.error("SDTM submit error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

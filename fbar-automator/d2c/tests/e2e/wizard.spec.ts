@@ -5,6 +5,7 @@ import {
   completeThreshold,
   completePersonalInfo,
   addForeignAccount,
+  completeSigning,
 } from "./helpers/auth";
 
 const EXISTING_EMAIL = "debug@example.com";
@@ -373,6 +374,47 @@ test.describe("Accounts Page", () => {
       timeout: 5000,
     });
   });
+
+  test("edit an existing account", async ({ page }) => {
+    await login(page);
+    await page.goto("/accounts");
+    await page.waitForLoadState("networkidle");
+
+    // Add an account first
+    await page.locator("button:has-text('Add Foreign Account')").click();
+    await page
+      .locator('input[placeholder="e.g., HSBC, Deutsche Bank"]')
+      .fill("Edit Me Bank");
+    const formInputs = page.locator("form input[type='text']");
+    await formInputs.nth(1).fill("DE1111111111");
+    const countrySelect = page
+      .locator("select")
+      .filter({ has: page.locator('option:has-text("Select country")') });
+    await countrySelect.selectOption({ index: 1 });
+    const currencySelect = page
+      .locator("select")
+      .filter({ has: page.locator('option:has-text("Select currency")') });
+    await currencySelect.selectOption({ index: 1 });
+    await page.locator('input[type="number"]').fill("15000");
+    await page.locator("button:has-text('Save Account')").click();
+    await expect(page.locator("text=Edit Me Bank")).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Click Edit button on the account
+    await page.locator("button:has-text('Edit')").first().click();
+
+    // Change the institution name
+    const nameInput = page.locator('input[placeholder="e.g., HSBC, Deutsche Bank"]');
+    await nameInput.clear();
+    await nameInput.fill("Updated Bank Name");
+    await page.locator("button:has-text('Save Account')").click();
+
+    // Verify the updated name appears
+    await expect(page.locator("text=Updated Bank Name")).toBeVisible({
+      timeout: 10000,
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -542,6 +584,70 @@ test.describe("Sign Page", () => {
       await expect(page.locator("text=Filing Summary")).toBeVisible();
       await expect(page.locator("text=Calendar Year")).toBeVisible();
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sign Flow Completion (exercises POST /api/filing/sign)
+// ---------------------------------------------------------------------------
+test.describe("Sign Flow Completion", () => {
+  test("complete signing flow: signup → threshold → personal → account → review → sign → payment", async ({
+    page,
+  }) => {
+    test.setTimeout(90000);
+
+    const password = "SignTest123!";
+    const email = `signflow-${Date.now()}@test.com`;
+    const firstName = "Sign";
+    const lastName = "Tester";
+
+    // Signup
+    await page.goto("/signup");
+    await page.fill("#firstName", firstName);
+    await page.fill("#lastName", lastName);
+    await page.fill("#email", email);
+    await page.fill("#password", password);
+    await page.fill("#confirmPassword", password);
+    await page.click('button[type="submit"]');
+    await page.waitForURL("**/threshold", { timeout: 15000 });
+
+    // Threshold: Yes/Yes
+    await page.locator("button:has-text('Yes')").first().click();
+    await page.locator("button:has-text('Yes')").nth(1).click();
+    await page.locator("text=Continue to Personal Information").click();
+    await page.waitForURL("**/personal", { timeout: 15000 });
+
+    // Personal info
+    await page.locator('input[placeholder="XXX-XX-XXXX"]').fill("123456789");
+    await page.locator('input[type="date"]').fill("1990-01-15");
+    await page.locator('input[placeholder="Street Address"]').fill("123 Sign St");
+    await page.locator('input[placeholder="City"]').fill("Signville");
+    await page
+      .locator("select")
+      .filter({ has: page.locator('option:has-text("State")') })
+      .selectOption("CA");
+    await page.locator('input[placeholder="ZIP Code"]').fill("90210");
+    await page.click('button[type="submit"]');
+    await page.waitForURL("**/accounts", { timeout: 15000 });
+
+    // Add account
+    await addForeignAccount(page, "Sign Test Bank AG");
+
+    // Continue to review
+    await page.locator("button:has-text('Continue to Review')").click();
+    await page.waitForURL("**/review", { timeout: 15000 });
+
+    // Navigate to sign
+    const signBtn = page.locator("button:has-text('Continue'), a:has-text('Continue'), button:has-text('Sign'), a:has-text('Sign')");
+    await signBtn.first().click();
+    await page.waitForURL("**/sign", { timeout: 15000 });
+
+    // Complete signing using helper
+    await completeSigning(page, firstName, lastName);
+
+    // Verify we're on the payment page
+    await expect(page).toHaveURL(/\/payment/);
+    await expect(page.getByRole("heading").first()).toBeVisible({ timeout: 10000 });
   });
 });
 

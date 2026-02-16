@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 // ---------------------------------------------------------------------------
@@ -329,5 +329,150 @@ test.describe("Mobile Accessibility", () => {
       .evaluate((el) => el.scrollWidth);
     // Allow small margin for potential scrollbar
     expect(bodyWidth).toBeLessThanOrEqual(375 + 20);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Accessibility — Authenticated Wizard Pages
+// ---------------------------------------------------------------------------
+test.describe("Accessibility — Authenticated Wizard Pages", () => {
+  const LOGIN_EMAIL = "debug@example.com";
+  const LOGIN_PASSWORD = "Debug123!";
+
+  async function loginFirst(page: Page) {
+    await page.goto("/login");
+    await page.fill('#email', LOGIN_EMAIL);
+    await page.fill('#password', LOGIN_PASSWORD);
+    await page.click('button[type="submit"]');
+    await page.waitForURL(
+      /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
+      { timeout: 15000 }
+    );
+  }
+
+  const wizardPages = [
+    { path: "/threshold", name: "Threshold Page" },
+    { path: "/personal", name: "Personal Information Page" },
+    { path: "/accounts", name: "Accounts Page" },
+    { path: "/review", name: "Review Page" },
+    { path: "/sign", name: "Sign Page" },
+    { path: "/dashboard", name: "Dashboard Page" },
+  ];
+
+  for (const { path, name } of wizardPages) {
+    test(`${name} (${path}) passes axe a11y checks`, async ({ page }) => {
+      await loginFirst(page);
+      await page.goto(path);
+      await page.waitForLoadState("networkidle");
+
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa"])
+        .disableRules(["color-contrast"])
+        .analyze();
+
+      expect(
+        results.violations,
+        `${name} has ${results.violations.length} a11y violation(s):\n` +
+          results.violations
+            .map(
+              (v) =>
+                `  - ${v.id}: ${v.description} (${v.nodes.length} node(s))\n    ${v.helpUrl}`
+            )
+            .join("\n")
+      ).toEqual([]);
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Keyboard Navigation — Wizard Forms
+// ---------------------------------------------------------------------------
+test.describe("Keyboard Navigation — Wizard Forms", () => {
+  const LOGIN_EMAIL = "debug@example.com";
+  const LOGIN_PASSWORD = "Debug123!";
+
+  async function loginFirst(page: Page) {
+    await page.goto("/login");
+    await page.fill('#email', LOGIN_EMAIL);
+    await page.fill('#password', LOGIN_PASSWORD);
+    await page.click('button[type="submit"]');
+    await page.waitForURL(
+      /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
+      { timeout: 15000 }
+    );
+  }
+
+  test("personal info form: Tab through all fields", async ({ page }) => {
+    await loginFirst(page);
+    await page.goto("/personal");
+    await page.waitForLoadState("networkidle");
+
+    // Focus first input and start tabbing
+    const firstInput = page.locator("input, select").first();
+    await firstInput.focus();
+    await expect(firstInput).toBeFocused();
+
+    // Tab through several fields and verify focus moves
+    const focusedElements: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press("Tab");
+      const tagName = await page.locator(":focus").evaluate((el) => el.tagName.toLowerCase());
+      focusedElements.push(tagName);
+    }
+
+    // Verify we reached multiple different focusable elements
+    const uniqueTags = new Set(focusedElements);
+    expect(uniqueTags.size).toBeGreaterThanOrEqual(2);
+  });
+
+  test("accounts form: Tab through add account form fields", async ({ page }) => {
+    await loginFirst(page);
+    await page.goto("/accounts");
+    await page.waitForLoadState("networkidle");
+
+    // Open the add account form
+    await page.locator("button:has-text('Add Foreign Account')").click();
+    await expect(
+      page.locator("h3:has-text('Add Foreign Account')")
+    ).toBeVisible();
+
+    // Focus institution name and tab through
+    const nameInput = page.locator('input[placeholder="e.g., HSBC, Deutsche Bank"]');
+    await nameInput.focus();
+    await expect(nameInput).toBeFocused();
+
+    const focusedElements: string[] = [];
+    for (let i = 0; i < 8; i++) {
+      await page.keyboard.press("Tab");
+      const tagName = await page.locator(":focus").evaluate((el) => el.tagName.toLowerCase());
+      focusedElements.push(tagName);
+    }
+
+    // Should reach inputs, selects, and buttons
+    const uniqueTags = new Set(focusedElements);
+    expect(uniqueTags.size).toBeGreaterThanOrEqual(2);
+  });
+
+  test("sign page: Tab through agreement and signature", async ({ page }) => {
+    await loginFirst(page);
+    await page.goto("/sign");
+    await page.waitForLoadState("networkidle");
+
+    if (page.url().includes("/sign")) {
+      // The checkbox should be reachable by tab
+      const checkbox = page.locator('#agree-checkbox');
+      await checkbox.focus();
+      await expect(checkbox).toBeFocused();
+
+      // Tab to signature input
+      await page.keyboard.press("Tab");
+      const signatureInput = page.locator('#typed-signature');
+      await expect(signatureInput).toBeFocused();
+
+      // Tab to sign button
+      await page.keyboard.press("Tab");
+      const focused = page.locator(":focus");
+      await expect(focused).toBeVisible();
+    }
   });
 });

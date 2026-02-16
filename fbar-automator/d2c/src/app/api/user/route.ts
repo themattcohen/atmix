@@ -39,7 +39,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("User get error:", error);
+    console.error("User get error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -93,7 +93,7 @@ export async function PUT(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("User update error:", error);
+    console.error("User update error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

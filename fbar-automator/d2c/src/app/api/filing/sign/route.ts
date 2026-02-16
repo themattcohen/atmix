@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: { form114aUrl } });
   } catch (error) {
-    console.error("Sign error:", error);
+    console.error("Sign error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
