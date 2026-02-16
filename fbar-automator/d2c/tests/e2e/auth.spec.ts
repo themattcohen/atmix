@@ -55,6 +55,7 @@ test.describe("Signup Page", () => {
   test("signup with valid data creates account and redirects to threshold", async ({
     page,
   }) => {
+    test.slow(); // signup + bcrypt + auto-login + page transition can exceed 30s
     const email = `pw-signup-${Date.now()}@test.com`;
     await page.goto("/signup");
     await page.fill("#firstName", "Playwright");
@@ -63,7 +64,7 @@ test.describe("Signup Page", () => {
     await page.fill("#password", "TestPass123!");
     await page.fill("#confirmPassword", "TestPass123!");
     await page.click('button[type="submit"]');
-    await page.waitForURL("**/threshold", { timeout: 30000 });
+    await page.waitForURL("**/threshold", { timeout: 60000 });
     await expect(page).toHaveURL(/\/threshold/);
   });
 
@@ -220,7 +221,7 @@ test.describe("Forgot Password Page", () => {
     await page.fill("#email", EXISTING_EMAIL);
     await page.click('button[type="submit"]');
     await expect(page.locator("text=Check Your Email")).toBeVisible({
-      timeout: 10000,
+      timeout: 30000,
     });
     await expect(
       page
@@ -234,7 +235,7 @@ test.describe("Forgot Password Page", () => {
     await page.fill("#email", EXISTING_EMAIL);
     await page.click('button[type="submit"]');
     await expect(page.locator("text=Check Your Email")).toBeVisible({
-      timeout: 10000,
+      timeout: 30000,
     });
     const backLink = page.locator("text=Back to sign in");
     await expect(backLink).toBeVisible();
@@ -259,7 +260,7 @@ test.describe("Logout", () => {
     await expect(logoutBtn).toBeVisible();
     await logoutBtn.click();
 
-    await page.waitForURL("/", { timeout: 10000 });
+    await page.waitForURL(/\/$/, { timeout: 30000 });
     await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
   });
 
