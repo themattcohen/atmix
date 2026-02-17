@@ -44,4 +44,9 @@ venv/
 audit-engine/workspaces/
 archive/
 
+# Test artifacts
+test-results/
+playwright-report/
+test-results.json
+
 .vercel
