@@ -57,7 +57,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
       processingStatus: statement.processingStatus,
       processingStartedAt: statement.processingStartedAt,
       processingCompletedAt: statement.processingCompletedAt,
-      processingError: statement.processingError,
+      processingError: statement.processingError
+        ? "Processing encountered an error. Contact support for details."
+        : null,
     })
   } catch (error) {
     console.error("GET /api/statements/[statementId]/status error:", error)

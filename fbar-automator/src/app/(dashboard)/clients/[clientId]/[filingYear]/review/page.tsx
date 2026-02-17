@@ -126,8 +126,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           accounts = extraction.accounts
         }
       } catch {
-        // If parsing fails, leave accounts empty -- the ReviewForm will
-        // show an empty state for this statement.
+        // If parsing fails, leave accounts empty.
       }
     }
 

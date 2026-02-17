@@ -79,6 +79,3 @@ Return your response as valid JSON matching this exact schema:
 
 export const EXTRACTION_USER_PROMPT =
   "Extract all bank account information from this bank statement document. Return the structured JSON as specified."
-
-export const CONTINUATION_PROMPT =
-  "Continue extracting balance information for account {accountNumber} from these additional pages. Add any new balances found to the balances array and update the max_balance if a higher value is found."

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, Send, ShieldCheck, CheckCircle } from "lucide-react"
+import { Loader2, Send, ShieldCheck, CheckCircle, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 
 interface FilingActionsProps {
@@ -65,8 +65,10 @@ export function FilingActions({
   const showApproveForExport =
     status === "REVIEWED" && (userRole === "ADMIN" || userRole === "REVIEWER")
   const showMarkAsFiled = status === "EXPORTED"
+  const showReopenFiling =
+    (status === "REVIEWED" || status === "EXPORTED") && userRole === "ADMIN"
 
-  if (!showSubmitForReview && !showApproveForExport && !showMarkAsFiled) {
+  if (!showSubmitForReview && !showApproveForExport && !showMarkAsFiled && !showReopenFiling) {
     return null
   }
 
@@ -130,6 +132,27 @@ export function FilingActions({
               <CheckCircle className="mr-2 h-4 w-4" />
             )}
             Mark as Filed
+          </Button>
+        )}
+
+        {showReopenFiling && (
+          <Button
+            variant="outline"
+            onClick={() =>
+              performAction(
+                "reopened filing",
+                `/api/filing-years/${filingYearId}/reopen`,
+                "POST"
+              )
+            }
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RotateCcw className="mr-2 h-4 w-4" />
+            )}
+            Reopen Filing
           </Button>
         )}
       </div>

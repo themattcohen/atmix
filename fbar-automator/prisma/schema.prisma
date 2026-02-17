@@ -100,6 +100,9 @@ model Practice {
   ein       String?  @map("ein")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  statementRetentionDays    Int @default(365)  @map("statement_retention_days")
+  auditLogRetentionDays     Int @default(2555) @map("audit_log_retention_days")
+  inactiveClientArchiveDays Int @default(1095) @map("inactive_client_archive_days")
 
   users     User[]
   clients   Client[]
@@ -121,12 +124,14 @@ model User {
   emailVerified DateTime? @map("email_verified")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
+  tokenVersion  Int  @default(0) @map("token_version")
 
   practice             Practice            @relation(fields: [practiceId], references: [id], onDelete: Cascade)
   assignedFilingYears  FilingYear[]        @relation("AssignedPreparer")
   reviewedFilingYears  FilingYear[]        @relation("FilingReviewer")
   reviewedAccountYears ReviewedAccountYear[]
   auditLogs            AuditLog[]
+  resetTokens          PasswordResetToken[]
 
   @@index([practiceId])
   @@map("users")
@@ -325,4 +330,19 @@ model AuditLog {
   @@index([practiceId, createdAt])
   @@index([entityType, entityId])
   @@map("audit_logs")
+}
+
+/// Token for password reset requests
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@map("password_reset_tokens")
 }

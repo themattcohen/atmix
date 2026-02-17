@@ -36,6 +36,8 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
   const [files, setFiles] = useState<UploadingFile[]>([])
   const router = useRouter()
   const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
+  const [workerWarning, setWorkerWarning] = useState(false)
+  const workerWarningTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const updateFile = useCallback(
     (id: string, updates: Partial<UploadingFile>) => {
@@ -219,6 +221,30 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
     }
   }, [])
 
+  // Show worker warning if files are stuck in "processing" for 30+ seconds
+  useEffect(() => {
+    const hasProcessing = files.some((f) => f.status === "processing")
+
+    if (hasProcessing && !workerWarning) {
+      workerWarningTimerRef.current = setTimeout(() => {
+        // Re-check if still processing when timer fires
+        setWorkerWarning(true)
+      }, 30_000)
+    } else if (!hasProcessing) {
+      setWorkerWarning(false)
+      if (workerWarningTimerRef.current) {
+        clearTimeout(workerWarningTimerRef.current)
+        workerWarningTimerRef.current = null
+      }
+    }
+
+    return () => {
+      if (workerWarningTimerRef.current) {
+        clearTimeout(workerWarningTimerRef.current)
+      }
+    }
+  }, [files, workerWarning])
+
   const isUploading = files.some(
     (f) => f.status === "uploading" || f.status === "pending"
   )
@@ -235,6 +261,19 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
       <DropZone onFilesAccepted={handleFilesAccepted} disabled={isUploading} />
 
       <UploadProgress files={files} />
+
+      {workerWarning && (
+        <div className="rounded-md bg-yellow-50 border border-yellow-200 p-3">
+          <p className="text-sm text-yellow-800">
+            <strong>Processing is taking longer than expected.</strong>{" "}
+            The background worker may be offline. Run{" "}
+            <code className="rounded bg-yellow-100 px-1 py-0.5 text-xs font-mono">
+              npm run worker
+            </code>{" "}
+            to start it.
+          </p>
+        </div>
+      )}
 
       {files.length > 0 && (
         <div

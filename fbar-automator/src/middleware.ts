@@ -38,7 +38,7 @@ export function middleware(request: NextRequest) {
   // 1. Route protection: Check authentication for protected routes
   // ---------------------------------------------------------------------------
 
-  const publicPaths = ["/api/auth", "/api/health", "/login", "/register"]
+  const publicPaths = ["/api/auth", "/api/health", "/api/cron", "/login", "/register", "/forgot-password", "/reset-password"]
   const isPublicRoute = publicPaths.some((p) => pathname.startsWith(p))
 
   if (!isPublicRoute) {
@@ -51,6 +51,18 @@ export function middleware(request: NextRequest) {
       // Redirect unauthenticated users to login
       const loginUrl = new URL("/login", request.url)
       return NextResponse.redirect(loginUrl)
+    }
+  }
+
+  // Redirect authenticated users away from login/register pages
+  if (pathname === "/login" || pathname === "/register") {
+    const sessionToken =
+      request.cookies.get("next-auth.session-token")?.value ||
+      request.cookies.get("__Secure-next-auth.session-token")?.value
+
+    if (sessionToken) {
+      const homeUrl = new URL("/", request.url)
+      return NextResponse.redirect(homeUrl)
     }
   }
 
@@ -99,6 +111,10 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
     "/dashboard/:path*",
     "/clients/:path*",
     "/settings/:path*",

@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth"
 import { getFileBuffer } from "@/lib/s3"
 
 interface RouteParams {
-  params: Promise<{ key: string }>
+  params: Promise<{ key: string[] }>
 }
 
 export async function GET(
@@ -19,8 +19,8 @@ export async function GET(
 
     const { key } = await params
 
-    // Decode the URL-encoded key (handles slashes in S3 keys)
-    const decodedKey = decodeURIComponent(key)
+    // Join path segments — catch-all handles slashes in S3 keys natively
+    const decodedKey = key.join("/")
 
     // Fetch file from S3
     const buffer = await getFileBuffer(decodedKey)
