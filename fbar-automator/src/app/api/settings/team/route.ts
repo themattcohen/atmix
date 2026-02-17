@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         name: user.name,
         role: user.role,
-        ...(process.env.NODE_ENV === "development" ? { temporaryPassword } : {}),
+        temporaryPassword,
       },
       { status: 201 }
     )
