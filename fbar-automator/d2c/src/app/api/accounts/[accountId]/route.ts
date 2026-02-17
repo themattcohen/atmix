@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { foreignAccountSchema } from "@/lib/validation";
-import { encrypt, safeDecrypt } from "@/lib/encryption";
+import { encrypt } from "@/lib/encryption";
+import { mapAccountToDisplay } from "@/lib/account-mapper";
 import { Prisma } from "@prisma/client";
 
 export async function GET(
@@ -25,19 +26,7 @@ export async function GET(
 
     return NextResponse.json({
       data: {
-        id: account.id,
-        institutionName: account.institutionName,
-        accountNumberLast4: safeDecrypt(account.accountNumber).slice(-4) || "****",
-        accountType: account.accountType,
-        ownershipType: account.ownershipType,
-        countryCode: account.countryCode,
-        currencyCode: account.currencyCode,
-        maxValueLocal: Number(account.maxValueLocal),
-        maxValueUsd: account.maxValueUsd ? Number(account.maxValueUsd) : null,
-        exchangeRate: account.exchangeRate ? Number(account.exchangeRate) : null,
-        isJointAccount: account.isJointAccount,
-        jointOwnerInfo: account.jointOwnerInfo,
-        calendarYear: account.calendarYear,
+        ...mapAccountToDisplay(account),
         institutionAddress: account.institutionAddress,
       },
     });

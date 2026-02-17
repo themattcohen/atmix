@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { foreignAccountSchema } from "@/lib/validation";
-import { encrypt, safeDecrypt } from "@/lib/encryption";
+import { encrypt } from "@/lib/encryption";
+import { mapAccountToDisplay } from "@/lib/account-mapper";
 import { Prisma, AccountType, OwnershipType } from "@prisma/client";
+import { PriorYearInfo } from "@/types";
 
 export async function GET(req: NextRequest) {
   try {
@@ -24,23 +26,26 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "asc" },
     });
 
-    const data = accounts.map((a) => ({
-      id: a.id,
-      institutionName: a.institutionName,
-      accountNumberLast4: safeDecrypt(a.accountNumber).slice(-4) || "****",
-      accountType: a.accountType,
-      ownershipType: a.ownershipType,
-      countryCode: a.countryCode,
-      currencyCode: a.currencyCode,
-      maxValueLocal: Number(a.maxValueLocal),
-      maxValueUsd: a.maxValueUsd ? Number(a.maxValueUsd) : null,
-      exchangeRate: a.exchangeRate ? Number(a.exchangeRate) : null,
-      isJointAccount: a.isJointAccount,
-      jointOwnerInfo: a.jointOwnerInfo,
-      calendarYear: a.calendarYear,
-    }));
+    let priorYears: PriorYearInfo[] = [];
+    if (calendarYear && accounts.length === 0) {
+      const grouped = await prisma.foreignAccount.groupBy({
+        by: ['calendarYear'],
+        where: {
+          userId: session.user.id,
+          calendarYear: { lt: parseInt(calendarYear) },
+        },
+        _count: { id: true },
+        orderBy: { calendarYear: 'desc' },
+      });
+      priorYears = grouped.map(g => ({
+        calendarYear: g.calendarYear,
+        count: g._count.id,
+      }));
+    }
 
-    return NextResponse.json({ data });
+    const data = accounts.map(mapAccountToDisplay);
+
+    return NextResponse.json({ data, priorYears });
   } catch (error) {
     console.error("Accounts list error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -98,17 +103,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        data: {
-          id: account.id,
-          institutionName: account.institutionName,
-          accountNumberLast4: accountNumber.slice(-4),
-          accountType: account.accountType,
-          ownershipType: account.ownershipType,
-          countryCode: account.countryCode,
-          currencyCode: account.currencyCode,
-          maxValueLocal: Number(account.maxValueLocal),
-          calendarYear: account.calendarYear,
-        },
+        data: mapAccountToDisplay(account),
       },
       { status: 201 }
     );

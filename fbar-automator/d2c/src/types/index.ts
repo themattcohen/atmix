@@ -100,6 +100,23 @@ export interface AccountDisplay {
   calendarYear: number;
 }
 
+export interface PriorYearInfo {
+  calendarYear: number;
+  count: number;
+}
+
+export interface AccountsListResponse {
+  data: AccountDisplay[];
+  priorYears: PriorYearInfo[];
+}
+
+export interface ImportAccountsResponse {
+  success: boolean;
+  importedCount: number;
+  targetCalendarYear: number;
+  data: AccountDisplay[];
+}
+
 // Filing
 export interface CreateFilingRequest {
   calendarYear: number;

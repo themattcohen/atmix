@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { AccountForm } from "@/components/forms/AccountForm";
 import { AccountEditForm } from "@/components/forms/AccountEditForm";
-import type { AccountDisplay } from "@/types";
+import { ImportBanner } from "@/components/ImportBanner";
+import type { AccountDisplay, PriorYearInfo } from "@/types";
 
 function AccountSkeleton() {
   return (
@@ -31,6 +32,7 @@ export default function AccountsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [calendarYear, setCalendarYear] = useState<number>(new Date().getFullYear() - 1);
+  const [priorYears, setPriorYears] = useState<PriorYearInfo[]>([]);
 
   const loadData = async () => {
     try {
@@ -72,6 +74,7 @@ export default function AccountsPage() {
       }
       const data = await res.json();
       if (data.data) setAccounts(data.data);
+      if (data.priorYears) setPriorYears(data.priorYears);
     } catch {
       setError("Unable to connect to the server. Please check your connection and try again.");
     } finally {
@@ -108,6 +111,27 @@ export default function AccountsPage() {
   const handleEdited = () => {
     setEditingId(null);
     loadData();
+  };
+
+  const handleImport = async (sourceCalendarYear: number) => {
+    const res = await fetch("/api/accounts/import", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      body: JSON.stringify({ sourceCalendarYear }),
+    });
+    if (res.status === 401) {
+      window.location.href = "/login";
+      return;
+    }
+    if (!res.ok) {
+      const err = await res.json();
+      setError(err.error || "Failed to import accounts");
+      return;
+    }
+    await loadData();
   };
 
   return (
@@ -210,6 +234,11 @@ export default function AccountsPage() {
                   Add your first foreign financial account to continue your FBAR filing.
                 </p>
               </div>
+            )}
+
+            {/* Import banner — shown only in empty state when prior years exist */}
+            {accounts.length === 0 && priorYears.length > 0 && (
+              <ImportBanner priorYears={priorYears} onImport={handleImport} />
             )}
 
             {/* Add account form */}

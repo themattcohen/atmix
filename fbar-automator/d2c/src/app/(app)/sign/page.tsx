@@ -46,17 +46,20 @@ export default function SignPage() {
         }
 
         if (filingData.data?.length > 0) {
-          // Check if already signed - redirect to payment
-          const signedFiling = filingData.data.find((f: FilingData) => f.status === "SIGNED");
-          if (signedFiling) {
-            router.push("/payment");
-            return;
-          }
-
+          // Prioritize active filing — don't redirect to /payment if user has a filing to sign
           const activeFiling = filingData.data.find(
             (f: FilingData) => f.status === "REVIEWED" || f.status === "IN_PROGRESS"
           );
-          if (activeFiling) setFiling(activeFiling);
+          if (activeFiling) {
+            setFiling(activeFiling);
+          } else {
+            // No active filing — if there's a SIGNED one, redirect to payment
+            const signedFiling = filingData.data.find((f: FilingData) => f.status === "SIGNED");
+            if (signedFiling) {
+              router.push("/payment");
+              return;
+            }
+          }
         }
       } catch {
         setError("Failed to load data");

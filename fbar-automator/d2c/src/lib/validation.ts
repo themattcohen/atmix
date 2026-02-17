@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const calendarYearSchema = z.number().int().min(2010).max(2030);
+
 // US States + DC + territories
 export const US_STATES = [
   { code: "AL", name: "Alabama" }, { code: "AK", name: "Alaska" },
@@ -64,7 +66,7 @@ export const foreignAccountSchema = z.object({
   maxValueLocal: z.number().positive("Please enter the maximum account value (must be greater than 0)"),
   isJointAccount: z.boolean(),
   jointOwnerInfo: z.string().max(500).optional().nullable(),
-  calendarYear: z.number().int().min(2010).max(2030),
+  calendarYear: calendarYearSchema,
   institutionAddress: z.object({
     street: z.string().optional(),
     city: z.string().optional(),
@@ -75,7 +77,7 @@ export const foreignAccountSchema = z.object({
 export const thresholdSchema = z.object({
   hadForeignAccounts: z.boolean(),
   aggregateValueExceeded: z.boolean(),
-  calendarYear: z.number().int().min(2010).max(2030),
+  calendarYear: calendarYearSchema,
 });
 
 export const signatureSchema = z.object({
@@ -117,6 +119,12 @@ export const passwordSchema = z.string()
 export const personalInfoUpdateSchema = personalInfoSchema.extend({
   tin: z.string().regex(/^\d{3}-?\d{2}-?\d{4}$/, "Please enter a valid SSN (e.g. 123-45-6789) or ITIN").optional().or(z.literal("")),
 });
+
+export const importAccountsSchema = z.object({
+  sourceCalendarYear: calendarYearSchema,
+}).strict();
+
+export type ImportAccountsInput = z.infer<typeof importAccountsSchema>;
 
 // Export type
 export type PersonalInfoUpdateInput = z.infer<typeof personalInfoUpdateSchema>;

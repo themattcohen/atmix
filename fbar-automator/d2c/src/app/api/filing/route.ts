@@ -11,37 +11,38 @@ export async function GET() {
 
     const userId = session.user.id;
 
-    const filings = await prisma.filingYear.findMany({
-      where: { userId },
-      include: {
-        _count: { select: { payments: true } },
-      },
-      orderBy: { calendarYear: "desc" },
-    });
+    const [filings, accountCounts] = await Promise.all([
+      prisma.filingYear.findMany({
+        where: { userId },
+        include: {
+          _count: { select: { payments: true } },
+        },
+        orderBy: { calendarYear: "desc" },
+      }),
+      prisma.foreignAccount.groupBy({
+        by: ['calendarYear'],
+        where: { userId },
+        _count: { id: true },
+      }),
+    ]);
 
-    // Get account counts
-    const filingData = await Promise.all(
-      filings.map(async (f) => {
-        const accountCount = await prisma.foreignAccount.count({
-          where: { userId, calendarYear: f.calendarYear },
-        });
-        return {
-          id: f.id,
-          calendarYear: f.calendarYear,
-          status: f.status,
-          filingType: f.filingType,
-          has25PlusAccounts: f.has25PlusAccounts,
-          signedAt: f.signedAt?.toISOString() || null,
-          form114aUrl: f.form114aUrl,
-          stripePaymentId: f.stripePaymentId,
-          bsaId: f.bsaId,
-          submittedAt: f.submittedAt?.toISOString() || null,
-          acknowledgedAt: f.acknowledgedAt?.toISOString() || null,
-          rejectionReason: f.rejectionReason,
-          accountCount,
-        };
-      })
-    );
+    const countMap = new Map(accountCounts.map(c => [c.calendarYear, c._count.id]));
+
+    const filingData = filings.map((f) => ({
+      id: f.id,
+      calendarYear: f.calendarYear,
+      status: f.status,
+      filingType: f.filingType,
+      has25PlusAccounts: f.has25PlusAccounts,
+      signedAt: f.signedAt?.toISOString() || null,
+      form114aUrl: f.form114aUrl,
+      stripePaymentId: f.stripePaymentId,
+      bsaId: f.bsaId,
+      submittedAt: f.submittedAt?.toISOString() || null,
+      acknowledgedAt: f.acknowledgedAt?.toISOString() || null,
+      rejectionReason: f.rejectionReason,
+      accountCount: countMap.get(f.calendarYear) ?? 0,
+    }));
 
     return NextResponse.json({ data: filingData });
   } catch (error) {

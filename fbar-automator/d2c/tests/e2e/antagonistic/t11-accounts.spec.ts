@@ -91,6 +91,9 @@ test.describe("Accounts Wizard Step - Add, Edit, Delete foreign accounts", () =>
       page.locator('[aria-label="Loading accounts"]')
     ).not.toBeVisible({ timeout: 30_000 });
 
+    // Defensive: import banner should not be visible (seeded user has accounts for default year)
+    await expect(page.locator('[data-testid="import-banner"]')).not.toBeVisible({ timeout: 5000 });
+
     // ── TEST 2: "Add Foreign Account" button is visible ──
 
     const addBtn = page.locator("button:has-text('Add Foreign Account')");
