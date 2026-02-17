@@ -407,6 +407,9 @@ test.describe("Keyboard Navigation — Wizard Forms", () => {
     await page.goto("/personal");
     await page.waitForLoadState("networkidle");
 
+    // Wait for form fields to render
+    await page.waitForSelector('input, select', { timeout: 15000 });
+
     // Focus first input and start tabbing
     const firstInput = page.locator("input, select").first();
     await firstInput.focus();
@@ -416,7 +419,10 @@ test.describe("Keyboard Navigation — Wizard Forms", () => {
     const focusedElements: string[] = [];
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press("Tab");
-      const tagName = await page.locator(":focus").evaluate((el) => el.tagName.toLowerCase());
+      const tagName = await page.evaluate(() => {
+        const el = document.activeElement;
+        return el ? el.tagName.toLowerCase() : "none";
+      });
       focusedElements.push(tagName);
     }
 

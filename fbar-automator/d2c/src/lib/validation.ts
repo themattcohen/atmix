@@ -63,7 +63,7 @@ export const foreignAccountSchema = z.object({
   currencyCode: z.string().length(3, "Please select a currency"),
   maxValueLocal: z.number().positive("Please enter the maximum account value (must be greater than 0)"),
   isJointAccount: z.boolean(),
-  jointOwnerInfo: z.string().max(500).optional(),
+  jointOwnerInfo: z.string().max(500).optional().nullable(),
   calendarYear: z.number().int().min(2010).max(2030),
   institutionAddress: z.object({
     street: z.string().optional(),

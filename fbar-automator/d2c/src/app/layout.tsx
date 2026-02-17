@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Merriweather } from "next/font/google";
+import { Inter, Merriweather, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const merriweather = Merriweather({
   subsets: ["latin"],
   weight: ["300", "400", "700", "900"],
-  variable: "--font-merriweather"
+  variable: "--font-merriweather",
+});
+const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+  weight: ["300", "400", "600", "700"],
+  variable: "--font-source-sans",
 });
 
 export const metadata: Metadata = {
@@ -30,7 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${merriweather.variable} ${inter.className}`}>{children}</body>
+      <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>{children}</body>
     </html>
   );
 }

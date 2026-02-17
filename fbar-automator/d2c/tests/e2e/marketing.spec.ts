@@ -6,24 +6,16 @@ import { test, expect } from "@playwright/test";
 test.describe("Landing Page", () => {
   test("loads with hero content and CTA button", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("h1")).toContainText("File Your FBAR");
+    await expect(page.locator("h1")).toContainText("Report of Foreign Bank");
     await expect(
-      page.locator("text=Start Filing Now").first()
+      page.locator("text=Begin Filing").first()
     ).toBeVisible();
-    await expect(page.locator("text=No credit card required")).toBeVisible();
+    await expect(page.locator("text=No account required")).toBeVisible();
   });
 
   test("hero CTA navigates to signup", async ({ page }) => {
     await page.goto("/");
-    await page.locator("text=Start Filing Now").first().click();
-    await page.waitForURL("**/signup");
-    await expect(page).toHaveURL(/\/signup/);
-  });
-
-  test("footer CTA navigates to signup", async ({ page }) => {
-    await page.goto("/");
-    const ctaButtons = page.locator("text=Start Filing Now");
-    await ctaButtons.last().click();
+    await page.locator("text=Begin Filing").first().click();
     await page.waitForURL("**/signup");
     await expect(page).toHaveURL(/\/signup/);
   });
@@ -31,7 +23,7 @@ test.describe("Landing Page", () => {
   test("has How It Works section", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.locator("text=How It Works").first()
+      page.locator("text=How to file with FBAR Direct").first()
     ).toBeVisible();
   });
 
@@ -43,10 +35,7 @@ test.describe("Landing Page", () => {
   test("has FAQ section", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page
-        .locator("text=FAQ")
-        .first()
-        .or(page.locator("text=Frequently Asked").first())
+      page.locator("text=Frequently asked questions").first()
     ).toBeVisible();
   });
 });
@@ -117,33 +106,25 @@ test.describe("Desktop Navigation", () => {
   test("nav bar has all expected links", async ({ page }) => {
     await page.goto("/");
     const nav = page.locator("header nav");
-    await expect(nav.locator("text=How It Works")).toBeVisible();
+    await expect(nav.locator("text=How to File")).toBeVisible();
     await expect(nav.locator("text=Pricing")).toBeVisible();
-    await expect(nav.locator("text=About")).toBeVisible();
+    await expect(nav.locator("text=FAQ")).toBeVisible();
     await expect(nav.locator("text=Log In")).toBeVisible();
-    await expect(nav.locator("text=Start Filing")).toBeVisible();
+    await expect(nav.locator("text=Begin Filing")).toBeVisible();
   });
 
-  test("How It Works nav link navigates correctly", async ({ page }) => {
+  test("How to File nav link has correct href", async ({ page }) => {
     await page.goto("/");
-    await page.click("header nav >> text=How It Works");
-    await page.waitForURL("**/how-it-works");
-    await expect(page).toHaveURL(/\/how-it-works/);
-    await expect(page.locator("h1")).toContainText("How FBAR Direct Works");
+    const link = page.locator('header nav a:has-text("How to File")');
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", "/#how-to-file");
   });
 
-  test("Pricing nav link navigates correctly", async ({ page }) => {
+  test("Pricing nav link has correct href", async ({ page }) => {
     await page.goto("/");
-    await page.click("header nav >> text=Pricing");
-    await page.waitForURL("**/pricing");
-    await expect(page).toHaveURL(/\/pricing/);
-  });
-
-  test("About nav link navigates correctly", async ({ page }) => {
-    await page.goto("/");
-    await page.click("header nav >> text=About");
-    await page.waitForURL("**/about");
-    await expect(page).toHaveURL(/\/about/);
+    const link = page.locator('header nav a:has-text("Pricing")');
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", "/#pricing");
   });
 
   test("Log In nav link navigates to login page", async ({ page }) => {
@@ -155,7 +136,7 @@ test.describe("Desktop Navigation", () => {
 
   test("Start Filing nav button navigates to signup", async ({ page }) => {
     await page.goto("/");
-    await page.click("header nav >> text=Start Filing");
+    await page.click("header nav >> text=Begin Filing");
     await page.waitForURL("**/signup");
     await expect(page).toHaveURL(/\/signup/);
   });
@@ -168,9 +149,9 @@ test.describe("Footer Links", () => {
   test("footer has Resources links", async ({ page }) => {
     await page.goto("/");
     const footer = page.locator("footer");
-    await expect(footer.locator("text=How It Works")).toBeVisible();
+    await expect(footer.locator("text=How to File")).toBeVisible();
     await expect(footer.locator("text=Pricing")).toBeVisible();
-    await expect(footer.locator("text=About Us")).toBeVisible();
+    await expect(footer.locator("text=Privacy Policy")).toBeVisible();
   });
 
   test("footer has Legal links", async ({ page }) => {
@@ -201,7 +182,7 @@ test.describe("Footer Links", () => {
   test("footer disclaimer is present", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("footer")).toContainText(
-      "not affiliated with the IRS"
+      "not a government agency"
     );
   });
 });
@@ -214,38 +195,47 @@ test.describe("Mobile Navigation", () => {
 
   test("hamburger menu appears on mobile", async ({ page }) => {
     await page.goto("/");
-    const hamburger = page.locator('button[aria-label="Toggle navigation menu"]');
+    const hamburger = page.locator('button[aria-label="Open menu"]');
     await expect(hamburger).toBeVisible();
   });
 
   test("hamburger menu opens and shows all links", async ({ page }) => {
     await page.goto("/");
-    await page.click('button[aria-label="Toggle navigation menu"]');
-    const overlay = page.locator(".fixed.inset-0");
-    await expect(overlay).toBeVisible();
-    await expect(overlay.locator("text=How It Works")).toBeVisible();
+    await page.waitForLoadState("networkidle");
+    const hamburger = page.locator('button[aria-label="Open menu"]');
+    await expect(hamburger).toBeVisible();
+    await hamburger.click();
+    const overlay = page.getByRole("dialog", { name: "Navigation menu" });
+    await expect(overlay).toBeVisible({ timeout: 10000 });
+    await expect(overlay.locator("text=How to File")).toBeVisible();
     await expect(overlay.locator("text=Pricing")).toBeVisible();
-    await expect(overlay.locator("text=About")).toBeVisible();
+    await expect(overlay.locator("text=FAQ")).toBeVisible();
     await expect(overlay.locator("text=Log In")).toBeVisible();
-    await expect(overlay.locator("text=Start Filing")).toBeVisible();
+    await expect(overlay.locator("text=Begin Filing")).toBeVisible();
   });
 
   test("hamburger menu close button works", async ({ page }) => {
     await page.goto("/");
-    await page.click('button[aria-label="Toggle navigation menu"]');
-    await expect(page.locator(".fixed.inset-0")).toBeVisible();
+    await page.waitForLoadState("networkidle");
+    const hamburger = page.locator('button[aria-label="Open menu"]');
+    await expect(hamburger).toBeVisible();
+    await hamburger.click();
+    const overlay = page.getByRole("dialog", { name: "Navigation menu" });
+    await expect(overlay).toBeVisible({ timeout: 10000 });
     await page.click('button[aria-label="Close menu"]');
-    await expect(page.locator(".fixed.inset-0")).toBeHidden();
+    await expect(overlay).toBeHidden();
   });
 
   test("mobile menu link navigates and closes menu", async ({ page }) => {
     await page.goto("/");
-    await page.click('button[aria-label="Toggle navigation menu"]');
-    await page
-      .locator(".fixed.inset-0")
-      .locator("text=How It Works")
-      .click();
-    await page.waitForURL("**/how-it-works");
-    await expect(page).toHaveURL(/\/how-it-works/);
+    await page.waitForLoadState("networkidle");
+    const hamburger = page.locator('button[aria-label="Open menu"]');
+    await expect(hamburger).toBeVisible();
+    await hamburger.click();
+    const overlay = page.getByRole("dialog", { name: "Navigation menu" });
+    await expect(overlay).toBeVisible({ timeout: 10000 });
+    await overlay.locator("text=How to File").click();
+    // Hash link — verify section anchor
+    await expect(page).toHaveURL(/#how-to-file/);
   });
 });

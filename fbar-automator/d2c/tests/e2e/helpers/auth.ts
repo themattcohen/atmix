@@ -10,14 +10,29 @@ export async function loginAsTestUser(
   email = "debug@example.com",
   password = "Debug123!"
 ) {
-  await page.goto("/login");
-  await page.fill('input[name="email"], #email', email);
-  await page.fill('input[name="password"], #password', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(
-    /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
-    { timeout: 15000 }
-  );
+  const doLogin = async () => {
+    await page.goto("/login");
+    await page.fill('input[name="email"], #email', email);
+    await page.fill('input[name="password"], #password', password);
+    await page.click('button[type="submit"]');
+  };
+
+  await doLogin();
+
+  try {
+    await page.waitForURL(
+      /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
+      { timeout: 10000 }
+    );
+  } catch {
+    // Rate-limited or other transient error; wait and retry once
+    await page.waitForTimeout(2000);
+    await doLogin();
+    await page.waitForURL(
+      /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
+      { timeout: 20000 }
+    );
+  }
 }
 
 /**

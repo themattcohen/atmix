@@ -127,7 +127,7 @@ export default function MarketingLayout({
             ref={hamburgerButtonRef}
             onClick={() => setMobileMenuOpen(true)}
             className="md:hidden text-gov-blue p-2"
-            aria-label="Toggle navigation menu"
+            aria-label="Open menu"
             aria-expanded={mobileMenuOpen}
           >
             <Menu className="h-6 w-6" aria-hidden="true" />
