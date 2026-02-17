@@ -12,7 +12,7 @@ import { Header } from "@/components/layout/Header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { getFilingProgress } from "@/lib/approval"
+import { getFilingProgress, getReviewSummary } from "@/lib/approval"
 import { ExportDownloadButtons } from "./ExportDownloadButtons"
 import { FilingActions } from "../FilingActions"
 
@@ -105,8 +105,11 @@ export default async function ExportPage({ params }: ExportPageProps) {
     )
   }
 
-  // Get filing progress data
-  const progress = await getFilingProgress(filingYearRecord.id)
+  // Get filing progress data and per-account review details
+  const [progress, reviewSummary] = await Promise.all([
+    getFilingProgress(filingYearRecord.id),
+    getReviewSummary(filingYearRecord.id),
+  ])
 
   const clientName = [
     filingYearRecord.client.firstName,
@@ -202,11 +205,43 @@ export default async function ExportPage({ params }: ExportPageProps) {
               </div>
               <div>
                 <p className="text-xs font-medium text-gray-500">
-                  Aggregate Max Value
+                  Aggregate Max Value (USD)
                 </p>
                 <p className="mt-1 text-sm font-medium text-gray-900">
                   {formattedAggregateValue}
                 </p>
+                {reviewSummary.accounts.length > 0 && (
+                  <div className="mt-1.5 space-y-0.5">
+                    {reviewSummary.accounts
+                      .filter((a) => a.currencyCode && a.currencyCode !== "USD" && a.maxValueLocal != null)
+                      .map((a) => {
+                        const localFormatted = new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(a.maxValueLocal!)
+                        const usdFormatted = new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        }).format(a.maxValueUsd ?? 0)
+                        const rateFormatted = a.exchangeRate
+                          ? a.exchangeRate.toFixed(4)
+                          : "—"
+                        return (
+                          <p
+                            key={a.foreignAccountId}
+                            className="text-xs text-gray-500"
+                          >
+                            {usdFormatted} — from {localFormatted} {a.currencyCode} @ {rateFormatted}{" "}
+                            <span className="text-gray-400">
+                              (Treasury Dec 31, {filingYear})
+                            </span>
+                          </p>
+                        )
+                      })}
+                  </div>
+                )}
               </div>
             </div>
 

@@ -540,7 +540,31 @@ export async function getRate(
   // Step 1: Check DB for existing rate in the given year
   const existing = await findRateInDb(code, year)
   if (existing) {
-    // OPT-5: Cache the DB result
+    // Check if we have a non-Dec-31 fallback rate that might be upgradeable.
+    // After Jan 15 of the following year, Treasury should have published
+    // Dec 31 rates. Try one re-sync to upgrade the fallback.
+    const isDecember31 =
+      existing.recordDate.getUTCMonth() === 11 &&
+      existing.recordDate.getUTCDate() === 31
+    const now = new Date()
+    const upgradeDeadline = new Date(`${year + 1}-01-15T00:00:00Z`)
+
+    if (!isDecember31 && now >= upgradeDeadline) {
+      // Attempt to fetch Dec 31 rates from Treasury
+      const synced = await syncTreasuryRates(year)
+      if (synced > 0) {
+        const upgraded = await findRateInDb(code, year)
+        if (upgraded) {
+          rateCache.set(cacheKey, {
+            rate: upgraded,
+            expiresAt: Date.now() + CACHE_TTL_MS,
+          })
+          return upgraded
+        }
+      }
+    }
+
+    // OPT-5: Cache the DB result (either Dec 31 or best available fallback)
     rateCache.set(cacheKey, {
       rate: existing,
       expiresAt: Date.now() + CACHE_TTL_MS,

@@ -249,7 +249,7 @@ export default async function FilingYearPage({
                   />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Aggregate Max Value</p>
+                  <p className="text-sm text-gray-500">Aggregate Max Value (USD)</p>
                   <p className="text-xl font-semibold text-gray-900">
                     {formatUSD(progress.aggregateMaxValueUSD)}
                   </p>
