@@ -42,20 +42,15 @@ After fixing 10 issues (2 critical, 4 major, 4 minor) in the B2B app, a comprehe
 
 That's it. The extraction pipeline works fine locally; it just won't start in a production Docker deploy without this fix.
 
-### 2. Deploy to Railway or VPS (~1 day)
+### 2. Deploy to Hetzner VPS (~1 day)
 
-**Option 1 — Railway (recommended for speed)**
-- Deploy from git push, managed Postgres + Redis add-ons, auto-TLS
-- ~$20-40/month depending on usage
-- No Docker/infra management needed
-
-**Option 2 — Single VPS (DigitalOcean/Hetzner)**
-- 4GB RAM VPS running docker-compose (same as local dev)
-- Caddy or nginx for TLS + reverse proxy
-- ~$10-24/month
-- More control, slightly more setup
-
-**Either option handles:** hundreds of concurrent users, thousands of filings. LLM API rate limits are the bottleneck, not the server.
+**Decision: Hetzner CAX11 (ARM, 4GB RAM, ~$4/mo)**
+- US-East datacenter (Virginia) for US user latency
+- Run docker-compose.prod.yml directly — same as local dev
+- Caddy for TLS + reverse proxy
+- 3x cheaper than DigitalOcean for equivalent specs
+- Handles hundreds of concurrent users, thousands of filings
+- Bottleneck is Anthropic API latency (5-30s/doc), not the server
 
 **Minimal files needed:**
 | File | Action |

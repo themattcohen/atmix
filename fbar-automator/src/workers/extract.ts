@@ -283,15 +283,18 @@ async function processExtractionJob(
 // Worker Instance
 // ---------------------------------------------------------------------------
 
+const WORKER_CONCURRENCY = parseInt(process.env.WORKER_CONCURRENCY || "10", 10)
+const WORKER_RATE_LIMIT = parseInt(process.env.WORKER_RATE_LIMIT_MAX || "60", 10)
+
 const worker = new Worker<ExtractionJobData>(
   "extraction",
   processExtractionJob,
   {
     connection: connection as any,
-    concurrency: 2, // Conservative for LLM API rate limits
+    concurrency: WORKER_CONCURRENCY,
     limiter: {
-      max: 10,
-      duration: 60_000, // 10 jobs per minute
+      max: WORKER_RATE_LIMIT,
+      duration: 60_000,
     },
   }
 )
@@ -334,6 +337,6 @@ process.on("SIGINT", () => shutdown("SIGINT"))
 
 console.log("[Worker] Extraction worker started")
 console.log(`[Worker] Redis: ${process.env.REDIS_URL || "redis://localhost:6379"}`)
-console.log("[Worker] Concurrency: 2 | Rate limit: 10 jobs/min")
+console.log(`[Worker] Concurrency: ${WORKER_CONCURRENCY} | Rate limit: ${WORKER_RATE_LIMIT} jobs/min`)
 
 export default worker
