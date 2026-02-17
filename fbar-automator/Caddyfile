@@ -1,0 +1,36 @@
+{$DOMAIN:localhost} {
+	# Reverse proxy to Next.js app
+	reverse_proxy app:3000
+
+	# Security headers
+	header {
+		X-Frame-Options "DENY"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		X-DNS-Prefetch-Control "off"
+		-Server
+	}
+
+	# Gzip compression
+	encode gzip
+
+	# Upload size limit (50MB)
+	request_body {
+		max_size 50MB
+	}
+
+	# Cache static assets aggressively
+	@static path /_next/static/*
+	header @static Cache-Control "public, max-age=31536000, immutable"
+
+	# No cache for API responses
+	@api path /api/*
+	header @api Cache-Control "no-store, no-cache, must-revalidate"
+
+	# Access log format
+	log {
+		output stdout
+		format console
+	}
+}
