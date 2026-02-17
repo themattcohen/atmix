@@ -303,7 +303,7 @@ model ExchangeRate {
   id           String   @id @default(uuid()) @map("id")
   currencyCode String   @map("currency_code")
   countryName  String   @map("country_name")
-  rate         Decimal  @map("rate") @db.Decimal(12, 6)
+  rate         Decimal  @map("rate") @db.Decimal(18, 6)
   recordDate   DateTime @map("record_date")
   source       String   @default("treasury_api") @map("source")
   fetchedAt    DateTime @map("fetched_at")
