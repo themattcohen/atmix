@@ -80,8 +80,8 @@ POSTGRES_DB=fbar_automator
 DATABASE_URL=postgresql://fbar:GENERATE_ME_1@postgres:5432/fbar_automator
 
 # --- Redis ---
-REDIS_URL=redis://redis:6379
 REDIS_PASSWORD=GENERATE_ME_2
+REDIS_URL=redis://:GENERATE_ME_2@redis:6379
 
 # --- Auth ---
 NEXTAUTH_SECRET=GENERATE_ME_3
@@ -116,8 +116,8 @@ Generate all the secrets:
 
 ```bash
 # Replace each GENERATE_ME_N with a real secret
-sed -i "s/GENERATE_ME_1/$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)/" .env
-sed -i "s/GENERATE_ME_2/$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)/" .env
+sed -i "s/GENERATE_ME_1/$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)/g" .env
+sed -i "s/GENERATE_ME_2/$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)/g" .env
 sed -i "s/GENERATE_ME_3/$(openssl rand -base64 32)/" .env
 sed -i "s/GENERATE_ME_4/$(openssl rand -hex 16)/" .env
 sed -i "s/GENERATE_ME_5/$(openssl rand -hex 32)/" .env
