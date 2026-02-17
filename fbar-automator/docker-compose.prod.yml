@@ -106,8 +106,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
-    command: npx tsx src/workers/extract.ts
+      target: worker
     env_file:
       - .env
     environment:
