@@ -15,6 +15,7 @@
 | **App directory** | `/opt/fbar/fbar-automator` |
 | **Git remote** | `https://github.com/themattcohen/atmix.git` (cloned at `/opt/fbar`) |
 | **Compose file** | `docker-compose.prod.yml` (unified — B2B + D2C) |
+| **Server RAM** | 1.9 GB (no swap) — build images ONE AT A TIME |
 
 The local Mac SSH key is authorized on the server. No password needed.
 
@@ -28,19 +29,26 @@ The local Mac SSH key is authorized on the server. No password needed.
 # 1. From local Mac — commit and push
 git add <files> && git commit -m "message" && git push
 
-# 2. On server — pull and rebuild
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build app"
+# 2. On server — pull and rebuild B2B
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build b2b-app"
+
+# 2b. Or rebuild D2C
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build d2c-app"
+
+# 2c. Or rebuild B2B + worker (if worker code changed)
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build b2b-app b2b-worker"
 ```
 
-If the change also affects the worker:
-```bash
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build app worker"
-```
+**WARNING**: Server has only 1.9 GB RAM. Never build more than one image at a time or the OOM killer will strike. Use `--build <service>` to target specific services.
 
 ### Run Database Migrations
 
 ```bash
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml exec app npx prisma migrate deploy"
+# B2B migrations
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml exec b2b-app npx prisma migrate deploy"
+
+# D2C migrations
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml exec d2c-app npx prisma migrate deploy"
 ```
 
 ### Check Service Health
@@ -61,36 +69,47 @@ All 7 services should show `Up` and `(healthy)`:
 ### View Logs
 
 ```bash
-# App logs (most common)
-ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 100 app"
+# B2B app logs
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 100 b2b-app"
 
-# Worker logs
-ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 100 worker"
+# D2C app logs
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 100 d2c-app"
+
+# B2B worker logs
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 100 b2b-worker"
 
 # Caddy/TLS logs
 ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 50 caddy"
 
 # Follow logs live (add -f)
-ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs -f app"
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs -f d2c-app"
 ```
 
 ### Restart a Service
 
 ```bash
-ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml restart app"
+# Restart B2B
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml restart b2b-app"
+
+# Restart D2C
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml restart d2c-app"
 ```
 
-### Backup Database
+### Backup Databases
 
 ```bash
-ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml exec -T postgres pg_dump -U fbar fbar_automator" > backup_$(date +%Y%m%d).sql
+# B2B database
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml exec -T postgres pg_dump -U fbar fbar_automator" > b2b_backup_$(date +%Y%m%d).sql
+
+# D2C database
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml exec -T postgres pg_dump -U fbar fbar_direct" > d2c_backup_$(date +%Y%m%d).sql
 ```
 
 ---
 
 ## TLS / Domain Configuration
 
-TLS is handled by Caddy + Let's Encrypt, configured via two `.env` variables:
+TLS is handled by Caddy + Let's Encrypt, configured via `.env` variables:
 
 | Variable | Current Value |
 |----------|---------------|
@@ -101,21 +120,23 @@ TLS is handled by Caddy + Let's Encrypt, configured via two `.env` variables:
 
 **sslip.io** provides free wildcard DNS: `*.A-B-C-D.sslip.io` resolves to `A.B.C.D`. Caddy auto-provisions Let's Encrypt certs for both subdomains.
 
-### Switch to a Real Domain
+### Switch to Real Domains
 
-1. Point DNS A record for `fbar.yourdomain.com` to `178.156.250.116`
-2. Update the two `.env` values on the server:
+1. Point DNS A records for both domains to `178.156.250.116`
+2. Update the `.env` values on the server:
    ```bash
    ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && \
-     sed -i 's|^DOMAIN=.*|DOMAIN=fbar.yourdomain.com|' .env && \
-     sed -i 's|^NEXTAUTH_URL=.*|NEXTAUTH_URL=https://fbar.yourdomain.com|' .env"
+     sed -i 's|^B2B_DOMAIN=.*|B2B_DOMAIN=preparer.yourdomain.com|' .env && \
+     sed -i 's|^D2C_DOMAIN=.*|D2C_DOMAIN=file.yourdomain.com|' .env && \
+     sed -i 's|^B2B_NEXTAUTH_URL=.*|B2B_NEXTAUTH_URL=https://preparer.yourdomain.com|' .env && \
+     sed -i 's|^D2C_NEXTAUTH_URL=.*|D2C_NEXTAUTH_URL=https://file.yourdomain.com|' .env"
    ```
-3. Recreate Caddy and app:
+3. Recreate Caddy and both apps:
    ```bash
-   ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy app"
+   ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy b2b-app d2c-app"
    ```
 
-Caddy auto-provisions the new cert. No other changes needed.
+Caddy auto-provisions new certs. No other changes needed.
 
 ---
 
@@ -134,8 +155,20 @@ ssh root@178.156.250.116 "nano /opt/fbar/fbar-automator/.env"
 
 After editing `.env`, restart affected services:
 ```bash
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate app worker"
+# If B2B env changed:
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate b2b-app b2b-worker"
+
+# If D2C env changed:
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate d2c-app"
 ```
+
+### D2C Integrations Not Yet Configured
+
+| Integration | Env Var | Status |
+|---|---|---|
+| **Stripe** | `D2C_STRIPE_SECRET_KEY`, `D2C_STRIPE_WEBHOOK_SECRET` | Placeholder values — payment flow won't work |
+| **Email (Resend)** | `D2C_RESEND_API_KEY` | Empty — no emails sent |
+| **FinCEN SFTP** | `SDTM_HOST`, `SDTM_USERNAME`, `SDTM_PRIVATE_KEY_PATH` | Empty — sandbox mode |
 
 ---
 
@@ -160,21 +193,45 @@ Internet → Caddy (:443)
 
 The `backend` network is internal-only (no external access). Only Caddy is exposed to the internet.
 
+### Databases
+
+| Database | App | Prisma Schema |
+|---|---|---|
+| `fbar_automator` | B2B | `fbar-automator/prisma/schema.prisma` |
+| `fbar_direct` | D2C | `fbar-automator/d2c/prisma/schema.prisma` |
+
+Both accessed via the `fbar` superuser. Per-app users (`fbar_b2b`, `fbar_d2c`) defined in `docker/init-db.sh` but not yet created (init script only runs on fresh postgres).
+
 ---
 
 ## Troubleshooting
 
 ### App won't start
 ```bash
-ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 50 app"
+# Check B2B
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 50 b2b-app"
+
+# Check D2C
+ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 50 d2c-app"
 ```
 Common causes: missing env var, database migration needed, port conflict.
+
+### OOM during Docker build
+Server has only 1.9 GB RAM with no swap. **Always build ONE image at a time:**
+```bash
+# GOOD — build one service
+docker compose -f docker-compose.prod.yml build b2b-app
+
+# BAD — builds all at once, will OOM
+docker compose -f docker-compose.prod.yml up -d --build
+```
+If OOM kills sshd, wait 15-30 seconds and reconnect. Run `docker system prune -f` to recover disk/memory.
 
 ### TLS cert not provisioning
 ```bash
 ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml logs --tail 50 caddy"
 ```
-Ensure ports 80 and 443 are open (`ufw status`) and `DOMAIN` resolves to the server IP.
+Ensure ports 80 and 443 are open (`ufw status`) and both domains resolve to the server IP.
 
 ### Database connection errors
 ```bash
