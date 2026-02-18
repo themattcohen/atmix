@@ -46,7 +46,7 @@ export function AddFilingYearForm({ clientId }: AddFilingYearFormProps) {
 
       setOpen(false)
       setError(null)
-      router.refresh()
+      router.push(`/clients/${clientId}/${year}`)
     } catch {
       setError("Network error. Please try again.")
     } finally {

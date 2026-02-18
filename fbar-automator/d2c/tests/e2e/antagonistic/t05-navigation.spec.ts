@@ -9,11 +9,14 @@ test.setTimeout(90_000);
  * Navigate to landing page and wait for React hydration.
  * The marketing layout is a "use client" component, so we need
  * to wait until React has hydrated the page and event handlers
- * are attached. We wait for networkidle to ensure all JS chunks
- * have been loaded and executed.
+ * are attached. We use domcontentloaded (not networkidle) because
+ * the Next.js dev server HMR WebSocket prevents networkidle from
+ * settling. Instead we wait for the nav to be interactive.
  */
 async function gotoLandingHydrated(page: Page) {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  // Wait for React hydration — nav buttons need to be interactive
+  await page.locator("nav[aria-label='Main navigation']").waitFor({ state: "visible", timeout: 15000 });
 }
 
 /**
@@ -132,7 +135,8 @@ test.describe("Desktop Navigation", () => {
   });
 
   test("FBAR Direct logo links back to home", async ({ page }) => {
-    await page.goto("/about", { waitUntil: "networkidle" });
+    await page.goto("/about", { waitUntil: "domcontentloaded" });
+    await page.locator("nav[aria-label='Main navigation']").waitFor({ state: "visible", timeout: 15000 });
 
     const logo = page.locator("nav[aria-label='Main navigation']").getByText("FBAR Direct");
     await logo.click();
@@ -183,10 +187,12 @@ test.describe("Mobile Navigation", () => {
     await openMobileMenu(page);
 
     const mobileMenu = page.getByRole("dialog", { name: "Navigation menu" });
+    const closeBtn = page.getByRole("button", { name: "Close menu" });
 
-    // Close menu
-    await page.getByRole("button", { name: "Close menu" }).click();
-    await expect(mobileMenu).toBeHidden();
+    // Ensure close button is visible and actionable before clicking
+    await expect(closeBtn).toBeVisible({ timeout: 5_000 });
+    await closeBtn.click();
+    await expect(mobileMenu).not.toBeVisible({ timeout: 10_000 });
   });
 
   test("Escape key closes mobile menu", async ({ page }) => {

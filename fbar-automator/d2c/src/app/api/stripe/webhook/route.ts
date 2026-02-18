@@ -77,6 +77,27 @@ export async function POST(req: NextRequest) {
           },
         });
 
+        // Fire-and-forget GA4 Measurement Protocol purchase event
+        if (process.env.GA4_MEASUREMENT_ID && process.env.GA4_API_SECRET) {
+          fetch(
+            `https://www.google-analytics.com/mp/collect?measurement_id=${process.env.GA4_MEASUREMENT_ID}&api_secret=${process.env.GA4_API_SECRET}`,
+            {
+              method: 'POST',
+              body: JSON.stringify({
+                client_id: session.metadata?.userId || 'server',
+                events: [{
+                  name: 'purchase',
+                  params: {
+                    currency: 'USD',
+                    value: session.amount_total! / 100,
+                    transaction_id: session.id,
+                  },
+                }],
+              }),
+            }
+          ).catch(() => {}); // Fire and forget — don't block webhook processing
+        }
+
         break;
       }
 

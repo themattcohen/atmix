@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: 'About FBAR Direct — FinCEN-Registered E-Filing Institution',
+  description: 'FBAR Direct is a FinCEN-registered BSA E-Filing institution authorized to submit FinCEN Form 114 directly to FinCEN.',
+  alternates: { canonical: '/about' },
+  openGraph: { title: 'About FBAR Direct', url: '/about' },
+};
 
 export default function AboutPage() {
   return (
@@ -40,6 +48,15 @@ export default function AboutPage() {
                 <div>
                   <p className="font-semibold text-navy-900">AES-256-GCM Encryption</p>
                   <p className="text-sm text-gray-600">All sensitive data (SSN, account numbers) encrypted at rest and in transit.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <p className="font-semibold text-navy-900">Built by a Licensed CPA</p>
+                  <p className="text-sm text-gray-600">Founded by a Certified Public Accountant with direct FBAR filing experience. Professional tax compliance expertise built into every step of the process.</p>
                 </div>
               </div>
             </div>

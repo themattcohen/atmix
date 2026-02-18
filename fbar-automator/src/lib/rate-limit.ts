@@ -19,17 +19,21 @@ interface RateLimitConfig {
   windowMs: number
 }
 
+const RATE_LIMIT_MULTIPLIER = process.env.RATE_LIMIT_MULTIPLIER
+  ? parseInt(process.env.RATE_LIMIT_MULTIPLIER, 10)
+  : 1
+
 const RATE_LIMIT_TIERS: Record<string, RateLimitConfig> = {
   auth: {
-    maxRequests: 5,
+    maxRequests: 5 * RATE_LIMIT_MULTIPLIER,
     windowMs: 60 * 1000, // 1 minute
   },
   upload: {
-    maxRequests: 10,
+    maxRequests: 10 * RATE_LIMIT_MULTIPLIER,
     windowMs: 60 * 1000, // 1 minute
   },
   general: {
-    maxRequests: 60,
+    maxRequests: 60 * RATE_LIMIT_MULTIPLIER,
     windowMs: 60 * 1000, // 1 minute
   },
 }

@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description: 'FBAR Direct privacy policy. How we collect, use, and protect your personal and financial information.',
+  alternates: { canonical: '/privacy' },
+};
+
 export default function PrivacyPage() {
   return (
     <div className="py-20 px-4">
@@ -78,6 +86,7 @@ export default function PrivacyPage() {
               <li><strong>FinCEN:</strong> We submit your FBAR directly to FinCEN&apos;s BSA E-Filing System via SFTP</li>
               <li><strong>Stripe:</strong> Payment processing (Stripe handles all credit card information; we never see or store your card details)</li>
               <li><strong>Resend:</strong> Email delivery for notifications, confirmations, and receipts</li>
+              <li><strong>Google Analytics / Google Tag Manager:</strong> Website analytics to understand visitor behavior and measure advertising effectiveness (see Cookies and Tracking section)</li>
             </ul>
             <p className="text-gray-700 leading-relaxed mt-4">
               These services are contractually bound to protect your data and use it only for the
@@ -104,10 +113,23 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold text-navy-900 mb-4">Cookies and Tracking</h2>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed mb-4">
               We use essential cookies to maintain your session and provide basic functionality.
-              We do not use third-party tracking cookies or advertising cookies. You can disable
-              cookies in your browser settings, but this may affect your ability to use our service.
+              You can disable cookies in your browser settings, but this may affect your ability to use our service.
+            </p>
+            <h3 className="text-lg font-semibold text-navy-900 mb-2">Analytics</h3>
+            <p className="text-gray-700 leading-relaxed">
+              We use Google Analytics and Google Tag Manager to understand how visitors use our site
+              and to measure the effectiveness of our advertising. These services may set cookies on
+              your device. You can opt out of Google Analytics by installing the{' '}
+              <a
+                href="https://tools.google.com/dlpage/gaoptout"
+                className="text-blue-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Google Analytics Opt-out Browser Add-on
+              </a>.
             </p>
           </section>
 

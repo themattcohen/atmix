@@ -14,6 +14,8 @@ interface FilingActionsProps {
   totalStatements: number
   pendingStatements: number
   failedStatements: number
+  totalAccounts: number
+  reviewedAccounts: number
 }
 
 export function FilingActions({
@@ -25,6 +27,8 @@ export function FilingActions({
   totalStatements,
   pendingStatements,
   failedStatements,
+  totalAccounts,
+  reviewedAccounts,
 }: FilingActionsProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -60,8 +64,7 @@ export function FilingActions({
   }
 
   // Determine available actions based on current status
-  const showSubmitForReview =
-    (status === "NOT_STARTED" || status === "IN_PROGRESS") && isFullyReviewed
+  const showSubmitForReview = status === "NOT_STARTED" || status === "IN_PROGRESS"
   const showApproveForExport =
     status === "REVIEWED" && (userRole === "ADMIN" || userRole === "REVIEWER")
   const showMarkAsFiled = status === "EXPORTED"
@@ -84,7 +87,7 @@ export function FilingActions({
                 "POST"
               )
             }
-            disabled={isLoading || !isReadyForReview}
+            disabled={isLoading || !isFullyReviewed || !isReadyForReview}
           >
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -164,7 +167,14 @@ export function FilingActions({
         <p className="mt-3 text-sm text-green-600">{success}</p>
       )}
 
-      {showSubmitForReview && !isReadyForReview && (
+      {showSubmitForReview && !isFullyReviewed && (
+        <p className="mt-2 text-xs text-gray-500">
+          {totalAccounts === 0
+            ? "Add accounts and complete reviews before submitting."
+            : `${reviewedAccounts} of ${totalAccounts} accounts reviewed — complete all reviews to submit.`}
+        </p>
+      )}
+      {showSubmitForReview && isFullyReviewed && !isReadyForReview && (
         <p className="mt-2 text-xs text-gray-500">
           {totalStatements === 0
             ? "Upload and process at least one statement before submitting for review."

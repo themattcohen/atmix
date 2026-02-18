@@ -79,6 +79,26 @@ function parseUsAddress(
 }
 
 /**
+ * Parses the Client.foreignAddress JSON field into typed components.
+ * Returns empty strings for missing fields.
+ */
+function parseForeignAddress(
+  foreignAddress: unknown
+): { street: string; city: string; stateProvince: string; postalCode: string; country: string } {
+  if (!foreignAddress || typeof foreignAddress !== "object") {
+    return { street: "", city: "", stateProvince: "", postalCode: "", country: "" }
+  }
+  const addr = foreignAddress as Record<string, string | undefined>
+  return {
+    street: addr.street ?? "",
+    city: addr.city ?? "",
+    stateProvince: addr.stateProvince ?? "",
+    postalCode: addr.postalCode ?? "",
+    country: addr.country ?? "",
+  }
+}
+
+/**
  * Manages a monotonically increasing sequence counter for XML SeqNum
  * attributes. FinCEN requires each element to have a unique SeqNum.
  */
@@ -141,7 +161,10 @@ export async function generateFincenXml(
   // 2. Build filer Party (Part I)
   // -----------------------------------------------------------------------
 
-  const filerAddress = parseUsAddress(client.usAddress)
+  // Determine filer address (foreign address takes precedence)
+  const hasForeignAddr = client.foreignAddress && typeof client.foreignAddress === "object"
+  const filerForeignAddr = hasForeignAddr ? parseForeignAddress(client.foreignAddress) : null
+  const filerUsAddr = !hasForeignAddr ? parseUsAddress(client.usAddress) : null
 
   const filerPartySeq = seq.next() // Party element
   const filerNameSeq = seq.next() // PartyName element
@@ -170,11 +193,11 @@ export async function generateFincenXml(
 
   filerParty.Address = {
     "@_SeqNum": String(filerAddressSeq),
-    RawCityText: filerAddress.city,
-    RawCountryCodeText: "US",
-    RawStateCodeText: filerAddress.state,
-    RawStreetAddress1Text: filerAddress.street,
-    RawZIPCode: filerAddress.zip,
+    RawCityText: filerForeignAddr ? filerForeignAddr.city : filerUsAddr!.city,
+    RawCountryCodeText: filerForeignAddr ? filerForeignAddr.country : "US",
+    RawStateCodeText: filerForeignAddr ? filerForeignAddr.stateProvince : filerUsAddr!.state,
+    RawStreetAddress1Text: filerForeignAddr ? filerForeignAddr.street : filerUsAddr!.street,
+    RawZIPCode: filerForeignAddr ? filerForeignAddr.postalCode : filerUsAddr!.zip,
   }
 
   if (client.tin && client.tinType) {

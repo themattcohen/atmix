@@ -27,6 +27,12 @@ model User {
   failedLoginAttempts Int       @default(0)
   lockoutUntil        DateTime?
 
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  utmContent   String?
+  utmTerm      String?
+
   accounts      ForeignAccount[]
   filingYears   FilingYear[]
   payments      Payment[]

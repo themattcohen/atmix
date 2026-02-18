@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Shield shape -->
+  <path d="M16 2 L28 7 L28 17 C28 24 22 29 16 31 C10 29 4 24 4 17 L4 7 Z" fill="#1a4480"/>
+  <!-- Inner shield highlight -->
+  <path d="M16 4.5 L26 9 L26 17 C26 23 21 27.5 16 29.5 C11 27.5 6 23 6 17 L6 9 Z" fill="#1e50a0"/>
+  <!-- FD monogram -->
+  <text x="16" y="22" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="-0.5">FD</text>
+</svg>

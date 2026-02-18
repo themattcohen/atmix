@@ -267,18 +267,24 @@ test.describe("Forgot Password Page", () => {
 // Logout
 // ---------------------------------------------------------------------------
 test.describe("Logout", () => {
+  // Dashboard navigation requires login + session hydration, which is slow on dev server
+  test.setTimeout(90_000);
+
   test("logout button exists when logged in and works", async ({ page }) => {
     await page.goto("/login");
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
+    // Navigate to dashboard to reach the (app) layout which has the auth header
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded", timeout: 60000 });
 
+    // Wait for the app header to render (session must load first)
     const logoutBtn = page.locator("text=Log Out");
-    await expect(logoutBtn).toBeVisible();
+    await expect(logoutBtn).toBeVisible({ timeout: 30000 });
     await logoutBtn.click();
 
-    await page.waitForURL(/\/$/, { timeout: 30000 });
+    await page.waitForURL(/\/$/, { timeout: 30000, waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/^https?:\/\/[^/]+\/$/);
   });
 
@@ -288,8 +294,10 @@ test.describe("Logout", () => {
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
+    // Navigate to dashboard to reach the (app) layout which shows user email
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded", timeout: 60000 });
 
-    await expect(page.locator(`text=${EXISTING_EMAIL}`)).toBeVisible();
+    await expect(page.locator(`text=${EXISTING_EMAIL}`)).toBeVisible({ timeout: 30000 });
   });
 
   test("app header has My Filings link", async ({ page }) => {
@@ -298,9 +306,11 @@ test.describe("Logout", () => {
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
+    // Navigate to dashboard to reach the (app) layout which has My Filings link
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded", timeout: 60000 });
 
     const filingsLink = page.locator("text=My Filings");
-    await expect(filingsLink).toBeVisible();
+    await expect(filingsLink).toBeVisible({ timeout: 30000 });
     await filingsLink.click();
     await page.waitForURL("**/dashboard");
     await expect(page).toHaveURL(/\/dashboard/);
@@ -319,12 +329,11 @@ test.describe("Auth Redirects", () => {
     await expect(page).toHaveURL(/\/login/);
   });
 
-  test("unauthenticated user accessing /threshold gets redirected to login", async ({
+  test("unauthenticated user accessing /threshold loads successfully without redirect", async ({
     page,
   }) => {
     await page.goto("/threshold");
-    await page.waitForURL("**/login**", { timeout: 15000 });
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/threshold/);
   });
 
   test("unauthenticated user accessing /personal gets redirected to login", async ({

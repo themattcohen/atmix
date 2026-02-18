@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
+
+export const metadata: Metadata = {
+  title: 'How to File an FBAR — 7 Steps, Under 10 Minutes',
+  description: 'Step-by-step guide to filing your FBAR through FBAR Direct. Enter information, review, sign Form 114a, pay, and receive your BSA tracking ID.',
+  alternates: { canonical: '/how-it-works' },
+  openGraph: { title: 'How to File an FBAR — 7 Steps, Under 10 Minutes', url: '/how-it-works' },
+};
 
 export default function HowItWorksPage() {
   const steps = [
@@ -12,7 +21,25 @@ export default function HowItWorksPage() {
   ];
 
   return (
-    <div className="py-20 px-4">
+    <>
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to File an FBAR with FBAR Direct",
+        "totalTime": "PT10M",
+        "estimatedCost": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "value": "59",
+        },
+        "step": steps.map((s) => ({
+          "@type": "HowToStep",
+          "name": s.title,
+          "text": s.desc,
+          "position": s.num,
+        })),
+      }} />
+      <div className="py-20 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-navy-900 mb-4">How FBAR Direct Works</h1>
@@ -45,5 +72,6 @@ export default function HowItWorksPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

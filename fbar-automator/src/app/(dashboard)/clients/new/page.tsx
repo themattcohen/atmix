@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
+import { COUNTRY_CODES } from "@/types/fincen"
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -58,17 +59,21 @@ export default function NewClientPage() {
   const [tinType, setTinType] = useState("")
   const [dateOfBirth, setDateOfBirth] = useState("")
 
+  // Address mode toggle
+  const [addressMode, setAddressMode] = useState<"us" | "foreign">("us")
+
   // US Address
   const [usStreet, setUsStreet] = useState("")
   const [usCity, setUsCity] = useState("")
   const [usState, setUsState] = useState("")
   const [usZip, setUsZip] = useState("")
 
-  // Mailing Address
-  const [mailStreet, setMailStreet] = useState("")
-  const [mailCity, setMailCity] = useState("")
-  const [mailState, setMailState] = useState("")
-  const [mailZip, setMailZip] = useState("")
+  // Foreign Address
+  const [foreignStreet, setForeignStreet] = useState("")
+  const [foreignCity, setForeignCity] = useState("")
+  const [foreignStateProvince, setForeignStateProvince] = useState("")
+  const [foreignPostalCode, setForeignPostalCode] = useState("")
+  const [foreignCountry, setForeignCountry] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -92,22 +97,21 @@ export default function NewClientPage() {
       dateOfBirth: dateOfBirth ? new Date(dateOfBirth + "T00:00:00.000Z").toISOString() : null,
     }
 
-    // Only include address objects if any field is filled
-    if (usStreet || usCity || usState || usZip) {
+    // Address (mutually exclusive: US or Foreign)
+    if (addressMode === "us" && (usStreet || usCity || usState || usZip)) {
       payload.usAddress = {
         street: usStreet || undefined,
         city: usCity || undefined,
         state: usState || undefined,
         zip: usZip || undefined,
       }
-    }
-
-    if (mailStreet || mailCity || mailState || mailZip) {
-      payload.mailingAddress = {
-        street: mailStreet || undefined,
-        city: mailCity || undefined,
-        state: mailState || undefined,
-        zip: mailZip || undefined,
+    } else if (addressMode === "foreign" && foreignCountry) {
+      payload.foreignAddress = {
+        street: foreignStreet || undefined,
+        city: foreignCity || undefined,
+        stateProvince: foreignStateProvince || undefined,
+        postalCode: foreignPostalCode || undefined,
+        country: foreignCountry,
       }
     }
 
@@ -267,82 +271,110 @@ export default function NewClientPage() {
                 {fieldError("dateOfBirth")}
               </div>
 
-              {/* US Address */}
+              {/* Address (US or Foreign toggle) */}
               <fieldset className="space-y-3">
                 <legend className="text-sm font-medium text-gray-700">
-                  US Address
+                  Address
                 </legend>
-                <div>
-                  <Input
-                    value={usStreet}
-                    onChange={(e) => setUsStreet(e.target.value)}
-                    placeholder="Street address"
-                  />
+                <div className="flex items-center gap-4 mb-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="addressMode"
+                      value="us"
+                      checked={addressMode === "us"}
+                      onChange={() => setAddressMode("us")}
+                      className="text-gray-900"
+                    />
+                    US Address
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="addressMode"
+                      value="foreign"
+                      checked={addressMode === "foreign"}
+                      onChange={() => setAddressMode("foreign")}
+                      className="text-gray-900"
+                    />
+                    Foreign Address
+                  </label>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Input
-                    value={usCity}
-                    onChange={(e) => setUsCity(e.target.value)}
-                    placeholder="City"
-                  />
-                  <select
-                    value={usState}
-                    onChange={(e) => setUsState(e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
-                  >
-                    <option value="">State</option>
-                    {US_STATES.filter(Boolean).map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                  <Input
-                    value={usZip}
-                    onChange={(e) => setUsZip(e.target.value)}
-                    placeholder="ZIP code"
-                    maxLength={10}
-                  />
-                </div>
-              </fieldset>
-
-              {/* Mailing Address */}
-              <fieldset className="space-y-3">
-                <legend className="text-sm font-medium text-gray-700">
-                  Mailing Address
-                </legend>
-                <div>
-                  <Input
-                    value={mailStreet}
-                    onChange={(e) => setMailStreet(e.target.value)}
-                    placeholder="Street address"
-                  />
-                </div>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Input
-                    value={mailCity}
-                    onChange={(e) => setMailCity(e.target.value)}
-                    placeholder="City"
-                  />
-                  <select
-                    value={mailState}
-                    onChange={(e) => setMailState(e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
-                  >
-                    <option value="">State</option>
-                    {US_STATES.filter(Boolean).map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                  <Input
-                    value={mailZip}
-                    onChange={(e) => setMailZip(e.target.value)}
-                    placeholder="ZIP code"
-                    maxLength={10}
-                  />
-                </div>
+                {addressMode === "us" ? (
+                  <>
+                    <div>
+                      <Input
+                        value={usStreet}
+                        onChange={(e) => setUsStreet(e.target.value)}
+                        placeholder="Street address"
+                      />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      <Input
+                        value={usCity}
+                        onChange={(e) => setUsCity(e.target.value)}
+                        placeholder="City"
+                      />
+                      <select
+                        value={usState}
+                        onChange={(e) => setUsState(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+                      >
+                        <option value="">State</option>
+                        {US_STATES.filter(Boolean).map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                      <Input
+                        value={usZip}
+                        onChange={(e) => setUsZip(e.target.value)}
+                        placeholder="ZIP code"
+                        maxLength={10}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <Input
+                        value={foreignStreet}
+                        onChange={(e) => setForeignStreet(e.target.value)}
+                        placeholder="Street address"
+                      />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Input
+                        value={foreignCity}
+                        onChange={(e) => setForeignCity(e.target.value)}
+                        placeholder="City"
+                      />
+                      <Input
+                        value={foreignStateProvince}
+                        onChange={(e) => setForeignStateProvince(e.target.value)}
+                        placeholder="State / Province"
+                      />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Input
+                        value={foreignPostalCode}
+                        onChange={(e) => setForeignPostalCode(e.target.value)}
+                        placeholder="Postal code"
+                      />
+                      <select
+                        value={foreignCountry}
+                        onChange={(e) => setForeignCountry(e.target.value)}
+                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+                      >
+                        <option value="">Select country</option>
+                        {Object.entries(COUNTRY_CODES).filter(([code]) => code !== "US").map(([code, name]) => (
+                          <option key={code} value={code}>{name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
               </fieldset>
 
               {/* Submit */}

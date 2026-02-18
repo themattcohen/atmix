@@ -99,12 +99,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(response, { status: result.status });
     }
 
+    // Fetch user UTM fields for Stripe metadata
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { utmSource: true, utmMedium: true, utmCampaign: true },
+    });
+
     // Create Stripe checkout session (outside transaction — external API call)
     const url = await createCheckoutSession(
       session.user.id,
       filingYearId,
       session.user.email!,
-      result.tier
+      result.tier,
+      user ?? undefined
     );
 
     return NextResponse.json({ url });

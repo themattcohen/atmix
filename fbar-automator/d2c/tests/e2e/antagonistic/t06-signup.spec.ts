@@ -22,13 +22,15 @@ test.describe("Signup Flow", () => {
 
   /**
    * Helper: navigate to /signup and wait for React hydration.
-   * Uses networkidle to ensure all JS bundles are loaded, plus a small
-   * delay for React to hydrate the controlled form inputs.
+   * Uses domcontentloaded (not networkidle) because the Next.js dev server
+   * HMR WebSocket and Google Font requests prevent networkidle from settling.
+   * Instead we wait for the #firstName field to be visible, which proves
+   * React has hydrated the form and event handlers are attached.
    */
   async function gotoSignup(page: import("@playwright/test").Page) {
-    await page.goto("/signup", { waitUntil: "networkidle" });
-    // Wait for React hydration to attach event handlers to form inputs
-    await page.locator("#firstName").waitFor({ state: "visible" });
+    await page.goto("/signup", { waitUntil: "domcontentloaded" });
+    // Wait for React hydration — the form fields are rendered by a client component
+    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await page.waitForTimeout(500);
   }
 

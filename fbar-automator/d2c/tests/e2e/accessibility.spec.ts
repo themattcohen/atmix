@@ -17,7 +17,7 @@ test.describe("Accessibility — Marketing Pages", () => {
   for (const { path, name } of marketingPages) {
     test(`${name} (${path}) passes axe a11y checks`, async ({ page }) => {
       await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("load");
 
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa"])
@@ -52,7 +52,9 @@ test.describe("Accessibility — Auth Pages", () => {
   for (const { path, name } of authPages) {
     test(`${name} (${path}) passes axe a11y checks`, async ({ page }) => {
       await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("load");
+      // Wait for React hydration — auth pages are client components
+      await page.locator("form").waitFor({ state: "visible", timeout: 15000 });
 
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa"])
@@ -136,7 +138,7 @@ test.describe("Images and SVG Accessibility", () => {
     page,
   }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // All SVGs should either have aria-hidden="true" or have a role/title
     const svgs = page.locator("svg");
@@ -180,7 +182,7 @@ test.describe("Images and SVG Accessibility", () => {
 
   test("about page: images/SVGs are accessible", async ({ page }) => {
     await page.goto("/about");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // Check all img elements have alt text
     const images = page.locator("img");
@@ -264,7 +266,7 @@ test.describe("Keyboard Navigation — Marketing", () => {
 
   test("marketing pages: heading structure is logical", async ({ page }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // There should be exactly one h1 on the page
     const h1s = page.locator("h1");
@@ -282,7 +284,7 @@ test.describe("Keyboard Navigation — Marketing", () => {
     page,
   }) => {
     await page.goto("/about");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     const h1Count = await page.locator("h1").count();
     expect(h1Count).toBe(1);
@@ -322,7 +324,7 @@ test.describe("Mobile Accessibility", () => {
     page,
   }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     const bodyWidth = await page
       .locator("body")
@@ -363,7 +365,7 @@ test.describe("Accessibility — Authenticated Wizard Pages", () => {
     test(`${name} (${path}) passes axe a11y checks`, async ({ page }) => {
       await loginFirst(page);
       await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("load");
 
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa"])
@@ -405,7 +407,7 @@ test.describe("Keyboard Navigation — Wizard Forms", () => {
   test("personal info form: Tab through all fields", async ({ page }) => {
     await loginFirst(page);
     await page.goto("/personal");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // Wait for form fields to render
     await page.waitForSelector('input, select', { timeout: 15000 });
@@ -434,7 +436,7 @@ test.describe("Keyboard Navigation — Wizard Forms", () => {
   test("accounts form: Tab through add account form fields", async ({ page }) => {
     await loginFirst(page);
     await page.goto("/accounts");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // Open the add account form
     await page.locator("button:has-text('Add Foreign Account')").click();
@@ -462,7 +464,7 @@ test.describe("Keyboard Navigation — Wizard Forms", () => {
   test("sign page: Tab through agreement and signature", async ({ page }) => {
     await loginFirst(page);
     await page.goto("/sign");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     if (page.url().includes("/sign")) {
       // The checkbox should be reachable by tab

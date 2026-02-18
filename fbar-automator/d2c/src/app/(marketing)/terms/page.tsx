@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description: 'FBAR Direct terms of service. Agreement for using our FBAR filing platform.',
+  alternates: { canonical: '/terms' },
+};
+
 export default function TermsPage() {
   return (
     <div className="py-20 px-4">

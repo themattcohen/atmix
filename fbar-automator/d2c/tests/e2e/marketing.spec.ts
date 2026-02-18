@@ -13,11 +13,12 @@ test.describe("Landing Page", () => {
     await expect(page.locator("text=No account required")).toBeVisible();
   });
 
-  test("hero CTA navigates to signup", async ({ page }) => {
+  test("hero CTA navigates to threshold", async ({ page }) => {
     await page.goto("/");
-    await page.locator("text=Begin Filing").first().click();
-    await page.waitForURL("**/signup");
-    await expect(page).toHaveURL(/\/signup/);
+    // Target the hero section CTA specifically (not the nav "Begin Filing" which goes to /signup)
+    await page.locator("section a:has-text('Begin Filing')").click();
+    await page.waitForURL("**/threshold");
+    await expect(page).toHaveURL(/\/threshold/);
   });
 
   test("has How It Works section", async ({ page }) => {

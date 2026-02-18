@@ -271,6 +271,8 @@ export default async function ExportPage({ params }: ExportPageProps) {
               totalStatements={progress.totalStatements}
               pendingStatements={progress.pendingStatements}
               failedStatements={progress.failedStatements}
+              totalAccounts={progress.totalAccounts}
+              reviewedAccounts={progress.reviewedAccounts}
             />
 
             {isExportReady && (

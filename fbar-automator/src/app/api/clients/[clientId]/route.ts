@@ -40,6 +40,16 @@ const updateClientSchema = z.object({
     })
     .optional()
     .nullable(),
+  foreignAddress: z
+    .object({
+      street: z.string().optional(),
+      city: z.string().optional(),
+      stateProvince: z.string().optional(),
+      postalCode: z.string().optional(),
+      country: z.string().length(2),
+    })
+    .optional()
+    .nullable(),
   spouseClientId: z.string().uuid().optional().nullable(),
 })
 
@@ -119,6 +129,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
       tinType: client.tinType,
       dateOfBirth: client.dateOfBirth,
       usAddress: client.usAddress,
+      foreignAddress: client.foreignAddress,
       mailingAddress: client.mailingAddress,
       spouseClientId: client.spouseClientId,
       foreignAccounts: client.foreignAccounts.map((fa) => ({
@@ -234,7 +245,18 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       updateData.dateOfBirth = data.dateOfBirth
         ? new Date(data.dateOfBirth)
         : null
-    if (data.usAddress !== undefined) updateData.usAddress = data.usAddress
+    if (data.usAddress !== undefined) {
+      updateData.usAddress = data.usAddress
+      if (data.usAddress) {
+        updateData.foreignAddress = null // Clear foreign address when US is set
+      }
+    }
+    if (data.foreignAddress !== undefined) {
+      updateData.foreignAddress = data.foreignAddress
+      if (data.foreignAddress) {
+        updateData.usAddress = null // Clear US address when foreign is set
+      }
+    }
     if (data.mailingAddress !== undefined)
       updateData.mailingAddress = data.mailingAddress
     if (data.spouseClientId !== undefined)
@@ -272,6 +294,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       tinType: updated.tinType,
       dateOfBirth: updated.dateOfBirth,
       usAddress: updated.usAddress,
+      foreignAddress: updated.foreignAddress,
       mailingAddress: updated.mailingAddress,
       updatedAt: updated.updatedAt,
     })

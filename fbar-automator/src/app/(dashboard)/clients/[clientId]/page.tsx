@@ -15,6 +15,7 @@ import { ClientInfoCard } from "./ClientInfoCard"
 import { AccountsTable } from "./AccountsTable"
 import { AddAccountForm } from "./AddAccountForm"
 import { AddFilingYearForm } from "./AddFilingYearForm"
+import { CollapsibleAccountsSection } from "./CollapsibleAccountsSection"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -101,6 +102,14 @@ export default async function ClientDetailPage({
     zip?: string
   } | null
 
+  const foreignAddress = client.foreignAddress as {
+    street?: string
+    city?: string
+    stateProvince?: string
+    postalCode?: string
+    country?: string
+  } | null
+
   const activeAccountCount = client.foreignAccounts.filter((a) => a.isActive).length
 
   return (
@@ -128,41 +137,13 @@ export default async function ClientDetailPage({
             maskedTin: maskTIN(client.tin ? safeDecrypt(client.tin) : null),
             dateOfBirth: client.dateOfBirth ? client.dateOfBirth.toISOString() : null,
             usAddress: usAddress,
+            foreignAddress: foreignAddress,
             activeAccountCount,
           }}
         />
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-2">
-          {/* Foreign Accounts */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <CardTitle>Foreign Accounts</CardTitle>
-              <AddAccountForm clientId={clientId} />
-            </CardHeader>
-            <CardContent>
-              {client.foreignAccounts.length > 0 ? (
-                <AccountsTable
-                  clientId={clientId}
-                  isAdmin={session.user.role === "ADMIN"}
-                  accounts={client.foreignAccounts.map((account) => ({
-                    id: account.id,
-                    accountNumber: maskAccountNumber(account.accountNumber),
-                    accountType: account.accountType,
-                    institutionName: account.institutionName,
-                    institutionAddressCountry: account.institutionAddressCountry,
-                    ownershipType: account.ownershipType,
-                    isActive: account.isActive,
-                  }))}
-                />
-              ) : (
-                <p className="text-sm text-gray-500">
-                  No foreign accounts yet. Add accounts to begin FBAR filing.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Filing Years */}
+        {/* Filing Years - full width, prominent */}
+        <div className="mt-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <CardTitle>Filing Years</CardTitle>
@@ -177,6 +158,7 @@ export default async function ClientDetailPage({
                         <th className="pb-2 pr-4 font-medium">Year</th>
                         <th className="pb-2 pr-4 font-medium">Status</th>
                         <th className="pb-2 pr-4 font-medium">Statements</th>
+                        <th className="pb-2 pr-4 font-medium">Reviewed</th>
                         <th className="pb-2 font-medium">Actions</th>
                       </tr>
                     </thead>
@@ -203,6 +185,9 @@ export default async function ClientDetailPage({
                             <td className="py-2 pr-4 text-gray-600">
                               {fy._count.statements}
                             </td>
+                            <td className="py-2 pr-4 text-gray-600">
+                              {fy._count.reviewedAccountYears}/{activeAccountCount}
+                            </td>
                             <td className="py-2">
                               <Link
                                 href={`/clients/${clientId}/${fy.calendarYear}`}
@@ -221,11 +206,39 @@ export default async function ClientDetailPage({
                 </div>
               ) : (
                 <p className="text-sm text-gray-500">
-                  No filing years yet. Create a filing year to start the FBAR process.
+                  Get started by adding a filing year above.
                 </p>
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Foreign Accounts - full width, collapsible */}
+        <div className="mt-6">
+          <CollapsibleAccountsSection
+            accountCount={activeAccountCount}
+            addAccountForm={<AddAccountForm clientId={clientId} />}
+          >
+            {client.foreignAccounts.length > 0 ? (
+              <AccountsTable
+                clientId={clientId}
+                isAdmin={session.user.role === "ADMIN"}
+                accounts={client.foreignAccounts.map((account) => ({
+                  id: account.id,
+                  accountNumber: maskAccountNumber(account.accountNumber),
+                  accountType: account.accountType,
+                  institutionName: account.institutionName,
+                  institutionAddressCountry: account.institutionAddressCountry,
+                  ownershipType: account.ownershipType,
+                  isActive: account.isActive,
+                }))}
+              />
+            ) : (
+              <p className="text-sm text-gray-500">
+                No foreign accounts yet. Add accounts to begin FBAR filing.
+              </p>
+            )}
+          </CollapsibleAccountsSection>
         </div>
       </div>
     </>

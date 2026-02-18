@@ -23,6 +23,7 @@ interface FilingInfo {
   rejectionReason: string | null;
   submittedAt: string | null;
   form114aUrl: string | null;
+  tier: string | null;
 }
 
 function ConfirmationContent() {
@@ -30,10 +31,28 @@ function ConfirmationContent() {
   const sessionId = searchParams.get("session_id");
 
   const hasSubmitted = useRef(false);
+  const hasFiredPurchase = useRef(false);
   const pollCount = useRef(0);
   const [status, setStatus] = useState<ConfirmationStatus>("loading");
   const [error, setError] = useState<string>("");
   const [filing, setFiling] = useState<FilingInfo | null>(null);
+
+  // Fire purchase event once when status transitions to paid
+  useEffect(() => {
+    if (status === 'paid' && !hasFiredPurchase.current) {
+      hasFiredPurchase.current = true;
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'purchase',
+          ecommerce: {
+            transaction_id: filing?.id || '',
+            currency: 'USD',
+            value: filing?.tier?.toUpperCase() === 'PREMIUM' ? 79 : 59,
+          },
+        });
+      }
+    }
+  }, [status, filing]);
 
   // Load filing data from the filing API
   const loadFiling = useCallback(async (): Promise<string | null> => {

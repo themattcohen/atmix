@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email: rawEmail, password, firstName, lastName } = parsed.data;
+    const { email: rawEmail, password, firstName, lastName, utmSource, utmMedium, utmCampaign, utmContent, utmTerm } = parsed.data;
     const email = rawEmail.toLowerCase().trim();
 
     // Always hash password to prevent timing-based enumeration
@@ -23,7 +23,17 @@ export async function POST(req: NextRequest) {
 
     try {
       await prisma.user.create({
-        data: { email, passwordHash, firstName, lastName },
+        data: {
+          email,
+          passwordHash,
+          firstName,
+          lastName,
+          utmSource: utmSource || null,
+          utmMedium: utmMedium || null,
+          utmCampaign: utmCampaign || null,
+          utmContent: utmContent || null,
+          utmTerm: utmTerm || null,
+        },
       });
     } catch (err: unknown) {
       // Unique constraint = email exists. Fall through to return same response

@@ -44,21 +44,14 @@ const AUTH_RATE_LIMIT_PATHS = [
   "/api/auth/callback",
 ];
 
-// ---------------------------------------------------------------------------
-// Public paths (no auth required)
-// ---------------------------------------------------------------------------
-const publicPaths = [
-  "/",
-  "/pricing",
-  "/about",
-  "/how-it-works",
-  "/threshold",
-  "/login",
-  "/signup",
-  "/forgot-password",
-  "/reset-password",
-  "/privacy",
-  "/terms",
+const authRequiredPrefixes = [
+  "/dashboard",
+  "/personal",
+  "/accounts",
+  "/review",
+  "/sign",
+  "/payment",
+  "/confirmation",
 ];
 
 // ---------------------------------------------------------------------------
@@ -135,11 +128,11 @@ export default auth((req) => {
   }
 
   // ------------------------------------------------------------------
-  // Allow public paths
+  // Auth check: blocklist approach — only specified prefixes require auth
+  // Everything else (marketing, blog, country pages, etc.) is public
   // ------------------------------------------------------------------
-  if (publicPaths.some((p) => normalizedPath === p)) return NextResponse.next();
 
-  // Allow API auth routes and Stripe webhooks and health
+  // Allow API auth routes, Stripe webhooks, and health
   if (
     normalizedPath.startsWith("/api/auth/") ||
     normalizedPath === "/api/stripe/webhook" ||
@@ -148,14 +141,23 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // ------------------------------------------------------------------
-  // Require auth for everything else
-  // ------------------------------------------------------------------
-  if (!req.auth) {
-    // Return JSON 401 for API routes instead of redirecting to HTML login
-    if (normalizedPath.startsWith("/api/")) {
+  // API routes require auth (except the exempted ones above)
+  if (normalizedPath.startsWith("/api/")) {
+    if (!req.auth) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    return NextResponse.next();
+  }
+
+  // Page routes: check if auth is required
+  // Use exact match or prefix+slash to prevent "/sign" from matching "/signup"
+  const requiresAuth = authRequiredPrefixes.some(
+    (p) => normalizedPath === p || normalizedPath.startsWith(p + "/")
+  );
+  if (!requiresAuth) return NextResponse.next();
+
+  // Auth required but not authenticated — redirect to login
+  if (!req.auth) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", normalizedPath);
     return NextResponse.redirect(loginUrl);

@@ -1,31 +1,60 @@
 import type { Metadata } from "next";
 import { Inter, Merriweather, Source_Sans_3 } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
+import { UTMCapture } from "@/components/analytics/UTMCapture";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const merriweather = Merriweather({
   subsets: ["latin"],
   weight: ["300", "400", "700", "900"],
   variable: "--font-merriweather",
+  display: "swap",
 });
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   weight: ["300", "400", "600", "700"],
   variable: "--font-source-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "FBAR Direct — Report of Foreign Bank and Financial Accounts",
-  description:
-    "Securely file your FBAR (FinCEN Form 114) online. FinCEN-registered BSA E-Filing institution. AES-256 encryption. Starting at $59 per filing.",
-  keywords: [
-    "FBAR",
-    "FinCEN Form 114",
-    "file FBAR online",
-    "FBAR filing service",
-    "foreign bank account report",
-    "BSA E-Filing",
-  ],
+  metadataBase: new URL('https://fbardirect.com'),
+  title: {
+    default: 'FBAR Direct — File Your FBAR Online',
+    template: '%s | FBAR Direct',
+  },
+  description: 'File your FBAR (FinCEN Form 114) electronically. FinCEN-registered BSA E-Filing institution. AES-256 encryption. Starting at $59 per filing.',
+  keywords: ['FBAR', 'FinCEN Form 114', 'file FBAR online', 'FBAR filing service', 'foreign bank account report', 'BSA E-Filing'],
+  openGraph: {
+    type: 'website',
+    siteName: 'FBAR Direct',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '32x32' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large' as const,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || '',
+  },
 };
 
 export default function RootLayout({
@@ -35,7 +64,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>{children}</body>
+      <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} />
+        <Suspense fallback={null}>
+          <UTMCapture />
+        </Suspense>
+        {children}
+      </body>
     </html>
   );
 }

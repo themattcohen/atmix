@@ -62,6 +62,20 @@ export default function PaymentPage() {
         return;
       }
 
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'begin_checkout',
+          ecommerce: {
+            currency: 'USD',
+            value: pricing.amountDollars,
+            items: [{
+              item_name: pricing.stripeProductName,
+              price: pricing.amountDollars,
+            }],
+          },
+        });
+      }
+
       window.location.href = data.url;
     } catch {
       setError("An unexpected error occurred. Please try again.");

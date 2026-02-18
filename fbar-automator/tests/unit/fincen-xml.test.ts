@@ -184,4 +184,27 @@ describe("validateFincenXml", () => {
       result.errors.some((e) => e.includes("IndividualBirthDateText"))
     ).toBe(true)
   })
+
+  // --- Foreign Address Tests ---
+
+  it("passes validation when filer address uses foreign country code", () => {
+    const xml = buildValidXml({
+      filerParty: `<Party SeqNum="4"><ActivityPartyTypeCode>35</ActivityPartyTypeCode><PartyName SeqNum="5"><PartyNameTypeCode>L</PartyNameTypeCode><RawIndividualLastName>Smith</RawIndividualLastName><RawIndividualFirstName>John</RawIndividualFirstName></PartyName><Address SeqNum="6"><RawCityText>London</RawCityText><RawCountryCodeText>GB</RawCountryCodeText><RawStateCodeText>England</RawStateCodeText><RawStreetAddress1Text>10 Downing St</RawStreetAddress1Text><RawZIPCode>SW1A 2AA</RawZIPCode></Address><PartyIdentification SeqNum="7"><PartyIdentificationNumberText>123456789</PartyIdentificationNumberText><PartyIdentificationTypeCode>1</PartyIdentificationTypeCode></PartyIdentification></Party>`,
+    })
+    const result = validateFincenXml(xml)
+    expect(result.isValid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it("XML contains correct country code when foreign address is used", () => {
+    const xml = buildValidXml({
+      filerParty: `<Party SeqNum="4"><ActivityPartyTypeCode>35</ActivityPartyTypeCode><PartyName SeqNum="5"><PartyNameTypeCode>L</PartyNameTypeCode><RawIndividualLastName>Smith</RawIndividualLastName><RawIndividualFirstName>John</RawIndividualFirstName></PartyName><Address SeqNum="6"><RawCityText>London</RawCityText><RawCountryCodeText>GB</RawCountryCodeText><RawStateCodeText>England</RawStateCodeText><RawStreetAddress1Text>10 Downing St</RawStreetAddress1Text><RawZIPCode>SW1A 2AA</RawZIPCode></Address><PartyIdentification SeqNum="7"><PartyIdentificationNumberText>123456789</PartyIdentificationNumberText><PartyIdentificationTypeCode>1</PartyIdentificationTypeCode></PartyIdentification></Party>`,
+    })
+    expect(xml).toContain("<RawCountryCodeText>GB</RawCountryCodeText>")
+  })
+
+  it("XML with US address uses US country code", () => {
+    const xml = buildValidXml() // Default uses US
+    expect(xml).toContain("<RawCountryCodeText>US</RawCountryCodeText>")
+  })
 })

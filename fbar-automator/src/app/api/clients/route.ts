@@ -34,6 +34,16 @@ const createClientSchema = z.object({
     })
     .optional()
     .nullable(),
+  foreignAddress: z
+    .object({
+      street: z.string().optional(),
+      city: z.string().optional(),
+      stateProvince: z.string().optional(),
+      postalCode: z.string().optional(),
+      country: z.string().length(2),
+    })
+    .optional()
+    .nullable(),
   spouseClientId: z.string().uuid().optional().nullable(),
 })
 
@@ -210,6 +220,7 @@ export async function POST(request: NextRequest) {
           tinType: data.tinType ?? null,
           dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
           usAddress: data.usAddress ?? undefined,
+          foreignAddress: data.foreignAddress ?? undefined,
           mailingAddress: data.mailingAddress ?? undefined,
           spouseClientId: data.spouseClientId ?? null,
         },

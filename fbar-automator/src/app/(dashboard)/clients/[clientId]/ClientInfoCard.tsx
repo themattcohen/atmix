@@ -6,6 +6,7 @@ import { User, Building2, Pencil, Trash2, Loader2, CheckCircle, XCircle } from "
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
+import { COUNTRY_CODES } from "@/types/fincen"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,6 +23,7 @@ interface ClientInfoCardProps {
     maskedTin: string | null
     dateOfBirth: string | null
     usAddress: { street?: string; city?: string; state?: string; zip?: string } | null
+    foreignAddress: { street?: string; city?: string; stateProvince?: string; postalCode?: string; country?: string } | null
     activeAccountCount: number
   }
 }
@@ -76,6 +78,16 @@ export function ClientInfoCard({ clientId, isAdmin, client }: ClientInfoCardProp
   const [state, setState] = useState(client.usAddress?.state || "")
   const [zip, setZip] = useState(client.usAddress?.zip || "")
 
+  // Address mode toggle
+  const [addressMode, setAddressMode] = useState<"us" | "foreign">(
+    client.foreignAddress ? "foreign" : "us"
+  )
+  const [foreignStreet, setForeignStreet] = useState(client.foreignAddress?.street || "")
+  const [foreignCity, setForeignCity] = useState(client.foreignAddress?.city || "")
+  const [foreignStateProvince, setForeignStateProvince] = useState(client.foreignAddress?.stateProvince || "")
+  const [foreignPostalCode, setForeignPostalCode] = useState(client.foreignAddress?.postalCode || "")
+  const [foreignCountry, setForeignCountry] = useState(client.foreignAddress?.country || "")
+
   function resetForm() {
     setType(client.type)
     setLastName(client.lastName)
@@ -88,6 +100,12 @@ export function ClientInfoCard({ clientId, isAdmin, client }: ClientInfoCardProp
     setCity(client.usAddress?.city || "")
     setState(client.usAddress?.state || "")
     setZip(client.usAddress?.zip || "")
+    setAddressMode(client.foreignAddress ? "foreign" : "us")
+    setForeignStreet(client.foreignAddress?.street || "")
+    setForeignCity(client.foreignAddress?.city || "")
+    setForeignStateProvince(client.foreignAddress?.stateProvince || "")
+    setForeignPostalCode(client.foreignAddress?.postalCode || "")
+    setForeignCountry(client.foreignAddress?.country || "")
     setMessage(null)
   }
 
@@ -111,9 +129,18 @@ export function ClientInfoCard({ clientId, isAdmin, client }: ClientInfoCardProp
         firstName: firstName || null,
         tinType: effectiveTinType,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth + "T00:00:00.000Z").toISOString() : null,
-        usAddress: (street || city || state || zip)
+      }
+
+      if (addressMode === "us") {
+        payload.usAddress = (street || city || state || zip)
           ? { street: street || undefined, city: city || undefined, state: state || undefined, zip: zip || undefined }
-          : null,
+          : null
+        payload.foreignAddress = null
+      } else {
+        payload.foreignAddress = foreignCountry
+          ? { street: foreignStreet || undefined, city: foreignCity || undefined, stateProvince: foreignStateProvince || undefined, postalCode: foreignPostalCode || undefined, country: foreignCountry }
+          : null
+        payload.usAddress = null
       }
 
       if (tinModified) {
@@ -262,6 +289,17 @@ export function ClientInfoCard({ clientId, isAdmin, client }: ClientInfoCardProp
                 </dd>
               </div>
             )}
+            {client.foreignAddress && (client.foreignAddress.street || client.foreignAddress.city) && (
+              <div>
+                <dt className="font-medium text-gray-500">Foreign Address</dt>
+                <dd className="mt-1 text-gray-900">
+                  {client.foreignAddress.street && <>{client.foreignAddress.street}<br /></>}
+                  {client.foreignAddress.city && <>{client.foreignAddress.city}, </>}
+                  {client.foreignAddress.stateProvince} {client.foreignAddress.postalCode}
+                  {client.foreignAddress.country && <><br />{COUNTRY_CODES[client.foreignAddress.country] || client.foreignAddress.country}</>}
+                </dd>
+              </div>
+            )}
             <div>
               <dt className="font-medium text-gray-500">Foreign Accounts</dt>
               <dd className="mt-1 text-gray-900">
@@ -325,22 +363,71 @@ export function ClientInfoCard({ clientId, isAdmin, client }: ClientInfoCardProp
               <Input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
             </div>
             <fieldset className="space-y-2">
-              <legend className="text-xs font-medium text-gray-600">US Address</legend>
-              <Input value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Street address" />
-              <div className="grid gap-3 sm:grid-cols-3">
-                <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
-                <select
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
-                >
-                  <option value="">State</option>
-                  {US_STATES.filter(Boolean).map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                <Input value={zip} onChange={(e) => setZip(e.target.value)} placeholder="ZIP code" maxLength={10} />
+              <legend className="text-xs font-medium text-gray-600">Address</legend>
+              <div className="flex items-center gap-4 mb-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    name="addressMode"
+                    value="us"
+                    checked={addressMode === "us"}
+                    onChange={() => setAddressMode("us")}
+                    className="text-gray-900"
+                  />
+                  US Address
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    name="addressMode"
+                    value="foreign"
+                    checked={addressMode === "foreign"}
+                    onChange={() => setAddressMode("foreign")}
+                    className="text-gray-900"
+                  />
+                  Foreign Address
+                </label>
               </div>
+              {addressMode === "us" ? (
+                <>
+                  <Input value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Street address" />
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
+                    <select
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+                    >
+                      <option value="">State</option>
+                      {US_STATES.filter(Boolean).map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                    <Input value={zip} onChange={(e) => setZip(e.target.value)} placeholder="ZIP code" maxLength={10} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Input value={foreignStreet} onChange={(e) => setForeignStreet(e.target.value)} placeholder="Street address" />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Input value={foreignCity} onChange={(e) => setForeignCity(e.target.value)} placeholder="City" />
+                    <Input value={foreignStateProvince} onChange={(e) => setForeignStateProvince(e.target.value)} placeholder="State / Province" />
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Input value={foreignPostalCode} onChange={(e) => setForeignPostalCode(e.target.value)} placeholder="Postal code" />
+                    <select
+                      value={foreignCountry}
+                      onChange={(e) => setForeignCountry(e.target.value)}
+                      className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+                    >
+                      <option value="">Select country</option>
+                      {Object.entries(COUNTRY_CODES).filter(([code]) => code !== "US").map(([code, name]) => (
+                        <option key={code} value={code}>{name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
             </fieldset>
             <div className="flex items-center gap-2 pt-2 border-t">
               <Button onClick={handleSave} disabled={saving || !lastName.trim()}>

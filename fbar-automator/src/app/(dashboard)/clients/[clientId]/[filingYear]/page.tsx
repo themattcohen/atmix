@@ -312,7 +312,26 @@ export default async function FilingYearPage({
           totalStatements={progress.totalStatements}
           pendingStatements={progress.pendingStatements}
           failedStatements={progress.failedStatements}
+          totalAccounts={progress.totalAccounts}
+          reviewedAccounts={progress.reviewedAccounts}
         />
+
+        {/* Progress Banner */}
+        {!progress.isFullyReviewed && progress.totalAccounts > 0 && (
+          <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-amber-800">
+                {progress.reviewedAccounts} of {progress.totalAccounts} accounts reviewed. Complete all reviews to submit this filing.
+              </p>
+            </div>
+            <div className="mt-2 h-2 w-full rounded-full bg-amber-100">
+              <div
+                className="h-2 rounded-full bg-amber-500 transition-all"
+                style={{ width: `${progress.totalAccounts > 0 ? (progress.reviewedAccounts / progress.totalAccounts) * 100 : 0}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Quick Links */}
         <Card className="mt-6">
@@ -321,34 +340,60 @@ export default async function FilingYearPage({
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-3">
+              {/* Upload Statements */}
               <Link
                 href={`/clients/${clientId}/${filingYear}/upload`}
-                className="rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:bg-gray-50"
+                className={`rounded-lg border p-4 text-sm transition-colors ${
+                  progress.totalStatements === 0
+                    ? "border-blue-300 bg-blue-50 ring-2 ring-blue-200"
+                    : "border-gray-200 hover:bg-gray-50"
+                }`}
               >
-                <p className="font-medium text-gray-900">Upload Statements</p>
-                <p className="mt-1 text-gray-500">
-                  {progress.totalStatements} statements uploaded
+                <p className={`font-medium ${progress.totalStatements === 0 ? "text-blue-900" : "text-gray-900"}`}>
+                  Upload Statements
+                </p>
+                <p className={`mt-1 ${progress.totalStatements === 0 ? "text-blue-700" : "text-gray-500"}`}>
+                  {progress.totalStatements === 0 ? "Start here — upload bank statements" : `${progress.totalStatements} statements uploaded`}
                 </p>
               </Link>
+
+              {/* Review Accounts */}
               <Link
                 href={`/clients/${clientId}/${filingYear}/review`}
-                className="rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:bg-gray-50"
+                className={`rounded-lg border p-4 text-sm transition-colors ${
+                  progress.totalStatements > 0 && !progress.isFullyReviewed
+                    ? "border-blue-300 bg-blue-50 ring-2 ring-blue-200"
+                    : progress.totalStatements === 0
+                      ? "border-gray-200 opacity-60"
+                      : "border-gray-200 hover:bg-gray-50"
+                }`}
               >
-                <p className="font-medium text-gray-900">Review Accounts</p>
-                <p className="mt-1 text-gray-500">
-                  {progress.reviewedAccounts} of {progress.totalAccounts}{" "}
-                  reviewed
+                <p className={`font-medium ${
+                  progress.totalStatements > 0 && !progress.isFullyReviewed ? "text-blue-900" : "text-gray-900"
+                }`}>
+                  Review Accounts
+                </p>
+                <p className={`mt-1 ${
+                  progress.totalStatements > 0 && !progress.isFullyReviewed ? "text-blue-700" : "text-gray-500"
+                }`}>
+                  {progress.reviewedAccounts} of {progress.totalAccounts} reviewed
                 </p>
               </Link>
+
+              {/* Export Filing */}
               <Link
                 href={`/clients/${clientId}/${filingYear}/export`}
-                className="rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:bg-gray-50"
+                className={`rounded-lg border p-4 text-sm transition-colors ${
+                  progress.isFullyReviewed
+                    ? "border-green-300 bg-green-50 ring-2 ring-green-200"
+                    : "border-gray-200 opacity-60"
+                }`}
               >
-                <p className="font-medium text-gray-900">Export Filing</p>
-                <p className="mt-1 text-gray-500">
-                  {progress.isReadyForExport
-                    ? "Ready for export"
-                    : "Complete review first"}
+                <p className={`font-medium ${progress.isFullyReviewed ? "text-green-900" : "text-gray-900"}`}>
+                  Export Filing
+                </p>
+                <p className={`mt-1 ${progress.isFullyReviewed ? "text-green-700" : "text-gray-500"}`}>
+                  {progress.isReadyForExport ? "Ready for export" : "Complete review first"}
                 </p>
               </Link>
             </div>

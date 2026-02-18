@@ -15,11 +15,18 @@ function getStripe(): Stripe {
 
 export { getStripe };
 
+export type UTMFields = {
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+};
+
 export async function createCheckoutSession(
   userId: string,
   filingYearId: string,
   userEmail: string,
-  tier: PricingTier = "basic"
+  tier: PricingTier = "basic",
+  utm?: UTMFields
 ): Promise<string> {
   const pricing = PRICING[tier];
 
@@ -39,7 +46,14 @@ export async function createCheckoutSession(
         quantity: 1,
       },
     ],
-    metadata: { userId, filingYearId, tier },
+    metadata: {
+      userId,
+      filingYearId,
+      tier,
+      utm_source: utm?.utmSource || '',
+      utm_medium: utm?.utmMedium || '',
+      utm_campaign: utm?.utmCampaign || '',
+    },
     success_url: `${process.env.NEXTAUTH_URL}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXTAUTH_URL}/review`,
   });

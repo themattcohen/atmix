@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: 'Do I Need to File an FBAR? — Free Eligibility Check',
+  description: 'Answer two questions to find out if you need to file an FBAR (FinCEN Form 114). Free, instant result.',
+  alternates: { canonical: '/threshold' },
+};
 
 export default function ThresholdLayout({
   children,

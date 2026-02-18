@@ -6,6 +6,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 
+function getUTMFromCookie(): Record<string, string> {
+  if (typeof document === 'undefined') return {};
+  const match = document.cookie.match(/fbar_utm=([^;]+)/);
+  if (!match) return {};
+  try {
+    return JSON.parse(decodeURIComponent(match[1]));
+  } catch {
+    return {};
+  }
+}
+
 function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -32,10 +43,18 @@ function SignupForm() {
     setLoading(true);
 
     try {
+      const utmData = getUTMFromCookie();
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          utmSource: utmData.utm_source,
+          utmMedium: utmData.utm_medium,
+          utmCampaign: utmData.utm_campaign,
+          utmContent: utmData.utm_content,
+          utmTerm: utmData.utm_term,
+        }),
       });
 
       const data = await res.json();

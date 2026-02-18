@@ -88,6 +88,16 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     select: { id: true, accountNumber: true, institutionName: true },
   })
 
+  // Get review progress for banner
+  const [totalAccountCount, reviewedAccountCount] = await Promise.all([
+    prisma.foreignAccount.count({
+      where: { clientId, isActive: true },
+    }),
+    prisma.reviewedAccountYear.count({
+      where: { filingYearId: filingYearRecord.id, foreignAccount: { isActive: true } },
+    }),
+  ])
+
   // Fetch completed statements with extracted data - use select for efficiency
   const statements = await prisma.statement.findMany({
     where: {
@@ -198,6 +208,23 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             })}
           </nav>
         </div>
+
+        {/* Review Progress Banner */}
+        {totalAccountCount > 0 && reviewedAccountCount < totalAccountCount && (
+          <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-amber-800">
+                {reviewedAccountCount} of {totalAccountCount} accounts reviewed. Complete all reviews to submit this filing.
+              </p>
+            </div>
+            <div className="mt-2 h-2 w-full rounded-full bg-amber-100">
+              <div
+                className="h-2 rounded-full bg-amber-500 transition-all"
+                style={{ width: `${(reviewedAccountCount / totalAccountCount) * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {hasStatements ? (
           <div className="mt-6">

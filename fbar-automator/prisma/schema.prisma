@@ -148,6 +148,7 @@ model Client {
   tinType         TINType?    @map("tin_type")
   dateOfBirth     DateTime?   @map("date_of_birth")
   usAddress       Json?       @map("us_address")
+  foreignAddress  Json?       @map("foreign_address")
   mailingAddress  Json?       @map("mailing_address")
   spouseClientId  String?     @unique @map("spouse_client_id")
   createdAt       DateTime    @default(now()) @map("created_at")

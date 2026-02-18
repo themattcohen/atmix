@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PRICING } from "@/lib/pricing";
+
+export const metadata: Metadata = {
+  title: 'FBAR Filing Pricing — $59 Basic or $79 Premium',
+  description: 'File FinCEN Form 114 starting at $59. AI-assisted bank statement extraction at $79. No hidden fees. 100% money-back guarantee.',
+  alternates: { canonical: '/pricing' },
+  openGraph: { title: 'FBAR Filing Pricing — $59 Basic or $79 Premium', url: '/pricing' },
+};
 
 export default function PricingPage() {
   return (
