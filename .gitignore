@@ -42,7 +42,7 @@ venv/
 
 # Audit Engine
 audit-engine/workspaces/
-archive/
+audit-engine/archive/
 
 # Test artifacts
 test-results/
