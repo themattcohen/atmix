@@ -1,4 +1,4 @@
-# B2B FBAR Automator — Operations Runbook
+# FBAR Unified — Operations Runbook
 
 **For Claude Code sessions.** This is the reference for all production operations on the Hetzner server. Read this before touching prod.
 
@@ -10,10 +10,11 @@
 |-----|-------|
 | **IP** | `178.156.250.116` |
 | **SSH** | `ssh root@178.156.250.116` |
-| **URL** | `https://178-156-250-116.sslip.io` |
+| **B2B URL** | `https://b2b.178-156-250-116.sslip.io` |
+| **D2C URL** | `https://d2c.178-156-250-116.sslip.io` |
 | **App directory** | `/opt/fbar/fbar-automator` |
 | **Git remote** | `https://github.com/themattcohen/atmix.git` (cloned at `/opt/fbar`) |
-| **Compose file** | `docker-compose.prod.yml` |
+| **Compose file** | `docker-compose.prod.yml` (unified — B2B + D2C) |
 
 The local Mac SSH key is authorized on the server. No password needed.
 
@@ -48,13 +49,14 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml ps --format 'table {{.Name}}\t{{.Status}}'"
 ```
 
-All 6 services should show `Up` and `(healthy)`:
-- `app` — Next.js application
-- `worker` — Background job processor (LLM extraction)
-- `caddy` — Reverse proxy + auto-TLS
-- `postgres` — Primary database
-- `redis` — Cache + job queue
-- `minio` — S3-compatible object storage (bank statement PDFs)
+All 7 services should show `Up` and `(healthy)`:
+- `b2b-app` — B2B Next.js application (port 3000)
+- `b2b-worker` — B2B background job processor (LLM extraction)
+- `d2c-app` — D2C Next.js application (port 3001)
+- `caddy` — Reverse proxy + auto-TLS (routes by hostname)
+- `postgres` — Shared database (fbar_automator + fbar_direct)
+- `redis` — Cache + job queue (B2B only)
+- `minio` — S3-compatible object storage
 
 ### View Logs
 
@@ -92,10 +94,12 @@ TLS is handled by Caddy + Let's Encrypt, configured via two `.env` variables:
 
 | Variable | Current Value |
 |----------|---------------|
-| `DOMAIN` | `178-156-250-116.sslip.io` |
-| `NEXTAUTH_URL` | `https://178-156-250-116.sslip.io` |
+| `B2B_DOMAIN` | `b2b.178-156-250-116.sslip.io` |
+| `D2C_DOMAIN` | `d2c.178-156-250-116.sslip.io` |
+| `B2B_NEXTAUTH_URL` | `https://b2b.178-156-250-116.sslip.io` |
+| `D2C_NEXTAUTH_URL` | `https://d2c.178-156-250-116.sslip.io` |
 
-**sslip.io** provides free wildcard DNS: `A-B-C-D.sslip.io` resolves to `A.B.C.D`. Caddy auto-provisions a Let's Encrypt cert for it.
+**sslip.io** provides free wildcard DNS: `*.A-B-C-D.sslip.io` resolves to `A.B.C.D`. Caddy auto-provisions Let's Encrypt certs for both subdomains.
 
 ### Switch to a Real Domain
 
@@ -138,18 +142,21 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 ## Architecture
 
 ```
-Internet → Caddy (:443) → App (:3000) → Postgres / Redis / MinIO
-                                      → Worker (background jobs via Redis queue)
+Internet → Caddy (:443)
+            ├── b2b.*.sslip.io → B2B App (:3000) → Postgres (fbar_automator) / Redis / MinIO
+            │                                     → Worker (background jobs via Redis queue)
+            └── d2c.*.sslip.io → D2C App (:3001) → Postgres (fbar_direct) / MinIO
 ```
 
 | Service | Image | Resources | Network |
 |---------|-------|-----------|---------|
-| caddy | `caddy:2-alpine` | 0.25 CPU, 128M | frontend |
-| app | Custom (Node 20 alpine) | 1.0 CPU, 512M | frontend + backend |
-| worker | Custom (Node 20 alpine) | 1.0 CPU, 1G | backend |
-| postgres | `postgres:16-alpine` | 1.0 CPU, 1G | backend |
-| redis | `redis:7-alpine` | 0.5 CPU, 256M | backend |
-| minio | `minio/minio:latest` | 0.5 CPU, 256M | backend |
+| caddy | Custom (caddy + rate_limit) | 0.25 CPU, 128M | frontend |
+| b2b-app | Custom (Node 20 alpine) | 0.50 CPU, 384M | frontend + backend |
+| b2b-worker | Custom (Node 20 alpine) | 0.50 CPU, 384M | frontend + backend |
+| d2c-app | Custom (Node 22 alpine) | 0.50 CPU, 384M | frontend + backend |
+| postgres | `postgres:16-alpine` | 0.75 CPU, 768M | backend |
+| redis | `redis:7-alpine` | 0.25 CPU, 128M | backend |
+| minio | `minio/minio:latest` | 0.25 CPU, 192M | backend |
 
 The `backend` network is internal-only (no external access). Only Caddy is exposed to the internet.
 
