@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
 
   const buffer = await downloadFile(filing.form114aUrl);
   const calendarYear = filing.calendarYear ?? "unknown";
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="form114a_${calendarYear}.pdf"`,
