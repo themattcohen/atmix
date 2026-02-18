@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Menu, X, Flag } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { DeadlineBanner } from "@/components/landing/DeadlineBanner";
 
 export default function MarketingLayout({
@@ -48,19 +48,6 @@ export default function MarketingLayout({
       >
         Skip to main content
       </a>
-
-      {/* USWDS-style Official Site Banner */}
-      <div className="w-full bg-gov-blue-dark py-1 px-4">
-        <div className="max-w-doc mx-auto flex items-center">
-          <Flag className="h-3 w-3 text-gray-400 mr-2 flex-shrink-0" aria-hidden="true" />
-          <span className="text-xs text-gray-300">
-            FBAR Direct is not a government website.{" "}
-            <Link href="/about" className="underline hover:text-white">
-              Learn more about our FinCEN registration.
-            </Link>
-          </span>
-        </div>
-      </div>
 
       <DeadlineBanner />
 

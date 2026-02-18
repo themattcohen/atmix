@@ -4,20 +4,26 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
+import { PRICING } from "@/lib/pricing";
+import type { PricingTier } from "@/lib/pricing";
 
 interface FilingData {
   id: string;
   calendarYear: number;
   accountCount: number;
   status: string;
+  tier: string;
 }
 
 export default function PaymentPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [filing, setFiling] = useState<{ id: string; calendarYear: number; accountCount: number } | null>(null);
+  const [filing, setFiling] = useState<FilingData | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+
+  const tier = (filing?.tier?.toLowerCase() || "basic") as PricingTier;
+  const pricing = PRICING[tier];
 
   useEffect(() => {
     async function loadFiling() {
@@ -25,7 +31,6 @@ export default function PaymentPage() {
         const res = await fetch("/api/filing");
         const data = await res.json();
         if (data.data && data.data.length > 0) {
-          // Get the most recent SIGNED filing
           const signedFiling = data.data.find((f: FilingData) => f.status === "SIGNED");
           if (signedFiling) setFiling(signedFiling);
         }
@@ -57,7 +62,6 @@ export default function PaymentPage() {
         return;
       }
 
-      // Redirect to Stripe Checkout
       window.location.href = data.url;
     } catch {
       setError("An unexpected error occurred. Please try again.");
@@ -127,10 +131,11 @@ export default function PaymentPage() {
         <div className="space-y-2 text-gray-700">
           <p><span className="font-medium">Calendar Year:</span> {filing.calendarYear}</p>
           <p><span className="font-medium">Accounts:</span> {filing.accountCount || "\u2014"}</p>
+          <p><span className="font-medium">Service:</span> {pricing.name}</p>
           <div className="border-t pt-4 mt-4">
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold">Total</span>
-              <span className="text-2xl font-bold text-navy-900">$59.00</span>
+              <span className="text-2xl font-bold text-navy-900">${pricing.amountDollars}.00</span>
             </div>
             <p className="text-xs text-gray-500 mt-1">One-time fee. No recurring charges.</p>
           </div>
@@ -142,7 +147,7 @@ export default function PaymentPage() {
           <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span>Secure payment via Stripe &mdash; 256-bit encryption</span>
+          <span>Secure payment via Stripe &mdash; AES-256 encryption</span>
         </div>
         <div className="flex items-center gap-2">
           <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -155,6 +160,12 @@ export default function PaymentPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <span>You&apos;ll receive your BSA tracking ID via email</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <span>100% money-back guarantee if we are unable to file</span>
         </div>
       </div>
 
@@ -173,7 +184,7 @@ export default function PaymentPage() {
             Redirecting to secure payment...
           </span>
         ) : (
-          "Pay $59 \u2014 File Your FBAR"
+          `Pay $${pricing.amountDollars} — File Your FBAR`
         )}
       </button>
     </div>

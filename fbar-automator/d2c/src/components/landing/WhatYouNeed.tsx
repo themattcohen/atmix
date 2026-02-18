@@ -38,8 +38,8 @@ export function WhatYouNeed() {
         </div>
 
         <p className="text-sm text-text-secondary italic">
-          Note: You do not need to upload bank statements. You will enter
-          account information manually.
+          Enter account details manually, or upload bank statements and let
+          AI extract them automatically (Premium).
         </p>
       </div>
     </section>

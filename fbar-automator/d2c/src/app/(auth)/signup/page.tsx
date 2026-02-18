@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -57,9 +59,32 @@ export default function SignupPage() {
       if (result?.error) {
         setGeneralError("Account created but auto-login failed. Please sign in.");
         router.push("/login");
-      } else {
-        router.push("/threshold");
+        return;
       }
+
+      // Check if coming from threshold flow
+      const from = searchParams.get("from");
+      const calendarYear = searchParams.get("calendarYear");
+
+      if (from === "threshold" && calendarYear) {
+        // Create filing and skip threshold
+        try {
+          const filingRes = await fetch("/api/filing", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+            body: JSON.stringify({ calendarYear: parseInt(calendarYear, 10) }),
+          });
+
+          if (filingRes.ok || filingRes.status === 409) {
+            router.push("/personal");
+            return;
+          }
+        } catch {
+          // If filing creation fails, still navigate to threshold
+        }
+      }
+
+      router.push("/threshold");
     } catch {
       setGeneralError("An unexpected error occurred");
     } finally {
@@ -194,5 +219,17 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 }

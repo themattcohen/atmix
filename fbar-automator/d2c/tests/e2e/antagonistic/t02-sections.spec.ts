@@ -20,7 +20,7 @@ test.describe("Landing Page Sections: TrustBar + WhoNeedsToFile + WhatYouNeed", 
     await expect(trustBar).toBeVisible();
 
     await expect(trustBar.getByText("FinCEN-Registered BSA E-Filer")).toBeVisible();
-    await expect(trustBar.getByText("256-bit SSL Encryption")).toBeVisible();
+    await expect(trustBar.getByText("AES-256 Encryption")).toBeVisible();
     await expect(trustBar.getByText("Direct FinCEN Submission")).toBeVisible();
   });
 
@@ -174,10 +174,10 @@ test.describe("Landing Page Sections: TrustBar + WhoNeedsToFile + WhatYouNeed", 
     await section.scrollIntoViewIfNeeded();
 
     await expect(
-      section.getByText("You do not need to upload bank statements")
+      section.getByText("Enter account details manually")
     ).toBeVisible();
     await expect(
-      section.getByText("enter account information manually", { exact: false })
+      section.getByText("upload bank statements and let AI extract them automatically", { exact: false })
     ).toBeVisible();
   });
 

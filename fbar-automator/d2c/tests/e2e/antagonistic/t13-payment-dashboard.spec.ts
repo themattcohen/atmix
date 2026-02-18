@@ -96,8 +96,15 @@ test.describe.serial("T13-A: Payment page (full wizard flow)", () => {
     await page.click('button[type="submit"]');
     await page.waitForURL("**/accounts", { timeout: WAIT });
 
+    // Handle tier selector (shown when user has no accounts yet)
+    const tierButton = page.locator("button:has-text('Enter accounts manually')");
+    await tierButton.waitFor({ state: "visible", timeout: 15000 });
+    await tierButton.click();
+    const addButton = page.locator("button:has-text('Add Foreign Account')");
+    await addButton.waitFor({ state: "visible", timeout: 15000 });
+
     // Add account
-    await page.locator("button:has-text('Add Foreign Account')").click();
+    await addButton.click();
     await page
       .locator('input[placeholder="e.g., HSBC, Deutsche Bank"]')
       .fill("Test Bank AG");

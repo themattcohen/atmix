@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { PRICING, type PricingTier } from "./pricing";
 
 let _stripe: Stripe | null = null;
 
@@ -17,8 +18,11 @@ export { getStripe };
 export async function createCheckoutSession(
   userId: string,
   filingYearId: string,
-  userEmail: string
+  userEmail: string,
+  tier: PricingTier = "basic"
 ): Promise<string> {
+  const pricing = PRICING[tier];
+
   const session = await getStripe().checkout.sessions.create({
     mode: "payment",
     customer_email: userEmail,
@@ -27,15 +31,15 @@ export async function createCheckoutSession(
         price_data: {
           currency: "usd",
           product_data: {
-            name: "FBAR Filing — FinCEN Form 114",
+            name: pricing.stripeProductName,
             description: "Electronic filing of your Report of Foreign Bank and Financial Accounts",
           },
-          unit_amount: 5900, // $59.00
+          unit_amount: pricing.amountCents,
         },
         quantity: 1,
       },
     ],
-    metadata: { userId, filingYearId },
+    metadata: { userId, filingYearId, tier },
     success_url: `${process.env.NEXTAUTH_URL}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXTAUTH_URL}/review`,
   });

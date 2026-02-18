@@ -62,7 +62,7 @@ export function FAQ() {
           />
           <FAQItem
             question="How is my data protected?"
-            answer="We utilize bank-grade 256-bit SSL encryption for all data transmission. Your data is encrypted at rest and submitted directly to FinCEN's secure BSA E-Filing system. We do not share your personal or financial data with any third parties other than FinCEN."
+            answer="All sensitive data is protected with AES-256-GCM encryption at rest and TLS encryption in transit. Your data is submitted directly to FinCEN's secure BSA E-Filing system. We do not share your personal or financial data with any third parties other than FinCEN."
           />
           <FAQItem
             question="Can I file for previous years?"
@@ -71,6 +71,10 @@ export function FAQ() {
           <FAQItem
             question="What happens if my filing is rejected?"
             answer="In the rare event that FinCEN rejects a filing (usually due to formatting issues with specific foreign addresses), we will notify you immediately with the specific error code. You can correct the information and resubmit through our platform at no additional cost."
+          />
+          <FAQItem
+            question="Do you offer a money-back guarantee?"
+            answer="Yes. If we are unable to file your FBAR for any reason, you will receive a full refund. If you have not yet submitted your filing, you may request a refund within 30 days of payment."
           />
         </div>
       </div>

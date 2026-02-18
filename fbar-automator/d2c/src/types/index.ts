@@ -7,6 +7,7 @@ export {
   FilingType,
   PaymentStatus,
   ExchangeRateSource,
+  PricingTier,
 } from "@prisma/client";
 
 // Re-export Prisma model types
@@ -16,6 +17,7 @@ export type {
   FilingYear,
   Payment,
   ExchangeRate,
+  Statement,
 } from "@prisma/client";
 
 // --- API Request/Response Types ---
@@ -129,6 +131,7 @@ export interface FilingDisplay {
   status: string;
   filingType: string;
   has25PlusAccounts: boolean;
+  tier: string;
   signedAt: string | null;
   form114aUrl: string | null;
   stripePaymentId: string | null;

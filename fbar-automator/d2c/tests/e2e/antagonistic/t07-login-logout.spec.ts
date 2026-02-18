@@ -182,6 +182,9 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
     page,
   }) => {
     await loginAndWaitForRedirect(page);
+    // Navigate to dashboard (inside (app) layout which has Log Out button)
+    // Threshold is now public and doesn't have the (app) layout
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
     await doLogout(page);
   });
 
@@ -190,6 +193,8 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
     context,
   }) => {
     await loginAndWaitForRedirect(page);
+    // Navigate to dashboard (inside (app) layout which has Log Out button)
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
     await doLogout(page);
 
     // Clear all cookies to ensure clean unauthenticated state
@@ -205,16 +210,18 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
     await expect(page.locator("#email")).toBeVisible({ timeout: 15000 });
   });
 
-  test("6: unauthenticated user cannot access /threshold directly", async ({
+  test("6: unauthenticated user can access /threshold (now public)", async ({
     page,
   }) => {
     await page.goto("/threshold", { waitUntil: "domcontentloaded" });
 
-    // Middleware redirects to /login?callbackUrl=%2Fthreshold
-    await expect(page).toHaveURL(/\/login/, { timeout: 20000 });
+    // Threshold is now public — should NOT redirect to login
+    await expect(page).toHaveURL(/\/threshold/, { timeout: 20000 });
 
-    // Verify the login form rendered
-    await expect(page.locator("#email")).toBeVisible({ timeout: 15000 });
+    // Verify the threshold page content is visible
+    await expect(page.locator("h1")).toContainText("Do You Need to File", {
+      timeout: 15000,
+    });
   });
 
   test("7: wrong password shows generic error -- no email enumeration", async ({

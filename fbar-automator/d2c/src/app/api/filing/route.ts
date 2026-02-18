@@ -34,6 +34,7 @@ export async function GET() {
       status: f.status,
       filingType: f.filingType,
       has25PlusAccounts: f.has25PlusAccounts,
+      tier: f.tier,
       signedAt: f.signedAt?.toISOString() || null,
       form114aUrl: f.form114aUrl,
       stripePaymentId: f.stripePaymentId,

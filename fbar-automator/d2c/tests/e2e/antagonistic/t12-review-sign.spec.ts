@@ -126,7 +126,18 @@ async function doPersonalInfo(page: Page) {
  * Add a foreign account.
  */
 async function doAddAccount(page: Page, bankName = "Test Bank AG") {
-  await page.locator("button:has-text('Add Foreign Account')").click();
+  // Handle tier selector (shown when user has no accounts yet)
+  const tierButton = page.locator("button:has-text('Enter accounts manually')");
+  const addButton = page.locator("button:has-text('Add Foreign Account')");
+  try {
+    await tierButton.waitFor({ state: "visible", timeout: 10000 });
+    await tierButton.click();
+    await addButton.waitFor({ state: "visible", timeout: 15000 });
+  } catch {
+    // Tier selector not shown — user already has accounts
+  }
+
+  await addButton.click();
   await page
     .locator('input[placeholder="e.g., HSBC, Deutsche Bank"]')
     .fill(bankName);

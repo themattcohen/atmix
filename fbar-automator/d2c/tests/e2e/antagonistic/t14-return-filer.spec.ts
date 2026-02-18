@@ -138,7 +138,18 @@ async function doAddAccount(
     isJoint?: boolean;
   }
 ) {
-  await page.locator("button:has-text('Add Foreign Account')").click();
+  // Handle tier selector (shown when user has no accounts yet)
+  const tierButton = page.locator("button:has-text('Enter accounts manually')");
+  const addButton = page.locator("button:has-text('Add Foreign Account')");
+  try {
+    await tierButton.waitFor({ state: "visible", timeout: 10000 });
+    await tierButton.click();
+    await addButton.waitFor({ state: "visible", timeout: 15000 });
+  } catch {
+    // Tier selector not shown — user already has accounts
+  }
+
+  await addButton.click();
   await page
     .locator('input[placeholder="e.g., HSBC, Deutsche Bank"]')
     .fill(bankName);
@@ -294,6 +305,15 @@ test.describe.serial("T14-A: Return filer flow", () => {
   test("import banner visible with prior year and account count", async () => {
     await expect(page).toHaveURL(/\/accounts/);
 
+    // Handle tier selector (shown for new filing year with no accounts)
+    const tierButton = page.locator("button:has-text('Enter accounts manually')");
+    try {
+      await tierButton.waitFor({ state: "visible", timeout: 15000 });
+      await tierButton.click();
+    } catch {
+      // Tier selector already dismissed or not shown
+    }
+
     // Wait for skeleton to disappear (loading state resolves)
     await page.waitForSelector('[aria-label="Loading accounts"]', { state: "hidden", timeout: WAIT }).catch(() => null);
 
@@ -316,6 +336,27 @@ test.describe.serial("T14-A: Return filer flow", () => {
     });
     await expect(importButton).toBeVisible({ timeout: 10000 });
     await importButton.click();
+
+    // Handle rate limiting: if "Too many requests" error appears, retry
+    const errorAlert = page.locator("text=Too many requests");
+    const swissBank = page.locator("text=Swiss Bank AG");
+    try {
+      await swissBank.waitFor({ state: "visible", timeout: 10000 });
+    } catch {
+      if (await errorAlert.isVisible().catch(() => false)) {
+        // Wait and retry via "Try again" button, then re-click import
+        await page.waitForTimeout(3000);
+        const tryAgain = page.locator("button:has-text('Try again')");
+        if (await tryAgain.isVisible().catch(() => false)) {
+          await tryAgain.click();
+          await page.waitForTimeout(2000);
+        }
+        // Re-click import if banner reappears
+        if (await importButton.isVisible().catch(() => false)) {
+          await importButton.click();
+        }
+      }
+    }
 
     // Wait for accounts to appear
     await expect(page.locator("text=Swiss Bank AG")).toBeVisible({ timeout: 30000 });

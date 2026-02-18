@@ -76,7 +76,7 @@ export default function TermsPage() {
               <li>FBAR Direct is not responsible for errors or omissions in information you provide</li>
               <li>FBAR Direct is not liable for FinCEN rejections due to incomplete or inaccurate data</li>
               <li>FBAR Direct is not liable for penalties, fines, or legal consequences resulting from your FBAR filing or failure to file</li>
-              <li>Our total liability to you for any claims arising from the Service is limited to the amount you paid for the filing ($59)</li>
+              <li>Our total liability to you for any claims arising from the Service is limited to the amount you paid for the filing ($59–$79 depending on service tier)</li>
               <li>We are not liable for indirect, incidental, consequential, or punitive damages</li>
             </ul>
             <p className="text-gray-700 leading-relaxed mt-4">
@@ -89,7 +89,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-navy-900 mb-4">Fee Structure</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              FBAR Direct charges a flat fee of <strong>$59 per FBAR filing</strong>. This fee includes:
+              FBAR Direct charges a fee of <strong>$59–$79 per FBAR filing</strong>, depending on the service tier selected. This fee includes:
             </p>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
               <li>Guided filing workflow</li>

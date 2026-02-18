@@ -22,7 +22,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "How is my data protected?",
-    answerSnippet: "bank-grade 256-bit SSL encryption",
+    answerSnippet: "AES-256-GCM encryption at rest",
   },
   {
     question: "Can I file for previous years?",
@@ -31,6 +31,10 @@ const FAQ_ITEMS = [
   {
     question: "What happens if my filing is rejected?",
     answerSnippet: "notify you immediately with the specific error code",
+  },
+  {
+    question: "Do you offer a money-back guarantee?",
+    answerSnippet: "full refund",
   },
 ];
 

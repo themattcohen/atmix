@@ -30,7 +30,7 @@ export default function AboutPage() {
                 </svg>
                 <div>
                   <p className="font-semibold text-navy-900">FinCEN-Registered BSA E-Filing Institution</p>
-                  <p className="text-sm text-gray-600">Authorized to submit FBARs electronically through FinCEN&apos;s SDTM system.</p>
+                  <p className="text-sm text-gray-600">Authorized to submit FBARs electronically through FinCEN&apos;s BSA E-Filing system.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -52,7 +52,7 @@ export default function AboutPage() {
             </p>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
               <li>Ask for their FinCEN BSA E-Filing registration credentials</li>
-              <li>Verify they submit through FinCEN&apos;s official SDTM system</li>
+              <li>Verify they submit through FinCEN&apos;s official BSA E-Filing system</li>
               <li>Confirm you&apos;ll receive a BSA tracking ID after filing</li>
               <li>Check for transparent pricing with no hidden fees</li>
               <li>Look for E&amp;O (Errors and Omissions) insurance coverage</li>
@@ -69,7 +69,7 @@ export default function AboutPage() {
 
           <div className="mt-12 text-center">
             <Link
-              href="/signup"
+              href="/threshold"
               className="inline-block px-8 py-4 bg-gold-500 text-navy-900 rounded-lg text-lg font-semibold hover:bg-gold-600 transition-colors shadow-lg"
             >
               Get Started — File Your FBAR

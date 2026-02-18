@@ -17,7 +17,7 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: "FBAR Direct — Report of Foreign Bank and Financial Accounts",
   description:
-    "Securely file your FBAR (FinCEN Form 114) online. FinCEN-registered BSA E-Filing institution. AES-256 encryption. $59 per filing.",
+    "Securely file your FBAR (FinCEN Form 114) online. FinCEN-registered BSA E-Filing institution. AES-256 encryption. Starting at $59 per filing.",
   keywords: [
     "FBAR",
     "FinCEN Form 114",

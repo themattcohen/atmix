@@ -31,6 +31,7 @@ model User {
   filingYears   FilingYear[]
   payments      Payment[]
   resetTokens   PasswordResetToken[]
+  statements    Statement[]
 }
 
 model ForeignAccount {
@@ -65,6 +66,7 @@ model FilingYear {
   status              FilingStatus @default(NOT_STARTED)
   filingType          FilingType   @default(ORIGINAL)
   has25PlusAccounts   Boolean      @default(false)
+  tier                PricingTier  @default(BASIC)
 
   // Signature
   signedAt            DateTime?
@@ -173,6 +175,11 @@ enum ExchangeRateSource {
   MANUAL
 }
 
+enum PricingTier {
+  BASIC
+  PREMIUM
+}
+
 model PasswordResetToken {
   id        String   @id @default(cuid())
   userId    String
@@ -183,4 +190,27 @@ model PasswordResetToken {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
+}
+
+model Statement {
+  id                String   @id @default(cuid())
+  userId            String
+  filingYearId      String
+  filePath          String
+  fileName          String
+  fileType          String
+  fileSizeBytes     Int
+  extractionStatus  String   @default("PENDING")
+  extractionError   String?
+  rawExtraction     Json?
+  extractedAccounts Json?
+  llmModel          String?
+  llmTokensUsed     Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([filingYearId])
 }

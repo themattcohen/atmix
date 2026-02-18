@@ -26,7 +26,7 @@ export function Hero() {
 
         <div className="flex flex-col items-start space-y-3">
           <Link
-            href="/signup"
+            href="/threshold"
             className="bg-gov-blue hover:bg-gov-blue-dark text-white font-semibold text-base px-6 py-2.5 transition-colors inline-flex items-center"
           >
             Begin Filing <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />

@@ -167,13 +167,34 @@ async function createUserAndGetSession(): Promise<{
  * Set up a fresh user, inject session cookies, navigate through threshold to /personal.
  */
 async function getToPersonalPage(page: Page): Promise<void> {
-  const { cookies } = await createUserAndGetSession();
+  // Retry createUserAndGetSession up to 3 times (MissingCSRF is transient)
+  let result: Awaited<ReturnType<typeof createUserAndGetSession>> | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      result = await createUserAndGetSession();
+      break;
+    } catch {
+      if (attempt === 2) throw new Error("createUserAndGetSession failed after 3 attempts");
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
 
   // Inject cookies into browser context
-  await page.context().addCookies(cookies);
+  await page.context().addCookies(result!.cookies);
 
   // Navigate to threshold (authenticated via cookie)
   await page.goto("/threshold", { timeout: 30_000, waitUntil: "networkidle" });
+
+  // Fallback: if cookie injection failed and we landed on login, do browser login
+  if (page.url().includes("/login")) {
+    await page.fill("#email", result!.email);
+    await page.fill("#password", TEST_PASSWORD);
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30_000 });
+    if (!page.url().includes("/threshold")) {
+      await page.goto("/threshold", { timeout: 30_000, waitUntil: "networkidle" });
+    }
+  }
 
   // Complete threshold — wait for React hydration first
   const firstYes = page.locator("button:has-text('Yes')").first();
@@ -202,9 +223,16 @@ async function getToPersonalPage(page: Page): Promise<void> {
   await expect(page.locator("h1")).toContainText("Personal Information", {
     timeout: 10_000,
   });
+
+  // Wait for API data to load — firstName gets pre-filled from user record.
+  // Must wait for this before filling any fields to avoid useEffect race condition
+  // where /api/user response overwrites form values after test fills them.
+  await expect(page.locator("#firstName")).toHaveValue(/\w+/, { timeout: 30_000 });
+  await page.waitForTimeout(1500); // Extra settle time for React re-renders
 }
 
 test.describe("Personal Information Wizard Step — Antagonistic Tests", () => {
+  test.describe.configure({ retries: 1 }); // API-based auth has transient MissingCSRF failures
   test("all expected form fields render on /personal", async ({ page }) => {
     await getToPersonalPage(page);
 

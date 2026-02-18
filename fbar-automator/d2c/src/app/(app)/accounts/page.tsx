@@ -1,12 +1,40 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { AccountForm } from "@/components/forms/AccountForm";
 import { AccountEditForm } from "@/components/forms/AccountEditForm";
+import { StatementUpload } from "@/components/forms/StatementUpload";
+import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountReview";
+import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
 import { ImportBanner } from "@/components/ImportBanner";
+import { PRICING } from "@/lib/pricing";
 import type { AccountDisplay, PriorYearInfo } from "@/types";
+
+interface MappedAccount {
+  account: {
+    institutionName: string;
+    accountNumber: string;
+    accountType: "BANK" | "SECURITIES" | "OTHER";
+    ownershipType: "FINANCIAL_INTEREST" | "SIGNATURE_AUTHORITY" | "BOTH";
+    countryCode: string;
+    currencyCode: string;
+    maxValueLocal: number;
+    isJointAccount: boolean;
+    calendarYear: number;
+    institutionAddress?: { street?: string; city?: string; country?: string };
+  };
+  confidence: {
+    bank_name: "high" | "medium" | "low";
+    account_number: "high" | "medium" | "low";
+    currency: "high" | "medium" | "low";
+    max_balance: "high" | "medium" | "low";
+    overall: "high" | "medium" | "low";
+  };
+  warnings: string[];
+  sourceIndex: number;
+}
 
 function AccountSkeleton() {
   return (
@@ -33,11 +61,15 @@ export default function AccountsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [calendarYear, setCalendarYear] = useState<number>(new Date().getFullYear() - 1);
   const [priorYears, setPriorYears] = useState<PriorYearInfo[]>([]);
+  const [filingYearId, setFilingYearId] = useState<string | null>(null);
+  const [tier, setTier] = useState<"BASIC" | "PREMIUM">("BASIC");
+  const [tierSelected, setTierSelected] = useState(false);
+  const [extractedAccounts, setExtractedAccounts] = useState<MappedAccount[] | null>(null);
+  const [savingExtracted, setSavingExtracted] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setError("");
-      // First fetch the active filing to get the correct calendar year
       const filingRes = await fetch("/api/filing");
       if (filingRes.status === 401) {
         window.location.href = "/login";
@@ -52,16 +84,21 @@ export default function AccountsPage() {
 
       let year = new Date().getFullYear() - 1;
       if (filingData.data?.length > 0) {
-        const active = filingData.data.find((f: { status: string; calendarYear: number }) =>
+        const active = filingData.data.find((f: { status: string; calendarYear: number; id: string; tier: string }) =>
           ["IN_PROGRESS", "REVIEWED"].includes(f.status)
         );
         if (active) {
           year = active.calendarYear;
+          setFilingYearId(active.id);
+          setTier(active.tier || "BASIC");
+          // If tier was already explicitly set to PREMIUM, skip tier selection
+          if (active.tier === "PREMIUM") {
+            setTierSelected(true);
+          }
         }
       }
       setCalendarYear(year);
 
-      // Now fetch accounts using the correct year
       const res = await fetch(`/api/accounts?calendarYear=${year}`);
       if (res.status === 401) {
         window.location.href = "/login";
@@ -73,16 +110,20 @@ export default function AccountsPage() {
         return;
       }
       const data = await res.json();
-      if (data.data) setAccounts(data.data);
+      if (data.data) {
+        setAccounts(data.data);
+        // If user already has accounts, skip tier selection
+        if (data.data.length > 0) setTierSelected(true);
+      }
       if (data.priorYears) setPriorYears(data.priorYears);
     } catch {
       setError("Unable to connect to the server. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { loadData(); }, [loadData]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this account? This action cannot be undone.")) return;
@@ -116,10 +157,7 @@ export default function AccountsPage() {
   const handleImport = async (sourceCalendarYear: number) => {
     const res = await fetch("/api/accounts/import", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
+      headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
       body: JSON.stringify({ sourceCalendarYear }),
     });
     if (res.status === 401) {
@@ -133,6 +171,94 @@ export default function AccountsPage() {
     }
     await loadData();
   };
+
+  const handleTierSelect = async (selectedTier: "BASIC" | "PREMIUM") => {
+    if (!filingYearId) return;
+    setTier(selectedTier);
+    setTierSelected(true);
+
+    // Update tier on server
+    try {
+      await fetch("/api/filing/tier", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+        body: JSON.stringify({ filingYearId, tier: selectedTier }),
+      });
+    } catch {
+      // Non-blocking — tier will default to BASIC if this fails
+    }
+  };
+
+  const handleExtracted = (mapped: MappedAccount[]) => {
+    setExtractedAccounts(mapped);
+  };
+
+  const handleSaveExtracted = async (accountsToSave: AccountToSave[]) => {
+    setSavingExtracted(true);
+    try {
+      for (const account of accountsToSave) {
+        const res = await fetch("/api/accounts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+          body: JSON.stringify(account),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          setError(err.error || "Failed to save extracted account");
+          break;
+        }
+      }
+      setExtractedAccounts(null);
+      await loadData();
+    } catch {
+      setError("Failed to save extracted accounts. Please try again.");
+    } finally {
+      setSavingExtracted(false);
+    }
+  };
+
+  // Tier selection view — shown when no accounts and tier not yet chosen
+  if (!loading && accounts.length === 0 && !tierSelected && filingYearId) {
+    return (
+      <WizardLayout currentStep={3} onPrevious="/personal">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-2xl font-bold text-navy-900 mb-2">Choose Your Filing Method</h1>
+          <p className="text-gray-600 mb-8">Select how you&apos;d like to add your foreign accounts.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Basic */}
+            <button
+              onClick={() => handleTierSelect("BASIC")}
+              className="bg-white rounded-lg shadow-md border-2 border-gray-200 p-6 text-left hover:border-navy-900 transition-colors group"
+            >
+              <p className="text-2xl font-bold text-navy-900 mb-1">${PRICING.basic.amountDollars}</p>
+              <p className="text-sm font-medium text-navy-900 mb-3">{PRICING.basic.name}</p>
+              <p className="text-sm text-gray-600 mb-4">Enter your foreign account details manually using our guided form.</p>
+              <span className="text-sm text-navy-900 font-medium group-hover:underline">
+                Enter accounts manually →
+              </span>
+            </button>
+
+            {/* Premium */}
+            <button
+              onClick={() => handleTierSelect("PREMIUM")}
+              className="bg-white rounded-lg shadow-md border-2 border-gold-500 p-6 text-left hover:border-gold-600 transition-colors group relative"
+            >
+              <div className="absolute -top-2.5 left-4 bg-gold-500 text-navy-900 text-xs font-bold px-2 py-0.5 rounded-full">
+                Recommended
+              </div>
+              <p className="text-2xl font-bold text-navy-900 mb-1">${PRICING.premium.amountDollars}</p>
+              <p className="text-sm font-medium text-navy-900 mb-3">{PRICING.premium.name}</p>
+              <p className="text-sm text-gray-600 mb-4">Upload bank statements and let AI extract your account details automatically.</p>
+              <span className="text-sm text-navy-900 font-medium group-hover:underline">
+                Upload statements →
+              </span>
+            </button>
+          </div>
+        </div>
+      </WizardLayout>
+    );
+  }
 
   return (
     <WizardLayout currentStep={3} onPrevious="/personal">
@@ -216,7 +342,7 @@ export default function AccountsPage() {
             )}
 
             {/* Empty state */}
-            {accounts.length === 0 && !showForm && (
+            {accounts.length === 0 && !showForm && !extractedAccounts && (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center mb-6">
                 <svg
                   className="mx-auto h-12 w-12 text-gray-400 mb-4"
@@ -231,14 +357,42 @@ export default function AccountsPage() {
                   No accounts added yet
                 </p>
                 <p className="text-sm text-gray-600">
-                  Add your first foreign financial account to continue your FBAR filing.
+                  {tier === "PREMIUM"
+                    ? "Upload a bank statement above, or add an account manually below."
+                    : "Add your first foreign financial account to continue your FBAR filing."}
                 </p>
               </div>
             )}
 
-            {/* Import banner — shown only in empty state when prior years exist */}
-            {accounts.length === 0 && priorYears.length > 0 && (
+            {/* Import banner */}
+            {accounts.length === 0 && priorYears.length > 0 && !extractedAccounts && (
               <ImportBanner priorYears={priorYears} onImport={handleImport} />
+            )}
+
+            {/* Statement upload — premium only */}
+            {tier === "PREMIUM" && filingYearId && !extractedAccounts && !showForm && (
+              <div className="mb-6">
+                <StatementUpload
+                  filingYearId={filingYearId}
+                  onExtracted={handleExtracted}
+                  onError={(err) => setError(err)}
+                />
+              </div>
+            )}
+
+            {/* Extracted account review */}
+            {extractedAccounts && (
+              <div className="mb-6">
+                <ExtractedAccountReview
+                  accounts={extractedAccounts}
+                  calendarYear={calendarYear}
+                  onSaveAll={handleSaveExtracted}
+                  onDismiss={() => setExtractedAccounts(null)}
+                />
+                {savingExtracted && (
+                  <div className="mt-2 text-center text-sm text-gray-500">Saving accounts...</div>
+                )}
+              </div>
             )}
 
             {/* Add account form */}
@@ -248,7 +402,7 @@ export default function AccountsPage() {
                 onSaved={handleSaved}
                 onCancel={() => { setShowForm(false); }}
               />
-            ) : (
+            ) : !extractedAccounts && (
               <button
                 onClick={() => setShowForm(true)}
                 className="w-full py-3 px-6 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-navy-900 hover:text-navy-900 font-medium"
@@ -258,7 +412,7 @@ export default function AccountsPage() {
             )}
 
             {/* Continue */}
-            {accounts.length > 0 && !showForm && (
+            {accounts.length > 0 && !showForm && !extractedAccounts && (
               <button
                 onClick={() => router.push("/review")}
                 className="w-full mt-6 py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-medium"

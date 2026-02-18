@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createCheckoutSession } from "@/lib/stripe";
+import { PRICING } from "@/lib/pricing";
+import type { PricingTier } from "@/lib/pricing";
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,6 +69,10 @@ export async function POST(req: NextRequest) {
         } as const;
       }
 
+      // Determine tier and pricing
+      const tier = filingYear.tier.toLowerCase() as PricingTier;
+      const pricing = PRICING[tier];
+
       // Create or reuse payment record
       let payment = await tx.payment.findFirst({
         where: { userId: session.user.id, filingYearId, status: "PENDING" },
@@ -77,14 +83,14 @@ export async function POST(req: NextRequest) {
           data: {
             userId: session.user.id,
             filingYearId,
-            amount: 59.0,
+            amount: pricing.amountDollars,
             currency: "usd",
             status: "PENDING",
           },
         });
       }
 
-      return { success: true, payment } as const;
+      return { success: true, payment, tier } as const;
     });
 
     if ("error" in result) {
@@ -97,7 +103,8 @@ export async function POST(req: NextRequest) {
     const url = await createCheckoutSession(
       session.user.id,
       filingYearId,
-      session.user.email!
+      session.user.email!,
+      result.tier
     );
 
     return NextResponse.json({ url });

@@ -95,34 +95,29 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
 
     // Section heading
     await expect(
-      section.getByRole("heading", { name: "Filing Fee" })
+      section.getByRole("heading", { name: "Pricing" })
     ).toBeVisible();
 
     // Price amount
-    await expect(section.getByText("$59.00")).toBeVisible();
+    await expect(section.getByText("Starting at $59")).toBeVisible();
 
     // Context for the price
-    await expect(
-      section.getByText("FinCEN Form 114 (per filing):")
-    ).toBeVisible();
+    await expect(section.getByText("per filing")).toBeVisible();
   });
 
   test("Pricing section lists all included features", async ({ page }) => {
     const section = page.locator("#pricing");
     await section.scrollIntoViewIfNeeded();
 
-    // "Fee includes:" label
-    await expect(section.getByText("Fee includes:")).toBeVisible();
-
     // All four bullet items
     const bullets = section.locator("ul li");
     await expect(bullets).toHaveCount(4);
 
     const expectedBullets = [
-      "FinCEN Form 114 preparation and review",
+      "Guided step-by-step filing process",
       "Direct electronic submission to FinCEN",
-      "BSA tracking ID confirmation",
-      "Secure record retention",
+      "AES-256 encrypted data handling",
+      "Free resubmission if rejected",
     ];
 
     for (const bulletText of expectedBullets) {
@@ -136,11 +131,9 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
     const section = page.locator("#pricing");
     await section.scrollIntoViewIfNeeded();
 
+    await expect(section.getByText("per filing")).toBeVisible();
     await expect(
-      section.getByText("Fee covers one FinCEN Form 114 for one calendar year")
-    ).toBeVisible();
-    await expect(
-      section.getByText("No hidden fees or subscription requirements")
+      section.getByRole("link", { name: /View all plans and features/i })
     ).toBeVisible();
   });
 
@@ -153,16 +146,18 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
     const section = page.locator("#pricing");
     await section.scrollIntoViewIfNeeded();
 
-    const ctaButton = section.getByRole("link", { name: /Begin Filing/i });
+    const ctaButton = section.getByRole("link", {
+      name: /View all plans and features/i,
+    });
     await expect(ctaButton).toBeVisible();
 
     // Verify href before clicking
-    await expect(ctaButton).toHaveAttribute("href", "/signup");
+    await expect(ctaButton).toHaveAttribute("href", "/pricing");
 
     // Click and verify navigation
     await ctaButton.click();
-    await page.waitForURL("**/signup");
-    expect(page.url()).toContain("/signup");
+    await page.waitForURL("**/pricing");
+    expect(page.url()).toContain("/pricing");
   });
 
   // -------------------------------------------------------
@@ -219,7 +214,7 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
     expect(sectionBox!.height).toBeGreaterThan(100);
 
     // Price text specifically must be visible and have readable size
-    const priceText = section.getByText("$59.00");
+    const priceText = section.getByText("Starting at $59");
     const priceBox = await priceText.boundingBox();
     expect(priceBox).not.toBeNull();
     expect(priceBox!.width).toBeGreaterThan(10);
@@ -237,12 +232,12 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
     }
 
     // CTA button should be visible and have adequate click target size
-    const cta = section.getByRole("link", { name: /Begin Filing/i });
+    const cta = section.getByRole("link", { name: /View all plans/i });
     const ctaBox = await cta.boundingBox();
     expect(ctaBox).not.toBeNull();
-    // Minimum touch target: 44x44 is WCAG recommendation, but we'll check for reasonableness
+    // CTA is now a text link (not a button), so height is smaller
     expect(ctaBox!.width).toBeGreaterThan(40);
-    expect(ctaBox!.height).toBeGreaterThan(30);
+    expect(ctaBox!.height).toBeGreaterThan(10);
   });
 
   test("HowItWorks and Pricing sections do not overlap each other", async ({

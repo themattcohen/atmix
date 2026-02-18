@@ -86,11 +86,11 @@ test.describe("Landing Page Hero + DeadlineBanner", () => {
     const cta = heroSection.locator("text=Begin Filing");
     await expect(cta).toBeVisible();
 
-    // Verify it is styled as a link pointing to /signup
-    await expect(cta).toHaveAttribute("href", "/signup");
+    // Verify it is styled as a link pointing to /threshold
+    await expect(cta).toHaveAttribute("href", "/threshold");
   });
 
-  test("clicking Begin Filing CTA redirects to /signup", async ({ page }) => {
+  test("clicking Begin Filing CTA redirects to /threshold", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     // Target the hero section specifically (first section inside main)
@@ -102,13 +102,13 @@ test.describe("Landing Page Hero + DeadlineBanner", () => {
 
     // Use Promise.all to avoid race: start waiting for navigation before clicking
     await Promise.all([
-      page.waitForURL("**/signup", {
+      page.waitForURL("**/threshold", {
         timeout: 60000,
         waitUntil: "domcontentloaded",
       }),
       heroBeginFiling.click(),
     ]);
-    expect(page.url()).toContain("/signup");
+    expect(page.url()).toContain("/threshold");
   });
 
   test("navigating back to / loads without console errors", async ({

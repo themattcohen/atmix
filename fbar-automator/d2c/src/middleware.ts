@@ -52,6 +52,7 @@ const publicPaths = [
   "/pricing",
   "/about",
   "/how-it-works",
+  "/threshold",
   "/login",
   "/signup",
   "/forgot-password",
@@ -109,9 +110,10 @@ export default auth((req) => {
     normalizedPath.startsWith("/api/") &&
     normalizedPath !== "/api/health" &&
     normalizedPath !== "/api/stripe/webhook" &&
-    !isAuthRoute // already counted above
+    !isAuthRoute && !normalizedPath.startsWith("/api/auth/") // auth/* has its own rate limit above
   ) {
-    if (!rateLimit(`api:${ip}`, 60, 60_000)) {
+    const generalLimit = process.env.NODE_ENV === "production" ? 60 : 600;
+    if (!rateLimit(`api:${ip}`, generalLimit, 60_000)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
   }

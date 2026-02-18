@@ -11,18 +11,41 @@ test.setTimeout(120000);
  */
 async function loginAndGoToThreshold(page: Page) {
   // Step 1: Get CSRF token
-  const csrfRes = await page.request.get("/api/auth/csrf");
-  const { csrfToken } = await csrfRes.json();
+  let csrfToken: string;
+  try {
+    const csrfRes = await page.request.get("/api/auth/csrf");
+    const data = await csrfRes.json();
+    csrfToken = data.csrfToken;
+  } catch {
+    // Retry once on network error
+    await page.waitForTimeout(1000);
+    const csrfRes = await page.request.get("/api/auth/csrf");
+    const data = await csrfRes.json();
+    csrfToken = data.csrfToken;
+  }
 
   // Step 2: Call the credentials callback to get a session cookie
-  await page.request.post("/api/auth/callback/credentials", {
-    form: {
-      email: "debug@example.com",
-      password: "Debug123!",
-      csrfToken,
-      json: "true",
-    },
-  });
+  try {
+    await page.request.post("/api/auth/callback/credentials", {
+      form: {
+        email: "debug@example.com",
+        password: "Debug123!",
+        csrfToken,
+        json: "true",
+      },
+    });
+  } catch {
+    // Retry once on network error
+    await page.waitForTimeout(1000);
+    await page.request.post("/api/auth/callback/credentials", {
+      form: {
+        email: "debug@example.com",
+        password: "Debug123!",
+        csrfToken,
+        json: "true",
+      },
+    });
+  }
 
   // Step 3: Navigate to /threshold with the session cookie
   await page.goto("/threshold", { waitUntil: "networkidle", timeout: 60000 });

@@ -7,7 +7,7 @@ export default function HowItWorksPage() {
     { num: 3, title: "Add Foreign Accounts", desc: "Enter details for each foreign account: institution name, account number, country, and maximum value during the year.", icon: "bank" },
     { num: 4, title: "Review Everything", desc: "See all your information in one place. Edit anything that needs changing. We'll flag potential issues.", icon: "eye" },
     { num: 5, title: "Sign Form 114a", desc: "Digitally sign the authorization form (Form 114a) that allows us to e-file your FBAR on your behalf.", icon: "pen" },
-    { num: 6, title: "Pay $59", desc: "Secure payment via Stripe. We don't charge until you're ready to file. No hidden fees.", icon: "card" },
+    { num: 6, title: "Pay & Submit", desc: "Secure payment via Stripe ($59 Basic / $79 Premium). We don't charge until you're ready to file. No hidden fees.", icon: "card" },
     { num: 7, title: "We Submit to FinCEN", desc: "We generate your FinCEN XML, submit through the official BSA E-Filing System, and send you your BSA tracking ID.", icon: "send" },
   ];
 
@@ -37,7 +37,7 @@ export default function HowItWorksPage() {
 
         <div className="mt-16 text-center">
           <Link
-            href="/signup"
+            href="/threshold"
             className="inline-block px-8 py-4 bg-gold-500 text-navy-900 rounded-md text-lg font-bold hover:bg-gold-600 transition-colors"
           >
             Start Filing Now
