@@ -165,7 +165,7 @@ export default function AccountsPage() {
         )}
 
         {loading ? (
-          <div className="space-y-4" aria-label="Loading accounts">
+          <div className="space-y-4" aria-label="Loading accounts" role="status">
             <AccountSkeleton />
             <AccountSkeleton />
             <AccountSkeleton />
