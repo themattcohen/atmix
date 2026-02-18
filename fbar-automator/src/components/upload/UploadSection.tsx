@@ -22,6 +22,7 @@ interface StatementResult {
 interface UploadResponse {
   uploaded: StatementResult[]
   errors: Array<{ fileName: string; error: string }>
+  queueErrors?: string[]
 }
 
 interface StatusResponse {
@@ -37,6 +38,7 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
   const router = useRouter()
   const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
   const [workerWarning, setWorkerWarning] = useState(false)
+  const [queueWarning, setQueueWarning] = useState(false)
   const workerWarningTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const updateFile = useCallback(
@@ -132,6 +134,11 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
         }
 
         const data: UploadResponse = await response.json()
+
+        // Warn if extraction queue is unavailable
+        if (data.queueErrors && data.queueErrors.length > 0) {
+          setQueueWarning(true)
+        }
 
         if (data.uploaded && data.uploaded.length > 0) {
           const statementId = data.uploaded[0].id
@@ -261,6 +268,15 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
       <DropZone onFilesAccepted={handleFilesAccepted} disabled={isUploading} />
 
       <UploadProgress files={files} />
+
+      {queueWarning && (
+        <div className="rounded-md bg-amber-50 border border-amber-200 p-3">
+          <p className="text-sm text-amber-800">
+            <strong>Files uploaded but extraction queue is temporarily unavailable.</strong>{" "}
+            Your files are saved. Extraction will begin automatically when the queue recovers.
+          </p>
+        </div>
+      )}
 
       {workerWarning && (
         <div className="rounded-md bg-yellow-50 border border-yellow-200 p-3">

@@ -1,3 +1,8 @@
+> **ARCHIVED 2026-02-18**: Stale B2B snapshot from 2026-02-13 reporting 65% MVP completion. B2B is now deployed and significantly further along; this status table no longer reflects reality. Moved from `claudedocs/` during cleanup.
+> Original date: 2026-02-13 22:15 MST
+
+---
+
 # FBAR Automator - Application Status Report
 
 **Generated**: 2026-02-13 22:15 MST

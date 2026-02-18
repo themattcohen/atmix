@@ -1,3 +1,8 @@
+> **ARCHIVED 2026-02-18**: Stale performance analysis from 2026-02-13 that uses wrong file paths throughout (`/Users/matt/fbar-automator/` instead of `/Users/matt/atmix/fbar-automator/`). The analysis itself is from a snapshot in time and the codebase has changed since then. Moved from `claudedocs/` during cleanup.
+> Original date: 2026-02-13
+
+---
+
 # FBAR Automator Performance Review
 
 **Date**: 2026-02-13

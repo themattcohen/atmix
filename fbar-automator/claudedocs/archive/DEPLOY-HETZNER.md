@@ -1,3 +1,7 @@
+> **ARCHIVED 2026-02-18**: SUPERSEDED — This was the original B2B-only deployment guide. B2B is live at 178.156.250.116 and this guide was used for that deployment. It is now superseded by `claudedocs/DEPLOY-HETZNER-UNIFIED.md`, which handles both B2B + D2C on a single server. Refer to the unified guide for any future deployments. Moved from `claudedocs/DEPLOY-HETZNER.md` during cleanup.
+
+---
+
 # Deploy FBAR Automator to Hetzner VPS
 
 **Target:** Hetzner CAX11 (ARM, 4GB RAM, ~$4/mo) | **Location:** US-East (Ashburn, VA)

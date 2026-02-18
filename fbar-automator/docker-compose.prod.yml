@@ -1,33 +1,44 @@
 # =============================================================================
-# FBAR Automator - Production Docker Compose
+# FBAR Unified Production — B2B + D2C on Single VPS
 # =============================================================================
 # Usage:
 #   docker compose -f docker-compose.prod.yml up -d --build
 #
 # Prerequisites:
-#   - Copy .env.example to .env and set all production values
-#   - Set DOMAIN to your domain (e.g., fbar.yourdomain.com)
-#   - See claudedocs/DEPLOY-HETZNER.md for full setup guide
+#   - Copy .env.unified.example to .env and set all production values
+#   - Set B2B_DOMAIN and D2C_DOMAIN to your domains
+#   - See claudedocs/DEPLOY-HETZNER-UNIFIED.md for full setup guide
+#
+# Architecture:
+#   Caddy (auto-TLS) → B2B app (3000) + D2C app (3001)
+#   Shared: Postgres (2 DBs), MinIO (2 buckets)
+#   B2B only: Redis + Worker
 # =============================================================================
 
 services:
   # ---------------------------------------------------------------------------
-  # Caddy - Reverse Proxy & Automatic TLS (Let's Encrypt)
+  # Caddy — Reverse Proxy & Automatic TLS (Let's Encrypt)
+  # Custom build with rate_limit module
   # ---------------------------------------------------------------------------
   caddy:
-    image: caddy:2-alpine
+    build:
+      context: ./docker
+      dockerfile: Caddy.Dockerfile
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
     environment:
-      - DOMAIN=${DOMAIN:-localhost}
+      - B2B_DOMAIN=${B2B_DOMAIN:-localhost}
+      - D2C_DOMAIN=${D2C_DOMAIN:-localhost}
     depends_on:
-      app:
+      b2b-app:
+        condition: service_healthy
+      d2c-app:
         condition: service_healthy
     networks:
       - frontend
@@ -44,9 +55,9 @@ services:
     restart: always
 
   # ---------------------------------------------------------------------------
-  # App - Next.js Application Server
+  # B2B App — FBAR Preparer (Next.js on port 3000)
   # ---------------------------------------------------------------------------
-  app:
+  b2b-app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -55,21 +66,36 @@ services:
       - .env
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=${B2B_DATABASE_URL}
+      - NEXTAUTH_SECRET=${B2B_NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${B2B_NEXTAUTH_URL}
+      - S3_ENDPOINT=${S3_ENDPOINT}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_BUCKET=${B2B_S3_BUCKET}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - CRON_SECRET=${CRON_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - RESEND_FROM_EMAIL=${B2B_RESEND_FROM_EMAIL}
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
       minio:
         condition: service_healthy
+      b2b-migrate:
+        condition: service_completed_successfully
     networks:
       - frontend
       - backend
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 512M
+          cpus: "0.50"
+          memory: 384M
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 30s
@@ -88,9 +114,9 @@ services:
     restart: always
 
   # ---------------------------------------------------------------------------
-  # Worker - Background Job Processor (LLM extraction, PDF processing)
+  # B2B Worker — BullMQ Extraction Worker
   # ---------------------------------------------------------------------------
-  worker:
+  b2b-worker:
     build:
       context: .
       dockerfile: Dockerfile
@@ -99,6 +125,18 @@ services:
       - .env
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=${B2B_DATABASE_URL}
+      - S3_ENDPOINT=${S3_ENDPOINT}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_BUCKET=${B2B_S3_BUCKET}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WORKER_CONCURRENCY=${WORKER_CONCURRENCY}
+      - WORKER_RATE_LIMIT_MAX=${WORKER_RATE_LIMIT_MAX}
     depends_on:
       postgres:
         condition: service_healthy
@@ -112,8 +150,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1G
+          cpus: "0.50"
+          memory: 384M
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f 'extract' || exit 1"]
       interval: 30s
@@ -125,35 +163,138 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    read_only: true
+    tmpfs:
+      - /tmp:size=50M
     restart: always
 
   # ---------------------------------------------------------------------------
-  # PostgreSQL - Primary Database
+  # B2B Migrate — One-shot Prisma migration (B2B schema)
+  # ---------------------------------------------------------------------------
+  b2b-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: ["npx", "prisma", "migrate", "deploy"]
+    environment:
+      - DATABASE_URL=${B2B_DATABASE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # D2C App — FBAR Direct Filing (Next.js on port 3001)
+  # ---------------------------------------------------------------------------
+  d2c-app:
+    build:
+      context: ./d2c
+      dockerfile: Dockerfile
+      target: runner
+    command: ["node", "server.js"]
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${D2C_DATABASE_URL}
+      - NEXTAUTH_SECRET=${D2C_NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${D2C_NEXTAUTH_URL}
+      - S3_BUCKET=${D2C_S3_BUCKET}
+      - STRIPE_SECRET_KEY=${D2C_STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${D2C_STRIPE_WEBHOOK_SECRET}
+      - ENCRYPTION_KEY=${D2C_ENCRYPTION_KEY}
+      - ANTHROPIC_API_KEY=${D2C_ANTHROPIC_API_KEY}
+      - RESEND_API_KEY=${D2C_RESEND_API_KEY}
+      - RESEND_FROM_EMAIL=${D2C_RESEND_FROM_EMAIL}
+      - SDTM_HOST=${SDTM_HOST}
+      - SDTM_PORT=${SDTM_PORT}
+      - SDTM_USERNAME=${SDTM_USERNAME}
+      - SDTM_PRIVATE_KEY_PATH=${SDTM_PRIVATE_KEY_PATH}
+      - SDTM_REMOTE_DIR=${SDTM_REMOTE_DIR}
+      - SDTM_SANDBOX_MODE=${SDTM_SANDBOX_MODE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      d2c-migrate:
+        condition: service_completed_successfully
+    networks:
+      - frontend
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 384M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    read_only: true
+    tmpfs:
+      - /tmp:size=100M
+      - /app/.next/cache:size=200M
+    restart: always
+
+  # ---------------------------------------------------------------------------
+  # D2C Migrate — One-shot Prisma migration (D2C schema)
+  # ---------------------------------------------------------------------------
+  d2c-migrate:
+    build:
+      context: ./d2c
+      dockerfile: Dockerfile
+      target: runner
+    command: ["npx", "prisma", "migrate", "deploy"]
+    environment:
+      - DATABASE_URL=${D2C_DATABASE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL — Shared Database (fbar_automator + fbar_direct)
   # ---------------------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: fbar_automator
+      # Passed to init-db.sh for creating per-app database users
+      POSTGRES_B2B_PASSWORD: ${POSTGRES_B2B_PASSWORD}
+      POSTGRES_D2C_PASSWORD: ${POSTGRES_D2C_PASSWORD}
     command:
       - "postgres"
       - "-c"
-      - "shared_buffers=256MB"
+      - "shared_buffers=192MB"
       - "-c"
-      - "work_mem=8MB"
+      - "work_mem=4MB"
       - "-c"
-      - "maintenance_work_mem=128MB"
+      - "maintenance_work_mem=64MB"
       - "-c"
-      - "max_connections=100"
+      - "max_connections=80"
       - "-c"
-      - "effective_cache_size=512MB"
+      - "effective_cache_size=384MB"
       - "-c"
       - "random_page_cost=1.1"
       - "-c"
       - "checkpoint_completion_target=0.9"
       - "-c"
-      - "wal_buffers=16MB"
+      - "wal_buffers=8MB"
       - "-c"
       - "default_statistics_target=100"
       - "-c"
@@ -168,13 +309,14 @@ services:
       - "log_lock_waits=on"
     volumes:
       - pgdata_prod:/var/lib/postgresql/data
+      - ./docker/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
       - backend
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1G
+          cpus: "0.75"
+          memory: 768M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -189,7 +331,7 @@ services:
     restart: always
 
   # ---------------------------------------------------------------------------
-  # Redis - Cache & Job Queue
+  # Redis — B2B Job Queue (BullMQ)
   # ---------------------------------------------------------------------------
   redis:
     image: redis:7-alpine
@@ -202,7 +344,7 @@ services:
       - "--requirepass"
       - "${REDIS_PASSWORD}"
       - "--maxmemory"
-      - "200mb"
+      - "100mb"
       - "--maxmemory-policy"
       - "allkeys-lru"
       - "--tcp-backlog"
@@ -220,8 +362,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 256M
+          cpus: "0.25"
+          memory: 128M
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
@@ -236,7 +378,7 @@ services:
     restart: always
 
   # ---------------------------------------------------------------------------
-  # MinIO - S3-Compatible Object Storage (bank statement PDFs)
+  # MinIO — Shared S3-Compatible Object Storage
   # ---------------------------------------------------------------------------
   minio:
     image: minio/minio:latest
@@ -251,8 +393,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 256M
+          cpus: "0.25"
+          memory: 192M
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 10s
@@ -270,10 +412,10 @@ services:
 # Networks
 # =============================================================================
 networks:
-  # caddy <-> app communication
+  # Caddy <-> app containers
   frontend:
     driver: bridge
-  # app <-> postgres, redis, minio, worker (no external access)
+  # Apps <-> postgres, redis, minio (no external access)
   backend:
     driver: bridge
     internal: true

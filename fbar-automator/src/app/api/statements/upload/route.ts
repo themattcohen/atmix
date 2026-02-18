@@ -21,6 +21,12 @@ interface UploadError {
   error: string
 }
 
+interface QueueError {
+  fileName: string
+  statementId: string
+  error: string
+}
+
 // ---------------------------------------------------------------------------
 // POST /api/statements/upload
 // ---------------------------------------------------------------------------
@@ -109,6 +115,7 @@ export async function POST(request: NextRequest) {
     // 7. Process each file in parallel
     const uploaded: StatementResult[] = []
     const errors: UploadError[] = []
+    const queueErrors: QueueError[] = []
 
     const results = await Promise.allSettled(
       fileEntries.map(async (file) => {
@@ -144,14 +151,25 @@ export async function POST(request: NextRequest) {
           })
 
           // 6d. Enqueue extraction job
-          await enqueueExtraction({
-            statementId: statement.id,
-            filingYearId,
-            practiceId,
-            filePath: uploadResult.key,
-            fileType: uploadResult.fileType,
-            fileName: uploadResult.fileName,
-          })
+          let queued = true
+          try {
+            await enqueueExtraction({
+              statementId: statement.id,
+              filingYearId,
+              practiceId,
+              filePath: uploadResult.key,
+              fileType: uploadResult.fileType,
+              fileName: uploadResult.fileName,
+            })
+          } catch (queueError) {
+            queued = false
+            console.error(`Failed to enqueue extraction for "${file.name}" (statement ${statement.id}):`, queueError)
+            queueErrors.push({
+              fileName: uploadResult.fileName,
+              statementId: statement.id,
+              error: "File uploaded successfully but extraction could not be queued. It can be retried later.",
+            })
+          }
 
           // 6e. Create audit log entry
           const ipAddress = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? null
@@ -209,7 +227,11 @@ export async function POST(request: NextRequest) {
 
     // 8. Return results
     const status = uploaded.length > 0 ? 200 : 400
-    return NextResponse.json({ uploaded, errors }, { status })
+    const response: { uploaded: StatementResult[]; errors: UploadError[]; queueErrors?: QueueError[] } = { uploaded, errors }
+    if (queueErrors.length > 0) {
+      response.queueErrors = queueErrors
+    }
+    return NextResponse.json(response, { status })
   } catch (error) {
     console.error("Upload route error:", error)
     return NextResponse.json(

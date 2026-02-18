@@ -79,32 +79,46 @@ export async function POST(request: NextRequest, context: RouteContext) {
       )
     }
 
-    // 4. Delete existing extracted data if any
+    // 4. Enqueue the extraction job FIRST — before any DB mutations.
+    //    If Redis is down, we return 503 without touching the DB,
+    //    preserving the statement's existing extracted data.
+    try {
+      await enqueueExtraction({
+        statementId,
+        filingYearId: statement.filingYearId,
+        practiceId,
+        filePath: statement.filePath,
+        fileType: statement.fileType,
+        pageCount: statement.pageCount ?? undefined,
+      })
+    } catch (queueError) {
+      console.error("Failed to enqueue extraction for reprocess:", queueError)
+      return NextResponse.json(
+        { error: "Queue unavailable, please try again later." },
+        { status: 503 }
+      )
+    }
+
+    // 5. Enqueue succeeded — now safe to delete existing extracted data
     if (statement.extractedData) {
       await prisma.extractedData.delete({
         where: { id: statement.extractedData.id },
       })
     }
 
-    // 5. Reset processing state on the statement
-    await prisma.statement.update({
-      where: { id: statementId },
+    // 6. Reset processing state on the statement
+    //    Guard: skip reset if worker already completed (prevents race condition)
+    await prisma.statement.updateMany({
+      where: {
+        id: statementId,
+        processingStatus: { not: "COMPLETED" },
+      },
       data: {
         processingStatus: "PENDING",
         processingError: null,
         processingStartedAt: null,
         processingCompletedAt: null,
       },
-    })
-
-    // 6. Re-queue the extraction job
-    await enqueueExtraction({
-      statementId,
-      filingYearId: statement.filingYearId,
-      practiceId,
-      filePath: statement.filePath,
-      fileType: statement.fileType,
-      pageCount: statement.pageCount ?? undefined,
     })
 
     // 7. Create audit log entry

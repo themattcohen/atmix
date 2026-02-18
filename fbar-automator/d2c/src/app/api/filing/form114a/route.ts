@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { getPresignedUrl } from "@/lib/s3";
+import { downloadFile } from "@/lib/s3";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -22,6 +22,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Form 114a not found" }, { status: 404 });
   }
 
-  const url = await getPresignedUrl(filing.form114aUrl);
-  return NextResponse.redirect(url);
+  const buffer = await downloadFile(filing.form114aUrl);
+  const calendarYear = filing.calendarYear ?? "unknown";
+  return new NextResponse(buffer, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="form114a_${calendarYear}.pdf"`,
+      "Cache-Control": "private, max-age=3600",
+    },
+  });
 }

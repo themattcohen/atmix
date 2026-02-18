@@ -1,0 +1,151 @@
+# =============================================================================
+# Unified Caddyfile — B2B + D2C on same VPS
+# =============================================================================
+# Caddy auto-provisions TLS via Let's Encrypt for both domains.
+# Rate limiting requires custom Caddy build (see docker/Caddy.Dockerfile).
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# B2B Domain — FBAR Preparer App (port 3000)
+# ---------------------------------------------------------------------------
+{$B2B_DOMAIN} {
+	# Security headers
+	header {
+		X-Frame-Options "DENY"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		X-DNS-Prefetch-Control "off"
+		Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		-Server
+	}
+
+	encode gzip
+
+	# B2B allows 50MB uploads (bank statement PDFs)
+	request_body {
+		max_size 50MB
+	}
+
+	# Rate limits — auth endpoints: 5 requests per minute
+	@b2b_auth path /api/auth/*
+	rate_limit @b2b_auth {
+		zone b2b_auth {
+			key    {remote_host}
+			events 5
+			window 1m
+		}
+	}
+
+	# Rate limits — API endpoints (excluding auth)
+	@b2b_api {
+		path /api/*
+		not path /api/auth/*
+	}
+	rate_limit @b2b_api {
+		zone b2b_api {
+			key    {remote_host}
+			events 10
+			window 1s
+		}
+	}
+
+	# Health check endpoint
+	handle /health {
+		reverse_proxy b2b-app:3000/api/health
+	}
+
+	# Static assets — aggressive caching
+	@b2b_static path /_next/static/*
+	header @b2b_static Cache-Control "public, max-age=31536000, immutable"
+
+	# API — no cache
+	@b2b_api_nocache path /api/*
+	header @b2b_api_nocache Cache-Control "no-store, no-cache, must-revalidate"
+
+	reverse_proxy b2b-app:3000
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+# ---------------------------------------------------------------------------
+# D2C Domain — FBAR Direct Filing App (port 3001)
+# ---------------------------------------------------------------------------
+{$D2C_DOMAIN} {
+	# Security headers (CSP managed by Next.js app — see d2c/next.config.js)
+	header {
+		X-Frame-Options "DENY"
+		X-Content-Type-Options "nosniff"
+		X-XSS-Protection "1; mode=block"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		X-DNS-Prefetch-Control "off"
+		-Server
+	}
+
+	encode gzip
+
+	# D2C limits to 1MB (no file uploads in D2C wizard)
+	request_body {
+		max_size 1MB
+	}
+
+	# Stripe webhook — no rate limiting (Stripe manages its own retry logic)
+	@d2c_stripe path /api/stripe/webhook
+	# (no rate_limit applied — falls through to reverse_proxy)
+
+	# Rate limits — auth endpoints: 5 requests per minute
+	@d2c_auth {
+		path /api/auth/*
+		not path /api/stripe/webhook
+	}
+	rate_limit @d2c_auth {
+		zone d2c_auth {
+			key    {remote_host}
+			events 5
+			window 1m
+		}
+	}
+
+	# Rate limits — API endpoints: 10 requests per second
+	@d2c_api {
+		path /api/*
+		not path /api/auth/*
+		not path /api/stripe/webhook
+	}
+	rate_limit @d2c_api {
+		zone d2c_api {
+			key    {remote_host}
+			events 10
+			window 1s
+		}
+	}
+
+	# Health check endpoint
+	handle /health {
+		reverse_proxy d2c-app:3001/api/health
+	}
+
+	# Static assets — aggressive caching
+	@d2c_static path /_next/static/*
+	header @d2c_static Cache-Control "public, max-age=31536000, immutable"
+
+	# Next.js image optimization — moderate caching
+	@d2c_images path /_next/image*
+	header @d2c_images Cache-Control "public, max-age=86400"
+
+	# API — no cache
+	@d2c_api_nocache path /api/*
+	header @d2c_api_nocache Cache-Control "no-store, no-cache, must-revalidate"
+
+	reverse_proxy d2c-app:3001
+
+	log {
+		output stdout
+		format console
+	}
+}

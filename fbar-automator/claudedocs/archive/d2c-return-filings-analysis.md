@@ -1,3 +1,7 @@
+> **ARCHIVED 2026-02-18**: COMPLETED PLAN — All 18 decisions in this implementation plan were fully implemented on 2026-02-17. Feature is live. Moved from `claudedocs/d2c-return-filings-analysis.md` during cleanup.
+
+---
+
 # Pre-Populated Return Filings: Implementation Plan (Final)
 
 **Date:** 2026-02-17

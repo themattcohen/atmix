@@ -1,3 +1,7 @@
+> **ARCHIVED 2026-02-18**: SUPERSEDED — This was a standalone D2C deployment guide using nginx as the reverse proxy. It is superseded by the unified Caddy-based approach in `claudedocs/DEPLOY-HETZNER-UNIFIED.md`, which deploys both B2B and D2C on a single Hetzner server. Moved from `d2c/DEPLOY.md` during cleanup.
+
+---
+
 # FBAR Direct (D2C) -- Deployment Guide
 
 Production deployment guide for the FBAR Direct application. The stack is Next.js 14, PostgreSQL 16, MinIO (S3-compatible storage), and nginx, all orchestrated with Docker Compose.

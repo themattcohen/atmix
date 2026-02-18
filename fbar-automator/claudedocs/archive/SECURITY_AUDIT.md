@@ -1,3 +1,8 @@
+> **ARCHIVED 2026-02-18**: Stale security audit from 2026-02-13. Many of the critical and high findings documented here have since been resolved: field-level encryption was added for TINs and account numbers, rate limiting was implemented, and other hardening work was done. This audit no longer reflects the current security posture. Moved from `claudedocs/` during cleanup.
+> Original date: 2026-02-13
+
+---
+
 # FBAR Automator Security Audit Report
 
 **Date**: 2026-02-13

@@ -1,7 +1,8 @@
 # B2B FBAR Automator - Implementation Roadmap
 
-**Generated:** 2026-02-16 | **Updated:** 2026-02-17
-**Status:** All 8 planning agents complete. Roadmap prioritized for launch.
+**Generated:** 2026-02-16 | **Updated:** 2026-02-18
+**Last updated:** 2026-02-18
+**Status:** B2B deployed on Hetzner at 178.156.250.116 (accessible via sslip.io). Launch blockers complete.
 **Source:** Opus planning agents with full codebase analysis + web research
 
 ---
@@ -18,46 +19,46 @@ After fixing 10 issues (2 critical, 4 major, 4 minor) in the B2B app, a comprehe
 
 | Priority | Issue | Category | Effort | Blocks Launch? | Status |
 |----------|-------|----------|--------|----------------|--------|
-| **LAUNCH** | Worker Docker Bug Fix | Operations | 10 min | **YES** | Plan complete |
-| **LAUNCH** | Deploy to Railway/VPS | Infrastructure | 1 day | **YES** | Plan complete |
-| Post-launch | MFA Implementation | Security | 3-4 days | No (ship within first month) | Plan complete |
-| Post-launch | Tax Software Integrations | Feature | 5-7 days | No | Plan complete |
-| Post-launch | Integration Tests | Quality | 3-4 days | No | Plan complete |
-| Future | 25+ Accounts Part V | Feature | 2-3 days | No (edge case) | Plan complete |
-| Future | SOC 2 Certification | Compliance | 4-5 months | No (when enterprise customers arrive) | Plan complete |
-| Future | Form 8938 Support | Feature | 5-7 days (Phase 1) | No (different form entirely) | Plan complete |
+| **LAUNCH** | Worker Docker Bug Fix | Operations | 10 min | **YES** | **DONE** (2026-02-17) |
+| **LAUNCH** | Deploy to Hetzner VPS | Infrastructure | 1 day | **YES** | **DONE** (2026-02-18) — live at 178.156.250.116 |
+| Post-launch | MFA Implementation | Security | 3-4 days | No (ship within first month) | Not started |
+| Post-launch | Tax Software Integrations | Feature | 5-7 days | No | Not started |
+| Post-launch | Integration Tests | Quality | 3-4 days | No | Not started |
+| Future | 25+ Accounts Part V | Feature | 2-3 days | No (edge case) | Not started |
+| Future | SOC 2 Certification | Compliance | 4-5 months | No (when enterprise customers arrive) | Not started |
+| Future | Form 8938 Support | Feature | 5-7 days (Phase 1) | No (different form entirely) | Not started |
 
 ---
 
-## LAUNCH BLOCKERS (do these, then ship)
+## LAUNCH BLOCKERS (COMPLETE)
 
-### 1. Fix Worker Docker Bug (10 minutes)
+### 1. Fix Worker Docker Bug (10 minutes) — DONE 2026-02-17
 
-**What:** `docker-compose.prod.yml` has 2 lines wrong — worker container won't start in production.
+**What:** `docker-compose.prod.yml` had 2 lines wrong — worker container wouldn't start in production. Fixed and committed. Additionally, worker was missing the `frontend` network needed to reach the Anthropic API; that was also patched.
 
-| Line | Current | Fix |
-|------|---------|-----|
+| Line | Was | Fixed To |
+|------|-----|----------|
 | 109 | `target: builder` | `target: worker` |
-| 110 | `command: npx tsx src/workers/extract.ts` | Remove (use Dockerfile CMD) |
+| 110 | `command: npx tsx src/workers/extract.ts` | Removed (Dockerfile CMD used) |
+| Worker networks | Missing `frontend` | Added `frontend` network for Anthropic API access |
 
-That's it. The extraction pipeline works fine locally; it just won't start in a production Docker deploy without this fix.
-
-### 2. Deploy to Hetzner VPS (~1 day)
+### 2. Deploy to Hetzner VPS (~1 day) — DONE 2026-02-18
 
 **Decision: Hetzner CAX11 (ARM, 4GB RAM, ~$4/mo)**
-- US-East datacenter (Virginia) for US user latency
-- Run docker-compose.prod.yml directly — same as local dev
+- Live at: `178.156.250.116` (accessible via sslip.io)
+- Run docker-compose.prod.yml directly
 - Caddy for TLS + reverse proxy
 - 3x cheaper than DigitalOcean for equivalent specs
 - Handles hundreds of concurrent users, thousands of filings
 - Bottleneck is Anthropic API latency (5-30s/doc), not the server
 
-**Minimal files needed:**
+**Files updated:**
 | File | Action |
 |------|--------|
-| `docker-compose.prod.yml` | FIX - Worker target bug (2 lines) |
-| `.env.example` | UPDATE - Document required production env vars |
-| `Dockerfile` | UPDATE - Pin base image, add migrator stage |
+| `docker-compose.prod.yml` | FIXED - Worker target bug + frontend network |
+| `Caddyfile.prod` | ADDED - Production Caddy config |
+| `.env.unified.example` | ADDED - Unified env var reference |
+| `claudedocs/DEPLOY-HETZNER-UNIFIED.md` | ADDED - Full deploy runbook |
 
 ---
 

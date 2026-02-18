@@ -1,3 +1,8 @@
+> **ARCHIVED 2026-02-18**: Stale onboarding guide from 2026-02-13 with an outdated status section describing the B2B app as partially broken with missing API routes. Project state has changed substantially since then. Current session context is maintained in `~/.claude/projects/` memory files. Moved from `claudedocs/` during cleanup.
+> Original date: 2026-02-13 22:15 MST
+
+---
+
 # FBAR Automator - Session Continuity Guide
 
 **Purpose**: Everything needed to resume work on the FBAR Automator project after a session break.
