@@ -1,6 +1,7 @@
 import {
   S3Client,
   PutObjectCommand,
+  type PutObjectCommandInput,
   GetObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
@@ -47,14 +48,18 @@ export async function uploadFile(
   body: Buffer,
   contentType: string
 ): Promise<string> {
-  await getS3Client().send(
-    new PutObjectCommand({
-      Bucket: getBucket(),
-      Key: key,
-      Body: body,
-      ContentType: contentType,
-    })
-  );
+  const params: PutObjectCommandInput = {
+    Bucket: getBucket(),
+    Key: key,
+    Body: body,
+    ContentType: contentType,
+  };
+  // SSE requires KMS on MinIO. Enable via S3_SERVER_SIDE_ENCRYPTION=AES256
+  // when using AWS S3 or MinIO with KMS configured.
+  if (process.env.S3_SERVER_SIDE_ENCRYPTION) {
+    params.ServerSideEncryption = process.env.S3_SERVER_SIDE_ENCRYPTION as "AES256" | "aws:kms";
+  }
+  await getS3Client().send(new PutObjectCommand(params));
   return key;
 }
 

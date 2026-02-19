@@ -50,4 +50,11 @@ const nextConfig = {
   },
 };
 
-module.exports = withMDX(nextConfig);
+const { withSentryConfig } = require('@sentry/nextjs');
+
+module.exports = withSentryConfig(withMDX(nextConfig), {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  silent: true,
+  disableSourceMapUpload: true,
+});

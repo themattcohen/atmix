@@ -17,6 +17,14 @@ export interface AcknowledgementResult {
 
 const isSandbox = () => process.env.SDTM_SANDBOX_MODE === "true";
 
+export function validateSdtmConfig(): void {
+  if (isSandbox()) return;
+
+  if (!process.env.SDTM_HOST_KEY) {
+    throw new Error("SDTM_HOST_KEY is required when SDTM_SANDBOX_MODE is not true");
+  }
+}
+
 function getSFTPConnectConfig(): Record<string, unknown> {
   const config: Record<string, unknown> = {
     host: process.env.SDTM_HOST,

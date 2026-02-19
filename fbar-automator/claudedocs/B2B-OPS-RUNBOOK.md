@@ -20,6 +20,12 @@
 
 The local Mac SSH key is authorized on the server. No password needed.
 
+**Claude Code SSH access** (added 2026-02-19):
+- Key file: `~/.ssh/hetzner_claude` (ed25519)
+- Public key: `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9igMdJQTZFdnMEwYxiO0rCqL+zsJwzkFPiKD/gzDG6 claude-code@atmix`
+- Usage: `ssh -i ~/.ssh/hetzner_claude -o BatchMode=yes root@178.156.250.116`
+- Always use `-o BatchMode=yes` to prevent Git for Windows password popups
+
 ---
 
 ## Common Operations
