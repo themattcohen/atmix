@@ -361,7 +361,8 @@ test.describe("Auth Redirects", () => {
   });
 
   test("login blocks external redirect via callbackUrl (absolute URL)", async ({ page }) => {
-    await page.goto("/login?callbackUrl=https://evil.com");
+    await page.goto("/login?callbackUrl=https://evil.com", { waitUntil: "networkidle" });
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", "debug@example.com");
     await page.fill("#password", "Debug123!");
     await page.click('button[type="submit"]');
@@ -371,7 +372,8 @@ test.describe("Auth Redirects", () => {
   });
 
   test("login blocks protocol-relative redirect via callbackUrl", async ({ page }) => {
-    await page.goto("/login?callbackUrl=//evil.com");
+    await page.goto("/login?callbackUrl=//evil.com", { waitUntil: "networkidle" });
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", "debug@example.com");
     await page.fill("#password", "Debug123!");
     await page.click('button[type="submit"]');
@@ -380,7 +382,8 @@ test.describe("Auth Redirects", () => {
   });
 
   test("login allows valid internal callbackUrl", async ({ page }) => {
-    await page.goto("/login?callbackUrl=/dashboard");
+    await page.goto("/login?callbackUrl=/dashboard", { waitUntil: "networkidle" });
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", "debug@example.com");
     await page.fill("#password", "Debug123!");
     await page.click('button[type="submit"]');

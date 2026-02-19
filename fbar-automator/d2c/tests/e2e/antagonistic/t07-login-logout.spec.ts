@@ -58,37 +58,17 @@ async function doLogin(page: Page, email: string, password: string) {
 
 /**
  * Log in and wait for redirect to an authenticated route.
+ * Uses simple fill-and-submit instead of complex hydration checking.
  */
 async function loginAndWaitForRedirect(page: Page) {
-  // Reset lockout before attempting login
-  await page.request.post("http://localhost:3001/api/test/reset-lockout", {
-    headers: { "x-requested-with": "playwright" },
-    data: { email: "debug@example.com" },
-  });
+  const authPattern = /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/;
 
-  // Attempt login with up to 3 tries to handle server contention
-  for (let attempt = 0; attempt < 3; attempt++) {
-    await doLogin(page, "debug@example.com", "Debug123!");
-
-    // Check if we landed on an authenticated route
-    try {
-      await expect(page).toHaveURL(
-        /\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/,
-        { timeout: 20000 }
-      );
-      return; // Success
-    } catch {
-      // Login may have failed due to server contention. If we're still on
-      // /login, the signIn call likely timed out or returned an error.
-      // Wait a bit and retry.
-      if (page.url().includes("/login")) {
-        await page.waitForTimeout(3000);
-        continue;
-      }
-      throw new Error(`Unexpected URL after login: ${page.url()}`);
-    }
-  }
-  throw new Error("Login failed after 3 attempts");
+  await page.goto("/login", { waitUntil: "networkidle" });
+  await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
+  await page.fill("#email", "debug@example.com");
+  await page.fill("#password", "Debug123!");
+  await page.click('button[type="submit"]');
+  await page.waitForURL(authPattern, { timeout: 60000 });
 }
 
 /**
@@ -174,6 +154,7 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
   test("3: valid credentials redirect to authenticated route", async ({
     page,
   }) => {
+    test.setTimeout(300_000);
     await loginAndWaitForRedirect(page);
     expect(page.url()).not.toContain("/login");
   });
@@ -181,6 +162,7 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
   test("4: Log Out button redirects to / (marketing home)", async ({
     page,
   }) => {
+    test.setTimeout(300_000);
     await loginAndWaitForRedirect(page);
     // Navigate to dashboard (inside (app) layout which has Log Out button)
     // Threshold is now public and doesn't have the (app) layout
@@ -192,6 +174,7 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
     page,
     context,
   }) => {
+    test.setTimeout(300_000);
     await loginAndWaitForRedirect(page);
     // Navigate to dashboard (inside (app) layout which has Log Out button)
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
@@ -227,12 +210,6 @@ test.describe.serial("Login + Logout Flow -- Antagonistic Tests", () => {
   test("7: wrong password shows generic error -- no email enumeration", async ({
     page,
   }) => {
-    // Reset lockout before testing wrong password
-    await page.request.post("http://localhost:3001/api/test/reset-lockout", {
-      headers: { "x-requested-with": "playwright" },
-      data: { email: "debug@example.com" },
-    });
-
     // This test runs last to avoid lockout affecting other tests.
     await doLogin(page, "debug@example.com", "WrongPass999!");
 

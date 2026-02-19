@@ -10,7 +10,8 @@ test.use({ baseURL: "http://localhost:3001" });
 const WAIT = 60000; // 60s for any single navigation/wait
 
 // ---------------------------------------------------------------------------
-// Robust signup: handles auto-login CSRF failures gracefully
+// Create user via API and login via browser (avoids auto-login race condition).
+// Signup UI is covered by auth.spec.ts.
 // ---------------------------------------------------------------------------
 async function robustSignup(
   page: Page,
@@ -18,32 +19,28 @@ async function robustSignup(
 ): Promise<string> {
   const email = `t13-${Date.now()}-${Math.random().toString(36).slice(2, 6)}@test.com`;
 
-  await page.goto("/signup");
-  await page.waitForLoadState("domcontentloaded");
-  await page.fill("#firstName", opts.firstName);
-  await page.fill("#lastName", opts.lastName);
+  // Create user via API
+  const response = await page.request.post("/api/auth/signup", {
+    data: {
+      firstName: opts.firstName,
+      lastName: opts.lastName,
+      email,
+      password: opts.password,
+      confirmPassword: opts.password,
+    },
+  });
+  if (response.status() !== 201) {
+    throw new Error(`Signup API failed: ${response.status()} ${await response.text()}`);
+  }
+
+  // Login via browser
+  await page.goto("/login");
+  await page.waitForLoadState("networkidle");
+  await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
   await page.fill("#email", email);
   await page.fill("#password", opts.password);
-  await page.fill("#confirmPassword", opts.password);
   await page.click('button[type="submit"]');
-
-  try {
-    await page.waitForURL(/\/(threshold|login|dashboard)/, { timeout: WAIT });
-  } catch {
-    const errorText = page.locator("text=auto-login failed");
-    if (await errorText.isVisible().catch(() => false)) {
-      await page.goto("/login");
-    } else {
-      await page.waitForURL(/\/(threshold|login|dashboard)/, { timeout: WAIT });
-    }
-  }
-
-  if (page.url().includes("/login")) {
-    await page.fill("#email", email);
-    await page.fill("#password", opts.password);
-    await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: WAIT });
-  }
+  await page.waitForURL(/\/(threshold|dashboard)/, { timeout: WAIT });
 
   return email;
 }
@@ -232,13 +229,14 @@ test.describe.serial("T13-B: Dashboard + payment edge cases", () => {
     await page.goto("/payment");
     await page.waitForLoadState("networkidle");
 
-    const signingPrompt = page.locator("text=Please complete the signing step first");
-    const goToSignLink = page.locator("a:has-text('Go to Signing')");
+    // P1-8/P1-9: Payment page now shows this message when no SIGNED filing exists
+    const signingPrompt = page.locator("text=Please complete and sign your FBAR before proceeding to payment");
+    const goToReviewLink = page.locator("a:has-text('Go to Review & Sign')");
     const loadingSpinner = page.locator('[aria-label="Loading payment page"]');
 
     const anyVisible = await Promise.any([
       signingPrompt.waitFor({ state: "visible", timeout: WAIT }).then(() => "prompt"),
-      goToSignLink.waitFor({ state: "visible", timeout: WAIT }).then(() => "link"),
+      goToReviewLink.waitFor({ state: "visible", timeout: WAIT }).then(() => "link"),
       loadingSpinner.waitFor({ state: "visible", timeout: WAIT }).then(() => "loading"),
     ]).catch(() => null);
 

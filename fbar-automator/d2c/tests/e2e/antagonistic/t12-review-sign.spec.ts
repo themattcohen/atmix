@@ -16,8 +16,8 @@ const NAV_TIMEOUT = 90000;
 const WAIT = 60000;
 
 /**
- * Robust browser-based signup (same pattern as T-13).
- * Handles auto-login CSRF failures gracefully.
+ * Create user via API and login via browser.
+ * Bypasses signup page auto-login race condition (signup UI is covered by auth.spec.ts).
  */
 async function robustSignup(
   page: Page,
@@ -25,33 +25,29 @@ async function robustSignup(
 ): Promise<string> {
   const email = `t12-${Date.now()}-${Math.random().toString(36).slice(2, 6)}@test.com`;
 
-  await page.goto("/signup");
-  await page.waitForLoadState("domcontentloaded");
-  await page.fill("#firstName", opts.firstName);
-  await page.fill("#lastName", opts.lastName);
+  // Create user via API (avoids auto-login race condition)
+  const response = await page.request.post("/api/auth/signup", {
+    data: {
+      firstName: opts.firstName,
+      lastName: opts.lastName,
+      email,
+      password: opts.password,
+      confirmPassword: opts.password,
+    },
+  });
+  if (response.status() !== 201) {
+    throw new Error(`Signup API failed: ${response.status()} ${await response.text()}`);
+  }
+
+  // Login via /login page (clean session, no CSRF race)
+  await page.goto("/login");
+  await page.waitForLoadState("networkidle");
+  await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
   await page.fill("#email", email);
   await page.fill("#password", opts.password);
-  await page.fill("#confirmPassword", opts.password);
   await page.click('button[type="submit"]');
+  await page.waitForURL(/\/(threshold|dashboard)/, { timeout: WAIT });
 
-  try {
-    await page.waitForURL(/\/(threshold|login|dashboard)/, { timeout: WAIT });
-  } catch {
-    // If still on signup page, check for auto-login failure or just go to login
-    if (page.url().includes("/signup")) {
-      await page.goto("/login");
-      await page.waitForLoadState("domcontentloaded");
-    }
-  }
-
-  if (page.url().includes("/login")) {
-    await page.fill("#email", email);
-    await page.fill("#password", opts.password);
-    await page.click('button[type="submit"]');
-    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: WAIT });
-  }
-
-  // Verify we're actually authenticated (not stuck on signup/login)
   if (page.url().includes("/login") || page.url().includes("/signup")) {
     throw new Error(`robustSignup failed: still on ${page.url()}`);
   }

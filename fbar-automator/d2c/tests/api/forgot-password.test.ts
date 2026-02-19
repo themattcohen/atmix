@@ -78,6 +78,8 @@ describe("POST /api/auth/forgot-password", () => {
   });
 
   it("2. valid email for non-existent user → 200 (anti-enumeration, no token created)", async () => {
+    const countBefore = await prisma.passwordResetToken.count();
+
     const req = makeRequest({ email: "nobody-here@example.com" });
     const res = await POST(req);
     const json = await res.json();
@@ -85,9 +87,9 @@ describe("POST /api/auth/forgot-password", () => {
     expect(res.status).toBe(200);
     expect(json.message).toBe(ANTI_ENUM_MESSAGE);
 
-    // No token should be created for this non-existent user
-    const count = await prisma.passwordResetToken.count();
-    expect(count).toBe(0);
+    // No NEW token should be created for this non-existent user
+    const countAfter = await prisma.passwordResetToken.count();
+    expect(countAfter).toBe(countBefore);
   });
 
   it("3. malformed email (no @) → 200 (anti-enumeration)", async () => {
@@ -162,14 +164,16 @@ describe("POST /api/auth/forgot-password", () => {
   });
 
   it("9. non-existent email → no token created AND sendPasswordResetEmail NOT called", async () => {
+    const countBefore = await prisma.passwordResetToken.count();
+
     const req = makeRequest({ email: "ghost@example.com" });
     const res = await POST(req);
 
     expect(res.status).toBe(200);
 
-    // No tokens in DB
-    const count = await prisma.passwordResetToken.count();
-    expect(count).toBe(0);
+    // No NEW tokens created
+    const countAfter = await prisma.passwordResetToken.count();
+    expect(countAfter).toBe(countBefore);
 
     // Email must NOT have been sent
     expect(sendPasswordResetEmail).not.toHaveBeenCalled();

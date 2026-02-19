@@ -94,6 +94,12 @@ test.describe("Accounts Wizard Step - Add, Edit, Delete foreign accounts", () =>
     // Defensive: import banner should not be visible (seeded user has accounts for default year)
     await expect(page.locator('[data-testid="import-banner"]')).not.toBeVisible({ timeout: 5000 });
 
+    // Handle tier selector (shown when user has no accounts yet)
+    const tierButton = page.locator("button:has-text('Enter accounts manually')");
+    if (await tierButton.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await tierButton.click();
+    }
+
     // ── TEST 2: "Add Foreign Account" button is visible ──
 
     const addBtn = page.locator("button:has-text('Add Foreign Account')");
