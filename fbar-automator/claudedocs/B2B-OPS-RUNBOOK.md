@@ -11,7 +11,8 @@
 | **IP** | `178.156.250.116` |
 | **SSH** | `ssh root@178.156.250.116` |
 | **B2B URL** | `https://b2b.178-156-250-116.sslip.io` |
-| **D2C URL** | `https://d2c.178-156-250-116.sslip.io` |
+| **D2C URL** | `https://fbardirect.com` |
+| **Domain registrar** | Namecheap (`fbardirect.com`) |
 | **App directory** | `/opt/fbar/fbar-automator` |
 | **Git remote** | `https://github.com/themattcohen/atmix.git` (cloned at `/opt/fbar`) |
 | **Compose file** | `docker-compose.prod.yml` (unified — B2B + D2C) |
@@ -114,29 +115,39 @@ TLS is handled by Caddy + Let's Encrypt, configured via `.env` variables:
 | Variable | Current Value |
 |----------|---------------|
 | `B2B_DOMAIN` | `b2b.178-156-250-116.sslip.io` |
-| `D2C_DOMAIN` | `d2c.178-156-250-116.sslip.io` |
+| `D2C_DOMAIN` | `fbardirect.com` |
 | `B2B_NEXTAUTH_URL` | `https://b2b.178-156-250-116.sslip.io` |
-| `D2C_NEXTAUTH_URL` | `https://d2c.178-156-250-116.sslip.io` |
+| `D2C_NEXTAUTH_URL` | `https://fbardirect.com` |
 
-**sslip.io** provides free wildcard DNS: `*.A-B-C-D.sslip.io` resolves to `A.B.C.D`. Caddy auto-provisions Let's Encrypt certs for both subdomains.
+**D2C** uses the real domain `fbardirect.com` (registered on Namecheap, deployed 2026-02-19).
+**B2B** still uses sslip.io (free wildcard DNS: `*.A-B-C-D.sslip.io` resolves to `A.B.C.D`).
 
-### Switch to Real Domains
+The `Caddyfile.prod` includes a `www.{$D2C_DOMAIN}` block that 301-redirects `www.fbardirect.com` → `fbardirect.com`.
 
-1. Point DNS A records for both domains to `178.156.250.116`
+### DNS Setup (Namecheap)
+
+`fbardirect.com` DNS is managed in Namecheap → Domain List → Manage → Advanced DNS:
+
+| Type | Host | Value | TTL |
+|------|------|-------|-----|
+| A Record | `@` | `178.156.250.116` | Automatic |
+| A Record | `www` | `178.156.250.116` | Automatic |
+
+Caddy auto-provisions Let's Encrypt certs for the domain and www subdomain.
+
+### Switch B2B to a Real Domain (when ready)
+
+1. Register a domain and point A record to `178.156.250.116`
 2. Update the `.env` values on the server:
    ```bash
    ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && \
      sed -i 's|^B2B_DOMAIN=.*|B2B_DOMAIN=preparer.yourdomain.com|' .env && \
-     sed -i 's|^D2C_DOMAIN=.*|D2C_DOMAIN=file.yourdomain.com|' .env && \
-     sed -i 's|^B2B_NEXTAUTH_URL=.*|B2B_NEXTAUTH_URL=https://preparer.yourdomain.com|' .env && \
-     sed -i 's|^D2C_NEXTAUTH_URL=.*|D2C_NEXTAUTH_URL=https://file.yourdomain.com|' .env"
+     sed -i 's|^B2B_NEXTAUTH_URL=.*|B2B_NEXTAUTH_URL=https://preparer.yourdomain.com|' .env"
    ```
-3. Recreate Caddy and both apps:
+3. Recreate Caddy and the B2B app:
    ```bash
-   ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy b2b-app d2c-app"
+   ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy b2b-app"
    ```
-
-Caddy auto-provisions new certs. No other changes needed.
 
 ---
 
@@ -162,13 +173,36 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate d2c-app"
 ```
 
-### D2C Integrations Not Yet Configured
+### D2C Integrations
 
 | Integration | Env Var | Status |
 |---|---|---|
+| **Domain** | `D2C_DOMAIN` | `fbardirect.com` — live with TLS |
 | **Stripe** | `D2C_STRIPE_SECRET_KEY`, `D2C_STRIPE_WEBHOOK_SECRET` | Placeholder values — payment flow won't work |
-| **Email (Resend)** | `D2C_RESEND_API_KEY` | Empty — no emails sent |
+| **Email (Resend)** | `D2C_RESEND_API_KEY`, `D2C_RESEND_FROM_EMAIL` | Not yet configured (see below) |
 | **FinCEN SFTP** | `SDTM_HOST`, `SDTM_USERNAME`, `SDTM_PRIVATE_KEY_PATH` | Empty — sandbox mode |
+
+### Resend Email Setup
+
+D2C sends transactional emails (password reset, filing confirmation) via [Resend](https://resend.com).
+
+1. **Create Resend account** at [resend.com](https://resend.com)
+2. **Verify domain** — Resend dashboard → Domains → Add Domain → `fbardirect.com`
+   - Add the DKIM, SPF, and DMARC DNS records Resend provides to Namecheap:
+     - Namecheap → Domain List → `fbardirect.com` → Manage → Advanced DNS
+     - Add each TXT/CNAME record Resend requires (typically 3 records)
+   - Wait for Resend to show "Verified" status
+3. **Get API key** — Resend dashboard → API Keys → Create Key (domain-scoped to `fbardirect.com`)
+4. **Set env vars on server:**
+   ```bash
+   ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && \
+     sed -i 's|^D2C_RESEND_API_KEY=.*|D2C_RESEND_API_KEY=re_your_key_here|' .env && \
+     sed -i 's|^D2C_RESEND_FROM_EMAIL=.*|D2C_RESEND_FROM_EMAIL=noreply@fbardirect.com|' .env"
+   ```
+5. **Restart D2C:**
+   ```bash
+   ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate d2c-app"
+   ```
 
 ---
 
@@ -176,9 +210,10 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 
 ```
 Internet → Caddy (:443)
-            ├── b2b.*.sslip.io → B2B App (:3000) → Postgres (fbar_automator) / Redis / MinIO
-            │                                     → Worker (background jobs via Redis queue)
-            └── d2c.*.sslip.io → D2C App (:3001) → Postgres (fbar_direct) / MinIO
+            ├── b2b.*.sslip.io  → B2B App (:3000) → Postgres (fbar_automator) / Redis / MinIO
+            │                                      → Worker (background jobs via Redis queue)
+            ├── fbardirect.com  → D2C App (:3001) → Postgres (fbar_direct) / MinIO
+            └── www.fbardirect.com → 301 redirect → fbardirect.com
 ```
 
 | Service | Image | Resources | Network |
@@ -201,6 +236,32 @@ The `backend` network is internal-only (no external access). Only Caddy is expos
 | `fbar_direct` | D2C | `fbar-automator/d2c/prisma/schema.prisma` |
 
 Both accessed via the `fbar` superuser. Per-app users (`fbar_b2b`, `fbar_d2c`) defined in `docker/init-db.sh` but not yet created (init script only runs on fresh postgres).
+
+---
+
+## Password Gate (D2C)
+
+The D2C site is behind Caddy basic auth while in development. Credentials: `admin` / `admin123`.
+
+### Disable the password gate
+
+Remove the `PASSWORD GATE` block from `Caddyfile.prod` (between the `---` comment markers), then reload Caddy:
+
+```bash
+# After editing Caddyfile.prod locally and pushing:
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml exec caddy caddy reload --config /etc/caddy/Caddyfile"
+```
+
+If `caddy reload` fails, force-recreate:
+```bash
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy"
+```
+
+### Exempted paths
+
+These paths bypass the password gate:
+- `/api/stripe/webhook` — Stripe needs unauthenticated access for payment callbacks
+- `/health` — Health check endpoint for monitoring
 
 ---
 

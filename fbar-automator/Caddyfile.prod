@@ -99,6 +99,16 @@ www.{$D2C_DOMAIN} {
 		max_size 1MB
 	}
 
+	# --- PASSWORD GATE (remove this block to disable) ---
+	@d2c_protected {
+		not path /api/stripe/webhook
+		not path /health
+	}
+	basicauth @d2c_protected {
+		admin $2y$10$qdyVFYGWSlpiKJeutSnMwenxioDD2I6BDR.nbwcKPE8c6EsKsZjGq
+	}
+	# --- END PASSWORD GATE ---
+
 	# Stripe webhook — no rate limiting (Stripe manages its own retry logic)
 	@d2c_stripe path /api/stripe/webhook
 	# (no rate_limit applied — falls through to reverse_proxy)
