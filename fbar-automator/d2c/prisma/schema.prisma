@@ -27,6 +27,10 @@ model User {
   failedLoginAttempts Int       @default(0)
   lockoutUntil        DateTime?
 
+  mfaEnabled          Boolean   @default(false)
+  mfaSecret           String?
+  mfaVerifiedAt       DateTime?
+
   utmSource    String?  @db.VarChar(200)
   utmMedium    String?  @db.VarChar(200)
   utmCampaign  String?  @db.VarChar(200)
@@ -38,6 +42,7 @@ model User {
   payments      Payment[]
   resetTokens   PasswordResetToken[]
   statements    Statement[]
+  mfaRecoveryCodes MfaRecoveryCode[]
 }
 
 model ForeignAccount {
@@ -222,4 +227,17 @@ model Statement {
 
   @@index([userId])
   @@index([filingYearId])
+}
+
+model MfaRecoveryCode {
+  id        String   @id @default(cuid())
+  userId    String
+  codeHash  String
+  used      Boolean  @default(false)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([codeHash])
 }

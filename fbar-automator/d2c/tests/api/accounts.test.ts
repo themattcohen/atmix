@@ -300,8 +300,8 @@ describe("POST /api/accounts — account creation", () => {
     expect(dbAccount).not.toBeNull();
     // The stored value must NOT be the plaintext
     expect(dbAccount!.accountNumber).not.toBe("MYSECRET123");
-    // It must contain the iv:tag:cipher format
-    expect(dbAccount!.accountNumber).toMatch(/^[0-9a-f]+:[0-9a-f]+:[0-9a-f]+$/);
+    // It must contain the iv:tag:cipher format (v1:iv:tag:cipher or legacy iv:tag:cipher)
+    expect(dbAccount!.accountNumber).toMatch(/^(v1:)?[0-9a-f]+:[0-9a-f]+:[0-9a-f]+$/);
   });
 
   it("POST response shows last-4 digits of account number, not full number", async () => {

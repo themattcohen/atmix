@@ -114,14 +114,20 @@ export default auth((req) => {
   // ------------------------------------------------------------------
   // Fix 3: CSRF header check for state-changing requests
   // POST/PUT/PATCH/DELETE to /api/* must include X-Requested-With header
-  // Exempt: /api/auth/callback (NextAuth), /api/stripe/webhook (Stripe-signed)
+  // Exempt: NextAuth internal routes + Stripe webhook (has own sig verification)
   // ------------------------------------------------------------------
+  const csrfExemptPaths = [
+    "/api/auth/callback/",   // NextAuth OAuth callbacks
+    "/api/auth/session",     // NextAuth session endpoint
+    "/api/auth/csrf",        // NextAuth CSRF token endpoint
+    "/api/auth/providers",   // NextAuth providers list
+    "/api/auth/signout",     // NextAuth signout
+    "/api/stripe/webhook",   // Stripe (has own signature verification)
+    "/api/health",           // Health check
+  ];
   const method = request.method;
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-    const isExempt =
-      normalizedPath.startsWith("/api/auth/") ||
-      normalizedPath.startsWith("/api/stripe/webhook") ||
-      normalizedPath === "/api/health";
+    const isExempt = csrfExemptPaths.some((p) => normalizedPath.startsWith(p));
     if (!isExempt && normalizedPath.startsWith("/api/") && !request.headers.get("x-requested-with")) {
       return NextResponse.json({ error: "Missing CSRF header" }, { status: 403 });
     }

@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { signatureSchema } from "@/lib/validation";
 import { generateForm114a } from "@/lib/form114a";
-import { encrypt, safeDecrypt } from "@/lib/encryption";
+import { encrypt, decrypt } from "@/lib/encryption";
 
 export async function POST(req: NextRequest) {
   try {
@@ -73,7 +73,17 @@ export async function POST(req: NextRequest) {
       || "unknown";
 
     // Generate Form 114a PDF
-    const tinLast4 = user.tin ? safeDecrypt(user.tin).slice(-4) : "0000";
+    let tinLast4 = "0000";
+    if (user.tin) {
+      try {
+        tinLast4 = decrypt(user.tin).slice(-4);
+        if (!tinLast4 || tinLast4.length < 4) {
+          return NextResponse.json({ error: "Unable to retrieve your TIN" }, { status: 422 });
+        }
+      } catch {
+        return NextResponse.json({ error: "Unable to process your TIN" }, { status: 500 });
+      }
+    }
     const { key: form114aUrl } = await generateForm114a({
       userId: session.user.id,
       firstName: user.firstName,
