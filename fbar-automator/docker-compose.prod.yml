@@ -188,14 +188,17 @@ services:
 
   # ---------------------------------------------------------------------------
   # D2C App — FBAR Direct Filing (Next.js on port 3001)
+  # Image built by GitHub Actions → ghcr.io/themattcohen/fbar-d2c
+  # Old build config (for reference):
+  #   build:
+  #     context: ./d2c
+  #     dockerfile: Dockerfile
+  #     target: runner
+  #     args:
+  #       - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
   # ---------------------------------------------------------------------------
   d2c-app:
-    build:
-      context: ./d2c
-      dockerfile: Dockerfile
-      target: runner
-      args:
-        - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
+    image: ghcr.io/themattcohen/fbar-d2c:latest
     command: ["node", "server.js"]
     env_file:
       - .env
