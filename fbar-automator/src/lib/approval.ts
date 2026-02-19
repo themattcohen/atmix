@@ -136,10 +136,11 @@ export async function getFilingProgress(
   )
 
   // Derive readiness flags
-  const isReadyForReview =
-    totalStatements > 0 && pendingStatements === 0 && failedStatements === 0
   const isFullyReviewed =
     totalAccounts > 0 && reviewedAccounts >= totalAccounts
+  const isReadyForReview =
+    (totalStatements > 0 && pendingStatements === 0 && failedStatements === 0) ||
+    (totalStatements === 0 && isFullyReviewed)
   const isReadyForExport =
     isFullyReviewed && filingYear.status === "REVIEWED"
 

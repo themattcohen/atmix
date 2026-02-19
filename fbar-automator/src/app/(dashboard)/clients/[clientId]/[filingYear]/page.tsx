@@ -361,20 +361,20 @@ export default async function FilingYearPage({
               <Link
                 href={`/clients/${clientId}/${filingYear}/review`}
                 className={`rounded-lg border p-4 text-sm transition-colors ${
-                  progress.totalStatements > 0 && !progress.isFullyReviewed
+                  progress.totalAccounts > 0 && !progress.isFullyReviewed
                     ? "border-blue-300 bg-blue-50 ring-2 ring-blue-200"
-                    : progress.totalStatements === 0
+                    : progress.totalAccounts === 0
                       ? "border-gray-200 opacity-60"
                       : "border-gray-200 hover:bg-gray-50"
                 }`}
               >
                 <p className={`font-medium ${
-                  progress.totalStatements > 0 && !progress.isFullyReviewed ? "text-blue-900" : "text-gray-900"
+                  progress.totalAccounts > 0 && !progress.isFullyReviewed ? "text-blue-900" : "text-gray-900"
                 }`}>
                   Review Accounts
                 </p>
                 <p className={`mt-1 ${
-                  progress.totalStatements > 0 && !progress.isFullyReviewed ? "text-blue-700" : "text-gray-500"
+                  progress.totalAccounts > 0 && !progress.isFullyReviewed ? "text-blue-700" : "text-gray-500"
                 }`}>
                   {progress.reviewedAccounts} of {progress.totalAccounts} reviewed
                 </p>

@@ -176,13 +176,11 @@ export function FilingActions({
       )}
       {showSubmitForReview && isFullyReviewed && !isReadyForReview && (
         <p className="mt-2 text-xs text-gray-500">
-          {totalStatements === 0
-            ? "Upload and process at least one statement before submitting for review."
-            : failedStatements > 0
-              ? `${failedStatements} statement(s) failed processing. Reprocess or remove them before submitting.`
-              : pendingStatements > 0
-                ? `${pendingStatements} statement(s) still processing. Please wait for completion.`
-                : "All statements must be processed before submitting for review."}
+          {failedStatements > 0
+            ? `${failedStatements} statement(s) failed processing. Reprocess or remove them before submitting.`
+            : pendingStatements > 0
+              ? `${pendingStatements} statement(s) still processing. Please wait for completion.`
+              : "All statements must be processed before submitting for review."}
         </p>
       )}
     </div>

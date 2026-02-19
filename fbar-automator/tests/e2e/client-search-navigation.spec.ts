@@ -127,7 +127,7 @@ test.describe("Client Search & Navigation", () => {
 
     // Verify empty state text
     await expect(
-      page.getByText("No completed extractions to review")
+      page.getByText("No accounts yet")
     ).toBeVisible({ timeout: 10000 })
 
     // Verify "Go to Upload" link and click it

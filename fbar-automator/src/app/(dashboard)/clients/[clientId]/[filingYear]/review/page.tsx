@@ -9,6 +9,7 @@ import type { ExtractionResult, ExtractedAccount } from "@/types/extraction"
 import { consolidateAccounts } from "@/lib/consolidation"
 import type { StatementWithExtraction } from "@/lib/consolidation"
 import { ReviewPageClient } from "./ReviewPageClient"
+import { ManualAccountReviewCard } from "@/components/review/ManualAccountReviewCard"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -85,7 +86,15 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   // Fetch client's foreign accounts for matching
   const foreignAccounts = await prisma.foreignAccount.findMany({
     where: { clientId, isActive: true },
-    select: { id: true, accountNumber: true, institutionName: true },
+    select: {
+      id: true,
+      accountNumber: true,
+      institutionName: true,
+      accountType: true,
+      institutionAddressCountry: true,
+      ownershipType: true,
+      isActive: true,
+    },
   })
 
   // Get review progress for banner
@@ -97,6 +106,26 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
       where: { filingYearId: filingYearRecord.id, foreignAccount: { isActive: true } },
     }),
   ])
+
+  // Fetch existing manual reviews for this filing year
+  const existingReviews = await prisma.reviewedAccountYear.findMany({
+    where: { filingYearId: filingYearRecord.id },
+    select: {
+      foreignAccountId: true,
+      maxValueLocal: true,
+      currencyCode: true,
+      isValueUnknown: true,
+      maxValueUsd: true,
+    },
+  })
+  const reviewMap = new Map(
+    existingReviews.map(r => [r.foreignAccountId, {
+      maxValueLocal: r.maxValueLocal ? Number(r.maxValueLocal) : null,
+      currencyCode: r.currencyCode,
+      isValueUnknown: r.isValueUnknown,
+      maxValueUsd: r.maxValueUsd ? Number(r.maxValueUsd) : null,
+    }])
+  )
 
   // Fetch completed statements with extracted data - use select for efficiency
   const statements = await prisma.statement.findMany({
@@ -165,6 +194,11 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
 
   const hasStatements = statementData.length > 0
 
+  function maskAccountNumber(acctNum: string): string {
+    if (acctNum.length <= 4) return acctNum
+    return "****" + acctNum.slice(-4)
+  }
+
   return (
     <>
       <Header
@@ -226,7 +260,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           </div>
         )}
 
-        {hasStatements ? (
+        {/* Case 1: Has statements — show ReviewPageClient + unmatched manual accounts */}
+        {hasStatements && (
           <div className="mt-6">
             <ReviewPageClient
               consolidatedAccounts={consolidatedAccounts}
@@ -237,21 +272,98 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
               filingYearId={filingYearRecord.id}
               foreignAccounts={foreignAccounts}
             />
+
+            {/* Mixed path: accounts not matched to any consolidated account */}
+            {(() => {
+              const matchedAccountIds = new Set(
+                consolidatedAccounts
+                  .map(ca => ca.foreignAccountId)
+                  .filter((id): id is string => id != null)
+              )
+              const unmatchedAccounts = foreignAccounts.filter(
+                fa => fa.isActive && !matchedAccountIds.has(fa.id)
+              )
+              if (unmatchedAccounts.length === 0) return null
+              return (
+                <div className="mt-8">
+                  <div className="mb-4 border-t border-gray-200 pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Accounts Without Statement Data
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                      These accounts were added manually and don&apos;t appear in any uploaded statement. Enter their financial data below.
+                    </p>
+                  </div>
+                  <div className="space-y-4">
+                    {unmatchedAccounts.map(account => (
+                      <ManualAccountReviewCard
+                        key={account.id}
+                        account={{
+                          ...account,
+                          accountNumber: maskAccountNumber(account.accountNumber),
+                        }}
+                        existingReview={reviewMap.get(account.id) ?? null}
+                        filingYearId={filingYearRecord.id}
+                        onSaved={() => {}}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
           </div>
-        ) : (
+        )}
+
+        {/* Case 2: No statements but has accounts — show ManualReviewSection */}
+        {!hasStatements && foreignAccounts.filter(fa => fa.isActive).length > 0 && (
+          <div className="mt-6">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Manual Account Review
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Enter the maximum account value and currency for each account. This data will be used for the FBAR filing.
+              </p>
+            </div>
+            <div className="space-y-4">
+              {foreignAccounts.filter(fa => fa.isActive).map(account => (
+                <ManualAccountReviewCard
+                  key={account.id}
+                  account={{
+                    ...account,
+                    accountNumber: maskAccountNumber(account.accountNumber),
+                  }}
+                  existingReview={reviewMap.get(account.id) ?? null}
+                  filingYearId={filingYearRecord.id}
+                  onSaved={() => {}}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Case 3: No statements and no accounts */}
+        {!hasStatements && foreignAccounts.filter(fa => fa.isActive).length === 0 && (
           <Card className="mt-6">
             <CardContent className="flex flex-col items-center justify-center py-16">
               <FileWarning className="h-8 w-8 text-gray-400" />
               <p className="mt-4 text-sm text-gray-500">
-                No completed extractions to review. Upload and process
-                statements first.
+                No accounts yet. Add accounts on the client page, or upload statements.
               </p>
-              <Link
-                href={`/clients/${clientId}/${filingYear}/upload`}
-                className="mt-4 text-sm font-medium text-blue-600 hover:text-blue-800"
-              >
-                Go to Upload
-              </Link>
+              <div className="mt-4 flex gap-4">
+                <Link
+                  href={`/clients/${clientId}`}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                >
+                  Go to Client Page
+                </Link>
+                <Link
+                  href={`/clients/${clientId}/${filingYear}/upload`}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                >
+                  Go to Upload
+                </Link>
+              </div>
             </CardContent>
           </Card>
         )}

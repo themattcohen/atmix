@@ -158,7 +158,7 @@ test.describe("Client Flow UX", () => {
     await page.click("text=Review")
     await page.waitForTimeout(2000)
     await expect(
-      page.locator("text=No completed extractions to review")
+      page.locator("text=No accounts yet")
     ).toBeVisible({ timeout: 10000 })
   })
 })
