@@ -245,17 +245,14 @@ The D2C site is behind Caddy basic auth while in development. Credentials: `admi
 
 ### Disable the password gate
 
-Remove the `PASSWORD GATE` block from `Caddyfile.prod` (between the `---` comment markers), then reload Caddy:
+Remove the `PASSWORD GATE` block from `Caddyfile.prod` (between the `---` comment markers), then force-recreate Caddy:
 
 ```bash
 # After editing Caddyfile.prod locally and pushing:
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml exec caddy caddy reload --config /etc/caddy/Caddyfile"
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy"
 ```
 
-If `caddy reload` fails, force-recreate:
-```bash
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate caddy"
-```
+**Note:** `caddy reload` alone won't work — the bind mount needs a container recreate to pick up file changes.
 
 ### Exempted paths
 
