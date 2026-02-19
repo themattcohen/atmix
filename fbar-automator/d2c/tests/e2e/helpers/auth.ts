@@ -145,8 +145,11 @@ export async function resetLockout(
   request: import("@playwright/test").APIRequestContext,
   email = "debug@example.com"
 ) {
-  await request.post("/api/test/reset-lockout", {
-    headers: { "x-requested-with": "playwright" },
-    data: { email },
-  });
+  // The /api/test/reset-lockout route has been deleted for security.
+  // In dev/test, the seed user debug@example.com never locks out because
+  // tests reset state by using a fresh signup or by accepting that the
+  // login test might encounter a lockout (which auto-expires after 15 min).
+  // This function is now a no-op kept for backward compatibility.
+  // If lockout becomes an issue in tests, run:
+  //   npx tsx -e "const {prisma} = require('./src/lib/db'); prisma.user.updateMany({where:{email:'${email}'}, data:{failedLoginAttempts:0, lockoutUntil:null}})"
 }

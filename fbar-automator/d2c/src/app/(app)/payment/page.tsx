@@ -21,6 +21,7 @@ export default function PaymentPage() {
   const [error, setError] = useState("");
   const [filing, setFiling] = useState<FilingData | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const tier = (filing?.tier?.toLowerCase() || "basic") as PricingTier;
   const pricing = PRICING[tier];
@@ -30,16 +31,30 @@ export default function PaymentPage() {
       try {
         const res = await fetch("/api/filing");
         const data = await res.json();
-        if (data.data && data.data.length > 0) {
-          const signedFiling = data.data.find((f: FilingData) => f.status === "SIGNED");
-          if (signedFiling) setFiling(signedFiling);
+        const filings = data.data || [];
+
+        // P1-9: Redirect completed filings to confirmation
+        const completedFiling = filings.find((f: FilingData) =>
+          ["PAID", "SUBMITTED", "ACCEPTED", "SUBMITTING"].includes(f.status)
+        );
+        if (completedFiling) {
+          router.push("/confirmation");
+          return;
+        }
+
+        // P1-8: Find SIGNED filing or show message
+        const signedFiling = filings.find((f: FilingData) => f.status === "SIGNED");
+        if (signedFiling) {
+          setFiling(signedFiling);
         }
       } catch {
         setError("Failed to load filing details");
+      } finally {
+        setInitialLoading(false);
       }
     }
     loadFiling();
-  }, []);
+  }, [router]);
 
   const handlePayment = async () => {
     if (!filing || redirecting) return;
@@ -91,7 +106,7 @@ export default function PaymentPage() {
     handlePayment();
   };
 
-  if (!filing && !error) {
+  if (initialLoading) {
     return (
       <WizardLayout currentStep={6} onPrevious="/sign">
         <div className="flex justify-center py-12" aria-label="Loading payment page">
@@ -108,13 +123,13 @@ export default function PaymentPage() {
       <WizardLayout currentStep={6} onPrevious="/sign">
         <div className="max-w-2xl mx-auto py-8 px-4">
           <div role="alert" className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-md mb-6">
-            Please complete the signing step first.
+            {error ? error : "Please complete and sign your FBAR before proceeding to payment."}
           </div>
           <Link
-            href="/sign"
+            href={error ? "/payment" : "/review"}
             className="inline-block py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-bold"
           >
-            Go to Signing
+            {error ? "Retry" : "Go to Review & Sign"}
           </Link>
         </div>
       </WizardLayout>

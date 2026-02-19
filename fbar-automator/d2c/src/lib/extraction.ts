@@ -14,9 +14,6 @@ const MEDIA_TYPE_MAP: Record<string, string> = {
   png: "image/png",
   gif: "image/gif",
   webp: "image/webp",
-  tiff: "image/tiff",
-  tif: "image/tiff",
-  bmp: "image/bmp",
   csv: "text/csv",
   xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 }

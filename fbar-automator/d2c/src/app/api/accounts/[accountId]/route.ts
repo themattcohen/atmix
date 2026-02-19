@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { foreignAccountSchema } from "@/lib/validation";
 import { encrypt } from "@/lib/encryption";
 import { mapAccountToDisplay } from "@/lib/account-mapper";
+import { getRate } from "@/lib/treasury";
 import { Prisma } from "@prisma/client";
 
 export async function GET(
@@ -77,12 +78,32 @@ export async function PUT(
     if (d.maxValueLocal !== undefined) updateData.maxValueLocal = d.maxValueLocal;
     if (d.isJointAccount !== undefined) updateData.isJointAccount = d.isJointAccount;
     if (d.jointOwnerInfo !== undefined) updateData.jointOwnerInfo = d.jointOwnerInfo || null;
-    if (d.institutionAddress !== undefined) updateData.institutionAddress = d.institutionAddress as unknown as Prisma.InputJsonValue;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (d.institutionAddress !== undefined) updateData.institutionAddress = (d.institutionAddress || null) as any;
 
     const account = await prisma.foreignAccount.update({
       where: { id: params.accountId },
       data: updateData,
     });
+
+    // Recompute maxValueUsd if relevant fields changed
+    if (d.currencyCode !== undefined || d.maxValueLocal !== undefined) {
+      const updated = await prisma.foreignAccount.findUnique({ where: { id: params.accountId } });
+      if (updated && updated.currencyCode && updated.maxValueLocal) {
+        if (updated.currencyCode === "USD") {
+          await prisma.foreignAccount.update({
+            where: { id: updated.id },
+            data: { maxValueUsd: updated.maxValueLocal },
+          });
+        } else {
+          const rateResult = await getRate(updated.currencyCode, updated.calendarYear);
+          await prisma.foreignAccount.update({
+            where: { id: updated.id },
+            data: { maxValueUsd: rateResult ? Number(updated.maxValueLocal) * rateResult.rate : null },
+          });
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,
@@ -118,7 +139,18 @@ export async function DELETE(
       return NextResponse.json({ error: "Account not found" }, { status: 404 });
     }
 
+    const { calendarYear } = existing;
+
     await prisma.foreignAccount.delete({ where: { id: params.accountId } });
+
+    // Recompute has25PlusAccounts flag after account deletion
+    const accountCount = await prisma.foreignAccount.count({
+      where: { userId: session.user.id, calendarYear },
+    });
+    await prisma.filingYear.updateMany({
+      where: { userId: session.user.id, calendarYear, status: "IN_PROGRESS" },
+      data: { has25PlusAccounts: accountCount >= 25 },
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

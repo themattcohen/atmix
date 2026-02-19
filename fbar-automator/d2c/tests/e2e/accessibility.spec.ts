@@ -217,14 +217,7 @@ test.describe("Error Messages Accessibility", () => {
     // At minimum, the error should be visible and announced
     // (even if it does not use role="alert", it should be detectable)
     const isAnnounced = role === "alert" || ariaLive !== null;
-    // Log for information even if not failing — this is aspirational
-    if (!isAnnounced) {
-      console.warn(
-        "Login error container does not have role='alert' or aria-live attribute. " +
-          "Consider adding for screen reader support."
-      );
-    }
-    // Still assert the error is at least visible
+    expect(isAnnounced).toBeTruthy();
     await expect(errorContainer).toBeVisible();
   });
 

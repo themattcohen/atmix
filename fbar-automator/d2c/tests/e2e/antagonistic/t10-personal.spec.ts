@@ -291,7 +291,7 @@ test.describe("Personal Information Wizard Step — Antagonistic Tests", () => {
     await expect(stateSelect).toBeVisible({ timeout: 15_000 });
     // Wait for options to populate (useEffect loads data async)
     await page.waitForFunction(
-      () => document.querySelector("#state")?.querySelectorAll("option").length > 5,
+      () => (document.querySelector("#state")?.querySelectorAll("option").length ?? 0) > 5,
       { timeout: 15_000 }
     );
 
@@ -393,7 +393,7 @@ test.describe("Personal Information Wizard Step — Antagonistic Tests", () => {
 
     // Wait for state dropdown to have options (useEffect data load)
     await page.waitForFunction(
-      () => document.querySelector("#state")?.querySelectorAll("option").length > 5,
+      () => (document.querySelector("#state")?.querySelectorAll("option").length ?? 0) > 5,
       { timeout: 15_000 }
     );
 
@@ -456,7 +456,7 @@ test.describe("Personal Information Wizard Step — Antagonistic Tests", () => {
 
     // Wait for state dropdown to populate
     await page.waitForFunction(
-      () => document.querySelector("#state")?.querySelectorAll("option").length > 5,
+      () => (document.querySelector("#state")?.querySelectorAll("option").length ?? 0) > 5,
       { timeout: 15_000 }
     );
 

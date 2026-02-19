@@ -9,7 +9,13 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { filingYearId, tier } = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const { filingYearId, tier } = body;
 
     if (!filingYearId || !tier) {
       return NextResponse.json({ error: "filingYearId and tier are required" }, { status: 400 });

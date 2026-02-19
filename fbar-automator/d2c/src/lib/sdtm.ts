@@ -22,10 +22,14 @@ function getSFTPConnectConfig(): Record<string, unknown> {
     host: process.env.SDTM_HOST,
     port: parseInt(process.env.SDTM_PORT || "22"),
     username: process.env.SDTM_USERNAME,
+    readyTimeout: 10000,
   };
 
   const keyPath = process.env.SDTM_PRIVATE_KEY_PATH;
   if (keyPath) {
+    if (!fs.existsSync(keyPath)) {
+      throw new Error(`SFTP private key not found at: ${keyPath}`);
+    }
     config.privateKey = fs.readFileSync(keyPath);
   }
 

@@ -8,7 +8,10 @@ import Link from "next/link";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/threshold";
+  const rawCallback = searchParams.get("callbackUrl") || "/threshold";
+  const callbackUrl = (rawCallback.startsWith("/") && !rawCallback.startsWith("//"))
+    ? rawCallback
+    : "/threshold";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -50,7 +53,7 @@ function LoginForm() {
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
+          <div role="alert" aria-live="polite" className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
             {error}
           </div>
         )}

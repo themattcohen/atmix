@@ -1,19 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/lib/db";
 import crypto from "crypto";
 import { sendPasswordResetEmail } from "@/lib/email";
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email().max(254),
+});
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email } = body;
-
-    if (!email || typeof email !== "string") {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
-      );
+    const parsed = forgotPasswordSchema.safeParse(body);
+    if (!parsed.success) {
+      // Return same success response to prevent email format enumeration
+      return NextResponse.json({
+        message:
+          "If an account exists with that email, we've sent password reset instructions.",
+      });
     }
+    const { email } = parsed.data;
 
     // Always return success to prevent email enumeration
     const user = await prisma.user.findUnique({

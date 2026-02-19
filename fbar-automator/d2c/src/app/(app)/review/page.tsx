@@ -77,8 +77,28 @@ export default function ReviewPage() {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const config = getCtaConfig();
+
+    // If filing is IN_PROGRESS, confirm review before proceeding to sign
+    if (filing && filing.status === "IN_PROGRESS") {
+      try {
+        const res = await fetch("/api/filing/review", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+          body: JSON.stringify({ filingYearId: filing.id }),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          setError(data.error || "Failed to confirm review");
+          return;
+        }
+      } catch {
+        setError("An unexpected error occurred");
+        return;
+      }
+    }
+
     router.push(config.path);
   };
 

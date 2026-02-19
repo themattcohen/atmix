@@ -10,6 +10,9 @@ const withMDX = createMDX({
 const nextConfig = {
   output: "standalone",
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
+  experimental: {
+    serverComponentsExternalPackages: ['ssh2'],
+  },
 
   async headers() {
     // Development needs 'unsafe-eval' for React Refresh / HMR

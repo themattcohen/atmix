@@ -7,13 +7,28 @@ import { sendSubmissionEmail } from "@/lib/email";
 import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
+  // Track these outside try for status revert in catch
+  let filingYearId: string | undefined;
+  let userId: string | undefined;
+
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    userId = session.user.id;
 
-    const { filingYearId } = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    filingYearId = body.filingYearId;
+
+    if (!filingYearId) {
+      return NextResponse.json({ error: "filingYearId is required" }, { status: 400 });
+    }
 
     const filingYear = await prisma.filingYear.findFirst({
       where: { id: filingYearId, userId: session.user.id },
@@ -70,6 +85,19 @@ export async function POST(req: NextRequest) {
     // Generate FinCEN XML
     const xml = await generateFincenXml(filingYearId);
 
+    // Validate XML before sending to FinCEN
+    if (!xml || xml.length < 100 || !xml.includes("<BSAMessage")) {
+      // Revert SUBMITTING -> PAID
+      await prisma.filingYear.updateMany({
+        where: { id: filingYearId, userId: session.user.id, status: "SUBMITTING" },
+        data: { status: "PAID" },
+      });
+      return NextResponse.json(
+        { error: "XML validation failed — cannot submit malformed data to FinCEN" },
+        { status: 500 }
+      );
+    }
+
     // Create batch ID
     const batchId = crypto.randomUUID();
 
@@ -118,7 +146,18 @@ export async function POST(req: NextRequest) {
       data: { batchId, submittedAt: new Date().toISOString() },
     });
   } catch (error) {
-    console.error("SDTM submit error:", error instanceof Error ? error.message : "Unknown error");
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    // Revert SUBMITTING -> PAID to prevent stuck filings
+    if (filingYearId && userId) {
+      try {
+        await prisma.filingYear.updateMany({
+          where: { id: filingYearId, userId, status: "SUBMITTING" },
+          data: { status: "PAID" },
+        });
+      } catch (revertError) {
+        console.error("Failed to revert filing status:", revertError instanceof Error ? revertError.message : "Unknown error");
+      }
+    }
+    console.error("SDTM submission failed:", error instanceof Error ? error.message : "Unknown error");
+    return NextResponse.json({ error: "Submission failed" }, { status: 500 });
   }
 }

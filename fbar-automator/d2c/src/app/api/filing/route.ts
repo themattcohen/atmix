@@ -70,6 +70,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid filing type" }, { status: 400 });
     }
 
+    // AMENDED filings require an existing ACCEPTED filing for the same year
+    if (filingType === "AMENDED") {
+      const acceptedFiling = await prisma.filingYear.findFirst({
+        where: { userId: session.user.id, calendarYear, status: "ACCEPTED" },
+      });
+      if (!acceptedFiling) {
+        return NextResponse.json(
+          { error: "Cannot create amended filing: original filing must be in ACCEPTED status" },
+          { status: 400 }
+        );
+      }
+    }
+
     // Check for existing filing (allow AMENDED if ORIGINAL exists)
     const existing = await prisma.filingYear.findFirst({
       where: {

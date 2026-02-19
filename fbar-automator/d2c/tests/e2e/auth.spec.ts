@@ -359,4 +359,32 @@ test.describe("Auth Redirects", () => {
     await page.waitForURL("**/login**", { timeout: 15000 });
     await expect(page).toHaveURL(/\/login/);
   });
+
+  test("login blocks external redirect via callbackUrl (absolute URL)", async ({ page }) => {
+    await page.goto("/login?callbackUrl=https://evil.com");
+    await page.fill("#email", "debug@example.com");
+    await page.fill("#password", "Debug123!");
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
+    // Should NOT be on evil.com
+    expect(page.url()).not.toContain("evil.com");
+  });
+
+  test("login blocks protocol-relative redirect via callbackUrl", async ({ page }) => {
+    await page.goto("/login?callbackUrl=//evil.com");
+    await page.fill("#email", "debug@example.com");
+    await page.fill("#password", "Debug123!");
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 30000 });
+    expect(page.url()).not.toContain("evil.com");
+  });
+
+  test("login allows valid internal callbackUrl", async ({ page }) => {
+    await page.goto("/login?callbackUrl=/dashboard");
+    await page.fill("#email", "debug@example.com");
+    await page.fill("#password", "Debug123!");
+    await page.click('button[type="submit"]');
+    await page.waitForURL("**/dashboard", { timeout: 30000 });
+    await expect(page).toHaveURL(/\/dashboard/);
+  });
 });

@@ -2,8 +2,8 @@ const ALLOWED_TYPES = new Set([
   "application/pdf",
   "image/jpeg",
   "image/png",
-  "image/heic",
-  "image/tiff",
+  "image/gif",
+  "image/webp",
   "text/csv",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ])
@@ -14,10 +14,8 @@ const MAGIC_BYTES: Record<string, Buffer[]> = {
   "application/pdf": [Buffer.from([0x25, 0x50, 0x44, 0x46])],
   "image/jpeg": [Buffer.from([0xFF, 0xD8, 0xFF])],
   "image/png": [Buffer.from([0x89, 0x50, 0x4E, 0x47])],
-  "image/tiff": [
-    Buffer.from([0x49, 0x49, 0x2A, 0x00]),
-    Buffer.from([0x4D, 0x4D, 0x00, 0x2A]),
-  ],
+  "image/gif": [Buffer.from([0x47, 0x49, 0x46])],
+  "image/webp": [Buffer.from([0x52, 0x49, 0x46, 0x46])],
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
     Buffer.from([0x50, 0x4B, 0x03, 0x04]),
   ],
@@ -37,7 +35,7 @@ export function normalizeMimeType(file: { name: string; type: string }): string 
 export function validateFile(file: { name: string; type: string; size: number }): string | null {
   const mimeType = normalizeMimeType(file)
   if (!ALLOWED_TYPES.has(mimeType)) {
-    return `File type "${file.type}" is not supported. Accepted: PDF, JPEG, PNG, HEIC, TIFF, CSV, Excel (.xlsx).`
+    return `File type "${file.type}" is not supported. Accepted: PDF, JPEG, PNG, GIF, WebP, CSV, Excel (.xlsx).`
   }
   if (file.size > MAX_FILE_SIZE) {
     return `File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds the 50MB limit.`
@@ -49,7 +47,7 @@ export function validateFile(file: { name: string; type: string; size: number })
 }
 
 export function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
-  if (mimeType === "image/heic" || mimeType === "text/csv") return true
+  if (mimeType === "text/csv") return true
   const expectedBytes = MAGIC_BYTES[mimeType]
   if (!expectedBytes) return true
   return expectedBytes.some((magicBytes) => {

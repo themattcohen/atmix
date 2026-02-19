@@ -52,8 +52,14 @@ export async function POST(req: NextRequest) {
           break;
         }
 
-        if (filing.status !== "SIGNED" && filing.status !== "IN_PROGRESS") {
-          console.warn(`Webhook: filing ${filingYearId} in unexpected state ${filing.status}, skipping payment`);
+        if (filing.status !== "SIGNED") {
+          console.warn(`Webhook: filing ${filingYearId} in unexpected state ${filing.status} (expected SIGNED), skipping payment`);
+          break;
+        }
+
+        // Only advance to PAID when payment is actually confirmed
+        if (session.payment_status !== "paid") {
+          console.warn(`Webhook: checkout session ${session.id} has payment_status=${session.payment_status}, deferring`);
           break;
         }
 
@@ -77,26 +83,8 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        // Fire-and-forget GA4 Measurement Protocol purchase event
-        if (process.env.GA4_MEASUREMENT_ID && process.env.GA4_API_SECRET) {
-          fetch(
-            `https://www.google-analytics.com/mp/collect?measurement_id=${process.env.GA4_MEASUREMENT_ID}&api_secret=${process.env.GA4_API_SECRET}`,
-            {
-              method: 'POST',
-              body: JSON.stringify({
-                client_id: session.metadata?.userId || 'server',
-                events: [{
-                  name: 'purchase',
-                  params: {
-                    currency: 'USD',
-                    value: session.amount_total! / 100,
-                    transaction_id: session.id,
-                  },
-                }],
-              }),
-            }
-          ).catch(() => {}); // Fire and forget — don't block webhook processing
-        }
+        // GA4 purchase event handled client-side on the confirmation page
+        // (server-side Measurement Protocol removed — no access to client _ga cookie)
 
         break;
       }
@@ -141,18 +129,9 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Revert filing status to SIGNED if it was advanced to PAID
-        // (only if payment failed before completion)
-        if (paymentIntent.metadata?.userId && paymentIntent.metadata?.filingYearId) {
-          await prisma.filingYear.updateMany({
-            where: {
-              id: paymentIntent.metadata.filingYearId,
-              userId: paymentIntent.metadata.userId,
-              status: "PAID", // Only revert if still in PAID state
-            },
-            data: { status: "SIGNED" },
-          });
-        }
+        // Note: No filing status revert needed. If payment failed, checkout.session.completed
+        // never fired, so the filing is still in SIGNED state. The checkout.session.expired
+        // handler covers the session-timeout case for the Payment record.
 
         break;
       }

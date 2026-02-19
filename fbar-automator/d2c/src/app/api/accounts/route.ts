@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { foreignAccountSchema } from "@/lib/validation";
 import { encrypt } from "@/lib/encryption";
 import { mapAccountToDisplay } from "@/lib/account-mapper";
+import { getRate } from "@/lib/treasury";
 import { Prisma, AccountType, OwnershipType } from "@prisma/client";
 import { PriorYearInfo } from "@/types";
 
@@ -14,11 +15,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const calendarYear = req.nextUrl.searchParams.get("calendarYear");
+    const calendarYearParam = req.nextUrl.searchParams.get("calendarYear");
 
     const where: Prisma.ForeignAccountWhereInput = { userId: session.user.id };
-    if (calendarYear) {
-      where.calendarYear = parseInt(calendarYear);
+    if (calendarYearParam) {
+      const calendarYear = parseInt(calendarYearParam, 10);
+      if (isNaN(calendarYear)) {
+        return NextResponse.json({ error: "Invalid calendar year" }, { status: 400 });
+      }
+      where.calendarYear = calendarYear;
     }
 
     const accounts = await prisma.foreignAccount.findMany({
@@ -27,12 +32,13 @@ export async function GET(req: NextRequest) {
     });
 
     let priorYears: PriorYearInfo[] = [];
-    if (calendarYear && accounts.length === 0) {
+    if (calendarYearParam && accounts.length === 0) {
+      const parsedYear = parseInt(calendarYearParam, 10);
       const grouped = await prisma.foreignAccount.groupBy({
         by: ['calendarYear'],
         where: {
           userId: session.user.id,
-          calendarYear: { lt: parseInt(calendarYear) },
+          calendarYear: { lt: parsedYear },
         },
         _count: { id: true },
         orderBy: { calendarYear: 'desc' },
@@ -99,6 +105,31 @@ export async function POST(req: NextRequest) {
         institutionAddress: institutionAddress ? (institutionAddress as unknown as Prisma.InputJsonValue) : undefined,
       },
     });
+
+    // Recompute has25PlusAccounts flag after account creation
+    const accountCount = await prisma.foreignAccount.count({
+      where: { userId: session.user.id, calendarYear },
+    });
+    await prisma.filingYear.updateMany({
+      where: { userId: session.user.id, calendarYear, status: "IN_PROGRESS" },
+      data: { has25PlusAccounts: accountCount >= 25 },
+    });
+
+    // Compute maxValueUsd for non-USD currencies
+    if (account.currencyCode && account.currencyCode !== "USD" && account.maxValueLocal) {
+      const rateResult = await getRate(account.currencyCode, account.calendarYear);
+      const maxValueUsd = rateResult ? Number(account.maxValueLocal) * rateResult.rate : null;
+      await prisma.foreignAccount.update({
+        where: { id: account.id },
+        data: { maxValueUsd },
+      });
+    } else if (account.currencyCode === "USD" && account.maxValueLocal) {
+      // USD accounts: maxValueUsd = maxValueLocal (1:1)
+      await prisma.foreignAccount.update({
+        where: { id: account.id },
+        data: { maxValueUsd: account.maxValueLocal },
+      });
+    }
 
     return NextResponse.json(
       {
