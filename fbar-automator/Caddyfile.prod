@@ -105,7 +105,7 @@ www.{$D2C_DOMAIN} {
 		not path /health
 	}
 	basicauth @d2c_protected {
-		admin $2y$10$qdyVFYGWSlpiKJeutSnMwenxioDD2I6BDR.nbwcKPE8c6EsKsZjGq
+		admin $2a$14$Jjd7CnDjUnC2ias/pDOEGuYnG8nxRNni3/Ar.hUFD9DuxuJc/7SJK
 	}
 	# --- END PASSWORD GATE ---
 
