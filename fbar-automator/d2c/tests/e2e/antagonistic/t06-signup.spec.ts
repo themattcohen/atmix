@@ -17,38 +17,54 @@ import { test, expect } from "@playwright/test";
 test.describe("Signup Flow", () => {
   test.use({ baseURL: "http://localhost:3001" });
 
-  // Increase per-test timeout for slower dev server responses
-  test.setTimeout(60000);
+  // Increase per-test timeout: the signup API is slow on a cold Next.js dev
+  // server (first request triggers route compilation + Prisma init, ~45s).
+  // Subsequent requests are fast once the server is warm.
+  test.setTimeout(120000);
 
   /**
    * Helper: navigate to /signup and wait for React hydration.
+   *
    * Uses domcontentloaded (not networkidle) because the Next.js dev server
-   * HMR WebSocket and Google Font requests prevent networkidle from settling.
-   * Instead we wait for the #firstName field to be visible, which proves
-   * React has hydrated the form and event handlers are attached.
+   * HMR WebSocket and font requests prevent networkidle from settling.
+   * After DOM load we wait for React to attach its fiber/event data to the
+   * form element — this is the precise signal that onSubmit is wired up.
    */
   async function gotoSignup(page: import("@playwright/test").Page) {
     await page.goto("/signup", { waitUntil: "domcontentloaded" });
-    // Wait for React hydration — the form fields are rendered by a client component
-    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
-    await page.waitForTimeout(500);
+    // Wait for React hydration by polling for React's internal fiber key on
+    // the form element. This is the only reliable signal that React has
+    // finished hydration and the onSubmit handler is attached.
+    await page.waitForFunction(
+      () => {
+        const form = document.querySelector("form");
+        if (!form) return false;
+        return Object.keys(form).some(
+          (k) =>
+            k.startsWith("__reactFiber") ||
+            k.startsWith("__reactEvents") ||
+            k.startsWith("__reactProps")
+        );
+      },
+      { timeout: 20000 }
+    );
   }
 
   /**
    * Helper: fill a single form field reliably for React controlled components.
-   * Uses pressSequentially to type character-by-character, ensuring React's
-   * onChange handler fires for each keystroke.
+   *
+   * Uses page.fill() which atomically sets the DOM value and dispatches
+   * the input/change events that React's synthetic event system listens to.
+   * pressSequentially was unreliable: character-by-character typing sometimes
+   * left React's controlled state empty when the submit button was clicked.
    */
   async function fillField(
     page: import("@playwright/test").Page,
     selector: string,
     value: string
   ) {
-    const field = page.locator(selector);
-    await field.click();
-    await field.fill("");
-    await field.pressSequentially(value, { delay: 10 });
-    await expect(field).toHaveValue(value);
+    await page.fill(selector, value);
+    await expect(page.locator(selector)).toHaveValue(value);
   }
 
   /**
@@ -148,6 +164,10 @@ test.describe("Signup Flow", () => {
   test("mismatched confirmPassword shows server-side mismatch error", async ({
     page,
   }) => {
+    // The first POST to /api/auth/signup triggers Next.js route compilation
+    // which can take 60-90s on a cold dev server. test.slow() triples the
+    // test timeout (120s → 360s) to accommodate this.
+    test.slow();
     await gotoSignup(page);
 
     await fillSignupForm(page, {
@@ -158,10 +178,11 @@ test.describe("Signup Flow", () => {
       confirmPassword: "DifferentPass456",
     });
 
-    // Set up response listener BEFORE clicking submit
+    // Set up response listener BEFORE clicking submit.
+    // Allow 90s for cold-start route compilation + Zod validation.
     const responsePromise = page.waitForResponse(
       (resp) => resp.url().includes("/api/auth/signup"),
-      { timeout: 30000 }
+      { timeout: 90000 }
     );
 
     // Submit -- passes HTML5 validation so onSubmit fires
@@ -195,13 +216,13 @@ test.describe("Signup Flow", () => {
     const minLenError = page.locator(
       "text=Password must be at least 8 characters"
     );
-    await expect(minLenError).toBeVisible({ timeout: 15000 });
+    await expect(minLenError).toBeVisible({ timeout: 60000 });
 
     // Should show "Password must contain at least one uppercase letter"
     const uppercaseError = page.locator(
       "text=Password must contain at least one uppercase letter"
     );
-    await expect(uppercaseError).toBeVisible({ timeout: 15000 });
+    await expect(uppercaseError).toBeVisible({ timeout: 10000 });
   });
 
   test("weak password (long enough but no uppercase) shows uppercase error", async ({
@@ -222,7 +243,7 @@ test.describe("Signup Flow", () => {
     const uppercaseError = page.locator(
       "text=Password must contain at least one uppercase letter"
     );
-    await expect(uppercaseError).toBeVisible({ timeout: 15000 });
+    await expect(uppercaseError).toBeVisible({ timeout: 60000 });
 
     // Should NOT show the "at least 8 characters" error since length is fine
     const minLenError = page.locator(
@@ -247,7 +268,7 @@ test.describe("Signup Flow", () => {
     const numberError = page.locator(
       "text=Password must contain at least one number"
     );
-    await expect(numberError).toBeVisible({ timeout: 15000 });
+    await expect(numberError).toBeVisible({ timeout: 60000 });
 
     // Should NOT show uppercase or min-length errors
     const uppercaseError = page.locator(
@@ -259,6 +280,8 @@ test.describe("Signup Flow", () => {
   test("valid signup creates account and redirects to /threshold or /login", async ({
     page,
   }) => {
+    // bcrypt at cost 12 is slow under dev server load; triple the timeout
+    test.slow();
     await gotoSignup(page);
 
     const uniqueEmail = `test-antagonistic-${Date.now()}@example.com`;
@@ -271,10 +294,11 @@ test.describe("Signup Flow", () => {
       confirmPassword: "TestPass123",
     });
 
-    // Set up response listener for signup API
+    // Set up response listener for signup API before clicking submit.
+    // test.slow() triples timeout to 360s; give bcrypt 120s to hash.
     const signupResponsePromise = page.waitForResponse(
       (resp) => resp.url().includes("/api/auth/signup"),
-      { timeout: 30000 }
+      { timeout: 120000 }
     );
 
     // Submit the form
@@ -286,8 +310,8 @@ test.describe("Signup Flow", () => {
 
     // After signup, the app calls signIn("credentials") for auto-login.
     // If auto-login succeeds -> /threshold; if it fails -> /login with error message.
-    // Wait for either URL to appear.
-    await page.waitForURL(/(threshold|login)/, { timeout: 45000 });
+    // Allow 120s for auto-login + NextAuth session + RSC navigation to complete.
+    await page.waitForURL(/(threshold|login)/, { timeout: 120000 });
 
     const finalUrl = page.url();
     if (finalUrl.includes("/threshold")) {

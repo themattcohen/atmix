@@ -6,10 +6,10 @@ Both apps are deployed on a single Hetzner VPS. **Read the ops runbook before to
 
 **`claudedocs/B2B-OPS-RUNBOOK.md`** — SSH access, URLs, deploy commands, migrations, logs, backups, troubleshooting.
 
-| App | URL |
-|-----|-----|
-| B2B (preparer) | `https://b2b.178-156-250-116.sslip.io` |
-| D2C (direct filing) | `https://d2c.178-156-250-116.sslip.io` |
+| App | URL | Domain Registrar |
+|-----|-----|-----------------|
+| B2B (preparer) | `https://b2b.178-156-250-116.sslip.io` | sslip.io (free) |
+| D2C (direct filing) | `https://fbardirect.com` | Namecheap |
 
 ## Codebase
 

@@ -3,7 +3,7 @@
 **Target:** Hetzner CAX11 (ARM, 2 vCPU, 4GB RAM, 40GB disk, ~$4.49/mo)
 **Location:** US-East (Ashburn, VA)
 **Stack:** Caddy (auto-TLS + rate limiting) → B2B app + D2C app + B2B worker + Postgres + Redis + MinIO
-**Prerequisites:** Two domain names (e.g., `preparer.yourdomain.com` + `file.yourdomain.com`)
+**Prerequisites:** Domain name(s) on Namecheap. D2C uses `fbardirect.com`. B2B uses sslip.io (or a separate domain when ready).
 
 ---
 
@@ -65,20 +65,32 @@
 
 ## Phase 2: Point Your Domains (~2 min)
 
-In your DNS provider (Cloudflare, Namecheap, etc.), create two A records:
+### D2C Domain: fbardirect.com (Namecheap)
 
-| Type | Name | Value | TTL |
+In Namecheap → Domain List → `fbardirect.com` → Manage → Advanced DNS:
+
+| Type | Host | Value | TTL |
 |------|------|-------|-----|
-| A | `preparer` | `<server-ip>` | 300 |
-| A | `file` | `<server-ip>` | 300 |
+| A Record | `@` | `<server-ip>` | Automatic |
+| A Record | `www` | `<server-ip>` | Automatic |
+
+Delete any existing parking page records first.
+
+### B2B Domain
+
+B2B uses sslip.io by default (no DNS setup needed). When you register a B2B domain:
+
+| Type | Host | Value | TTL |
+|------|------|-------|-----|
+| A Record | `@` or subdomain | `<server-ip>` | Automatic |
 
 Wait for DNS propagation (usually <5 min):
 ```bash
-dig preparer.yourdomain.com
-dig file.yourdomain.com
+dig fbardirect.com
+dig www.fbardirect.com
 ```
 
-> **Note:** If using Cloudflare, set proxy status to "DNS only" (grey cloud) so Caddy can provision TLS certificates directly.
+> **Note:** If using Cloudflare for any domain, set proxy status to "DNS only" (grey cloud) so Caddy can provision TLS certificates directly.
 
 ---
 
@@ -153,16 +165,29 @@ Then edit `.env` manually to set:
 ```bash
 nano .env
 # Set these:
-#   B2B_DOMAIN=preparer.yourdomain.com
-#   D2C_DOMAIN=file.yourdomain.com
-#   B2B_NEXTAUTH_URL=https://preparer.yourdomain.com
-#   D2C_NEXTAUTH_URL=https://file.yourdomain.com
+#   B2B_DOMAIN=b2b.178-156-250-116.sslip.io   (or real domain when ready)
+#   D2C_DOMAIN=fbardirect.com
+#   B2B_NEXTAUTH_URL=https://b2b.178-156-250-116.sslip.io
+#   D2C_NEXTAUTH_URL=https://fbardirect.com
 #   ANTHROPIC_API_KEY=sk-ant-your-real-key       (B2B)
 #   D2C_ANTHROPIC_API_KEY=sk-ant-your-real-key   (D2C)
 #   D2C_STRIPE_SECRET_KEY=sk_live_...
 #   D2C_STRIPE_WEBHOOK_SECRET=whsec_...
 #   D2C_RESEND_API_KEY=re_...
+#   D2C_RESEND_FROM_EMAIL=noreply@fbardirect.com
 ```
+
+### Resend Email Setup (D2C)
+
+D2C sends transactional emails (password reset, filing confirmation) via [Resend](https://resend.com).
+
+1. Create account at [resend.com](https://resend.com)
+2. Dashboard → Domains → Add Domain → `fbardirect.com`
+3. Add the DNS records Resend provides to Namecheap (Advanced DNS):
+   - Typically 2-3 TXT/CNAME records for DKIM, SPF, and DMARC
+   - Wait for "Verified" status in Resend dashboard
+4. Dashboard → API Keys → Create Key (scope to `fbardirect.com`)
+5. Set `D2C_RESEND_API_KEY` and `D2C_RESEND_FROM_EMAIL` in `.env`
 
 > **Note on per-app database passwords:** The setup above generates three separate passwords —
 > `POSTGRES_PASSWORD` (superuser `fbar`), `POSTGRES_B2B_PASSWORD` (app user `fbar_b2b`), and
@@ -217,15 +242,18 @@ docker compose -f docker-compose.prod.yml exec postgres \
 ### Verify Routing
 
 ```bash
-# B2B app responds
-curl -s https://preparer.yourdomain.com/api/health
-
 # D2C app responds
-curl -s https://file.yourdomain.com/api/health
+curl -s https://fbardirect.com/api/health
+
+# www redirects to bare domain
+curl -sI https://www.fbardirect.com/ | grep -i location
+# Expected: location: https://fbardirect.com/
+
+# B2B app responds
+curl -s https://b2b.178-156-250-116.sslip.io/api/health
 
 # Both should have valid TLS certs
-curl -vI https://preparer.yourdomain.com 2>&1 | grep "SSL certificate"
-curl -vI https://file.yourdomain.com 2>&1 | grep "SSL certificate"
+curl -vI https://fbardirect.com 2>&1 | grep "SSL certificate"
 ```
 
 ---
@@ -430,9 +458,10 @@ free -h
 | Item | Cost |
 |------|------|
 | Hetzner CAX11 | ~$4.49/mo |
-| Domain names (2) | ~$20-30/yr |
+| `fbardirect.com` (Namecheap) | ~$10-13/yr |
 | TLS certificates | Free (Let's Encrypt via Caddy) |
-| **Total** | **~$6-7/mo** |
+| Resend email | Free tier (100 emails/day) or $20/mo |
+| **Total** | **~$5-25/mo** |
 
 ---
 
@@ -448,3 +477,115 @@ free -h
 | redis | 0.25 | 128M | maxmemory=100mb |
 | minio | 0.25 | 192M | Shared storage |
 | **Total** | **3.0** | **2368M** | ~1.4GB headroom for OS/cache |
+
+---
+
+## Tech Stack Reference
+
+**Last updated**: 2026-02-19
+
+### D2C App (`d2c/`)
+
+| Layer | Technology | Version |
+|---|---|---|
+| Runtime | Node.js 22 Alpine | Docker base image |
+| Framework | Next.js (App Router) | 14.2.21 |
+| Language | TypeScript | 5.7.0 |
+| React | React + React DOM | 18.3.1 |
+| ORM | Prisma | 6.2.0 |
+| Database | PostgreSQL 16 | `fbar_direct` |
+| Auth | NextAuth v5 (beta.25) | JWT strategy, Credentials provider |
+| Password hashing | bcryptjs | 2.4.3 |
+| Field encryption | AES-256-GCM (app-level) | TIN + account numbers |
+| CSRF | Custom `X-Requested-With` header | Middleware-enforced |
+| Rate limiting | In-memory (middleware) + Caddy (edge) | Dual-layer |
+| Payments | Stripe Checkout | 17.0.0 |
+| Email | Resend | 4.0.0 |
+| LLM extraction | Anthropic Claude SDK | 0.75.0 |
+| FinCEN XML | fast-xml-parser | 4.5.1 |
+| SFTP (BSA E-Filing) | ssh2 | 1.16.0 |
+| PDF generation | jsPDF | 2.5.2 |
+| Spreadsheet parsing | xlsx | 0.18.5 |
+| CSS | Tailwind CSS | 3.4.17 |
+| Class utilities | clsx + tailwind-merge + CVA | 2.1.1 / 2.6.0 / 0.7.1 |
+| Icons | Lucide React | 0.564.0 |
+| Blog/marketing | MDX (@mdx-js + @next/mdx) | 3.1.1 / 16.1.6 |
+| Validation | Zod | 3.24.1 |
+| E2E tests | Playwright | 1.58.2 |
+| A11y tests | axe-core/playwright | 4.11.1 |
+| Unit tests | Vitest | 2.1.0 |
+
+**Pricing tiers**: Basic $59 (manual entry) / Premium $79 (AI extraction). Config: `d2c/src/lib/pricing.ts`
+
+### B2B App (`src/`)
+
+| Layer | Technology | Version |
+|---|---|---|
+| Runtime | Node.js 20 Alpine | Docker base image |
+| Framework | Next.js (App Router) | 14.2.21 |
+| Language | TypeScript | 5.7.0 |
+| React | React + React DOM | 18.3.1 |
+| ORM | Prisma | 6.2.0 |
+| Database | PostgreSQL 16 | `fbar_automator` |
+| UI components | Radix UI (dialog, dropdown, select, tabs, toast) | Various |
+| PDF rendering | @react-pdf/renderer + react-pdf | 4.1.6 / 9.2.1 |
+| CSV parsing | PapaParse | 5.4.1 |
+| Job queue | BullMQ | 5.34.0 |
+| Redis client | ioredis | 5.4.2 |
+| LLM extraction | Anthropic Claude SDK | 0.39.0 |
+| Email | Resend | 6.9.2 |
+| File upload UI | react-dropzone | 14.3.5 |
+
+**Shared deps**: Prisma 6.2.0, Zod 3.24.1, fast-xml-parser 4.5.1, xlsx 0.18.5, @aws-sdk/client-s3 3.700.0, bcryptjs 2.4.3, NextAuth 5.0.0-beta.25, Tailwind 3.4.17.
+
+### Known Gaps (as of 2026-02-19)
+
+#### Blocking (cannot accept real filings without these)
+
+| # | Gap | Details |
+|---|---|---|
+| 1 | **FinCEN XML generation** | `d2c/src/lib/fincen-xml.ts` returns `<!-- STUB -->`. Port from `src/lib/export/fincen-xml.ts` (B2B). Hardest item — must adapt to D2C Prisma schema. |
+| 2 | **Treasury exchange rates** | `d2c/src/lib/treasury.ts` — all 4 functions return empty/null. Port from `src/lib/treasury.ts` (B2B). Required for USD conversion on FBAR. |
+| 3 | **Stripe live keys + webhook** | Need `sk_live_...` and `whsec_...` in prod `.env`. Must register `https://fbardirect.com/api/stripe/webhook` in Stripe dashboard. |
+| 4 | **Next.js CVE-2025-55184** | 14.2.21 → needs ≥14.2.35. DoS vulnerability — malformed request crashes Node process. |
+| 5 | **SDTM SFTP credentials** | Need FinCEN BSA E-Filing account: `SDTM_HOST`, `SDTM_USERNAME`, `SDTM_PRIVATE_KEY_PATH`. Set `SDTM_SANDBOX_MODE=false` for live. |
+
+#### High (significant risk or broken functionality)
+
+| # | Gap | Details |
+|---|---|---|
+| 6 | **FinCEN submission triggered from browser** | Confirmation page `useEffect` calls `POST /api/sdtm/submit`. If user closes browser after payment, filing stays at PAID forever. Should be a Stripe webhook callback or background job. |
+| 7 | **Open redirect via `callbackUrl`** | `d2c/src/app/(auth)/login/page.tsx:32` — `router.push(callbackUrl)` with no validation. Attacker can craft `?callbackUrl=https://evil.com`. One-line fix: validate starts with `/` and not `//`. |
+| 8 | **S3 presigned URLs broken in prod** | `S3_PUBLIC_ENDPOINT` missing from `.env.unified.example` and `docker-compose.prod.yml`. Presigned URLs use internal `http://minio:9000` which is unreachable from browser. Document downloads will fail. |
+| 9 | **SDTM host key verification skipped** | `SDTM_HOST_KEY` referenced in `sdtm.ts:32` but missing from both env templates and compose. Without it, SFTP runs without host verification (MITM risk). |
+
+#### Medium (should fix before public launch)
+
+| # | Gap | Details |
+|---|---|---|
+| 10 | **MFA / 2FA** | No second factor. FTC Safeguards Rule (16 CFR Part 314) requires MFA for financial data handlers. |
+| 11 | **JWT revocation non-functional** | `auth.ts:63` — `maxAge: 30 days`. `tokenVersion` is set but never re-checked (Edge runtime can't access Prisma). After password reset, old sessions stay valid 30 days. Reduce `maxAge` to 1–7 days or add blocklist. |
+| 12 | **No encryption key rotation** | `encryption.ts` — ciphertext format `iv:authTag:ciphertext` has no key version prefix. Rotating `ENCRYPTION_KEY` makes all stored TINs/account numbers undecryptable. `safeDecrypt` silently returns empty string. |
+| 13 | **CSRF exempts all `/api/auth/*`** | `middleware.ts:122` — blanket exemption includes `forgot-password`. Cross-site POST to forgot-password triggers password reset email (rate-limited to 5/min, so limited severity). |
+| 14 | **BSA-ID confirmation email requires user to revisit** | `sendConfirmationEmail` only fires when user polls `GET /api/sdtm/status`. No background ack checker. If FinCEN takes days, user must revisit to trigger the email. |
+| 15 | **Drawn signatures not in Form 114a PDF** | `form114a.ts:91` — drawn signatures show `[Digital signature on file]` text instead of embedding the canvas image. Typed signatures work correctly. |
+| 16 | **Test route in production codebase** | `api/test/reset-lockout/route.ts` — guarded by `NODE_ENV === "production"` check, but should be removed from prod source entirely. |
+
+#### Low (post-launch / nice-to-have)
+
+| # | Gap | Details |
+|---|---|---|
+| 17 | **GTM/GA4 disabled in prod** | `NEXT_PUBLIC_GTM_ID`, `GA4_MEASUREMENT_ID`, `GA4_API_SECRET` missing from `.env.unified.example` and compose. GTM is a build-time var (needs `build.args`, not just `environment`). Analytics silently disabled. |
+| 18 | **`xlsx` package abandoned** | v0.18.5 is last OSS release (2023). No security patches on npm. Processes user-uploaded bank statements. Consider replacing with `exceljs`. |
+| 19 | **In-memory rate limiter resets on restart** | `middleware.ts:9` — `Map`-based store. All counters reset on deploy/restart. Caddy rate limiting at edge partially mitigates. Fine for single-instance MVP. |
+| 20 | **Blog placeholder** | `(marketing)/blog/page.tsx` shows "Articles coming soon". MDX infrastructure exists but zero articles published. |
+| 21 | **`X-XSS-Protection` header deprecated** | `Caddyfile.prod:88` — this header is removed from browser standards and can introduce XSS in old IE. Should be deleted. |
+| 22 | **No welcome/signup email** | Users create accounts with no email confirmation. Not a security issue (password reset verifies email) but a UX gap. |
+
+#### Resolved
+
+| # | Gap | Status |
+|---|---|---|
+| ~~R1~~ | ~~Resend env var naming~~ | Fixed — compose maps `D2C_RESEND_API_KEY` → `RESEND_API_KEY` |
+| ~~R2~~ | ~~`fbardirect.com` sender domain~~ | Done — verified in Resend (DKIM + SPF) |
+| ~~R3~~ | ~~Resend API key~~ | Done — deployed to prod `.env`, D2C restarted |

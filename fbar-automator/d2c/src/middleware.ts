@@ -90,7 +90,7 @@ export default auth((req) => {
   const ip = getClientIp(request);
 
   // Strict rate limit on auth-sensitive routes: 5 req/min per IP (relaxed in dev for testing)
-  const authRateLimit = process.env.NODE_ENV === "production" ? 5 : 100;
+  const authRateLimit = process.env.NODE_ENV === "production" ? 5 : 1000;
   const isAuthRoute = AUTH_RATE_LIMIT_PATHS.some((p) => normalizedPath.startsWith(p));
   if (isAuthRoute) {
     if (!rateLimit(`auth:${ip}`, authRateLimit, 60_000)) {

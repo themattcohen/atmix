@@ -337,18 +337,18 @@ Landing page variants: `file-fbar-online`, `fbar-software`, `fbar-expat`, `fince
 ### Build Status
 
 - `npm run build` passes with 60 pages generated
-- **E2E tests have NOT been run against the new code** — the frontend has never been tested in a browser after the GTM implementation
-- 2 known test breakages need fixing before running the suite:
-  - `auth.spec.ts`: threshold redirect test (threshold is now public)
-  - `marketing.spec.ts`: hero CTA test (now goes to `/threshold` not `/signup`)
-- 109 of 111 existing tests are expected to still pass
-- New smoke tests needed for all GTM pages (blog, country, comparison, landing, sitemap, robots, JSON-LD)
+- **E2E tests verified (2026-02-19):**
+  - 2 known test breakages fixed (auth.spec.ts threshold redirect, marketing.spec.ts hero CTA target)
+  - 41 new GTM smoke tests written and passing (`d2c/tests/e2e/gtm-smoke.spec.ts`)
+  - t06-signup.spec.ts fixed (React hydration detection + `page.fill()` for controlled components)
+  - Dev rate limit raised 100→1000 in middleware.ts to prevent test suite rate exhaustion
+  - All GTM routes verified in browser: blog, 10 country pages, 3 comparison pages, 4 landing pages, sitemap.xml, robots.txt, JSON-LD
 
 ### What Remains — NOT YET IMPLEMENTED
 
 | Item | Priority | Notes |
 |------|----------|-------|
-| **E2E test verification** | CRITICAL | Must fix 2 tests, run full suite, write smoke tests for new routes |
+| ~~E2E test verification~~ | ~~DONE~~ | Fixed 2 tests, wrote 41 GTM smoke tests, all passing (2026-02-19) |
 | **n8n content pipeline** | HIGH | The entire automated article production system. See Section 5 |
 | **Blog content** | HIGH | MDX infrastructure exists but zero articles. Need first 5 high-intent articles |
 | **Semrush keyword research** | HIGH | No keyword data has been collected. Need to run Semrush API batch |
