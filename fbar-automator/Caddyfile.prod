@@ -71,6 +71,11 @@
 	}
 }
 
+# www redirect — 301 to bare domain
+www.{$D2C_DOMAIN} {
+	redir https://{$D2C_DOMAIN}{uri} permanent
+}
+
 # ---------------------------------------------------------------------------
 # D2C Domain — FBAR Direct Filing App (port 3001)
 # ---------------------------------------------------------------------------
