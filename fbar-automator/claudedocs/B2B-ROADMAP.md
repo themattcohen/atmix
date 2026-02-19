@@ -1,7 +1,7 @@
 # B2B FBAR Automator - Implementation Roadmap
 
-**Generated:** 2026-02-16 | **Updated:** 2026-02-18
-**Last updated:** 2026-02-18
+**Generated:** 2026-02-16 | **Updated:** 2026-02-19
+**Last updated:** 2026-02-19
 **Status:** B2B deployed on Hetzner at 178.156.250.116 (accessible via sslip.io). Launch blockers complete.
 **Source:** Opus planning agents with full codebase analysis + web research
 
@@ -21,6 +21,7 @@ After fixing 10 issues (2 critical, 4 major, 4 minor) in the B2B app, a comprehe
 |----------|-------|----------|--------|----------------|--------|
 | **LAUNCH** | Worker Docker Bug Fix | Operations | 10 min | **YES** | **DONE** (2026-02-17) |
 | **LAUNCH** | Deploy to Hetzner VPS | Infrastructure | 1 day | **YES** | **DONE** (2026-02-18) — live at 178.156.250.116 |
+| Post-launch | FinCEN XML Schema Compliance | Quality | 1 day | No | **DONE** (2026-02-19) — all 24 issues fixed, 107 tests |
 | Post-launch | MFA Implementation | Security | 3-4 days | No (ship within first month) | Not started |
 | Post-launch | Tax Software Integrations | Feature | 5-7 days | No | Not started |
 | Post-launch | Integration Tests | Quality | 3-4 days | No | Not started |

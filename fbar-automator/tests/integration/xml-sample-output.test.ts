@@ -7,6 +7,7 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import type { ReviewSummary } from "@/lib/approval"
+import type { TransmitterConfig, PreparerConfig } from "@/lib/export/fincen-xml"
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -31,6 +32,34 @@ vi.mock("@/lib/db", () => ({
 vi.mock("@/lib/encryption", () => ({
   safeDecrypt: (value: string) => value,
 }))
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function createMockTransmitter(): TransmitterConfig {
+  return {
+    name: "Test Tax Firm LLC",
+    tin: "12-3456789",
+    tcc: "PTCC1234",
+    phone: "555-123-4567",
+    address: { street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+    contactName: "John Smith",
+  }
+}
+
+function createMockPreparer(): PreparerConfig {
+  return {
+    firstName: "John",
+    lastName: "Smith",
+    phone: "555-123-4567",
+    ptin: "P12345678",
+    selfEmployed: false,
+    address: { street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+    firmName: "Test Tax Firm LLC",
+    firmEin: "12-3456789",
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Test
@@ -169,7 +198,11 @@ describe("XML Sample Output", () => {
       "@/lib/export/fincen-xml"
     )
 
-    const xml = await generateFincenXml("fy-sample")
+    const xml = await generateFincenXml(
+      "fy-sample",
+      createMockTransmitter(),
+      createMockPreparer()
+    )
 
     // Validate the XML
     const validation = validateFincenXml(xml)
@@ -187,15 +220,15 @@ describe("XML Sample Output", () => {
 
     // Verify key elements are present
     expect(xml).toContain("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-    expect(xml).toContain("<EFilingBatchXML")
-    expect(xml).toContain("xmlns=\"www.fincen.gov/base\"")
-    expect(xml).toContain("<Activity")
-    expect(xml).toContain("<ActivityPartyTypeCode>35</ActivityPartyTypeCode>")
-    expect(xml).toContain("<RawIndividualLastName>Smith</RawIndividualLastName>")
-    expect(xml).toContain("<PartyIdentificationNumberText>123456789</PartyIdentificationNumberText>")
-    expect(xml).toContain("<RawPartyFullName>UBS Switzerland AG</RawPartyFullName>")
-    expect(xml).toContain("<AccountNumberText>CH-98765432</AccountNumberText>")
-    expect(xml).toContain("<EFilingAccountTypeCode>1</EFilingAccountTypeCode>")
-    expect(xml).toContain("<AccountMaximumValueAmountText>113636</AccountMaximumValueAmountText>")
+    expect(xml).toContain("<fc2:EFilingBatchXML")
+    expect(xml).toContain("xmlns:fc2=\"www.fincen.gov/base\"")
+    expect(xml).toContain("<fc2:Activity")
+    expect(xml).toContain("<fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>")
+    expect(xml).toContain("<fc2:RawEntityIndividualLastName>Smith</fc2:RawEntityIndividualLastName>")
+    expect(xml).toContain("<fc2:PartyIdentificationNumberText>123456789</fc2:PartyIdentificationNumberText>")
+    expect(xml).toContain("<fc2:RawPartyLegalName>UBS Switzerland AG</fc2:RawPartyLegalName>")
+    expect(xml).toContain("<fc2:AccountNumberText>CH-98765432</fc2:AccountNumberText>")
+    expect(xml).toContain("<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>")
+    expect(xml).toContain("<fc2:AccountMaximumValueAmountText>113636</fc2:AccountMaximumValueAmountText>")
   })
 })

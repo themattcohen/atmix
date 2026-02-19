@@ -9,6 +9,10 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import type { ReviewSummary } from "@/lib/approval"
+import type {
+  TransmitterConfig,
+  PreparerConfig,
+} from "@/lib/export/fincen-xml"
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -22,6 +26,7 @@ vi.mock("@/lib/approval", () => ({
 
 const mockPrisma = {
   filingYear: {
+    findUnique: vi.fn(),
     findUniqueOrThrow: vi.fn(),
     findFirst: vi.fn(),
   },
@@ -30,6 +35,38 @@ const mockPrisma = {
 vi.mock("@/lib/db", () => ({
   prisma: mockPrisma,
 }))
+
+vi.mock("@/lib/encryption", () => ({
+  safeDecrypt: (value: string) => value,
+}))
+
+// ---------------------------------------------------------------------------
+// Transmitter & Preparer configs for XML tests
+// ---------------------------------------------------------------------------
+
+function createMockTransmitter(): TransmitterConfig {
+  return {
+    name: "Test Tax Firm LLC",
+    tin: "12-3456789",
+    tcc: "PTCC1234",
+    phone: "555-123-4567",
+    address: { street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+    contactName: "John Smith",
+  }
+}
+
+function createMockPreparer(): PreparerConfig {
+  return {
+    firstName: "John",
+    lastName: "Smith",
+    phone: "555-123-4567",
+    ptin: "P12345678",
+    selfEmployed: false,
+    address: { street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+    firmName: "Test Tax Firm LLC",
+    firmEin: "12-3456789",
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Comprehensive mock ReviewSummary
@@ -90,7 +127,7 @@ function createMockReviewSummary(
 /**
  * Creates a mock filingYear with client and reviewedAccountYears for
  * the XML generator, which fetches data directly from Prisma in addition
- * to getReviewSummary.
+ * to the prefetched summary.
  */
 function createMockFilingYearForXml() {
   return {
@@ -162,6 +199,31 @@ function createMockFilingYearForXml() {
       },
     ],
   }
+}
+
+// ---------------------------------------------------------------------------
+// Helper: set up mocks + generate XML with new 4-arg signature
+// ---------------------------------------------------------------------------
+
+async function setupAndGenerateXml(
+  overrides?: {
+    summary?: ReviewSummary
+    filingYear?: ReturnType<typeof createMockFilingYearForXml>
+    transmitter?: TransmitterConfig
+    preparer?: PreparerConfig
+  }
+) {
+  const summary = overrides?.summary ?? createMockReviewSummary()
+  const filingYear = overrides?.filingYear ?? createMockFilingYearForXml()
+  const transmitter = overrides?.transmitter ?? createMockTransmitter()
+  const preparer = overrides?.preparer ?? createMockPreparer()
+
+  mockGetReviewSummary.mockResolvedValue(summary)
+  mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
+
+  const { generateFincenXml } = await import("@/lib/export/fincen-xml")
+
+  return generateFincenXml("fy-1", transmitter, preparer, summary)
 }
 
 // ---------------------------------------------------------------------------
@@ -290,16 +352,9 @@ describe("Export Pipeline Integration", () => {
 
   describe("XML structure validation", () => {
     it("generates valid XML that passes structural validation", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
+      const xml = await setupAndGenerateXml()
 
-      const { generateFincenXml, validateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const { validateFincenXml } = await import("@/lib/export/fincen-xml")
       const validation = validateFincenXml(xml)
 
       expect(validation.isValid).toBe(true)
@@ -307,11 +362,9 @@ describe("Export Pipeline Integration", () => {
     })
 
     it("validates malformed XML correctly", async () => {
-      const { validateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
+      const { validateFincenXml } = await import("@/lib/export/fincen-xml")
 
-      const badXml = "<root><Activity></Activity></root>"
+      const badXml = "<root><fc2:Activity></fc2:Activity></root>"
       const validation = validateFincenXml(badXml)
 
       expect(validation.isValid).toBe(false)
@@ -324,83 +377,95 @@ describe("Export Pipeline Integration", () => {
   // -------------------------------------------------------------------------
 
   describe("XML required elements", () => {
-    it("contains Activity, filer Party, and account Parties", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
+    it("contains fc2:EFilingBatchXML root, Activity, parties, and accounts", async () => {
+      const xml = await setupAndGenerateXml()
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
-
-      // Root element
-      expect(xml).toContain("<EFilingBatchXML")
+      // Root element with fc2 prefix
+      expect(xml).toContain("<fc2:EFilingBatchXML")
 
       // Activity element
-      expect(xml).toContain("<Activity")
+      expect(xml).toContain("<fc2:Activity")
 
-      // Filer Party (type 35)
+      // FormTypeCode
+      expect(xml).toContain("<fc2:FormTypeCode>FBARX</fc2:FormTypeCode>")
+
+      // Transmitter party (type 35)
       expect(xml).toContain(
-        "<ActivityPartyTypeCode>35</ActivityPartyTypeCode>"
+        "<fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>"
       )
 
-      // Account Parties (type 41 for individual, non-joint accounts)
+      // Filer party (type 15)
       expect(xml).toContain(
-        "<ActivityPartyTypeCode>41</ActivityPartyTypeCode>"
+        "<fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>"
       )
 
-      // PartyName for filer
-      expect(xml).toContain("<RawIndividualLastName>Doe</RawIndividualLastName>")
+      // FI parties (type 41) inside Account elements
       expect(xml).toContain(
-        "<RawIndividualFirstName>John</RawIndividualFirstName>"
+        "<fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>"
+      )
+
+      // PartyName for filer (uses RawEntityIndividualLastName in new schema)
+      expect(xml).toContain(
+        "<fc2:RawEntityIndividualLastName>Doe</fc2:RawEntityIndividualLastName>"
+      )
+      expect(xml).toContain(
+        "<fc2:RawIndividualFirstName>John</fc2:RawIndividualFirstName>"
       )
 
       // PartyName for institutions
       expect(xml).toContain(
-        "<RawPartyFullName>Swiss Bank Corp</RawPartyFullName>"
+        "<fc2:RawPartyLegalName>Swiss Bank Corp</fc2:RawPartyLegalName>"
       )
       expect(xml).toContain(
-        "<RawPartyFullName>Tokyo Securities</RawPartyFullName>"
+        "<fc2:RawPartyLegalName>Tokyo Securities</fc2:RawPartyLegalName>"
       )
 
       // Filer TIN (unmasked in XML)
       expect(xml).toContain(
-        "<PartyIdentificationNumberText>123456789</PartyIdentificationNumberText>"
+        "<fc2:PartyIdentificationNumberText>123456789</fc2:PartyIdentificationNumberText>"
       )
 
-      // Account numbers
+      // Account numbers (direct child of Account, not PartyAccountAssociation)
       expect(xml).toContain(
-        "<AccountNumberText>CH-123456</AccountNumberText>"
+        "<fc2:AccountNumberText>CH-123456</fc2:AccountNumberText>"
       )
       expect(xml).toContain(
-        "<AccountNumberText>JP-789012</AccountNumberText>"
+        "<fc2:AccountNumberText>JP-789012</fc2:AccountNumberText>"
+      )
+
+      // ForeignAccountActivity
+      expect(xml).toContain("<fc2:ForeignAccountActivity")
+      expect(xml).toContain(
+        "<fc2:ReportCalendarYearText>2024</fc2:ReportCalendarYearText>"
       )
     })
 
-    it("includes filer address elements", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
-
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+    it("includes filer address elements with fc2 prefix", async () => {
+      const xml = await setupAndGenerateXml()
 
       expect(xml).toContain(
-        "<RawStreetAddress1Text>123 Main Street</RawStreetAddress1Text>"
+        "<fc2:RawStreetAddress1Text>123 Main Street</fc2:RawStreetAddress1Text>"
       )
-      expect(xml).toContain("<RawCityText>New York</RawCityText>")
-      expect(xml).toContain("<RawStateCodeText>NY</RawStateCodeText>")
-      expect(xml).toContain("<RawZIPCode>10001</RawZIPCode>")
+      expect(xml).toContain("<fc2:RawCityText>New York</fc2:RawCityText>")
+      expect(xml).toContain("<fc2:RawStateCodeText>NY</fc2:RawStateCodeText>")
+      expect(xml).toContain("<fc2:RawZIPCode>10001</fc2:RawZIPCode>")
       expect(xml).toContain(
-        "<RawCountryCodeText>US</RawCountryCodeText>"
+        "<fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>"
       )
+    })
+
+    it("does not contain removed elements from old schema", async () => {
+      const xml = await setupAndGenerateXml()
+
+      // PartyAccountAssociation was CTR-only, not in FBAR
+      expect(xml).not.toContain("PartyAccountAssociation")
+
+      // FilingDateText does not exist in FBAR schema
+      expect(xml).not.toContain("FilingDateText")
+
+      // StatusCode and TotalAmount are acknowledgement-only attributes
+      expect(xml).not.toContain("StatusCode")
+      expect(xml).not.toContain("TotalAmount")
     })
   })
 
@@ -409,30 +474,47 @@ describe("Export Pipeline Integration", () => {
   // -------------------------------------------------------------------------
 
   describe("XML account type mapping", () => {
-    it("maps BANK to code 1, SECURITIES to code 2", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
+    it("maps BANK to AccountTypeCode 1, SECURITIES to AccountTypeCode 2", async () => {
+      const xml = await setupAndGenerateXml()
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
-
-      // BANK -> 1
+      // BANK -> AccountTypeCode 1
       expect(xml).toContain(
-        "<EFilingAccountTypeCode>1</EFilingAccountTypeCode>"
+        "<fc2:AccountTypeCode>1</fc2:AccountTypeCode>"
       )
-      // SECURITIES -> 2
+      // SECURITIES -> AccountTypeCode 2
       expect(xml).toContain(
-        "<EFilingAccountTypeCode>2</EFilingAccountTypeCode>"
+        "<fc2:AccountTypeCode>2</fc2:AccountTypeCode>"
       )
     })
 
-    it("maps OTHER account type to code 3", async () => {
-      const summaryWithOther = createMockReviewSummary({
+    it("maps OTHER account type to AccountTypeCode 999", async () => {
+      const filingYear = createMockFilingYearForXml()
+      filingYear.reviewedAccountYears = [
+        {
+          id: "ray-3",
+          foreignAccountId: "fa-3",
+          maxValueLocal: 100000,
+          maxValueUsd: 100000,
+          isValueUnknown: false,
+          currencyCode: "USD",
+          exchangeRate: 1.0,
+          foreignAccount: {
+            id: "fa-3",
+            institutionName: "Cayman Fund LLC",
+            accountNumber: "KY-555666",
+            accountType: "OTHER",
+            ownershipType: "FINANCIAL_INTEREST",
+            isJointlyOwned: false,
+            institutionAddressStreet: "PO Box 1234",
+            institutionAddressCity: "George Town",
+            institutionAddressState: "",
+            institutionAddressCountry: "KY",
+            institutionAddressPostal: "KY1-1234",
+          },
+        },
+      ]
+
+      const summary = createMockReviewSummary({
         accounts: [
           {
             foreignAccountId: "fa-3",
@@ -452,48 +534,44 @@ describe("Export Pipeline Integration", () => {
         ],
         aggregateMaxValueUSD: 100000,
       })
-      mockGetReviewSummary.mockResolvedValue(summaryWithOther)
 
-      const xmlFilingYear = {
-        ...createMockFilingYearForXml(),
-        reviewedAccountYears: [
-          {
-            id: "ray-3",
-            foreignAccountId: "fa-3",
-            maxValueLocal: 100000,
-            maxValueUsd: 100000,
-            isValueUnknown: false,
-            currencyCode: "USD",
-            exchangeRate: 1.0,
-            foreignAccount: {
-              id: "fa-3",
-              institutionName: "Cayman Fund LLC",
-              accountNumber: "KY-555666",
-              accountType: "OTHER",
-              ownershipType: "FINANCIAL_INTEREST",
-              isJointlyOwned: false,
-              institutionAddressStreet: "PO Box 1234",
-              institutionAddressCity: "George Town",
-              institutionAddressState: "",
-              institutionAddressCountry: "KY",
-              institutionAddressPostal: "KY1-1234",
-            },
-          },
-        ],
-      }
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        xmlFilingYear
-      )
+      const xml = await setupAndGenerateXml({ filingYear, summary })
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
-
-      // OTHER -> 3
+      // OTHER -> 999
       expect(xml).toContain(
-        "<EFilingAccountTypeCode>3</EFilingAccountTypeCode>"
+        "<fc2:AccountTypeCode>999</fc2:AccountTypeCode>"
+      )
+    })
+
+    it("maps EFilingAccountTypeCode based on ownership: 141, 142, 143", async () => {
+      const xml = await setupAndGenerateXml()
+
+      // Default accounts are FINANCIAL_INTEREST, not joint -> 141
+      expect(xml).toContain(
+        "<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>"
+      )
+    })
+
+    it("maps joint ownership to EFilingAccountTypeCode 142", async () => {
+      const filingYear = createMockFilingYearForXml()
+      filingYear.reviewedAccountYears[0].foreignAccount.isJointlyOwned = true
+
+      const xml = await setupAndGenerateXml({ filingYear })
+
+      expect(xml).toContain(
+        "<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>"
+      )
+    })
+
+    it("maps SIGNATURE_AUTHORITY to EFilingAccountTypeCode 143", async () => {
+      const filingYear = createMockFilingYearForXml()
+      filingYear.reviewedAccountYears[0].foreignAccount.ownershipType =
+        "SIGNATURE_AUTHORITY"
+
+      const xml = await setupAndGenerateXml({ filingYear })
+
+      expect(xml).toContain(
+        "<fc2:EFilingAccountTypeCode>143</fc2:EFilingAccountTypeCode>"
       )
     })
   })
@@ -504,28 +582,17 @@ describe("Export Pipeline Integration", () => {
 
   describe("XML date formatting", () => {
     it("formats dates as YYYYMMDD without dashes", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
-
-      const { generateFincenXml, validateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const xml = await setupAndGenerateXml()
 
       // Date of birth: 1985-03-15 -> 19850315
       expect(xml).toContain(
-        "<IndividualBirthDateText>19850315</IndividualBirthDateText>"
+        "<fc2:IndividualBirthDateText>19850315</fc2:IndividualBirthDateText>"
       )
 
-      // Filing and signature dates should be YYYYMMDD format
-      const dateValidation = validateFincenXml(xml)
-      const dateErrors = dateValidation.errors.filter((e) =>
-        e.includes("Invalid date format")
-      )
-      expect(dateErrors).toHaveLength(0)
+      // Signature date should be YYYYMMDD format
+      const datePattern =
+        /<fc2:ApprovalOfficialSignatureDateText>(\d{8})<\/fc2:ApprovalOfficialSignatureDateText>/
+      expect(xml).toMatch(datePattern)
     })
   })
 
@@ -535,20 +602,11 @@ describe("Export Pipeline Integration", () => {
 
   describe("XML USD amounts", () => {
     it("outputs amounts as whole dollars without decimals", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
-
-      const { generateFincenXml, validateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const xml = await setupAndGenerateXml()
 
       // Extract all AccountMaximumValueAmountText values
       const amountPattern =
-        /<AccountMaximumValueAmountText>(\d+)<\/AccountMaximumValueAmountText>/g
+        /<fc2:AccountMaximumValueAmountText>(\d+)<\/fc2:AccountMaximumValueAmountText>/g
       const amounts: string[] = []
       let match: RegExpExecArray | null
       while ((match = amountPattern.exec(xml)) !== null) {
@@ -562,39 +620,21 @@ describe("Export Pipeline Integration", () => {
         expect(amount).toMatch(/^\d+$/)
         expect(amount).not.toContain(".")
       }
-
-      // Verify the validation also passes for amounts
-      const validation = validateFincenXml(xml)
-      const amountErrors = validation.errors.filter((e) =>
-        e.includes("AccountMaximumValueAmountText")
-      )
-      expect(amountErrors).toHaveLength(0)
     })
 
     it("rounds fractional USD values to nearest whole dollar", async () => {
-      const summaryWithFractional = createMockReviewSummary()
-      mockGetReviewSummary.mockResolvedValue(summaryWithFractional)
+      const filingYear = createMockFilingYearForXml()
+      filingYear.reviewedAccountYears[0].maxValueUsd = 56818.45
+      filingYear.reviewedAccountYears[1].maxValueUsd = 33670.87
 
-      // Use maxValueUsd with fractional cents
-      const xmlFilingYear = createMockFilingYearForXml()
-      xmlFilingYear.reviewedAccountYears[0].maxValueUsd = 56818.45
-      xmlFilingYear.reviewedAccountYears[1].maxValueUsd = 33670.87
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        xmlFilingYear
-      )
-
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const xml = await setupAndGenerateXml({ filingYear })
 
       // Should be rounded: 56818.45 -> 56818, 33670.87 -> 33671
       expect(xml).toContain(
-        "<AccountMaximumValueAmountText>56818</AccountMaximumValueAmountText>"
+        "<fc2:AccountMaximumValueAmountText>56818</fc2:AccountMaximumValueAmountText>"
       )
       expect(xml).toContain(
-        "<AccountMaximumValueAmountText>33671</AccountMaximumValueAmountText>"
+        "<fc2:AccountMaximumValueAmountText>33671</fc2:AccountMaximumValueAmountText>"
       )
     })
   })
@@ -612,20 +652,23 @@ describe("Export Pipeline Integration", () => {
       )
 
       const { generateFBARCsv } = await import("@/lib/export/csv")
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
+      const { generateFincenXml } = await import("@/lib/export/fincen-xml")
 
       const csv = await generateFBARCsv("fy-1")
-      const xml = await generateFincenXml("fy-1")
+      const xml = await generateFincenXml(
+        "fy-1",
+        createMockTransmitter(),
+        createMockPreparer(),
+        summary
+      )
 
       // CSV: count data rows (exclude header and summary)
       const csvLines = csv.split("\n").filter((l) => l.trim().length > 0)
       const csvDataRows = csvLines.length - 2 // minus header and summary row
 
-      // XML: count account Parties (type 41 or 42)
+      // XML: count FI parties (type 41) inside Account elements
       const xmlAccountPartyMatches = xml.match(
-        /<ActivityPartyTypeCode>4[12]<\/ActivityPartyTypeCode>/g
+        /<fc2:ActivityPartyTypeCode>41<\/fc2:ActivityPartyTypeCode>/g
       )
       const xmlAccountCount = xmlAccountPartyMatches
         ? xmlAccountPartyMatches.length
@@ -643,12 +686,15 @@ describe("Export Pipeline Integration", () => {
       )
 
       const { generateFBARCsv } = await import("@/lib/export/csv")
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
+      const { generateFincenXml } = await import("@/lib/export/fincen-xml")
 
       const csv = await generateFBARCsv("fy-1")
-      const xml = await generateFincenXml("fy-1")
+      const xml = await generateFincenXml(
+        "fy-1",
+        createMockTransmitter(),
+        createMockPreparer(),
+        summary
+      )
 
       for (const account of summary.accounts) {
         expect(csv).toContain(account.institutionName)
@@ -664,12 +710,15 @@ describe("Export Pipeline Integration", () => {
       )
 
       const { generateFBARCsv } = await import("@/lib/export/csv")
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
+      const { generateFincenXml } = await import("@/lib/export/fincen-xml")
 
       const csv = await generateFBARCsv("fy-1")
-      const xml = await generateFincenXml("fy-1")
+      const xml = await generateFincenXml(
+        "fy-1",
+        createMockTransmitter(),
+        createMockPreparer(),
+        summary
+      )
 
       for (const account of summary.accounts) {
         expect(csv).toContain(account.accountNumber)
@@ -685,12 +734,15 @@ describe("Export Pipeline Integration", () => {
       )
 
       const { generateFBARCsv } = await import("@/lib/export/csv")
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
+      const { generateFincenXml } = await import("@/lib/export/fincen-xml")
 
       const csv = await generateFBARCsv("fy-1")
-      const xml = await generateFincenXml("fy-1")
+      const xml = await generateFincenXml(
+        "fy-1",
+        createMockTransmitter(),
+        createMockPreparer(),
+        summary
+      )
 
       // CSV: TIN is masked
       expect(csv).not.toContain("123456789")
@@ -707,16 +759,9 @@ describe("Export Pipeline Integration", () => {
 
   describe("XML SeqNum uniqueness", () => {
     it("all SeqNum values are unique across the document", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
+      const xml = await setupAndGenerateXml()
 
-      const { generateFincenXml, validateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const { validateFincenXml } = await import("@/lib/export/fincen-xml")
       const validation = validateFincenXml(xml)
 
       // The validator checks SeqNum uniqueness
@@ -744,42 +789,31 @@ describe("Export Pipeline Integration", () => {
   // -------------------------------------------------------------------------
 
   describe("XML filing type indicators", () => {
-    it("sets CorrectsAmendsPriorReportIndicator to N for initial filing", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
+    it("sets CorrectsAmendsPriorReportIndicator correctly for initial filing", async () => {
+      const xml = await setupAndGenerateXml()
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
+      // For initial filings, indicator should be "N" or empty
+      const hasN = xml.includes(
+        "<fc2:CorrectsAmendsPriorReportIndicator>N</fc2:CorrectsAmendsPriorReportIndicator>"
       )
-
-      const xml = await generateFincenXml("fy-1")
-
-      expect(xml).toContain(
-        "<CorrectsAmendsPriorReportIndicator>N</CorrectsAmendsPriorReportIndicator>"
+      const hasEmpty = xml.includes(
+        "<fc2:CorrectsAmendsPriorReportIndicator/>"
+      ) || xml.includes(
+        "<fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>"
       )
+      expect(hasN || hasEmpty).toBe(true)
     })
 
     it("sets CorrectsAmendsPriorReportIndicator to Y for amended filing", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-
-      const amendedFilingYear = {
+      const filingYear = {
         ...createMockFilingYearForXml(),
         filingType: "AMENDED",
       }
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        amendedFilingYear
-      )
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const xml = await setupAndGenerateXml({ filingYear })
 
       expect(xml).toContain(
-        "<CorrectsAmendsPriorReportIndicator>Y</CorrectsAmendsPriorReportIndicator>"
+        "<fc2:CorrectsAmendsPriorReportIndicator>Y</fc2:CorrectsAmendsPriorReportIndicator>"
       )
     })
   })
@@ -790,7 +824,7 @@ describe("Export Pipeline Integration", () => {
 
   describe("XML value unknown handling", () => {
     it("sets UnknownMaximumValueIndicator for unknown-value accounts", async () => {
-      const summaryWithUnknown = createMockReviewSummary({
+      const summary = createMockReviewSummary({
         accounts: [
           {
             foreignAccountId: "fa-1",
@@ -811,9 +845,8 @@ describe("Export Pipeline Integration", () => {
         aggregateMaxValueUSD: 0,
         exceedsThreshold: false,
       })
-      mockGetReviewSummary.mockResolvedValue(summaryWithUnknown)
 
-      const xmlFilingYear = {
+      const filingYear = {
         ...createMockFilingYearForXml(),
         reviewedAccountYears: [
           {
@@ -837,24 +870,17 @@ describe("Export Pipeline Integration", () => {
               institutionAddressCountry: "CH",
               institutionAddressPostal: "8001",
             },
-          },
+          } as any,
         ],
       }
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        xmlFilingYear
-      )
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
+      const xml = await setupAndGenerateXml({ summary, filingYear })
 
       expect(xml).toContain(
-        "<UnknownMaximumValueIndicator>Y</UnknownMaximumValueIndicator>"
+        "<fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>"
       )
       expect(xml).toContain(
-        "<AccountMaximumValueAmountText>0</AccountMaximumValueAmountText>"
+        "<fc2:AccountMaximumValueAmountText>0</fc2:AccountMaximumValueAmountText>"
       )
     })
   })
@@ -865,25 +891,21 @@ describe("Export Pipeline Integration", () => {
 
   describe("XML batch attributes", () => {
     it("sets correct PartyCount and AccountCount", async () => {
-      mockGetReviewSummary.mockResolvedValue(createMockReviewSummary())
-      mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(
-        createMockFilingYearForXml()
-      )
+      const xml = await setupAndGenerateXml()
 
-      const { generateFincenXml } = await import(
-        "@/lib/export/fincen-xml"
-      )
-
-      const xml = await generateFincenXml("fy-1")
-
-      // PartyCount = 1 filer + 2 accounts = 3
-      expect(xml).toContain('PartyCount="3"')
+      // PartyCount = number of type-41 FI parties = 2 (one per account)
+      expect(xml).toContain('PartyCount="2"')
 
       // AccountCount = 2 accounts
       expect(xml).toContain('AccountCount="2"')
 
       // ActivityCount = always 1
       expect(xml).toContain('ActivityCount="1"')
+
+      // Owner counts default to 0
+      expect(xml).toContain('JointlyOwnedOwnerCount="0"')
+      expect(xml).toContain('NoFIOwnerCount="0"')
+      expect(xml).toContain('ConsolidatedOwnerCount="0"')
     })
   })
 })

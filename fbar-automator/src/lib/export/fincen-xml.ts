@@ -2,8 +2,8 @@
 // FinCEN BSA E-Filing XML Export Module
 // ---------------------------------------------------------------------------
 // Generates FinCEN-compliant XML for FBAR (Form 114) batch e-filing.
-// Follows the EFL_FBARXBatchSchema.xsd structure and FinCEN Line Item
-// Filing Instructions.
+// Follows the EFL_FBARXBatchSchema.xsd v1.2 structure and FinCEN Line Item
+// Filing Instructions v1.4 (August 2021).
 //
 // IMPORTANT: This module produces XML containing unmasked TINs and full
 // account numbers. Output must be treated as PII/sensitive data at rest
@@ -14,17 +14,41 @@ import { XMLBuilder } from "fast-xml-parser"
 import { prisma } from "@/lib/db"
 import { getReviewSummary, type ReviewSummary } from "@/lib/approval"
 import { safeDecrypt } from "@/lib/encryption"
-import type { AccountType, OwnershipType, TINType, FilingType } from "@prisma/client"
+import type { AccountType, TINType, FilingType } from "@prisma/client"
+
+// ---------------------------------------------------------------------------
+// Public Types
+// ---------------------------------------------------------------------------
+
+export interface TransmitterConfig {
+  name: string           // Practice/firm name
+  tin: string            // Practice EIN
+  tcc: string            // Transmitter Control Code (PTCC####)
+  phone: string          // Practice phone
+  address: { street: string; city: string; state: string; zip: string; country?: string }
+  contactName: string    // Transmitter contact person name
+}
+
+export interface PreparerConfig {
+  firstName: string
+  lastName: string
+  phone: string
+  ptin: string           // PTIN for type code 31
+  selfEmployed: boolean
+  address: { street: string; city: string; state: string; zip: string; country?: string }
+  firmName?: string      // If not self-employed
+  firmEin?: string       // If not self-employed
+}
 
 // ---------------------------------------------------------------------------
 // Constants & Mappings
 // ---------------------------------------------------------------------------
 
-/** Maps Prisma AccountType enum to FinCEN EFilingAccountTypeCode */
+/** Maps Prisma AccountType enum to FinCEN AccountTypeCode (Bank=1, Securities=2, Other=999) */
 const ACCOUNT_TYPE_CODE: Record<AccountType, string> = {
   BANK: "1",
   SECURITIES: "2",
-  OTHER: "3",
+  OTHER: "999",
 }
 
 /** Maps Prisma TINType enum to FinCEN PartyIdentificationTypeCode */
@@ -32,14 +56,7 @@ const TIN_TYPE_CODE: Record<TINType, string> = {
   SSN: "1",
   ITIN: "1",
   EIN: "2",
-  FOREIGN_TIN: "14",
-}
-
-/** Maps Prisma OwnershipType to FinCEN PartyAccountAssociationTypeCode(s) */
-const OWNERSHIP_TYPE_CODES: Record<OwnershipType, string[]> = {
-  FINANCIAL_INTEREST: ["8"],
-  SIGNATURE_AUTHORITY: ["9"],
-  BOTH: ["8", "9"],
+  FOREIGN_TIN: "9",
 }
 
 // ---------------------------------------------------------------------------
@@ -60,54 +77,50 @@ function formatDateFincen(date: Date | string | null | undefined): string {
 }
 
 /**
- * Parses the Client.usAddress JSON field into typed components.
+ * Parses a JSON address field into typed components.
  * Returns empty strings for missing fields.
  */
-function parseUsAddress(
-  usAddress: unknown
-): { street: string; city: string; state: string; zip: string } {
-  if (!usAddress || typeof usAddress !== "object") {
-    return { street: "", city: "", state: "", zip: "" }
+function parseAddress(
+  addr: unknown
+): { street: string; city: string; state: string; zip: string; country: string } {
+  if (!addr || typeof addr !== "object") {
+    return { street: "", city: "", state: "", zip: "", country: "" }
   }
-  const addr = usAddress as Record<string, string | undefined>
+  const a = addr as Record<string, string | undefined>
   return {
-    street: addr.street ?? "",
-    city: addr.city ?? "",
-    state: addr.state ?? "",
-    zip: addr.zip ?? "",
+    street: a.street ?? "",
+    city: a.city ?? "",
+    state: a.state ?? a.stateProvince ?? "",
+    zip: a.zip ?? a.postalCode ?? "",
+    country: a.country ?? "",
   }
 }
 
 /**
- * Parses the Client.foreignAddress JSON field into typed components.
- * Returns empty strings for missing fields.
+ * Determines the EFilingAccountTypeCode based on ownership:
+ *   143 = Signature Authority (no financial interest)
+ *   142 = Jointly Owned Financial Account
+ *   141 = Separately Owned Financial Account (default)
  */
-function parseForeignAddress(
-  foreignAddress: unknown
-): { street: string; city: string; stateProvince: string; postalCode: string; country: string } {
-  if (!foreignAddress || typeof foreignAddress !== "object") {
-    return { street: "", city: "", stateProvince: "", postalCode: "", country: "" }
-  }
-  const addr = foreignAddress as Record<string, string | undefined>
-  return {
-    street: addr.street ?? "",
-    city: addr.city ?? "",
-    stateProvince: addr.stateProvince ?? "",
-    postalCode: addr.postalCode ?? "",
-    country: addr.country ?? "",
-  }
+function getEFilingAccountTypeCode(
+  ownershipType: string,
+  isJointlyOwned: boolean
+): string {
+  if (ownershipType === "SIGNATURE_AUTHORITY") return "143"
+  if (isJointlyOwned) return "142"
+  return "141"
 }
 
 /**
  * Manages a monotonically increasing sequence counter for XML SeqNum
  * attributes. FinCEN requires each element to have a unique SeqNum.
+ * First call to next() returns 1.
  */
 class SeqNumCounter {
-  private current = 1
+  private current = 0
 
   next(): number {
-    this.current += 1
-    return this.current
+    return ++this.current
   }
 
   /** Returns the highest SeqNum issued so far. */
@@ -125,9 +138,13 @@ class SeqNumCounter {
  * (Form 114) filing year.
  *
  * The XML follows the EFilingBatchXML schema with one Activity element
- * containing the filer Party and one Party per foreign account.
+ * containing activity-level Parties (transmitter, contact, filer, preparer),
+ * Account elements (each with a nested financial institution Party), and
+ * a ForeignAccountActivity element.
  *
  * @param filingYearId - The FilingYear ID to generate XML for
+ * @param transmitter - Transmitter (practice/firm) configuration
+ * @param preparer - Third-party preparer configuration
  * @param prefetchedSummary - Optional pre-fetched review data (avoids redundant DB queries)
  * @returns Well-formed XML string with XML declaration
  *
@@ -135,6 +152,8 @@ class SeqNumCounter {
  */
 export async function generateFincenXml(
   filingYearId: string,
+  transmitter: TransmitterConfig,
+  preparer: PreparerConfig,
   prefetchedSummary?: ReviewSummary
 ): Promise<string> {
   // -----------------------------------------------------------------------
@@ -158,177 +177,326 @@ export async function generateFincenXml(
   const seq = new SeqNumCounter()
 
   // -----------------------------------------------------------------------
-  // 2. Build filer Party (Part I)
+  // 2. Build Activity element
   // -----------------------------------------------------------------------
+
+  const today = formatDateFincen(new Date())
+  const isAmended = filingYear.filingType === ("AMENDED" as FilingType)
+
+  const activitySeq = seq.next() // 1
+
+  // Activity-level fields (in schema order)
+  const activity: Record<string, unknown> = {
+    "@_SeqNum": String(activitySeq),
+    "fc2:ApprovalOfficialSignatureDateText": today,
+    "fc2:EFilingPriorDocumentNumber": "",
+    "fc2:ThirdPartyPreparerIndicator": "Y",
+  }
+
+  // ActivityAssociation
+  const assocSeq = seq.next()
+  activity["fc2:ActivityAssociation"] = {
+    "@_SeqNum": String(assocSeq),
+    "fc2:CorrectsAmendsPriorReportIndicator": isAmended ? "Y" : "",
+  }
+
+  // -----------------------------------------------------------------------
+  // 3. Build activity-level Party elements
+  // -----------------------------------------------------------------------
+
+  const activityParties: Record<string, unknown>[] = []
+
+  // --- Party[0]: Transmitter (type 35) ---
+  const txPartySeq = seq.next()
+  const txNameSeq = seq.next()
+  const txAddrSeq = seq.next()
+  const txPhoneSeq = seq.next()
+  const txIdTinSeq = seq.next()
+  const txIdTccSeq = seq.next()
+
+  activityParties.push({
+    "@_SeqNum": String(txPartySeq),
+    "fc2:ActivityPartyTypeCode": "35",
+    "fc2:PartyName": {
+      "@_SeqNum": String(txNameSeq),
+      "fc2:PartyNameTypeCode": "L",
+      "fc2:RawPartyLegalName": transmitter.name,
+    },
+    "fc2:Address": {
+      "@_SeqNum": String(txAddrSeq),
+      "fc2:RawCityText": transmitter.address.city,
+      "fc2:RawCountryCodeText": transmitter.address.country ?? "US",
+      "fc2:RawStateCodeText": transmitter.address.state,
+      "fc2:RawStreetAddress1Text": transmitter.address.street,
+      "fc2:RawZIPCode": transmitter.address.zip,
+    },
+    "fc2:PhoneNumber": {
+      "@_SeqNum": String(txPhoneSeq),
+      "fc2:PhoneNumberText": transmitter.phone,
+    },
+    "fc2:PartyIdentification": [
+      {
+        "@_SeqNum": String(txIdTinSeq),
+        "fc2:PartyIdentificationNumberText": transmitter.tin,
+        "fc2:PartyIdentificationTypeCode": "4",
+      },
+      {
+        "@_SeqNum": String(txIdTccSeq),
+        "fc2:PartyIdentificationNumberText": transmitter.tcc,
+        "fc2:PartyIdentificationTypeCode": "28",
+      },
+    ],
+  })
+
+  // --- Party[1]: Transmitter Contact (type 37) ---
+  const tcPartySeq = seq.next()
+  const tcNameSeq = seq.next()
+
+  // Split contact name into first/last
+  const contactParts = transmitter.contactName.trim().split(/\s+/)
+  const contactFirst = contactParts.slice(0, -1).join(" ") || contactParts[0]
+  const contactLast = contactParts.length > 1 ? contactParts[contactParts.length - 1] : ""
+
+  activityParties.push({
+    "@_SeqNum": String(tcPartySeq),
+    "fc2:ActivityPartyTypeCode": "37",
+    "fc2:PartyName": {
+      "@_SeqNum": String(tcNameSeq),
+      "fc2:PartyNameTypeCode": "L",
+      "fc2:RawIndividualFirstName": contactFirst,
+      "fc2:RawEntityIndividualLastName": contactLast,
+    },
+  })
+
+  // --- Party[2]: Foreign Account Filer (type 15) ---
+  const filerPartySeq = seq.next()
 
   // Determine filer address (foreign address takes precedence)
   const hasForeignAddr = client.foreignAddress && typeof client.foreignAddress === "object"
-  const filerForeignAddr = hasForeignAddr ? parseForeignAddress(client.foreignAddress) : null
-  const filerUsAddr = !hasForeignAddr ? parseUsAddress(client.usAddress) : null
+  const filerAddr = hasForeignAddr
+    ? parseAddress(client.foreignAddress)
+    : parseAddress(client.usAddress)
+  const filerCountry = hasForeignAddr ? filerAddr.country : "US"
 
-  const filerPartySeq = seq.next() // Party element
-  const filerNameSeq = seq.next() // PartyName element
-  const filerAddressSeq = seq.next() // Address element
-  const filerIdSeq = seq.next() // PartyIdentification element
+  // Determine if any account has signature authority
+  const hasSignatureAuthority = filingYear.reviewedAccountYears.some(
+    (ray) =>
+      ray.foreignAccount.ownershipType === "SIGNATURE_AUTHORITY" ||
+      ray.foreignAccount.ownershipType === "BOTH"
+  )
 
   const filerParty: Record<string, unknown> = {
     "@_SeqNum": String(filerPartySeq),
-    ActivityPartyTypeCode: "35",
-    FilerFinancialInterest25ForeignAccountIndicator:
+    "fc2:ActivityPartyTypeCode": "15",
+    "fc2:FilerFinancialInterest25ForeignAccountIndicator":
       filingYear.has25PlusAccounts ? "Y" : "N",
-    FilerTypeIndividualIndicator: client.type === "INDIVIDUAL" ? "Y" : "N",
+    "fc2:FilerTypeIndividualIndicator": "Y",
   }
 
-  // Include date of birth for individuals
   if (client.dateOfBirth) {
-    filerParty.IndividualBirthDateText = formatDateFincen(client.dateOfBirth)
+    filerParty["fc2:IndividualBirthDateText"] = formatDateFincen(client.dateOfBirth)
   }
 
-  filerParty.PartyName = {
+  filerParty["fc2:SignatureAuthoritiesIndicator"] = hasSignatureAuthority ? "Y" : "N"
+
+  const filerNameSeq = seq.next()
+  filerParty["fc2:PartyName"] = {
     "@_SeqNum": String(filerNameSeq),
-    PartyNameTypeCode: "L",
-    RawIndividualLastName: client.lastName,
-    RawIndividualFirstName: client.firstName ?? "",
+    "fc2:PartyNameTypeCode": "L",
+    "fc2:RawEntityIndividualLastName": client.lastName,
+    "fc2:RawIndividualFirstName": client.firstName ?? "",
   }
 
-  filerParty.Address = {
-    "@_SeqNum": String(filerAddressSeq),
-    RawCityText: filerForeignAddr ? filerForeignAddr.city : filerUsAddr!.city,
-    RawCountryCodeText: filerForeignAddr ? filerForeignAddr.country : "US",
-    RawStateCodeText: filerForeignAddr ? filerForeignAddr.stateProvince : filerUsAddr!.state,
-    RawStreetAddress1Text: filerForeignAddr ? filerForeignAddr.street : filerUsAddr!.street,
-    RawZIPCode: filerForeignAddr ? filerForeignAddr.postalCode : filerUsAddr!.zip,
+  const filerAddrSeq = seq.next()
+  filerParty["fc2:Address"] = {
+    "@_SeqNum": String(filerAddrSeq),
+    "fc2:RawCityText": filerAddr.city,
+    "fc2:RawCountryCodeText": filerCountry,
+    "fc2:RawStateCodeText": filerAddr.state,
+    "fc2:RawStreetAddress1Text": filerAddr.street,
+    "fc2:RawZIPCode": filerAddr.zip,
   }
 
   if (client.tin && client.tinType) {
-    // Decrypt TIN for FinCEN XML export (required to be unmasked)
+    const filerIdSeq = seq.next()
     const decryptedTin = safeDecrypt(client.tin)
-    filerParty.PartyIdentification = {
+    filerParty["fc2:PartyIdentification"] = {
       "@_SeqNum": String(filerIdSeq),
-      PartyIdentificationNumberText: decryptedTin,
-      PartyIdentificationTypeCode: TIN_TYPE_CODE[client.tinType],
+      "fc2:PartyIdentificationNumberText": decryptedTin,
+      "fc2:PartyIdentificationTypeCode": TIN_TYPE_CODE[client.tinType],
     }
   }
 
+  activityParties.push(filerParty)
+
+  // --- Party[3]: Third Party Preparer (type 57) ---
+  const prepPartySeq = seq.next()
+  const prepNameSeq = seq.next()
+  const prepAddrSeq = seq.next()
+  const prepPhoneSeq = seq.next()
+  const prepIdSeq = seq.next()
+
+  activityParties.push({
+    "@_SeqNum": String(prepPartySeq),
+    "fc2:ActivityPartyTypeCode": "57",
+    "fc2:PartyName": {
+      "@_SeqNum": String(prepNameSeq),
+      "fc2:PartyNameTypeCode": "L",
+      "fc2:RawEntityIndividualLastName": preparer.lastName,
+      "fc2:RawIndividualFirstName": preparer.firstName,
+    },
+    "fc2:Address": {
+      "@_SeqNum": String(prepAddrSeq),
+      "fc2:RawCityText": preparer.address.city,
+      "fc2:RawCountryCodeText": preparer.address.country ?? "US",
+      "fc2:RawStateCodeText": preparer.address.state,
+      "fc2:RawStreetAddress1Text": preparer.address.street,
+      "fc2:RawZIPCode": preparer.address.zip,
+    },
+    "fc2:PhoneNumber": {
+      "@_SeqNum": String(prepPhoneSeq),
+      "fc2:PhoneNumberText": preparer.phone,
+    },
+    "fc2:PartyIdentification": {
+      "@_SeqNum": String(prepIdSeq),
+      "fc2:PartyIdentificationNumberText": preparer.ptin,
+      "fc2:PartyIdentificationTypeCode": "31",
+    },
+  })
+
+  // --- Party[4]: Third Party Preparer Firm (type 56) — only if not self-employed ---
+  if (!preparer.selfEmployed && preparer.firmName) {
+    const firmPartySeq = seq.next()
+    const firmNameSeq = seq.next()
+    const firmIdSeq = seq.next()
+
+    activityParties.push({
+      "@_SeqNum": String(firmPartySeq),
+      "fc2:ActivityPartyTypeCode": "56",
+      "fc2:PartyName": {
+        "@_SeqNum": String(firmNameSeq),
+        "fc2:PartyNameTypeCode": "L",
+        "fc2:RawPartyLegalName": preparer.firmName,
+      },
+      "fc2:PartyIdentification": {
+        "@_SeqNum": String(firmIdSeq),
+        "fc2:PartyIdentificationNumberText": preparer.firmEin ?? "",
+        "fc2:PartyIdentificationTypeCode": "4",
+      },
+    })
+  }
+
   // -----------------------------------------------------------------------
-  // 3. Build account Parties (Part II / Part III)
+  // 4. Build Account elements (siblings of Party at Activity level)
   // -----------------------------------------------------------------------
 
-  const accountParties: Record<string, unknown>[] = []
+  const accountElements: Record<string, unknown>[] = []
+  let type41Count = 0
 
   for (const ray of filingYear.reviewedAccountYears) {
     const fa = ray.foreignAccount
-
-    const partySeq = seq.next()
-    const nameSeq = seq.next()
-    const addressSeq = seq.next()
-    const accountSeq = seq.next()
-
-    // Determine Party type code: 41 for individual accounts, 42 for joint
-    const activityPartyTypeCode = fa.isJointlyOwned ? "42" : "41"
 
     // Calculate max value in whole USD dollars
     const maxValueUsd = ray.isValueUnknown
       ? 0
       : Math.round(Number(ray.maxValueUsd ?? 0))
 
-    // Build account element
+    // Decrypt account number
+    const decryptedAccountNumber = safeDecrypt(fa.accountNumber)
+
+    const accountSeq = seq.next()
+
     const accountElement: Record<string, unknown> = {
       "@_SeqNum": String(accountSeq),
-      AccountMaximumValueAmountText: String(maxValueUsd),
-      EFilingAccountTypeCode: ACCOUNT_TYPE_CODE[fa.accountType],
+      "fc2:AccountMaximumValueAmountText": String(maxValueUsd),
+      "fc2:AccountNumberText": decryptedAccountNumber,
+      "fc2:AccountTypeCode": ACCOUNT_TYPE_CODE[fa.accountType],
+      "fc2:EFilingAccountTypeCode": getEFilingAccountTypeCode(
+        fa.ownershipType,
+        fa.isJointlyOwned
+      ),
     }
 
     // Add unknown value indicator if value is unknown
     if (ray.isValueUnknown) {
-      accountElement.UnknownMaximumValueIndicator = "Y"
+      accountElement["fc2:UnknownMaximumValueIndicator"] = "Y"
     }
 
-    // Build PartyAccountAssociation(s) based on ownership type
-    const associationCodes = OWNERSHIP_TYPE_CODES[fa.ownershipType]
-    const associations = associationCodes.map((code) => {
-      const assocSeq = seq.next()
-      return {
-        "@_SeqNum": String(assocSeq),
-        PartyAccountAssociationTypeCode: code,
-        AccountNumberText: fa.accountNumber,
-      }
-    })
+    // Nested Party: Financial Institution (type 41)
+    const fiPartySeq = seq.next()
+    const fiNameSeq = seq.next()
+    const fiAddrSeq = seq.next()
+    type41Count++
 
-    // fast-xml-parser: single item = object, multiple = array
-    accountElement.PartyAccountAssociation =
-      associations.length === 1 ? associations[0] : associations
-
-    const accountParty: Record<string, unknown> = {
-      "@_SeqNum": String(partySeq),
-      ActivityPartyTypeCode: activityPartyTypeCode,
-      PartyName: {
-        "@_SeqNum": String(nameSeq),
-        PartyNameTypeCode: "L",
-        RawPartyFullName: fa.institutionName,
+    accountElement["fc2:Party"] = {
+      "@_SeqNum": String(fiPartySeq),
+      "fc2:ActivityPartyTypeCode": "41",
+      "fc2:PartyName": {
+        "@_SeqNum": String(fiNameSeq),
+        "fc2:PartyNameTypeCode": "L",
+        "fc2:RawPartyLegalName": fa.institutionName,
       },
-      Address: {
-        "@_SeqNum": String(addressSeq),
-        RawCityText: fa.institutionAddressCity ?? "",
-        RawCountryCodeText: fa.institutionAddressCountry ?? "",
-        RawStateCodeText: fa.institutionAddressState ?? "",
-        RawStreetAddress1Text: fa.institutionAddressStreet ?? "",
-        RawZIPCode: fa.institutionAddressPostal ?? "",
+      "fc2:Address": {
+        "@_SeqNum": String(fiAddrSeq),
+        "fc2:RawCityText": fa.institutionAddressCity ?? "",
+        "fc2:RawCountryCodeText": fa.institutionAddressCountry ?? "",
+        "fc2:RawStreetAddress1Text": fa.institutionAddressStreet ?? "",
+        "fc2:RawZIPCode": fa.institutionAddressPostal ?? "",
       },
-      Account: accountElement,
     }
 
-    accountParties.push(accountParty)
+    accountElements.push(accountElement)
   }
 
   // -----------------------------------------------------------------------
-  // 4. Build Activity element
+  // 5. Assemble Activity children
   // -----------------------------------------------------------------------
 
-  const today = formatDateFincen(new Date())
-  const isAmended = filingYear.filingType === ("AMENDED" as FilingType)
+  // Parties array
+  activity["fc2:Party"] = activityParties.length === 1
+    ? activityParties[0]
+    : activityParties
 
-  const activitySeq = seq.next()
-  const assocSeq = seq.next()
+  // Accounts
+  if (accountElements.length === 1) {
+    activity["fc2:Account"] = accountElements[0]
+  } else if (accountElements.length > 1) {
+    activity["fc2:Account"] = accountElements
+  }
 
-  const activity: Record<string, unknown> = {
-    "@_SeqNum": String(activitySeq),
-    ApprovalOfficialSignatureDateText: today,
-    EFilingPriorDocumentNumber: "",
-    FilingDateText: today,
-    ActivityAssociation: {
-      "@_SeqNum": String(assocSeq),
-      CorrectsAmendsPriorReportIndicator: isAmended ? "Y" : "N",
-    },
-    Party: [filerParty, ...accountParties],
+  // ForeignAccountActivity (required)
+  const faaSeq = seq.next()
+  activity["fc2:ForeignAccountActivity"] = {
+    "@_SeqNum": String(faaSeq),
+    "fc2:ReportCalendarYearText": String(filingYear.calendarYear),
   }
 
   // -----------------------------------------------------------------------
-  // 5. Build root element
+  // 6. Build root element
   // -----------------------------------------------------------------------
-
-  const totalPartyCount = 1 + accountParties.length // filer + accounts
 
   const root = {
     "?xml": {
       "@_version": "1.0",
       "@_encoding": "UTF-8",
     },
-    EFilingBatchXML: {
-      "@_xmlns": "www.fincen.gov/base",
-      "@_xmlns:fc2": "www.fincen.gov/base",
-      "@_SeqNum": "1",
-      "@_StatusCode": "A",
-      "@_TotalAmount": "0",
-      "@_PartyCount": String(totalPartyCount),
+    "fc2:EFilingBatchXML": {
       "@_ActivityCount": "1",
-      "@_AccountCount": String(accountParties.length),
-      Activity: activity,
+      "@_PartyCount": String(type41Count),
+      "@_AccountCount": String(accountElements.length),
+      "@_JointlyOwnedOwnerCount": "0",
+      "@_NoFIOwnerCount": "0",
+      "@_ConsolidatedOwnerCount": "0",
+      "@_xsi:schemaLocation": "www.fincen.gov/base/EFL_FBARXBatchSchema.xsd",
+      "@_xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+      "@_xmlns:fc2": "www.fincen.gov/base",
+      "fc2:FormTypeCode": "FBARX",
+      "fc2:Activity": activity,
     },
   }
 
   // -----------------------------------------------------------------------
-  // 6. Serialize to XML
+  // 7. Serialize to XML
   // -----------------------------------------------------------------------
 
   const builder = new XMLBuilder({
@@ -361,50 +529,71 @@ export function validateFincenXml(
   const errors: string[] = []
 
   // -----------------------------------------------------------------------
-  // 1. Check required root element
+  // 1. Check required root element (with fc2: prefix)
   // -----------------------------------------------------------------------
 
-  if (!xml.includes("<EFilingBatchXML")) {
-    errors.push("Missing root element: EFilingBatchXML")
+  if (!xml.includes("<fc2:EFilingBatchXML")) {
+    errors.push("Missing root element: fc2:EFilingBatchXML")
   }
 
   // -----------------------------------------------------------------------
   // 2. Check Activity element exists
   // -----------------------------------------------------------------------
 
-  if (!xml.includes("<Activity")) {
-    errors.push("Missing required element: Activity")
+  if (!xml.includes("<fc2:Activity")) {
+    errors.push("Missing required element: fc2:Activity")
   }
 
   // -----------------------------------------------------------------------
-  // 3. Check filer Party (ActivityPartyTypeCode 35)
+  // 3. Check FormTypeCode
   // -----------------------------------------------------------------------
 
-  if (!xml.includes("<ActivityPartyTypeCode>35</ActivityPartyTypeCode>")) {
+  if (!xml.includes("<fc2:FormTypeCode>FBARX</fc2:FormTypeCode>")) {
+    errors.push("Missing or incorrect FormTypeCode (expected FBARX)")
+  }
+
+  // -----------------------------------------------------------------------
+  // 4. Check filer Party (ActivityPartyTypeCode 15)
+  // -----------------------------------------------------------------------
+
+  if (!xml.includes("<fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>")) {
     errors.push(
-      "Missing filer Party element (ActivityPartyTypeCode 35)"
+      "Missing filer Party element (ActivityPartyTypeCode 15)"
     )
   }
 
   // -----------------------------------------------------------------------
-  // 4. Check at least one account Party (type 41 or 42)
+  // 5. Check transmitter Party (ActivityPartyTypeCode 35)
   // -----------------------------------------------------------------------
 
-  const hasType41 = xml.includes(
-    "<ActivityPartyTypeCode>41</ActivityPartyTypeCode>"
-  )
-  const hasType42 = xml.includes(
-    "<ActivityPartyTypeCode>42</ActivityPartyTypeCode>"
-  )
-
-  if (!hasType41 && !hasType42) {
+  if (!xml.includes("<fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>")) {
     errors.push(
-      "Missing account Party element (ActivityPartyTypeCode 41 or 42)"
+      "Missing transmitter Party element (ActivityPartyTypeCode 35)"
     )
   }
 
   // -----------------------------------------------------------------------
-  // 5. Check SeqNum uniqueness
+  // 6. Check Account elements exist
+  // -----------------------------------------------------------------------
+
+  if (!xml.includes("<fc2:Account")) {
+    errors.push("Missing Account elements")
+  }
+
+  // -----------------------------------------------------------------------
+  // 7. Check ForeignAccountActivity with ReportCalendarYearText
+  // -----------------------------------------------------------------------
+
+  if (!xml.includes("<fc2:ForeignAccountActivity")) {
+    errors.push("Missing ForeignAccountActivity element")
+  }
+
+  if (!xml.includes("<fc2:ReportCalendarYearText>")) {
+    errors.push("Missing ReportCalendarYearText in ForeignAccountActivity")
+  }
+
+  // -----------------------------------------------------------------------
+  // 8. Check SeqNum uniqueness
   // -----------------------------------------------------------------------
 
   const seqNumPattern = /SeqNum="(\d+)"/g
@@ -419,25 +608,24 @@ export function validateFincenXml(
     const duplicates = seqNums.filter(
       (num, idx) => seqNums.indexOf(num) !== idx
     )
-    const uniqueDuplicates = [...Array.from(new Set(duplicates))]
+    const uniqueDuplicates = Array.from(new Set(duplicates))
     errors.push(
       `Duplicate SeqNum values found: ${uniqueDuplicates.join(", ")}`
     )
   }
 
   // -----------------------------------------------------------------------
-  // 6. Validate date formats (YYYYMMDD)
+  // 9. Validate date formats (YYYYMMDD)
   // -----------------------------------------------------------------------
 
   const dateElements = [
     "ApprovalOfficialSignatureDateText",
-    "FilingDateText",
     "IndividualBirthDateText",
   ]
 
   for (const elem of dateElements) {
     const datePattern = new RegExp(
-      `<${elem}>([^<]+)</${elem}>`
+      `<fc2:${elem}>([^<]+)</fc2:${elem}>`
     )
     const dateMatch = datePattern.exec(xml)
     if (dateMatch) {
@@ -451,11 +639,11 @@ export function validateFincenXml(
   }
 
   // -----------------------------------------------------------------------
-  // 7. Validate AccountMaximumValueAmountText is a non-negative integer
+  // 10. Validate AccountMaximumValueAmountText is a non-negative integer
   // -----------------------------------------------------------------------
 
   const amountPattern =
-    /<AccountMaximumValueAmountText>([^<]+)<\/AccountMaximumValueAmountText>/g
+    /<fc2:AccountMaximumValueAmountText>([^<]+)<\/fc2:AccountMaximumValueAmountText>/g
   let amountMatch: RegExpExecArray | null
   while ((amountMatch = amountPattern.exec(xml)) !== null) {
     const amountValue = amountMatch[1].trim()

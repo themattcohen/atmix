@@ -7,6 +7,7 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import type { ReviewSummary } from "@/lib/approval"
+import type { TransmitterConfig, PreparerConfig } from "@/lib/export/fincen-xml"
 import { XMLParser } from "fast-xml-parser"
 
 // ---------------------------------------------------------------------------
@@ -252,6 +253,34 @@ function createComprehensiveFilingYear(
 }
 
 // ---------------------------------------------------------------------------
+// Mock Transmitter / Preparer Configs
+// ---------------------------------------------------------------------------
+
+function createMockTransmitter(): TransmitterConfig {
+  return {
+    name: "Test Tax Firm LLC",
+    tin: "12-3456789",
+    tcc: "PTCC1234",
+    phone: "555-123-4567",
+    address: { street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+    contactName: "John Smith",
+  }
+}
+
+function createMockPreparer(): PreparerConfig {
+  return {
+    firstName: "John",
+    lastName: "Smith",
+    phone: "555-123-4567",
+    ptin: "P12345678",
+    selfEmployed: false,
+    address: { street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+    firmName: "Test Tax Firm LLC",
+    firmEin: "12-3456789",
+  }
+}
+
+// ---------------------------------------------------------------------------
 // XML Parsing Helper
 // ---------------------------------------------------------------------------
 
@@ -284,25 +313,23 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Verify XML declaration
       expect(xml).toMatch(/^<\?xml version="1\.0" encoding="UTF-8"\?>/)
 
       // Verify root element with correct namespace
-      expect(xml).toContain('<EFilingBatchXML')
-      expect(xml).toContain('xmlns="www.fincen.gov/base"')
+      expect(xml).toContain('<fc2:EFilingBatchXML')
       expect(xml).toContain('xmlns:fc2="www.fincen.gov/base"')
 
       // Verify required root attributes
-      expect(xml).toContain('StatusCode="A"')
-      expect(xml).toContain('TotalAmount="0"')
       expect(xml).toContain('ActivityCount="1"')
 
       // Parse and verify structure
       const parsed = parseXml(xml)
-      expect(parsed).toHaveProperty("EFilingBatchXML")
-      expect(parsed.EFilingBatchXML).toHaveProperty("Activity")
+      expect(parsed).toHaveProperty("fc2:EFilingBatchXML")
+      const root = parsed["fc2:EFilingBatchXML"] as Record<string, unknown>
+      expect(root).toHaveProperty("fc2:Activity")
     })
 
     it("includes all required filer fields (Part I)", async () => {
@@ -311,29 +338,29 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // Filer identification
-      expect(xml).toContain("<ActivityPartyTypeCode>35</ActivityPartyTypeCode>")
-      expect(xml).toContain("<RawIndividualLastName>Smith</RawIndividualLastName>")
-      expect(xml).toContain("<RawIndividualFirstName>Robert</RawIndividualFirstName>")
+      // Filer identification (party type 15)
+      expect(xml).toContain("<fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>")
+      expect(xml).toContain("<fc2:RawEntityIndividualLastName>Smith</fc2:RawEntityIndividualLastName>")
+      expect(xml).toContain("<fc2:RawIndividualFirstName>Robert</fc2:RawIndividualFirstName>")
 
       // Filer TIN (unmasked)
-      expect(xml).toContain("<PartyIdentificationNumberText>987654321</PartyIdentificationNumberText>")
-      expect(xml).toContain("<PartyIdentificationTypeCode>1</PartyIdentificationTypeCode>") // SSN
+      expect(xml).toContain("<fc2:PartyIdentificationNumberText>987654321</fc2:PartyIdentificationNumberText>")
+      expect(xml).toContain("<fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>") // SSN
 
       // Filer address
-      expect(xml).toContain("<RawStreetAddress1Text>456 Oak Avenue</RawStreetAddress1Text>")
-      expect(xml).toContain("<RawCityText>San Francisco</RawCityText>")
-      expect(xml).toContain("<RawStateCodeText>CA</RawStateCodeText>")
-      expect(xml).toContain("<RawZIPCode>94102</RawZIPCode>")
-      expect(xml).toContain("<RawCountryCodeText>US</RawCountryCodeText>")
+      expect(xml).toContain("<fc2:RawStreetAddress1Text>456 Oak Avenue</fc2:RawStreetAddress1Text>")
+      expect(xml).toContain("<fc2:RawCityText>San Francisco</fc2:RawCityText>")
+      expect(xml).toContain("<fc2:RawStateCodeText>CA</fc2:RawStateCodeText>")
+      expect(xml).toContain("<fc2:RawZIPCode>94102</fc2:RawZIPCode>")
+      expect(xml).toContain("<fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>")
 
       // Filer date of birth
-      expect(xml).toContain("<IndividualBirthDateText>19750822</IndividualBirthDateText>")
+      expect(xml).toContain("<fc2:IndividualBirthDateText>19750822</fc2:IndividualBirthDateText>")
 
       // Individual indicator
-      expect(xml).toContain("<FilerTypeIndividualIndicator>Y</FilerTypeIndividualIndicator>")
+      expect(xml).toContain("<fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>")
     })
 
     it("includes all required account fields (Part II/III)", async () => {
@@ -342,25 +369,22 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // Account Party type (individual owned)
-      expect(xml).toContain("<ActivityPartyTypeCode>41</ActivityPartyTypeCode>")
+      // Financial institution party type (nested in Account)
+      expect(xml).toContain("<fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>")
 
       // Institution name
-      expect(xml).toContain("<RawPartyFullName>UBS AG</RawPartyFullName>")
+      expect(xml).toContain("<fc2:RawPartyLegalName>UBS AG</fc2:RawPartyLegalName>")
 
       // Institution address
-      expect(xml).toContain("<RawCityText>Zurich</RawCityText>")
-      expect(xml).toContain("<RawCountryCodeText>CH</RawCountryCodeText>")
+      expect(xml).toContain("<fc2:RawCityText>Zurich</fc2:RawCityText>")
+      expect(xml).toContain("<fc2:RawCountryCodeText>CH</fc2:RawCountryCodeText>")
 
       // Account details
-      expect(xml).toContain("<AccountNumberText>CH-123456789</AccountNumberText>")
-      expect(xml).toContain("<EFilingAccountTypeCode>1</EFilingAccountTypeCode>") // BANK
-      expect(xml).toContain("<AccountMaximumValueAmountText>85227</AccountMaximumValueAmountText>")
-
-      // PartyAccountAssociation with correct type code
-      expect(xml).toContain("<PartyAccountAssociationTypeCode>8</PartyAccountAssociationTypeCode>") // Financial Interest
+      expect(xml).toContain("<fc2:AccountNumberText>CH-123456789</fc2:AccountNumberText>")
+      expect(xml).toContain("<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>") // Separately owned BANK
+      expect(xml).toContain("<fc2:AccountMaximumValueAmountText>85227</fc2:AccountMaximumValueAmountText>")
     })
 
     it("formats all dates as YYYYMMDD", async () => {
@@ -369,17 +393,16 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Extract all date elements
       const dateElements = [
         "ApprovalOfficialSignatureDateText",
-        "FilingDateText",
         "IndividualBirthDateText",
       ]
 
       for (const elem of dateElements) {
-        const pattern = new RegExp(`<${elem}>([^<]+)</${elem}>`)
+        const pattern = new RegExp(`<fc2:${elem}>([^<]+)</fc2:${elem}>`)
         const match = pattern.exec(xml)
         if (match) {
           const dateValue = match[1]
@@ -398,10 +421,10 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Extract all AccountMaximumValueAmountText elements
-      const amountPattern = /<AccountMaximumValueAmountText>(\d+)<\/AccountMaximumValueAmountText>/g
+      const amountPattern = /<fc2:AccountMaximumValueAmountText>(\d+)<\/fc2:AccountMaximumValueAmountText>/g
       const amounts: string[] = []
       let match: RegExpExecArray | null
       while ((match = amountPattern.exec(xml)) !== null) {
@@ -433,19 +456,18 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // XML should escape special characters
       expect(xml).toContain("&amp;") // & -> &amp;
       expect(xml).toContain("&lt;") // < -> &lt;
 
       // Should not contain unescaped special characters
-      const institutionNamePattern = /<RawPartyFullName>([^<]+)<\/RawPartyFullName>/
+      const institutionNamePattern = /<fc2:RawPartyLegalName>([^<]+)<\/fc2:RawPartyLegalName>/
       const match = institutionNamePattern.exec(xml)
       if (match) {
-        const institutionName = match[1]
         // After parsing, should be properly escaped
-        expect(xml).not.toMatch(/<RawPartyFullName>UBS AG & Co\. <Private>/)
+        expect(xml).not.toMatch(/<fc2:RawPartyLegalName>UBS AG & Co\. <Private>/)
       }
     })
 
@@ -457,10 +479,10 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Should handle large numbers (over $50 million)
-      expect(xml).toContain("<AccountMaximumValueAmountText>56818182</AccountMaximumValueAmountText>")
+      expect(xml).toContain("<fc2:AccountMaximumValueAmountText>56818182</fc2:AccountMaximumValueAmountText>")
 
       // Verify validation still passes
       const { validateFincenXml } = await import("@/lib/export/fincen-xml")
@@ -476,13 +498,13 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Should include UnknownMaximumValueIndicator
-      expect(xml).toContain("<UnknownMaximumValueIndicator>Y</UnknownMaximumValueIndicator>")
+      expect(xml).toContain("<fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>")
 
       // Amount should be 0 for unknown value accounts
-      const unknownValuePattern = /<UnknownMaximumValueIndicator>Y<\/UnknownMaximumValueIndicator>[^]*?<AccountMaximumValueAmountText>(\d+)<\/AccountMaximumValueAmountText>/
+      const unknownValuePattern = /<fc2:UnknownMaximumValueIndicator>Y<\/fc2:UnknownMaximumValueIndicator>[^]*?<fc2:AccountMaximumValueAmountText>(\d+)<\/fc2:AccountMaximumValueAmountText>/
       const match = unknownValuePattern.exec(xml)
       if (match) {
         expect(match[1]).toBe("0")
@@ -498,15 +520,15 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // Should contain all three account type codes
-      expect(xml).toContain("<EFilingAccountTypeCode>1</EFilingAccountTypeCode>") // BANK
-      expect(xml).toContain("<EFilingAccountTypeCode>2</EFilingAccountTypeCode>") // SECURITIES
-      expect(xml).toContain("<EFilingAccountTypeCode>3</EFilingAccountTypeCode>") // OTHER
+      // Should contain all three AccountTypeCode values (BANK=1, SECURITIES=2, OTHER=999)
+      expect(xml).toContain("<fc2:AccountTypeCode>1</fc2:AccountTypeCode>") // BANK
+      expect(xml).toContain("<fc2:AccountTypeCode>2</fc2:AccountTypeCode>") // SECURITIES
+      expect(xml).toContain("<fc2:AccountTypeCode>999</fc2:AccountTypeCode>") // OTHER
     })
 
-    it("handles jointly owned accounts (type 42)", async () => {
+    it("handles jointly owned accounts (EFilingAccountTypeCode 142)", async () => {
       const { filingYear, summary } = createComprehensiveFilingYear({
         hasJointAccounts: true,
       })
@@ -514,10 +536,10 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // Should use ActivityPartyTypeCode 42 for jointly owned accounts
-      expect(xml).toContain("<ActivityPartyTypeCode>42</ActivityPartyTypeCode>")
+      // Should use EFilingAccountTypeCode 142 for jointly owned accounts
+      expect(xml).toContain("<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>")
     })
 
     it("handles signature authority ownership type", async () => {
@@ -528,10 +550,13 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // Should use PartyAccountAssociationTypeCode 9 for signature authority
-      expect(xml).toContain("<PartyAccountAssociationTypeCode>9</PartyAccountAssociationTypeCode>")
+      // Should use EFilingAccountTypeCode 143 for signature authority
+      expect(xml).toContain("<fc2:EFilingAccountTypeCode>143</fc2:EFilingAccountTypeCode>")
+
+      // Filer should have SignatureAuthoritiesIndicator set to Y
+      expect(xml).toContain("<fc2:SignatureAuthoritiesIndicator>Y</fc2:SignatureAuthoritiesIndicator>")
     })
 
     it("handles both financial interest and signature authority", async () => {
@@ -542,11 +567,13 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // Should have BOTH type codes (8 and 9)
-      expect(xml).toContain("<PartyAccountAssociationTypeCode>8</PartyAccountAssociationTypeCode>")
-      expect(xml).toContain("<PartyAccountAssociationTypeCode>9</PartyAccountAssociationTypeCode>")
+      // Filer should have SignatureAuthoritiesIndicator set to Y (BOTH includes signature authority)
+      expect(xml).toContain("<fc2:SignatureAuthoritiesIndicator>Y</fc2:SignatureAuthoritiesIndicator>")
+
+      // EFilingAccountTypeCode defaults to 141 for BOTH ownership (separately owned)
+      expect(xml).toContain("<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>")
     })
 
     it("handles amended filing type", async () => {
@@ -557,10 +584,10 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Should set CorrectsAmendsPriorReportIndicator to Y
-      expect(xml).toContain("<CorrectsAmendsPriorReportIndicator>Y</CorrectsAmendsPriorReportIndicator>")
+      expect(xml).toContain("<fc2:CorrectsAmendsPriorReportIndicator>Y</fc2:CorrectsAmendsPriorReportIndicator>")
     })
 
     it("handles 25+ accounts indicator", async () => {
@@ -571,10 +598,10 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Should set FilerFinancialInterest25ForeignAccountIndicator to Y
-      expect(xml).toContain("<FilerFinancialInterest25ForeignAccountIndicator>Y</FilerFinancialInterest25ForeignAccountIndicator>")
+      expect(xml).toContain("<fc2:FilerFinancialInterest25ForeignAccountIndicator>Y</fc2:FilerFinancialInterest25ForeignAccountIndicator>")
     })
   })
 
@@ -591,7 +618,7 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Extract all SeqNum values
       const seqNumPattern = /SeqNum="(\d+)"/g
@@ -617,10 +644,10 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
-      // PartyCount = 1 filer + 3 accounts = 4
-      expect(xml).toContain('PartyCount="4"')
+      // PartyCount = number of type 41 (financial institution) parties = 3
+      expect(xml).toContain('PartyCount="3"')
 
       // AccountCount = 3
       expect(xml).toContain('AccountCount="3"')
@@ -637,7 +664,7 @@ describe("XML Deep Validation", () => {
       const { generateFincenXml, validateFincenXml } = await import(
         "@/lib/export/fincen-xml"
       )
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
       const validation = validateFincenXml(xml)
 
       // Should pass all validation checks
@@ -745,20 +772,20 @@ describe("XML Deep Validation", () => {
       const { generateFincenXml, validateFincenXml } = await import(
         "@/lib/export/fincen-xml"
       )
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Should validate successfully
       const validation = validateFincenXml(xml)
       expect(validation.isValid).toBe(true)
 
-      // Should contain all 5 accounts
+      // Should contain all 5 accounts (each with a type 41 financial institution party)
       const accountPartyMatches = xml.match(
-        /<ActivityPartyTypeCode>4[12]<\/ActivityPartyTypeCode>/g
+        /<fc2:ActivityPartyTypeCode>41<\/fc2:ActivityPartyTypeCode>/g
       )
       expect(accountPartyMatches?.length).toBe(5)
 
-      // Should have correct PartyCount
-      expect(xml).toContain('PartyCount="6"') // 1 filer + 5 accounts
+      // Should have correct PartyCount (5 type-41 financial institution parties)
+      expect(xml).toContain('PartyCount="5"')
     })
   })
 
@@ -773,16 +800,16 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       // Should contain various country codes
-      expect(xml).toContain("<RawCountryCodeText>US</RawCountryCodeText>") // Filer
-      expect(xml).toContain("<RawCountryCodeText>CH</RawCountryCodeText>") // Switzerland
-      expect(xml).toContain("<RawCountryCodeText>JP</RawCountryCodeText>") // Japan
-      expect(xml).toContain("<RawCountryCodeText>KY</RawCountryCodeText>") // Cayman Islands
+      expect(xml).toContain("<fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>") // Filer
+      expect(xml).toContain("<fc2:RawCountryCodeText>CH</fc2:RawCountryCodeText>") // Switzerland
+      expect(xml).toContain("<fc2:RawCountryCodeText>JP</fc2:RawCountryCodeText>") // Japan
+      expect(xml).toContain("<fc2:RawCountryCodeText>KY</fc2:RawCountryCodeText>") // Cayman Islands
 
       // All should be 2-letter ISO codes
-      const countryPattern = /<RawCountryCodeText>([A-Z]{2})<\/RawCountryCodeText>/g
+      const countryPattern = /<fc2:RawCountryCodeText>([A-Z]{2})<\/fc2:RawCountryCodeText>/g
       const countries: string[] = []
       let match: RegExpExecArray | null
       while ((match = countryPattern.exec(xml)) !== null) {
@@ -808,17 +835,17 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       for (const account of summary.accounts) {
         const pattern = new RegExp(
-          `<AccountNumberText>${account.accountNumber}</AccountNumberText>`,
+          `<fc2:AccountNumberText>${account.accountNumber}</fc2:AccountNumberText>`,
           "g"
         )
         const matches = xml.match(pattern)
-        // Each account number should appear at least once (in PartyAccountAssociation)
+        // Each account number should appear exactly once (in the Account element)
         expect(matches).toBeTruthy()
-        expect(matches!.length).toBeGreaterThanOrEqual(1)
+        expect(matches!.length).toBe(1)
       }
     })
 
@@ -830,7 +857,7 @@ describe("XML Deep Validation", () => {
       mockPrisma.filingYear.findUniqueOrThrow.mockResolvedValue(filingYear)
 
       const { generateFincenXml } = await import("@/lib/export/fincen-xml")
-      const xml = await generateFincenXml("fy-test")
+      const xml = await generateFincenXml("fy-test", createMockTransmitter(), createMockPreparer())
 
       for (const account of summary.accounts) {
         // Institution name should appear in XML (possibly with XML escaping)

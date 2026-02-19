@@ -98,6 +98,8 @@ model Practice {
   name      String   @map("name")
   address   Json?    @map("address")
   ein       String?  @map("ein")
+  tcc       String?  @map("tcc")        // FinCEN Transmitter Control Code (PTCC####)
+  phone     String?  @map("phone")      // Practice phone for transmitter party
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   statementRetentionDays    Int @default(365)  @map("statement_retention_days")
@@ -121,6 +123,7 @@ model User {
   role          UserRole  @map("role")
   mfaSecret     String?   @map("mfa_secret")
   mfaEnabled    Boolean   @default(false) @map("mfa_enabled")
+  ptin          String?   @map("ptin")       // IRS Preparer Tax Identification Number
   emailVerified DateTime? @map("email_verified")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")

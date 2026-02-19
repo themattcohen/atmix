@@ -18,9 +18,34 @@ import { NextRequest } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { getFilingYearWithFullData } from "@/lib/approval"
-import { generateFincenXml, validateFincenXml } from "@/lib/export/fincen-xml"
+import {
+  generateFincenXml,
+  validateFincenXml,
+  type TransmitterConfig,
+  type PreparerConfig,
+} from "@/lib/export/fincen-xml"
 
 type RouteContext = { params: Promise<{ filingYearId: string }> }
+
+/**
+ * Parses a Practice.address JSON field into street/city/state/zip components.
+ * Returns empty strings for missing fields.
+ */
+function parsePracticeAddress(
+  address: unknown
+): { street: string; city: string; state: string; zip: string; country?: string } {
+  if (!address || typeof address !== "object") {
+    return { street: "", city: "", state: "", zip: "" }
+  }
+  const addr = address as Record<string, string | undefined>
+  return {
+    street: addr.street ?? "",
+    city: addr.city ?? "",
+    state: addr.state ?? "",
+    zip: addr.zip ?? "",
+    country: addr.country,
+  }
+}
 
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
@@ -46,14 +71,25 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const summary = await getFilingYearWithFullData(filingYearId, practiceId)
 
     // -------------------------------------------------------------------
-    // 3. Status check: only export reviewed/approved filings
+    // 3. Fetch practice and user for transmitter/preparer config
     // -------------------------------------------------------------------
 
-    // Need to fetch filing year status separately since summary doesn't have full filing details
-    const filingYear = await prisma.filingYear.findUniqueOrThrow({
-      where: { id: filingYearId },
-      include: { client: true },
-    })
+    const [practice, user, filingYear] = await Promise.all([
+      prisma.practice.findUniqueOrThrow({
+        where: { id: practiceId },
+      }),
+      prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+      }),
+      prisma.filingYear.findUniqueOrThrow({
+        where: { id: filingYearId },
+        include: { client: true },
+      }),
+    ])
+
+    // -------------------------------------------------------------------
+    // 4. Status check: only export reviewed/approved filings
+    // -------------------------------------------------------------------
 
     if (filingYear.status !== "EXPORTED" && filingYear.status !== "FILED") {
       return new Response(
@@ -65,13 +101,63 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     // -------------------------------------------------------------------
-    // 4. Generate XML with pre-fetched data
+    // 5. Validate TCC is configured
     // -------------------------------------------------------------------
 
-    const xml = await generateFincenXml(filingYearId, summary)
+    if (!practice.tcc) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "Transmitter Control Code (TCC) required for XML export. Configure in Practice settings.",
+        }),
+        { status: 422, headers: { "Content-Type": "application/json" } }
+      )
+    }
 
     // -------------------------------------------------------------------
-    // 5. Validate generated XML
+    // 6. Build transmitter and preparer configs
+    // -------------------------------------------------------------------
+
+    const practiceAddr = parsePracticeAddress(practice.address)
+
+    const nameParts = user.name.trim().split(/\s+/)
+    const preparerFirstName = nameParts.slice(0, -1).join(" ") || nameParts[0]
+    const preparerLastName =
+      nameParts.length > 1 ? nameParts[nameParts.length - 1] : ""
+
+    const transmitter: TransmitterConfig = {
+      name: practice.name,
+      tin: practice.ein ?? "",
+      tcc: practice.tcc,
+      phone: practice.phone ?? "",
+      address: practiceAddr,
+      contactName: user.name,
+    }
+
+    const preparerConfig: PreparerConfig = {
+      firstName: preparerFirstName,
+      lastName: preparerLastName,
+      phone: practice.phone ?? "",
+      ptin: user.ptin ?? "",
+      selfEmployed: false,
+      address: practiceAddr,
+      firmName: practice.name,
+      firmEin: practice.ein ?? "",
+    }
+
+    // -------------------------------------------------------------------
+    // 7. Generate XML with pre-fetched data
+    // -------------------------------------------------------------------
+
+    const xml = await generateFincenXml(
+      filingYearId,
+      transmitter,
+      preparerConfig,
+      summary
+    )
+
+    // -------------------------------------------------------------------
+    // 8. Validate generated XML
     // -------------------------------------------------------------------
 
     const validation = validateFincenXml(xml)
@@ -91,7 +177,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     // -------------------------------------------------------------------
-    // 6. Audit log
+    // 9. Audit log
     // -------------------------------------------------------------------
 
     await prisma.auditLog.create({
@@ -114,7 +200,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     })
 
     // -------------------------------------------------------------------
-    // 7. Return XML download
+    // 10. Return XML download
     // -------------------------------------------------------------------
 
     const lastName = filingYear.client.lastName.replace(/[^a-zA-Z0-9]/g, "_")
