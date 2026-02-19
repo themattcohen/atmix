@@ -15,9 +15,9 @@ export default function HowItWorksPage() {
     { num: 2, title: "Enter Personal Information", desc: "Your name, SSN/ITIN, date of birth, and US address. This information goes on your FBAR.", icon: "user" },
     { num: 3, title: "Add Foreign Accounts", desc: "Enter details for each foreign account: institution name, account number, country, and maximum value during the year.", icon: "bank" },
     { num: 4, title: "Review Everything", desc: "See all your information in one place. Edit anything that needs changing. We'll flag potential issues.", icon: "eye" },
-    { num: 5, title: "Sign Form 114a", desc: "Digitally sign the authorization form (Form 114a) that allows us to e-file your FBAR on your behalf.", icon: "pen" },
-    { num: 6, title: "Pay & Submit", desc: "Secure payment via Stripe ($59 Basic / $79 Premium). We don't charge until you're ready to file. No hidden fees.", icon: "card" },
-    { num: 7, title: "We Submit to FinCEN", desc: "We generate your FinCEN XML, submit through the official BSA E-Filing System, and send you your BSA tracking ID.", icon: "send" },
+    { num: 5, title: "Sign Form 114a", desc: "Digitally sign the authorization form (Form 114a) that allows us to e-file your FBAR on your behalf. This is your last step — everything after this is on us.", icon: "pen" },
+    { num: 6, title: "Pay & Submit", desc: "Secure payment via Stripe ($59 Basic / $79 Premium). We don't charge until you're ready to file. No hidden fees. Both plans include direct FinCEN filing — not just form preparation.", icon: "card" },
+    { num: 7, title: "We Submit to FinCEN", desc: "We generate your FinCEN XML and submit through the official BSA E-Filing System — the same channel used by banks and accounting firms — then send you your BSA tracking ID.", icon: "send" },
   ];
 
   return (
@@ -44,7 +44,7 @@ export default function HowItWorksPage() {
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-navy-900 mb-4">How FBAR Direct Works</h1>
           <p className="text-xl text-gray-600">
-            7 simple steps. Most people finish in under 10 minutes.
+            You complete 6 steps. We handle step 7 — filing directly to FinCEN.
           </p>
         </div>
 

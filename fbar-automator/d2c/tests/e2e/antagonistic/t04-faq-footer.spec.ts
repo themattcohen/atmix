@@ -190,7 +190,7 @@ test.describe("Footer Content", () => {
       footer.getByRole("heading", { name: "FBAR Direct" })
     ).toBeVisible();
     await expect(
-      footer.getByText("Secure, simplified electronic filing")
+      footer.getByText("We file your FBAR directly to FinCEN")
     ).toBeVisible();
     await expect(
       footer.getByText("FinCEN-Registered BSA E-Filing Institution")

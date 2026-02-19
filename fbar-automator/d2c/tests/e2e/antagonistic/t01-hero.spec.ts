@@ -59,19 +59,19 @@ test.describe("Landing Page Hero + DeadlineBanner", () => {
 
     const headlineText = await headline.textContent();
     expect(headlineText).toBeTruthy();
-    // The headline should reference foreign bank accounts
-    expect(headlineText!.toLowerCase()).toContain("foreign bank");
+    // The headline should reference filing FBARs
+    expect(headlineText!.toLowerCase()).toContain("fbar");
   });
 
   test("Hero subtitle/description text is visible", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    // Subtitle: "FinCEN Form 114 | Secure Electronic Filing Service"
+    // Subtitle: "FinCEN Form 114 — Filed Directly to FinCEN on Your Behalf"
     const subtitle = page.locator("text=FinCEN Form 114");
     await expect(subtitle.first()).toBeVisible({ timeout: 15000 });
 
-    // Description paragraph about filing electronically
-    const description = page.locator("text=File your FBAR electronically");
+    // Description paragraph about filing
+    const description = page.locator("text=we handle the rest");
     await expect(description).toBeVisible({ timeout: 10000 });
   });
 

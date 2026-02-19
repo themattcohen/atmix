@@ -15,7 +15,7 @@ export default function PricingPage() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-navy-900 mb-4">Simple, Transparent Pricing</h1>
-          <p className="text-xl text-gray-600">Choose the plan that fits your needs. No hidden fees.</p>
+          <p className="text-xl text-gray-600">Both plans include direct filing to FinCEN — not just form preparation.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto mb-16">
@@ -77,7 +77,7 @@ export default function PricingPage() {
 
         <div className="bg-navy-50 rounded-lg p-6 text-center">
           <p className="text-navy-900 font-medium">
-            100% money-back guarantee if we are unable to file your FBAR.
+            If we cannot file your FBAR with FinCEN, you pay nothing.
           </p>
           <p className="text-sm text-gray-500 mt-1">No credit card required to start</p>
         </div>

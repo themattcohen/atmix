@@ -17,11 +17,11 @@ export const PRICING: Record<PricingTier, {
     description: "Manual account entry",
     stripeProductName: "FBAR Filing — FinCEN Form 114 (Basic)",
     features: [
+      "We file your FBAR directly to FinCEN",
+      "BSA tracking ID as proof of filing",
       "Guided step-by-step process",
       "Automated data verification",
       "FinCEN XML generation",
-      "Direct electronic submission to FinCEN",
-      "BSA tracking ID confirmation",
       "Email confirmation with receipt",
       "Form 114a digital signature",
       "AES-256 encrypted data handling",

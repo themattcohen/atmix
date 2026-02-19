@@ -6,21 +6,20 @@ export function Hero() {
     <section className="w-full bg-white py-12 px-4 border-b border-border-gray">
       <div className="max-w-doc mx-auto text-left">
         <h1 className="text-3xl md:text-4xl font-heading font-bold text-gov-blue mb-4">
-          Report of Foreign Bank and Financial Accounts
+          We File Your FBAR for You
         </h1>
 
         <hr className="border-t border-gray-200 mb-6 w-full" />
 
         <p className="text-lg text-text-secondary mb-6 font-body font-semibold">
-          FinCEN Form 114 — Electronic Filing Service
+          FinCEN Form 114 — Filed Directly to FinCEN on Your Behalf
         </p>
 
         <div className="max-w-[640px] mb-8">
           <p className="text-base text-text-primary leading-relaxed">
-            File your FBAR electronically through our FinCEN-registered BSA
-            E-Filing system. Your data is encrypted end-to-end and submitted
-            directly to FinCEN. This service is authorized for use by United
-            States persons required to file FinCEN Form 114.
+            Answer a few questions, review your filing, and we handle the rest
+            — including submitting directly to FinCEN. No government portals to
+            navigate. No CPA fees. From $59.
           </p>
         </div>
 
@@ -32,7 +31,7 @@ export function Hero() {
             Begin Filing <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
           </Link>
           <span className="text-[13px] text-text-secondary">
-            No account required to check if you need to file.
+            Free threshold check — no account required
           </span>
         </div>
       </div>

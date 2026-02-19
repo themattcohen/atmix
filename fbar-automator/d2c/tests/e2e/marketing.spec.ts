@@ -6,11 +6,11 @@ import { test, expect } from "@playwright/test";
 test.describe("Landing Page", () => {
   test("loads with hero content and CTA button", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("h1")).toContainText("Report of Foreign Bank");
+    await expect(page.locator("h1")).toContainText("We File Your FBAR for You");
     await expect(
       page.locator("text=Begin Filing").first()
     ).toBeVisible();
-    await expect(page.locator("text=No account required")).toBeVisible();
+    await expect(page.locator("text=Free threshold check")).toBeVisible();
   });
 
   test("hero CTA navigates to threshold", async ({ page }) => {
@@ -24,7 +24,7 @@ test.describe("Landing Page", () => {
   test("has How It Works section", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.locator("text=How to file with FBAR Direct").first()
+      page.locator("text=You Enter the Data. We File It with FinCEN.").first()
     ).toBeVisible();
   });
 
@@ -48,7 +48,7 @@ test.describe("Static Marketing Pages", () => {
   test("About page loads with heading", async ({ page }) => {
     await page.goto("/about");
     await expect(page.locator("h1")).toContainText(
-      "The Trustworthy FBAR Filing Alternative"
+      "FBAR Filing, Not Just FBAR Preparation"
     );
     await expect(page.locator("text=Why We Built FBAR Direct")).toBeVisible();
   });
@@ -58,9 +58,9 @@ test.describe("Static Marketing Pages", () => {
     await expect(page.locator("h1")).toContainText(
       "Simple, Transparent Pricing"
     );
-    await expect(page.locator("text=$59")).toBeVisible();
+    await expect(page.locator("text=$59").first()).toBeVisible();
     await expect(
-      page.locator("text=No hidden fees")
+      page.locator("text=not just form preparation")
     ).toBeVisible();
   });
 

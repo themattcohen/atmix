@@ -21,7 +21,7 @@ test.describe("Landing Page Sections: TrustBar + WhoNeedsToFile + WhatYouNeed", 
 
     await expect(trustBar.getByText("FinCEN-Registered BSA E-Filer")).toBeVisible();
     await expect(trustBar.getByText("AES-256 Encryption")).toBeVisible();
-    await expect(trustBar.getByText("Direct FinCEN Submission")).toBeVisible();
+    await expect(trustBar.getByText("BSA Tracking ID as Proof of Filing")).toBeVisible();
   });
 
   test("TrustBar trust indicators contain checkmark prefix", async ({ page }) => {

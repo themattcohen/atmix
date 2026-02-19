@@ -7,7 +7,7 @@ export function TrustBar() {
           <span className="hidden md:inline mx-3 text-gray-400">•</span>
           <span>✓ AES-256 Encryption</span>
           <span className="hidden md:inline mx-3 text-gray-400">•</span>
-          <span>✓ Direct FinCEN Submission</span>
+          <span>✓ BSA Tracking ID as Proof of Filing</span>
         </div>
       </div>
     </section>

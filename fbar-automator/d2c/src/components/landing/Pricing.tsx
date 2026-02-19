@@ -10,6 +10,9 @@ export function Pricing() {
         <h2 className="text-2xl font-heading font-bold text-gov-blue mb-4">
           Pricing
         </h2>
+        <p className="text-sm text-text-secondary mb-6 max-w-md">
+          Other services prepare your FBAR and leave you to file it yourself. FBAR Direct files it for you.
+        </p>
 
         <div className="bg-bg-gray border border-border-gray p-6 max-w-md">
           <p className="text-3xl font-bold text-gov-blue mb-1">
@@ -19,11 +22,11 @@ export function Pricing() {
           <ul className="space-y-2 text-sm text-text-primary mb-6">
             <li className="flex items-start gap-2">
               <span className="text-gov-blue font-bold mt-0.5">✓</span>
-              <span>Guided step-by-step filing process</span>
+              <span>We file your FBAR directly to FinCEN</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-gov-blue font-bold mt-0.5">✓</span>
-              <span>Direct electronic submission to FinCEN</span>
+              <span>BSA tracking ID as proof of filing</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-gov-blue font-bold mt-0.5">✓</span>

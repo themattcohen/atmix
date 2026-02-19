@@ -10,10 +10,10 @@ import { JsonLd } from "@/components/JsonLd";
 import { FAQ_ITEMS } from "@/lib/faq-data";
 
 export const metadata: Metadata = {
-  title: 'File Your FBAR Online — FinCEN Form 114 E-Filing',
-  description: 'File your FBAR (FinCEN Form 114) in under 10 minutes. FinCEN-registered. AI-powered bank statement extraction. From $59.',
+  title: 'File Your FBAR Online — We Submit Directly to FinCEN',
+  description: 'We file your FBAR directly to FinCEN for you. FinCEN-registered BSA E-Filing institution. AI-powered bank statement extraction. From $59.',
   alternates: { canonical: '/' },
-  openGraph: { title: 'File Your FBAR Online — FinCEN Form 114 E-Filing', description: 'File your FBAR in under 10 minutes. FinCEN-registered. From $59.', url: '/' },
+  openGraph: { title: 'File Your FBAR Online — We Submit Directly to FinCEN', description: 'We file your FBAR directly to FinCEN for you. FinCEN-registered. From $59.', url: '/' },
 };
 
 export default function LandingPage() {

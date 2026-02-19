@@ -30,7 +30,7 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
 
     // Section heading
     await expect(
-      section.getByRole("heading", { name: "How to file with FBAR Direct" })
+      section.getByRole("heading", { name: "You Enter the Data. We File It with FinCEN." })
     ).toBeVisible();
 
     // Step 1
@@ -55,7 +55,7 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
 
     // Step 3
     const step3Heading = section.getByRole("heading", {
-      name: "3. We submit to FinCEN",
+      name: "3. We file with FinCEN",
     });
     await expect(step3Heading).toBeVisible();
     await expect(
@@ -114,8 +114,8 @@ test.describe("HowItWorks + Pricing sections — antagonistic tests", () => {
     await expect(bullets).toHaveCount(4);
 
     const expectedBullets = [
-      "Guided step-by-step filing process",
-      "Direct electronic submission to FinCEN",
+      "We file your FBAR directly to FinCEN",
+      "BSA tracking ID as proof of filing",
       "AES-256 encrypted data handling",
       "Free resubmission if rejected",
     ];

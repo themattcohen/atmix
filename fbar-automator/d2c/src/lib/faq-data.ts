@@ -1,5 +1,9 @@
 export const FAQ_ITEMS = [
   {
+    question: "Do you actually file my FBAR, or just prepare the form?",
+    answer: "We file it. FBAR Direct is a FinCEN-registered BSA E-Filing institution. We generate the required XML, submit your FBAR through the official BSA E-Filing system, and provide you with a BSA tracking ID as proof of filing. Some other services only prepare the form and leave you to navigate the government filing portal yourself — we handle the entire process from start to finish.",
+  },
+  {
     question: "What is an FBAR?",
     answer: "The Report of Foreign Bank and Financial Accounts (FBAR), or FinCEN Form 114, is a report required by the Bank Secrecy Act. It must be filed by United States persons who have a financial interest in or signature authority over foreign financial accounts if the aggregate value of the foreign financial accounts exceeds $10,000 at any time during the calendar year.",
   },

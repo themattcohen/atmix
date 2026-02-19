@@ -29,7 +29,7 @@ export default function MarketingLayout({
             {/* Brand Column */}
             <div>
               <h3 className="font-heading font-bold text-lg text-white mb-2">FBAR Direct</h3>
-              <p className="text-sm text-gray-300 mb-3">Secure, simplified electronic filing for FinCEN Form 114.</p>
+              <p className="text-sm text-gray-300 mb-3">We file your FBAR directly to FinCEN. From $59.</p>
               <p className="text-xs text-gray-400">FinCEN-Registered BSA E-Filing Institution</p>
             </div>
             {/* Links Column */}

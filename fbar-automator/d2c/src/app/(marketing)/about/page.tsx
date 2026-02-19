@@ -12,20 +12,21 @@ export default function AboutPage() {
   return (
     <div className="py-20 px-4">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-navy-900 mb-8">The Trustworthy FBAR Filing Alternative</h1>
+        <h1 className="text-4xl font-bold text-navy-900 mb-8">FBAR Filing, Not Just FBAR Preparation</h1>
 
         <div className="prose prose-gray max-w-none space-y-8">
           <section>
             <h2 className="text-2xl font-semibold text-navy-900">Why We Built FBAR Direct</h2>
             <p className="text-gray-700 leading-relaxed">
-              Filing an FBAR should be straightforward. The government provides a free filing system,
-              but it&apos;s complex and confusing. Meanwhile, some third-party services charge hundreds
-              of dollars — and some aren&apos;t even legitimate.
+              Filing an FBAR should be straightforward. But most people are stuck choosing between
+              two bad options: preparation tools that make you navigate the government portal yourself,
+              or CPA firms that charge hundreds of dollars for the exact same filing.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              We built FBAR Direct to be the trustworthy middle ground: an affordable, guided filing
-              service that takes 10 minutes and files directly to FinCEN through the official BSA
-              E-Filing System.
+              We built FBAR Direct to be the better alternative: CPA-quality filing at a fraction of
+              the cost. A guided service that takes 10 minutes and files directly to FinCEN through
+              the official BSA E-Filing System — no portal navigation required, no expensive
+              professional fees.
             </p>
           </section>
 
