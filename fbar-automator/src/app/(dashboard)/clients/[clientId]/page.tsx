@@ -16,6 +16,7 @@ import { AccountsTable } from "./AccountsTable"
 import { AddAccountForm } from "./AddAccountForm"
 import { AddFilingYearForm } from "./AddFilingYearForm"
 import { CollapsibleAccountsSection } from "./CollapsibleAccountsSection"
+import { WorkflowChecklist } from "./WorkflowChecklist"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -112,6 +113,18 @@ export default async function ClientDetailPage({
 
   const activeAccountCount = client.foreignAccounts.filter((a) => a.isActive).length
 
+  const hasFilingYears = client.filingYears.length > 0
+  const hasAccounts = activeAccountCount > 0
+  const hasData = client.filingYears.some(
+    (fy) => fy._count.statements > 0 || fy._count.reviewedAccountYears > 0
+  )
+  const hasReviewedFiling = client.filingYears.some((fy) =>
+    ["REVIEWED", "EXPORTED", "FILED"].includes(fy.status)
+  )
+  const latestFilingYear = hasFilingYears
+    ? client.filingYears[0].calendarYear
+    : null
+
   return (
     <>
       <Header title="Client Details" userName={session.user.name || ""} />
@@ -140,6 +153,16 @@ export default async function ClientDetailPage({
             foreignAddress: foreignAddress,
             activeAccountCount,
           }}
+        />
+
+        <WorkflowChecklist
+          hasFilingYears={hasFilingYears}
+          hasAccounts={hasAccounts}
+          hasData={hasData}
+          hasReviewedFiling={hasReviewedFiling}
+          clientId={clientId}
+          latestFilingYear={latestFilingYear}
+          accountCount={activeAccountCount}
         />
 
         {/* Filing Years - full width, prominent */}
