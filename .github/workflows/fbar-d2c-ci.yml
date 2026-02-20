@@ -5,9 +5,11 @@ on:
     branches: [main]
     paths:
       - 'fbar-automator/d2c/**'
+      - '.github/workflows/fbar-d2c-ci.yml'
   pull_request:
     paths:
       - 'fbar-automator/d2c/**'
+      - '.github/workflows/fbar-d2c-ci.yml'
 
 jobs:
   ci:
@@ -33,6 +35,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start MinIO and create bucket
+        working-directory: .
+        run: |
+          docker run -d --name minio -p 9000:9000 \
+            -e MINIO_ROOT_USER=minioadmin \
+            -e MINIO_ROOT_PASSWORD=minioadmin \
+            minio/minio server /data
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:9000/minio/health/live && break
+            sleep 1
+          done
+          curl -sf http://localhost:9000/minio/health/live || (echo "MinIO failed to start" && exit 1)
+          wget -q https://dl.min.io/client/mc/release/linux-amd64/mc -O /tmp/mc && chmod +x /tmp/mc
+          /tmp/mc alias set local http://localhost:9000 minioadmin minioadmin
+          /tmp/mc mb local/fbar-direct
 
       - uses: actions/setup-node@v4
         with:
@@ -64,6 +82,11 @@ jobs:
           ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
           NEXTAUTH_SECRET: "test-secret-for-ci"
           NEXTAUTH_URL: "http://localhost:3001"
+          S3_ENDPOINT: "http://localhost:9000"
+          S3_REGION: "us-east-1"
+          S3_ACCESS_KEY: "minioadmin"
+          S3_SECRET_KEY: "minioadmin"
+          S3_BUCKET: "fbar-direct"
 
       - name: Build
         run: npm run build
