@@ -104,10 +104,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // Cascade deletes clean up filingYear records
-  await prisma.user.delete({ where: { id: testUser.id } });
-  await prisma.user.delete({ where: { id: secondUser.id } });
+  // Guard against beforeAll failure (e.g. S3 unavailable in CI)
+  if (testUser?.id) await prisma.user.delete({ where: { id: testUser.id } });
+  if (secondUser?.id) await prisma.user.delete({ where: { id: secondUser.id } });
   await prisma.$disconnect();
-  await deleteFile(s3Key);
+  if (s3Key) await deleteFile(s3Key).catch(() => {});
 });
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
