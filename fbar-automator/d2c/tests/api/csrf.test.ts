@@ -83,6 +83,7 @@ async function callMiddleware(
   headers: Record<string, string> = {}
 ): Promise<{ status: number; body?: any; isNext: boolean }> {
   const req = makeRequest(method, path, headers);
+  // @ts-expect-error — mock auth wraps middleware as single-arg function
   const response = await middleware(req as any);
 
   // If middleware returns NextResponse.next(), status is 200 and there is no

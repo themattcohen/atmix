@@ -30,7 +30,7 @@ function mockAuth(userId: string | null) {
 }
 
 function makeRequest(url: string, init?: RequestInit): NextRequest {
-  return new NextRequest(`http://localhost:3000${url}`, init);
+  return new NextRequest(`http://localhost:3000${url}`, init as any);
 }
 
 // ─── Test Setup ───────────────────────────────────────────────────────────────
@@ -243,6 +243,7 @@ describe("Phase 7 Security: Health endpoint rate limit", () => {
       const { GET } = await import("@/app/api/health/route");
 
       const req = makeRequest("/api/health");
+      // @ts-expect-error — GET accepts request in runtime but typed as no-arg
       const res = await GET(req);
 
       expect(res.status).toBe(200);

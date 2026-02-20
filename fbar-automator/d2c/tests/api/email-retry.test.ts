@@ -236,7 +236,7 @@ describe("P7-12: Error classification", () => {
     }
 
     const connError = new Error("connect ECONNREFUSED 127.0.0.1:443");
-    (connError as Record<string, unknown>).code = "ECONNREFUSED";
+    (connError as unknown as Record<string, unknown>).code = "ECONNREFUSED";
 
     const sendFn = vi
       .fn()
@@ -256,7 +256,7 @@ describe("P7-12: Error classification", () => {
     }
 
     const timeoutError = new Error("Request timeout");
-    (timeoutError as Record<string, unknown>).code = "ETIMEDOUT";
+    (timeoutError as unknown as Record<string, unknown>).code = "ETIMEDOUT";
 
     const sendFn = vi
       .fn()
