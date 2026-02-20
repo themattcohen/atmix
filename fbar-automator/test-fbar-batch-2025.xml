@@ -1,0 +1,3583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fc2:EFilingBatchXML
+  ActivityCount="26"
+  PartyCount="51"
+  AccountCount="51"
+  JointlyOwnedOwnerCount="0"
+  NoFIOwnerCount="0"
+  ConsolidatedOwnerCount="0"
+  xsi:schemaLocation="www.fincen.gov/base EFL_FBARXBatchSchema.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:fc2="www.fincen.gov/base">
+  <fc2:FormTypeCode>FBARX</fc2:FormTypeCode>
+    <fc2:Activity SeqNum="1">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="2">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="3">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="4">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="5">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="6">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="7">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="8">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="9">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="10">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="11">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19800115</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="12">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testman</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>John</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="13">
+              <fc2:RawCityText>Denver</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>100 Main St</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80201</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="14">
+              <fc2:PartyIdentificationNumberText>900111001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="15">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="16">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="17">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="18">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="19">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="20">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="21">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="22">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="23">
+        <fc2:AccountMaximumValueAmountText>15000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CH1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="24">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="25">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Swiss National Bank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="26">
+            <fc2:RawCityText>Zurich</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CH</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Bahnhofstrasse 1</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>8001</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="27">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="28">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="29">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="30">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="31">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="32">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="33">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="34">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="35">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="36">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="37">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="38">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19850622</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="39">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testwoman</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Jane</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="40">
+              <fc2:RawCityText>Boulder</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>200 Oak Ave</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80301</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="41">
+              <fc2:PartyIdentificationNumberText>900111002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="42">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="43">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="44">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="45">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="46">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="47">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="48">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="49">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="50">
+        <fc2:AccountMaximumValueAmountText>25000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>GB9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="51">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="52">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>HSBC Holdings</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="53">
+            <fc2:RawCityText>London</fc2:RawCityText>
+            <fc2:RawCountryCodeText>GB</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>8 Canada Square</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>E145HQ</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="54">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="55">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="56">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="57">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="58">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="59">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="60">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="61">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="62">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="63">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="64">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="65">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19750310</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="66">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testson</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Robert</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="67">
+              <fc2:RawCityText>Aurora</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>300 Pine Rd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80010</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="68">
+              <fc2:PartyIdentificationNumberText>900111003</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="69">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="70">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="71">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="72">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="73">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="74">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="75">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="76">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="77">
+        <fc2:AccountMaximumValueAmountText>50000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>DE1122334455</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="78">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="79">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Deutsche Bank AG</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="80">
+            <fc2:RawCityText>Frankfurt</fc2:RawCityText>
+            <fc2:RawCountryCodeText>DE</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Taunusanlage 12</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>60325</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="81">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="82">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="83">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="84">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="85">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="86">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="87">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="88">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="89">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="90">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="91">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="92">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19900805</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="93">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testinez</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Maria</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="94">
+              <fc2:RawCityText>Lakewood</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>400 Elm Blvd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80226</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="95">
+              <fc2:PartyIdentificationNumberText>900111004</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="96">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="97">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="98">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="99">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="100">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="101">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="102">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="103">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="104">
+        <fc2:AccountMaximumValueAmountText>12000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>ES5566778899</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="105">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="106">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Banco Santander</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="107">
+            <fc2:RawCityText>Madrid</fc2:RawCityText>
+            <fc2:RawCountryCodeText>ES</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Paseo de Pereda 9</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>28014</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="108">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="109">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="110">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="111">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="112">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="113">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="114">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="115">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="116">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="117">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="118">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="119">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19880120</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="120">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testberg</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>David</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="121">
+              <fc2:RawCityText>Arvada</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>500 Cedar Ln</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80002</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="122">
+              <fc2:PartyIdentificationNumberText>900111005</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="123">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="124">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="125">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="126">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="127">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="128">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="129">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="130">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="131">
+        <fc2:AccountMaximumValueAmountText>75000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>JP1234509876</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="132">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="133">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Mizuho Financial Group</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="134">
+            <fc2:RawCityText>Tokyo</fc2:RawCityText>
+            <fc2:RawCountryCodeText>JP</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>1-5-5 Otemachi</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>1008176</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="135">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="136">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="137">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="138">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="139">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="140">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="141">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="142">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="143">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="144">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="145">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="146">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19820714</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="147">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testwell</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Sarah</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="148">
+              <fc2:RawCityText>Westminster</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>601 Birch Way</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80030</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="149">
+              <fc2:PartyIdentificationNumberText>900222001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="150">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="151">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="152">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="153">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="154">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="155">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="156">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="157">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="158">
+        <fc2:AccountMaximumValueAmountText>30000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CH9988776655</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="159">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="160">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Credit Suisse</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="161">
+            <fc2:RawCityText>Zurich</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CH</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Paradeplatz 8</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>8001</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="162">
+        <fc2:AccountMaximumValueAmountText>45000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CH5544332211</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="163">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="164">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>UBS Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="165">
+            <fc2:RawCityText>Basel</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CH</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Aeschenvorstadt 1</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>4002</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="166">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="167">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="168">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="169">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="170">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="171">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="172">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="173">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="174">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="175">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="176">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="177">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19770319</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="178">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testworth</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Michael</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="179">
+              <fc2:RawCityText>Thornton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>702 Spruce Dr</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80229</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="180">
+              <fc2:PartyIdentificationNumberText>900222002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="181">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="182">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="183">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="184">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="185">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="186">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="187">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="188">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="189">
+        <fc2:AccountMaximumValueAmountText>20000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>GB1122334456</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="190">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="191">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Barclays Bank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="192">
+            <fc2:RawCityText>London</fc2:RawCityText>
+            <fc2:RawCountryCodeText>GB</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>1 Churchill Place</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>E145HP</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="193">
+        <fc2:AccountMaximumValueAmountText>35000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>GB6677889900</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="194">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="195">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>IG Group Holdings</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="196">
+            <fc2:RawCityText>London</fc2:RawCityText>
+            <fc2:RawCountryCodeText>GB</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>195 Cannon St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>EC4A5EN</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="197">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="198">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="199">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="200">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="201">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="202">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="203">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="204">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="205">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="206">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="207">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="208">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19930228</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="209">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testfield</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Emily</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="210">
+              <fc2:RawCityText>Broomfield</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>803 Maple Ct</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80020</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="211">
+              <fc2:PartyIdentificationNumberText>900222003</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="212">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="213">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="214">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="215">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="216">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="217">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="218">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="219">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="220">
+        <fc2:AccountMaximumValueAmountText>18000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>DE9988776655</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="221">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="222">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Commerzbank AG</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="223">
+            <fc2:RawCityText>Frankfurt</fc2:RawCityText>
+            <fc2:RawCountryCodeText>DE</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Kaiserplatz</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>60311</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="224">
+        <fc2:AccountMaximumValueAmountText>22000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NL1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="225">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="226">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>DeGiro BV</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="227">
+            <fc2:RawCityText>Amsterdam</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NL</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Amstelplein 1</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>1096HA</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="228">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="229">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="230">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="231">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="232">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="233">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="234">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="235">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="236">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="237">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="238">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="239">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19690501</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="240">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testington</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>James</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="241">
+              <fc2:RawCityText>Longmont</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>904 Aspen Pl</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80501</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="242">
+              <fc2:PartyIdentificationNumberText>900222004</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="243">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="244">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="245">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="246">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="247">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="248">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="249">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="250">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="251">
+        <fc2:AccountMaximumValueAmountText>40000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>FR1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="252">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="253">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Societe Generale</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="254">
+            <fc2:RawCityText>Paris</fc2:RawCityText>
+            <fc2:RawCountryCodeText>FR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>29 Boulevard Haussmann</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>75009</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="255">
+        <fc2:AccountMaximumValueAmountText>55000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>FR9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="256">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="257">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Euronext Paris</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="258">
+            <fc2:RawCityText>Paris</fc2:RawCityText>
+            <fc2:RawCountryCodeText>FR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>14 Place des Reflets</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>92054</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="259">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="260">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="261">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="262">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="263">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="264">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="265">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="266">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="267">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="268">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="269">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="270">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19810930</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="271">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testwood</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Patricia</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="272">
+              <fc2:RawCityText>Louisville</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1005 Willow Rd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80027</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="273">
+              <fc2:PartyIdentificationNumberText>900222005</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="274">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="275">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="276">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="277">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="278">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="279">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="280">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="281">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="282">
+        <fc2:AccountMaximumValueAmountText>28000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>AU1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="283">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="284">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>National Australia Bank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="285">
+            <fc2:RawCityText>Melbourne</fc2:RawCityText>
+            <fc2:RawCountryCodeText>AU</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>800 Bourke St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>3008</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="286">
+        <fc2:AccountMaximumValueAmountText>32000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>AU9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="287">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="288">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>ASX Limited</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="289">
+            <fc2:RawCityText>Sydney</fc2:RawCityText>
+            <fc2:RawCountryCodeText>AU</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>20 Bridge St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>2000</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="290">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="291">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="292">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="293">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="294">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="295">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="296">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="297">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="298">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="299">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="300">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="301">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19720415</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="302">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testmore</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>William</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="303">
+              <fc2:RawCityText>Golden</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1101 Juniper Ave</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80401</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="304">
+              <fc2:PartyIdentificationNumberText>900333001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="305">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="306">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="307">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="308">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="309">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="310">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="311">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="312">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="313">
+        <fc2:AccountMaximumValueAmountText>60000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CN1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="314">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="315">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Bank of China</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="316">
+            <fc2:RawCityText>Beijing</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CN</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>1 Fuxingmen Nei Dajie</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>100818</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="317">
+        <fc2:AccountMaximumValueAmountText>45000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CN9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="318">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="319">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>China Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="320">
+            <fc2:RawCityText>Shanghai</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CN</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>689 Guangdong Rd</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>200001</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="321">
+        <fc2:AccountMaximumValueAmountText>20000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CN5555666677</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="322">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="323">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>China Insurance Fund</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="324">
+            <fc2:RawCityText>Beijing</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CN</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>15 Financial St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>100032</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="325">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="326">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="327">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="328">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="329">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="330">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="331">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="332">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="333">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="334">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="335">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="336">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19860701</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="337">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testview</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Linda</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="338">
+              <fc2:RawCityText>Englewood</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1202 Fir St</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80110</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="339">
+              <fc2:PartyIdentificationNumberText>900333002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="340">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="341">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="342">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="343">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="344">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="345">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="346">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="347">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="348">
+        <fc2:AccountMaximumValueAmountText>35000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NL9988776655</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="349">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="350">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Rabobank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="351">
+            <fc2:RawCityText>Utrecht</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NL</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Croeselaan 18</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>3521CB</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="352">
+        <fc2:AccountMaximumValueAmountText>28000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NL1122334455</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="353">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="354">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>ING Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="355">
+            <fc2:RawCityText>Amsterdam</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NL</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Bijlmerdreef 106</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>1102CT</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="356">
+        <fc2:AccountMaximumValueAmountText>15000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NL7788990011</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="357">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="358">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Dutch Pension Trust</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="359">
+            <fc2:RawCityText>The Hague</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NL</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Bezuidenhoutseweg 30</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>2594AV</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="360">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="361">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="362">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="363">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="364">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="365">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="366">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="367">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="368">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="369">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="370">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="371">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19780823</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="372">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testhill</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Richard</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="373">
+              <fc2:RawCityText>Centennial</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1303 Poplar Ln</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80112</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="374">
+              <fc2:PartyIdentificationNumberText>900333003</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="375">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="376">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="377">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="378">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="379">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="380">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="381">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="382">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="383">
+        <fc2:AccountMaximumValueAmountText>55000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CA1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="384">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="385">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Royal Bank of Canada</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="386">
+            <fc2:RawCityText>Toronto</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>200 Bay St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>M5J2J5</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="387">
+        <fc2:AccountMaximumValueAmountText>42000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CA9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="388">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="389">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>TD Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="390">
+            <fc2:RawCityText>Toronto</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>66 Wellington St W</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>M5K1A2</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="391">
+        <fc2:AccountMaximumValueAmountText>18000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CA5555666677</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="392">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="393">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Canadian RESP Trust</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="394">
+            <fc2:RawCityText>Montreal</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>1250 Rene-Levesque Blvd</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>H3B4W8</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="395">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="396">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="397">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="398">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="399">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="400">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="401">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="402">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="403">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="404">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="405">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="406">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19910112</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="407">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testdale</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Barbara</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="408">
+              <fc2:RawCityText>Parker</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1404 Hickory Ct</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80134</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="409">
+              <fc2:PartyIdentificationNumberText>900333004</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="410">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="411">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="412">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="413">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="414">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="415">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="416">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="417">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="418">
+        <fc2:AccountMaximumValueAmountText>48000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>SE1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="419">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="420">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Nordea Bank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="421">
+            <fc2:RawCityText>Stockholm</fc2:RawCityText>
+            <fc2:RawCountryCodeText>SE</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Hamngatan 10</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>10571</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="422">
+        <fc2:AccountMaximumValueAmountText>33000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>SE9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="423">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="424">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Handelsbanken Capital</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="425">
+            <fc2:RawCityText>Stockholm</fc2:RawCityText>
+            <fc2:RawCountryCodeText>SE</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Kungstradgardsgatan 2</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>10670</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="426">
+        <fc2:AccountMaximumValueAmountText>22000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>SE5555666677</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="427">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="428">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Swedish Investment Fund</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="429">
+            <fc2:RawCityText>Gothenburg</fc2:RawCityText>
+            <fc2:RawCountryCodeText>SE</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Ostra Hamngatan 16</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>41109</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="430">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="431">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="432">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="433">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="434">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="435">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="436">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="437">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="438">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="439">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="440">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="441">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19840607</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="442">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testbrook</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Thomas</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="443">
+              <fc2:RawCityText>Castle Rock</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1505 Sycamore Way</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80104</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="444">
+              <fc2:PartyIdentificationNumberText>900333005</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="445">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="446">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="447">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="448">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="449">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="450">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="451">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="452">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="453">
+        <fc2:AccountMaximumValueAmountText>70000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>SG1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="454">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="455">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>DBS Bank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="456">
+            <fc2:RawCityText>Singapore</fc2:RawCityText>
+            <fc2:RawCountryCodeText>SG</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>12 Marina Blvd</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>018982</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="457">
+        <fc2:AccountMaximumValueAmountText>38000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>SG9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="458">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="459">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>SGX Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="460">
+            <fc2:RawCityText>Singapore</fc2:RawCityText>
+            <fc2:RawCountryCodeText>SG</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>2 Shenton Way</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>068804</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="461">
+        <fc2:AccountMaximumValueAmountText>25000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>SG5555666677</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="462">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="463">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Singapore Savings Bond</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="464">
+            <fc2:RawCityText>Singapore</fc2:RawCityText>
+            <fc2:RawCountryCodeText>SG</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>10 Shenton Way</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>079117</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="465">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="466">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="467">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="468">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="469">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="470">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="471">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="472">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="473">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="474">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="475">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="476">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19760320</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="477">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testjoint</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Charles</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="478">
+              <fc2:RawCityText>Highlands Ranch</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1601 Walnut Blvd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80129</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="479">
+              <fc2:PartyIdentificationNumberText>900444001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="480">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="481">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="482">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="483">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="484">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="485">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="486">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="487">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="488">
+        <fc2:AccountMaximumValueAmountText>40000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>BR1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="489">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="490">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Banco Bradesco</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="491">
+            <fc2:RawCityText>Sao Paulo</fc2:RawCityText>
+            <fc2:RawCountryCodeText>BR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Cidade de Deus</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>06029900</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="492">
+        <fc2:AccountMaximumValueAmountText>25000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>BR9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="493">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="494">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>B3 Exchange</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="495">
+            <fc2:RawCityText>Sao Paulo</fc2:RawCityText>
+            <fc2:RawCountryCodeText>BR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Rua XV de Novembro 275</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>01013001</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="496">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="497">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="498">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="499">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="500">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="501">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="502">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="503">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="504">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="505">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="506">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="507">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19830918</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="508">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testpair</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Susan</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="509">
+              <fc2:RawCityText>Parker</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1702 Cherry Rd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80134</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="510">
+              <fc2:PartyIdentificationNumberText>900444002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="511">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="512">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="513">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="514">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="515">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="516">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="517">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="518">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="519">
+        <fc2:AccountMaximumValueAmountText>52000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CA1111222233</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="520">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="521">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Scotiabank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="522">
+            <fc2:RawCityText>Toronto</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>44 King St W</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>M5H1H1</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="523">
+        <fc2:AccountMaximumValueAmountText>38000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CA4444555566</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="524">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="525">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>CIBC</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="526">
+            <fc2:RawCityText>Toronto</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>81 Bay St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>M5J0E7</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="527">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="528">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="529">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="530">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="531">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="532">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="533">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="534">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="535">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="536">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="537">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="538">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19710204</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="539">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testdual</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Daniel</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="540">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1803 Peach Ave</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="541">
+              <fc2:PartyIdentificationNumberText>900444003</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="542">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="543">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="544">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="545">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="546">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="547">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="548">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="549">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="550">
+        <fc2:AccountMaximumValueAmountText>65000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>AU1111222233</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="551">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="552">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>ANZ Banking Group</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="553">
+            <fc2:RawCityText>Melbourne</fc2:RawCityText>
+            <fc2:RawCountryCodeText>AU</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>833 Collins St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>3008</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="554">
+        <fc2:AccountMaximumValueAmountText>30000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>AU4444555566</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="555">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="556">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Macquarie Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="557">
+            <fc2:RawCityText>Sydney</fc2:RawCityText>
+            <fc2:RawCountryCodeText>AU</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>50 Martin Place</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>2000</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="558">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="559">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="560">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="561">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="562">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="563">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="564">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="565">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="566">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="567">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="568">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="569">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19890411</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="570">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testsign</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Nancy</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="571">
+              <fc2:RawCityText>Denver</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>1901 Plum St</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80220</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="572">
+              <fc2:PartyIdentificationNumberText>900555001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="573">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="574">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="575">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="576">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="577">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="578">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="579">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="580">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="581">
+        <fc2:AccountMaximumValueAmountText>90000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>HK1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="582">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="583">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Standard Chartered Bank</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="584">
+            <fc2:RawCityText>Hong Kong</fc2:RawCityText>
+            <fc2:RawCountryCodeText>HK</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>32nd Fl Standard Chartered Tower</fc2:RawStreetAddress1Text>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="585">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="586">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="587">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="588">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="589">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="590">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="591">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="592">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="593">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="594">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="595">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="596">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19740625</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="597">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testauth</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Mark</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="598">
+              <fc2:RawCityText>Aurora</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2001 Grape Ln</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80012</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="599">
+              <fc2:PartyIdentificationNumberText>900555002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="600">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="601">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="602">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="603">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="604">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="605">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="606">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="607">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="608">
+        <fc2:AccountMaximumValueAmountText>120000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>FR1111222233</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="609">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="610">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>BNP Paribas</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="611">
+            <fc2:RawCityText>Paris</fc2:RawCityText>
+            <fc2:RawCountryCodeText>FR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>16 Boulevard des Italiens</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>75009</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="612">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="613">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="614">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="615">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="616">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="617">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="618">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="619">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="620">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="621">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="622">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="623">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19860930</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="624">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testpower</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Karen</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="625">
+              <fc2:RawCityText>Lakewood</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2101 Fig Way</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80226</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="626">
+              <fc2:PartyIdentificationNumberText>900555003</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="627">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="628">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="629">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="630">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="631">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="632">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="633">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="634">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="635">
+        <fc2:AccountMaximumValueAmountText>55000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>IE1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="636">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="637">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Bank of Ireland</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="638">
+            <fc2:RawCityText>Dublin</fc2:RawCityText>
+            <fc2:RawCountryCodeText>IE</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>40 Mespil Rd</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>D04C2N4</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="639">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="640">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="641">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="642">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="643">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="644">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="645">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="646">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="647">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="648">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="649">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="650">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19950315</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="651">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testunknown</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Steven</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="652">
+              <fc2:RawCityText>Arvada</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2201 Olive Ct</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80004</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="653">
+              <fc2:PartyIdentificationNumberText>900666001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="654">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="655">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="656">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="657">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="658">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="659">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="660">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="661">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="662">
+        <fc2:AccountMaximumValueAmountText>0</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>CL1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>
+        <fc2:Party SeqNum="663">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="664">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Banco de Chile</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="665">
+            <fc2:RawCityText>Santiago</fc2:RawCityText>
+            <fc2:RawCountryCodeText>CL</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Paseo Ahumada 251</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>8320000</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="666">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="667">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="668">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="669">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="670">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="671">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="672">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="673">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="674">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="675">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="676">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="677">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19870720</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="678">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testmystery</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Lisa</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="679">
+              <fc2:RawCityText>Westminster</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2301 Lemon Blvd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80030</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="680">
+              <fc2:PartyIdentificationNumberText>900666002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="681">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="682">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="683">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="684">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="685">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="686">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="687">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="688">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="689">
+        <fc2:AccountMaximumValueAmountText>0</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>RU9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>
+        <fc2:Party SeqNum="690">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="691">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Moscow Exchange</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="692">
+            <fc2:RawCityText>Moscow</fc2:RawCityText>
+            <fc2:RawCountryCodeText>RU</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Vozdvizhenka St 4/7</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>125009</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="693">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="694">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="695">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="696">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="697">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="698">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="699">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="700">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="701">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="702">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="703">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="704">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19790108</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="705">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testmix</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Kevin</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="706">
+              <fc2:RawCityText>Golden</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2401 Mango Ave</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80401</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="707">
+              <fc2:PartyIdentificationNumberText>900777001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="708">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="709">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="710">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="711">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="712">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="713">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="714">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="715">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="716">
+        <fc2:AccountMaximumValueAmountText>35000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>KR1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="717">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="718">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Industrial Bank of Korea</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="719">
+            <fc2:RawCityText>Seoul</fc2:RawCityText>
+            <fc2:RawCountryCodeText>KR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>50 Eulji-ro</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>04538</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="720">
+        <fc2:AccountMaximumValueAmountText>48000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>KR9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="721">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="722">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Korea Investment Corp</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="723">
+            <fc2:RawCityText>Seoul</fc2:RawCityText>
+            <fc2:RawCountryCodeText>KR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>12 Yeouido-dong</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>07326</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="724">
+        <fc2:AccountMaximumValueAmountText>22000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>KR5555666677</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="725">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="726">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Korean Life Insurance</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="727">
+            <fc2:RawCityText>Seoul</fc2:RawCityText>
+            <fc2:RawCountryCodeText>KR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>27 Sejong-daero 9-gil</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>04513</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="728">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="729">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="730">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="731">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="732">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="733">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="734">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="735">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="736">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="737">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="738">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="739">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>N</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19881215</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="740">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testvariety</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Angela</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="741">
+              <fc2:RawCityText>Thornton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2501 Coconut Rd</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80229</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="742">
+              <fc2:PartyIdentificationNumberText>900777002</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="743">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="744">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="745">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="746">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="747">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="748">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="749">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="750">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="751">
+        <fc2:AccountMaximumValueAmountText>42000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>BR5555111122</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="752">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="753">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Itau Unibanco</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="754">
+            <fc2:RawCityText>Sao Paulo</fc2:RawCityText>
+            <fc2:RawCountryCodeText>BR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Praca Alfredo Egydio de Souza Aranha 100</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>04344902</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="755">
+        <fc2:AccountMaximumValueAmountText>28000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>BR6666222233</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="756">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="757">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>BTG Pactual</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="758">
+            <fc2:RawCityText>Rio de Janeiro</fc2:RawCityText>
+            <fc2:RawCountryCodeText>BR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Praia de Botafogo 501</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>22250040</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="759">
+        <fc2:AccountMaximumValueAmountText>55000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>BR7777333344</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="760">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="761">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Banco do Brasil</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="762">
+            <fc2:RawCityText>Brasilia</fc2:RawCityText>
+            <fc2:RawCountryCodeText>BR</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>SBS Q1 Bl G</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>70073901</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="763">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+    <fc2:Activity SeqNum="764">
+      <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
+      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
+      <fc2:ActivityAssociation SeqNum="765">
+        <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
+      </fc2:ActivityAssociation>
+      <fc2:Party SeqNum="766">
+        <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="767">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="768">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="769">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="770">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+            <fc2:PartyIdentification SeqNum="771">
+              <fc2:PartyIdentificationNumberText>TBSATEST</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>28</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="772">
+        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="773">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+      </fc2:Party>
+      <fc2:Party SeqNum="774">
+        <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+        <fc2:FilerFinancialInterest25ForeignAccountIndicator>Y</fc2:FilerFinancialInterest25ForeignAccountIndicator>
+        <fc2:FilerTypeIndividualIndicator>Y</fc2:FilerTypeIndividualIndicator>
+        <fc2:IndividualBirthDateText>19700303</fc2:IndividualBirthDateText>
+        <fc2:SignatureAuthoritiesIndicator>N</fc2:SignatureAuthoritiesIndicator>
+        <fc2:PartyName SeqNum="775">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Testmax</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Christopher</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="776">
+              <fc2:RawCityText>Centennial</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>2601 Papaya Ln</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80112</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PartyIdentification SeqNum="777">
+              <fc2:PartyIdentificationNumberText>900888001</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>1</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="778">
+        <fc2:ActivityPartyTypeCode>57</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="779">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
+          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+        </fc2:PartyName>
+            <fc2:Address SeqNum="780">
+              <fc2:RawCityText>Littleton</fc2:RawCityText>
+              <fc2:RawCountryCodeText>US</fc2:RawCountryCodeText>
+              <fc2:RawStateCodeText>CO</fc2:RawStateCodeText>
+              <fc2:RawStreetAddress1Text>6732 W Coal Mine Ave Ste 451</fc2:RawStreetAddress1Text>
+              <fc2:RawZIPCode>80123</fc2:RawZIPCode>
+            </fc2:Address>
+            <fc2:PhoneNumber SeqNum="781">
+              <fc2:PhoneNumberText>3035551234</fc2:PhoneNumberText>
+            </fc2:PhoneNumber>
+            <fc2:PartyIdentification SeqNum="782">
+              <fc2:PartyIdentificationNumberText>P99999999</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>31</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Party SeqNum="783">
+        <fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>
+        <fc2:PartyName SeqNum="784">
+          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
+        </fc2:PartyName>
+            <fc2:PartyIdentification SeqNum="785">
+              <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
+              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+            </fc2:PartyIdentification>
+      </fc2:Party>
+      <fc2:Account SeqNum="786">
+        <fc2:AccountMaximumValueAmountText>38000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NZ1234567890</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="787">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="788">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Bank of New Zealand</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="789">
+            <fc2:RawCityText>Wellington</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NZ</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>1 Willis St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>6011</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="790">
+        <fc2:AccountMaximumValueAmountText>22000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NZ9876543210</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="791">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="792">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>NZX Securities</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="793">
+            <fc2:RawCityText>Wellington</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NZ</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>Level 1 NZX Centre</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>6011</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="794">
+        <fc2:AccountMaximumValueAmountText>47000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NZ5555666677</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="795">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="796">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>Westpac NZ</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="797">
+            <fc2:RawCityText>Auckland</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NZ</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>16 Takutai Square</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>1010</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:Account SeqNum="798">
+        <fc2:AccountMaximumValueAmountText>15000</fc2:AccountMaximumValueAmountText>
+        <fc2:AccountNumberText>NZ8888999900</fc2:AccountNumberText>
+        <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
+        <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:Party SeqNum="799">
+          <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+          <fc2:PartyName SeqNum="800">
+            <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
+            <fc2:RawPartyFullName>NZ Super Fund</fc2:RawPartyFullName>
+          </fc2:PartyName>
+          <fc2:Address SeqNum="801">
+            <fc2:RawCityText>Auckland</fc2:RawCityText>
+            <fc2:RawCountryCodeText>NZ</fc2:RawCountryCodeText>
+            <fc2:RawStreetAddress1Text>21 Queen St</fc2:RawStreetAddress1Text>
+            <fc2:RawZIPCode>1010</fc2:RawZIPCode>
+          </fc2:Address>
+        </fc2:Party>
+      </fc2:Account>
+      <fc2:ForeignAccountActivity SeqNum="802">
+        <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
+      </fc2:ForeignAccountActivity>
+    </fc2:Activity>
+</fc2:EFilingBatchXML>

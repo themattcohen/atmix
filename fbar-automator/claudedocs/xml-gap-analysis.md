@@ -6,6 +6,35 @@
 
 ---
 
+## Post-Rewrite Bugs Found (2026-02-20)
+
+**3 additional bugs** discovered during sandbox test batch generation. These survived the rewrite and exist in the current B2B code at `src/lib/export/fincen-xml.ts` (662 lines post-rewrite). They would cause **batch rejection by FinCEN**.
+
+See full details: [`claudedocs/bsa-efiling-setup-2026-02-20.md`](bsa-efiling-setup-2026-02-20.md) §2 and §6.
+
+### Bug 25: `RawPartyLegalName` — element does not exist in schema
+
+- **Lines**: 223, 379, 437
+- **Problem**: Uses `RawPartyLegalName` for entity names
+- **Fix**: Change to `RawPartyFullName` — the only valid entity name element in both XSD schemas
+- **Status**: NOT YET FIXED in B2B code. Fixed in test generator script.
+
+### Bug 26: `EFilingPriorDocumentNumber` empty string — invalid for `xsd:long`
+
+- **Line**: 192
+- **Problem**: Emits `<fc2:EFilingPriorDocumentNumber></fc2:EFilingPriorDocumentNumber>` — empty string is not a valid `xsd:long`
+- **Fix**: Omit the element entirely for non-amendments (`minOccurs="0"`)
+- **Status**: NOT YET FIXED in B2B code. Omitted in test generator script.
+
+### Bug 27: Transmitter Contact (type 37) name element order wrong
+
+- **Lines**: 266-267
+- **Problem**: Outputs FirstName before LastName
+- **Fix**: XSD sequence requires `RawEntityIndividualLastName` before `RawIndividualFirstName`
+- **Status**: NOT YET FIXED in B2B code. Fixed in test generator script.
+
+---
+
 **Current implementation:** `src/lib/export/fincen-xml.ts` (474 lines)
 **Official schema:** `EFL_FBARXBatchSchema.xsd` v1.2 (7/31/2018)
 **Official user guide:** `XMLUserGuide_FinCENFBAR.pdf` v1.4 (August 2021)

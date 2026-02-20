@@ -316,9 +316,16 @@ describe("XML structure", () => {
     )
   })
 
-  it("EFilingPriorDocumentNumber is present (empty for original)", async () => {
+  it("EFilingPriorDocumentNumber is omitted for non-amendment filings", async () => {
     const xml = await generateTestXml()
-    expect(xml).toContain("<fc2:EFilingPriorDocumentNumber")
+    expect(xml).not.toContain("EFilingPriorDocumentNumber")
+  })
+
+  it("PreparerFilingSignatureIndicator is Y", async () => {
+    const xml = await generateTestXml()
+    expect(xml).toContain(
+      "<fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>"
+    )
   })
 })
 
@@ -595,11 +602,36 @@ describe("Party type tests", () => {
     const xml = await generateTestXml()
 
     expect(xml).toContain(
-      "<fc2:RawPartyLegalName>Swiss Bank Corp</fc2:RawPartyLegalName>"
+      "<fc2:RawPartyFullName>Swiss Bank Corp</fc2:RawPartyFullName>"
     )
     expect(xml).toContain(
-      "<fc2:RawPartyLegalName>Tokyo Securities</fc2:RawPartyLegalName>"
+      "<fc2:RawPartyFullName>Tokyo Securities</fc2:RawPartyFullName>"
     )
+  })
+
+  it("entity names use RawPartyFullName (NOT RawPartyLegalName)", async () => {
+    const xml = await generateTestXml()
+    expect(xml).not.toContain("RawPartyLegalName")
+    expect(xml).toContain("RawPartyFullName")
+  })
+
+  it("Transmitter Contact name has LastName before FirstName (schema order)", async () => {
+    const xml = await generateTestXml()
+
+    const type37Start = xml.indexOf(
+      "<fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>"
+    )
+    const type15Start = xml.indexOf(
+      "<fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>"
+    )
+    const contactSection = xml.slice(type37Start, type15Start)
+
+    const lastNamePos = contactSection.indexOf("RawEntityIndividualLastName")
+    const firstNamePos = contactSection.indexOf("RawIndividualFirstName")
+
+    expect(lastNamePos).toBeGreaterThan(-1)
+    expect(firstNamePos).toBeGreaterThan(-1)
+    expect(lastNamePos).toBeLessThan(firstNamePos)
   })
 })
 

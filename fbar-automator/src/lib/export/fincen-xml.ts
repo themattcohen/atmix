@@ -189,7 +189,9 @@ export async function generateFincenXml(
   const activity: Record<string, unknown> = {
     "@_SeqNum": String(activitySeq),
     "fc2:ApprovalOfficialSignatureDateText": today,
-    "fc2:EFilingPriorDocumentNumber": "",
+    // EFilingPriorDocumentNumber: omitted for non-amendments (type is xsd:long,
+    // empty string is invalid). Only emit for amendments with a valid BSA ID.
+    "fc2:PreparerFilingSignatureIndicator": "Y",
     "fc2:ThirdPartyPreparerIndicator": "Y",
   }
 
@@ -220,7 +222,7 @@ export async function generateFincenXml(
     "fc2:PartyName": {
       "@_SeqNum": String(txNameSeq),
       "fc2:PartyNameTypeCode": "L",
-      "fc2:RawPartyLegalName": transmitter.name,
+      "fc2:RawPartyFullName": transmitter.name,
     },
     "fc2:Address": {
       "@_SeqNum": String(txAddrSeq),
@@ -263,8 +265,8 @@ export async function generateFincenXml(
     "fc2:PartyName": {
       "@_SeqNum": String(tcNameSeq),
       "fc2:PartyNameTypeCode": "L",
-      "fc2:RawIndividualFirstName": contactFirst,
       "fc2:RawEntityIndividualLastName": contactLast,
+      "fc2:RawIndividualFirstName": contactFirst,
     },
   })
 
@@ -376,7 +378,7 @@ export async function generateFincenXml(
       "fc2:PartyName": {
         "@_SeqNum": String(firmNameSeq),
         "fc2:PartyNameTypeCode": "L",
-        "fc2:RawPartyLegalName": preparer.firmName,
+        "fc2:RawPartyFullName": preparer.firmName,
       },
       "fc2:PartyIdentification": {
         "@_SeqNum": String(firmIdSeq),
@@ -434,7 +436,7 @@ export async function generateFincenXml(
       "fc2:PartyName": {
         "@_SeqNum": String(fiNameSeq),
         "fc2:PartyNameTypeCode": "L",
-        "fc2:RawPartyLegalName": fa.institutionName,
+        "fc2:RawPartyFullName": fa.institutionName,
       },
       "fc2:Address": {
         "@_SeqNum": String(fiAddrSeq),
