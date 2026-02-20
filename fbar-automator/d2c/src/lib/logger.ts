@@ -38,16 +38,21 @@ function scrubPii(value: string): string {
   return result;
 }
 
-function scrubMeta(meta: Record<string, unknown>): Record<string, unknown> {
-  const scrubbed: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(meta)) {
-    if (typeof value === "string") {
-      scrubbed[key] = scrubPii(value);
-    } else {
-      scrubbed[key] = value;
-    }
+function scrubValue(value: unknown): unknown {
+  if (typeof value === "string") {
+    return scrubPii(value);
   }
-  return scrubbed;
+  if (Array.isArray(value)) {
+    return value.map(scrubValue);
+  }
+  if (value !== null && typeof value === "object") {
+    const scrubbed: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      scrubbed[key] = scrubValue(val);
+    }
+    return scrubbed;
+  }
+  return value;
 }
 
 export function log(
@@ -55,7 +60,7 @@ export function log(
   message: string,
   meta?: Record<string, unknown>,
 ): void {
-  const scrubbedMeta = meta ? scrubMeta(meta) : {};
+  const scrubbedMeta = meta ? scrubValue(meta) as Record<string, unknown> : {};
 
   // Core fields CANNOT be overwritten by meta
   const entry = {

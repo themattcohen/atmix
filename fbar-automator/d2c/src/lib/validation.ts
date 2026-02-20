@@ -84,7 +84,7 @@ export const signatureSchema = z.object({
   filingYearId: z.string().min(1),
   fullName: z.string().min(1, "Full name is required"),
   agreed: z.literal(true, { errorMap: () => ({ message: "You must agree to the certification" }) }),
-  signatureData: z.string().min(1, "Signature is required"),
+  signatureData: z.string().min(1, "Signature is required").max(500_000, "Signature data too large"),
   signatureType: z.enum(["typed", "drawn"]),
 });
 

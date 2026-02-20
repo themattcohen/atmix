@@ -82,6 +82,8 @@ let testFilingId: string;
 
 // ─── Test Setup ───────────────────────────────────────────────────────────────
 
+const originalStripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
 beforeAll(async () => {
   // Env var required by the route's early guard (before constructEvent is called)
   process.env.STRIPE_WEBHOOK_SECRET = "whsec_test_secret";
@@ -124,6 +126,13 @@ afterAll(async () => {
   // User cascade-deletes filingYears and payments
   await prisma.user.delete({ where: { id: testUserId } });
   await prisma.$disconnect();
+
+  // Restore original env var
+  if (originalStripeWebhookSecret !== undefined) {
+    process.env.STRIPE_WEBHOOK_SECRET = originalStripeWebhookSecret;
+  } else {
+    delete process.env.STRIPE_WEBHOOK_SECRET;
+  }
 });
 
 afterEach(async () => {
@@ -147,6 +156,7 @@ afterEach(async () => {
   });
   // Reset mock between tests
   mockConstructEvent.mockReset();
+  vi.clearAllMocks();
 });
 
 // ─── Tests ────────────────────────────────────────────────────────────────────

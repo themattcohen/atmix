@@ -85,23 +85,27 @@ export async function generateForm114a(data: Form114aData): Promise<{ buffer: Bu
   if (data.signatureType === "typed") {
     doc.setFontSize(16);
     doc.setFont("courier", "italic");
-    doc.text(data.signatureData, 25, y + 2);
+    doc.text(data.signatureData.slice(0, 200), 25, y + 2);
   } else {
-    // Drawn signature: embed base64 PNG into PDF
-    try {
-      doc.addImage(
-        `data:image/png;base64,${data.signatureData}`,
-        "PNG",
-        25,       // x position
-        y - 8,    // y position (above the signature line)
-        50,       // width (mm)
-        15        // height (mm)
-      );
-    } catch {
-      // Fallback if image is malformed
-      doc.setFontSize(10);
-      doc.text("[Digital signature on file]", 25, y + 2);
+    // Drawn signature: validate and embed base64 PNG into PDF
+    let rawBase64 = data.signatureData;
+    // Strip data URI prefix if present
+    const dataUriMatch = rawBase64.match(/^data:image\/\w+;base64,(.+)$/);
+    if (dataUriMatch) {
+      rawBase64 = dataUriMatch[1];
     }
+    // Validate base64 format
+    if (!/^[A-Za-z0-9+/]+=*$/.test(rawBase64) || rawBase64.length === 0) {
+      throw new Error("Invalid drawn signature: signatureData is not valid base64");
+    }
+    doc.addImage(
+      `data:image/png;base64,${rawBase64}`,
+      "PNG",
+      25,       // x position
+      y - 8,    // y position (above the signature line)
+      50,       // width (mm)
+      15        // height (mm)
+    );
   }
 
   y += 15;

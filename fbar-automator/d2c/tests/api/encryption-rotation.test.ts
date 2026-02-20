@@ -47,6 +47,10 @@ describe("Encryption: round-trip and format detection (P5-4)", () => {
     vi.resetModules();
   });
 
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   afterAll(() => {
     // Restore original env vars
     if (originalEncryptionKey) {
@@ -114,9 +118,9 @@ describe("Encryption: round-trip and format detection (P5-4)", () => {
     const plaintext = "versioned-tin-456";
     const encrypted = encrypt(plaintext);
 
-    // IMPLEMENTATION NEEDED: After P5-4, encrypt() should produce "v1:iv:tag:cipher"
+    // After P5-4, encrypt() produces "v1:iv:tag:cipher"
     // Verify the new format has the version prefix
-    // expect(encrypted.startsWith("v1:")).toBe(true);
+    expect(encrypted.startsWith("v1:")).toBe(true);
 
     const decrypted = decrypt(encrypted);
     expect(decrypted).toBe(plaintext);
@@ -164,6 +168,10 @@ describe("Encryption: round-trip and format detection (P5-4)", () => {
 describe("Encryption: key rotation with ENCRYPTION_KEY_PREV (P5-4)", () => {
   beforeEach(() => {
     vi.resetModules();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
@@ -252,6 +260,10 @@ describe("safeDecrypt behavior (P5-4)", () => {
     process.env.ENCRYPTION_KEY = TEST_KEY_CURRENT;
     delete process.env.ENCRYPTION_KEY_PREV;
     vi.resetModules();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
@@ -539,6 +551,10 @@ describe("POST /api/filing/sign — TIN decryption hard-fail (P5-4)", () => {
 describe("Encryption: key validation (P5-4)", () => {
   beforeEach(() => {
     vi.resetModules();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   afterAll(() => {

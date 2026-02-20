@@ -65,12 +65,12 @@ afterEach(async () => {
 describe("POST /api/filing", () => {
   // ── P1-3: Invalid JSON handling ─────────────────────────────────────────────
 
-  it("P1-3: POST with invalid JSON body — does not crash (documents actual behavior)", async () => {
+  it("P1-3: POST with invalid JSON body → 400 Invalid JSON body", async () => {
     mockAuth(testUserId);
 
-    // The filing route does NOT have a try/catch around req.json() — it only
-    // has an outer catch. An unparseable body will cause req.json() to throw,
-    // which is caught by the outer try/catch and returns 500.
+    // Sprint 2 Item 15 added an inner try/catch around req.json() that returns
+    // a 400 "Invalid JSON body" response instead of falling through to the outer
+    // 500 catch. Verify the exact status and error message.
     const req = new NextRequest("http://localhost:3000/api/filing", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -78,10 +78,10 @@ describe("POST /api/filing", () => {
     });
 
     const res = await POST(req);
-    // The outer catch handles this — route does not crash the process.
-    // We document the actual HTTP status rather than asserting a specific
-    // business-level response.
-    expect([400, 500]).toContain(res.status);
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid json body/i);
   });
 
   // ── P1-11: AMENDED-requires-ACCEPTED guard ──────────────────────────────────

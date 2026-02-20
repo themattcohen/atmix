@@ -57,15 +57,14 @@ export function isValidImageTag(tag: string): boolean {
  * Uses AbortSignal for timeout enforcement.
  */
 export async function checkHealth(url: string): Promise<boolean> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
-
     const response = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeout);
-
     return response.status === 200;
   } catch {
     return false;
+  } finally {
+    clearTimeout(timeout);
   }
 }

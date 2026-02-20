@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from "vitest
 vi.mock("@/lib/auth", () => ({ auth: vi.fn() }));
 vi.mock("@/lib/email", () => ({
   sendPasswordResetEmail: vi.fn().mockResolvedValue(undefined),
+  sendEmailWithRetry: vi.fn().mockImplementation((fn: () => Promise<void>) => fn()),
 }));
 
 import { POST } from "@/app/api/auth/forgot-password/route";

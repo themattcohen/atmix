@@ -63,7 +63,8 @@ function convertCsvToText(buffer: Buffer): string {
 
 export async function convertExcelToText(buffer: Buffer): Promise<string> {
   const workbook = new ExcelJS.Workbook()
-  await workbook.xlsx.load(buffer as unknown as ArrayBuffer)
+  const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer
+  await workbook.xlsx.load(arrayBuffer)
   const sections: string[] = []
   for (const worksheet of workbook.worksheets) {
     const rows: string[] = []
@@ -172,7 +173,7 @@ export async function extractFromStatement(
     }
 
     const elapsed = Date.now() - startTime
-    console.log(`[Extraction] Completed in ${elapsed}ms | model=${MODEL} | tokens=${tokensUsed} | accounts=${result.accounts.length}`)
+    console.log(`[Extraction] Completed in ${elapsed}ms | model=${MODEL} | tokens=${tokensUsed} | accounts=${result.accounts?.length ?? 0}`)
 
     return { success: true, result, model: MODEL, tokensUsed }
   } catch (err) {

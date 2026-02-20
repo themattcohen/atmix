@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import crypto from "crypto";
-import { sendPasswordResetEmail } from "@/lib/email";
+import { sendPasswordResetEmail, sendEmailWithRetry } from "@/lib/email";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email().max(254),
@@ -54,10 +54,9 @@ export async function POST(req: NextRequest) {
       // Send email with raw token (don't block on failure)
       const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${rawToken}`;
       try {
-        await sendPasswordResetEmail(
-          email,
-          user.firstName || "there",
-          resetUrl
+        await sendEmailWithRetry(
+          () => sendPasswordResetEmail(email, user.firstName || "there", resetUrl),
+          { maxRetries: 2, backoffMs: 500 }
         );
       } catch (emailError) {
         console.error("Failed to send password reset email:", emailError instanceof Error ? emailError.message : "Unknown error");

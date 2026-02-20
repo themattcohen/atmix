@@ -48,15 +48,12 @@ export function decrypt(encrypted: string): string {
   let ivHex: string;
   let authTagHex: string;
   let cipherHex: string;
-  let isVersioned: boolean;
 
   if (parts.length === 4 && parts[0] === VERSION_PREFIX) {
     // New versioned format: v1:iv:authTag:ciphertext
-    isVersioned = true;
     [, ivHex, authTagHex, cipherHex] = parts;
   } else if (parts.length === 3) {
     // Legacy unversioned format: iv:authTag:ciphertext
-    isVersioned = false;
     [ivHex, authTagHex, cipherHex] = parts;
   } else {
     throw new Error("Invalid encrypted format");

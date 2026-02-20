@@ -127,7 +127,7 @@ export async function checkAcknowledgement(
         }
 
         const ackDir = process.env.SDTM_REMOTE_DIR
-          ? process.env.SDTM_REMOTE_DIR.replace("/upload", "/download")
+          ? process.env.SDTM_REMOTE_DIR.replace(/\/upload\/?$/, "/download")
           : "/download";
 
         sftp.readdir(ackDir, (readErr, list) => {
@@ -170,7 +170,11 @@ export async function checkAcknowledgement(
               const status = ack.Status || ack.status;
               if (status === "A" || status === "Accepted") {
                 const bsaId = ack.BSAId || ack.bsaId || ack.TrackingId;
-                resolve({ status: "accepted", bsaId: String(bsaId) });
+              if (!bsaId) {
+                resolve({ status: "accepted" });
+                return;
+              }
+              resolve({ status: "accepted", bsaId: String(bsaId) });
               } else if (status === "R" || status === "Rejected") {
                 const reason = ack.ErrorMessage || ack.Reason || "Unknown rejection reason";
                 resolve({ status: "rejected", rejectionReason: reason });

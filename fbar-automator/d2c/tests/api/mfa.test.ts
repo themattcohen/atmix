@@ -482,12 +482,6 @@ describe("POST /api/auth/mfa/recovery (P5-3)", () => {
 // ---------------------------------------------------------------------------
 
 describe("MFA middleware guard (P5-3)", () => {
-  it("P5-3: API route with mfaEnabled=true and mfaVerifiedAt=null -> 403 'MFA verification required'", async () => {
-    // Placeholder: test will be fully fleshed out once MFA middleware exists
-    expect(true).toBe(true);
-  });
-
-  it("P5-3: MFA-exempt routes (/api/auth/mfa/*) still accessible when MFA pending", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("P5-3: API route with mfaEnabled=true and mfaVerifiedAt=null -> 403 'MFA verification required'");
+  it.todo("P5-3: MFA-exempt routes (/api/auth/mfa/*) still accessible when MFA pending");
 });

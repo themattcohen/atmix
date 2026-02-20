@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { signupSchema } from "@/lib/validation";
-import { sendWelcomeEmail } from "@/lib/email";
+import { sendWelcomeEmail, sendEmailWithRetry } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,8 +52,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Fire-and-forget welcome email — non-blocking, signup succeeds even if email fails
-    if (userCreated) {
-      sendWelcomeEmail(email, { firstName }).catch((err) => {
+    if (userCreated && process.env.RESEND_API_KEY) {
+      sendEmailWithRetry(
+        () => sendWelcomeEmail(email, { firstName }),
+        { maxRetries: 2, backoffMs: 500 }
+      ).catch((err) => {
         console.error("Welcome email failed:", err instanceof Error ? err.message : "Unknown error");
       });
     }

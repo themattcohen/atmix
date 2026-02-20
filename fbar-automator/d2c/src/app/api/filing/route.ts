@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { FilingType } from "@prisma/client";
 
 export async function GET() {
   try {
@@ -59,9 +60,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { calendarYear, filingType = "ORIGINAL" } = await req.json();
+    let calendarYear: unknown;
+    let filingType: FilingType = FilingType.ORIGINAL;
+    try {
+      const body = await req.json();
+      calendarYear = body.calendarYear;
+      const rawType = body.filingType ?? "ORIGINAL";
+      if (!Object.values(FilingType).includes(rawType)) {
+        return NextResponse.json({ error: "Invalid filing type" }, { status: 400 });
+      }
+      filingType = rawType as FilingType;
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
 
-    if (!calendarYear || calendarYear < 2010 || calendarYear > 2030) {
+    if (typeof calendarYear !== "number" || !Number.isInteger(calendarYear) || calendarYear < 2010 || calendarYear > 2030) {
       return NextResponse.json({ error: "Invalid calendar year" }, { status: 400 });
     }
 

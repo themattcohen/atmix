@@ -81,10 +81,23 @@ export async function PUT(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (d.institutionAddress !== undefined) updateData.institutionAddress = (d.institutionAddress || null) as any;
 
-    const account = await prisma.foreignAccount.update({
-      where: { id: params.accountId },
+    const { count } = await prisma.foreignAccount.updateMany({
+      where: { id: params.accountId, userId: session.user.id },
       data: updateData,
     });
+
+    if (count === 0) {
+      return NextResponse.json({ error: "Account not found" }, { status: 404 });
+    }
+
+    // Re-fetch for response since updateMany doesn't return the record
+    const account = await prisma.foreignAccount.findUnique({
+      where: { id: params.accountId },
+    });
+
+    if (!account) {
+      return NextResponse.json({ error: "Account not found" }, { status: 404 });
+    }
 
     // Recompute maxValueUsd if relevant fields changed
     if (d.currencyCode !== undefined || d.maxValueLocal !== undefined) {
@@ -141,7 +154,13 @@ export async function DELETE(
 
     const { calendarYear } = existing;
 
-    await prisma.foreignAccount.delete({ where: { id: params.accountId } });
+    const { count: deleteCount } = await prisma.foreignAccount.deleteMany({
+      where: { id: params.accountId, userId: session.user.id },
+    });
+
+    if (deleteCount === 0) {
+      return NextResponse.json({ error: "Account not found" }, { status: 404 });
+    }
 
     // Recompute has25PlusAccounts flag after account deletion
     const accountCount = await prisma.foreignAccount.count({

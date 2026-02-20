@@ -6,17 +6,7 @@ import { uploadFile } from "@/lib/s3";
 import { validateFile, validateMagicBytes, normalizeMimeType, getFileExtension } from "@/lib/upload-validation";
 import { extractFromStatement } from "@/lib/extraction";
 import { mapExtractedAccounts } from "@/lib/extraction-mapper";
-
-function sanitizeFileName(name: string): string {
-  if (!name) return `upload_${Date.now()}`;
-  // Remove null bytes, path traversal, and dangerous characters
-  return name
-    .replace(/\0/g, "")           // null bytes
-    .replace(/\.\./g, "")         // path traversal
-    .replace(/[/\\]/g, "")        // path separators
-    .replace(/[<>:"|?*]/g, "")    // Windows reserved chars
-    .trim() || `upload_${Date.now()}`;
-}
+import { sanitizeFileName } from "@/lib/sanitize";
 
 export const maxDuration = 60;
 

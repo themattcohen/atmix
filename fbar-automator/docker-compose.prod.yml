@@ -198,7 +198,7 @@ services:
   #       - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
   # ---------------------------------------------------------------------------
   d2c-app:
-    image: ghcr.io/themattcohen/fbar-d2c:latest
+    image: ghcr.io/themattcohen/fbar-d2c:${D2C_IMAGE_TAG:-latest}
     command: ["node", "server.js"]
     env_file:
       - .env
@@ -260,10 +260,7 @@ services:
   # D2C Migrate — One-shot Prisma migration (D2C schema)
   # ---------------------------------------------------------------------------
   d2c-migrate:
-    build:
-      context: ./d2c
-      dockerfile: Dockerfile
-      target: runner
+    image: ghcr.io/themattcohen/fbar-d2c:${D2C_IMAGE_TAG:-latest}
     command: ["npx", "prisma", "migrate", "deploy"]
     environment:
       - DATABASE_URL=${D2C_DATABASE_URL}

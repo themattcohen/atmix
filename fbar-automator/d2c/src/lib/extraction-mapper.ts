@@ -32,7 +32,7 @@ export function mapExtractedAccounts(
   calendarYear: number
 ): MappedAccount[] {
   return accounts.map((extracted, index) => {
-    const warnings = [...extracted.warnings];
+    const warnings = [...(extracted.warnings ?? [])];
 
     if (!extracted.bank_name) {
       warnings.push("Institution name could not be determined from the document.");
@@ -46,10 +46,10 @@ export function mapExtractedAccounts(
       accountNumber: extracted.account_number || "",
       accountType: mapAccountType(extracted.account_type),
       ownershipType: mapOwnershipType(extracted.ownership_type),
-      countryCode: extracted.bank_address.country || "",
+      countryCode: extracted.bank_address?.country ?? "",
       currencyCode: extracted.currency || "",
       maxValueLocal: extracted.max_balance?.amount ?? 0,
-      isJointAccount: false,
+      isJointAccount: mapOwnershipType(extracted.ownership_type) === "BOTH",
       calendarYear,
     };
 

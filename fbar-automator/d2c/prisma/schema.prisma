@@ -223,7 +223,7 @@ model Statement {
   updatedAt         DateTime @updatedAt
 
   user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  filingYear        FilingYear? @relation(fields: [filingYearId], references: [id])
+  filingYear        FilingYear? @relation(fields: [filingYearId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([filingYearId])

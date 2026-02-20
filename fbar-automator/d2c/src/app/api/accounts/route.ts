@@ -89,6 +89,15 @@ export async function POST(req: NextRequest) {
       institutionAddress,
     } = parsed.data;
 
+    // Compute maxValueUsd before create
+    let maxValueUsd: number | null = null;
+    if (currencyCode.toUpperCase() === "USD" && maxValueLocal) {
+      maxValueUsd = maxValueLocal;
+    } else if (currencyCode && currencyCode.toUpperCase() !== "USD" && maxValueLocal) {
+      const rateResult = await getRate(currencyCode.toUpperCase(), calendarYear);
+      maxValueUsd = rateResult ? Number(maxValueLocal) * rateResult.rate : null;
+    }
+
     const account = await prisma.foreignAccount.create({
       data: {
         userId: session.user.id,
@@ -99,6 +108,7 @@ export async function POST(req: NextRequest) {
         countryCode: countryCode.toUpperCase(),
         currencyCode: currencyCode.toUpperCase(),
         maxValueLocal,
+        maxValueUsd,
         isJointAccount,
         jointOwnerInfo: jointOwnerInfo || null,
         calendarYear,
@@ -114,22 +124,6 @@ export async function POST(req: NextRequest) {
       where: { userId: session.user.id, calendarYear, status: "IN_PROGRESS" },
       data: { has25PlusAccounts: accountCount >= 25 },
     });
-
-    // Compute maxValueUsd for non-USD currencies
-    if (account.currencyCode && account.currencyCode !== "USD" && account.maxValueLocal) {
-      const rateResult = await getRate(account.currencyCode, account.calendarYear);
-      const maxValueUsd = rateResult ? Number(account.maxValueLocal) * rateResult.rate : null;
-      await prisma.foreignAccount.update({
-        where: { id: account.id },
-        data: { maxValueUsd },
-      });
-    } else if (account.currencyCode === "USD" && account.maxValueLocal) {
-      // USD accounts: maxValueUsd = maxValueLocal (1:1)
-      await prisma.foreignAccount.update({
-        where: { id: account.id },
-        data: { maxValueUsd: account.maxValueLocal },
-      });
-    }
 
     return NextResponse.json(
       {

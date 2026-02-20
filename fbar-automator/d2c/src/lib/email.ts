@@ -181,7 +181,7 @@ export async function sendWelcomeEmail(
 
 function isPermanentError(err: unknown): boolean {
   const status = (err as Record<string, unknown>)?.status;
-  return typeof status === "number" && status >= 400 && status < 500;
+  return typeof status === "number" && status >= 400 && status < 500 && status !== 429;
 }
 
 export async function sendEmailWithRetry(

@@ -1,11 +1,10 @@
 name: D2C FBAR Build & Push
 
 on:
-  push:
+  workflow_run:
+    workflows: ["D2C FBAR CI"]
+    types: [completed]
     branches: [main]
-    paths:
-      - 'fbar-automator/d2c/**'
-      - 'fbar-automator/docker-compose.prod.yml'
 
 env:
   REGISTRY: ghcr.io
@@ -14,6 +13,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
