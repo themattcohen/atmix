@@ -164,7 +164,7 @@ const FILERS = [
     accounts: [
       { type: "1", eType: "141", name: "Bank of China", num: "CN1234567890", maxVal: "60000", instCity: "Beijing", instCountry: "CN", instStreet: "1 Fuxingmen Nei Dajie", instZip: "100818" },
       { type: "2", eType: "141", name: "China Securities", num: "CN9876543210", maxVal: "45000", instCity: "Shanghai", instCountry: "CN", instStreet: "689 Guangdong Rd", instZip: "200001" },
-      { type: "999", eType: "141", name: "China Insurance Fund", num: "CN5555666677", maxVal: "20000", instCity: "Beijing", instCountry: "CN", instStreet: "15 Financial St", instZip: "100032" },
+      { type: "999", eType: "141", name: "China Insurance Fund", num: "CN5555666677", maxVal: "20000", instCity: "Beijing", instCountry: "CN", instStreet: "15 Financial St", instZip: "100032", otherTypeText: "Insurance policy" },
     ],
   },
   {
@@ -173,16 +173,16 @@ const FILERS = [
     accounts: [
       { type: "1", eType: "141", name: "Rabobank", num: "NL9988776655", maxVal: "35000", instCity: "Utrecht", instCountry: "NL", instStreet: "Croeselaan 18", instZip: "3521CB" },
       { type: "2", eType: "141", name: "ING Securities", num: "NL1122334455", maxVal: "28000", instCity: "Amsterdam", instCountry: "NL", instStreet: "Bijlmerdreef 106", instZip: "1102CT" },
-      { type: "999", eType: "141", name: "Dutch Pension Trust", num: "NL7788990011", maxVal: "15000", instCity: "The Hague", instCountry: "NL", instStreet: "Bezuidenhoutseweg 30", instZip: "2594AV" },
+      { type: "999", eType: "141", name: "Dutch Pension Trust", num: "NL7788990011", maxVal: "15000", instCity: "The Hague", instCountry: "NL", instStreet: "Bezuidenhoutseweg 30", instZip: "2594AV", otherTypeText: "Pension fund" },
     ],
   },
   {
     first: "Richard", last: "Testhill", ssn: "900333003", dob: "19780823",
     street: "1303 Poplar Ln", city: "Centennial", state: "CO", zip: "80112", country: "US",
     accounts: [
-      { type: "1", eType: "141", name: "Royal Bank of Canada", num: "CA1234567890", maxVal: "55000", instCity: "Toronto", instCountry: "CA", instStreet: "200 Bay St", instZip: "M5J2J5" },
-      { type: "2", eType: "141", name: "TD Securities", num: "CA9876543210", maxVal: "42000", instCity: "Toronto", instCountry: "CA", instStreet: "66 Wellington St W", instZip: "M5K1A2" },
-      { type: "999", eType: "141", name: "Canadian RESP Trust", num: "CA5555666677", maxVal: "18000", instCity: "Montreal", instCountry: "CA", instStreet: "1250 Rene-Levesque Blvd", instZip: "H3B4W8" },
+      { type: "1", eType: "141", name: "Royal Bank of Canada", num: "CA1234567890", maxVal: "55000", instCity: "Toronto", instCountry: "CA", instState: "ON", instStreet: "200 Bay St", instZip: "M5J2J5" },
+      { type: "2", eType: "141", name: "TD Securities", num: "CA9876543210", maxVal: "42000", instCity: "Toronto", instCountry: "CA", instState: "ON", instStreet: "66 Wellington St W", instZip: "M5K1A2" },
+      { type: "999", eType: "141", name: "Canadian RESP Trust", num: "CA5555666677", maxVal: "18000", instCity: "Montreal", instCountry: "CA", instState: "QC", instStreet: "1250 Rene-Levesque Blvd", instZip: "H3B4W8", otherTypeText: "Education savings plan" },
     ],
   },
   {
@@ -191,7 +191,7 @@ const FILERS = [
     accounts: [
       { type: "1", eType: "141", name: "Nordea Bank", num: "SE1234567890", maxVal: "48000", instCity: "Stockholm", instCountry: "SE", instStreet: "Hamngatan 10", instZip: "10571" },
       { type: "2", eType: "141", name: "Handelsbanken Capital", num: "SE9876543210", maxVal: "33000", instCity: "Stockholm", instCountry: "SE", instStreet: "Kungstradgardsgatan 2", instZip: "10670" },
-      { type: "999", eType: "141", name: "Swedish Investment Fund", num: "SE5555666677", maxVal: "22000", instCity: "Gothenburg", instCountry: "SE", instStreet: "Ostra Hamngatan 16", instZip: "41109" },
+      { type: "999", eType: "141", name: "Swedish Investment Fund", num: "SE5555666677", maxVal: "22000", instCity: "Gothenburg", instCountry: "SE", instStreet: "Ostra Hamngatan 16", instZip: "41109", otherTypeText: "Investment fund" },
     ],
   },
   {
@@ -200,7 +200,7 @@ const FILERS = [
     accounts: [
       { type: "1", eType: "141", name: "DBS Bank", num: "SG1234567890", maxVal: "70000", instCity: "Singapore", instCountry: "SG", instStreet: "12 Marina Blvd", instZip: "018982" },
       { type: "2", eType: "141", name: "SGX Securities", num: "SG9876543210", maxVal: "38000", instCity: "Singapore", instCountry: "SG", instStreet: "2 Shenton Way", instZip: "068804" },
-      { type: "999", eType: "141", name: "Singapore Savings Bond", num: "SG5555666677", maxVal: "25000", instCity: "Singapore", instCountry: "SG", instStreet: "10 Shenton Way", instZip: "079117" },
+      { type: "999", eType: "141", name: "Singapore Savings Bond", num: "SG5555666677", maxVal: "25000", instCity: "Singapore", instCountry: "SG", instStreet: "10 Shenton Way", instZip: "079117", otherTypeText: "Government savings bond" },
     ],
   },
   // --- Activities 16-18: Multiple bank accounts (various countries) ---
@@ -216,8 +216,8 @@ const FILERS = [
     first: "Susan", last: "Testpair", ssn: "900444002", dob: "19830918",
     street: "1702 Cherry Rd", city: "Parker", state: "CO", zip: "80134", country: "US",
     accounts: [
-      { type: "1", eType: "141", name: "Scotiabank", num: "CA1111222233", maxVal: "52000", instCity: "Toronto", instCountry: "CA", instStreet: "44 King St W", instZip: "M5H1H1" },
-      { type: "1", eType: "141", name: "CIBC", num: "CA4444555566", maxVal: "38000", instCity: "Toronto", instCountry: "CA", instStreet: "81 Bay St", instZip: "M5J0E7" },
+      { type: "1", eType: "141", name: "Scotiabank", num: "CA1111222233", maxVal: "52000", instCity: "Toronto", instCountry: "CA", instState: "ON", instStreet: "44 King St W", instZip: "M5H1H1" },
+      { type: "1", eType: "141", name: "CIBC", num: "CA4444555566", maxVal: "38000", instCity: "Toronto", instCountry: "CA", instState: "ON", instStreet: "81 Bay St", instZip: "M5J0E7" },
     ],
   },
   {
@@ -272,7 +272,7 @@ const FILERS = [
     accounts: [
       { type: "1", eType: "141", name: "Industrial Bank of Korea", num: "KR1234567890", maxVal: "35000", instCity: "Seoul", instCountry: "KR", instStreet: "50 Eulji-ro", instZip: "04538" },
       { type: "2", eType: "141", name: "Korea Investment Corp", num: "KR9876543210", maxVal: "48000", instCity: "Seoul", instCountry: "KR", instStreet: "12 Yeouido-dong", instZip: "07326" },
-      { type: "999", eType: "141", name: "Korean Life Insurance", num: "KR5555666677", maxVal: "22000", instCity: "Seoul", instCountry: "KR", instStreet: "27 Sejong-daero 9-gil", instZip: "04513" },
+      { type: "999", eType: "141", name: "Korean Life Insurance", num: "KR5555666677", maxVal: "22000", instCity: "Seoul", instCountry: "KR", instStreet: "27 Sejong-daero 9-gil", instZip: "04513", otherTypeText: "Life insurance policy" },
     ],
   },
   {
@@ -293,7 +293,7 @@ const FILERS = [
       { type: "1", eType: "141", name: "Bank of New Zealand", num: "NZ1234567890", maxVal: "38000", instCity: "Wellington", instCountry: "NZ", instStreet: "1 Willis St", instZip: "6011" },
       { type: "2", eType: "141", name: "NZX Securities", num: "NZ9876543210", maxVal: "22000", instCity: "Wellington", instCountry: "NZ", instStreet: "Level 1 NZX Centre", instZip: "6011" },
       { type: "1", eType: "141", name: "Westpac NZ", num: "NZ5555666677", maxVal: "47000", instCity: "Auckland", instCountry: "NZ", instStreet: "16 Takutai Square", instZip: "1010" },
-      { type: "999", eType: "141", name: "NZ Super Fund", num: "NZ8888999900", maxVal: "15000", instCity: "Auckland", instCountry: "NZ", instStreet: "21 Queen St", instZip: "1010" },
+      { type: "999", eType: "141", name: "NZ Super Fund", num: "NZ8888999900", maxVal: "15000", instCity: "Auckland", instCountry: "NZ", instStreet: "21 Queen St", instZip: "1010", otherTypeText: "Superannuation fund" },
     ],
   },
 ];
@@ -345,7 +345,6 @@ function buildActivity(filer, calendarYear) {
   // 3. ThirdPartyPreparerIndicator
   let xml = `    <fc2:Activity SeqNum="${actSeq}">\n`;
   xml += `      <fc2:ApprovalOfficialSignatureDateText>${TODAY}</fc2:ApprovalOfficialSignatureDateText>\n`;
-  xml += `      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>\n`;
   xml += `      <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>\n`;
 
   // --- ActivityAssociation (required) ---
@@ -366,21 +365,21 @@ function buildActivity(filer, calendarYear) {
   xml += `        </fc2:PartyName>\n`;
   xml += xmlAddress(TRANSMITTER.address.street, TRANSMITTER.address.city, TRANSMITTER.address.state, TRANSMITTER.address.country, TRANSMITTER.address.zip);
   xml += xmlPhone(TRANSMITTER.phone);
-  // Two PartyIdentification elements: TIN (type 4) + TCC (type 28)
+  // Two PartyIdentification elements: TIN (type 4 = EIN for transmitter) + TCC (type 28)
   xml += xmlPartyId(TRANSMITTER.tin, "4");
   xml += xmlPartyId(TRANSMITTER.tcc, "28");
   xml += `      </fc2:Party>\n`;
 
   // --- Party[1]: Transmitter Contact (type 37) ---
+  // FinCEN business rules: type 37 uses RawPartyFullName (entity/org name), NOT individual name fields.
+  // A2 error: individual name fields are "inappropriate" for party type 37.
   const tcSeq = nextSeq();
   xml += `      <fc2:Party SeqNum="${tcSeq}">\n`;
   xml += `        <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>\n`;
   const tcNameSeq = nextSeq();
-  // Schema order: PartyNameTypeCode, RawEntityIndividualLastName, RawIndividualFirstName
   xml += `        <fc2:PartyName SeqNum="${tcNameSeq}">\n`;
   xml += `          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>\n`;
-  xml += `          <fc2:RawEntityIndividualLastName>${esc(TRANSMITTER.contactLast)}</fc2:RawEntityIndividualLastName>\n`;
-  xml += `          <fc2:RawIndividualFirstName>${esc(TRANSMITTER.contactFirst)}</fc2:RawIndividualFirstName>\n`;
+  xml += `          <fc2:RawPartyFullName>${esc(TRANSMITTER.name)}</fc2:RawPartyFullName>\n`;
   xml += `        </fc2:PartyName>\n`;
   xml += `      </fc2:Party>\n`;
 
@@ -435,8 +434,8 @@ function buildActivity(filer, calendarYear) {
   xml += `          <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>\n`;
   xml += `          <fc2:RawPartyFullName>${esc(PREPARER.firmName)}</fc2:RawPartyFullName>\n`;
   xml += `        </fc2:PartyName>\n`;
-  // EIN (type 4) — schema actually doesn't require Address for type 56
-  xml += xmlPartyId(PREPARER.firmEin, "4");
+  // EIN (type 2) for preparer firm — type 2 = standard EIN (type 4 is transmitter-only)
+  xml += xmlPartyId(PREPARER.firmEin, "2");
   xml += `      </fc2:Party>\n`;
 
   // --- Account elements ---
@@ -445,11 +444,18 @@ function buildActivity(filer, calendarYear) {
     const acctSeq = nextSeq();
     xml += `      <fc2:Account SeqNum="${acctSeq}">\n`;
     // Schema order: AccountMaximumValueAmountText, AccountNumberText, AccountTypeCode,
-    // EFilingAccountTypeCode, UnknownMaximumValueIndicator, then nested Party
-    xml += `        <fc2:AccountMaximumValueAmountText>${esc(acct.maxVal)}</fc2:AccountMaximumValueAmountText>\n`;
+    // EFilingAccountTypeCode, OtherAccountTypeText, UnknownMaximumValueIndicator, then nested Party
+    // FinCEN rule A20: When UnknownMaximumValueIndicator=Y, OMIT AccountMaximumValueAmountText
+    if (!acct.unknownValue) {
+      xml += `        <fc2:AccountMaximumValueAmountText>${esc(acct.maxVal)}</fc2:AccountMaximumValueAmountText>\n`;
+    }
     xml += `        <fc2:AccountNumberText>${esc(acct.num)}</fc2:AccountNumberText>\n`;
     xml += `        <fc2:AccountTypeCode>${esc(acct.type)}</fc2:AccountTypeCode>\n`;
     xml += `        <fc2:EFilingAccountTypeCode>${esc(acct.eType)}</fc2:EFilingAccountTypeCode>\n`;
+    // FinCEN rule D10: AccountTypeCode=999 requires OtherAccountTypeText
+    if (acct.type === "999" && acct.otherTypeText) {
+      xml += `        <fc2:OtherAccountTypeText>${esc(acct.otherTypeText)}</fc2:OtherAccountTypeText>\n`;
+    }
     if (acct.unknownValue) {
       xml += `        <fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>\n`;
     }
@@ -468,6 +474,8 @@ function buildActivity(filer, calendarYear) {
     xml += `          <fc2:Address SeqNum="${fiAddrSeq}">\n`;
     xml += `            <fc2:RawCityText>${esc(acct.instCity)}</fc2:RawCityText>\n`;
     xml += `            <fc2:RawCountryCodeText>${esc(acct.instCountry)}</fc2:RawCountryCodeText>\n`;
+    // FinCEN rule D18: CA/MX addresses need RawStateCodeText (province/state)
+    if (acct.instState) xml += `            <fc2:RawStateCodeText>${esc(acct.instState)}</fc2:RawStateCodeText>\n`;
     xml += `            <fc2:RawStreetAddress1Text>${esc(acct.instStreet)}</fc2:RawStreetAddress1Text>\n`;
     if (acct.instZip) xml += `            <fc2:RawZIPCode>${esc(acct.instZip)}</fc2:RawZIPCode>\n`;
     xml += `          </fc2:Address>\n`;
@@ -479,6 +487,10 @@ function buildActivity(filer, calendarYear) {
   // --- ForeignAccountActivity (required) ---
   const faaSeq = nextSeq();
   xml += `      <fc2:ForeignAccountActivity SeqNum="${faaSeq}">\n`;
+  // FinCEN rule C44: When 25+ indicator=Y, must include ForeignAccountHeldQuantityText
+  if (has25Plus) {
+    xml += `        <fc2:ForeignAccountHeldQuantityText>30</fc2:ForeignAccountHeldQuantityText>\n`;
+  }
   xml += `        <fc2:ReportCalendarYearText>${calendarYear}</fc2:ReportCalendarYearText>\n`;
   xml += `      </fc2:ForeignAccountActivity>\n`;
 
@@ -604,13 +616,50 @@ function validateXml(xml, stats) {
     errors.push("EFilingPriorDocumentNumber should be omitted for non-amendment filings");
   }
 
-  // 9. Check account amounts are non-negative integers
+  // 9. Check account amounts are non-negative integers (when present)
   const amounts = xml.match(/<fc2:AccountMaximumValueAmountText>([^<]+)<\/fc2:AccountMaximumValueAmountText>/g) || [];
   for (const a of amounts) {
     const val = a.replace(/<[^>]+>/g, "");
     if (!/^\d+$/.test(val)) {
       errors.push(`Invalid amount: ${val}`);
     }
+    if (val === "0") {
+      errors.push(`Amount is 0 — if unknown, use UnknownMaximumValueIndicator and omit amount`);
+    }
+  }
+
+  // 14. Verify PartyIdentificationTypeCode per party type (FinCEN User Guide v1.4 p.29)
+  // Type 35 (Transmitter): code 4 (TIN) + 28 (TCC) only
+  // Type 56 (Preparer Firm): code 2 (EIN) or 9 (Foreign TIN) only
+  // Type 15 (Filer): code 1/2/6/9/999
+  // Type 57 (Preparer): code 1/9/31
+  {
+    const type35Section = xml.slice(
+      xml.indexOf("<fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>") || 0,
+      xml.indexOf("<fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>") || xml.length
+    );
+    if (type35Section.includes("<fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>")) {
+      errors.push("Transmitter (type 35) uses type code 2 — must be 4 (A23 rejection)");
+    }
+    const type56Section = xml.slice(
+      xml.indexOf("<fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>") || 0,
+      xml.indexOf("<fc2:Account ") || xml.length
+    );
+    if (type56Section.includes("<fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>")) {
+      errors.push("Preparer Firm (type 56) uses type code 4 — must be 2 (J38 rejection)");
+    }
+  }
+
+  // 15. Verify PreparerFilingSignatureIndicator is NOT present with ThirdPartyPreparerIndicator
+  if (xml.includes("PreparerFilingSignatureIndicator") && xml.includes("ThirdPartyPreparerIndicator")) {
+    errors.push("PreparerFilingSignatureIndicator conflicts with ThirdPartyPreparerIndicator");
+  }
+
+  // 16. Verify AccountTypeCode=999 has OtherAccountTypeText
+  const type999Accounts = xml.match(/<fc2:AccountTypeCode>999<\/fc2:AccountTypeCode>/g) || [];
+  const otherTextCount = (xml.match(/<fc2:OtherAccountTypeText>/g) || []).length;
+  if (type999Accounts.length !== otherTextCount) {
+    errors.push(`AccountTypeCode=999 count (${type999Accounts.length}) != OtherAccountTypeText count (${otherTextCount})`);
   }
 
   // 10. Check TCC is TBSATEST

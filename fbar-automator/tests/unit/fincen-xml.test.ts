@@ -321,11 +321,9 @@ describe("XML structure", () => {
     expect(xml).not.toContain("EFilingPriorDocumentNumber")
   })
 
-  it("PreparerFilingSignatureIndicator is Y", async () => {
+  it("PreparerFilingSignatureIndicator is NOT present (conflicts with ThirdPartyPreparer)", async () => {
     const xml = await generateTestXml()
-    expect(xml).toContain(
-      "<fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>"
-    )
+    expect(xml).not.toContain("PreparerFilingSignatureIndicator")
   })
 })
 
@@ -354,6 +352,7 @@ describe("Party type tests", () => {
     )
     const transmitterSection = xml.slice(type35Start, nextPartyAfter35)
 
+    // Type 4 = EIN for transmitters/reporting entities (NOT type 2, which is for filers)
     expect(transmitterSection).toContain(
       "<fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>"
     )
@@ -391,8 +390,7 @@ describe("Party type tests", () => {
     )
     const contactSection = xml.slice(type37Start, type15Start)
 
-    expect(contactSection).toContain("John") // contactName first
-    expect(contactSection).toContain("Smith") // contactName last
+    expect(contactSection).toContain("John Smith") // full contact name
     expect(contactSection).toContain("<fc2:PartyName")
   })
 
@@ -615,7 +613,7 @@ describe("Party type tests", () => {
     expect(xml).toContain("RawPartyFullName")
   })
 
-  it("Transmitter Contact name has LastName before FirstName (schema order)", async () => {
+  it("Transmitter Contact (type 37) uses RawPartyFullName (entity-type name)", async () => {
     const xml = await generateTestXml()
 
     const type37Start = xml.indexOf(
@@ -626,12 +624,11 @@ describe("Party type tests", () => {
     )
     const contactSection = xml.slice(type37Start, type15Start)
 
-    const lastNamePos = contactSection.indexOf("RawEntityIndividualLastName")
-    const firstNamePos = contactSection.indexOf("RawIndividualFirstName")
-
-    expect(lastNamePos).toBeGreaterThan(-1)
-    expect(firstNamePos).toBeGreaterThan(-1)
-    expect(lastNamePos).toBeLessThan(firstNamePos)
+    expect(contactSection).toContain(
+      "<fc2:RawPartyFullName>John Smith</fc2:RawPartyFullName>"
+    )
+    expect(contactSection).not.toContain("RawEntityIndividualLastName")
+    expect(contactSection).not.toContain("RawIndividualFirstName")
   })
 })
 
@@ -1109,5 +1106,179 @@ describe("Namespace prefix", () => {
     // Check that core elements are not present without prefix
     expect(xml).not.toMatch(/<Activity[\s>](?!PartyTypeCode)/)
     expect(xml).not.toMatch(/<Account[\s>](?!MaximumValue|NumberText|TypeCode)/)
+  })
+})
+
+// ===========================================================================
+// 14. FinCEN Business Rule Fixes
+// ===========================================================================
+
+describe("FinCEN business rule fixes", () => {
+  it("unknown-value account omits AccountMaximumValueAmountText", async () => {
+    const filingYear = createMockFilingYear()
+    filingYear.reviewedAccountYears[0].isValueUnknown = true
+    filingYear.reviewedAccountYears[0].maxValueUsd = null as unknown as number
+
+    const summary = createMockReviewSummary({
+      accounts: [
+        {
+          foreignAccountId: "fa-1",
+          institutionName: "Swiss Bank Corp",
+          accountNumber: "CH-123456",
+          accountType: "BANK",
+          country: "CH",
+          maxValueLocal: null,
+          currencyCode: null,
+          exchangeRate: null,
+          maxValueUsd: null,
+          isValueUnknown: true,
+          reviewedAt: new Date("2024-06-15"),
+          reviewedBy: "Jane Smith",
+          corrections: null,
+        },
+        ...createMockReviewSummary().accounts.slice(1),
+      ],
+    })
+
+    const xml = await generateTestXml({ filingYear, summary })
+
+    // The unknown-value account should NOT have an amount
+    const accountSections = xml.split("<fc2:Account ")
+    const unknownAccountSection = accountSections[1].split("</fc2:Account>")[0]
+    expect(unknownAccountSection).toContain(
+      "<fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>"
+    )
+    expect(unknownAccountSection).not.toContain("AccountMaximumValueAmountText")
+
+    // The known-value account should still have an amount
+    const knownAccountSection = accountSections[2].split("</fc2:Account>")[0]
+    expect(knownAccountSection).toContain("AccountMaximumValueAmountText")
+    expect(knownAccountSection).not.toContain("UnknownMaximumValueIndicator")
+  })
+
+  it("AccountTypeCode 999 emits OtherAccountTypeText from accountTypeDescription", async () => {
+    const filingYear = createMockFilingYear()
+    filingYear.reviewedAccountYears = [
+      {
+        id: "ray-3",
+        foreignAccountId: "fa-3",
+        maxValueLocal: 100000,
+        maxValueUsd: 100000,
+        isValueUnknown: false,
+        currencyCode: "USD",
+        exchangeRate: 1.0,
+        foreignAccount: {
+          id: "fa-3",
+          institutionName: "Cayman Fund LLC",
+          accountNumber: "KY-555666",
+          accountType: "OTHER",
+          accountTypeDescription: "Mutual Fund",
+          ownershipType: "FINANCIAL_INTEREST",
+          isJointlyOwned: false,
+          institutionAddressStreet: "PO Box 1234",
+          institutionAddressCity: "George Town",
+          institutionAddressState: "",
+          institutionAddressCountry: "KY",
+          institutionAddressPostal: "KY1-1234",
+        },
+      },
+    ]
+
+    const summary = createMockReviewSummary({
+      accounts: [
+        {
+          foreignAccountId: "fa-3",
+          institutionName: "Cayman Fund LLC",
+          accountNumber: "KY-555666",
+          accountType: "OTHER",
+          country: "KY",
+          maxValueLocal: 100000,
+          currencyCode: "USD",
+          exchangeRate: 1.0,
+          maxValueUsd: 100000,
+          isValueUnknown: false,
+          reviewedAt: new Date("2024-06-17"),
+          reviewedBy: "Jane Smith",
+          corrections: null,
+        },
+      ],
+      aggregateMaxValueUSD: 100000,
+    })
+
+    const xml = await generateTestXml({ filingYear, summary })
+
+    expect(xml).toContain(
+      "<fc2:AccountTypeCode>999</fc2:AccountTypeCode>"
+    )
+    expect(xml).toContain(
+      "<fc2:OtherAccountTypeText>Mutual Fund</fc2:OtherAccountTypeText>"
+    )
+  })
+
+  it("FI address includes RawStateCodeText when institutionAddressState is set", async () => {
+    const xml = await generateTestXml()
+
+    // Swiss Bank Corp has institutionAddressState: "ZH"
+    const accountSections = xml.split("<fc2:Account ")
+    const swissAccountSection = accountSections[1].split("</fc2:Account>")[0]
+
+    expect(swissAccountSection).toContain(
+      "<fc2:RawStateCodeText>ZH</fc2:RawStateCodeText>"
+    )
+
+    // Verify schema order: RawCountryCodeText before RawStateCodeText before RawStreetAddress1Text
+    const countryPos = swissAccountSection.indexOf("RawCountryCodeText")
+    const statePos = swissAccountSection.indexOf("RawStateCodeText")
+    const streetPos = swissAccountSection.indexOf("RawStreetAddress1Text")
+    expect(countryPos).toBeLessThan(statePos)
+    expect(statePos).toBeLessThan(streetPos)
+  })
+
+  it("FI address omits RawStateCodeText when institutionAddressState is empty", async () => {
+    const xml = await generateTestXml()
+
+    // Tokyo Securities has institutionAddressState: "" (empty)
+    const accountSections = xml.split("<fc2:Account ")
+    const tokyoAccountSection = accountSections[2].split("</fc2:Account>")[0]
+
+    expect(tokyoAccountSection).not.toContain("RawStateCodeText")
+  })
+
+  it("ForeignAccountHeldQuantityText emitted when has25PlusAccounts is true", async () => {
+    const filingYear = createMockFilingYear()
+    filingYear.has25PlusAccounts = true
+
+    const xml = await generateTestXml({ filingYear })
+
+    expect(xml).toContain("<fc2:ForeignAccountHeldQuantityText>")
+
+    // Verify the count is at least 25
+    const quantityMatch = xml.match(
+      /<fc2:ForeignAccountHeldQuantityText>(\d+)<\/fc2:ForeignAccountHeldQuantityText>/
+    )
+    expect(quantityMatch).not.toBeNull()
+    expect(Number(quantityMatch![1])).toBeGreaterThanOrEqual(25)
+  })
+
+  it("ForeignAccountHeldQuantityText NOT emitted when has25PlusAccounts is false", async () => {
+    const xml = await generateTestXml()
+    expect(xml).not.toContain("ForeignAccountHeldQuantityText")
+  })
+
+  it("Preparer Firm (type 56) EIN uses type code 2 (not 4)", async () => {
+    const xml = await generateTestXml()
+
+    const type56Start = xml.indexOf(
+      "<fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>"
+    )
+    const firmSection = xml.slice(type56Start)
+
+    // Type 2 = standard EIN (type 4 is only valid for Transmitter type 35)
+    expect(firmSection).toContain(
+      "<fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>"
+    )
+    expect(firmSection).not.toContain(
+      "<fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>"
+    )
   })
 })

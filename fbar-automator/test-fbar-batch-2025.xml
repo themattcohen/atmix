@@ -12,7 +12,6 @@
   <fc2:FormTypeCode>FBARX</fc2:FormTypeCode>
     <fc2:Activity SeqNum="1">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="2">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -46,8 +45,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="10">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="11">
@@ -103,7 +101,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="22">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="23">
@@ -131,7 +129,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="28">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="29">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -165,8 +162,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="37">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="38">
@@ -222,7 +218,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="49">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="50">
@@ -250,7 +246,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="55">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="56">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -284,8 +279,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="64">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="65">
@@ -341,7 +335,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="76">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="77">
@@ -369,7 +363,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="82">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="83">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -403,8 +396,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="91">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="92">
@@ -460,7 +452,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="103">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="104">
@@ -488,7 +480,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="109">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="110">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -522,8 +513,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="118">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="119">
@@ -579,7 +569,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="130">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="131">
@@ -607,7 +597,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="136">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="137">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -641,8 +630,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="145">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="146">
@@ -698,7 +686,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="157">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="158">
@@ -745,7 +733,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="167">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="168">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -779,8 +766,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="176">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="177">
@@ -836,7 +822,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="188">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="189">
@@ -883,7 +869,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="198">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="199">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -917,8 +902,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="207">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="208">
@@ -974,7 +958,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="219">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="220">
@@ -1021,7 +1005,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="229">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="230">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1055,8 +1038,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="238">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="239">
@@ -1112,7 +1094,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="250">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="251">
@@ -1159,7 +1141,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="260">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="261">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1193,8 +1174,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="269">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="270">
@@ -1250,7 +1230,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="281">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="282">
@@ -1297,7 +1277,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="291">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="292">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1331,8 +1310,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="300">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="301">
@@ -1388,7 +1366,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="312">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="313">
@@ -1434,6 +1412,7 @@
         <fc2:AccountNumberText>CN5555666677</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Insurance policy</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="322">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="323">
@@ -1454,7 +1433,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="326">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="327">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1488,8 +1466,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="335">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="336">
@@ -1545,7 +1522,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="347">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="348">
@@ -1591,6 +1568,7 @@
         <fc2:AccountNumberText>NL7788990011</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Pension fund</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="357">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="358">
@@ -1611,7 +1589,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="361">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="362">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1645,8 +1622,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="370">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="371">
@@ -1702,7 +1678,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="382">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="383">
@@ -1719,6 +1695,7 @@
           <fc2:Address SeqNum="386">
             <fc2:RawCityText>Toronto</fc2:RawCityText>
             <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStateCodeText>ON</fc2:RawStateCodeText>
             <fc2:RawStreetAddress1Text>200 Bay St</fc2:RawStreetAddress1Text>
             <fc2:RawZIPCode>M5J2J5</fc2:RawZIPCode>
           </fc2:Address>
@@ -1738,6 +1715,7 @@
           <fc2:Address SeqNum="390">
             <fc2:RawCityText>Toronto</fc2:RawCityText>
             <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStateCodeText>ON</fc2:RawStateCodeText>
             <fc2:RawStreetAddress1Text>66 Wellington St W</fc2:RawStreetAddress1Text>
             <fc2:RawZIPCode>M5K1A2</fc2:RawZIPCode>
           </fc2:Address>
@@ -1748,6 +1726,7 @@
         <fc2:AccountNumberText>CA5555666677</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Education savings plan</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="392">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="393">
@@ -1757,6 +1736,7 @@
           <fc2:Address SeqNum="394">
             <fc2:RawCityText>Montreal</fc2:RawCityText>
             <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStateCodeText>QC</fc2:RawStateCodeText>
             <fc2:RawStreetAddress1Text>1250 Rene-Levesque Blvd</fc2:RawStreetAddress1Text>
             <fc2:RawZIPCode>H3B4W8</fc2:RawZIPCode>
           </fc2:Address>
@@ -1768,7 +1748,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="396">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="397">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1802,8 +1781,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="405">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="406">
@@ -1859,7 +1837,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="417">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="418">
@@ -1905,6 +1883,7 @@
         <fc2:AccountNumberText>SE5555666677</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Investment fund</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="427">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="428">
@@ -1925,7 +1904,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="431">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="432">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -1959,8 +1937,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="440">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="441">
@@ -2016,7 +1993,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="452">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="453">
@@ -2062,6 +2039,7 @@
         <fc2:AccountNumberText>SG5555666677</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Government savings bond</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="462">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="463">
@@ -2082,7 +2060,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="466">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="467">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2116,8 +2093,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="475">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="476">
@@ -2173,7 +2149,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="487">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="488">
@@ -2220,7 +2196,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="497">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="498">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2254,8 +2229,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="506">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="507">
@@ -2311,7 +2285,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="518">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="519">
@@ -2328,6 +2302,7 @@
           <fc2:Address SeqNum="522">
             <fc2:RawCityText>Toronto</fc2:RawCityText>
             <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStateCodeText>ON</fc2:RawStateCodeText>
             <fc2:RawStreetAddress1Text>44 King St W</fc2:RawStreetAddress1Text>
             <fc2:RawZIPCode>M5H1H1</fc2:RawZIPCode>
           </fc2:Address>
@@ -2347,6 +2322,7 @@
           <fc2:Address SeqNum="526">
             <fc2:RawCityText>Toronto</fc2:RawCityText>
             <fc2:RawCountryCodeText>CA</fc2:RawCountryCodeText>
+            <fc2:RawStateCodeText>ON</fc2:RawStateCodeText>
             <fc2:RawStreetAddress1Text>81 Bay St</fc2:RawStreetAddress1Text>
             <fc2:RawZIPCode>M5J0E7</fc2:RawZIPCode>
           </fc2:Address>
@@ -2358,7 +2334,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="528">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="529">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2392,8 +2367,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="537">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="538">
@@ -2449,7 +2423,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="549">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="550">
@@ -2496,7 +2470,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="559">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="560">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2530,8 +2503,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="568">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="569">
@@ -2587,7 +2559,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="580">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="581">
@@ -2614,7 +2586,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="586">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="587">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2648,8 +2619,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="595">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="596">
@@ -2705,7 +2675,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="607">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="608">
@@ -2733,7 +2703,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="613">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="614">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2767,8 +2736,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="622">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="623">
@@ -2824,7 +2792,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="634">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="635">
@@ -2852,7 +2820,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="640">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="641">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -2886,8 +2853,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="649">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="650">
@@ -2943,11 +2909,10 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="661">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="662">
-        <fc2:AccountMaximumValueAmountText>0</fc2:AccountMaximumValueAmountText>
         <fc2:AccountNumberText>CL1234567890</fc2:AccountNumberText>
         <fc2:AccountTypeCode>1</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
@@ -2972,7 +2937,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="667">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="668">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -3006,8 +2970,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="676">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="677">
@@ -3063,11 +3026,10 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="688">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="689">
-        <fc2:AccountMaximumValueAmountText>0</fc2:AccountMaximumValueAmountText>
         <fc2:AccountNumberText>RU9876543210</fc2:AccountNumberText>
         <fc2:AccountTypeCode>2</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
@@ -3092,7 +3054,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="694">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="695">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -3126,8 +3087,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="703">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="704">
@@ -3183,7 +3143,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="715">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="716">
@@ -3229,6 +3189,7 @@
         <fc2:AccountNumberText>KR5555666677</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Life insurance policy</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="725">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="726">
@@ -3249,7 +3210,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="729">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="730">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -3283,8 +3243,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="738">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="739">
@@ -3340,7 +3299,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="750">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="751">
@@ -3406,7 +3365,6 @@
     </fc2:Activity>
     <fc2:Activity SeqNum="764">
       <fc2:ApprovalOfficialSignatureDateText>20260220</fc2:ApprovalOfficialSignatureDateText>
-      <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
       <fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>
       <fc2:ActivityAssociation SeqNum="765">
         <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
@@ -3440,8 +3398,7 @@
         <fc2:ActivityPartyTypeCode>37</fc2:ActivityPartyTypeCode>
         <fc2:PartyName SeqNum="773">
           <fc2:PartyNameTypeCode>L</fc2:PartyNameTypeCode>
-          <fc2:RawEntityIndividualLastName>Cohen</fc2:RawEntityIndividualLastName>
-          <fc2:RawIndividualFirstName>Matthew</fc2:RawIndividualFirstName>
+          <fc2:RawPartyFullName>All Solutions Consulting</fc2:RawPartyFullName>
         </fc2:PartyName>
       </fc2:Party>
       <fc2:Party SeqNum="774">
@@ -3497,7 +3454,7 @@
         </fc2:PartyName>
             <fc2:PartyIdentification SeqNum="785">
               <fc2:PartyIdentificationNumberText>883761328</fc2:PartyIdentificationNumberText>
-              <fc2:PartyIdentificationTypeCode>4</fc2:PartyIdentificationTypeCode>
+              <fc2:PartyIdentificationTypeCode>2</fc2:PartyIdentificationTypeCode>
             </fc2:PartyIdentification>
       </fc2:Party>
       <fc2:Account SeqNum="786">
@@ -3562,6 +3519,7 @@
         <fc2:AccountNumberText>NZ8888999900</fc2:AccountNumberText>
         <fc2:AccountTypeCode>999</fc2:AccountTypeCode>
         <fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>
+        <fc2:OtherAccountTypeText>Superannuation fund</fc2:OtherAccountTypeText>
         <fc2:Party SeqNum="799">
           <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
           <fc2:PartyName SeqNum="800">
@@ -3577,6 +3535,7 @@
         </fc2:Party>
       </fc2:Account>
       <fc2:ForeignAccountActivity SeqNum="802">
+        <fc2:ForeignAccountHeldQuantityText>30</fc2:ForeignAccountHeldQuantityText>
         <fc2:ReportCalendarYearText>2025</fc2:ReportCalendarYearText>
       </fc2:ForeignAccountActivity>
     </fc2:Activity>

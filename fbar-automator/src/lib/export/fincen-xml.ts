@@ -191,7 +191,6 @@ export async function generateFincenXml(
     "fc2:ApprovalOfficialSignatureDateText": today,
     // EFilingPriorDocumentNumber: omitted for non-amendments (type is xsd:long,
     // empty string is invalid). Only emit for amendments with a valid BSA ID.
-    "fc2:PreparerFilingSignatureIndicator": "Y",
     "fc2:ThirdPartyPreparerIndicator": "Y",
   }
 
@@ -254,19 +253,13 @@ export async function generateFincenXml(
   const tcPartySeq = seq.next()
   const tcNameSeq = seq.next()
 
-  // Split contact name into first/last
-  const contactParts = transmitter.contactName.trim().split(/\s+/)
-  const contactFirst = contactParts.slice(0, -1).join(" ") || contactParts[0]
-  const contactLast = contactParts.length > 1 ? contactParts[contactParts.length - 1] : ""
-
   activityParties.push({
     "@_SeqNum": String(tcPartySeq),
     "fc2:ActivityPartyTypeCode": "37",
     "fc2:PartyName": {
       "@_SeqNum": String(tcNameSeq),
       "fc2:PartyNameTypeCode": "L",
-      "fc2:RawEntityIndividualLastName": contactLast,
-      "fc2:RawIndividualFirstName": contactFirst,
+      "fc2:RawPartyFullName": transmitter.contactName,
     },
   })
 
@@ -383,7 +376,7 @@ export async function generateFincenXml(
       "fc2:PartyIdentification": {
         "@_SeqNum": String(firmIdSeq),
         "fc2:PartyIdentificationNumberText": preparer.firmEin ?? "",
-        "fc2:PartyIdentificationTypeCode": "4",
+        "fc2:PartyIdentificationTypeCode": "2",
       },
     })
   }
@@ -408,16 +401,29 @@ export async function generateFincenXml(
 
     const accountSeq = seq.next()
 
+    // Build account element step-by-step to maintain schema element order
+    // and conditionally include/omit fields
     const accountElement: Record<string, unknown> = {
       "@_SeqNum": String(accountSeq),
-      "fc2:AccountMaximumValueAmountText": String(maxValueUsd),
-      "fc2:AccountNumberText": decryptedAccountNumber,
-      "fc2:AccountTypeCode": ACCOUNT_TYPE_CODE[fa.accountType],
-      "fc2:EFilingAccountTypeCode": getEFilingAccountTypeCode(
-        fa.ownershipType,
-        fa.isJointlyOwned
-      ),
     }
+
+    // Only emit amount when value is known (conflicts with UnknownMaximumValueIndicator)
+    if (!ray.isValueUnknown) {
+      accountElement["fc2:AccountMaximumValueAmountText"] = String(maxValueUsd)
+    }
+
+    accountElement["fc2:AccountNumberText"] = decryptedAccountNumber
+    accountElement["fc2:AccountTypeCode"] = ACCOUNT_TYPE_CODE[fa.accountType]
+
+    // Emit OtherAccountTypeText when AccountTypeCode is 999 (OTHER)
+    if (fa.accountType === "OTHER" && fa.accountTypeDescription) {
+      accountElement["fc2:OtherAccountTypeText"] = fa.accountTypeDescription
+    }
+
+    accountElement["fc2:EFilingAccountTypeCode"] = getEFilingAccountTypeCode(
+      fa.ownershipType,
+      fa.isJointlyOwned
+    )
 
     // Add unknown value indicator if value is unknown
     if (ray.isValueUnknown) {
@@ -430,6 +436,19 @@ export async function generateFincenXml(
     const fiAddrSeq = seq.next()
     type41Count++
 
+    // Build FI address step-by-step to maintain schema element order
+    // (RawStateCodeText must come between RawCountryCodeText and RawStreetAddress1Text)
+    const fiAddress: Record<string, unknown> = {
+      "@_SeqNum": String(fiAddrSeq),
+      "fc2:RawCityText": fa.institutionAddressCity ?? "",
+      "fc2:RawCountryCodeText": fa.institutionAddressCountry ?? "",
+    }
+    if (fa.institutionAddressState) {
+      fiAddress["fc2:RawStateCodeText"] = fa.institutionAddressState
+    }
+    fiAddress["fc2:RawStreetAddress1Text"] = fa.institutionAddressStreet ?? ""
+    fiAddress["fc2:RawZIPCode"] = fa.institutionAddressPostal ?? ""
+
     accountElement["fc2:Party"] = {
       "@_SeqNum": String(fiPartySeq),
       "fc2:ActivityPartyTypeCode": "41",
@@ -438,13 +457,7 @@ export async function generateFincenXml(
         "fc2:PartyNameTypeCode": "L",
         "fc2:RawPartyFullName": fa.institutionName,
       },
-      "fc2:Address": {
-        "@_SeqNum": String(fiAddrSeq),
-        "fc2:RawCityText": fa.institutionAddressCity ?? "",
-        "fc2:RawCountryCodeText": fa.institutionAddressCountry ?? "",
-        "fc2:RawStreetAddress1Text": fa.institutionAddressStreet ?? "",
-        "fc2:RawZIPCode": fa.institutionAddressPostal ?? "",
-      },
+      "fc2:Address": fiAddress,
     }
 
     accountElements.push(accountElement)
@@ -468,10 +481,16 @@ export async function generateFincenXml(
 
   // ForeignAccountActivity (required)
   const faaSeq = seq.next()
-  activity["fc2:ForeignAccountActivity"] = {
+  const faa: Record<string, unknown> = {
     "@_SeqNum": String(faaSeq),
-    "fc2:ReportCalendarYearText": String(filingYear.calendarYear),
   }
+  if (filingYear.has25PlusAccounts) {
+    faa["fc2:ForeignAccountHeldQuantityText"] = String(
+      Math.max(filingYear.reviewedAccountYears.length, 25)
+    )
+  }
+  faa["fc2:ReportCalendarYearText"] = String(filingYear.calendarYear)
+  activity["fc2:ForeignAccountActivity"] = faa
 
   // -----------------------------------------------------------------------
   // 6. Build root element
@@ -652,6 +671,36 @@ export function validateFincenXml(
     if (!/^\d+$/.test(amountValue)) {
       errors.push(
         `Invalid AccountMaximumValueAmountText: "${amountValue}" (must be a non-negative integer)`
+      )
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // 11. Validate no conflicting PreparerFilingSignatureIndicator with ThirdPartyPreparer
+  // -----------------------------------------------------------------------
+
+  if (
+    xml.includes("<fc2:PreparerFilingSignatureIndicator>") &&
+    xml.includes("<fc2:ThirdPartyPreparerIndicator>Y</fc2:ThirdPartyPreparerIndicator>")
+  ) {
+    errors.push(
+      "PreparerFilingSignatureIndicator conflicts with ThirdPartyPreparerIndicator=Y"
+    )
+  }
+
+  // -----------------------------------------------------------------------
+  // 12. Validate UnknownMaximumValueIndicator not paired with amount
+  // -----------------------------------------------------------------------
+
+  const accountBlocks = xml.split("<fc2:Account ")
+  for (let i = 1; i < accountBlocks.length; i++) {
+    const block = accountBlocks[i].split("</fc2:Account>")[0] ?? ""
+    if (
+      block.includes("<fc2:UnknownMaximumValueIndicator>Y</fc2:UnknownMaximumValueIndicator>") &&
+      block.includes("<fc2:AccountMaximumValueAmountText>")
+    ) {
+      errors.push(
+        "Account has both UnknownMaximumValueIndicator=Y and AccountMaximumValueAmountText"
       )
     }
   }
