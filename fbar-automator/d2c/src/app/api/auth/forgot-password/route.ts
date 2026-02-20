@@ -27,15 +27,9 @@ export async function POST(req: NextRequest) {
     });
 
     if (user) {
-      // Clean up expired and used tokens for this user
+      // Delete ALL existing tokens for this user before creating a new one
       await prisma.passwordResetToken.deleteMany({
-        where: {
-          userId: user.id,
-          OR: [
-            { expiresAt: { lt: new Date() } },
-            { used: true },
-          ],
-        },
+        where: { userId: user.id },
       });
 
       // Generate reset token (raw token to send in email)

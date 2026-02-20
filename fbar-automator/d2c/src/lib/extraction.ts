@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk"
-import * as XLSX from "xlsx"
+import ExcelJS from "exceljs"
 import { downloadFile } from "./s3"
 import { EXTRACTION_SYSTEM_PROMPT, EXTRACTION_USER_PROMPT } from "./prompts"
 import type { ExtractionResult, ExtractionResponse } from "@/types/extraction"
@@ -61,12 +61,18 @@ function convertCsvToText(buffer: Buffer): string {
   return `CSV Bank Statement Data:\n\n${buffer.toString("utf-8")}`
 }
 
-function convertExcelToText(buffer: Buffer): string {
-  const workbook = XLSX.read(buffer, { type: "buffer", cellDates: true })
+export async function convertExcelToText(buffer: Buffer): Promise<string> {
+  const workbook = new ExcelJS.Workbook()
+  await workbook.xlsx.load(buffer as unknown as ArrayBuffer)
   const sections: string[] = []
-  for (const name of workbook.SheetNames) {
-    const csv = XLSX.utils.sheet_to_csv(workbook.Sheets[name], { blankrows: false })
-    if (csv.trim()) sections.push(`Sheet: ${name}\n${csv}`)
+  for (const worksheet of workbook.worksheets) {
+    const rows: string[] = []
+    worksheet.eachRow({ includeEmpty: false }, (row) => {
+      const cells = row.values as (string | number | null | undefined)[]
+      // row.values is 1-indexed (index 0 is undefined), so slice(1)
+      rows.push(cells.slice(1).map(v => v != null ? String(v) : "").join(","))
+    })
+    if (rows.length > 0) sections.push(`Sheet: ${worksheet.name}\n${rows.join("\n")}`)
   }
   return `Excel Bank Statement Data:\n\n${sections.join("\n\n")}`
 }
@@ -108,7 +114,7 @@ export async function extractFromStatement(
     if (isTabular) {
       const textContent = mediaType === "text/csv"
         ? convertCsvToText(fileBuffer)
-        : convertExcelToText(fileBuffer)
+        : await convertExcelToText(fileBuffer)
       documentContentBlock = { type: "text", text: textContent }
     } else if (isPdf) {
       const base64Data = fileBuffer.toString("base64")

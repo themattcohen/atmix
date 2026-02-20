@@ -24,6 +24,7 @@ export interface ExtractedAccount {
   account_number: string
   account_type: "bank" | "securities" | "other"
   account_type_description: string | null
+  ownership_type?: "financial_interest" | "signature_authority" | "both" | null
   currency: string // ISO 4217
   statement_period: {
     start_date: string // YYYY-MM-DD

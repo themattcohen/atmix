@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { signupSchema } from "@/lib/validation";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    // Trim and normalize email before Zod validation so whitespace-padded emails pass
+    if (body && typeof body.email === "string") {
+      body.email = body.email.trim();
+    }
     const parsed = signupSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -21,6 +26,7 @@ export async function POST(req: NextRequest) {
     // Always hash password to prevent timing-based enumeration
     const passwordHash = await bcrypt.hash(password, 12);
 
+    let userCreated = false;
     try {
       await prisma.user.create({
         data: {
@@ -35,6 +41,7 @@ export async function POST(req: NextRequest) {
           utmTerm: utmTerm || null,
         },
       });
+      userCreated = true;
     } catch (err: unknown) {
       // Unique constraint = email exists. Fall through to return same response
       if (err instanceof Error && err.message.includes("Unique constraint")) {
@@ -42,6 +49,13 @@ export async function POST(req: NextRequest) {
       } else {
         throw err; // Re-throw unexpected errors to be caught by outer catch
       }
+    }
+
+    // Fire-and-forget welcome email — non-blocking, signup succeeds even if email fails
+    if (userCreated) {
+      sendWelcomeEmail(email, { firstName }).catch((err) => {
+        console.error("Welcome email failed:", err instanceof Error ? err.message : "Unknown error");
+      });
     }
 
     // Always return identical response regardless of whether user was created or already existed

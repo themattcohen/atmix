@@ -87,8 +87,21 @@ export async function generateForm114a(data: Form114aData): Promise<{ buffer: Bu
     doc.setFont("courier", "italic");
     doc.text(data.signatureData, 25, y + 2);
   } else {
-    doc.setFontSize(10);
-    doc.text("[Digital signature on file]", 25, y + 2);
+    // Drawn signature: embed base64 PNG into PDF
+    try {
+      doc.addImage(
+        `data:image/png;base64,${data.signatureData}`,
+        "PNG",
+        25,       // x position
+        y - 8,    // y position (above the signature line)
+        50,       // width (mm)
+        15        // height (mm)
+      );
+    } catch {
+      // Fallback if image is malformed
+      doc.setFontSize(10);
+      doc.text("[Digital signature on file]", 25, y + 2);
+    }
   }
 
   y += 15;

@@ -21,6 +21,7 @@ IMPORTANT RULES:
 - For currency, use the ISO 4217 code (e.g., "EUR", "JPY", "GBP").
 - For dates, use YYYY-MM-DD format.
 - If the document shows only transactions with no explicit balance, set document_metadata.is_transaction_only to true and add a warning.
+- For ownership_type, determine whether the filer has a financial interest in the account, signature authority over it, or both. If the document does not indicate the type of ownership, return null (default to FINANCIAL_INTEREST in downstream processing).
 
 Return your response as valid JSON matching this exact schema:
 {
@@ -37,6 +38,7 @@ Return your response as valid JSON matching this exact schema:
       "account_number": "string",
       "account_type": "bank | securities | other",
       "account_type_description": "string or null (required if type is other)",
+      "ownership_type": "FINANCIAL_INTEREST | SIGNATURE_AUTHORITY | BOTH | null (type of account ownership - FINANCIAL_INTEREST if the filer has a financial interest, SIGNATURE_AUTHORITY if they only have signing authority, BOTH if both apply, null if unable to determine)",
       "currency": "ISO 4217 code",
       "statement_period": {
         "start_date": "YYYY-MM-DD",

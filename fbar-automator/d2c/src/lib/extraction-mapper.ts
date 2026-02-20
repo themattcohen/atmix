@@ -16,6 +16,17 @@ function mapAccountType(type: "bank" | "securities" | "other"): "BANK" | "SECURI
   }
 }
 
+function mapOwnershipType(type?: string | null): "FINANCIAL_INTEREST" | "SIGNATURE_AUTHORITY" | "BOTH" {
+  if (!type) return "FINANCIAL_INTEREST";
+  const normalized = type.toLowerCase().trim();
+  switch (normalized) {
+    case "signature_authority": return "SIGNATURE_AUTHORITY";
+    case "both": return "BOTH";
+    case "financial_interest": return "FINANCIAL_INTEREST";
+    default: return "FINANCIAL_INTEREST";
+  }
+}
+
 export function mapExtractedAccounts(
   accounts: ExtractedAccount[],
   calendarYear: number
@@ -34,7 +45,7 @@ export function mapExtractedAccounts(
       institutionName: extracted.bank_name || "Unknown Institution",
       accountNumber: extracted.account_number || "",
       accountType: mapAccountType(extracted.account_type),
-      ownershipType: "FINANCIAL_INTEREST",
+      ownershipType: mapOwnershipType(extracted.ownership_type),
       countryCode: extracted.bank_address.country || "",
       currencyCode: extracted.currency || "",
       maxValueLocal: extracted.max_balance?.amount ?? 0,

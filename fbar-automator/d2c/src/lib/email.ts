@@ -146,3 +146,74 @@ export async function sendPasswordResetEmail(
     `,
   });
 }
+
+export async function sendWelcomeEmail(
+  to: string,
+  data: { firstName: string }
+): Promise<void> {
+  await getResend().emails.send({
+    from: fromEmail,
+    to,
+    subject: "Welcome to FBAR Direct",
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #112e51; padding: 24px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">FBAR Direct</h1>
+        </div>
+        <div style="padding: 32px 24px;">
+          <h2 style="color: #112e51;">Welcome, ${escapeHtml(data.firstName)}!</h2>
+          <p>Your FBAR Direct account has been created. You can now file your Report of Foreign Bank and Financial Accounts (FBAR) with FinCEN.</p>
+          <p><strong>What's next?</strong></p>
+          <ol>
+            <li>Complete your personal information</li>
+            <li>Add your foreign accounts</li>
+            <li>Review and sign your filing</li>
+          </ol>
+          <p style="color: #666; font-size: 14px;">Questions? Reply to this email.</p>
+        </div>
+        <div style="background: #f5f5f5; padding: 16px 24px; font-size: 12px; color: #666; text-align: center;">
+          <p>FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S. government agency.</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
+function isPermanentError(err: unknown): boolean {
+  const status = (err as Record<string, unknown>)?.status;
+  return typeof status === "number" && status >= 400 && status < 500;
+}
+
+export async function sendEmailWithRetry(
+  fn: () => Promise<void>,
+  options?: { maxRetries?: number; backoffMs?: number }
+): Promise<void> {
+  const maxRetries = options?.maxRetries ?? 3;
+  const backoffMs = options?.backoffMs ?? 1000;
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      await fn();
+      return;
+    } catch (err) {
+      lastError = err;
+
+      // Permanent error (4xx) — don't retry
+      if (isPermanentError(err)) {
+        throw err;
+      }
+
+      // Last attempt — throw without waiting
+      if (attempt === maxRetries) {
+        throw err;
+      }
+
+      // Exponential backoff before next retry
+      const delay = backoffMs * Math.pow(2, attempt);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+}

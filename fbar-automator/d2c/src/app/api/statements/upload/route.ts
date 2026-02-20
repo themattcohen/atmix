@@ -7,6 +7,17 @@ import { validateFile, validateMagicBytes, normalizeMimeType, getFileExtension }
 import { extractFromStatement } from "@/lib/extraction";
 import { mapExtractedAccounts } from "@/lib/extraction-mapper";
 
+function sanitizeFileName(name: string): string {
+  if (!name) return `upload_${Date.now()}`;
+  // Remove null bytes, path traversal, and dangerous characters
+  return name
+    .replace(/\0/g, "")           // null bytes
+    .replace(/\.\./g, "")         // path traversal
+    .replace(/[/\\]/g, "")        // path separators
+    .replace(/[<>:"|?*]/g, "")    // Windows reserved chars
+    .trim() || `upload_${Date.now()}`;
+}
+
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
@@ -77,7 +88,7 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
         filingYearId,
         filePath: s3Key,
-        fileName: file.name,
+        fileName: sanitizeFileName(file.name),
         fileType: normalizedType,
         fileSizeBytes: file.size,
         extractionStatus: "PENDING",
