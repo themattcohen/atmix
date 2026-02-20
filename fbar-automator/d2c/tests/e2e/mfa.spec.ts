@@ -90,7 +90,7 @@ test.describe("MFA Flows (P5-3)", () => {
 
   // ── MFA Verification on Login ──────────────────────────────────────────────
 
-  test("P5-3: login with MFA enabled redirects to /mfa-verify", async ({ page }) => {
+  test.skip("P5-3: login with MFA enabled redirects to /mfa-verify", async ({ page }) => {
     // IMPLEMENTATION NEEDED: This test requires a user with MFA already enabled.
     // Either seed such a user or enable MFA via setup flow first.
     //
@@ -118,12 +118,9 @@ test.describe("MFA Flows (P5-3)", () => {
     // Should see "Use recovery code" link
     // const recoveryLink = page.locator("text=recovery code");
     // await expect(recoveryLink).toBeVisible();
-
-    // Placeholder until MFA-enabled test user is set up
-    expect(true).toBe(true);
   });
 
-  test("P5-3: entering correct TOTP on /mfa-verify redirects to app", async ({ page }) => {
+  test.skip("P5-3: entering correct TOTP on /mfa-verify redirects to app", async ({ page }) => {
     // IMPLEMENTATION NEEDED: login as MFA-enabled user, enter correct TOTP
     //
     // Steps:
@@ -137,11 +134,9 @@ test.describe("MFA Flows (P5-3)", () => {
     // await page.fill("#mfa-token", validTotpToken);
     // await page.click('button[type="submit"]');
     // await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
-
-    expect(true).toBe(true);
   });
 
-  test("P5-3: entering incorrect TOTP on /mfa-verify shows error", async ({ page }) => {
+  test.skip("P5-3: entering incorrect TOTP on /mfa-verify shows error", async ({ page }) => {
     // IMPLEMENTATION NEEDED: login as MFA-enabled user, enter wrong TOTP
     //
     // await loginAsTestUser(page, "mfa-user@test.com", "MfaTestPassword1!");
@@ -150,13 +145,11 @@ test.describe("MFA Flows (P5-3)", () => {
     // await page.click('button[type="submit"]');
     // await expect(page.locator(".text-red-600, .bg-red-50, [role='alert']")).toBeVisible();
     // await expect(page).toHaveURL(/\/mfa-verify/); // stays on page
-
-    expect(true).toBe(true);
   });
 
   // ── Recovery Code Usage ────────────────────────────────────────────────────
 
-  test("P5-3: using recovery code on /mfa-verify succeeds", async ({ page }) => {
+  test.skip("P5-3: using recovery code on /mfa-verify succeeds", async ({ page }) => {
     // IMPLEMENTATION NEEDED: login as MFA-enabled user, use recovery code
     //
     // Steps:
@@ -172,11 +165,9 @@ test.describe("MFA Flows (P5-3)", () => {
     // await page.fill("#recovery-code", validRecoveryCode);
     // await page.click('button[type="submit"]');
     // await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 15000 });
-
-    expect(true).toBe(true);
   });
 
-  test("P5-3: using invalid recovery code on /mfa-verify shows error", async ({ page }) => {
+  test.skip("P5-3: using invalid recovery code on /mfa-verify shows error", async ({ page }) => {
     // IMPLEMENTATION NEEDED:
     //
     // await loginAsTestUser(page, "mfa-user@test.com", "MfaTestPassword1!");
@@ -186,13 +177,11 @@ test.describe("MFA Flows (P5-3)", () => {
     // await page.click('button[type="submit"]');
     // await expect(page.locator(".text-red-600, .bg-red-50, [role='alert']")).toBeVisible();
     // await expect(page).toHaveURL(/\/mfa-verify/);
-
-    expect(true).toBe(true);
   });
 
   // ── MFA Disable Flow ───────────────────────────────────────────────────────
 
-  test("P5-3: disabling MFA on /settings/security requires TOTP confirmation", async ({ page }) => {
+  test.skip("P5-3: disabling MFA on /settings/security requires TOTP confirmation", async ({ page }) => {
     // IMPLEMENTATION NEEDED: login as MFA-enabled user (after MFA verify),
     // navigate to settings, disable MFA
     //
@@ -225,8 +214,6 @@ test.describe("MFA Flows (P5-3)", () => {
     // await expect(page.locator("text=MFA has been disabled")).toBeVisible({ timeout: 5000 });
     // const enableBtn = page.locator("button:has-text('Enable'), button:has-text('Set Up')");
     // await expect(enableBtn).toBeVisible();
-
-    expect(true).toBe(true);
   });
 
   // ── Non-MFA User ───────────────────────────────────────────────────────────
@@ -240,19 +227,15 @@ test.describe("MFA Flows (P5-3)", () => {
     await expect(page).toHaveURL(/\/(threshold|dashboard|personal|accounts|review|sign|payment|confirmation)/);
   });
 
-  test("P5-3: non-MFA user accessing /mfa-verify directly -> redirect away", async ({ page }) => {
+  test.skip("P5-3: non-MFA user accessing /mfa-verify directly -> redirect away", async ({ page }) => {
     // IMPLEMENTATION NEEDED: /mfa-verify should only be accessible when
     // MFA is pending. Non-MFA users should be redirected away.
-    await loginAsTestUser(page);
-
-    await page.goto("/mfa-verify");
-
+    // await loginAsTestUser(page);
+    // await page.goto("/mfa-verify");
     // Should redirect to threshold/dashboard since MFA is not enabled
     // IMPLEMENTATION NEEDED: verify redirect behavior
     // await page.waitForURL(/\/(threshold|dashboard)/, { timeout: 10000 });
     // await expect(page).not.toHaveURL(/\/mfa-verify/);
-
-    expect(true).toBe(true);
   });
 
   // ── Settings Page Access ───────────────────────────────────────────────────

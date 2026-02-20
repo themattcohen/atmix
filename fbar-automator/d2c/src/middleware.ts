@@ -42,6 +42,8 @@ const AUTH_RATE_LIMIT_PATHS = [
   "/api/auth/forgot-password",
   "/api/auth/reset-password",
   "/api/auth/callback",
+  "/api/auth/mfa/verify",
+  "/api/auth/mfa/recovery",
 ];
 
 const authRequiredPrefixes = [

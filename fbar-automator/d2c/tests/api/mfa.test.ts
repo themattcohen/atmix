@@ -10,6 +10,24 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
+// ---------------------------------------------------------------------------
+// S5-5: Mock encrypt/decrypt so MFA secrets are stored/read in passthrough
+// mode during tests (no real key required in test environment).
+// ---------------------------------------------------------------------------
+vi.mock("@/lib/encryption", () => ({
+  encrypt: vi.fn((plaintext: string) => `enc:${plaintext}`),
+  decrypt: vi.fn((ciphertext: string) => {
+    if (ciphertext.startsWith("enc:")) return ciphertext.slice(4);
+    // Unencrypted value written directly by test setup — return as-is
+    return ciphertext;
+  }),
+  safeDecrypt: vi.fn((ciphertext: string | null | undefined) => {
+    if (!ciphertext) return "";
+    if (ciphertext.startsWith("enc:")) return ciphertext.slice(4);
+    return ciphertext;
+  }),
+}));
+
 import { auth } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
@@ -89,6 +107,18 @@ afterAll(async () => {
 
 afterEach(async () => {
   vi.resetAllMocks();
+
+  // Re-apply the encryption mock after vi.resetAllMocks() so subsequent tests
+  // still have the passthrough behaviour.
+  const { encrypt, decrypt, safeDecrypt } = await import("@/lib/encryption");
+  (encrypt as ReturnType<typeof vi.fn>).mockImplementation((s: string) => `enc:${s}`);
+  (decrypt as ReturnType<typeof vi.fn>).mockImplementation((s: string) =>
+    s.startsWith("enc:") ? s.slice(4) : s
+  );
+  (safeDecrypt as ReturnType<typeof vi.fn>).mockImplementation((s: string | null | undefined) => {
+    if (!s) return "";
+    return s.startsWith("enc:") ? s.slice(4) : s;
+  });
 
   // Reset MFA state on the user between tests
   await prisma.user.update({
@@ -178,6 +208,26 @@ describe("POST /api/auth/mfa/setup (P5-3)", () => {
     expect(res.status).toBe(400);
     expect(json.error).toMatch(/already enabled/i);
   });
+
+  // ---------------------------------------------------------------------------
+  // 33-B: Double-call guard
+  // ---------------------------------------------------------------------------
+  it("33-B: setup when mfaSecret already set but MFA not yet enabled -> 409 (in-progress guard)", async () => {
+    // Simulate a partial setup: secret stored but MFA not yet verified/enabled
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: false, mfaSecret: "JBSWY3DPEHPK3PXP" },
+    });
+
+    mockAuth(testUserId);
+
+    const req = makeRequest("/api/auth/mfa/setup");
+    const res = await mfaSetup(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(409);
+    expect(json.error).toMatch(/already in progress/i);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -186,11 +236,12 @@ describe("POST /api/auth/mfa/setup (P5-3)", () => {
 
 describe("POST /api/auth/mfa/verify (P5-3)", () => {
   it("P5-3: correct TOTP token -> 200 success + sets mfaEnabled and mfaVerifiedAt", async () => {
-    // Setup: store a known mfaSecret on the user
+    // Setup: store a known mfaSecret on the user (passthrough encrypted form)
     const { secret } = generateSecret(TEST_EMAIL);
     await prisma.user.update({
       where: { id: testUserId },
-      data: { mfaSecret: secret },
+      // Store as enc:<secret> to match what the route's encrypt() mock produces
+      data: { mfaSecret: `enc:${secret}` },
     });
 
     mockAuth(testUserId);
@@ -213,10 +264,10 @@ describe("POST /api/auth/mfa/verify (P5-3)", () => {
   });
 
   it("P5-3: incorrect TOTP token -> 400", async () => {
-    // Set up user with mfaSecret first
+    // Set up user with mfaSecret first (passthrough encrypted form)
     await prisma.user.update({
       where: { id: testUserId },
-      data: { mfaSecret: "JBSWY3DPEHPK3PXP" },
+      data: { mfaSecret: "enc:JBSWY3DPEHPK3PXP" },
     });
 
     mockAuth(testUserId);
@@ -264,6 +315,32 @@ describe("POST /api/auth/mfa/verify (P5-3)", () => {
     expect(res.status).toBe(400);
     expect(json.error).toMatch(/setup|secret|not configured|not started/i);
   });
+
+  // ---------------------------------------------------------------------------
+  // S5-8: TOTP per-user rate limit
+  // ---------------------------------------------------------------------------
+  it("S5-8: 6th TOTP attempt from same user within 5 minutes -> 429", async () => {
+    // Use a dedicated user ID that has never been rate-limited to avoid
+    // cross-test contamination from the shared module-level Map.
+    const rateLimitUserId = `rate-limit-test-${Date.now()}`;
+    mockAuth(rateLimitUserId);
+
+    // Make 5 requests (each allowed but fail on bad token — that's fine,
+    // the rate limit check runs before DB lookup).
+    for (let i = 0; i < 5; i++) {
+      // re-mock auth for each call (resetAllMocks is not called mid-test)
+      mockAuth(rateLimitUserId);
+      await mfaVerify(makeRequest("/api/auth/mfa/verify", { token: "000000" }));
+    }
+
+    // 6th attempt should be rate-limited
+    mockAuth(rateLimitUserId);
+    const res = await mfaVerify(makeRequest("/api/auth/mfa/verify", { token: "000000" }));
+    const json = await res.json();
+
+    expect(res.status).toBe(429);
+    expect(json.error).toMatch(/too many|rate limit/i);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -272,11 +349,11 @@ describe("POST /api/auth/mfa/verify (P5-3)", () => {
 
 describe("POST /api/auth/mfa/disable (P5-3)", () => {
   it("P5-3: correct TOTP confirmation -> 200 + disables MFA", async () => {
-    // Enable MFA on user first with a known secret
+    // Enable MFA on user first with a known secret (passthrough encrypted form)
     const { secret } = generateSecret(TEST_EMAIL);
     await prisma.user.update({
       where: { id: testUserId },
-      data: { mfaEnabled: true, mfaSecret: secret, mfaVerifiedAt: new Date() },
+      data: { mfaEnabled: true, mfaSecret: `enc:${secret}`, mfaVerifiedAt: new Date() },
     });
 
     mockAuth(testUserId);
@@ -300,10 +377,10 @@ describe("POST /api/auth/mfa/disable (P5-3)", () => {
   });
 
   it("P5-3: incorrect TOTP confirmation -> 400 (MFA stays enabled)", async () => {
-    // Enable MFA on user first
+    // Enable MFA on user first (passthrough encrypted form)
     await prisma.user.update({
       where: { id: testUserId },
-      data: { mfaEnabled: true, mfaSecret: "JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
     });
 
     mockAuth(testUserId);
@@ -357,7 +434,7 @@ describe("POST /api/auth/mfa/recovery (P5-3)", () => {
     // Enable MFA and create recovery codes
     await prisma.user.update({
       where: { id: testUserId },
-      data: { mfaEnabled: true, mfaSecret: "JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
     });
     const codes = generateRecoveryCodes(10);
     await prisma.mfaRecoveryCode.createMany({
@@ -408,7 +485,7 @@ describe("POST /api/auth/mfa/recovery (P5-3)", () => {
     // Ensure MFA is enabled so recovery route is active
     await prisma.user.update({
       where: { id: testUserId },
-      data: { mfaEnabled: true, mfaSecret: "JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
     });
 
     const req = makeRequest("/api/auth/mfa/recovery", {
@@ -474,6 +551,30 @@ describe("POST /api/auth/mfa/recovery (P5-3)", () => {
     const updated = await prisma.mfaRecoveryCode.findUnique({ where: { id: record.id } });
     expect(updated!.used).toBe(true);
     expect(updated!.usedAt).not.toBeNull();
+  });
+
+  // ---------------------------------------------------------------------------
+  // 33-C: Atomic recovery code — second use of the same code must fail
+  // ---------------------------------------------------------------------------
+  it("33-C: atomic recovery — using the same code twice returns error on second use", async () => {
+    mockAuth(testUserId);
+
+    const code = "ATOMIC-TEST99";
+    await prisma.mfaRecoveryCode.create({
+      data: { userId: testUserId, codeHash: hashRecoveryCode(code) },
+    });
+
+    // First use — should succeed
+    mockAuth(testUserId);
+    const res1 = await mfaRecovery(makeRequest("/api/auth/mfa/recovery", { code }));
+    expect(res1.status).toBe(200);
+
+    // Second use — must fail with 400 (code is now marked used)
+    mockAuth(testUserId);
+    const res2 = await mfaRecovery(makeRequest("/api/auth/mfa/recovery", { code }));
+    const json2 = await res2.json();
+    expect(res2.status).toBe(400);
+    expect(json2.error).toMatch(/invalid|already used/i);
   });
 });
 

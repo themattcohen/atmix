@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { generateSecret, generateQrCode, generateRecoveryCodes, hashRecoveryCode } from "@/lib/mfa";
+import { encrypt } from "@/lib/encryption";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,6 +20,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "MFA is already enabled" }, { status: 400 });
     }
 
+    if (user.mfaSecret && !user.mfaEnabled) {
+      return NextResponse.json({ error: "MFA setup already in progress. Complete verification or start over." }, { status: 409 });
+    }
+
     const { secret, otpauthUri } = generateSecret(user.email);
     const qrCode = await generateQrCode(otpauthUri);
     const recoveryCodes = generateRecoveryCodes(10);
@@ -26,7 +31,7 @@ export async function POST(req: NextRequest) {
     // Store the secret (MFA not enabled until verify step)
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { mfaSecret: secret, mfaEnabled: false },
+      data: { mfaSecret: encrypt(secret), mfaEnabled: false },
     });
 
     // Store hashed recovery codes

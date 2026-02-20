@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { personalInfoSchema } from "@/lib/validation";
+import { personalInfoUpdateSchema } from "@/lib/validation";
 import { encrypt, safeDecrypt } from "@/lib/encryption";
 import { Prisma, TINType } from "@prisma/client";
 
@@ -52,7 +52,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
-    const parsed = personalInfoSchema.safeParse(body);
+    const parsed = personalInfoUpdateSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -63,6 +63,11 @@ export async function PUT(req: NextRequest) {
 
     const { firstName, lastName, middleName, suffix, tin, tinType, dateOfBirth, usAddress, phone } = parsed.data;
 
+    // Build update data — only overwrite TIN if a new one was provided
+    const tinUpdate = tin && tin.length > 0
+      ? { tin: encrypt(tin.replace(/-/g, "")), tinType: tinType as TINType }
+      : {};
+
     // Use updateMany with userId filter for defense-in-depth
     const result = await prisma.user.updateMany({
       where: { id: session.user.id },
@@ -71,8 +76,7 @@ export async function PUT(req: NextRequest) {
         lastName,
         middleName: middleName || null,
         suffix: suffix || null,
-        tin: encrypt(tin.replace(/-/g, "")),
-        tinType: tinType as TINType,
+        ...tinUpdate,
         dateOfBirth: new Date(dateOfBirth),
         usAddress: usAddress as unknown as Prisma.InputJsonValue,
         phone: phone || null,
@@ -88,8 +92,7 @@ export async function PUT(req: NextRequest) {
       data: {
         firstName,
         lastName,
-        tinLast4: tin.replace(/-/g, "").slice(-4),
-        tinType,
+        ...(tin && tin.length > 0 ? { tinLast4: tin.replace(/-/g, "").slice(-4), tinType } : {}),
       },
     });
   } catch (error) {

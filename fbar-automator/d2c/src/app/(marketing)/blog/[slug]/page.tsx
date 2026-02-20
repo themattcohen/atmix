@@ -79,6 +79,7 @@ export default async function BlogPostPage({
         <div className="prose prose-gray max-w-none">
           {/* MDX content will be rendered here in the future */}
           {/* For now, display raw content */}
+          {/* Content is sanitized in lib/blog.ts via sanitize-html */}
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
 

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { verifyTotp } from "@/lib/mfa";
+import { decrypt } from "@/lib/encryption";
 
 const disableSchema = z.object({
   token: z.string().min(1).max(10),
@@ -30,7 +31,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "MFA configuration error" }, { status: 400 });
     }
 
-    const isValid = verifyTotp(user.mfaSecret, parsed.data.token);
+    const decryptedSecret = decrypt(user.mfaSecret);
+    const isValid = verifyTotp(decryptedSecret, parsed.data.token);
     if (!isValid) {
       return NextResponse.json({ error: "Invalid TOTP token" }, { status: 400 });
     }

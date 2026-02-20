@@ -23,23 +23,16 @@ export async function POST(req: NextRequest) {
 
     const codeHash = hashRecoveryCode(parsed.data.code);
 
-    const recoveryCode = await prisma.mfaRecoveryCode.findFirst({
-      where: { userId: session.user.id, codeHash },
-    });
-
-    if (!recoveryCode) {
-      return NextResponse.json({ error: "Invalid recovery code" }, { status: 400 });
-    }
-
-    if (recoveryCode.used) {
-      return NextResponse.json({ error: "Recovery code already used" }, { status: 400 });
-    }
-
-    // Mark code as used
-    await prisma.mfaRecoveryCode.update({
-      where: { id: recoveryCode.id },
+    // 33-C: Atomic findFirst+update replaced with a single updateMany to prevent
+    // TOCTOU race conditions where two concurrent requests could both pass the
+    // "not used" check before either marks the code as used.
+    const result = await prisma.mfaRecoveryCode.updateMany({
+      where: { userId: session.user.id, codeHash, used: false },
       data: { used: true, usedAt: new Date() },
     });
+    if (result.count === 0) {
+      return NextResponse.json({ error: "Invalid or already used recovery code" }, { status: 400 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

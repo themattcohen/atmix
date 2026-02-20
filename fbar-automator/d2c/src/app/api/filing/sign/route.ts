@@ -33,9 +33,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Filing year not found" }, { status: 404 });
     }
 
-    if (!["IN_PROGRESS", "REVIEWED"].includes(filingYear.status)) {
+    if (filingYear.status !== "REVIEWED") {
       return NextResponse.json(
-        { error: "Filing cannot be signed in its current state" },
+        { error: "Filing must be in REVIEWED status before signing" },
         { status: 400 }
       );
     }

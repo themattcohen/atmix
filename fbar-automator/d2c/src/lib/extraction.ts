@@ -6,6 +6,7 @@ import type { ExtractionResult, ExtractionResponse } from "@/types/extraction"
 
 const MODEL = "claude-sonnet-4-5-20250929"
 const MAX_TOKENS = 16384
+const MAX_EXCEL_ROWS = 5000
 
 const MEDIA_TYPE_MAP: Record<string, string> = {
   pdf: "application/pdf",
@@ -66,16 +67,27 @@ export async function convertExcelToText(buffer: Buffer): Promise<string> {
   const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer
   await workbook.xlsx.load(arrayBuffer)
   const sections: string[] = []
+  let totalRows = 0
+  let truncated = false
   for (const worksheet of workbook.worksheets) {
     const rows: string[] = []
     worksheet.eachRow({ includeEmpty: false }, (row) => {
+      if (totalRows >= MAX_EXCEL_ROWS) {
+        truncated = true
+        return
+      }
       const cells = row.values as (string | number | null | undefined)[]
       // row.values is 1-indexed (index 0 is undefined), so slice(1)
       rows.push(cells.slice(1).map(v => v != null ? String(v) : "").join(","))
+      totalRows++
     })
     if (rows.length > 0) sections.push(`Sheet: ${worksheet.name}\n${rows.join("\n")}`)
   }
-  return `Excel Bank Statement Data:\n\n${sections.join("\n\n")}`
+  let result = `Excel Bank Statement Data:\n\n${sections.join("\n\n")}`
+  if (truncated) {
+    result += `\n\n[Truncated: Excel file exceeded ${MAX_EXCEL_ROWS} rows. Some data may be missing.]`
+  }
+  return result
 }
 
 export async function extractFromStatement(

@@ -194,4 +194,52 @@ describe("P7-2: Excel extraction with exceljs (parity with xlsx library)", () =>
     expect(result).toContain("999999.99");
     expect(result).toContain("1234567890");
   });
+
+  it("37: Excel files exceeding 5000 rows are truncated with a warning message", async () => {
+    if (!convertExcelToText) {
+      console.warn("convertExcelToText not yet exported — skipping");
+      return;
+    }
+
+    // Create a workbook with 5100 data rows (exceeds MAX_EXCEL_ROWS = 5000)
+    const header = ["Date", "Description", "Amount"];
+    const rows: (string | number)[][] = [header];
+    for (let i = 0; i < 5100; i++) {
+      rows.push([`2024-01-01`, `Row ${i + 1}`, i * 10]);
+    }
+
+    const buffer = await createXlsxBuffer(rows);
+    const result = await convertExcelToText(buffer);
+
+    // Should include truncation notice
+    expect(result).toContain("[Truncated: Excel file exceeded 5000 rows. Some data may be missing.]");
+
+    // Early rows should be present
+    expect(result).toContain("Row 1");
+
+    // Row 5100 should NOT be present (was cut off)
+    expect(result).not.toContain("Row 5100");
+  });
+
+  it("37: Excel files with exactly 5000 rows are NOT truncated", async () => {
+    if (!convertExcelToText) {
+      console.warn("convertExcelToText not yet exported — skipping");
+      return;
+    }
+
+    // Create a workbook with exactly 5000 data rows (at the limit, not over)
+    const rows: (string | number)[][] = [];
+    for (let i = 0; i < 5000; i++) {
+      rows.push([`Row ${i + 1}`, i]);
+    }
+
+    const buffer = await createXlsxBuffer(rows);
+    const result = await convertExcelToText(buffer);
+
+    // Should NOT include truncation notice
+    expect(result).not.toContain("[Truncated:");
+
+    // Last row should be present
+    expect(result).toContain("Row 5000");
+  });
 });

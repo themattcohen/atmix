@@ -5,8 +5,20 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
+// Mock out heavy dependencies needed by sign route to keep tests unit-level
+vi.mock("@/lib/form114a", () => ({
+  generateForm114a: vi.fn().mockResolvedValue({ key: "form114a/test.pdf", buffer: Buffer.from("%PDF-test") }),
+}));
+
+vi.mock("@/lib/encryption", () => ({
+  encrypt: vi.fn((v: string) => `encrypted:${v}`),
+  decrypt: vi.fn((v: string) => v.replace("encrypted:", "")),
+  safeDecrypt: vi.fn((v: string) => v.replace("encrypted:", "")),
+}));
+
 import { auth } from "@/lib/auth";
 import { POST } from "@/app/api/filing/review/route";
+import { POST as signPOST } from "@/app/api/filing/sign/route";
 import { prisma } from "@/lib/db";
 import { NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
@@ -306,5 +318,55 @@ describe("POST /api/filing/review", () => {
 
     expect(res2.status).toBe(400);
     expect(json2.error).toBe("Filing is in REVIEWED state, expected IN_PROGRESS");
+  });
+});
+
+// ─── S5-3: Sign route — REVIEWED-only status guard ───────────────────────────
+
+function makeSignRequest(body: unknown): NextRequest {
+  return new NextRequest("http://localhost:3000/api/filing/sign", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+describe("POST /api/filing/sign — S5-3: only REVIEWED status is signable", () => {
+  it("S5-3a. IN_PROGRESS filing → 400 'Filing must be in REVIEWED status before signing'", async () => {
+    mockAuth(testUserId);
+
+    // Filing is IN_PROGRESS after afterEach reset
+    const res = await signPOST(makeSignRequest({
+      filingYearId: testFilingId,
+      fullName: "Test User",
+      agreed: true,
+      signatureData: "Test User",
+      signatureType: "typed",
+    }));
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.error).toBe("Filing must be in REVIEWED status before signing");
+  });
+
+  it("S5-3b. SIGNED filing → 400 (not REVIEWED)", async () => {
+    mockAuth(testUserId);
+
+    await prisma.filingYear.update({
+      where: { id: testFilingId },
+      data: { status: "SIGNED" },
+    });
+
+    const res = await signPOST(makeSignRequest({
+      filingYearId: testFilingId,
+      fullName: "Test User",
+      agreed: true,
+      signatureData: "Test User",
+      signatureType: "typed",
+    }));
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.error).toBe("Filing must be in REVIEWED status before signing");
   });
 });
