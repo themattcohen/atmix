@@ -39,7 +39,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Transaction with advisory lock
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await prisma.$transaction(async (tx: any) => {
       // Advisory lock to prevent concurrent imports
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${session.user.id + ':import:' + targetCalendarYear}))`;

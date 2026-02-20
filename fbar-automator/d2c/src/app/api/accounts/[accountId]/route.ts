@@ -78,7 +78,6 @@ export async function PUT(
     if (d.maxValueLocal !== undefined) updateData.maxValueLocal = d.maxValueLocal;
     if (d.isJointAccount !== undefined) updateData.isJointAccount = d.isJointAccount;
     if (d.jointOwnerInfo !== undefined) updateData.jointOwnerInfo = d.jointOwnerInfo || null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (d.institutionAddress !== undefined) updateData.institutionAddress = (d.institutionAddress || null) as any;
 
     const { count } = await prisma.foreignAccount.updateMany({
