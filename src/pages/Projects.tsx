@@ -28,6 +28,15 @@ const projects: Project[] = [
     host: 'atmix.org',
     hostUrl: 'https://atmix.org',
   },
+  {
+    title: 'tonal exporter',
+    description:
+      "Personal tool for exporting workout data from Tonal's undocumented API. Authenticates via their mobile app's OAuth2 flow, syncs incrementally with token caching and retry logic, and outputs structured JSON for analysis.",
+    url: '',
+    lastUpdated: 'February 2026',
+    host: 'local CLI',
+    hostUrl: '',
+  },
 ];
 
 export default function Projects() {
@@ -68,14 +77,18 @@ export default function Projects() {
           {projects.map((project, i) => (
             <article key={i} className="border border-black p-8">
               <h2 className="text-2xl font-bold mb-4">
-                <a
-                  href={project.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:bg-black hover:text-white transition-colors"
-                >
-                  {project.title} &rarr;
-                </a>
+                {project.url ? (
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:bg-black hover:text-white transition-colors"
+                  >
+                    {project.title} &rarr;
+                  </a>
+                ) : (
+                  <span>{project.title}</span>
+                )}
               </h2>
               <p className="leading-relaxed mb-6">{project.description}</p>
               <div className="text-sm text-gray-600 space-y-1">
@@ -83,15 +96,21 @@ export default function Projects() {
                   Last updated: <span className="text-black">{project.lastUpdated}</span>
                 </p>
                 <p>
-                  Hosted on{' '}
-                  <a
-                    href={project.hostUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-black transition-colors"
-                  >
-                    {project.host}
-                  </a>
+                  {project.hostUrl ? (
+                    <>
+                      Hosted on{' '}
+                      <a
+                        href={project.hostUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-black transition-colors"
+                      >
+                        {project.host}
+                      </a>
+                    </>
+                  ) : (
+                    <>{project.host}</>
+                  )}
                 </p>
               </div>
             </article>
