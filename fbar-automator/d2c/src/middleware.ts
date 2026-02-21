@@ -203,11 +203,12 @@ export default auth(async (req) => {
   // Everything else (marketing, blog, country pages, etc.) is public
   // ------------------------------------------------------------------
 
-  // Allow API auth routes, Stripe webhooks, and health
+  // Allow API auth routes, Stripe webhooks, health, and internal test-only endpoints
   if (
     normalizedPath.startsWith("/api/auth/") ||
     normalizedPath === "/api/stripe/webhook" ||
-    normalizedPath === "/api/health"
+    normalizedPath === "/api/health" ||
+    normalizedPath.startsWith("/api/internal/")
   ) {
     return NextResponse.next();
   }

@@ -1,4 +1,5 @@
-import { Page } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
+import { generateTotpToken } from "./totp";
 
 /**
  * Log in as an existing test user.
@@ -69,6 +70,13 @@ export async function completeThreshold(page: Page) {
  * Assumes the user is already on /personal.
  */
 export async function completePersonalInfo(page: Page) {
+  // Wait for the form to be rendered and personal data API to finish loading.
+  // The firstName field is pre-filled from the signup API call; wait until it
+  // has a value so we know React hydration and the GET /api/user fetch are done.
+  await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
+  await expect(page.locator("#firstName")).toHaveValue(/.+/, { timeout: 15000 });
+  await page.waitForTimeout(1000); // settle after API prefill
+
   await page.locator('input[placeholder="XXX-XX-XXXX"]').fill("123456789");
   await page.locator('input[type="date"]').fill("1990-01-15");
   await page.locator('input[placeholder="Street Address"]').fill("123 Test St");
@@ -79,7 +87,7 @@ export async function completePersonalInfo(page: Page) {
     .selectOption("CA");
   await page.locator('input[placeholder="ZIP Code"]').fill("90210");
   await page.click('button[type="submit"]');
-  await page.waitForURL("**/accounts", { timeout: 15000 });
+  await page.waitForURL("**/accounts", { timeout: 30000 });
 }
 
 /**
@@ -152,4 +160,64 @@ export async function resetLockout(
   // This function is now a no-op kept for backward compatibility.
   // If lockout becomes an issue in tests, run:
   //   npx tsx -e "const {prisma} = require('./src/lib/db'); prisma.user.updateMany({where:{email:'${email}'}, data:{failedLoginAttempts:0, lockoutUntil:null}})"
+}
+
+/**
+ * Enable MFA via API for the currently logged-in user.
+ * Requires MFA_TEST_SECRET_OVERRIDE env var to be set on the server.
+ * Returns the recovery codes from setup.
+ *
+ * Note: After this call, the user's tokenVersion is incremented and
+ * subsequent requests may require re-authentication.
+ */
+export async function enableMfaViaApi(
+  page: Page,
+  base32Secret: string
+): Promise<string[]> {
+  const setupResp = await page.request.post("/api/auth/mfa/setup", {
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+  });
+
+  let recoveryCodes: string[] = [];
+  if (setupResp.ok()) {
+    const data = await setupResp.json();
+    recoveryCodes = data.recoveryCodes;
+  } else if (setupResp.status() === 409) {
+    // Setup already in progress — proceed to verify
+  } else {
+    throw new Error(`MFA setup failed: ${setupResp.status()}`);
+  }
+
+  const token = generateTotpToken(base32Secret);
+  const verifyResp = await page.request.post("/api/auth/mfa/verify", {
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    data: { token },
+  });
+
+  if (!verifyResp.ok()) {
+    throw new Error(`MFA verify failed: ${verifyResp.status()}`);
+  }
+
+  return recoveryCodes;
+}
+
+/**
+ * Seed a filing's status directly via test-only API endpoint.
+ * Works in non-production environments only.
+ */
+export async function seedFilingStatus(
+  request: import("@playwright/test").APIRequestContext,
+  filingId: string,
+  status: string,
+  extras?: { bsaId?: string; rejectionReason?: string; submittedAt?: string }
+) {
+  const resp = await request.post("http://127.0.0.1:3001/api/internal/seed-status", {
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+    data: { filingId, status, ...extras },
+  });
+  if (!resp.ok()) {
+    throw new Error(
+      `seedFilingStatus failed: ${resp.status()} ${await resp.text()}`
+    );
+  }
 }

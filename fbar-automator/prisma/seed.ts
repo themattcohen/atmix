@@ -48,6 +48,26 @@ async function main() {
   console.log(`  Admin user: ${adminUser.email} (${adminUser.id})`);
 
   // -------------------------------------------------------------------------
+  // 2b. Preparer User (non-admin test user)
+  //     Password: admin123 (for demo/test purposes only)
+  // -------------------------------------------------------------------------
+  const preparerUser = await prisma.user.upsert({
+    where: { email: "preparer@demo.com" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000011",
+      practiceId: practice.id,
+      email: "preparer@demo.com",
+      name: "Test Preparer",
+      passwordHash: "$2a$10$KO9wZGHTWoK718JKzVMlH.LVzjBPISsPWMb/57pTSDbMasCAUHtza",
+      role: "PREPARER",
+      mfaEnabled: false,
+      emailVerified: new Date(),
+    },
+  });
+  console.log(`  Preparer user: ${preparerUser.email} (${preparerUser.id})`);
+
+  // -------------------------------------------------------------------------
   // 3. Treasury Exchange Rates
   //    Rates are the foreign currency units per 1 USD as published by the
   //    U.S. Treasury for the last day of the calendar year. These are used
