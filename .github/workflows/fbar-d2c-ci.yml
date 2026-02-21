@@ -93,3 +93,45 @@ jobs:
         env:
           DATABASE_URL: "postgresql://test:test@localhost:5432/test"
           NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('fbar-automator/d2c/package-lock.json') }}
+
+      - name: Install Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Seed database
+        run: npx prisma db seed
+        env:
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+
+      - name: Run E2E smoke tests
+        run: npx playwright test marketing.spec.ts gtm-smoke.spec.ts auth.spec.ts
+        env:
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+          NEXTAUTH_SECRET: "test-secret-for-ci"
+          NEXTAUTH_URL: "http://localhost:3001"
+          S3_ENDPOINT: "http://localhost:9000"
+          S3_REGION: "us-east-1"
+          S3_ACCESS_KEY: "minioadmin"
+          S3_SECRET_KEY: "minioadmin"
+          S3_BUCKET: "fbar-direct"
+          NODE_ENV: "production"
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: fbar-automator/d2c/playwright-report/
+          retention-days: 7
