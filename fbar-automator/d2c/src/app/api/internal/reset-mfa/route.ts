@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { loginVerifyAttempts } from "@/app/api/auth/mfa/login-verify/route";
+import { loginVerifyAttempts } from "@/lib/login-verify-rate-limit";
 
 /**
  * Test-only endpoint: clear pending MFA setup state for a user.
