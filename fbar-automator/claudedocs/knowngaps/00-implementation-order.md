@@ -77,13 +77,13 @@ Mostly ops changes. Some code. Independent of each other unless noted.
 ### Phase 3: Filing Pipeline
 **MUST be sequential.** Each step depends on the previous.
 
-| Order | Gap | Effort | Description | Depends On |
-|-------|-----|--------|-------------|------------|
-| 1st   | #2  | M | Treasury exchange rates (copy from B2B, adapt schema) | — |
-| 2nd   | #1  | L | FinCEN XML generation (port from B2B, 6 schema diffs) | Gap #2 |
-| 3rd   | #6  | L | Submission architecture + cron (absorbs Gap #14) | Gap #1 |
+| Order | Gap | Effort | Description | Depends On | Status |
+|-------|-----|--------|-------------|------------|--------|
+| 1st   | #2  | M | Treasury exchange rates (copy from B2B, adapt schema) | — | BLOCKED |
+| ~~2nd~~ | ~~#1~~ | ~~L~~ | ~~FinCEN XML generation (port from B2B, 6 schema diffs)~~ | ~~Gap #2~~ | **DONE** (2026-02-21) |
+| 3rd   | #6  | L | Submission architecture + cron (absorbs Gap #14) | ~~Gap #1~~ Gap #2 | BLOCKED on #2 |
 
-**Estimated total: 12-20 hours**
+**Estimated total: ~~12-20~~ 4-12 hours remaining (Gap #1 complete)**
 
 ### Phase 4: Security Hardening
 Implement as **one coordinated middleware pass**. Internal order matters.

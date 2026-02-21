@@ -1,6 +1,13 @@
 # Gap #01: FinCEN XML Generation
 
-**Severity:** Blocking
+> **STATUS: ✅ DONE** — Completed 2026-02-21
+> Ported from B2B `src/lib/export/fincen-xml.ts` to `d2c/src/lib/fincen-xml.ts` (662 lines).
+> All D2C adaptations applied: self-filed mode (`ThirdPartyPreparerIndicator: "N"`), no party 57/56,
+> env-var transmitter config, D2C Prisma schema (isJointAccount, Json institutionAddress, SSN/ITIN only).
+> Submit route validation gate fixed (`<BSAMessage` → `<fc2:EFilingBatchXML`).
+> Tests: 25 fincen-xml tests + 13 sdtm-submit tests = all passing (498 total suite).
+
+**Severity:** ~~Blocking~~ Resolved
 **Effort:** L (4-8 hours)
 **Depends on:** None (treasury rates are used upstream before XML generation — accounts already have `maxValueUsd` stored)
 

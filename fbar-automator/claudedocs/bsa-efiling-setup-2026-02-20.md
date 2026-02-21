@@ -1,7 +1,7 @@
 # BSA E-Filing Setup & FBAR Batch Testing
 
 **Date**: 2026-02-20
-**Status**: XML validated, awaiting sandbox submission
+**Status**: Sandbox test batch submitted, awaiting acknowledgment
 **Phase**: D2C Phase 4 — FinCEN Pipeline
 
 ---
@@ -414,6 +414,20 @@ PartyName
 
 ---
 
+## Sandbox Submission Confirmation
+
+| Field | Value |
+|-------|-------|
+| **Tracking ID** | T-FBX26-00000047 |
+| **Receive Date/Time** | 02/20/2026, 11:07:57 AM MST |
+| **Submission Type** | FBARXBATCH |
+| **Owner Name** | Matthew Cohen |
+| **Owner Email** | matt@atmix.org |
+| **Filing Name** | TEST FBAR BATCH |
+| **Signed PDF** | `FBARXBATCH_mc.pdf` |
+
+---
+
 ## Timeline
 
 | Date | Event |
@@ -422,8 +436,8 @@ PartyName
 | 2026-02-20 | Analyzed B2B XML code against XSD — found 3 critical bugs |
 | 2026-02-20 | Built standalone test batch generator (`scripts/generate-test-batch.mjs`) |
 | 2026-02-20 | Generated + validated `test-fbar-batch-2025.xml` (26 activities, 51 accounts) |
-| *Pending* | Submit test batch on sandbox via FBARXBatch PDF |
-| *Pending* | Review acknowledgment file, fix errors if any |
+| 2026-02-20 | Fixed 3 bugs in B2B code (`src/lib/export/fincen-xml.ts`) — 62/62 tests pass |
+| 2026-02-20 | Submitted test batch on sandbox — Tracking ID **T-FBX26-00000047** |
+| *Pending* | Review acknowledgment file in Secure Messenger (up to 2 business days) |
 | *~10 days* | Receive production TCC from FinCEN |
-| *Pending* | Fix 3 bugs in B2B code (`src/lib/export/fincen-xml.ts`) |
 | *Pending* | Build D2C XML generation (currently stub at `d2c/src/lib/fincen-xml.ts`) |

@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     const xml = await generateFincenXml(filingYearId);
 
     // Validate XML before sending to FinCEN
-    if (!xml || xml.length < 100 || !xml.includes("<BSAMessage")) {
+    if (!xml || xml.length < 100 || !xml.includes("<fc2:EFilingBatchXML")) {
       // Revert SUBMITTING -> PAID
       await prisma.filingYear.updateMany({
         where: { id: filingYearId, userId: session.user.id, status: "SUBMITTING" },

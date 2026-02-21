@@ -2,7 +2,7 @@
 
 **Severity:** High
 **Effort:** L (4-8 hours)
-**Depends on:** Gap #1 (XML generation), Gap #2 (Treasury rates)
+**Depends on:** ~~Gap #1 (XML generation)~~ ✅ DONE (2026-02-21), Gap #2 (Treasury rates)
 
 ## Problem
 

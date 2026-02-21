@@ -43,8 +43,8 @@ function makeRequest(body: unknown): NextRequest {
 // Valid XML that passes all three validation gates:
 //   1. non-null
 //   2. length >= 100
-//   3. contains "<BSAMessage"
-const VALID_XML = `<?xml version="1.0" encoding="UTF-8"?><BSAMessage>${"x".repeat(100)}</BSAMessage>`;
+//   3. contains "<fc2:EFilingBatchXML"
+const VALID_XML = `<?xml version="1.0" encoding="UTF-8"?><fc2:EFilingBatchXML>${"x".repeat(100)}</fc2:EFilingBatchXML>`;
 
 async function resetFilingToPaid() {
   await prisma.filingYear.update({
@@ -262,9 +262,9 @@ describe("POST /api/sdtm/submit", () => {
     expect(filing!.status).toBe("PAID");
   });
 
-  it("5. generateFincenXml returns string without <BSAMessage → 500 + filing reverts to PAID", async () => {
+  it("5. generateFincenXml returns string without <fc2:EFilingBatchXML → 500 + filing reverts to PAID", async () => {
     mockAuth(testUserId);
-    // Long enough but missing the required <BSAMessage tag
+    // Long enough but missing the required <fc2:EFilingBatchXML tag
     (generateFincenXml as ReturnType<typeof vi.fn>).mockResolvedValue(
       `<?xml version="1.0"?><SomeOtherElement>${"x".repeat(100)}</SomeOtherElement>`
     );
@@ -279,7 +279,7 @@ describe("POST /api/sdtm/submit", () => {
     expect(filing!.status).toBe("PAID");
   });
 
-  it("6. generateFincenXml returns valid XML (>100 chars + contains <BSAMessage) → proceeds to submitBatch", async () => {
+  it("6. generateFincenXml returns valid XML (>100 chars + contains <fc2:EFilingBatchXML) → proceeds to submitBatch", async () => {
     mockAuth(testUserId);
     (generateFincenXml as ReturnType<typeof vi.fn>).mockResolvedValue(VALID_XML);
     (submitBatch as ReturnType<typeof vi.fn>).mockResolvedValue({
