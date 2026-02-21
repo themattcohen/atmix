@@ -4,12 +4,16 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      mfaEnabled?: boolean;
     } & DefaultSession["user"];
+    tokenVersion?: number;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
+    mfaEnabled?: boolean;
+    tokenVersion?: number;
   }
 }

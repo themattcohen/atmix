@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { foreignAccountSchema } from "@/lib/validation";
+import { foreignAccountSchema, calendarYearSchema } from "@/lib/validation";
 import { encrypt } from "@/lib/encryption";
 import { mapAccountToDisplay } from "@/lib/account-mapper";
 import { getRate } from "@/lib/treasury";
@@ -19,11 +19,11 @@ export async function GET(req: NextRequest) {
 
     const where: Prisma.ForeignAccountWhereInput = { userId: session.user.id };
     if (calendarYearParam) {
-      const calendarYear = parseInt(calendarYearParam, 10);
-      if (isNaN(calendarYear)) {
-        return NextResponse.json({ error: "Invalid calendar year" }, { status: 400 });
+      const parsed = calendarYearSchema.safeParse(parseInt(calendarYearParam, 10));
+      if (!parsed.success) {
+        return NextResponse.json({ error: "Invalid calendar year (must be 2010-2030)" }, { status: 400 });
       }
-      where.calendarYear = calendarYear;
+      where.calendarYear = parsed.data;
     }
 
     const accounts = await prisma.foreignAccount.findMany({

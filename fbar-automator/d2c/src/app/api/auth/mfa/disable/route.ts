@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { verifyTotp } from "@/lib/mfa";
 import { decrypt } from "@/lib/encryption";
+import { clearMfaCookieOptions } from "@/lib/mfa-cookie";
 
 const disableSchema = z.object({
   token: z.string().min(1).max(10),
@@ -39,13 +40,16 @@ export async function POST(req: NextRequest) {
 
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { mfaEnabled: false, mfaSecret: null, mfaVerifiedAt: null },
+      data: { mfaEnabled: false, mfaSecret: null, mfaVerifiedAt: null, tokenVersion: { increment: 1 } },
     });
 
     // Delete all recovery codes
     await prisma.mfaRecoveryCode.deleteMany({ where: { userId: session.user.id } });
 
-    return NextResponse.json({ success: true });
+    const clearCookie = clearMfaCookieOptions();
+    const response = NextResponse.json({ success: true });
+    response.cookies.set(clearCookie.name, clearCookie.value, clearCookie.options as any);
+    return response;
   } catch (error) {
     console.error("MFA disable error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

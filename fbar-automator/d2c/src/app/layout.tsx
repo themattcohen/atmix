@@ -57,15 +57,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { headers } = await import("next/headers");
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce") ?? undefined;
+
   return (
     <html lang="en">
       <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} />
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} nonce={nonce} />
         <Suspense fallback={null}>
           <UTMCapture />
         </Suspense>

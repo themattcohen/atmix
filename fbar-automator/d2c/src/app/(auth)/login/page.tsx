@@ -32,7 +32,19 @@ function LoginForm() {
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        router.push(callbackUrl);
+        // Check if user has MFA enabled — redirect to verification page
+        try {
+          const sessionRes = await fetch("/api/auth/session");
+          const sessionData = await sessionRes.json();
+          if (sessionData?.user?.mfaEnabled) {
+            router.push(`/mfa-verify?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+          } else {
+            router.push(callbackUrl);
+          }
+        } catch {
+          // If session check fails, proceed to callbackUrl (middleware will catch MFA)
+          router.push(callbackUrl);
+        }
       }
     } catch {
       setError("An unexpected error occurred");

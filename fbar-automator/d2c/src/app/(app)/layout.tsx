@@ -37,6 +37,9 @@ function AppLayoutInner({ children }: { children: React.ReactNode }) {
             <Link href="/dashboard" className="text-sm text-navy-900 hover:underline font-medium">
               My Filings
             </Link>
+            <Link href="/settings/security" className="text-sm text-navy-900 hover:underline font-medium">
+              Settings
+            </Link>
             <span className="text-sm text-gray-500">{session.user?.email}</span>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}

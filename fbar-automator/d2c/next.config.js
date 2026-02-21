@@ -15,13 +15,8 @@ const nextConfig = {
   },
 
   async headers() {
-    // Development needs 'unsafe-eval' for React Refresh / HMR
-    // Production removes it for security
-    const isDev = process.env.NODE_ENV !== "production";
-    const scriptSrc = isDev
-      ? "'self' 'unsafe-inline' 'unsafe-eval'"
-      : "'self' 'unsafe-inline'";
-
+    // CSP is set dynamically per-request in middleware.ts (nonce-based).
+    // Static headers remain here.
     return [
       {
         source: "/:path*",
@@ -35,10 +30,6 @@ const nextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: `default-src 'self'; script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io; frame-src https://www.googletagmanager.com; frame-ancestors 'none';`
           },
           {
             key: "X-DNS-Prefetch-Control",

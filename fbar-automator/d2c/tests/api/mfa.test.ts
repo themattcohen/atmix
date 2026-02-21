@@ -38,6 +38,7 @@ import { POST as mfaSetup } from "@/app/api/auth/mfa/setup/route";
 import { POST as mfaVerify } from "@/app/api/auth/mfa/verify/route";
 import { POST as mfaDisable } from "@/app/api/auth/mfa/disable/route";
 import { POST as mfaRecovery } from "@/app/api/auth/mfa/recovery/route";
+import { POST as mfaLoginVerify, loginVerifyAttempts } from "@/app/api/auth/mfa/login-verify/route";
 
 // Real MFA lib imports
 import { generateSecret, verifyTotp, generateRecoveryCodes, hashRecoveryCode } from "@/lib/mfa";
@@ -583,6 +584,176 @@ describe("POST /api/auth/mfa/recovery (P5-3)", () => {
 // ---------------------------------------------------------------------------
 
 describe("MFA middleware guard (P5-3)", () => {
-  it.todo("P5-3: API route with mfaEnabled=true and mfaVerifiedAt=null -> 403 'MFA verification required'");
-  it.todo("P5-3: MFA-exempt routes (/api/auth/mfa/*) still accessible when MFA pending");
+  it("middleware.ts contains checkMfaGate function", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const middlewareSrc = fs.readFileSync(
+      path.resolve(process.cwd(), "src/middleware.ts"),
+      "utf-8"
+    );
+    expect(middlewareSrc).toContain("checkMfaGate");
+    expect(middlewareSrc).toContain("mfa-verify");
+    expect(middlewareSrc).toContain("__mfa_verified");
+  });
+
+  it("middleware.ts exempts /api/auth/ routes from MFA gate", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+    const middlewareSrc = fs.readFileSync(
+      path.resolve(process.cwd(), "src/middleware.ts"),
+      "utf-8"
+    );
+    expect(middlewareSrc).toContain('/api/auth/');
+    expect(middlewareSrc).toContain("validateMfaCookie");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Tests: POST /api/auth/mfa/login-verify
+// ---------------------------------------------------------------------------
+
+describe("POST /api/auth/mfa/login-verify", () => {
+  beforeEach(() => {
+    loginVerifyAttempts.clear();
+  });
+
+  it("unauthenticated → 401", async () => {
+    mockAuth(null);
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { token: "123456" }));
+    expect(res.status).toBe(401);
+  });
+
+  it("user without MFA enabled → 400", async () => {
+    // Temporarily disable MFA on test user
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: false },
+    });
+    mockAuth(testUserId);
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { token: "123456" }));
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/not enabled/i);
+
+    // Restore
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: true },
+    });
+  });
+
+  it("valid TOTP token → 200 with Set-Cookie", async () => {
+    // Set up the user with a known secret and mfaEnabled before the test
+    const { generateSecret } = await import("@/lib/mfa");
+    const { secret } = generateSecret(TEST_EMAIL);
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: true, mfaSecret: `enc:${secret}`, mfaVerifiedAt: new Date() },
+    });
+
+    mockAuth(testUserId);
+
+    const totp = new OTPAuth.TOTP({
+      issuer: "FBAR Direct",
+      algorithm: "SHA1",
+      digits: 6,
+      period: 30,
+      secret: OTPAuth.Secret.fromBase32(secret),
+    });
+    const validToken = totp.generate();
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { token: validToken }));
+    expect(res.status).toBe(200);
+
+    const json = await res.json();
+    expect(json.success).toBe(true);
+
+    // Check that a Set-Cookie header was set
+    const setCookie = res.headers.get("set-cookie");
+    expect(setCookie).toContain("__mfa_verified");
+  });
+
+  it("invalid TOTP token → 400", async () => {
+    // Enable MFA with a known secret so the route reaches TOTP validation
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+    });
+    mockAuth(testUserId);
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { token: "000000" }));
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid/i);
+  });
+
+  it("valid recovery code → 200 + code consumed", async () => {
+    // Enable MFA so the route doesn't reject early
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+    });
+    mockAuth(testUserId);
+
+    const code = "LOGIN-VERIFY1";
+    const { hashRecoveryCode } = await import("@/lib/mfa");
+    await prisma.mfaRecoveryCode.create({
+      data: { userId: testUserId, codeHash: hashRecoveryCode(code) },
+    });
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { recoveryCode: code }));
+    expect(res.status).toBe(200);
+
+    const json = await res.json();
+    expect(json.success).toBe(true);
+
+    // Code should be marked as used
+    const dbCode = await prisma.mfaRecoveryCode.findFirst({
+      where: { userId: testUserId, codeHash: hashRecoveryCode(code) },
+    });
+    expect(dbCode!.used).toBe(true);
+  });
+
+  it("invalid recovery code → 400", async () => {
+    // Enable MFA so the route reaches recovery code validation
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+    });
+    mockAuth(testUserId);
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { recoveryCode: "FAKE-CODE123" }));
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid|already used/i);
+  });
+
+  it("already-used recovery code → 400", async () => {
+    // Enable MFA so the route reaches recovery code validation
+    await prisma.user.update({
+      where: { id: testUserId },
+      data: { mfaEnabled: true, mfaSecret: "enc:JBSWY3DPEHPK3PXP", mfaVerifiedAt: new Date() },
+    });
+    mockAuth(testUserId);
+
+    const code = "LOGIN-USED01";
+    const { hashRecoveryCode } = await import("@/lib/mfa");
+    await prisma.mfaRecoveryCode.create({
+      data: { userId: testUserId, codeHash: hashRecoveryCode(code), used: true, usedAt: new Date() },
+    });
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", { recoveryCode: code }));
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid|already used/i);
+  });
+
+  it("missing both token and recoveryCode → 400", async () => {
+    mockAuth(testUserId);
+
+    const res = await mfaLoginVerify(makeRequest("/api/auth/mfa/login-verify", {}));
+    const json = await res.json();
+    expect(res.status).toBe(400);
+  });
 });

@@ -56,6 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
           tokenVersion: user.tokenVersion,
+          mfaEnabled: user.mfaEnabled,
         };
       },
     }),
@@ -69,10 +70,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.tokenVersion = (user as any).tokenVersion;
+        token.mfaEnabled = (user as any).mfaEnabled ?? false;
       }
-      // Note: We don't re-check tokenVersion on every request because the JWT
-      // callback runs on Edge runtime (via middleware) where Prisma isn't available.
-      // Token revocation is handled by bumping tokenVersion + short maxAge.
+      // Token revocation is handled by bumping tokenVersion + short maxAge (Edge runtime has no Prisma).
       return token;
     },
     async session({ session, token }) {
@@ -83,7 +83,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
+        (session.user as any).mfaEnabled = token.mfaEnabled ?? false;
       }
+      (session as any).tokenVersion = token.tokenVersion;
       return session;
     },
   },

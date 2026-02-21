@@ -177,6 +177,52 @@ describe("GET /api/accounts — calendarYear validation (P1-2)", () => {
   });
 });
 
+describe("GET /api/accounts — calendarYear range validation", () => {
+  it("calendarYear=1999 (below min 2010) → 400", async () => {
+    mockAuth(testUserId);
+
+    const req = makeGetRequest({ calendarYear: "1999" });
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid calendar year/i);
+  });
+
+  it("calendarYear=2050 (above max 2030) → 400", async () => {
+    mockAuth(testUserId);
+
+    const req = makeGetRequest({ calendarYear: "2050" });
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid calendar year/i);
+  });
+
+  it("calendarYear=-1 (negative) → 400", async () => {
+    mockAuth(testUserId);
+
+    const req = makeGetRequest({ calendarYear: "-1" });
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/invalid calendar year/i);
+  });
+
+  it("calendarYear=2025 (valid) → 200", async () => {
+    mockAuth(testUserId);
+
+    const req = makeGetRequest({ calendarYear: "2025" });
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json).toHaveProperty("data");
+  });
+});
+
 describe("GET /api/accounts — auth guard", () => {
   it("12. GET unauthenticated → 401", async () => {
     mockAuth(null);

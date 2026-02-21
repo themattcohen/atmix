@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { mfaEnabled: true, mfaVerifiedAt: new Date() },
+      data: { mfaEnabled: true, mfaVerifiedAt: new Date(), tokenVersion: { increment: 1 } },
     });
 
     return NextResponse.json({ success: true });

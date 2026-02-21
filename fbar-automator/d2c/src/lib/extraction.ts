@@ -3,6 +3,7 @@ import ExcelJS from "exceljs"
 import { downloadFile } from "./s3"
 import { EXTRACTION_SYSTEM_PROMPT, EXTRACTION_USER_PROMPT } from "./prompts"
 import type { ExtractionResult, ExtractionResponse } from "@/types/extraction"
+import { log } from "@/lib/logger"
 
 const MODEL = "claude-sonnet-4-5-20250929"
 const MAX_TOKENS = 16384
@@ -185,19 +186,19 @@ export async function extractFromStatement(
     }
 
     const elapsed = Date.now() - startTime
-    console.log(`[Extraction] Completed in ${elapsed}ms | model=${MODEL} | tokens=${tokensUsed} | accounts=${result.accounts?.length ?? 0}`)
+    log("info", "[Extraction] Completed", { elapsed, model: MODEL, tokens: tokensUsed, accounts: result.accounts?.length ?? 0 })
 
     return { success: true, result, model: MODEL, tokensUsed }
   } catch (err) {
     if (err instanceof Anthropic.APIError) {
-      console.error(`[Extraction] Anthropic API error: status=${err.status} message=${err.message}`)
+      log("error", "[Extraction] Anthropic API error", { status: err.status, message: err.message })
       return { success: false, result: null, error: `Claude API error (HTTP ${err.status}): ${err.message}`, model: MODEL, tokensUsed: 0 }
     }
     if (err instanceof Error) {
-      console.error(`[Extraction] Error: ${err.message}`)
+      log("error", "[Extraction] Error", { message: err.message })
       return { success: false, result: null, error: err.message, model: MODEL, tokensUsed: 0 }
     }
-    console.error("[Extraction] Unexpected error:", err)
+    log("error", "[Extraction] Unexpected error", { error: String(err) })
     return { success: false, result: null, error: "An unexpected error occurred during extraction.", model: MODEL, tokensUsed: 0 }
   }
 }

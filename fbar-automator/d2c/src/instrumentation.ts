@@ -1,3 +1,5 @@
+import { log } from "@/lib/logger";
+
 export async function register() {
   // Required for core functionality — fail fast if missing
   const required = ["DATABASE_URL", "NEXTAUTH_SECRET", "NEXTAUTH_URL"];
@@ -38,5 +40,5 @@ export async function register() {
     );
   }
 
-  console.log("[STARTUP] Configuration validated successfully");
+  log("info", "[STARTUP] Configuration validated successfully");
 }

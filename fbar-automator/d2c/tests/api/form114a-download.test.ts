@@ -195,4 +195,46 @@ describe("GET /api/filing/form114a", () => {
     const json = await res.json();
     expect(json.error).toMatch(/form 114a not found/i);
   });
+
+  it("7. prisma throws → returns 500 with generic error", async () => {
+    if (!s3Available) return;
+    mockAuth(testUser.id);
+
+    // Temporarily make prisma.filingYear.findFirst throw
+    const originalFindFirst = prisma.filingYear.findFirst;
+    (prisma.filingYear as any).findFirst = vi.fn().mockRejectedValue(new Error("DB connection lost"));
+
+    const res = await GET(makeRequest(filingId));
+
+    expect(res.status).toBe(500);
+    const json = await res.json();
+    expect(json.error).toBe("Internal server error");
+
+    // Restore
+    (prisma.filingYear as any).findFirst = originalFindFirst;
+  });
+
+  it("8. downloadFile throws → returns 500 with generic error", async () => {
+    if (!s3Available) return;
+    mockAuth(testUser.id);
+
+    // Create a filing pointing to a non-existent S3 key to trigger a download error
+    const badFiling = await prisma.filingYear.create({
+      data: {
+        userId: testUser.id,
+        calendarYear: 2022,
+        status: "SUBMITTED",
+        form114aUrl: "nonexistent/path/that-does-not-exist.pdf",
+      },
+    });
+
+    const res = await GET(makeRequest(badFiling.id));
+
+    expect(res.status).toBe(500);
+    const json = await res.json();
+    expect(json.error).toBe("Internal server error");
+
+    // Cleanup
+    await prisma.filingYear.delete({ where: { id: badFiling.id } });
+  });
 });

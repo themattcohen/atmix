@@ -36,6 +36,7 @@ export async function GET() {
         dateOfBirth: user.dateOfBirth?.toISOString().split("T")[0] || null,
         usAddress: user.usAddress as { street: string; street2?: string; city: string; state: string; zip: string } | null,
         phone: user.phone,
+        mfaEnabled: user.mfaEnabled,
       },
     });
   } catch (error) {

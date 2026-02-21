@@ -1,6 +1,33 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { validateMfaCookie } from "@/lib/mfa-cookie";
+
+// ---------------------------------------------------------------------------
+// CSP nonce helpers
+// ---------------------------------------------------------------------------
+function buildCspHeader(nonce: string): string {
+  const isDev = process.env.NODE_ENV !== "production";
+  const scriptSrc = isDev
+    ? `'self' 'nonce-${nonce}' 'unsafe-eval'`
+    : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
+  return [
+    "default-src 'self'",
+    `script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
+    "font-src 'self' data:",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io",
+    "frame-src https://www.googletagmanager.com",
+    "frame-ancestors 'none'",
+  ].join("; ");
+}
+
+function withCspHeaders(response: NextResponse, nonce: string): NextResponse {
+  response.headers.set("Content-Security-Policy", buildCspHeader(nonce));
+  response.headers.set("x-nonce", nonce);
+  return response;
+}
 
 // ---------------------------------------------------------------------------
 // Rate limit store: Map<key, { count: number, resetTime: number }>
@@ -44,6 +71,9 @@ const AUTH_RATE_LIMIT_PATHS = [
   "/api/auth/callback",
   "/api/auth/mfa/verify",
   "/api/auth/mfa/recovery",
+  "/api/auth/mfa/setup",
+  "/api/auth/mfa/disable",
+  "/api/auth/mfa/login-verify",
 ];
 
 const authRequiredPrefixes = [
@@ -54,6 +84,7 @@ const authRequiredPrefixes = [
   "/sign",
   "/payment",
   "/confirmation",
+  "/settings",
 ];
 
 // ---------------------------------------------------------------------------
@@ -68,7 +99,36 @@ function getClientIp(request: NextRequest): string {
   return request.ip ?? "unknown";
 }
 
-export default auth((req) => {
+// ---------------------------------------------------------------------------
+// MFA gate: redirect/block users who have MFA enabled but haven't verified
+// ---------------------------------------------------------------------------
+async function checkMfaGate(
+  req: { auth: any; url: string },
+  normalizedPath: string
+): Promise<NextResponse | null> {
+  if (!req.auth?.user?.mfaEnabled) return null; // No MFA required
+  if (normalizedPath === "/mfa-verify" || normalizedPath.startsWith("/mfa-verify/")) return null; // Exempt
+  if (normalizedPath.startsWith("/api/auth/")) return null; // Auth routes must be accessible
+  if (normalizedPath === "/api/health") return null; // Health check exempt
+
+  // Check for valid MFA cookie
+  const request = req as unknown as NextRequest;
+  const cookieValue = request.cookies.get("__mfa_verified")?.value;
+
+  const tokenVersion = (req.auth as any)?.tokenVersion ?? 0;
+  const isValid = await validateMfaCookie(cookieValue, req.auth.user.id, tokenVersion);
+  if (isValid) return null; // MFA verified
+
+  // Not verified — block or redirect
+  if (normalizedPath.startsWith("/api/")) {
+    return NextResponse.json({ error: "MFA verification required" }, { status: 403 });
+  }
+  const mfaUrl = new URL("/mfa-verify", req.url);
+  mfaUrl.searchParams.set("callbackUrl", normalizedPath);
+  return NextResponse.redirect(mfaUrl);
+}
+
+export default auth(async (req) => {
   const request = req as unknown as NextRequest;
 
   // ------------------------------------------------------------------
@@ -76,6 +136,9 @@ export default auth((req) => {
   // Normalize pathname to prevent traversal (e.g. /api/health/../auth/signup)
   // ------------------------------------------------------------------
   const normalizedPath = new URL(request.url).pathname.replace(/\/\.+\//g, "/");
+
+  // Generate CSP nonce for this request
+  const nonce = btoa(crypto.randomUUID());
 
   // Allow static files and Next.js internals (check early to skip security overhead)
   if (
@@ -154,6 +217,8 @@ export default auth((req) => {
     if (!req.auth) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const mfaBlock = await checkMfaGate(req, normalizedPath);
+    if (mfaBlock) return mfaBlock;
     return NextResponse.next();
   }
 
@@ -162,16 +227,19 @@ export default auth((req) => {
   const requiresAuth = authRequiredPrefixes.some(
     (p) => normalizedPath === p || normalizedPath.startsWith(p + "/")
   );
-  if (!requiresAuth) return NextResponse.next();
+  if (!requiresAuth) return withCspHeaders(NextResponse.next(), nonce);
 
   // Auth required but not authenticated — redirect to login
   if (!req.auth) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", normalizedPath);
-    return NextResponse.redirect(loginUrl);
+    return withCspHeaders(NextResponse.redirect(loginUrl), nonce);
   }
 
-  return NextResponse.next();
+  const mfaBlock = await checkMfaGate(req, normalizedPath);
+  if (mfaBlock) return withCspHeaders(mfaBlock, nonce);
+
+  return withCspHeaders(NextResponse.next(), nonce);
 });
 
 export const config = {

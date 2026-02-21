@@ -12,6 +12,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Token version check — detect revoked sessions on high-security route
+    const { validateTokenVersion } = await import("@/lib/token-guard");
+    const tokenError = await validateTokenVersion();
+    if (tokenError) return tokenError;
+
     const { filingYearId } = await req.json();
     if (!filingYearId) {
       return NextResponse.json({ error: "filingYearId is required" }, { status: 400 });

@@ -24,7 +24,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "MFA setup already in progress. Complete verification or start over." }, { status: 409 });
     }
 
-    const { secret, otpauthUri } = generateSecret(user.email);
+    let secret: string;
+    let otpauthUri: string;
+    if (process.env.NODE_ENV !== "production" && process.env.MFA_TEST_SECRET_OVERRIDE) {
+      secret = process.env.MFA_TEST_SECRET_OVERRIDE;
+      otpauthUri = `otpauth://totp/FBAR%20Direct:${encodeURIComponent(user.email)}?secret=${secret}&issuer=FBAR%20Direct&algorithm=SHA1&digits=6&period=30`;
+    } else {
+      ({ secret, otpauthUri } = generateSecret(user.email));
+    }
     const qrCode = await generateQrCode(otpauthUri);
     const recoveryCodes = generateRecoveryCodes(10);
 
