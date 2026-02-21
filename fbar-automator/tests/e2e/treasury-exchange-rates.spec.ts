@@ -199,20 +199,31 @@ test.describe.serial("Exchange Rates Settings Page", () => {
   // Test 4: Changing year loads different data
   // -------------------------------------------------------------------------
   test("changing year loads different data", async () => {
-    // Switch to 2023
+    // Switch to 2023 — this clears the stale syncMessage from the previous test
     const yearDropdown = page.getByLabel("Select year")
     await yearDropdown.selectOption("2023")
     await page.waitForLoadState("networkidle")
 
+    // Verify heading already shows 2023
+    await expect(page.locator("text=Rates for 2023")).toBeVisible({ timeout: 5000 })
+
+    // Ensure any stale sync alert from the previous test is gone
+    await expect(
+      page.locator('[role="alert"]:has-text("Successfully synced")')
+    ).not.toBeVisible({ timeout: 5000 })
+
     // Click Sync Rates
     await page.click('button:has-text("Sync Rates")')
 
-    // Wait for success alert
-    const successAlert = page.locator('[role="alert"]:has-text("Successfully synced")')
-    await expect(successAlert).toBeVisible({ timeout: 30000 })
+    // Wait for the NEW success alert for 2023
+    await expect(
+      page.locator('[role="alert"]:has-text("Successfully synced")')
+    ).toBeVisible({ timeout: 30000 })
 
-    // Card title should show "2023"
-    await expect(page.locator("text=Rates for 2023")).toBeVisible()
+    // Verify the alert mentions 2023
+    await expect(
+      page.locator('[role="alert"]:has-text("for 2023")')
+    ).toBeVisible()
   })
 
   // -------------------------------------------------------------------------
@@ -312,8 +323,8 @@ test.describe.serial("Treasury Currency Conversion Flow", () => {
   // Test 7: USD account saves with rate = 1 (no conversion)
   // -------------------------------------------------------------------------
   test("USD account saves with rate=1", async () => {
-    // Scope to the US National Bank card
-    const usCard = page.locator("text=US National Bank").locator("..").locator("..").locator("..")
+    // Scope to the US National Bank card via data-testid
+    const usCard = page.locator('[data-testid="review-card-us-national-bank"]')
     const amountInput = usCard.locator('input[type="number"]')
     const currencyDropdown = usCard.locator('select[aria-label="Currency code"]')
     const saveBtn = usCard.locator('button:has-text("Save")')
@@ -348,8 +359,8 @@ test.describe.serial("Treasury Currency Conversion Flow", () => {
   // Test 8: EUR account converts using the Treasury Dec 31 rate
   // -------------------------------------------------------------------------
   test("EUR account converts using Treasury Dec 31 rate", async () => {
-    // Scope to the Deutsche Bank card
-    const eurCard = page.locator("text=Deutsche Bank").locator("..").locator("..").locator("..")
+    // Scope to the Deutsche Bank card via data-testid
+    const eurCard = page.locator('[data-testid="review-card-deutsche-bank"]')
     const amountInput = eurCard.locator('input[type="number"]')
     const currencyDropdown = eurCard.locator('select[aria-label="Currency code"]')
     const saveBtn = eurCard.locator('button:has-text("Save")')
@@ -382,8 +393,8 @@ test.describe.serial("Treasury Currency Conversion Flow", () => {
   // Test 9: GBP account converts using the Treasury rate
   // -------------------------------------------------------------------------
   test("GBP account converts using Treasury rate", async () => {
-    // Scope to the HSBC London card
-    const gbpCard = page.locator("text=HSBC London").locator("..").locator("..").locator("..")
+    // Scope to the HSBC London card via data-testid
+    const gbpCard = page.locator('[data-testid="review-card-hsbc-london"]')
     const amountInput = gbpCard.locator('input[type="number"]')
     const currencyDropdown = gbpCard.locator('select[aria-label="Currency code"]')
     const saveBtn = gbpCard.locator('button:has-text("Save")')
@@ -423,7 +434,7 @@ test.describe.serial("Treasury Currency Conversion Flow", () => {
     // The export page should display "Treasury Dec 31, 2024" attribution
     // for accounts that used Treasury rates (see export/page.tsx line 239)
     await expect(
-      page.locator("text=Treasury Dec 31, 2024")
+      page.locator("text=Treasury Dec 31, 2024").first()
     ).toBeVisible({ timeout: 15000 })
   })
 })
@@ -466,8 +477,8 @@ test.describe.serial("Manual Rate Override", () => {
   // Test 11: Missing Treasury rate triggers the manual rate entry UI
   // -------------------------------------------------------------------------
   test("missing Treasury rate triggers manual rate entry UI", async () => {
-    // Scope to the Banco Test card
-    const card = page.locator("text=Banco Test").locator("..").locator("..").locator("..")
+    // Scope to the Banco Test card via data-testid
+    const card = page.locator('[data-testid="review-card-banco-test"]')
     const amountInput = card.locator('input[type="number"]')
     const currencyDropdown = card.locator('select[aria-label="Currency code"]')
     const saveBtn = card.locator('button:has-text("Save")')
@@ -502,7 +513,7 @@ test.describe.serial("Manual Rate Override", () => {
   // -------------------------------------------------------------------------
   test("submitting manual rate saves successfully", async () => {
     // The card and manual rate UI should still be visible from the previous test
-    const card = page.locator("text=Banco Test").locator("..").locator("..").locator("..")
+    const card = page.locator('[data-testid="review-card-banco-test"]')
 
     // Fill in the manual exchange rate and justification
     const manualRateInput = card.locator('input[placeholder="e.g. 1.08"]')

@@ -270,7 +270,6 @@ test.describe.serial("T22-A: Payment page edge cases (shared signed filing)", ()
 
   // ── Test 5: Double-click fires only one request ────────────────────────────
   test("05: Double-click on Pay button fires only one checkout request", async () => {
-    test.fixme(true, "App does not disable Pay button fast enough — double-click fires 2 requests. Needs optimistic UI disable on click.");
     // Clear route handlers from test 4 (Stripe mock + abort rule) so they
     // do not stack and distort the requestCount assertion in this test.
     await page.unrouteAll({ behavior: "ignoreErrors" });
@@ -279,13 +278,10 @@ test.describe.serial("T22-A: Payment page edge cases (shared signed filing)", ()
     await page.waitForLoadState("networkidle");
 
     let requestCount = 0;
-    // Return a URL that won't actually navigate (empty string triggers the
-    // button's "redirecting" state without leaving the page).
     await page.route("**/api/stripe/checkout", (route) => {
       requestCount++;
-      // Delay the response slightly so the disabled state has time to kick in
-      // before the second click.
-      void new Promise((r) => setTimeout(r, 500)).then(() =>
+      // Delay the response so the disabled/redirecting state persists
+      void new Promise((r) => setTimeout(r, 2000)).then(() =>
         route.fulfill({
           status: 200,
           contentType: "application/json",
@@ -297,18 +293,22 @@ test.describe.serial("T22-A: Payment page edge cases (shared signed filing)", ()
     const payButton = page.locator("button:has-text('Pay $')");
     await expect(payButton).toBeVisible({ timeout: WAIT });
 
-    // Click twice in rapid succession
+    // Click once — triggers handlePayment which sets redirecting=true
     await payButton.click();
-    await page.waitForTimeout(100);
-    await payButton.click({ force: true }).catch(() => {
-      // Button may already be disabled — that's the expected behavior
-    });
 
-    // Allow any async handlers to settle
+    // After click, button text changes to "Redirecting..." — wait for that
+    const redirectingButton = page.locator("button:has-text('Redirecting')");
+    await expect(redirectingButton).toBeVisible({ timeout: 5000 });
+    await expect(redirectingButton).toBeDisabled({ timeout: 2000 });
+
+    // Attempt a second click via dispatchEvent to bypass Playwright's
+    // built-in disabled-element check — tests the ref guard too.
+    await redirectingButton.dispatchEvent("click");
+
+    // Allow async handlers to settle
     await page.waitForTimeout(3000);
 
-    // Only one request should have been fired because the button is disabled
-    // immediately after the first click (redirecting state is set).
+    // Only one request should have been fired
     expect(requestCount).toBe(1);
   });
 

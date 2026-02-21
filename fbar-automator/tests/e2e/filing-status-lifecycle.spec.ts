@@ -13,7 +13,17 @@ async function loginAsAdmin(page: Page) {
   await page.fill('input[name="email"]', ADMIN_EMAIL)
   await page.fill('input[name="password"]', ADMIN_PASSWORD)
   await page.click('button[type="submit"]')
-  await page.waitForURL("/", { timeout: 20000 })
+  try {
+    await page.waitForURL("/", { timeout: 20000 })
+  } catch {
+    // Retry once on transient DB/auth errors
+    await page.goto("/login")
+    await page.waitForLoadState("networkidle")
+    await page.fill('input[name="email"]', ADMIN_EMAIL)
+    await page.fill('input[name="password"]', ADMIN_PASSWORD)
+    await page.click('button[type="submit"]')
+    await page.waitForURL("/", { timeout: 20000 })
+  }
 }
 
 // Shared state across serial tests

@@ -17,7 +17,17 @@ async function loginAsAdmin(page: Page) {
   await page.fill('input[name="email"]', ADMIN_EMAIL)
   await page.fill('input[name="password"]', ADMIN_PASSWORD)
   await page.click('button[type="submit"]')
-  await page.waitForURL("/", { timeout: 20000 })
+  try {
+    await page.waitForURL("/", { timeout: 20000 })
+  } catch {
+    // Retry once on transient auth/DB error
+    await page.goto("/login")
+    await page.waitForLoadState("networkidle")
+    await page.fill('input[name="email"]', ADMIN_EMAIL)
+    await page.fill('input[name="password"]', ADMIN_PASSWORD)
+    await page.click('button[type="submit"]')
+    await page.waitForURL("/", { timeout: 20000 })
+  }
 }
 
 async function createClientAndFilingYear(page: Page): Promise<string> {
@@ -48,15 +58,8 @@ async function createClientAndFilingYear(page: Page): Promise<string> {
     page.getByRole("button", { name: "Create" }).click(),
   ])
 
-  await expect(page.getByText("New Filing Year")).not.toBeVisible({ timeout: 10000 })
-  await expect(page.locator("table").getByText("2024")).toBeVisible({ timeout: 10000 })
-
-  await page.getByRole("link", { name: "View" }).first().click()
+  // AddFilingYearForm pushes to /clients/{id}/2024 after creation
   await page.waitForURL(/\/clients\/[a-f0-9-]+\/2024$/, { timeout: 15000 })
-
-  const overviewUrl = page.url()
-  await page.goto(overviewUrl + "/upload")
-  await page.waitForLoadState("networkidle")
 
   return cid
 }
@@ -67,8 +70,8 @@ test.describe.serial("CSV Upload Flow", () => {
     sharedContext = await browser.newContext()
     const page = await sharedContext.newPage()
     await loginAsAdmin(page)
-    await createClientAndFilingYear(page)
-    uploadPageUrl = page.url()
+    const cid = await createClientAndFilingYear(page)
+    uploadPageUrl = `/clients/${cid}/2024/upload`
     await page.close()
   })
 
@@ -146,11 +149,11 @@ test.describe.serial("CSV Upload Flow", () => {
     await page.goto(reviewUrl)
     await page.waitForLoadState("networkidle")
 
-    // Verify account number from CSV
-    await expect(page.getByText("CH93")).toBeVisible({ timeout: 10000 })
+    // Verify masked account number suffix from CSV
+    await expect(page.getByText("95-7")).toBeVisible({ timeout: 10000 })
 
     // Verify currency
-    await expect(page.getByText("CHF")).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText("CHF").first()).toBeVisible({ timeout: 5000 })
 
     await page.close()
   })
@@ -164,11 +167,12 @@ test.describe.serial("CSV Upload Flow", () => {
     await page.waitForLoadState("networkidle")
 
     // Look for approve button
-    const approveBtn = page.getByRole("button", { name: /approve/i })
-    if (await approveBtn.isVisible().catch(() => false)) {
-      await approveBtn.click()
-      await expect(page.locator('[role="alert"]')).not.toBeVisible({ timeout: 5000 })
-    }
+    const approveBtn = page.getByRole("button", { name: /approve account/i })
+    await expect(approveBtn).toBeVisible({ timeout: 10000 })
+    await approveBtn.click()
+
+    // Wait for approval to complete — button should disappear or show "Approved"
+    await expect(approveBtn).not.toBeVisible({ timeout: 15000 })
 
     await page.close()
   })

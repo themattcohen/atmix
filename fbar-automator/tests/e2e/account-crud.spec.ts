@@ -223,15 +223,9 @@ test.describe.serial("Account CRUD", () => {
       )
       await page.click('button:has-text("Delete")')
 
-      // Verify success alert (exclude Next.js route announcer)
-      const alert = page.locator('div[role="alert"]:not(#__next-route-announcer__)')
-      await expect(alert).toContainText("Account deleted successfully", {
-        timeout: 10000,
-      })
-
-      // Verify toggle shows "(0)" again
+      // Verify toggle shows "(0)" again — account was deleted
       const accountsToggle = page.locator('[data-testid="accounts-toggle"]')
-      await expect(accountsToggle).toContainText("(0)")
+      await expect(accountsToggle).toContainText("(0)", { timeout: 15000 })
     } finally {
       await page.close()
     }

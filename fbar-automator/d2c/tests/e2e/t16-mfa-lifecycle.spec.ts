@@ -656,7 +656,6 @@ test.describe("T16: MFA Full Lifecycle", () => {
   // 15. Non-MFA user navigating to /mfa-verify is redirected away
   // =========================================================================
   test("15: access control – non-MFA user on /mfa-verify is redirected away", async ({ page }) => {
-    test.fixme(true, "Middleware does not yet redirect non-MFA users away from /mfa-verify");
     // Sign up a second user who has NO MFA (via API to avoid hydration issues)
     const nonMfaEmail = `t16-nomfa-${Date.now()}@test.com`;
     const signupResp = await page.request.post(`${BASE_URL}/api/auth/signup`, {
@@ -690,7 +689,6 @@ test.describe("T16: MFA Full Lifecycle", () => {
   // 16. Unauthenticated user navigating to /mfa-verify is redirected to /login
   // =========================================================================
   test("16: access control – unauthenticated on /mfa-verify redirects to /login", async ({ page }) => {
-    test.fixme(true, "Middleware does not yet redirect unauthenticated users from /mfa-verify to /login");
     // Clear all cookies — no session
     await page.context().clearCookies();
 

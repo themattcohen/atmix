@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Suspense } from "react";
 
 function getUTMFromCookie(): Record<string, string> {
   if (typeof document === 'undefined') return {};
@@ -30,6 +29,24 @@ function SignupForm() {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [generalError, setGeneralError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.user) {
+          router.replace("/threshold");
+        } else {
+          setAuthChecked(true);
+        }
+      })
+      .catch(() => setAuthChecked(true));
+  }, [router]);
+
+  if (!authChecked) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));

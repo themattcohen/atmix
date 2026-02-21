@@ -85,6 +85,7 @@ const authRequiredPrefixes = [
   "/payment",
   "/confirmation",
   "/settings",
+  "/mfa-verify",
 ];
 
 // ---------------------------------------------------------------------------
@@ -239,6 +240,11 @@ export default auth(async (req) => {
 
   const mfaBlock = await checkMfaGate(req, normalizedPath);
   if (mfaBlock) return withCspHeaders(mfaBlock, nonce);
+
+  // Guard: non-MFA users should not access /mfa-verify
+  if (normalizedPath === "/mfa-verify" && !req.auth?.user?.mfaEnabled) {
+    return withCspHeaders(NextResponse.redirect(new URL("/threshold", req.url)), nonce);
+  }
 
   return withCspHeaders(NextResponse.next(), nonce);
 });

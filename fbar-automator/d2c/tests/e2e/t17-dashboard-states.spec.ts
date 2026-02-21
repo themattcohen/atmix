@@ -12,9 +12,6 @@
  *   4. Use seedFilingStatus() to flip the filing into each status and
  *      reload /dashboard to assert the rendered output.
  *
- * Skipped:
- *   - Test 5 (REVIEWED status): P2-1 not implemented — REVIEWED is never set
- *     by current application code.
  */
 
 import { test, expect } from "@playwright/test";
@@ -176,10 +173,9 @@ test.describe("T17: Dashboard Filing States", () => {
   });
 
   // ── Test 5 ─────────────────────────────────────────────────────────────────
-  test.skip("05: REVIEWED — badge Ready to Sign; action goes to /sign (P2-1 not implemented)", async ({
+  test("05: REVIEWED — badge Ready to Sign; action goes to /sign", async ({
     page,
   }) => {
-    // REVIEWED status is never set by current code — skip until P2-1 lands.
     await apiLogin(page, sharedEmail, sharedPassword);
     await seedFilingStatus(page.request, sharedFilingId, "REVIEWED");
     await gotoDashboard(page);

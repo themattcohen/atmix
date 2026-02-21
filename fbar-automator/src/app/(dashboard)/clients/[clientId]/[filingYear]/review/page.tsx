@@ -304,7 +304,6 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                         }}
                         existingReview={reviewMap.get(account.id) ?? null}
                         filingYearId={filingYearRecord.id}
-                        onSaved={() => {}}
                       />
                     ))}
                   </div>
@@ -335,7 +334,6 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                   }}
                   existingReview={reviewMap.get(account.id) ?? null}
                   filingYearId={filingYearRecord.id}
-                  onSaved={() => {}}
                 />
               ))}
             </div>

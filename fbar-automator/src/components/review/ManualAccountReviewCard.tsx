@@ -32,7 +32,7 @@ interface ManualAccountReviewCardProps {
     maxValueUsd: number | null
   } | null
   filingYearId: string
-  onSaved: () => void
+  onSaved?: () => void
 }
 
 // ---------------------------------------------------------------------------
@@ -137,12 +137,13 @@ export function ManualAccountReviewCard({
     setSavedUsd(data.maxValueUsd ? parseFloat(data.maxValueUsd) : null)
     setIsSaved(true)
     setShowManualRate(false)
-    onSaved()
+    onSaved?.()
     setSaving(false)
   }
 
   return (
     <Card
+      data-testid={`review-card-${account.institutionName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
       className={cn(
         "overflow-hidden",
         isSaved && "border-green-300"

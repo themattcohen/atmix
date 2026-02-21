@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
@@ -21,6 +21,7 @@ export default function PaymentPage() {
   const [error, setError] = useState("");
   const [filing, setFiling] = useState<FilingData | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+  const redirectingRef = useRef(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
   const tier = (filing?.tier?.toLowerCase() || "basic") as PricingTier;
@@ -57,7 +58,8 @@ export default function PaymentPage() {
   }, [router]);
 
   const handlePayment = async () => {
-    if (!filing || redirecting) return;
+    if (!filing || redirectingRef.current) return;
+    redirectingRef.current = true;
     setLoading(true);
     setRedirecting(true);
     setError("");
@@ -73,6 +75,7 @@ export default function PaymentPage() {
 
       if (!res.ok) {
         setError(data.error || "Payment initiation failed");
+        redirectingRef.current = false;
         setRedirecting(false);
         return;
       }
@@ -94,6 +97,7 @@ export default function PaymentPage() {
       window.location.href = data.url;
     } catch {
       setError("An unexpected error occurred. Please try again.");
+      redirectingRef.current = false;
       setRedirecting(false);
     } finally {
       setLoading(false);
@@ -102,6 +106,7 @@ export default function PaymentPage() {
 
   const handleRetry = () => {
     setError("");
+    redirectingRef.current = false;
     setRedirecting(false);
     handlePayment();
   };

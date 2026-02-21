@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +16,24 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.user) {
+          router.replace(callbackUrl);
+        } else {
+          setAuthChecked(true);
+        }
+      })
+      .catch(() => setAuthChecked(true));
+  }, [router, callbackUrl]);
+
+  if (!authChecked) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +48,15 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        const key = `loginFails:${email}`;
+        const stored = parseInt(sessionStorage.getItem(key) || "0", 10);
+        const count = stored + 1;
+        sessionStorage.setItem(key, count.toString());
+        if (count >= 5) {
+          setError("Account may be temporarily locked. Please try again in 15 minutes.");
+        } else {
+          setError("Invalid email or password");
+        }
       } else {
         // Check if user has MFA enabled — redirect to verification page
         try {

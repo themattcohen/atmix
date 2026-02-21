@@ -139,6 +139,124 @@ function convertExcelToText(buffer: Buffer): string {
 }
 
 // ---------------------------------------------------------------------------
+// Programmatic CSV Extraction
+// ---------------------------------------------------------------------------
+
+/**
+ * Parses a CSV bank statement buffer into an ExtractionResult without calling
+ * the LLM.  Expects columns: Account Number, Date, Currency, Balance, Description.
+ * Groups rows by account number, finds the maximum balance, and determines the
+ * statement period from the earliest/latest dates.
+ */
+function extractCsvProgrammatically(buffer: Buffer): ExtractionResult {
+  const text = buffer.toString("utf-8").trim()
+  const lines = text.split(/\r?\n/).filter((l) => l.trim())
+
+  if (lines.length < 2) {
+    throw new Error("CSV file has no data rows")
+  }
+
+  // Parse headers (case-insensitive, trimmed)
+  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase())
+  const colIdx = {
+    accountNumber: headers.findIndex((h) => h.includes("account") && h.includes("number")),
+    date: headers.findIndex((h) => h === "date"),
+    currency: headers.findIndex((h) => h === "currency"),
+    balance: headers.findIndex((h) => h === "balance"),
+    description: headers.findIndex((h) => h === "description"),
+  }
+
+  if (colIdx.accountNumber === -1 || colIdx.balance === -1) {
+    throw new Error("CSV missing required columns: Account Number, Balance")
+  }
+
+  // Parse rows and group by account number
+  const accountMap = new Map<string, { dates: string[]; balances: { date: string | null; amount: number; label: string }[]; currency: string }>()
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",").map((c) => c.trim())
+    const acctNum = cols[colIdx.accountNumber] || ""
+    if (!acctNum) continue
+
+    const date = colIdx.date >= 0 ? cols[colIdx.date] || null : null
+    const amount = parseFloat(cols[colIdx.balance] || "0")
+    const currency = colIdx.currency >= 0 ? cols[colIdx.currency] || "USD" : "USD"
+    const description = colIdx.description >= 0 ? cols[colIdx.description] || "" : ""
+
+    if (!accountMap.has(acctNum)) {
+      accountMap.set(acctNum, { dates: [], balances: [], currency })
+    }
+    const entry = accountMap.get(acctNum)!
+    if (date) entry.dates.push(date)
+    entry.balances.push({ date, amount, label: description || `Row ${i}` })
+  }
+
+  // Build ExtractedAccount for each account
+  const accounts: import("@/types/extraction").ExtractedAccount[] = []
+
+  for (const [acctNum, data] of accountMap) {
+    // Find max balance
+    let maxBal = data.balances[0]
+    for (const b of data.balances) {
+      if (b.amount > maxBal.amount) maxBal = b
+    }
+
+    // Determine statement period from date range
+    const sortedDates = data.dates.filter(Boolean).sort()
+    const startDate = sortedDates[0] || null
+    const endDate = sortedDates[sortedDates.length - 1] || null
+
+    accounts.push({
+      bank_name: null,
+      bank_address: {
+        street: null,
+        city: null,
+        state_province: null,
+        country: "XX",
+        postal_code: null,
+      },
+      account_number: acctNum,
+      account_type: "bank",
+      account_type_description: null,
+      currency: data.currency,
+      statement_period: {
+        start_date: startDate || "1970-01-01",
+        end_date: endDate || "1970-01-01",
+      },
+      balances: data.balances.map((b) => ({
+        date: b.date,
+        amount: b.amount,
+        label: b.label,
+        is_maximum: b.amount === maxBal.amount && b.date === maxBal.date,
+      })),
+      max_balance: {
+        amount: maxBal.amount,
+        date: maxBal.date,
+        label: maxBal.label,
+      },
+      confidence: {
+        bank_name: "low",
+        account_number: "high",
+        currency: "high",
+        max_balance: "high",
+        overall: "medium",
+      },
+      warnings: ["Extracted programmatically from CSV — bank name and address not available"],
+    })
+  }
+
+  return {
+    accounts,
+    document_language: "en",
+    document_metadata: {
+      page_count: 1,
+      is_multi_account: accounts.length > 1,
+      is_transaction_only: false,
+    },
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
@@ -184,17 +302,30 @@ export async function extractFromStatement(
       }
     }
 
+    // ----- Programmatic CSV extraction (no LLM needed) -----------------------
+    if (mediaType === "text/csv") {
+      const result = extractCsvProgrammatically(fileBuffer)
+      const elapsed = Date.now() - startTime
+      console.log(
+        `[Extraction] CSV parsed programmatically in ${elapsed}ms | accounts=${result.accounts.length}`
+      )
+      return {
+        success: true,
+        result,
+        model: "csv-parser",
+        tokensUsed: 0,
+      }
+    }
+
     // ----- Build content block -----------------------------------------------
     const isPdf = mediaType === "application/pdf"
-    const isTabular = mediaType === "text/csv" ||
+    const isTabular =
       mediaType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     let documentContentBlock: Anthropic.Messages.ContentBlockParam
 
     if (isTabular) {
-      const textContent = mediaType === "text/csv"
-        ? convertCsvToText(fileBuffer)
-        : convertExcelToText(fileBuffer)
+      const textContent = convertExcelToText(fileBuffer)
       documentContentBlock = { type: "text", text: textContent }
     } else if (isPdf) {
       const base64Data = fileBuffer.toString("base64")

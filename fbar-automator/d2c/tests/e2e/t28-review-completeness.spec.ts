@@ -16,7 +16,7 @@ import {
  *   - Masked SSN / TIN in the personal info section
  *   - Date of birth in the personal info section
  *   - Full mailing address in the personal info section
- *   - CTA button state (skipped: P2-1 — REVIEWED status never set)
+ *   - CTA button transitions filing to REVIEWED and redirects to /sign
  *   - Multiple accounts all rendered correctly
  *
  * Strategy: Serial suite, one browser page shared across all tests.
@@ -263,14 +263,8 @@ test.describe("T28: Review Page — Completeness", () => {
 
   // =========================================================================
   // Test 5: Review CTA sets REVIEWED status
-  // (Skipped: P2-1 not implemented — REVIEWED status is never set by current code)
   // =========================================================================
-  test("5 — review CTA sets REVIEWED status (P2-1)", async () => {
-    test.skip(
-      true,
-      "P2-1 not implemented: POST /api/filing/review endpoint does not yet set status to REVIEWED"
-    );
-
+  test("5 — review CTA sets REVIEWED status", async () => {
     await goToReviewAndWait(page);
 
     const cta = page.locator(

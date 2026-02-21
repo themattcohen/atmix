@@ -97,7 +97,7 @@ test.describe("Authentication", () => {
     await page.fill('input[name="password"]', "TestPassword123!")
     await page.fill('input[name="confirmPassword"]', "TestPassword123!")
     await page.click('button[type="submit"]')
-    // Should redirect to login or show rate limit error (if running after other tests)
-    await expect(page).toHaveURL(/.*login/, { timeout: 15000 })
+    // Should redirect to login page after successful registration
+    await expect(page).toHaveURL(/\/login/, { timeout: 15000 })
   })
 })

@@ -96,6 +96,17 @@ test.describe.serial("Manual Account Review", () => {
     await addAccount(page, "Swiss Bank AG", "CH12345678", "CH")
     await addAccount(page, "UK Bank PLC", "GB98765432", "GB")
 
+    // Sync Treasury exchange rates for 2024 so non-USD saves work (GBP conversion)
+    await page.goto("/settings/exchange-rates")
+    await page.waitForLoadState("networkidle")
+    const yearDropdown = page.getByLabel("Select year")
+    await yearDropdown.selectOption("2024")
+    await page.waitForLoadState("networkidle")
+    await page.click('button:has-text("Sync Rates")')
+    await expect(
+      page.locator('[role="alert"]:has-text("Successfully synced")')
+    ).toBeVisible({ timeout: 30000 })
+
     // Create a filing year
     filingYearUrl = await createFilingYear(page, clientUrl, 2024)
     await page.close()
@@ -279,8 +290,8 @@ test.describe.serial("Manual Account Review", () => {
         page.locator("text=Successfully submitted for review")
       ).toBeVisible({ timeout: 15000 })
 
-      // Status should update to "Reviewed"
-      await expect(page.locator("text=Reviewed")).toBeVisible({ timeout: 10000 })
+      // Status badge should update to "Reviewed"
+      await expect(page.locator("text=Reviewed").first()).toBeVisible({ timeout: 10000 })
     } finally {
       await page.close()
     }
@@ -288,9 +299,9 @@ test.describe.serial("Manual Account Review", () => {
 
   test("Review Accounts quick-link highlights when accounts exist without statements", async () => {
     // This tests a separate fresh client to verify the quick-link UX
+    // sharedContext is already authenticated from beforeAll — no need to re-login
     const page = await sharedContext.newPage()
     try {
-      await loginAsAdmin(page)
       const newClientUrl = await createClient(page, "quicklink")
       await addAccount(page, "Test Bank for QuickLink", "XX11223344", "DE")
       const newFilingUrl = await createFilingYear(page, newClientUrl, 2024)

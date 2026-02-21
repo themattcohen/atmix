@@ -66,7 +66,7 @@ Every implementation agent MUST follow this testing protocol:
 
 ---
 
-## Phase 0: Emergency Fixes
+## Phase 0: Emergency Fixes — DONE (6/8 tasks; P0-5 swap + P0-6 monitoring deferred)
 
 **Total effort:** ~1.5 hours | **Wall clock:** ~30 min (full parallel)
 All tasks are independent. Do these before any feature work.
@@ -112,7 +112,7 @@ This blocks `callbackUrl=https://evil.com` and `callbackUrl=//evil.com` from red
 
 ---
 
-## Phase 1: Quick Wins
+## Phase 1: Quick Wins — DONE (committed in Sprints 2-4, 2026-02-19)
 
 **Total effort:** ~5 hours | **Wall clock:** ~1 hour (6 parallel agent groups)
 Small independent fixes. All parallelizable when grouped by file ownership.
@@ -203,7 +203,7 @@ Each agent MUST run the relevant E2E specs after their changes. Run `npx playwri
 
 ---
 
-## Phase 2: Filing Pipeline Fix
+## Phase 2: Filing Pipeline Fix — DONE (committed 2026-02-19)
 
 **Total effort:** ~2 hours | **Wall clock:** ~2 hours (sequential)
 The review-to-sign transition is broken. Must fix before Phase 4 pipeline work.
@@ -244,7 +244,7 @@ Run full E2E suite after both tasks: `npx playwright test` — especially `t12-r
 
 ---
 
-## Phase 3: Infrastructure and Configuration
+## Phase 3: Infrastructure and Configuration — DONE (committed 2026-02-19)
 
 **Total effort:** ~10 hours | **Wall clock:** ~4 hours (4 parallel groups)
 Mostly ops changes. Maps to original Phase 2 plus new infrastructure findings.
@@ -350,10 +350,12 @@ When Phase 4 is unblocked:
 
 ---
 
-## Phase 5: Security Hardening
+## Phase 5: Security Hardening — DONE (committed 2026-02-19; MFA enforcement deferred)
 
 **Total effort:** ~26 hours | **Wall clock:** ~26 hours (sequential, single agent)
 Maps to original Phase 4. Gaps #10, #11, #13 all touch `d2c/src/middleware.ts` -- MUST be a single coordinated pass by ONE security-engineer agent.
+
+**Note (2026-02-21):** P5-1 (CSRF narrowing), P5-2 (JWT 24h maxAge), P5-3 (MFA enrollment/setup/verify/disable/recovery), P5-4 (encryption key rotation + safeDecrypt fix) are all DONE. MFA *login enforcement* (redirecting to `/mfa-verify` on login) was deferred — the infrastructure exists (`/mfa-verify` page, middleware gate, HMAC cookie) but is not wired into the login flow. 7 E2E test skips in `mfa.spec.ts` track this.
 
 **Middleware execution order after all changes:**
 
@@ -428,7 +430,7 @@ The single security-engineer agent MUST run the full E2E suite after EACH task (
 
 ---
 
-## Phase 6: CI/CD and Monitoring
+## Phase 6: CI/CD and Monitoring — DONE (committed 2026-02-19)
 
 **Total effort:** ~12 hours | **Wall clock:** ~6 hours (2 parallel groups)
 Can start anytime after Phase 0.
@@ -467,7 +469,7 @@ Replace all `console.log/warn/error` calls throughout the codebase. Add trace ID
 
 ---
 
-## Phase 7: Low Priority / Post-Launch
+## Phase 7: Low Priority / Post-Launch — DONE (committed 2026-02-19)
 
 **Total effort:** ~28 hours | **Wall clock:** ~6 hours (all independent, full parallel)
 Can start anytime after Phase 1.
@@ -721,31 +723,31 @@ An agent is **stuck** if ANY of these are true after 4 minutes of no progress:
 
 ## Effort Summary
 
-| Phase | Description | Tasks | Total Effort | Parallelism | Wall Clock |
-|-------|-------------|-------|-------------|-------------|------------|
-| Phase 0 | Emergency Fixes | 8 | 1.5 hr | Full parallel | ~30 min |
-| Phase 1 | Quick Wins | 14 | 5 hr | 6 parallel groups | ~1 hr |
-| Phase 2 | Filing Pipeline Fix | 2 | 2 hr | Sequential | ~2 hr |
-| Phase 3 | Infrastructure / Config | 9 | 10 hr | 4 parallel groups | ~4 hr |
-| Phase 4 | Filing Pipeline Core | 3 (1 done) | ~~20 hr~~ 12 hr remaining | Sequential | ~~20 hr~~ ~12 hr |
-| Phase 5 | Security Hardening | 4 | 26 hr | Sequential | ~26 hr |
-| Phase 6 | CI/CD / Monitoring | 4 | 12 hr | 2 parallel groups | ~6 hr |
-| Phase 7 | Post-Launch | 12+ | 28 hr | Full parallel | ~6 hr |
-| **Total** | | **56+** (1 done) | **~96 hr** remaining | | **~57 hr wall** |
+| Phase | Description | Tasks | Status | Remaining |
+|-------|-------------|-------|--------|-----------|
+| Phase 0 | Emergency Fixes | 8 | **DONE** (6/8; P0-5 swap + P0-6 monitoring deferred) | ~15 min |
+| Phase 1 | Quick Wins | 14 | **DONE** | 0 |
+| Phase 2 | Filing Pipeline Fix | 2 | **DONE** | 0 |
+| Phase 3 | Infrastructure / Config | 9 | **DONE** | 0 |
+| Phase 4 | Filing Pipeline Core | 3 | **PARTIAL** (P4-2 XML done; P4-1 + P4-3 blocked) | ~12 hr |
+| Phase 5 | Security Hardening | 4 | **DONE** (MFA enforcement deferred) | 0 |
+| Phase 6 | CI/CD / Monitoring | 4 | **DONE** | 0 |
+| Phase 7 | Post-Launch | 12+ | **DONE** | 0 |
+| **Total** | | **56+** | **~52 done, 2 blocked, 2 deferred** | **~12 hr** |
 
 ### Pre-Launch Minimum
 
 For a working FinCEN submission pipeline (minimum viable go-live):
 
-- Phase 0 (emergency fixes): 30 min
-- Phase 1 (quick wins): 1 hr
-- Phase 2 (filing pipeline fix): 2 hr
-- Phase 3 subset (P3-1 Stripe + P3-2 SFTP + P3-5/P3-6 schema): 2 hr
-- Phase 4 (filing pipeline core): 20 hr
+- ~~Phase 0 (emergency fixes): 30 min~~ **DONE**
+- ~~Phase 1 (quick wins): 1 hr~~ **DONE**
+- ~~Phase 2 (filing pipeline fix): 2 hr~~ **DONE**
+- ~~Phase 3 subset (P3-1 Stripe + P3-2 SFTP + P3-5/P3-6 schema): 2 hr~~ **DONE**
+- Phase 4 remaining (P4-1 Treasury + P4-3 submission): ~12 hr — **BLOCKED on B2B port**
 
-**Minimum for functional filing: ~25 hours wall clock.**
+**Remaining for functional filing: ~12 hours wall clock** (down from original ~25 hr estimate). Blocked on B2B Treasury rates port.
 
-Phase 5 (security) should follow closely but is not blocking for an initial soft launch with known-user testing. Phase 6 (CI/CD) and Phase 7 are enhancements.
+~~Phase 5 (security) should follow closely but is not blocking for an initial soft launch with known-user testing.~~ **DONE.** ~~Phase 6 (CI/CD) and Phase 7 are enhancements.~~ **DONE.**
 
 ### Key Risks and Mitigations
 
@@ -812,4 +814,4 @@ Phase 5 (security) should follow closely but is not blocking for an initial soft
 
 ---
 
-*This document is the authoritative implementation plan for the D2C FBAR Direct application. All work should reference this plan for sequencing, file ownership, and agent assignment. Updated: 2026-02-21 (P4-2 FinCEN XML ported, submit route gate fixed).*
+*This document is the authoritative implementation plan for the D2C FBAR Direct application. All work should reference this plan for sequencing, file ownership, and agent assignment. Updated: 2026-02-21 (Phases 0-3, 5-7 DONE; P4-2 FinCEN XML ported; E2E test suite T16-T28 added; frontend fixes F1-F6 applied. Remaining: P4-1 Treasury + P4-3 submission (~12 hr), P0-5 swap + P0-6 monitoring, MFA login enforcement wiring).*

@@ -70,7 +70,6 @@ test.describe.serial("T25-A: Authenticated user redirected from auth pages", () 
    * Test 1: Authenticated user on /login is redirected to app.
    */
   test("1: Auth'd user on /login redirects to app", async ({ page }) => {
-    test.fixme(true, "App does not redirect authenticated users away from /login — needs middleware implementation");
     // Establish an authenticated session
     await loginAsTestUser(page, DEBUG_EMAIL, DEBUG_PASSWORD);
 
@@ -90,7 +89,6 @@ test.describe.serial("T25-A: Authenticated user redirected from auth pages", () 
    * Test 2: Authenticated user on /signup is redirected to app.
    */
   test("2: Auth'd user on /signup redirects to app", async ({ page }) => {
-    test.fixme(true, "App does not redirect authenticated users away from /signup — needs middleware implementation");
     // Already authenticated from test 1 (serial — same context, cookies survive)
     // Re-login to be safe in case the context was reset.
     await loginAsTestUser(page, DEBUG_EMAIL, DEBUG_PASSWORD);
@@ -224,7 +222,6 @@ test.describe.serial("T25-C: Login lockout", () => {
   test("10: Login lockout after 5 failed attempts — lockout message appears", async ({
     page,
   }) => {
-    test.fixme(true, "Lockout error message UI not yet implemented — account locks but no visible alert rendered");
     test.slow(); // bcrypt × 5 + network latency can easily exceed 30 s
 
     const wrongPassword = "WrongPassword!";
@@ -271,7 +268,6 @@ test.describe.serial("T25-C: Login lockout", () => {
   test("11: Locked user with correct password still sees locked-out message (not wrong-password)", async ({
     page,
   }) => {
-    test.fixme(true, "Lockout error message UI not yet implemented — account locks but no visible alert rendered");
     // Attempt login with the correct password for the now-locked user
     await page.goto("/login", { waitUntil: "networkidle" });
     await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
