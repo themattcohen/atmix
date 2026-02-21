@@ -1,0 +1,8 @@
+# Tonal Workout Sync
+# Install: pip install -r requirements.txt
+
+# HTTP requests
+requests>=2.28.0
+
+# Environment variable loading
+python-dotenv>=1.0.0
