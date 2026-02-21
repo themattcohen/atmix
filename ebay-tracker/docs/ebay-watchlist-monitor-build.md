@@ -38,7 +38,7 @@ No login/auth system. Single user. Runs as a containerized app on Hetzner.
 ## App Structure
 
 ```
-ebay-watchlist-monitor/
+ebay-tracker/
 ├── src/
 │   ├── app/                          # Next.js App Router
 │   │   ├── layout.tsx                # Root layout (global styles, providers)
@@ -533,7 +533,7 @@ Phase 5 — Docker & Deploy
 ### Project files added to root
 
 ```
-ebay-watchlist-monitor/
+ebay-tracker/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .dockerignore
