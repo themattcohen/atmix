@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark theme is default */
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-background text-text-primary;
+}
+
+/* Pulse animation for urgent countdowns */
+@keyframes pulse-urgent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-urgent {
+  animation: pulse-urgent 1s ease-in-out infinite;
+}
