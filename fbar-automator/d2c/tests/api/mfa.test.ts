@@ -38,7 +38,8 @@ import { POST as mfaSetup } from "@/app/api/auth/mfa/setup/route";
 import { POST as mfaVerify } from "@/app/api/auth/mfa/verify/route";
 import { POST as mfaDisable } from "@/app/api/auth/mfa/disable/route";
 import { POST as mfaRecovery } from "@/app/api/auth/mfa/recovery/route";
-import { POST as mfaLoginVerify, loginVerifyAttempts } from "@/app/api/auth/mfa/login-verify/route";
+import { POST as mfaLoginVerify } from "@/app/api/auth/mfa/login-verify/route";
+import { loginVerifyAttempts } from "@/lib/login-verify-rate-limit";
 
 // Real MFA lib imports
 import { generateSecret, verifyTotp, generateRecoveryCodes, hashRecoveryCode } from "@/lib/mfa";

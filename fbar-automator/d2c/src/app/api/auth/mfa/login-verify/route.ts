@@ -5,23 +5,7 @@ import { prisma } from "@/lib/db";
 import { verifyTotp, hashRecoveryCode } from "@/lib/mfa";
 import { decrypt } from "@/lib/encryption";
 import { createMfaCookie } from "@/lib/mfa-cookie";
-
-// ---------------------------------------------------------------------------
-// Per-user rate limit: 5 attempts per 5 minutes (in-memory)
-// ---------------------------------------------------------------------------
-export const loginVerifyAttempts = new Map<string, { count: number; resetTime: number }>();
-
-function checkLoginVerifyRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const entry = loginVerifyAttempts.get(userId);
-  if (!entry || now > entry.resetTime) {
-    loginVerifyAttempts.set(userId, { count: 1, resetTime: now + 5 * 60_000 });
-    return true;
-  }
-  if (entry.count >= 5) return false;
-  entry.count++;
-  return true;
-}
+import { checkLoginVerifyRateLimit } from "@/lib/login-verify-rate-limit";
 
 const loginVerifySchema = z
   .object({
