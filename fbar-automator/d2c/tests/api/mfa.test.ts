@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
+import { vi, describe, it, expect, beforeAll, beforeEach, afterAll, afterEach } from "vitest";
 import * as OTPAuth from "otpauth";
 
 // ---------------------------------------------------------------------------
