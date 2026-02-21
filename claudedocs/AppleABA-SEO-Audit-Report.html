@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple ABA - Comprehensive SEO Audit Report</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --danger: #dc2626;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .header-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Grade Badge */
+        .grade-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            color: var(--warning);
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        nav a {
+            color: var(--gray-700);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Sections */
+        section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--gray-900);
+            font-size: 1.75rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            color: var(--gray-800);
+            font-size: 1.25rem;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: var(--gray-700);
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--gray-700);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: var(--gray-100);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        tr:hover {
+            background: var(--gray-50);
+        }
+
+        /* Status indicators */
+        .status-good { color: var(--success); font-weight: 600; }
+        .status-warning { color: var(--warning); font-weight: 600; }
+        .status-bad { color: var(--danger); font-weight: 600; }
+
+        /* Fix boxes */
+        .fix-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border-left: 4px solid var(--warning);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .fix-box.critical {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left-color: var(--danger);
+        }
+
+        .fix-box h4 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fix-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .fix-meta span {
+            background: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        /* Code blocks */
+        pre {
+            background: var(--gray-900);
+            color: #e5e7eb;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        /* Inline code */
+        p code, li code {
+            background: var(--gray-100);
+            color: var(--danger);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Grade summary cards */
+        .grade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .grade-card {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+        }
+
+        .grade-card .grade {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+        }
+
+        .grade-card .category {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .grade-a { color: var(--success); }
+        .grade-b { color: #22c55e; }
+        .grade-c { color: var(--warning); }
+        .grade-d { color: #f97316; }
+        .grade-f { color: var(--danger); }
+
+        /* Executive summary */
+        .exec-summary {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .exec-summary h2 {
+            border-bottom-color: var(--primary);
+        }
+
+        /* Highlight boxes */
+        .highlight-box {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box.success {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+        }
+
+        .highlight-box.warning {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+        }
+
+        .highlight-box.danger {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 10px 15px;
+            background: var(--gray-50);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* Action plan */
+        .action-priority {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-critical {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .priority-high {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .priority-medium {
+            background: #dbeafe;
+            color: var(--primary);
+        }
+
+        /* TOC */
+        .toc {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px 30px;
+            margin: 20px 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+        }
+
+        .toc ol {
+            columns: 2;
+            column-gap: 30px;
+        }
+
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* Print styles */
+        @media print {
+            nav { display: none; }
+            section { break-inside: avoid; }
+            .fix-box { break-inside: avoid; }
+            pre { white-space: pre-wrap; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.75rem; }
+            .header-meta { flex-direction: column; gap: 10px; }
+            nav ul { flex-direction: column; align-items: center; }
+            .toc ol { columns: 1; }
+            .grade-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Copy button for code */
+        .code-wrapper {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gray-700);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Website Audit Report</h1>
+            <h2 style="font-size: 1.5rem; font-weight: normal; opacity: 0.9; border: none; margin: 0; padding: 0;">Apple ABA - appleabacare.com</h2>
+            <div class="header-meta">
+                <span>📅 January 28, 2026</span>
+                <span>🏥 ABA Therapy Provider</span>
+                <span>📍 Mahwah, NJ & New York, NY</span>
+                <span>🔍 Full Presence Audit</span>
+            </div>
+            <div class="grade-badge">C+</div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#executive">Executive Summary</a></li>
+                <li><a href="#grades">Grades</a></li>
+                <li><a href="#technical">Technical</a></li>
+                <li><a href="#seo">SEO</a></li>
+                <li><a href="#local">Local SEO</a></li>
+                <li><a href="#social">Social & Reviews</a></li>
+                <li><a href="#citations">Citations</a></li>
+                <li><a href="#competition">Competition</a></li>
+                <li><a href="#action-plan">Action Plan</a></li>
+                <li><a href="#schema-code">Schema Code</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Executive Summary -->
+        <section id="executive" class="exec-summary">
+            <h2>Executive Summary</h2>
+            <p>Apple ABA has a <strong>technically sound website with excellent content</strong> (176 blog posts, active FAQ pages) and <strong>good performance metrics</strong> (2-second load time). However, <strong style="color: var(--danger);">critical local SEO and online presence gaps are severely limiting visibility</strong> to families searching for ABA therapy services.</p>
+
+            <h3>🚨 The Core Problem</h3>
+            <p>The website is well-built but essentially "invisible" to local search because it's missing the structured data (schema markup) that Google needs to understand and surface the business. Without LocalBusiness schema, Google doesn't confidently know that Apple ABA is a local healthcare provider—which means you're losing the "Local Pack" (the map with 3 businesses) to competitors who have these basics in place.</p>
+
+            <h3>✅ The Good News</h3>
+            <p>The fixes are <strong>straightforward and high-impact</strong>. Implementing proper schema markup, optimizing Google Business Profile, and adding citations to autism-specific directories could dramatically improve local search rankings within <strong>4-8 weeks</strong>.</p>
+
+            <div class="highlight-box warning">
+                <h4 style="margin-top: 0;">⏱️ Quick Win Opportunity</h4>
+                <p style="margin-bottom: 0;">With just <strong>3-4 hours of work</strong>, you can implement the critical schema fixes that will significantly improve local visibility. The schema code is ready to copy-paste in this report.</p>
+            </div>
+        </section>
+
+        <!-- Grade Summary -->
+        <section id="grades">
+            <h2>Grade Summary</h2>
+            <div class="grade-grid">
+                <div class="grade-card">
+                    <div class="grade grade-b">B+</div>
+                    <div class="category">Performance</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-c">C</div>
+                    <div class="category">SEO</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-b">B+</div>
+                    <div class="category">Accessibility</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-a">A-</div>
+                    <div class="category">Content</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-c">C-</div>
+                    <div class="category">Local SEO</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-b">B</div>
+                    <div class="category">Competitive Position</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-c">C</div>
+                    <div class="category">Social Presence</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-c">C+</div>
+                    <div class="category">Reviews</div>
+                </div>
+                <div class="grade-card">
+                    <div class="grade grade-c">C</div>
+                    <div class="category">Citations</div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Grade</th>
+                        <th>Status Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td class="status-good">B+</td>
+                        <td>Good load times (2s), needs resource optimization (75 scripts, 48 stylesheets)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SEO</strong></td>
+                        <td class="status-warning">C</td>
+                        <td>Missing critical LocalBusiness, MedicalBusiness, and FAQPage schema</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accessibility</strong></td>
+                        <td class="status-good">B+</td>
+                        <td>Strong foundation, 10 form inputs need labels</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Content</strong></td>
+                        <td class="status-good">A-</td>
+                        <td>Excellent blog (176 posts), missing therapist profiles</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Local SEO</strong></td>
+                        <td class="status-bad">C-</td>
+                        <td>No LocalBusiness schema, GBP under-optimized, no GBP link on site</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Competitive Position</strong></td>
+                        <td class="status-good">B</td>
+                        <td>Strong differentiators (no waitlist, concierge), untapped opportunities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Social Presence</strong></td>
+                        <td class="status-warning">C</td>
+                        <td>Instagram active, Facebook unclear, no YouTube/TikTok</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reviews & Reputation</strong></td>
+                        <td class="status-warning">C+</td>
+                        <td>Positive sentiment, needs more review volume</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Citations/NAP</strong></td>
+                        <td class="status-warning">C</td>
+                        <td>Good consistency, missing from Autism Speaks, Psychology Today, Beaming Health</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Technical Analysis -->
+        <section id="technical">
+            <h2>Section 1: Technical Analysis</h2>
+
+            <h3>Performance Metrics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Time to First Byte (TTFB)</td>
+                        <td>1ms</td>
+                        <td>&lt;800ms</td>
+                        <td class="status-good">✅ Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>DOM Interactive</td>
+                        <td>353ms</td>
+                        <td>&lt;1000ms</td>
+                        <td class="status-good">✅ Good</td>
+                    </tr>
+                    <tr>
+                        <td>Total Load Time</td>
+                        <td>2,027ms</td>
+                        <td>&lt;3000ms</td>
+                        <td class="status-good">✅ Good</td>
+                    </tr>
+                    <tr>
+                        <td>DOM Content Loaded</td>
+                        <td>359ms</td>
+                        <td>&lt;500ms</td>
+                        <td class="status-good">✅ Excellent</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Assessment:</strong> The website loads quickly, which is critical for both user experience and Google rankings. Parents researching ABA therapy on mobile devices will not experience frustrating delays.</p>
+
+            <h3>Resource Analysis</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resource Type</th>
+                        <th>Count</th>
+                        <th>Assessment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Scripts (JS)</td>
+                        <td>75</td>
+                        <td class="status-warning">⚠️ High - WordPress plugin bloat</td>
+                    </tr>
+                    <tr>
+                        <td>Stylesheets (CSS)</td>
+                        <td>48</td>
+                        <td class="status-warning">⚠️ High - needs consolidation</td>
+                    </tr>
+                    <tr>
+                        <td>Images</td>
+                        <td>48</td>
+                        <td class="status-good">✅ Normal</td>
+                    </tr>
+                    <tr>
+                        <td>Forms</td>
+                        <td>2</td>
+                        <td class="status-good">✅ Normal</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fix-box">
+                <h4>🔧 FIX: Resource Optimization</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> Medium (2-4 hours)</span>
+                    <span><strong>Impact:</strong> Medium</span>
+                    <span><strong>Priority:</strong> Strategic (90 days)</span>
+                </div>
+                <p><strong>The Problem:</strong> 75 JavaScript files and 48 stylesheets is excessive. Each file requires a separate HTTP request, which can slow down the site on slower connections.</p>
+                <pre><code>Steps to consolidate resources:
+
+1. AUDIT PLUGINS
+   - Go to WordPress Admin → Plugins
+   - Deactivate plugins one at a time and test
+   - Remove unused/redundant plugins
+   - Target: Reduce to 15-20 essential plugins
+
+2. INSTALL OPTIMIZATION PLUGIN
+   - Install "WP Rocket" or "Autoptimize" (free)
+   - Enable CSS/JS minification and combination
+   - Enable lazy loading for images
+   - Target: Reduce 48 stylesheets to 5-10 combined
+
+3. DEFER NON-CRITICAL SCRIPTS
+   - In WP Rocket: Settings → File Optimization → Defer JavaScript
+   - Move tracking scripts to footer
+
+4. TEST AFTER CHANGES
+   - Use GTmetrix.com to verify improvements
+   - Test all forms and interactive elements</code></pre>
+            </div>
+
+            <h3>Accessibility Assessment</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check</th>
+                        <th>Result</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Images without alt text</td>
+                        <td>0</td>
+                        <td class="status-good">✅ Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Form inputs without labels</td>
+                        <td>10</td>
+                        <td class="status-warning">⚠️ Needs fix</td>
+                    </tr>
+                    <tr>
+                        <td>Zoom disabled</td>
+                        <td>No</td>
+                        <td class="status-good">✅ Correct</td>
+                    </tr>
+                    <tr>
+                        <td>Skip link present</td>
+                        <td>Yes</td>
+                        <td class="status-good">✅ Good</td>
+                    </tr>
+                    <tr>
+                        <td>ARIA live regions</td>
+                        <td>8</td>
+                        <td class="status-good">✅ Well implemented</td>
+                    </tr>
+                    <tr>
+                        <td>Language attribute</td>
+                        <td>en-US</td>
+                        <td class="status-good">✅ Correct</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fix-box">
+                <h4>🔧 FIX: Form Accessibility</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> Low (30 min)</span>
+                    <span><strong>Impact:</strong> Medium</span>
+                    <span><strong>Priority:</strong> High (30 days)</span>
+                </div>
+                <p><strong>The Problem:</strong> 10 form inputs rely only on placeholder text instead of proper labels. Screen readers may not correctly identify these fields.</p>
+                <pre><code>BEFORE (Problem):
+&lt;input type="text" placeholder="Your Name"&gt;
+
+AFTER (Fixed):
+&lt;label for="name" class="screen-reader-text"&gt;Your Name&lt;/label&gt;
+&lt;input type="text" id="name" placeholder="Your Name" aria-label="Your Name"&gt;
+
+For Elementor forms:
+1. Edit each form in Elementor
+2. For each field, ensure "Label" is filled in (not just placeholder)
+3. If you want label hidden visually, add CSS:
+   .elementor-field-label {
+     position: absolute;
+     left: -9999px;
+   }</code></pre>
+            </div>
+
+            <h3>Technical Stack</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Value</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Platform</td>
+                        <td>WordPress</td>
+                        <td>With Elementor page builder</td>
+                    </tr>
+                    <tr>
+                        <td>SEO Plugin</td>
+                        <td>Yoast SEO</td>
+                        <td>Properly configured</td>
+                    </tr>
+                    <tr>
+                        <td>HTTPS</td>
+                        <td>✅ Enabled</td>
+                        <td>Secure connection</td>
+                    </tr>
+                    <tr>
+                        <td>Analytics</td>
+                        <td>GA, Facebook Pixel, GTM</td>
+                        <td>Complete tracking</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Other Technical Issues</h3>
+            <ul>
+                <li><strong>Font Loading Failures:</strong> Kaleko105 fonts from GeeksProduction CDN failing. Add system font fallbacks. <em>(Low priority)</em></li>
+                <li><strong>Facebook Pixel Duplicate:</strong> Console shows duplicate ID warning. Ensure pixel is installed in only one place (recommend GTM). <em>(Low priority)</em></li>
+            </ul>
+        </section>
+
+        <!-- SEO Analysis -->
+        <section id="seo">
+            <h2>Section 2: SEO Analysis</h2>
+
+            <h3>On-Page SEO</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Current Value</th>
+                        <th>Assessment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Title Tag</strong></td>
+                        <td>"In-Home ABA Therapists in New Jersey | Apple ABA" (57 chars)</td>
+                        <td class="status-good">✅ Optimal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Meta Description</strong></td>
+                        <td>"Expert in-home ABA therapists in New Jersey. No waitlist, free consults..." (122 chars)</td>
+                        <td class="status-warning">⚠️ Too short (target: 150-160)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>H1</strong></td>
+                        <td>"ABA Therapy in New Jersey"</td>
+                        <td class="status-good">✅ Good</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canonical</strong></td>
+                        <td>https://appleabacare.com/</td>
+                        <td class="status-good">✅ Correct</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fix-box">
+                <h4>🔧 FIX: Meta Description</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> 5 minutes</span>
+                    <span><strong>Impact:</strong> Medium</span>
+                    <span><strong>Priority:</strong> Critical (do today)</span>
+                </div>
+                <pre><code>CURRENT (122 chars):
+"Expert in-home ABA therapists in New Jersey. No waitlist, free consults,
+and personalized autism care from Apple ABA."
+
+RECOMMENDED (156 chars):
+"Expert in-home ABA therapists in New Jersey. No waitlist, free consultations,
+insurance accepted. BCBA-supervised personalized autism care. Call 201-270-0222."
+
+WHERE TO CHANGE:
+WordPress Admin → Yoast SEO → Search Appearance → Homepage
+OR Edit Homepage → Scroll to Yoast SEO box → Edit snippet</code></pre>
+            </div>
+
+            <h3>Schema Markup Analysis — <span style="color: var(--danger);">#1 CRITICAL ISSUE</span></h3>
+
+            <div class="highlight-box danger">
+                <h4 style="margin-top: 0;">🚨 Why This Is Critical</h4>
+                <p>When someone searches "ABA therapy near me" or "autism therapy Mahwah NJ," Google uses schema markup to understand which businesses are relevant. Without LocalBusiness schema, Google doesn't confidently know:</p>
+                <ul style="margin-bottom: 0;">
+                    <li>That Apple ABA is a local business (not just an informational website)</li>
+                    <li>Where exactly it's located</li>
+                    <li>What services it provides</li>
+                    <li>How to contact it</li>
+                </ul>
+                <p style="margin-top: 15px; margin-bottom: 0;"><strong>Result:</strong> Competitors WITH this schema appear in the Google Maps "Local Pack" (top 3 businesses) while Apple ABA is invisible.</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Schema Type</th>
+                        <th>Present</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Organization</td>
+                        <td class="status-good">✅ Yes</td>
+                        <td>Basic info present but incomplete</td>
+                    </tr>
+                    <tr>
+                        <td>WebSite</td>
+                        <td class="status-good">✅ Yes</td>
+                        <td>Search action enabled</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LocalBusiness</strong></td>
+                        <td class="status-bad">❌ NO</td>
+                        <td>🔴 CRITICAL — Google can't identify as local business</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MedicalBusiness</strong></td>
+                        <td class="status-bad">❌ NO</td>
+                        <td>🔴 CRITICAL — Google can't identify as healthcare</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FAQPage</strong></td>
+                        <td class="status-bad">❌ NO</td>
+                        <td>🟡 Missing rich snippet opportunity</td>
+                    </tr>
+                    <tr>
+                        <td>BreadcrumbList</td>
+                        <td class="status-good">✅ Yes</td>
+                        <td>Basic implementation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fix-box critical">
+                <h4>🚨 FIX: Add LocalBusiness/MedicalBusiness Schema (CRITICAL)</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> 1-2 hours</span>
+                    <span><strong>Impact:</strong> VERY HIGH</span>
+                    <span><strong>Priority:</strong> DO THIS WEEK</span>
+                </div>
+                <p>Add the JSON-LD script to your site's &lt;head&gt; section. Full ready-to-use code is in the <a href="#schema-code">Schema Code Appendix</a> below.</p>
+                <p><strong>Options to implement:</strong></p>
+                <ol>
+                    <li><strong>Via Theme Header (Recommended):</strong> Appearance → Theme Editor → header.php → Add before &lt;/head&gt;</li>
+                    <li><strong>Via Plugin:</strong> Install "Rank Math" plugin and configure MedicalBusiness schema through UI</li>
+                    <li><strong>Via Header/Footer Plugin:</strong> Use "Insert Headers and Footers" plugin to add script</li>
+                </ol>
+            </div>
+
+            <div class="fix-box critical">
+                <h4>🚨 FIX: Add FAQPage Schema</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> 30 minutes</span>
+                    <span><strong>Impact:</strong> High</span>
+                    <span><strong>Priority:</strong> DO THIS WEEK</span>
+                </div>
+                <p>The FAQ content already exists on the site. It just needs schema markup to enable FAQ rich snippets in Google. See <a href="#schema-code">Schema Code Appendix</a> for ready-to-use code.</p>
+                <p><strong>Easiest method:</strong> Use Rank Math's FAQ schema feature or Yoast FAQ blocks.</p>
+            </div>
+
+            <h3>Sitemap & Content</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Robots.txt</td>
+                        <td class="status-good">✅ Correct</td>
+                        <td>Allows crawlers, references sitemap</td>
+                    </tr>
+                    <tr>
+                        <td>XML Sitemap</td>
+                        <td class="status-good">✅ Excellent</td>
+                        <td>7 specialized sitemaps</td>
+                    </tr>
+                    <tr>
+                        <td>Blog Posts</td>
+                        <td class="status-good">176 posts</td>
+                        <td>Outstanding content volume</td>
+                    </tr>
+                    <tr>
+                        <td>Core Pages</td>
+                        <td class="status-good">20 pages</td>
+                        <td>Good coverage</td>
+                    </tr>
+                    <tr>
+                        <td>Location Pages</td>
+                        <td class="status-good">Present</td>
+                        <td>Counties and areas served</td>
+                    </tr>
+                    <tr>
+                        <td>Therapist Profiles</td>
+                        <td class="status-bad">❌ Missing</td>
+                        <td>Trust signal gap</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fix-box">
+                <h4>🔧 FIX: Create Therapist Profile Pages</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> 4-6 hours</span>
+                    <span><strong>Impact:</strong> High (E-E-A-T)</span>
+                    <span><strong>Priority:</strong> High (30 days)</span>
+                </div>
+                <p><strong>Why it matters:</strong> Google's E-E-A-T guidelines (Experience, Expertise, Authoritativeness, Trust) are especially important for healthcare. Parents also want to know WHO will work with their child.</p>
+                <pre><code>RECOMMENDED STRUCTURE:
+Create an "Our Team" page with individual profiles:
+
+For each BCBA/therapist:
+- Professional headshot
+- Name and credentials (e.g., "Sarah Johnson, BCBA, LBA")
+- Bio (2-3 paragraphs about background, specializations)
+- Education and certifications
+- Years of experience
+- Specialization areas (early intervention, teens, etc.)</code></pre>
+            </div>
+        </section>
+
+        <!-- Local SEO -->
+        <section id="local">
+            <h2>Section 3: Local SEO Analysis</h2>
+
+            <h3>Current Status</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Status</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>NAP on website</td>
+                        <td class="status-good">✅ Visible</td>
+                        <td>Good foundation</td>
+                    </tr>
+                    <tr>
+                        <td>NAP consistency</td>
+                        <td class="status-warning">⚠️ Dual locations</td>
+                        <td>Can confuse Google</td>
+                    </tr>
+                    <tr>
+                        <td>LocalBusiness schema</td>
+                        <td class="status-bad">❌ Missing</td>
+                        <td>🔴 Critical gap</td>
+                    </tr>
+                    <tr>
+                        <td>Google Business Profile</td>
+                        <td class="status-warning">⚠️ Under-optimized</td>
+                        <td>Major opportunity</td>
+                    </tr>
+                    <tr>
+                        <td>GBP link on website</td>
+                        <td class="status-bad">❌ Not visible</td>
+                        <td>Easy fix</td>
+                    </tr>
+                    <tr>
+                        <td>Location pages</td>
+                        <td class="status-good">✅ Present</td>
+                        <td>Good for geo-targeting</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>NAP Details</h3>
+            <div class="highlight-box">
+                <p><strong>Primary Location:</strong><br>
+                Apple ABA<br>
+                479 State Route 17 N #2026, Mahwah, NJ 07430<br>
+                201-270-0222</p>
+
+                <p style="margin-bottom: 0;"><strong>Secondary Location:</strong><br>
+                Apple ABA<br>
+                447 Broadway 2nd FL #615, New York, NY 10013<br>
+                201-270-0222</p>
+            </div>
+            <p><strong>Consistency Score: 9/10</strong> — NAP is displayed consistently across the website.</p>
+
+            <div class="fix-box critical">
+                <h4>🚨 FIX: Google Business Profile Optimization</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> 2-3 hours initial</span>
+                    <span><strong>Impact:</strong> VERY HIGH</span>
+                    <span><strong>Priority:</strong> DO THIS WEEK</span>
+                </div>
+                <pre><code>STEP 1: VERIFY/CLAIM GBP
+- Go to google.com/business
+- Search for "Apple ABA Mahwah NJ"
+- If unclaimed: Click "Claim this business" and verify
+- If claimed: Ensure you have admin access
+
+STEP 2: COMPLETE ALL FIELDS
+□ Business name: Apple ABA (exact match to website)
+□ Primary category: "Applied Behavior Analysis Therapist"
+□ Secondary categories: "Autism Therapy Service", "Child Psychologist"
+□ Address: 479 State Route 17 N #2026, Mahwah, NJ 07430
+□ Service area: Add all counties (Bergen, Passaic, etc.)
+□ Phone: 201-270-0222
+□ Website: https://appleabacare.com
+□ Hours: Accurate operating hours
+□ Description: 750 chars max, include keywords naturally
+
+SAMPLE DESCRIPTION:
+"Apple ABA provides expert in-home ABA therapy for children with autism
+in New Jersey. Our BCBA-supervised team delivers personalized, concierge-level
+care with no waitlist. Services include behavioral assessments, communication
+skills development, and social skills training. We accept most major insurance
+including Aetna, Horizon BCBS, and United Healthcare. Serving Bergen County,
+Passaic County, Essex County, and surrounding areas. Call for free consultation."
+
+STEP 3: ADD PHOTOS (Critical!)
+□ Logo (square, high-res)
+□ Cover photo (welcoming therapy session - with permission)
+□ Team photos
+□ Office exterior and interior
+□ At least 10 photos total (35% more clicks with 10+ photos)
+
+STEP 4: ADD SERVICES
+□ In-Home ABA Therapy
+□ Behavioral Assessment
+□ Parent Training
+□ Social Skills Groups
+□ Concierge Care
+
+STEP 5: ENABLE MESSAGING & BOOKING
+□ Turn on messaging
+□ Add booking link if available
+
+STEP 6: ADD GBP LINK TO WEBSITE FOOTER
+&lt;a href="https://g.page/apple-aba-mahwah"&gt;Find us on Google Maps&lt;/a&gt;</code></pre>
+            </div>
+        </section>
+
+        <!-- Social & Reviews -->
+        <section id="social">
+            <h2>Section 4: Social & Reviews Analysis</h2>
+
+            <h3>Social Media Presence</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Status</th>
+                        <th>Activity</th>
+                        <th>Action Needed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Instagram</td>
+                        <td class="status-good">✅ Active</td>
+                        <td>Regular posting</td>
+                        <td>Continue, engage more</td>
+                    </tr>
+                    <tr>
+                        <td>Facebook</td>
+                        <td class="status-warning">⚠️ Unclear</td>
+                        <td>Unknown</td>
+                        <td>Verify/create page</td>
+                    </tr>
+                    <tr>
+                        <td>LinkedIn</td>
+                        <td class="status-good">✅ Present</td>
+                        <td>Job postings active</td>
+                        <td>Add company updates</td>
+                    </tr>
+                    <tr>
+                        <td>YouTube</td>
+                        <td class="status-bad">❌ None</td>
+                        <td>N/A</td>
+                        <td>Create channel</td>
+                    </tr>
+                    <tr>
+                        <td>Nextdoor</td>
+                        <td class="status-good">✅ Listed</td>
+                        <td>Positive mentions</td>
+                        <td>Monitor, engage</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Review Sentiment</h3>
+            <div class="highlight-box success">
+                <p><strong>Overall Sentiment: Positive</strong></p>
+                <p><strong>Common Praise Themes:</strong></p>
+                <ul style="margin-bottom: 0;">
+                    <li>"Remarkable improvement" in children's skills</li>
+                    <li>Team commitment and caring approach</li>
+                    <li>"Game-changer" outcomes for families</li>
+                    <li>Personalized, individualized care</li>
+                    <li>Concierge-level service</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Complaint Themes:</strong> None identified</p>
+            </div>
+
+            <div class="fix-box">
+                <h4>🔧 FIX: Review Generation Strategy</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> Ongoing</span>
+                    <span><strong>Impact:</strong> VERY HIGH</span>
+                    <span><strong>Priority:</strong> Start immediately</span>
+                </div>
+                <p><strong>Goal:</strong> Get 20+ Google reviews in 90 days</p>
+                <pre><code>STEP 1: CREATE REVIEW LINK
+- In GBP dashboard, find your short review link
+- Or: g.page/apple-aba-mahwah/review
+
+STEP 2: ASK AT THE RIGHT TIME
+Best moments to request reviews:
+□ After successful assessment meeting
+□ When parent shares positive feedback verbally
+□ At milestone achievements (child hits a goal)
+□ After 90 days of service
+
+STEP 3: EMAIL TEMPLATE
+---
+Subject: Quick favor - 30 seconds?
+
+Hi [Parent Name],
+
+It's been wonderful working with [Child Name] and seeing their
+progress with [specific skill].
+
+If you have 30 seconds, would you mind sharing your experience
+on Google? It helps other families find quality ABA services.
+
+[Leave a Review] → g.page/apple-aba-mahwah/review
+
+Thank you!
+[Therapist Name]
+---
+
+STEP 4: RESPOND TO ALL REVIEWS
+- Respond within 24-48 hours
+- Thank positive reviewers specifically
+- Never share protected health information
+
+STEP 5: TRACK PROGRESS
+- Goal: 5 reviews/month minimum
+- Response rate: 100%</code></pre>
+            </div>
+        </section>
+
+        <!-- Citations -->
+        <section id="citations">
+            <h2>Section 5: Citations & Backlinks Analysis</h2>
+
+            <h3>Directory Presence</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Directory</th>
+                        <th>Listed</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Google Business</td>
+                        <td class="status-warning">⚠️ Verify</td>
+                        <td>🔴 Critical</td>
+                    </tr>
+                    <tr>
+                        <td>Yelp</td>
+                        <td class="status-good">✅ Yes</td>
+                        <td>Monitor</td>
+                    </tr>
+                    <tr>
+                        <td>Yellow Pages</td>
+                        <td class="status-bad">❌ No</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>Bing Places</td>
+                        <td class="status-warning">❓ Unknown</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Apple Maps</td>
+                        <td class="status-warning">⚠️ Likely</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Nextdoor</td>
+                        <td class="status-good">✅ Yes</td>
+                        <td>Monitor</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Healthcare Directories — <span style="color: var(--danger);">CRITICAL GAP</span></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Directory</th>
+                        <th>Listed</th>
+                        <th>Impact</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Autism Speaks</strong></td>
+                        <td class="status-bad">❌ No</td>
+                        <td>🔴 Very High</td>
+                        <td>#1 autism resource for families</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Beaming Health</strong></td>
+                        <td class="status-bad">❌ No</td>
+                        <td>🔴 High</td>
+                        <td>30K+ autism care marketplace</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Psychology Today</strong></td>
+                        <td class="status-bad">❌ No</td>
+                        <td>🔴 High</td>
+                        <td>Major therapist directory</td>
+                    </tr>
+                    <tr>
+                        <td>BHCOE Directory</td>
+                        <td class="status-bad">❌ No</td>
+                        <td>🟡 Medium</td>
+                        <td>Requires accreditation</td>
+                    </tr>
+                    <tr>
+                        <td>Healthgrades</td>
+                        <td class="status-bad">❌ No</td>
+                        <td>🟡 Medium</td>
+                        <td>Healthcare directory</td>
+                    </tr>
+                    <tr>
+                        <td>Autism NJ</td>
+                        <td class="status-warning">❓ Unknown</td>
+                        <td>🔴 High</td>
+                        <td>State autism organization</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="fix-box">
+                <h4>🔧 FIX: Citation Building Plan (90 Days)</h4>
+                <div class="fix-meta">
+                    <span><strong>Effort:</strong> Medium (spread over 90 days)</span>
+                    <span><strong>Impact:</strong> VERY HIGH</span>
+                    <span><strong>Priority:</strong> High</span>
+                </div>
+                <pre><code>PHASE 1: CRITICAL CITATIONS (Week 1-2)
+□ Google Business Profile - Verify and optimize
+□ Bing Places - Create listing at bingplaces.com
+□ Apple Maps - Claim at businessconnect.apple.com
+
+PHASE 2: HEALTHCARE DIRECTORIES (Week 3-4)
+□ Autism Speaks Provider Directory
+  - Go to autismspeaks.org/resource-guide
+  - Submit provider listing
+  - This is the #1 resource families use!
+
+□ Psychology Today
+  - Go to psychologytoday.com/us/therapists/join
+  - Create provider profile
+  - Add all credentials and specializations
+
+□ Beaming Health
+  - Go to beaminghealth.com/for-providers
+  - Apply for provider listing
+  - Specialized autism care marketplace
+
+PHASE 3: GENERAL DIRECTORIES (Week 5-6)
+□ Yellow Pages - yellowpages.com/business
+□ Manta - manta.com/claim
+□ Foursquare - business.foursquare.com
+□ MapQuest - mapquest.com/business
+
+PHASE 4: STATE/LOCAL RESOURCES (Week 7-8)
+□ NJ Department of Human Services Provider List
+□ Autism NJ Referral Database (autismnj.org)
+□ Bergen County resource directories
+□ Local Chamber of Commerce
+
+CITATION CHECKLIST (use for each):
+□ Business name exactly: "Apple ABA"
+□ Address exactly: "479 State Route 17 N #2026, Mahwah, NJ 07430"
+□ Phone exactly: "201-270-0222"
+□ Website: "https://appleabacare.com"
+□ Consistent description across all
+□ Same logo and photos as GBP</code></pre>
+            </div>
+        </section>
+
+        <!-- Competition -->
+        <section id="competition">
+            <h2>Section 6: Competitive Analysis</h2>
+
+            <h3>Top Competitors</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Key Differentiator</th>
+                        <th>What Apple ABA Can Learn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ABA Centers of NJ</td>
+                        <td>No waitlist + diagnostics</td>
+                        <td>Consider adding assessment services</td>
+                    </tr>
+                    <tr>
+                        <td>Proud Moments ABA</td>
+                        <td>BHCOE Accredited</td>
+                        <td>Pursue BHCOE accreditation</td>
+                    </tr>
+                    <tr>
+                        <td>Helping Hands Family</td>
+                        <td>Multi-location presence</td>
+                        <td>Expand geographic coverage</td>
+                    </tr>
+                    <tr>
+                        <td>Cross River Therapy</td>
+                        <td>Strong "near me" SEO</td>
+                        <td>Fix local SEO gaps</td>
+                    </tr>
+                    <tr>
+                        <td>Children First ABA NYC</td>
+                        <td>100% BCBA-delivered</td>
+                        <td>Emphasize BCBA supervision</td>
+                    </tr>
+                    <tr>
+                        <td>Yellow Bus ABA</td>
+                        <td>Teen/adolescent focus</td>
+                        <td>Consider teen specialization</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Apple ABA's Competitive Advantages</h3>
+            <div class="highlight-box success">
+                <ol>
+                    <li><strong>"No Waitlist"</strong> — Major differentiator (many competitors have 3-6 month waits)</li>
+                    <li><strong>"Concierge Care"</strong> — Unique positioning in market</li>
+                    <li><strong>In-Home Focus</strong> — Matches family preference trends</li>
+                    <li><strong>Dual Location</strong> — NY/NJ coverage is valuable</li>
+                    <li><strong>Content Volume</strong> — 176 blog posts is exceptional</li>
+                </ol>
+            </div>
+
+            <h3>Untapped Opportunities</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Opportunity</th>
+                        <th>Difficulty</th>
+                        <th>Potential Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BHCOE Accreditation</td>
+                        <td>High (6-12 months)</td>
+                        <td class="status-good">Very High</td>
+                    </tr>
+                    <tr>
+                        <td>Teen/Adolescent Programs</td>
+                        <td>Medium</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>Multilingual Services</td>
+                        <td>Medium</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>Outcome Transparency</td>
+                        <td>Medium</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Action Plan -->
+        <section id="action-plan">
+            <h2>Section 7: Prioritized Action Plan</h2>
+
+            <h3><span class="action-priority priority-critical">Critical</span> Do This Week</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Action</th>
+                        <th>Time</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>Add LocalBusiness/MedicalBusiness schema</strong></td>
+                        <td>2 hrs</td>
+                        <td class="status-good">Very High</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>Add FAQPage schema</strong> to existing FAQ pages</td>
+                        <td>30 min</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>Expand meta description</strong> to 155 characters</td>
+                        <td>5 min</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>Verify Google Business Profile</strong> ownership</td>
+                        <td>30 min</td>
+                        <td class="status-good">Very High</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Estimated Total Time:</strong> 3-4 hours<br>
+            <strong>Expected Impact:</strong> Significant improvement in local search visibility within 4-6 weeks</p>
+
+            <h3><span class="action-priority priority-high">High Priority</span> Next 30 Days</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Action</th>
+                        <th>Time</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>5</td>
+                        <td>Fully optimize Google Business Profile</td>
+                        <td>3 hrs</td>
+                        <td class="status-good">Very High</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Create Autism Speaks provider listing</td>
+                        <td>1 hr</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Create Psychology Today profile</td>
+                        <td>1 hr</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Fix 10 form inputs without labels</td>
+                        <td>30 min</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Start review generation campaign</td>
+                        <td>Ongoing</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>Create Bing Places listing</td>
+                        <td>30 min</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>Claim Apple Business Connect</td>
+                        <td>30 min</td>
+                        <td>Medium</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3><span class="action-priority priority-medium">Strategic</span> Next 90 Days</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Action</th>
+                        <th>Time</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>12</td>
+                        <td>Create therapist profile pages</td>
+                        <td>6 hrs</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>Consolidate CSS/JS resources</td>
+                        <td>4 hrs</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>Build out healthcare directory citations</td>
+                        <td>4 hrs</td>
+                        <td class="status-good">High</td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>Apply for BBB accreditation</td>
+                        <td>2 hrs</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td>Begin BHCOE accreditation research</td>
+                        <td>4 hrs</td>
+                        <td class="status-good">Very High</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Quick Wins Checklist (Can Do Today)</h3>
+            <ul class="checklist">
+                <li><strong>Expand meta description</strong> — Add 30+ characters (5 minutes)</li>
+                <li><strong>Add LocalBusiness JSON-LD</strong> — Copy schema from appendix (30 minutes)</li>
+                <li><strong>Add FAQPage schema</strong> — Mark up existing FAQ content (30 minutes)</li>
+                <li><strong>Link to GBP</strong> — Add "Find us on Google Maps" to footer (10 minutes)</li>
+                <li><strong>Fix font CSS</strong> — Add system font fallbacks (15 minutes)</li>
+            </ul>
+            <p><strong>Total Quick Win Time:</strong> ~90 minutes<br>
+            <strong>Combined Impact:</strong> Foundation for significant local SEO improvement</p>
+        </section>
+
+        <!-- Schema Code Appendix -->
+        <section id="schema-code">
+            <h2>Appendix: Ready-to-Use Schema Code</h2>
+            <p>Copy and paste these scripts into your website's <code>&lt;head&gt;</code> section.</p>
+
+            <h3>Complete LocalBusiness/MedicalBusiness Schema</h3>
+            <p><strong>Where to add:</strong> Appearance → Theme Editor → header.php → Before <code>&lt;/head&gt;</code><br>
+            <strong>Or use:</strong> "Insert Headers and Footers" plugin</p>
+
+            <div class="code-wrapper">
+                <pre><code>&lt;!-- Apple ABA LocalBusiness Schema - Add to header.php before &lt;/head&gt; --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalBusiness",
+  "name": "Apple ABA",
+  "alternateName": "Apple ABA Autism Therapy",
+  "description": "In-home ABA therapy provider specializing in personalized autism treatment for children in New Jersey and New York. BCBA-supervised services with no waitlist.",
+  "url": "https://appleabacare.com",
+  "telephone": "+1-201-270-0222",
+  "email": "info@appleabacare.com",
+  "priceRange": "$$",
+  "currenciesAccepted": "USD",
+  "paymentAccepted": "Insurance, Credit Card",
+  "medicalSpecialty": "Applied Behavior Analysis",
+  "isAcceptingNewPatients": true,
+  "availableService": [
+    {
+      "@type": "MedicalTherapy",
+      "name": "In-Home ABA Therapy",
+      "description": "One-on-one applied behavior analysis therapy delivered in the comfort of your home by certified therapists"
+    },
+    {
+      "@type": "MedicalTherapy",
+      "name": "Behavioral Assessment",
+      "description": "Comprehensive behavioral assessment and individualized treatment planning"
+    },
+    {
+      "@type": "MedicalTherapy",
+      "name": "Parent Training",
+      "description": "Training and support for parents to reinforce therapy goals at home"
+    },
+    {
+      "@type": "MedicalTherapy",
+      "name": "Concierge ABA Care",
+      "description": "Premium concierge-level ABA therapy services with dedicated support"
+    }
+  ],
+  "address": [
+    {
+      "@type": "PostalAddress",
+      "streetAddress": "479 State Route 17 N #2026",
+      "addressLocality": "Mahwah",
+      "addressRegion": "NJ",
+      "postalCode": "07430",
+      "addressCountry": "US"
+    },
+    {
+      "@type": "PostalAddress",
+      "streetAddress": "447 Broadway 2nd FL #615",
+      "addressLocality": "New York",
+      "addressRegion": "NY",
+      "postalCode": "10013",
+      "addressCountry": "US"
+    }
+  ],
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "41.0887",
+    "longitude": "-74.1438"
+  },
+  "areaServed": [
+    {
+      "@type": "State",
+      "name": "New Jersey"
+    },
+    {
+      "@type": "City",
+      "name": "New York"
+    }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "08:00",
+      "closes": "18:00"
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/appleabacare/",
+    "https://www.facebook.com/appleabacare",
+    "https://www.linkedin.com/company/a-is-for-apple-inc-/",
+    "https://www.yelp.com/biz/apple-aba-mahwah"
+  ],
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://appleabacare.com/wp-content/uploads/apple-aba-logo.png"
+  }
+}
+&lt;/script&gt;</code></pre>
+            </div>
+
+            <h3>Complete FAQPage Schema</h3>
+            <p><strong>Where to add:</strong> On FAQ pages (Insurance FAQ, Concierge Care FAQ, etc.)</p>
+
+            <div class="code-wrapper">
+                <pre><code>&lt;!-- Apple ABA FAQPage Schema - Add to FAQ pages --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is ABA therapy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Applied Behavior Analysis (ABA) therapy is an evidence-based treatment approach that helps children with autism spectrum disorder develop essential skills. Through positive reinforcement and structured interventions, ABA therapy improves communication, social skills, and daily living abilities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does insurance cover ABA therapy in New Jersey?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, most major insurance plans in New Jersey are required to cover ABA therapy for autism under state mandates. Apple ABA works with Aetna, Horizon Blue Cross Blue Shield, United Healthcare, Cigna, and many other insurance providers. We handle insurance verification and prior authorization paperwork for families."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a waitlist for ABA therapy at Apple ABA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, Apple ABA has no waitlist for ABA therapy services. We can typically begin in-home therapy within 1-2 weeks of completing the intake process and insurance verification. Contact us for a free consultation to get started."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What areas does Apple ABA serve?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Apple ABA provides in-home ABA therapy throughout New Jersey, including Bergen County, Passaic County, Essex County, Morris County, and surrounding areas. We also serve families in New York City and the greater New York metropolitan area."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What qualifications do Apple ABA therapists have?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All Apple ABA therapy programs are supervised by Board Certified Behavior Analysts (BCBAs). Our therapy team includes Licensed Behavior Analysts (LBAs) and Registered Behavior Technicians (RBTs) who receive ongoing training and supervision to ensure the highest quality care."
+      }
+    }
+  ]
+}
+&lt;/script&gt;</code></pre>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section>
+            <h2>Summary</h2>
+
+            <h3>What's Working Well</h3>
+            <div class="highlight-box success">
+                <ul style="margin: 0;">
+                    <li>✅ Excellent blog content (176 posts)</li>
+                    <li>✅ Fast website performance (2-second loads)</li>
+                    <li>✅ Strong accessibility foundation</li>
+                    <li>✅ Clear value proposition (concierge care, no waitlist)</li>
+                    <li>✅ Mobile-responsive design</li>
+                    <li>✅ Active Instagram presence</li>
+                    <li>✅ Positive review sentiment</li>
+                    <li>✅ Consistent NAP information</li>
+                </ul>
+            </div>
+
+            <h3>Critical Issues to Fix</h3>
+            <div class="highlight-box danger">
+                <ul style="margin: 0;">
+                    <li>❌ Missing LocalBusiness/MedicalBusiness schema</li>
+                    <li>❌ Missing FAQPage schema</li>
+                    <li>❌ Under-optimized Google Business Profile</li>
+                    <li>❌ Not listed in autism-specific directories (Autism Speaks, Beaming Health)</li>
+                    <li>❌ No therapist profile pages</li>
+                    <li>❌ Meta description too short</li>
+                    <li>❌ 10 form inputs missing accessibility labels</li>
+                </ul>
+            </div>
+
+            <h3>Expected Results After Fixes</h3>
+            <div class="highlight-box">
+                <p><strong>4-6 Weeks:</strong></p>
+                <ul>
+                    <li>Improved visibility in "ABA therapy near me" searches</li>
+                    <li>FAQ rich snippets appearing in Google</li>
+                    <li>Increased Google Business Profile views and calls</li>
+                </ul>
+                <p><strong>3-6 Months:</strong></p>
+                <ul style="margin-bottom: 0;">
+                    <li>Significant increase in organic local search traffic</li>
+                    <li>More review volume (target: 20+ Google reviews)</li>
+                    <li>Presence in healthcare directories driving referrals</li>
+                    <li>Improved competitive position against other NJ ABA providers</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer style="text-align: center; padding: 40px 0; color: var(--gray-600); font-size: 0.9rem;">
+            <p><strong>Full Presence Audit</strong> completed January 28, 2026</p>
+            <p>Generated by automated 5-agent analysis system</p>
+        </footer>
+    </main>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>

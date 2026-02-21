@@ -1,0 +1,165 @@
+THIS IS A *SANDBOX* SITE FOR TESTING PURPOSES ONLY
+U.S. flag
+An official website of the United States government
+
+Here’s how you know
+
+BSA E-Filing System
+Financial Crimes Enforcement Network
+Search
+
+You are logged in as matt@atmix.org
+My Profile
+Help
+Logout
+DASHBOARD
+FILE NOW
+FILING STATUS
+ACCOUNT MANAGEMENT
+SECURE MAILBOX
+RESOURCES
+LINKS
+Residential Real Estate Reporting: FinCEN announced the postponement of Residential Real Estate reporting until March 1, 2026. More details at www.fincen.gov/rre.
+Southwest Border GTO: FinCEN has issued a Geographic Targeting Order (GTO) to combat the illicit activities and money laundering of Mexico-based cartels and other criminal actors along the southwest border of the United States. Due to a court order, at this time, no money services business (MSB) under the jurisdiction of the U.S. District Court for the Southern District of California is required to submit information to FinCEN pursuant to that GTO. These MSBs may, however, voluntarily submit such information to FinCEN.
+Track Status
+Date Range
+
+Past 15 days
+Tracking ID
+BSA ID
+Status
+
+Search
+Reset
+Export page as CSV
+Displaying records 1-4 of 4
+Filing Name
+Filing Type
+Date Filed
+BSA E-Filing Tracking ID
+Number of Documents
+Status Date
+Status
+BSA ID
+TESTBATCH4	FBARXBATCH	02/20/2026, 01:36:39 PM MST	T-FBX26-00000050	26	02/20/2026, 01:36:41 PM MST	Rejected	
+TESTBATCH3	FBARXBATCH	02/20/2026, 01:29:02 PM MST	T-FBX26-00000049	26	02/20/2026, 01:29:13 PM MST	Rejected	
+TESTBATCH2	FBARXBATCH	02/20/2026, 01:22:16 PM MST	T-FBX26-00000048	26	02/20/2026, 01:22:27 PM MST	Rejected	
+TEST FBAR BATCH	FBARXBATCH	02/20/2026, 11:07:58 AM MST	T-FBX26-00000047	26	02/20/2026, 11:28:00 AM MST	Rejected	
+
+Previous
+1
+
+Next
+Show
+
+10
+entries
+Return to top
+Home
+About
+Help
+Contact Us
+U.S. Dept. Of Treasury
+ | 
+FinCEN.gov
+ | 
+Privacy Policy
+ | 
+Accessibility
+Sandbox 0.1.13 (68283a8)
+Submission Errors
+Received the following submission errors for:
+BSA E-Filing Tracking ID:
+T-FBX26-00000050
+Filing Name:
+TESTBATCH4
+Status Date:
+2026-02-20T20:36:41Z
+Code
+Context
+Severity
+Description
+Additional Information
+J38	EFilingBatchXML/Activity[109]/Party[128]/PartyIdentification[130]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[559]/Party[578]/PartyIdentification[580]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[640]/Party[659]/PartyIdentification[661]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[729]/Party[748]/PartyIdentification[750]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[361]/Party[380]/PartyIdentification[382]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[326]/Party[345]/PartyIdentification[347]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[667]/Party[686]/PartyIdentification[688]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[229]/Party[248]/PartyIdentification[250]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+E00		FATAL	
+This submission has been rejected because it contains significant errors. Please fix and re-submit
+the file.
+—
+J38	EFilingBatchXML/Activity[497]/Party[516]/PartyIdentification[518]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[136]/Party[155]/PartyIdentification[157]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[55]/Party[74]/PartyIdentification[76]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[528]/Party[547]/PartyIdentification[549]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[764]/Party[783]/PartyIdentification[785]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[466]/Party[485]/PartyIdentification[487]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[198]/Party[217]/PartyIdentification[219]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[167]/Party[186]/PartyIdentification[188]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[396]/Party[415]/PartyIdentification[417]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[82]/Party[101]/PartyIdentification[103]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[586]/Party[605]/PartyIdentification[607]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[694]/Party[713]/PartyIdentification[715]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[28]/Party[47]/PartyIdentification[49]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[260]/Party[279]/PartyIdentification[281]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[613]/Party[632]/PartyIdentification[634]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[1]/Party[20]/PartyIdentification[22]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[291]/Party[310]/PartyIdentification[312]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+J38	EFilingBatchXML/Activity[431]/Party[450]/PartyIdentification[452]/PartyIdentificationTypeCode	FATAL	
+The element contains a value that is not a valid code.
+value=4 [../../ActivityPartyTypeCode=56]
+Cancel
