@@ -1109,6 +1109,54 @@ function seed() {
     for (const ev of allEvents) stmtEvent.run(ev)
   })()
 
+  // Seed signals for top-ranked items so the Signal column isn't blank
+  console.log('Seeding signals for top-ranked items...')
+  const signalDefs = [
+    { item_id: 'v1|225678901234|0', event_type: 'callup', score: 2, confidence: 0.92, headline: 'Top prospect called up to majors', source: 'mlb_transactions' },
+    { item_id: 'v1|334512098765|0', event_type: 'award', score: 3, confidence: 0.95, headline: 'MVP award winner announced', source: 'rotowire_rss' },
+    { item_id: 'v1|276543210987|0', event_type: 'breakout', score: 1, confidence: 0.80, headline: 'Breakout performance — 4 HR week', source: 'espn_rss' },
+    { item_id: 'v1|404876543210|0', event_type: 'injury_minor', score: -1, confidence: 0.88, headline: 'Day-to-day with hamstring tightness', source: 'rotowire_rss' },
+    { item_id: 'v1|512345678901|0', event_type: 'trade_up', score: 2, confidence: 0.90, headline: 'Traded to contender ahead of deadline', source: 'mlb_transactions' },
+    { item_id: 'v1|445678901234|0', event_type: 'injury_season', score: -3, confidence: 0.93, headline: 'Out for season — torn ACL confirmed', source: 'espn_rss' },
+    { item_id: 'v1|678901234567|0', event_type: 'contract', score: 1, confidence: 0.85, headline: 'Signs 5-year extension worth $200M', source: 'google_news_rss' },
+    { item_id: 'v1|912345678901|0', event_type: 'return_injury', score: 1, confidence: 0.82, headline: 'Activated from IL — expected to start tonight', source: 'rotowire_rss' },
+  ]
+  // Need news_items rows (FK) and a player_roster id (FK) for card_signals
+  const rosterRow = db.prepare('SELECT id FROM player_roster LIMIT 1').get() as { id: number } | undefined
+  const playerId = rosterRow?.id ?? 1
+  const stmtNewsItem = db.prepare(`
+    INSERT INTO news_items (source, content_hash, title, processed)
+    VALUES (@source, @content_hash, @title, 1)
+  `)
+  const stmtSignal = db.prepare(`
+    INSERT INTO card_signals
+      (news_item_id, item_id, player_id, event_type, score, confidence, headline, source, source_url, expires_at)
+    VALUES
+      (@news_item_id, @item_id, @player_id, @event_type, @score, @confidence, @headline, @source, NULL, NULL)
+  `)
+  db.transaction(() => {
+    for (let i = 0; i < signalDefs.length; i++) {
+      const def = signalDefs[i]
+      // Insert a news_items row first to satisfy FK
+      const newsResult = stmtNewsItem.run({
+        source: def.source,
+        content_hash: `seed-signal-${i}`,
+        title: def.headline,
+      })
+      stmtSignal.run({
+        news_item_id: newsResult.lastInsertRowid,
+        item_id: def.item_id,
+        player_id: playerId,
+        event_type: def.event_type,
+        score: def.score,
+        confidence: def.confidence,
+        headline: def.headline,
+        source: def.source,
+      })
+    }
+  })()
+  console.log(`  Signals:   ${signalDefs.length}`)
+
   // Summary
   const rankedCount   = allItems.filter(i => i.rank !== null).length
   const unrankedCount = allItems.filter(i => i.rank === null).length
