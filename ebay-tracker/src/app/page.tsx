@@ -13,7 +13,7 @@ import { ErrorState } from '@/components/watchlist/error-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { WatchlistItem } from '@/types'
 
-const LIMIT = 50
+const LIMIT = 2000
 
 export default function WatchlistPage() {
   const { statusFilter, typeFilter, searchQuery, sortBy, sortDir } = useWatchlistStore()

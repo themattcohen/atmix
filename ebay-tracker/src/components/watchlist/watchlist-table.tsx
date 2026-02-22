@@ -77,7 +77,7 @@ function ResizableTh({
       {resizable && (
         <span
           onMouseDown={onMouseDown}
-          className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-accent/40 transition-colors"
+          className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-accent/40 transition-colors z-10"
         />
       )}
     </th>
@@ -283,7 +283,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
 
               {visibleColumns.bidCount && (
                 <ResizableTh colKey="bidCount" className={`${headerClass} text-center`}>
-                  Bids
+                  <SortableHeader colKey="bid_count" label="Bids" />
                 </ResizableTh>
               )}
 
@@ -295,7 +295,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
 
               {visibleColumns.status && (
                 <ResizableTh colKey="status" className={headerClass}>
-                  Status
+                  <SortableHeader colKey="status" label="Status" />
                 </ResizableTh>
               )}
 

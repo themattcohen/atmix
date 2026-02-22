@@ -146,15 +146,23 @@ export function updateRank(id: string, newRank: number): WatchlistItem[] {
 
       if (oldRank === null) {
         // Inserting unranked item into ranked list
-        db.prepare('UPDATE items SET rank = rank + 1 WHERE rank >= ? AND rank IS NOT NULL').run(newRank)
+        // Two-phase shift via negatives to avoid UNIQUE constraint collisions
+        db.prepare('UPDATE items SET rank = -rank WHERE rank >= ? AND rank IS NOT NULL').run(newRank)
+        db.prepare('UPDATE items SET rank = (-rank) + 1 WHERE rank < 0').run()
         db.prepare('UPDATE items SET rank = ? WHERE item_id = ?').run(newRank, id)
       } else if (newRank < oldRank) {
         // Moving up (e.g., rank 5 → rank 2)
-        db.prepare('UPDATE items SET rank = rank + 1 WHERE rank >= ? AND rank < ?').run(newRank, oldRank)
+        // Two-phase: negate affected ranks, then convert to final values
+        db.prepare('UPDATE items SET rank = NULL WHERE item_id = ?').run(id)
+        db.prepare('UPDATE items SET rank = -rank WHERE rank >= ? AND rank < ? AND rank IS NOT NULL').run(newRank, oldRank)
+        db.prepare('UPDATE items SET rank = (-rank) + 1 WHERE rank < 0').run()
         db.prepare('UPDATE items SET rank = ? WHERE item_id = ?').run(newRank, id)
       } else if (newRank > oldRank) {
         // Moving down (e.g., rank 2 → rank 5)
-        db.prepare('UPDATE items SET rank = rank - 1 WHERE rank > ? AND rank <= ?').run(oldRank, newRank)
+        // Two-phase: negate affected ranks, then convert to final values
+        db.prepare('UPDATE items SET rank = NULL WHERE item_id = ?').run(id)
+        db.prepare('UPDATE items SET rank = -rank WHERE rank > ? AND rank <= ? AND rank IS NOT NULL').run(oldRank, newRank)
+        db.prepare('UPDATE items SET rank = (-rank) - 1 WHERE rank < 0').run()
         db.prepare('UPDATE items SET rank = ? WHERE item_id = ?').run(newRank, id)
       }
       // If newRank === oldRank, no changes needed
@@ -212,7 +220,8 @@ export function freeRank(id: string): void {
 
       const oldRank = row.rank
       db.prepare('UPDATE items SET rank = NULL WHERE item_id = ?').run(id)
-      db.prepare('UPDATE items SET rank = rank - 1 WHERE rank > ?').run(oldRank)
+      db.prepare('UPDATE items SET rank = -rank WHERE rank > ? AND rank IS NOT NULL').run(oldRank)
+      db.prepare('UPDATE items SET rank = (-rank) - 1 WHERE rank < 0').run()
     })()
   } catch (err: any) {
     throw new DatabaseError(`Failed to free rank for ${id}: ${err.message}`)
@@ -223,6 +232,8 @@ const SORT_COL_MAP: Record<string, string> = {
   price: 'current_price',
   watchers: 'watcher_count',
   end_time: 'end_time',
+  bid_count: 'bid_count',
+  status: 'status',
 }
 
 export function getUnrankedPage(opts: {

@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const search  = params.get('search') ?? undefined
     const type    = params.get('type')  ?? undefined
     const offset  = parseInt(params.get('offset') ?? '0', 10)
-    const limit   = Math.min(parseInt(params.get('limit') ?? '50', 10), 100) // hard cap at 100
+    const limit   = Math.min(parseInt(params.get('limit') ?? '50', 10), 2000) // hard cap at 2000
 
     const filters = status === 'All'
       ? { search, type }

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { ListingStatus, ListingType } from '@/types'
 
-export type SortKey = 'rank' | 'price' | 'watchers' | 'end_time'
+export type SortKey = 'rank' | 'price' | 'watchers' | 'end_time' | 'bid_count' | 'status'
 export type SortDir = 'asc' | 'desc'
 
 const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {

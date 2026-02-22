@@ -49,9 +49,9 @@ export function SuggestionCarousel({
         ref={scrollRef}
         className="flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth"
       >
-        {endingSoon.map((item) => (
+        {endingSoon.map((item, idx) => (
           <SuggestionCard
-            key={`end-${item.id}`}
+            key={`end-${item.id}-${idx}`}
             type="ending_soon"
             title={item.title}
             endTime={item.endTime}

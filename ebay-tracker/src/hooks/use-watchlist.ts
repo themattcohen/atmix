@@ -31,7 +31,7 @@ export function useWatchlist(params: UseWatchlistParams = {}) {
       if (type && type !== 'All') searchParams.set('type', type)
       if (search) searchParams.set('search', search)
       if (offset > 0) searchParams.set('offset', String(offset))
-      if (limit !== 50) searchParams.set('limit', String(limit))
+      if (limit) searchParams.set('limit', String(limit))
       if (sort && sort !== 'rank') searchParams.set('sort', sort)
       if (dir && dir !== 'asc') searchParams.set('dir', dir)
 

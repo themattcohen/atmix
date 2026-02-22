@@ -9,7 +9,13 @@ export function SignalSummary() {
 
   const unacknowledged = stats?.countUnacknowledged ?? 0
   const allPreviews = recent?.signals ?? []
-  const previews = allPreviews.filter((s) => !s.acknowledged).slice(0, 3)
+  const dedupedPreviews = allPreviews.filter((s) => !s.acknowledged)
+  const seen = new Set<string>()
+  const previews = dedupedPreviews.filter((s) => {
+    if (seen.has(s.headline)) return false
+    seen.add(s.headline)
+    return true
+  }).slice(0, 3)
 
   return (
     <div className="px-3 py-3" data-testid="signal-summary">
