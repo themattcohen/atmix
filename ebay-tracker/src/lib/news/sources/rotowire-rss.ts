@@ -68,6 +68,11 @@ export async function fetchRotoWireRSS(): Promise<RawNewsItem[]> {
     try {
       const items = await fetchFeed(url)
 
+      if (items.length === 0) {
+        const sport = url.split('sport=')[1] ?? 'unknown'
+        console.warn(`[RotoWireRSS] ${sport} feed returned 0 items — check feed availability: ${url}`)
+      }
+
       for (const item of items) {
         const titleKey = (item.title ?? '').toLowerCase().trim()
         if (!titleKey || seen.has(titleKey)) continue

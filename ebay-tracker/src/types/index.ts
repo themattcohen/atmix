@@ -465,11 +465,53 @@ export interface CardMappingRepo {
   getUnmapped(): { id: string; title: string }[]
 }
 
+export type NewsProcessedStatus = 'pending' | 'matched' | 'no_match' | 'ai_fallback'
+export type NewsExtractionMethod = 'regex' | 'ai' | 'none'
+
+export interface NewsItemMention {
+  playerId: number
+  playerName: string
+  confidence: number
+}
+
+export interface NewsItemSignalSummary {
+  eventType: NewsEventType
+  score: number
+}
+
+export interface NewsItemDetail {
+  id: number
+  source: SourceName
+  title: string
+  body: string | null
+  url: string | null
+  publishedAt: string | null
+  fetchedAt: string
+  processedStatus: NewsProcessedStatus
+  extractionMethod: NewsExtractionMethod
+  mentions: NewsItemMention[]
+  signals: NewsItemSignalSummary[]
+}
+
+export interface NewsDetailPage {
+  items: NewsItemDetail[]
+  total: number
+}
+
+export interface NewsDetailParams {
+  limit?: number
+  offset?: number
+  source?: SourceName
+  status?: NewsProcessedStatus
+  playerSearch?: string
+}
+
 export interface NewsRepo {
   insertIfNew(item: RawNewsItem): { id: number; isNew: boolean }
   markProcessed(id: number, status: number): void
   insertMention(newsItemId: number, playerId: number, confidence: number): void
   getRecent(limit: number, source?: SourceName): NewsItem[]
+  getDetailed(params: NewsDetailParams): NewsDetailPage
 }
 
 export interface SignalsRepo {

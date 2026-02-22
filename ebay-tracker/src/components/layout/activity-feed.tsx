@@ -1,6 +1,8 @@
 'use client'
+import Link from 'next/link'
 import { useEvents } from '@/hooks/use-events'
 import { Skeleton } from '@/components/ui/skeleton'
+import { timeAgo } from '@/lib/utils'
 import type { EventType, WatchlistEvent } from '@/types'
 
 const eventIcons: Record<EventType, string> = {
@@ -44,19 +46,6 @@ function formatEventValues(event: WatchlistEvent): string | null {
   return `${event.oldValue} \u2192 ${event.newValue}`
 }
 
-function timeAgo(dateStr: string): string {
-  const now = Date.now()
-  const then = new Date(dateStr).getTime()
-  const diffMs = now - then
-  const minutes = Math.floor(diffMs / 60_000)
-  if (minutes < 1) return 'just now'
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
-}
-
 export function ActivityFeed() {
   const { data: events, isLoading } = useEvents({ limit: 20 })
 
@@ -81,8 +70,12 @@ export function ActivityFeed() {
             return (
               <li
                 key={event.id}
-                className="flex items-start gap-2 px-2 py-1.5 rounded hover:bg-raised transition-colors"
+                className="rounded hover:bg-raised transition-colors"
               >
+                <Link
+                  href={`/items/${event.itemId}`}
+                  className="flex items-start gap-2 px-2 py-1.5 cursor-pointer"
+                >
                 <span className="text-sm leading-none mt-0.5">{eventIcons[event.eventType]}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-text-primary truncate">
@@ -100,6 +93,7 @@ export function ActivityFeed() {
                 <span className="text-[10px] text-text-secondary whitespace-nowrap mt-0.5">
                   {timeAgo(event.detectedAt)}
                 </span>
+                </Link>
               </li>
             )
           })}

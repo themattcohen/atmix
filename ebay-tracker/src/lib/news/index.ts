@@ -151,6 +151,7 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
     const rawItems = await fetcher()
 
     if (rawItems.length === 0) {
+      console.warn(`[News] ${source}: returned 0 items — check feed availability`)
       recordSourceSuccess(source)
       return
     }

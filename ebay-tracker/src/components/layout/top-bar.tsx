@@ -13,6 +13,7 @@ export function TopBar() {
     { href: '/trends', label: 'Trends' },
     { href: '/budget', label: 'Budget' },
     { href: '/signals', label: 'Signals' },
+    { href: '/news', label: 'News' },
   ]
 
   return (

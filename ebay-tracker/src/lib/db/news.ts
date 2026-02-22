@@ -1,5 +1,10 @@
 import crypto from 'crypto'
-import type { NewsItem, RawNewsItem, SourceName, NewsRepo } from '../../types'
+import type {
+  NewsItem, RawNewsItem, SourceName, NewsRepo,
+  NewsDetailParams, NewsDetailPage, NewsItemDetail,
+  NewsProcessedStatus, NewsExtractionMethod,
+  NewsItemMention, NewsItemSignalSummary,
+} from '../../types'
 import { getDb } from './client'
 import { DatabaseError } from '../errors'
 
@@ -107,9 +112,130 @@ function mapRow(row: any): NewsItem {
   }
 }
 
+// === Status / extraction method mapping ===
+
+const STATUS_MAP: Record<number, NewsProcessedStatus> = {
+  0: 'pending',
+  1: 'matched',
+  2: 'no_match',
+  4: 'ai_fallback',
+}
+
+const EXTRACTION_MAP: Record<number, NewsExtractionMethod> = {
+  0: 'none',
+  1: 'regex',
+  2: 'none',
+  4: 'ai',
+}
+
+const STATUS_TO_INT: Record<NewsProcessedStatus, number> = {
+  pending: 0,
+  matched: 1,
+  no_match: 2,
+  ai_fallback: 4,
+}
+
+function toProcessedStatus(val: number): NewsProcessedStatus {
+  return STATUS_MAP[val] ?? 'pending'
+}
+
+function toExtractionMethod(val: number): NewsExtractionMethod {
+  return EXTRACTION_MAP[val] ?? 'none'
+}
+
+function parseMentions(raw: string | null): NewsItemMention[] {
+  if (!raw) return []
+  return raw.split(';;').filter(Boolean).map((entry) => {
+    const [id, name, conf] = entry.split('|')
+    return { playerId: parseInt(id, 10), playerName: name, confidence: parseFloat(conf) }
+  })
+}
+
+function parseSignals(raw: string | null): NewsItemSignalSummary[] {
+  if (!raw) return []
+  return raw.split(';;').filter(Boolean).map((entry) => {
+    const [eventType, score] = entry.split('|')
+    return { eventType: eventType as NewsItemSignalSummary['eventType'], score: parseFloat(score) }
+  })
+}
+
+export function getDetailed(params: NewsDetailParams): NewsDetailPage {
+  const db = getDb()
+  try {
+    const conditions: string[] = []
+    const bindings: any[] = []
+
+    if (params.source !== undefined) {
+      conditions.push('ni.source = ?')
+      bindings.push(params.source)
+    }
+
+    if (params.status !== undefined) {
+      conditions.push('ni.processed = ?')
+      bindings.push(STATUS_TO_INT[params.status])
+    }
+
+    if (params.playerSearch) {
+      conditions.push(`ni.id IN (SELECT npm2.news_item_id FROM news_player_mentions npm2 JOIN player_roster pr2 ON pr2.id = npm2.player_id WHERE LOWER(pr2.full_name) LIKE ?)`)
+      bindings.push(`%${params.playerSearch.toLowerCase()}%`)
+    }
+
+    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+
+    // Count query
+    const countRow = db.prepare(`
+      SELECT COUNT(*) AS cnt FROM news_items ni ${where}
+    `).get(...bindings) as any
+    const total: number = countRow.cnt
+
+    // Main query with aggregation
+    const limit = params.limit ?? 50
+    const offset = params.offset ?? 0
+
+    const mainBindings = [...bindings, limit, offset]
+
+    const rows = db.prepare(`
+      SELECT
+        ni.id, ni.source, ni.title, ni.body, ni.url,
+        ni.published_at, ni.fetched_at, ni.processed,
+        (SELECT GROUP_CONCAT(CAST(pr.id AS TEXT) || '|' || pr.full_name || '|'
+          || CAST(ROUND(npm.confidence, 4) AS TEXT), ';;')
+         FROM news_player_mentions npm
+         JOIN player_roster pr ON pr.id = npm.player_id
+         WHERE npm.news_item_id = ni.id) AS mentions_raw,
+        (SELECT GROUP_CONCAT(cs.event_type || '|' || CAST(cs.score AS TEXT), ';;')
+         FROM card_signals cs
+         WHERE cs.news_item_id = ni.id) AS signals_raw
+      FROM news_items ni
+      ${where}
+      ORDER BY ni.fetched_at DESC, ni.id DESC
+      LIMIT ? OFFSET ?
+    `).all(...mainBindings) as any[]
+
+    const items: NewsItemDetail[] = rows.map((row) => ({
+      id: row.id,
+      source: row.source,
+      title: row.title,
+      body: row.body,
+      url: row.url,
+      publishedAt: row.published_at,
+      fetchedAt: row.fetched_at,
+      processedStatus: toProcessedStatus(row.processed),
+      extractionMethod: toExtractionMethod(row.processed),
+      mentions: parseMentions(row.mentions_raw),
+      signals: parseSignals(row.signals_raw),
+    }))
+
+    return { items, total }
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get detailed news items: ${err.message}`)
+  }
+}
+
 export const newsRepo: NewsRepo = {
   insertIfNew,
   markProcessed,
   insertMention,
   getRecent,
+  getDetailed,
 }
