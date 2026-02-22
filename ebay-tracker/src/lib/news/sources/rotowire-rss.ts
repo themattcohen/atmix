@@ -34,7 +34,10 @@ export async function fetchRotoWireRSS(): Promise<RawNewsItem[]> {
   const url = 'https://www.rotowire.com/rss/news.htm'
 
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(15000) })
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(15000),
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EbayWatchlistMonitor/1.0)' },
+    })
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`)
     }

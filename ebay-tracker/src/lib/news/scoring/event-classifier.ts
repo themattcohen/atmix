@@ -3,11 +3,13 @@ import type { NewsEventType } from '../../../types'
 interface ClassifierRule {
   eventType: NewsEventType
   keywords: string[]
+  confidence: number
 }
 
 const RULES: ClassifierRule[] = [
   {
     eventType: 'injury_season',
+    confidence: 0.90,
     keywords: [
       'season-ending',
       'torn acl',
@@ -20,6 +22,7 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'injury_minor',
+    confidence: 0.80,
     keywords: [
       'day-to-day',
       '10-day il',
@@ -34,6 +37,7 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'trade_up',
+    confidence: 0.85,
     keywords: [
       'traded to yankees',
       'traded to dodgers',
@@ -46,10 +50,12 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'trade_down',
+    confidence: 0.70,
     keywords: ['traded to', 'dealt to'],
   },
   {
     eventType: 'suspension',
+    confidence: 0.90,
     keywords: [
       'suspended',
       'banned',
@@ -61,6 +67,7 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'callup',
+    confidence: 0.80,
     keywords: [
       'called up',
       'recalled',
@@ -72,6 +79,7 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'award',
+    confidence: 0.95,
     keywords: [
       'mvp',
       'cy young',
@@ -85,6 +93,7 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'breakout',
+    confidence: 0.85,
     keywords: [
       'no-hitter',
       'perfect game',
@@ -97,10 +106,12 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'retirement',
+    confidence: 0.90,
     keywords: ['retires', 'retirement', 'hangs up', 'calls it a career'],
   },
   {
     eventType: 'return_injury',
+    confidence: 0.85,
     keywords: [
       'activated from il',
       'returns from injury',
@@ -111,6 +122,7 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'release',
+    confidence: 0.80,
     keywords: [
       'released',
       'designated for assignment',
@@ -121,10 +133,12 @@ const RULES: ClassifierRule[] = [
   },
   {
     eventType: 'optioned',
+    confidence: 0.75,
     keywords: ['optioned to', 'sent down', 'assigned to'],
   },
   {
     eventType: 'contract',
+    confidence: 0.75,
     keywords: [
       'extension',
       'signs with',
@@ -144,7 +158,7 @@ export function classifyEvent(
   for (const rule of RULES) {
     for (const keyword of rule.keywords) {
       if (text.includes(keyword)) {
-        return { eventType: rule.eventType, confidence: 0.85 }
+        return { eventType: rule.eventType, confidence: rule.confidence }
       }
     }
   }

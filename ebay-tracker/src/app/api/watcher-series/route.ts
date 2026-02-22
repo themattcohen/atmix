@@ -1,0 +1,21 @@
+import { NextRequest } from 'next/server'
+import { routeOk, routeError } from '@/lib/errors'
+import { getWatcherSeries } from '@/lib/db/trends'
+
+export async function GET(request: NextRequest) {
+  try {
+    const params = request.nextUrl.searchParams
+    const idsParam = params.get('ids') ?? ''
+    const days = Math.min(parseInt(params.get('days') ?? '14', 10), 90)
+
+    const ids = idsParam.split(',').filter(Boolean)
+    if (ids.length === 0) {
+      return routeOk({})
+    }
+
+    const series = getWatcherSeries(ids, days)
+    return routeOk(Object.fromEntries(series))
+  } catch (err) {
+    return routeError(err)
+  }
+}

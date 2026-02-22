@@ -20,6 +20,7 @@ import { useWatchlistStore } from '@/store/watchlist-store'
 import { useDragRank } from '@/hooks/use-drag-rank'
 import { useSparklines } from '@/hooks/use-sparklines'
 import { useSignals } from '@/hooks/use-signals'
+import { useWatcherSeries } from '@/hooks/use-watcher-series'
 import { SortableWatchlistRow } from './watchlist-row'
 import { StaticWatchlistRow } from './static-watchlist-row'
 
@@ -40,6 +41,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
   // Load sparklines for ranked items only (unranked use static row without sparklines)
   const rankedIds = useMemo(() => ranked.map((i) => i.id), [ranked])
   const { data: sparklineMap, isLoading: sparklinesLoading } = useSparklines(rankedIds, sparklineDays)
+  const { data: watcherSeriesMap } = useWatcherSeries(rankedIds, 14)
 
   // Load latest signal per item (ranked items only)
   const { data: signalsData } = useSignals({ limit: 100, acknowledged: false })
@@ -112,6 +114,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
                   sparklinesLoading={sparklinesLoading}
                   heat={heatIndex?.[item.id]}
                   latestSignal={signalMap.get(item.id)}
+                  watcherTrend={watcherSeriesMap?.[item.id]}
                 />
               ))}
             </tbody>
@@ -134,7 +137,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
           {/* Unranked rows — static, no dnd-kit hooks */}
           <tbody>
             {unranked.map((item) => (
-              <StaticWatchlistRow key={item.id} item={item} />
+              <StaticWatchlistRow key={item.id} item={item} heat={heatIndex?.[item.id]} latestSignal={signalMap.get(item.id)} />
             ))}
           </tbody>
 

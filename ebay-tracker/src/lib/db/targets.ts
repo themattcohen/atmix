@@ -61,6 +61,31 @@ export function getActiveForItem(itemId: string): PriceTarget[] {
   }
 }
 
+export function getTargetCountsByItem(itemIds: string[]): Map<string, { active: number; triggered: number }> {
+  if (itemIds.length === 0) return new Map()
+  const db = getDb()
+  try {
+    const placeholders = itemIds.map(() => '?').join(', ')
+    const rows = db.prepare(`
+      SELECT item_id, status, COUNT(*) as cnt
+      FROM price_targets
+      WHERE item_id IN (${placeholders}) AND status IN ('active', 'triggered')
+      GROUP BY item_id, status
+    `).all(...itemIds) as any[]
+
+    const result = new Map<string, { active: number; triggered: number }>()
+    for (const row of rows) {
+      const existing = result.get(row.item_id) ?? { active: 0, triggered: 0 }
+      if (row.status === 'active') existing.active = row.cnt
+      else if (row.status === 'triggered') existing.triggered = row.cnt
+      result.set(row.item_id, existing)
+    }
+    return result
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get target counts: ${err.message}`)
+  }
+}
+
 export function create(input: CreateTargetInput): PriceTarget {
   const db = getDb()
   try {

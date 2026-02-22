@@ -8,7 +8,8 @@
     "start": "node dist/server.js",
     "ebay:auth": "tsx scripts/ebay-auth.ts",
     "seed": "tsx scripts/seed.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "backfill:rollups": "tsx scripts/backfill-rollups.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.55.0",

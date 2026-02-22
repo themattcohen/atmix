@@ -27,6 +27,7 @@ export interface WatchlistItem {
   firstSeenAt: string           // ISO 8601
   lastSyncedAt: string          // ISO 8601
   deltaPct?: number | null       // price change % since previous snapshot
+  targetCounts?: { active: number; triggered: number } | null
 }
 
 export interface PriceSnapshot {

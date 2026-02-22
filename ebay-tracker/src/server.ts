@@ -14,12 +14,14 @@ async function main() {
   await app.prepare()
   const handle = app.getRequestHandler()
 
-  await startScheduler(config)
-
   createServer((req, res) => {
     handle(req, res, parse(req.url!, true))
   }).listen(config.PORT, () => {
     console.log(`Server running on http://localhost:${config.PORT}`)
+    // Fire-and-forget: don't block HTTP server on scheduler init
+    startScheduler(config).catch((err) => {
+      console.error('Scheduler failed to start:', err)
+    })
   })
 
   process.on('SIGTERM', () => {

@@ -49,7 +49,20 @@ export async function syncRoster(): Promise<number> {
 }
 
 export async function initRosterIfEmpty(): Promise<void> {
-  if (count() === 0) {
-    await syncRoster()
+  if (count() > 0) return
+
+  const delays = [2000, 10000, 30000]  // 2s, 10s, 30s
+  for (let attempt = 0; attempt < delays.length; attempt++) {
+    try {
+      await syncRoster()
+      return
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      console.warn(`[RosterSync] Attempt ${attempt + 1}/${delays.length} failed: ${message}`)
+      if (attempt < delays.length - 1) {
+        await new Promise(r => setTimeout(r, delays[attempt]))
+      }
+    }
   }
+  console.error('[RosterSync] All retry attempts exhausted — roster will be empty until next scheduled sync')
 }

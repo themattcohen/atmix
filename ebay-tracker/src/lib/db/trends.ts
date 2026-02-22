@@ -270,6 +270,33 @@ export function getHeatIndexBatch(itemIds: string[]): Map<string, HeatIndex> {
   }
 }
 
+export function getWatcherSeries(itemIds: string[], days: number): Map<string, number[]> {
+  if (itemIds.length === 0) return new Map()
+
+  const db = getDb()
+  try {
+    const placeholders = itemIds.map(() => '?').join(', ')
+    const rows = db.prepare(`
+      SELECT item_id, watcher_count
+      FROM price_snapshots
+      WHERE item_id IN (${placeholders})
+        AND recorded_at >= datetime('now', ?)
+        AND watcher_count IS NOT NULL
+      ORDER BY item_id, recorded_at ASC
+    `).all(...itemIds, `-${days} days`) as any[]
+
+    const result = new Map<string, number[]>()
+    for (const row of rows) {
+      const existing = result.get(row.item_id) ?? []
+      existing.push(row.watcher_count)
+      result.set(row.item_id, existing)
+    }
+    return result
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get watcher series: ${err.message}`)
+  }
+}
+
 export function getStats(): TrendStats {
   const db = getDb()
   try {

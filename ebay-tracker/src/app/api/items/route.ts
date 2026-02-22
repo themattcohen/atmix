@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { routeOk, routeError } from '@/lib/errors'
 import { getAll, getUnrankedPage } from '@/lib/db/items'
 import { getPriceDeltas, getHeatIndexBatch } from '@/lib/db/trends'
+import { getTargetCountsByItem } from '@/lib/db/targets'
 import type { ListingStatus, WatchlistItem } from '@/types'
 
 export async function GET(request: NextRequest) {
@@ -11,12 +12,13 @@ export async function GET(request: NextRequest) {
     const sort    = params.get('sort')   ?? 'rank'
     const dir     = params.get('dir')    ?? 'asc'
     const search  = params.get('search') ?? undefined
+    const type    = params.get('type')  ?? undefined
     const offset  = parseInt(params.get('offset') ?? '0', 10)
     const limit   = Math.min(parseInt(params.get('limit') ?? '50', 10), 100) // hard cap at 100
 
     const filters = status === 'All'
-      ? { search }
-      : { status: status as ListingStatus, search }
+      ? { search, type }
+      : { status: status as ListingStatus, search, type }
 
     // Ranked: always return all (needed for dnd-kit DOM requirement)
     const allFiltered = getAll(filters)
@@ -36,6 +38,7 @@ export async function GET(request: NextRequest) {
       limit,
       status: status === 'All' ? undefined : status as ListingStatus,
       search,
+      type,
     })
 
     // Build delta lookup map (one DB call, covers all returned items)
@@ -69,7 +72,15 @@ export async function GET(request: NextRequest) {
     const heatMap = getHeatIndexBatch(allReturnedIds)
     const heatIndex = Object.fromEntries(heatMap)
 
-    return routeOk({ ranked: annotatedRanked, unranked: annotatedUnranked, unrankedTotal, counts, heatIndex })
+    // Merge target counts onto items
+    const targetCountsMap = getTargetCountsByItem(allReturnedIds)
+    const withTargets = (items: WatchlistItem[]) =>
+      items.map(item => ({
+        ...item,
+        targetCounts: targetCountsMap.get(item.id) ?? null,
+      }))
+
+    return routeOk({ ranked: withTargets(annotatedRanked), unranked: withTargets(annotatedUnranked), unrankedTotal, counts, heatIndex })
   } catch (err) {
     return routeError(err)
   }

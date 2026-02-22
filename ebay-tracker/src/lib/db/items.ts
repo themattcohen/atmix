@@ -33,7 +33,7 @@ function rowToItem(row: any): WatchlistItem {
   }
 }
 
-export function getAll(filters?: { status?: ListingStatus; search?: string }): WatchlistItem[] {
+export function getAll(filters?: { status?: ListingStatus; search?: string; type?: string }): WatchlistItem[] {
   const db = getDb()
   const conditions: string[] = []
   const params: any[] = []
@@ -45,6 +45,10 @@ export function getAll(filters?: { status?: ListingStatus; search?: string }): W
   if (filters?.search) {
     conditions.push('title LIKE ?')
     params.push(`%${filters.search}%`)
+  }
+  if (filters?.type) {
+    conditions.push('listing_type = ?')
+    params.push(filters.type)
   }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
@@ -220,6 +224,7 @@ export function getUnrankedPage(opts: {
   limit: number
   status?: ListingStatus
   search?: string
+  type?: string
 }): UnrankedPage {
   const db = getDb()
   const conditions = ['rank IS NULL']
@@ -232,6 +237,10 @@ export function getUnrankedPage(opts: {
   if (opts.search) {
     conditions.push('title LIKE ?')
     params.push(`%${opts.search}%`)
+  }
+  if (opts.type) {
+    conditions.push('listing_type = ?')
+    params.push(opts.type)
   }
 
   const where = `WHERE ${conditions.join(' AND ')}`

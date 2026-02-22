@@ -12,6 +12,7 @@ import { StatusBadge } from './status-badge'
 import { WatcherCell } from './watcher-cell'
 import { SparklineCell } from './sparkline-cell'
 import { SignalBadge } from '@/components/signals/signal-badge'
+import { TargetBadge } from '@/components/items/target-badge'
 import { useQueueToggle } from '@/hooks/use-queue-toggle'
 
 interface WatchlistRowProps {
@@ -20,9 +21,10 @@ interface WatchlistRowProps {
   sparklinesLoading?: boolean
   heat?: HeatIndex
   latestSignal?: CardSignal
+  watcherTrend?: number[]
 }
 
-export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading, heat, latestSignal }: WatchlistRowProps) {
+export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading, heat, latestSignal, watcherTrend }: WatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
   const queueMutation = useQueueToggle()
 
@@ -90,13 +92,19 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
               {item.bidCount} bid{item.bidCount !== 1 ? 's' : ''}
             </span>
           )}
+          {(item as any).targetCounts && (
+            <TargetBadge
+              activeCount={(item as any).targetCounts.active}
+              triggeredCount={(item as any).targetCounts.triggered}
+            />
+          )}
         </td>
       )}
 
       {/* Price */}
       {visibleColumns.price && (
         <td className="px-2 py-1.5">
-          <PriceCell priceCents={item.currentPrice} />
+          <PriceCell priceCents={item.currentPrice} deltaPct={item.deltaPct} />
         </td>
       )}
 
@@ -115,6 +123,7 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
         <td className="px-2 py-1.5">
           <WatcherCell
             count={item.watcherCount}
+            trend={watcherTrend}
             heat={heat}
             delta={heat?.watcherDelta ?? null}
           />

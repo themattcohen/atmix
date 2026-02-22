@@ -1,8 +1,10 @@
 'use client'
 import Link from 'next/link'
-import type { WatchlistItem } from '@/types'
+import type { WatchlistItem, HeatIndex, CardSignal } from '@/types'
 import { useWatchlistStore } from '@/store/watchlist-store'
 import { useQueueToggle } from '@/hooks/use-queue-toggle'
+import { SignalBadge } from '@/components/signals/signal-badge'
+import { TargetBadge } from '@/components/items/target-badge'
 import { CountdownCell } from './countdown-cell'
 import { PriceCell } from './price-cell'
 import { StatusBadge } from './status-badge'
@@ -10,9 +12,11 @@ import { WatcherCell } from './watcher-cell'
 
 interface StaticWatchlistRowProps {
   item: WatchlistItem
+  heat?: HeatIndex
+  latestSignal?: CardSignal
 }
 
-export function StaticWatchlistRow({ item }: StaticWatchlistRowProps) {
+export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
   const queueMutation = useQueueToggle()
 
@@ -59,27 +63,39 @@ export function StaticWatchlistRow({ item }: StaticWatchlistRowProps) {
               {item.bidCount} bid{item.bidCount !== 1 ? 's' : ''}
             </span>
           )}
+          {(item as any).targetCounts && (
+            <TargetBadge
+              activeCount={(item as any).targetCounts.active}
+              triggeredCount={(item as any).targetCounts.triggered}
+            />
+          )}
         </td>
       )}
 
       {/* Price */}
       {visibleColumns.price && (
         <td className="px-2 py-1.5">
-          <PriceCell priceCents={item.currentPrice} />
+          <PriceCell priceCents={item.currentPrice} deltaPct={item.deltaPct} />
         </td>
       )}
 
-      {/* Delta — static rows show a placeholder */}
+      {/* Delta */}
       {visibleColumns.delta && (
         <td className="px-2 py-1.5">
-          <span className="text-xs text-text-secondary">&mdash;</span>
+          {item.deltaPct != null && item.deltaPct !== 0 ? (
+            <span className={`text-xs font-mono ${item.deltaPct < 0 ? 'text-status-active' : 'text-status-sold'}`}>
+              {item.deltaPct < 0 ? '\u2193' : '\u2191'}{Math.abs(item.deltaPct).toFixed(1)}%
+            </span>
+          ) : (
+            <span className="text-xs text-text-secondary">&mdash;</span>
+          )}
         </td>
       )}
 
       {/* Watchers */}
       {visibleColumns.watchers && (
         <td className="px-2 py-1.5">
-          <WatcherCell count={item.watcherCount} />
+          <WatcherCell count={item.watcherCount} heat={heat} delta={heat?.watcherDelta ?? null} />
         </td>
       )}
 
@@ -104,10 +120,14 @@ export function StaticWatchlistRow({ item }: StaticWatchlistRowProps) {
         </td>
       )}
 
-      {/* Signal — static rows show placeholder */}
+      {/* Signal */}
       {visibleColumns.signals && (
         <td className="px-2 py-1.5">
-          <span className="text-xs text-text-secondary">&mdash;</span>
+          {latestSignal ? (
+            <SignalBadge signal={latestSignal} />
+          ) : (
+            <span className="text-xs text-text-secondary">&mdash;</span>
+          )}
         </td>
       )}
 

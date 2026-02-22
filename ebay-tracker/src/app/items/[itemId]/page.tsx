@@ -11,12 +11,17 @@ import { ItemEvents } from '@/components/detail/item-events'
 import { OHLCChart } from '@/components/detail/ohlc-chart'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import { TargetForm } from '@/components/items/target-form'
+import { useHistorySummary } from '@/hooks/use-history'
+import { useItemMetadata } from '@/hooks/use-metadata'
 
 export default function ItemDetailPage() {
   const params = useParams()
   const itemId = params.itemId as string
   const { data, isLoading, isError } = useItemDetail(itemId)
   const { data: signalData } = useSignals({ itemId })
+  const { data: historySummary } = useHistorySummary(itemId)
+  const { data: metadata, isLoading: metadataLoading } = useItemMetadata(itemId)
 
   return (
     <>
@@ -53,7 +58,36 @@ export default function ItemDetailPage() {
             </div>
             {/* Historical archive — empty state shown gracefully until first nightly rollup */}
             <OHLCChart itemId={data.item.id} />
+            {historySummary && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="rounded-lg bg-raised p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-text-secondary">All-Time High</p>
+                  <p className="text-sm font-mono text-text-primary">${(historySummary.allTimeHigh / 100).toFixed(2)}</p>
+                </div>
+                <div className="rounded-lg bg-raised p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-text-secondary">All-Time Low</p>
+                  <p className="text-sm font-mono text-text-primary">${(historySummary.allTimeLow / 100).toFixed(2)}</p>
+                </div>
+                <div className="rounded-lg bg-raised p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-text-secondary">Avg Price</p>
+                  <p className="text-sm font-mono text-text-primary">${(historySummary.avgPrice / 100).toFixed(2)}</p>
+                </div>
+                <div className="rounded-lg bg-raised p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-text-secondary">Snapshots</p>
+                  <p className="text-sm font-mono text-text-primary">{historySummary.totalSnapshots}</p>
+                  <p className="text-[10px] text-text-secondary">Trend: {historySummary.trend}</p>
+                </div>
+              </div>
+            )}
+            {!metadataLoading && metadata === null && (
+              <div className="rounded-lg bg-raised/50 border border-border px-4 py-2">
+                <p className="text-xs text-text-secondary">
+                  AI title parsing unavailable — set <code className="text-[11px] bg-background px-1 rounded">ANTHROPIC_API_KEY</code> to enable card metadata
+                </p>
+              </div>
+            )}
             <ItemEvents events={data.events} />
+            <TargetForm itemId={data.item.id} />
           </>
         ) : null}
       </div>

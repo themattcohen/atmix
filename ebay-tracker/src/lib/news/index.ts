@@ -1,4 +1,5 @@
 import type { SourceName } from '../../types'
+import { getByItemIds } from '../db/metadata'
 import { acquireLock, releaseLock } from './rate-limiter'
 import { isCircuitOpen, recordSourceSuccess, recordSourceFailure } from './circuit-breaker'
 import { fetchMLBTransactions } from './sources/mlb-transactions'
@@ -27,9 +28,23 @@ function resolveUnmappedItems(): void {
   const unmapped = getUnmapped()
   if (unmapped.length === 0) return
 
+  // Pre-load AI-parsed metadata for unmapped items as fallback
+  const metadataList = getByItemIds(unmapped.map(u => u.id))
+  const metadataMap = new Map(metadataList.map(m => [m.itemId, m]))
+
   let mapped = 0
   for (const item of unmapped) {
-    const playerName = parsePlayerFromTitle(item.title)
+    // Try regex title parser first
+    let playerName = parsePlayerFromTitle(item.title)
+
+    // Fallback: use AI-parsed playerName from card metadata
+    if (!playerName) {
+      const meta = metadataMap.get(item.id)
+      if (meta?.playerName) {
+        playerName = meta.playerName
+      }
+    }
+
     if (!playerName) continue
 
     const match = matchPlayerName(playerName)

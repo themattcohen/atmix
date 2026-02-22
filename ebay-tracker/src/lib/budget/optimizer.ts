@@ -132,8 +132,19 @@ export function optimizeBudget(
     }
   })
 
+  // Pre-pass: exclude items with non-positive scores
+  const excluded: ScoredItem[] = []
+  const positiveScored: ScoredItem[] = []
+  for (const s of scored) {
+    if (s.score <= 0) {
+      excluded.push({ ...s, included: false, excludedReason: 'negative_score' })
+    } else {
+      positiveScored.push(s)
+    }
+  }
+
   // Step 3: Sort by score desc, then cost asc (tie-break), then id asc (stable)
-  scored.sort((a, b) => {
+  positiveScored.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score
     if (a.estimatedCost !== b.estimatedCost) return a.estimatedCost - b.estimatedCost
     return a.item.id.localeCompare(b.item.id)
@@ -141,10 +152,9 @@ export function optimizeBudget(
 
   // Step 4: Greedy allocation
   const picks: ScoredItem[] = []
-  const excluded: ScoredItem[] = []
   let remainingBudget = budgetCents
 
-  for (const scoredItem of scored) {
+  for (const scoredItem of positiveScored) {
     if (scoredItem.estimatedCost <= remainingBudget) {
       picks.push({ ...scoredItem, included: true })
       remainingBudget -= scoredItem.estimatedCost
