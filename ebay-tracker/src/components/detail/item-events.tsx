@@ -6,19 +6,21 @@ interface ItemEventsProps {
 }
 
 const eventIcons: Record<EventType, string> = {
-  sold: '\uD83D\uDD34',
-  expired: '\u23F0',
-  price_drop: '\uD83D\uDCB0',
-  price_increase: '\uD83D\uDCC8',
-  watcher_spike: '\uD83D\uDC40',
+  sold:             '\uD83D\uDD34',
+  expired:          '\u23F0',
+  price_drop:       '\uD83D\uDCB0',
+  price_increase:   '\uD83D\uDCC8',
+  watcher_spike:    '\uD83D\uDC40',
+  target_triggered: '\uD83C\uDFAF',
 }
 
 const eventLabels: Record<EventType, string> = {
-  sold: 'Sold',
-  expired: 'Expired',
-  price_drop: 'Price Drop',
-  price_increase: 'Price Increase',
-  watcher_spike: 'Watcher Spike',
+  sold:             'Sold',
+  expired:          'Expired',
+  price_drop:       'Price Drop',
+  price_increase:   'Price Increase',
+  watcher_spike:    'Watcher Spike',
+  target_triggered: 'Target Hit',
 }
 
 function formatTimestamp(iso: string): string {

@@ -36,6 +36,36 @@ export function routeError(err: unknown): Response {
   )
 }
 
+export class NotFoundError extends AppError {
+  constructor(message: string) {
+    super('NOT_FOUND', message, 404)
+  }
+}
+
+export class AiConfigError extends AppError {
+  constructor(message = 'AI service not configured') {
+    super('AI_NOT_CONFIGURED', message, 503)
+  }
+}
+
+export class AiParseError extends AppError {
+  constructor(message: string) {
+    super('AI_PARSE_ERROR', message, 422)
+  }
+}
+
+export class AiRateLimitError extends AppError {
+  constructor(message = 'AI rate limit exceeded', public readonly retryAfterMs?: number) {
+    super('AI_RATE_LIMIT', message, 429)
+  }
+}
+
+export class AiBatchError extends AppError {
+  constructor(message: string, public readonly batchId?: string) {
+    super('AI_BATCH_ERROR', message, 502)
+  }
+}
+
 // Retry utility for eBay API calls
 export async function withRetry<T>(
   fn: () => Promise<T>,

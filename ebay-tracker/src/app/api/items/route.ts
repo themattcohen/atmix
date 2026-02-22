@@ -1,52 +1,75 @@
 import { NextRequest } from 'next/server'
 import { routeOk, routeError } from '@/lib/errors'
-import { getAll } from '@/lib/db/items'
+import { getAll, getUnrankedPage } from '@/lib/db/items'
+import { getPriceDeltas, getHeatIndexBatch } from '@/lib/db/trends'
 import type { ListingStatus, WatchlistItem } from '@/types'
 
 export async function GET(request: NextRequest) {
   try {
-    const params = request.nextUrl.searchParams
-    const status = params.get('status') ?? 'Active'
-    const sort = params.get('sort') ?? 'rank'
-    const dir = params.get('dir') ?? 'asc'
-    const search = params.get('search') ?? undefined
+    const params  = request.nextUrl.searchParams
+    const status  = params.get('status') ?? 'Active'
+    const sort    = params.get('sort')   ?? 'rank'
+    const dir     = params.get('dir')    ?? 'asc'
+    const search  = params.get('search') ?? undefined
+    const offset  = parseInt(params.get('offset') ?? '0', 10)
+    const limit   = Math.min(parseInt(params.get('limit') ?? '50', 10), 100) // hard cap at 100
 
     const filters = status === 'All'
       ? { search }
       : { status: status as ListingStatus, search }
 
-    const items = getAll(filters)
+    // Ranked: always return all (needed for dnd-kit DOM requirement)
+    const allFiltered = getAll(filters)
 
-    // Separate ranked (rank !== null) from unranked (rank === null)
-    const ranked = items.filter((i): i is WatchlistItem & { rank: number } => i.rank !== null)
-    const unranked = items.filter((i) => i.rank === null)
+    const ranked = allFiltered
+      .filter((i): i is WatchlistItem & { rank: number } => i.rank !== null)
 
-    // Sort ranked by rank ascending by default
+    // Sort ranked
     ranked.sort((a, b) => {
       if (sort === 'rank') return dir === 'asc' ? a.rank - b.rank : b.rank - a.rank
       return sortBy(a, b, sort, dir)
     })
 
-    // Sort unranked by endTime (soonest first)
-    unranked.sort((a, b) => {
-      if (sort !== 'rank') return sortBy(a, b, sort, dir)
-      if (!a.endTime && !b.endTime) return 0
-      if (!a.endTime) return 1
-      if (!b.endTime) return -1
-      return a.endTime.localeCompare(b.endTime)
+    // Unranked: paginated
+    const { items: unranked, total: unrankedTotal } = getUnrankedPage({
+      offset,
+      limit,
+      status: status === 'All' ? undefined : status as ListingStatus,
+      search,
     })
 
-    // Counts by status (over the unfiltered set if filtering by status,
-    // we count from the returned items since getAll already filtered)
-    const allItems = status === 'All' ? items : getAll()
+    // Build delta lookup map (one DB call, covers all returned items)
+    const allReturnedIds = [...ranked.map(i => i.id), ...unranked.map(i => i.id)]
+    const deltaMap = new Map<string, number | null>(
+      getPriceDeltas().map(d => [d.itemId, d.deltaPct])
+    )
+
+    // Annotate ranked with deltaPct
+    const annotatedRanked: WatchlistItem[] = ranked.map(item => ({
+      ...item,
+      deltaPct: deltaMap.get(item.id) ?? null,
+    }))
+
+    // Annotate unranked with deltaPct
+    const annotatedUnranked: WatchlistItem[] = unranked.map(item => ({
+      ...item,
+      deltaPct: deltaMap.get(item.id) ?? null,
+    }))
+
+    // Status counts from full unfiltered set
+    const allForCounts = status === 'All' ? allFiltered : getAll()
     const counts = {
-      active: allItems.filter((i) => i.status === 'Active').length,
-      sold: allItems.filter((i) => i.status === 'Sold').length,
-      ended: allItems.filter((i) => i.status === 'Ended').length,
-      total: allItems.length,
+      active: allForCounts.filter((i) => i.status === 'Active').length,
+      sold:   allForCounts.filter((i) => i.status === 'Sold').length,
+      ended:  allForCounts.filter((i) => i.status === 'Ended').length,
+      total:  allForCounts.length,
     }
 
-    return routeOk({ ranked, unranked, counts })
+    // Compute heat index for all returned items
+    const heatMap = getHeatIndexBatch(allReturnedIds)
+    const heatIndex = Object.fromEntries(heatMap)
+
+    return routeOk({ ranked: annotatedRanked, unranked: annotatedUnranked, unrankedTotal, counts, heatIndex })
   } catch (err) {
     return routeError(err)
   }

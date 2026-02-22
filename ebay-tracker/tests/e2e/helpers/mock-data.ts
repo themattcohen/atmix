@@ -1,4 +1,4 @@
-import type { WatchlistItem, WatchlistEvent, TrendStats, PortfolioDataPoint, PriceSnapshot } from '../../../src/types'
+import type { WatchlistItem, WatchlistEvent, TrendStats, PortfolioDataPoint, PriceSnapshot, CardSignal } from '../../../src/types'
 
 function makeItem(overrides: Partial<WatchlistItem> & { id: string; title: string }): WatchlistItem {
   return {
@@ -92,5 +92,50 @@ export const mockItemDetailResponse = {
     item: mockItems[0],
     snapshots: mockSnapshots,
     events: mockEvents.filter((e) => e.itemId === '111'),
+  },
+}
+
+function makeSignal(overrides: Partial<CardSignal> & { id: number }): CardSignal {
+  return {
+    newsItemId: 1,
+    itemId: '111',
+    playerId: 1,
+    eventType: 'callup',
+    score: 2,
+    confidence: 0.85,
+    headline: 'Player called up to majors',
+    source: 'mlb_transactions',
+    sourceUrl: null,
+    acknowledged: false,
+    expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    ...overrides,
+  }
+}
+
+export const mockSignals: CardSignal[] = [
+  makeSignal({ id: 1, itemId: '111', eventType: 'callup', score: 3, confidence: 0.92, headline: 'Top prospect called up to majors' }),
+  makeSignal({ id: 2, itemId: '222', eventType: 'injury_season', score: -3, confidence: 0.88, headline: 'Star player out for season with torn ACL', createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString() }),
+  makeSignal({ id: 3, itemId: '333', eventType: 'trade_up', score: 1, confidence: 0.75, headline: 'Player traded to contender' }),
+  makeSignal({ id: 4, itemId: '444', eventType: 'award', score: -1, confidence: 0.65, headline: 'Player misses All-Star selection' }),
+  makeSignal({ id: 5, itemId: '555', eventType: 'breakout', score: 2, confidence: 0.80, headline: 'Player hits for the cycle', acknowledged: true }),
+]
+
+export const mockSignalsResponse = {
+  data: {
+    signals: mockSignals,
+    total: mockSignals.length,
+  },
+}
+
+export const mockSignalStatsResponse = {
+  data: {
+    countToday: 3,
+    countUnacknowledged: 4,
+    sourceHealth: [
+      { source: 'mlb_transactions', lastSuccessAt: new Date().toISOString(), lastFailureAt: null, consecutiveFailures: 0, circuitOpen: false, circuitOpenUntil: null, lastError: null },
+      { source: 'rotowire_rss', lastSuccessAt: new Date().toISOString(), lastFailureAt: null, consecutiveFailures: 0, circuitOpen: false, circuitOpenUntil: null, lastError: null },
+      { source: 'google_news_rss', lastSuccessAt: new Date().toISOString(), lastFailureAt: null, consecutiveFailures: 0, circuitOpen: false, circuitOpenUntil: null, lastError: null },
+    ],
   },
 }

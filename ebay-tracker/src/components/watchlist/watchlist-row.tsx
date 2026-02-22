@@ -2,7 +2,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import Link from 'next/link'
-import type { WatchlistItem } from '@/types'
+import type { WatchlistItem, SparklineSummary, HeatIndex, CardSignal } from '@/types'
 import { useWatchlistStore } from '@/store/watchlist-store'
 import { DragHandle } from './drag-handle'
 import { RankCell } from './rank-cell'
@@ -10,12 +10,18 @@ import { CountdownCell } from './countdown-cell'
 import { PriceCell } from './price-cell'
 import { StatusBadge } from './status-badge'
 import { WatcherCell } from './watcher-cell'
+import { SparklineCell } from './sparkline-cell'
+import { SignalBadge } from '@/components/signals/signal-badge'
 
 interface WatchlistRowProps {
   item: WatchlistItem
+  sparklineSummary?: SparklineSummary
+  sparklinesLoading?: boolean
+  heat?: HeatIndex
+  latestSignal?: CardSignal
 }
 
-export function WatchlistRow({ item }: WatchlistRowProps) {
+export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading, heat, latestSignal }: WatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
 
   const {
@@ -92,17 +98,24 @@ export function WatchlistRow({ item }: WatchlistRowProps) {
         </td>
       )}
 
-      {/* Delta — placeholder, would need snapshot comparison */}
+      {/* Delta — sparkline with price history + change % */}
       {visibleColumns.delta && (
         <td className="px-2 py-1.5">
-          <span className="text-xs text-text-secondary">—</span>
+          <SparklineCell
+            summary={sparklineSummary}
+            isLoading={sparklinesLoading ?? false}
+          />
         </td>
       )}
 
       {/* Watchers */}
       {visibleColumns.watchers && (
         <td className="px-2 py-1.5">
-          <WatcherCell count={item.watcherCount} />
+          <WatcherCell
+            count={item.watcherCount}
+            heat={heat}
+            delta={heat?.watcherDelta ?? null}
+          />
         </td>
       )}
 
@@ -127,6 +140,17 @@ export function WatchlistRow({ item }: WatchlistRowProps) {
         </td>
       )}
 
+      {/* Signal */}
+      {visibleColumns.signals && (
+        <td className="px-2 py-1.5">
+          {latestSignal ? (
+            <SignalBadge signal={latestSignal} />
+          ) : (
+            <span className="text-xs text-text-secondary">&mdash;</span>
+          )}
+        </td>
+      )}
+
       {/* Queue toggle */}
       {visibleColumns.queue && (
         <td className="w-8 px-1 py-1.5 text-center">
@@ -143,3 +167,6 @@ export function WatchlistRow({ item }: WatchlistRowProps) {
     </tr>
   )
 }
+
+/** @deprecated Use SortableWatchlistRow instead. Kept for backward compatibility. */
+export const WatchlistRow = SortableWatchlistRow

@@ -2,6 +2,11 @@ import type { WatchlistItem, ListingStatus, UpsertItemInput, ItemsRepo } from '.
 import { getDb } from './client'
 import { DatabaseError } from '../errors'
 
+export interface UnrankedPage {
+  items: WatchlistItem[]
+  total: number
+}
+
 function rowToItem(row: any): WatchlistItem {
   return {
     id: row.item_id,
@@ -207,6 +212,39 @@ export function freeRank(id: string): void {
     })()
   } catch (err: any) {
     throw new DatabaseError(`Failed to free rank for ${id}: ${err.message}`)
+  }
+}
+
+export function getUnrankedPage(opts: {
+  offset: number
+  limit: number
+  status?: ListingStatus
+  search?: string
+}): UnrankedPage {
+  const db = getDb()
+  const conditions = ['rank IS NULL']
+  const params: any[] = []
+
+  if (opts.status) {
+    conditions.push('status = ?')
+    params.push(opts.status)
+  }
+  if (opts.search) {
+    conditions.push('title LIKE ?')
+    params.push(`%${opts.search}%`)
+  }
+
+  const where = `WHERE ${conditions.join(' AND ')}`
+
+  try {
+    const totalRow = db.prepare(`SELECT COUNT(*) as n FROM items ${where}`).get(...params) as any
+    const total = totalRow.n as number
+    const rows = db
+      .prepare(`SELECT * FROM items ${where} ORDER BY end_time ASC LIMIT ? OFFSET ?`)
+      .all(...params, opts.limit, opts.offset)
+    return { items: (rows as any[]).map(rowToItem), total }
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get unranked page: ${err.message}`)
   }
 }
 

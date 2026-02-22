@@ -7,6 +7,7 @@ import { ItemStatsGrid } from '@/components/detail/item-stats-grid'
 import { PriceChart } from '@/components/detail/price-chart'
 import { WatcherChart } from '@/components/detail/watcher-chart'
 import { ItemEvents } from '@/components/detail/item-events'
+import { OHLCChart } from '@/components/detail/ohlc-chart'
 import { ErrorState } from '@/components/watchlist/error-state'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -40,6 +41,8 @@ export default function ItemDetailPage() {
               <PriceChart snapshots={data.snapshots} />
               <WatcherChart snapshots={data.snapshots} />
             </div>
+            {/* Historical archive — empty state shown gracefully until first nightly rollup */}
+            <OHLCChart itemId={data.item.id} />
             <ItemEvents events={data.events} />
           </>
         ) : null}

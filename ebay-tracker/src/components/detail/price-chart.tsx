@@ -1,16 +1,29 @@
 'use client'
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts'
-import type { PriceSnapshot } from '@/types'
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from 'recharts'
+import type { PriceSnapshot, CardSignal } from '@/types'
 
 interface PriceChartProps {
   snapshots: PriceSnapshot[]
+  signals?: CardSignal[]
 }
 
-export function PriceChart({ snapshots }: PriceChartProps) {
+export function PriceChart({ snapshots, signals }: PriceChartProps) {
   const chartData = snapshots.map((s) => ({
     date: new Date(s.recordedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     price: s.priceCents / 100,
   }))
+
+  // Build signal markers mapped to chart dates
+  const signalMarkers = (signals ?? []).map((s) => ({
+    date: new Date(s.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    label: s.eventType.slice(0, 3).toUpperCase(),
+    color: s.score > 0 ? '#3fb950' : s.score < 0 ? '#f85149' : '#8b949e',
+    score: s.score,
+  }))
+
+  // Only show markers for dates that exist in chart data
+  const chartDates = new Set(chartData.map((d) => d.date))
+  const visibleMarkers = signalMarkers.filter((m) => chartDates.has(m.date))
 
   if (chartData.length === 0) {
     return (
@@ -61,6 +74,22 @@ export function PriceChart({ snapshots }: PriceChartProps) {
             fill="url(#priceGradient)"
             strokeWidth={2}
           />
+          {visibleMarkers.map((marker, i) => (
+            <ReferenceLine
+              key={`signal-${i}`}
+              x={marker.date}
+              stroke={marker.color}
+              strokeDasharray="4 4"
+              strokeWidth={1.5}
+              label={{
+                value: marker.label,
+                position: 'top',
+                fill: marker.color,
+                fontSize: 9,
+                fontWeight: 600,
+              }}
+            />
+          ))}
         </AreaChart>
       </ResponsiveContainer>
     </div>

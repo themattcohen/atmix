@@ -3,6 +3,8 @@ import { getAll, getById, upsert, markStatus, freeRank } from '../db/items'
 import { insertSnapshot } from '../db/trends'
 import { insert as insertEvent } from '../db/events'
 import { detectPriceChange, detectWatcherSpike } from './event-detector'
+import { evaluateTargets } from './target-evaluator'
+import { parseSingleAndStore } from '../ai/title-parser'
 import type { SyncResult } from '../../types'
 
 let syncing = false
@@ -40,6 +42,10 @@ export async function runSync(): Promise<SyncResult> {
         // New item
         upsert(apiItem)
         added++
+        // Fire-and-forget: parse the new item's title without blocking sync
+        void parseSingleAndStore(apiItem.id, apiItem.title).catch(err => {
+          console.error(`[title-parser] Failed to parse new item ${apiItem.id}: ${err.message}`)
+        })
       } else {
         // Existing item — update and detect changes
         upsert(apiItem)
@@ -64,6 +70,9 @@ export async function runSync(): Promise<SyncResult> {
         watcherCount: apiItem.watcherCount ?? null,
         bidCount: apiItem.bidCount ?? 0,
       })
+
+      // Evaluate price targets against the fresh price
+      evaluateTargets(apiItem.id, apiItem.currentPrice)
     }
 
     // 4. Detect sold/expired: DB items not in API response

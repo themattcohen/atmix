@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { useWatchlist } from '@/hooks/use-watchlist'
 import { useEvents } from '@/hooks/use-events'
 import { useWatchlistStore } from '@/store/watchlist-store'
@@ -10,26 +11,62 @@ import { WatchlistTable } from '@/components/watchlist/watchlist-table'
 import { EmptyState } from '@/components/watchlist/empty-state'
 import { ErrorState } from '@/components/watchlist/error-state'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { WatchlistItem } from '@/types'
+
+const LIMIT = 50
 
 export default function WatchlistPage() {
   const { statusFilter, typeFilter, searchQuery } = useWatchlistStore()
 
-  const { data, isLoading, isError, refetch } = useWatchlist({
+  // Pagination state for unranked items
+  const [unrankedOffset, setUnrankedOffset] = useState(0)
+  const [accumulatedUnranked, setAccumulatedUnranked] = useState<WatchlistItem[]>([])
+
+  const { data, isLoading, isError, isFetching, refetch } = useWatchlist({
     status: statusFilter,
     type: typeFilter,
     search: searchQuery,
+    offset: unrankedOffset,
+    limit: LIMIT,
   })
 
-  const { data: priceDropEvents } = useEvents({ type: 'price_drop', limit: 10 })
-  const { data: watcherSpikeEvents } = useEvents({ type: 'watcher_spike', limit: 10 })
+  // When new page arrives, append to accumulated list
+  useEffect(() => {
+    if (!data) return
+    if (unrankedOffset === 0) {
+      setAccumulatedUnranked(data.unranked)
+    } else {
+      setAccumulatedUnranked(prev => {
+        // Deduplicate by id in case of refetch
+        const existingIds = new Set(prev.map(i => i.id))
+        const newItems = data.unranked.filter(i => !existingIds.has(i.id))
+        return [...prev, ...newItems]
+      })
+    }
+  }, [data, unrankedOffset])
 
-  const allItems = data ? [...data.ranked, ...data.unranked] : []
+  // Reset on filter change
+  useEffect(() => {
+    setUnrankedOffset(0)
+    setAccumulatedUnranked([])
+  }, [statusFilter, typeFilter, searchQuery])
+
+  const handleLoadMore = () => setUnrankedOffset(prev => prev + LIMIT)
+
+  const ranked = data?.ranked ?? []
+  const unrankedTotal = data?.unrankedTotal ?? 0
+
+  const allItems = [...ranked, ...accumulatedUnranked]
   const endingSoon = allItems
     .filter((item) => item.status === 'Active' && item.endTime)
     .sort((a, b) => new Date(a.endTime!).getTime() - new Date(b.endTime!).getTime())
     .slice(0, 5)
 
+  const { data: priceDropEvents } = useEvents({ type: 'price_drop', limit: 10 })
+  const { data: watcherSpikeEvents } = useEvents({ type: 'watcher_spike', limit: 10 })
+
   const hasFilters = statusFilter !== 'All' || typeFilter !== 'All' || searchQuery !== ''
+  const isEmpty = !data || (ranked.length === 0 && unrankedTotal === 0)
 
   return (
     <>
@@ -50,10 +87,17 @@ export default function WatchlistPage() {
           </div>
         ) : isError ? (
           <ErrorState message="Failed to load watchlist" onRetry={() => refetch()} />
-        ) : !data || (data.ranked.length === 0 && data.unranked.length === 0) ? (
+        ) : isEmpty ? (
           <EmptyState hasFilters={hasFilters} />
         ) : (
-          <WatchlistTable ranked={data.ranked} unranked={data.unranked} />
+          <WatchlistTable
+            ranked={ranked}
+            unranked={accumulatedUnranked}
+            unrankedTotal={unrankedTotal}
+            onLoadMore={handleLoadMore}
+            isLoadingMore={isFetching && unrankedOffset > 0}
+            heatIndex={data?.heatIndex}
+          />
         )}
       </AppShell>
     </>

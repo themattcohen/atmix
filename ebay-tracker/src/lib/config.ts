@@ -11,6 +11,8 @@ const configSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_PATH: z.string().default('./db/watchlist.db'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_BATCH_ENABLED: z.enum(['true', 'false']).default('true'),
 })
 
 export type AppConfig = z.infer<typeof configSchema>
@@ -26,6 +28,9 @@ export function validateConfig(): AppConfig {
   if (!config.EBAY_CLIENT_ID || config.EBAY_CLIENT_ID.startsWith('placeholder')) {
     console.warn('eBay credentials not configured — sync will be disabled. Set real credentials in .env to enable.')
   }
+  if (!config.ANTHROPIC_API_KEY) {
+    console.warn('Anthropic API key not configured — AI title parsing will be disabled. Set ANTHROPIC_API_KEY in .env to enable.')
+  }
 
   return config
 }
@@ -37,4 +42,8 @@ export function hasEbayCredentials(config: AppConfig): boolean {
     config.EBAY_REFRESH_TOKEN &&
     !config.EBAY_REFRESH_TOKEN.startsWith('placeholder')
   )
+}
+
+export function hasAnthropicCredentials(config: AppConfig): boolean {
+  return !!config.ANTHROPIC_API_KEY
 }

@@ -11,6 +11,8 @@ export function TopBar() {
   const navLinks = [
     { href: '/', label: 'Watchlist' },
     { href: '/trends', label: 'Trends' },
+    { href: '/budget', label: 'Budget' },
+    { href: '/signals', label: 'Signals' },
   ]
 
   return (

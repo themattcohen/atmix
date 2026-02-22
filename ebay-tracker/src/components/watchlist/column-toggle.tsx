@@ -12,6 +12,7 @@ const columnLabels: Record<string, string> = {
   bidCount: 'Bids',
   timeLeft: 'Time Left',
   status: 'Status',
+  signals: 'Signals',
   queue: 'Queue',
 }
 

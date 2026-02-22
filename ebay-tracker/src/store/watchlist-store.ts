@@ -15,6 +15,9 @@ interface WatchlistStore {
   // Column visibility
   visibleColumns: Record<string, boolean>
   toggleColumn: (col: string) => void
+  // Sparkline timeframe preference
+  sparklineDays: 7 | 14 | 30
+  setSparklineDays: (d: 7 | 14 | 30) => void
 }
 
 export const useWatchlistStore = create<WatchlistStore>((set) => ({
@@ -39,6 +42,7 @@ export const useWatchlistStore = create<WatchlistStore>((set) => ({
     bidCount: true,
     timeLeft: true,
     status: true,
+    signals: true,
     queue: true,
   },
   toggleColumn: (col) =>
@@ -48,4 +52,7 @@ export const useWatchlistStore = create<WatchlistStore>((set) => ({
         [col]: !state.visibleColumns[col],
       },
     })),
+  // Sparkline timeframe
+  sparklineDays: 7,
+  setSparklineDays: (d) => set({ sparklineDays: d }),
 }))

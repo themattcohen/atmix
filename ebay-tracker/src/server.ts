@@ -14,7 +14,7 @@ async function main() {
   await app.prepare()
   const handle = app.getRequestHandler()
 
-  startScheduler(config)
+  await startScheduler(config)
 
   createServer((req, res) => {
     handle(req, res, parse(req.url!, true))
