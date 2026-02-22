@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { CardSignal } from '@/types'
 import { useSignals } from '@/hooks/use-signals'
+import { useSignalConfig } from '@/hooks/use-signal-config'
 
 interface Toast {
   id: number
@@ -15,6 +16,7 @@ const AUTO_DISMISS_MS = 8000
 
 export function SignalToastContainer() {
   const { data } = useSignals({ limit: 20, acknowledged: false })
+  const { data: config } = useSignalConfig()
   const signals: CardSignal[] = data?.signals ?? []
 
   const [toasts, setToasts] = useState<Toast[]>([])
@@ -65,8 +67,10 @@ export function SignalToastContainer() {
     <div className="fixed top-16 right-4 z-50 flex flex-col gap-2 max-w-sm" data-testid="signal-toast">
       {toasts.map((toast) => {
         const isPositive = toast.signal.score > 0
-        const borderColor = isPositive ? 'border-status-active' : 'border-status-sold'
-        const scoreColor = isPositive ? 'text-status-active' : 'text-status-sold'
+        const eventConfig = config?.signalConfig[toast.signal.eventType]
+        const borderColor = eventConfig ? eventConfig.color.replace('text-', 'border-') : (isPositive ? 'border-status-active' : 'border-status-sold')
+        const scoreColor = eventConfig?.color ?? (isPositive ? 'text-status-active' : 'text-status-sold')
+        const eventLabel = eventConfig?.label ?? toast.signal.eventType.replace('_', ' ')
 
         return (
           <div
@@ -80,7 +84,7 @@ export function SignalToastContainer() {
                     {isPositive ? '+' : ''}{toast.signal.score}
                   </span>
                   <span className="text-[10px] font-semibold text-text-secondary uppercase">
-                    {toast.signal.eventType.replace('_', ' ')}
+                    {eventLabel}
                   </span>
                 </div>
                 <p className="text-xs text-text-primary mt-0.5 truncate">

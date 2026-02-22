@@ -10,6 +10,7 @@ function interceptWithSignals(page: import('@playwright/test').Page, signals: ty
     page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
     page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
     page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+    page.route('**/api/signals/config*', (route) => route.continue()),
     page.route('**/api/signals*', (route) => route.fulfill({ json: makeCustomSignalsResponse(signals) })),
   ])
 }
@@ -25,14 +26,15 @@ const baseSignal: (typeof mockSignals)[0] = {
   headline: 'Test signal headline',
   source: 'mlb_transactions',
   sourceUrl: null,
+  matchedKeyword: null,
   acknowledged: false,
   expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString(),
   createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
 }
 
 test.describe('Signal Validity', () => {
-  // T41: score +3 shows success variant (green class text-status-active)
-  test('T41: score +3 shows green text-status-active class', async ({ page }) => {
+  // T41: score +3 with callup event type shows callup color (bg-emerald-400)
+  test('T41: score +3 shows callup config color bg-emerald-400', async ({ page }) => {
     const signal: (typeof mockSignals)[0] = { ...baseSignal, score: 3 }
     await interceptWithSignals(page, [signal])
     await page.goto('/')
@@ -41,11 +43,12 @@ test.describe('Signal Validity', () => {
     await expect(badge).toBeVisible()
 
     const className = await badge.getAttribute('class')
-    expect(className).toContain('text-status-active')
+    expect(className).toContain('bg-emerald-400')
   })
 
-  // T42: score -3 shows danger variant (red class text-status-sold)
-  test('T42: score -3 shows red text-status-sold class', async ({ page }) => {
+  // T42: score -3 with callup event type still shows callup color (bg-emerald-400)
+  // Badge color is driven by event type config, not score polarity
+  test('T42: score -3 with callup event shows callup config color bg-emerald-400', async ({ page }) => {
     const signal: (typeof mockSignals)[0] = { ...baseSignal, score: -3 }
     await interceptWithSignals(page, [signal])
     await page.goto('/')
@@ -54,11 +57,12 @@ test.describe('Signal Validity', () => {
     await expect(badge).toBeVisible()
 
     const className = await badge.getAttribute('class')
-    expect(className).toContain('text-status-sold')
+    expect(className).toContain('bg-emerald-400')
   })
 
-  // T43: score 0 shows default variant (gray class text-text-secondary)
-  test('T43: score 0 shows gray text-text-secondary class', async ({ page }) => {
+  // T43: score 0 with callup event type shows callup color (bg-emerald-400)
+  // Config-driven color applies regardless of score
+  test('T43: score 0 shows callup config color bg-emerald-400', async ({ page }) => {
     const signal: (typeof mockSignals)[0] = { ...baseSignal, score: 0 }
     await interceptWithSignals(page, [signal])
     await page.goto('/')
@@ -67,7 +71,7 @@ test.describe('Signal Validity', () => {
     await expect(badge).toBeVisible()
 
     const className = await badge.getAttribute('class')
-    expect(className).toContain('text-text-secondary')
+    expect(className).toContain('bg-emerald-400')
   })
 
   // T44: confidence 0.85 displays "85%"

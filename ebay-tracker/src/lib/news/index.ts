@@ -178,6 +178,7 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
             headline: raw.title,
             source,
             sourceUrl: raw.url || null,
+            matchedKeyword: classification.matchedKeyword,
             expiresAt,
           })
           signalCount++

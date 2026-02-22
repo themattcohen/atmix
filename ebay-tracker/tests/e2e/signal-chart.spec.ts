@@ -16,6 +16,7 @@ function interceptItemDetailApis(page: import('@playwright/test').Page, signals:
   return Promise.all([
     page.route('**/api/items/111*', (route) => route.fulfill({ json: mockItemDetailResponse })),
     page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+    page.route('**/api/signals/config*', (route) => route.continue()),
     page.route('**/api/signals*', (route) => route.fulfill({ json: itemSignalResponse })),
   ])
 }
@@ -45,6 +46,7 @@ test.describe('Signal Chart', () => {
     await Promise.all([
       page.route('**/api/items/111*', (route) => route.fulfill({ json: mockItemDetailResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => {
         const itemSignals = positiveSignals.filter((s) => s.itemId === '111')
         route.fulfill({ json: { data: { signals: itemSignals, total: itemSignals.length } } })
@@ -72,6 +74,7 @@ test.describe('Signal Chart', () => {
     await Promise.all([
       page.route('**/api/items/111*', (route) => route.fulfill({ json: mockItemDetailResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => {
         route.fulfill({ json: { data: { signals: [negativeSignal], total: 1 } } })
       }),

@@ -6,6 +6,7 @@ function interceptApis(page: import('@playwright/test').Page) {
     page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
     page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
     page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+    page.route('**/api/signals/config*', (route) => route.continue()),
     page.route('**/api/signals*', (route) => route.fulfill({ json: mockSignalsResponse })),
   ])
 }

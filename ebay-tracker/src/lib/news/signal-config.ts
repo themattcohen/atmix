@@ -1,0 +1,327 @@
+/**
+ * Single source of truth for all signal metadata.
+ * Imported by both backend (classifier, scorer) and frontend (tooltips, badges).
+ * Pure data — no Node.js dependencies.
+ */
+
+import type { NewsEventType, SourceName } from '../../types'
+
+export interface SignalEventConfig {
+  label: string
+  labelLong: string
+  description: string
+  impact: 'positive' | 'negative' | 'neutral'
+  baseScore: number
+  decayDays: number | null
+  color: string
+  bgColor: string
+  keywords: string[]
+  confidence: number
+}
+
+export interface SignalSourceConfig {
+  label: string
+  multiplier: number
+  reliability: string
+}
+
+export const SIGNAL_CONFIG: Record<NewsEventType, SignalEventConfig> = {
+  callup: {
+    label: 'CALLUP',
+    labelLong: 'Called Up',
+    description: 'Player promoted to major league roster',
+    impact: 'positive',
+    baseScore: 2,
+    decayDays: 30,
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-400/20',
+    confidence: 0.80,
+    keywords: [
+      'called up',
+      'recalled',
+      'promoted',
+      'select the contract',
+      'added to roster',
+      'roster move',
+      'signed 10-day',
+      'nba draft',
+      'recalled from ahl',
+      'nhl draft',
+      'nfl draft',
+    ],
+  },
+  injury_minor: {
+    label: 'INJURY',
+    labelLong: 'Minor Injury',
+    description: 'Player placed on short-term injured list',
+    impact: 'negative',
+    baseScore: -1,
+    decayDays: 14,
+    color: 'text-orange-400',
+    bgColor: 'bg-orange-400/20',
+    confidence: 0.80,
+    keywords: [
+      'day-to-day',
+      '10-day il',
+      '15-day il',
+      'placed on il',
+      'injured list',
+      'sprain',
+      'strain',
+      'bruise',
+      'soreness',
+      'placed on ir',
+      'injured reserve',
+      'placed on ltir',
+    ],
+  },
+  injury_season: {
+    label: 'INJURY',
+    labelLong: 'Season-Ending Injury',
+    description: 'Player value significantly impacted by major injury',
+    impact: 'negative',
+    baseScore: -3,
+    decayDays: null,
+    color: 'text-red-400',
+    bgColor: 'bg-red-400/20',
+    confidence: 0.90,
+    keywords: [
+      'season-ending',
+      'torn acl',
+      'torn ucl',
+      'tommy john',
+      'out for season',
+      'out for the season',
+      'season ending',
+    ],
+  },
+  trade_up: {
+    label: 'TRADE',
+    labelLong: 'Traded Up',
+    description: 'Player traded to a high-profile team',
+    impact: 'positive',
+    baseScore: 2,
+    decayDays: 30,
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-400/20',
+    confidence: 0.85,
+    keywords: [
+      'traded to yankees',
+      'traded to dodgers',
+      'traded to mets',
+      'traded to cubs',
+      'traded to braves',
+      'acquired by',
+      'blockbuster trade',
+      'traded to lakers',
+      'traded to celtics',
+      'traded to warriors',
+      'traded to chiefs',
+      'traded to cowboys',
+    ],
+  },
+  trade_down: {
+    label: 'TRADE',
+    labelLong: 'Traded Down',
+    description: 'Player traded or waived from current team',
+    impact: 'negative',
+    baseScore: -1,
+    decayDays: 30,
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-400/20',
+    confidence: 0.70,
+    keywords: [
+      'traded to',
+      'dealt to',
+      'waived',
+    ],
+  },
+  award: {
+    label: 'AWARD',
+    labelLong: 'Award / Honor',
+    description: 'Player received major award or honor',
+    impact: 'positive',
+    baseScore: 2,
+    decayDays: 30,
+    color: 'text-amber-400',
+    bgColor: 'bg-amber-400/20',
+    confidence: 0.95,
+    keywords: [
+      'mvp',
+      'cy young',
+      'all-star',
+      'rookie of the year',
+      'gold glove',
+      'silver slugger',
+      'hof',
+      'hall of fame',
+    ],
+  },
+  breakout: {
+    label: 'BREAKOUT',
+    labelLong: 'Breakout Performance',
+    description: 'Player achieved exceptional individual performance',
+    impact: 'positive',
+    baseScore: 2,
+    decayDays: 14,
+    color: 'text-cyan-400',
+    bgColor: 'bg-cyan-400/20',
+    confidence: 0.85,
+    keywords: [
+      'no-hitter',
+      'perfect game',
+      'cycle',
+      'grand slam',
+      'walk-off',
+      'career high',
+      'record-breaking',
+    ],
+  },
+  suspension: {
+    label: 'SUSPEND',
+    labelLong: 'Suspended',
+    description: 'Player suspended for rule violation',
+    impact: 'negative',
+    baseScore: -3,
+    decayDays: null,
+    color: 'text-red-400',
+    bgColor: 'bg-red-400/20',
+    confidence: 0.90,
+    keywords: [
+      'suspended',
+      'banned',
+      'peds',
+      'performance-enhancing',
+      'domestic violence',
+      'gambling',
+    ],
+  },
+  optioned: {
+    label: 'OPTION',
+    labelLong: 'Optioned / Sent Down',
+    description: 'Player demoted to minor league affiliate',
+    impact: 'negative',
+    baseScore: -1,
+    decayDays: 30,
+    color: 'text-violet-400',
+    bgColor: 'bg-violet-400/20',
+    confidence: 0.75,
+    keywords: [
+      'optioned to',
+      'sent down',
+      'assigned to',
+      'g-league assignment',
+      'practice squad',
+      'assigned to ahl',
+    ],
+  },
+  release: {
+    label: 'RELEASE',
+    labelLong: 'Released / DFA',
+    description: 'Player released or designated for assignment',
+    impact: 'negative',
+    baseScore: -2,
+    decayDays: null,
+    color: 'text-rose-400',
+    bgColor: 'bg-rose-400/20',
+    confidence: 0.80,
+    keywords: [
+      'released',
+      'designated for assignment',
+      'for assignment',
+      'dfa',
+      'non-tendered',
+      'outrighted',
+      'claimed off waivers',
+      'off waivers',
+      'cut from roster',
+    ],
+  },
+  return_injury: {
+    label: 'RETURN',
+    labelLong: 'Return from Injury',
+    description: 'Player activated from injured list',
+    impact: 'positive',
+    baseScore: 1,
+    decayDays: 14,
+    color: 'text-lime-400',
+    bgColor: 'bg-lime-400/20',
+    confidence: 0.85,
+    keywords: [
+      'activated from il',
+      'returns from injury',
+      'removed from il',
+      'back from il',
+      'cleared to play',
+    ],
+  },
+  contract: {
+    label: 'CONTRACT',
+    labelLong: 'Contract Signed',
+    description: 'Player signed new contract or extension',
+    impact: 'positive',
+    baseScore: 1,
+    decayDays: null,
+    color: 'text-teal-400',
+    bgColor: 'bg-teal-400/20',
+    confidence: 0.75,
+    keywords: [
+      'extension',
+      'signs with',
+      'signed with',
+      'contract extension',
+      'signs contract',
+      'signed contract',
+      'new contract',
+      'extends with',
+      'multi-year deal',
+      'free agent signing',
+      'signed free agent',
+      'signed as free agent',
+      'minor league contract',
+      'franchise tag',
+    ],
+  },
+  retirement: {
+    label: 'RETIRE',
+    labelLong: 'Retired',
+    description: 'Player announced retirement from professional sports',
+    impact: 'neutral',
+    baseScore: 1,
+    decayDays: 30,
+    color: 'text-slate-400',
+    bgColor: 'bg-slate-400/20',
+    confidence: 0.90,
+    keywords: ['retires', 'retirement', 'hangs up', 'calls it a career'],
+  },
+}
+
+export const SOURCE_CONFIG: Record<SourceName, SignalSourceConfig> = {
+  mlb_transactions: {
+    label: 'MLB Transactions',
+    multiplier: 0.95,
+    reliability: 'Very High',
+  },
+  rotowire_rss: {
+    label: 'RotoWire RSS',
+    multiplier: 0.85,
+    reliability: 'High',
+  },
+  espn_rss: {
+    label: 'ESPN RSS',
+    multiplier: 0.85,
+    reliability: 'High',
+  },
+  google_news_rss: {
+    label: 'Google News RSS',
+    multiplier: 0.65,
+    reliability: 'Moderate',
+  },
+}
+
+export const SCORING_FORMULA = {
+  sourceWeight: 0.4,
+  classificationWeight: 0.3,
+  matchWeight: 0.3,
+  description: 'composite = 0.4 x source + 0.3 x classification + 0.3 x match',
+}

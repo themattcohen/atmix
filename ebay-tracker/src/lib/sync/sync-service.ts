@@ -5,6 +5,7 @@ import { insert as insertEvent } from '../db/events'
 import { detectPriceChange, detectWatcherSpike } from './event-detector'
 import { evaluateTargets } from './target-evaluator'
 import { parseSingleAndStore } from '../ai/title-parser'
+import { getUnparsed } from '../db/metadata'
 import type { SyncResult } from '../../types'
 
 let syncing = false
@@ -109,6 +110,25 @@ export async function runSync(): Promise<SyncResult> {
 
     const durationMs = Date.now() - startTime
     console.log(`Sync complete: +${added} new, ${updated} updated, ${sold} sold, ${expired} expired (${durationMs}ms)`)
+
+    // 5. Backfill unparsed items — parse up to 5 per sync cycle to avoid rate limits
+    const unparsedIds = getUnparsed(5)
+    if (unparsedIds.length > 0) {
+      const items = getAll()
+      const itemMap = new Map(items.map(i => [i.id, i]))
+      let backfilled = 0
+      for (const id of unparsedIds) {
+        const item = itemMap.get(id)
+        if (!item) continue
+        void parseSingleAndStore(id, item.title).catch(err => {
+          console.error(`[title-parser] Backfill failed for ${id}: ${err.message}`)
+        })
+        backfilled++
+      }
+      if (backfilled > 0) {
+        console.log(`[Sync] Backfill: queued ${backfilled} unparsed items for AI parsing`)
+      }
+    }
 
     return { added, updated, sold, expired, durationMs }
   } finally {

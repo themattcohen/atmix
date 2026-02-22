@@ -11,6 +11,7 @@ import {
   mockSignals,
   mockSignalsResponse,
   mockSignalStatsResponse,
+
   mockTrendsResponse,
 } from './helpers/mock-data'
 
@@ -80,8 +81,8 @@ const mockWatchlistWithUnranked = {
 
 // ─── Helpers ────────────────────────────────────────────────────────────
 
-function interceptAll(page: Page) {
-  return Promise.all([
+async function interceptAll(page: Page) {
+  await Promise.all([
     page.route('**/api/items?*', (route) => {
       const url = new URL(route.request().url())
       const status = url.searchParams.get('status')
@@ -129,14 +130,14 @@ function interceptAll(page: Page) {
     page.route('**/api/events', (route) =>
       route.fulfill({ json: mockEventsResponse })
     ),
+    page.route('**/api/signals/stats*', (route) =>
+      route.fulfill({ json: mockSignalStatsResponse })
+    ),
     page.route('**/api/signals?*', (route) =>
       route.fulfill({ json: mockSignalsResponse })
     ),
     page.route('**/api/signals', (route) =>
       route.fulfill({ json: mockSignalsResponse })
-    ),
-    page.route('**/api/signals/stats', (route) =>
-      route.fulfill({ json: mockSignalStatsResponse })
     ),
     page.route('**/api/signals/*', (route) => {
       if (route.request().method() === 'PATCH') {
@@ -189,6 +190,9 @@ function interceptAll(page: Page) {
       route.fulfill({ json: { data: {} } })
     ),
   ])
+  // Config route registered LAST = highest priority (Playwright checks in reverse order).
+  // This prevents **/api/signals?* and **/api/signals/* from catching /api/signals/config.
+  await page.route('**/api/signals/config*', (route) => route.continue())
 }
 
 // ─── TEST SUITE: Antagonistic UI Testing ────────────────────────────────

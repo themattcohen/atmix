@@ -7,9 +7,9 @@ export function insert(signal: Omit<CardSignal, 'id' | 'createdAt' | 'acknowledg
   try {
     db.prepare(`
       INSERT OR IGNORE INTO card_signals
-        (news_item_id, item_id, player_id, event_type, score, confidence, headline, source, source_url, expires_at)
+        (news_item_id, item_id, player_id, event_type, score, confidence, headline, source, source_url, matched_keyword, expires_at)
       VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       signal.newsItemId,
       signal.itemId,
@@ -20,6 +20,7 @@ export function insert(signal: Omit<CardSignal, 'id' | 'createdAt' | 'acknowledg
       signal.headline,
       signal.source,
       signal.sourceUrl,
+      signal.matchedKeyword,
       signal.expiresAt,
     )
   } catch (err: any) {
@@ -146,6 +147,7 @@ function mapRow(row: any): CardSignal {
     headline: row.headline,
     source: row.source,
     sourceUrl: row.source_url,
+    matchedKeyword: row.matched_keyword ?? null,
     acknowledged: row.acknowledged === 1,
     expiresAt: row.expires_at,
     createdAt: row.created_at,

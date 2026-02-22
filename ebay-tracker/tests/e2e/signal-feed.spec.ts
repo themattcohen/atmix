@@ -6,6 +6,7 @@ function interceptApis(page: import('@playwright/test').Page) {
     page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
     page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
     page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+    page.route('**/api/signals/config*', (route) => route.continue()),
     page.route('**/api/signals*', (route) => route.fulfill({ json: mockSignalsResponse })),
   ])
 }
@@ -44,6 +45,7 @@ test.describe('Signal Feed Page', () => {
       page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
       page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => {
         filteredRequestUrl = route.request().url()
         route.fulfill({ json: mockSignalsResponse })
@@ -77,6 +79,7 @@ test.describe('Signal Feed Page', () => {
       page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
       page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => {
         lastRequestUrl = route.request().url()
         route.fulfill({ json: mockSignalsResponse })
@@ -109,6 +112,7 @@ test.describe('Signal Feed Page', () => {
     await page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse }))
     await page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse }))
     await page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse }))
+    await page.route('**/api/signals/config*', (route) => route.continue())
     await page.route('**/api/signals/*', (route) => {
       if (route.request().method() === 'PATCH') {
         patchedUrl = route.request().url()
@@ -146,6 +150,7 @@ test.describe('Signal Feed Page', () => {
       page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
       page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => route.fulfill({ json: emptyResponse })),
     ])
 

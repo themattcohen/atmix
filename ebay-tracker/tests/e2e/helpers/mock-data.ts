@@ -106,6 +106,7 @@ function makeSignal(overrides: Partial<CardSignal> & { id: number }): CardSignal
     headline: 'Player called up to majors',
     source: 'mlb_transactions',
     sourceUrl: null,
+    matchedKeyword: null,
     acknowledged: false,
     expiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString(),
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
@@ -139,3 +140,4 @@ export const mockSignalStatsResponse = {
     ],
   },
 }
+

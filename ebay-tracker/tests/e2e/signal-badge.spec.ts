@@ -6,6 +6,7 @@ function interceptApis(page: import('@playwright/test').Page) {
     page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
     page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
     page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+    page.route('**/api/signals/config*', (route) => route.continue()),
     page.route('**/api/signals*', (route) => route.fulfill({ json: mockSignalsResponse })),
   ])
 }
@@ -38,6 +39,7 @@ test.describe('Signal Badge', () => {
       page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
       page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => route.fulfill({ json: customResponse })),
     ])
 
@@ -50,7 +52,7 @@ test.describe('Signal Badge', () => {
     expect(text).toMatch(/\+[123]/)
 
     const className = await badge.getAttribute('class')
-    expect(className).toContain('text-status-active')
+    expect(className).toContain('bg-emerald-400')
   })
 
   // T24: negative score shows red styling
@@ -67,6 +69,7 @@ test.describe('Signal Badge', () => {
       page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
       page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => route.fulfill({ json: customResponse })),
     ])
 
@@ -79,7 +82,7 @@ test.describe('Signal Badge', () => {
     expect(text).toMatch(/-[13]/)
 
     const className = await badge.getAttribute('class')
-    expect(className).toContain('text-status-sold')
+    expect(className).toContain('bg-red-400')
   })
 
   // T25: no badge when no signals for item
@@ -90,6 +93,7 @@ test.describe('Signal Badge', () => {
       page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
       page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
       page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
+      page.route('**/api/signals/config*', (route) => route.continue()),
       page.route('**/api/signals*', (route) => route.fulfill({ json: emptySignalsResponse })),
     ])
 

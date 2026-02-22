@@ -3,27 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useSignals, useSignalStats, useAcknowledgeSignal } from '@/hooks/use-signals'
+import { useSignalConfig } from '@/hooks/use-signal-config'
 import { AppShell } from '@/components/layout/app-shell'
 import { TopBar } from '@/components/layout/top-bar'
 import { SignalBadge } from '@/components/signals/signal-badge'
 import type { NewsEventType } from '@/types'
-
-const EVENT_TYPE_OPTIONS: { value: NewsEventType | ''; label: string }[] = [
-  { value: '', label: 'All Events' },
-  { value: 'callup', label: 'Callup' },
-  { value: 'injury_minor', label: 'Injury (Minor)' },
-  { value: 'injury_season', label: 'Injury (Season)' },
-  { value: 'trade_up', label: 'Trade (Up)' },
-  { value: 'trade_down', label: 'Trade (Down)' },
-  { value: 'award', label: 'Award' },
-  { value: 'breakout', label: 'Breakout' },
-  { value: 'suspension', label: 'Suspension' },
-  { value: 'optioned', label: 'Optioned' },
-  { value: 'release', label: 'Release' },
-  { value: 'return_injury', label: 'Return from Injury' },
-  { value: 'contract', label: 'Contract' },
-  { value: 'retirement', label: 'Retirement' },
-]
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -37,6 +21,16 @@ function timeAgo(dateStr: string): string {
 }
 
 export default function SignalsPage() {
+  const { data: signalConfig } = useSignalConfig()
+
+  const eventTypeOptions: { value: NewsEventType | ''; label: string }[] = [
+    { value: '' as const, label: 'All Events' },
+    ...Object.entries(signalConfig?.signalConfig ?? {}).map(([key, cfg]) => ({
+      value: key as NewsEventType,
+      label: cfg.labelLong,
+    })),
+  ]
+
   const [eventTypeFilter, setEventTypeFilter] = useState<NewsEventType | ''>('')
   const [minScore, setMinScore] = useState(0)
   const [showAcknowledged, setShowAcknowledged] = useState(false)
@@ -77,7 +71,7 @@ export default function SignalsPage() {
           onChange={(e) => setEventTypeFilter(e.target.value as NewsEventType | '')}
           className="bg-background border border-border rounded px-2 py-1.5 text-xs text-text-primary"
         >
-          {EVENT_TYPE_OPTIONS.map((opt) => (
+          {eventTypeOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>

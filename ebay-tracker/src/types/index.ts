@@ -428,6 +428,7 @@ export interface CardSignal {
   headline: string
   source: SourceName
   sourceUrl: string | null
+  matchedKeyword: string | null
   acknowledged: boolean
   expiresAt: string | null
   createdAt: string
