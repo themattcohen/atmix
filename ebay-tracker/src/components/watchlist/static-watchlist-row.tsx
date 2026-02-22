@@ -1,8 +1,11 @@
 'use client'
+import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
 import Link from 'next/link'
 import type { WatchlistItem, HeatIndex, CardSignal } from '@/types'
 import { useWatchlistStore } from '@/store/watchlist-store'
 import { useQueueToggle } from '@/hooks/use-queue-toggle'
+import { DragHandle } from './drag-handle'
 import { SignalBadge } from '@/components/signals/signal-badge'
 import { TargetBadge } from '@/components/items/target-badge'
 import { RankCell } from './rank-cell'
@@ -21,10 +24,31 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
   const queueMutation = useQueueToggle()
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging,
+  } = useDraggable({ id: `unranked-${item.id}` })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+  }
+
   return (
-    <tr className="border-b border-border hover:bg-raised transition-colors">
-      {/* No drag handle — static rows cannot be dragged */}
-      <td className="w-8" />
+    <tr
+      ref={setNodeRef}
+      style={style}
+      className="border-b border-border hover:bg-raised transition-colors group"
+    >
+      {/* Drag handle — visible on hover to promote into ranked */}
+      <td className="w-8 px-1 py-1.5">
+        <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+          <DragHandle listeners={listeners} attributes={attributes} />
+        </span>
+      </td>
 
       {/* Rank — clickable so unranked items can be promoted */}
       {visibleColumns.rank && (

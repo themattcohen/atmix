@@ -1,4 +1,5 @@
 import { fetchWatchlist, getItemStatus } from '../ebay/client'
+import type { ItemStatusResult } from '../ebay/client'
 import { getAll, getById, upsert, markStatus, freeRank } from '../db/items'
 import { insertSnapshot } from '../db/trends'
 import { insert as insertEvent } from '../db/events'
@@ -82,14 +83,27 @@ export async function runSync(): Promise<SyncResult> {
 
       // Item left watchlist — determine why
       try {
-        const status = await getItemStatus(dbItem.id)
+        const result: ItemStatusResult = await getItemStatus(dbItem.id)
 
-        if (status === 'sold') {
+        // Speculatively persist watchCount from Browse API into both tables.
+        // result.watchCount will be null until eBay App Check is approved; that's fine.
+        if (result.watchCount != null) {
+          upsert({ ...dbItem, watcherCount: result.watchCount })
+          insertSnapshot({
+            itemId: dbItem.id,
+            priceCents: dbItem.currentPrice,
+            shippingCents: dbItem.shippingCost ?? 0,
+            watcherCount: result.watchCount,
+            bidCount: dbItem.bidCount ?? 0,
+          })
+        }
+
+        if (result.status === 'sold') {
           markStatus(dbItem.id, 'Sold')
           freeRank(dbItem.id)
           insertEvent({ itemId: dbItem.id, eventType: 'sold' })
           sold++
-        } else if (status === 'ended') {
+        } else if (result.status === 'ended') {
           markStatus(dbItem.id, 'Ended')
           freeRank(dbItem.id)
           insertEvent({ itemId: dbItem.id, eventType: 'expired' })

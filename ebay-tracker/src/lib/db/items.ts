@@ -219,12 +219,20 @@ export function freeRank(id: string): void {
   }
 }
 
+const SORT_COL_MAP: Record<string, string> = {
+  price: 'current_price',
+  watchers: 'watcher_count',
+  end_time: 'end_time',
+}
+
 export function getUnrankedPage(opts: {
   offset: number
   limit: number
   status?: ListingStatus
   search?: string
   type?: string
+  sort?: string
+  dir?: string
 }): UnrankedPage {
   const db = getDb()
   const conditions = ['rank IS NULL']
@@ -245,11 +253,15 @@ export function getUnrankedPage(opts: {
 
   const where = `WHERE ${conditions.join(' AND ')}`
 
+  const col = SORT_COL_MAP[opts.sort ?? ''] ?? 'end_time'
+  const direction = opts.dir === 'desc' ? 'DESC' : 'ASC'
+  const orderBy = `ORDER BY ${col} IS NULL, ${col} ${direction}`
+
   try {
     const totalRow = db.prepare(`SELECT COUNT(*) as n FROM items ${where}`).get(...params) as any
     const total = totalRow.n as number
     const rows = db
-      .prepare(`SELECT * FROM items ${where} ORDER BY end_time ASC LIMIT ? OFFSET ?`)
+      .prepare(`SELECT * FROM items ${where} ${orderBy} LIMIT ? OFFSET ?`)
       .all(...params, opts.limit, opts.offset)
     return { items: (rows as any[]).map(rowToItem), total }
   } catch (err: any) {

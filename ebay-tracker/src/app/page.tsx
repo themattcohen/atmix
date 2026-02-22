@@ -16,7 +16,7 @@ import type { WatchlistItem } from '@/types'
 const LIMIT = 50
 
 export default function WatchlistPage() {
-  const { statusFilter, typeFilter, searchQuery } = useWatchlistStore()
+  const { statusFilter, typeFilter, searchQuery, sortBy, sortDir } = useWatchlistStore()
 
   // Pagination state for unranked items
   const [unrankedOffset, setUnrankedOffset] = useState(0)
@@ -28,6 +28,8 @@ export default function WatchlistPage() {
     search: searchQuery,
     offset: unrankedOffset,
     limit: LIMIT,
+    sort: sortBy,
+    dir: sortDir,
   })
 
   // When new page arrives, append to accumulated list
@@ -45,11 +47,11 @@ export default function WatchlistPage() {
     }
   }, [data, unrankedOffset])
 
-  // Reset on filter change
+  // Reset on filter or sort change
   useEffect(() => {
     setUnrankedOffset(0)
     setAccumulatedUnranked([])
-  }, [statusFilter, typeFilter, searchQuery])
+  }, [statusFilter, typeFilter, searchQuery, sortBy, sortDir])
 
   const handleLoadMore = () => setUnrankedOffset(prev => prev + LIMIT)
 

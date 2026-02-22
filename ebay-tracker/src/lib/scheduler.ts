@@ -2,6 +2,7 @@ import cron from 'node-cron'
 import { runSync, isSyncing } from './sync/sync-service'
 import { runNightlyRollup } from './archive/rollup-service'
 import { runSourceIngestion } from './news/index'
+import { runRegexImprovementJob } from './news/regex-improvement-service'
 import { initRosterIfEmpty } from './news/matching/roster-sync'
 import { syncRoster } from './news/matching/roster-sync'
 import { deleteExpired } from './db/signals'
@@ -76,7 +77,16 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   })
 
-  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), Roster(weekly), Cleanup(daily)')
+  // Regex improvement: daily 3:30am UTC — analyze AI-fallback items, grow skip list
+  cron.schedule('30 3 * * *', async () => {
+    try {
+      await runRegexImprovementJob()
+    } catch (err) {
+      console.error('Regex improvement job failed:', err)
+    }
+  }, { timezone: 'UTC' })
+
+  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), Roster(weekly), Cleanup(daily), RegexImprove(daily)')
 
   // --- eBay sync crons (require credentials) ---
 

@@ -23,14 +23,17 @@ export function getEbayClient(): eBayApi {
     certId: clientSecret,
     devId: devId,
     sandbox,
+    siteId: eBayApi.SiteId.EBAY_US,
     ruName: redirectUri,
-    authToken: refreshToken,
+    // No authToken — that field is for legacy Auth'n'Auth tokens only.
+    // OAuth tokens go through OAuth2.setCredentials below.
   })
 
-  // Set the refresh token so the SDK can auto-refresh access tokens
+  // Set OAuth2 credentials — the SDK auto-refreshes access tokens using the refresh token
   ebayClient.OAuth2.setCredentials({
     access_token: '',
     refresh_token: refreshToken,
+    expires_in: 0,
   })
 
   return ebayClient

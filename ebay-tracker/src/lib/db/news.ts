@@ -8,7 +8,7 @@ export function insertIfNew(item: RawNewsItem): { id: number; isNew: boolean } {
   try {
     const contentHash = crypto
       .createHash('sha256')
-      .update(item.source + item.title + (item.body || ''))
+      .update(item.title + (item.body || ''))
       .digest('hex')
 
     const result = db.prepare(`

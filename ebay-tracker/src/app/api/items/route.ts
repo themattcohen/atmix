@@ -26,19 +26,18 @@ export async function GET(request: NextRequest) {
     const ranked = allFiltered
       .filter((i): i is WatchlistItem & { rank: number } => i.rank !== null)
 
-    // Sort ranked
-    ranked.sort((a, b) => {
-      if (sort === 'rank') return dir === 'asc' ? a.rank - b.rank : b.rank - a.rank
-      return sortBy(a, b, sort, dir)
-    })
+    // Ranked always sorted by rank ASC (DnD position must match rank numbers)
+    ranked.sort((a, b) => a.rank - b.rank)
 
-    // Unranked: paginated
+    // Unranked: paginated with user sort
     const { items: unranked, total: unrankedTotal } = getUnrankedPage({
       offset,
       limit,
       status: status === 'All' ? undefined : status as ListingStatus,
       search,
       type,
+      sort,
+      dir,
     })
 
     // Build delta lookup map (one DB call, covers all returned items)

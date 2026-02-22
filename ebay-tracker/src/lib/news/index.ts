@@ -1,5 +1,8 @@
+import fs from 'fs'
+import path from 'path'
 import type { SourceName } from '../../types'
 import { getByItemIds } from '../db/metadata'
+import { getAnthropicClient } from '../ai/client'
 import { acquireLock, releaseLock } from './rate-limiter'
 import { isCircuitOpen, recordSourceSuccess, recordSourceFailure } from './circuit-breaker'
 import { fetchMLBTransactions } from './sources/mlb-transactions'
@@ -20,6 +23,42 @@ const SOURCE_FETCHERS: Record<SourceName, () => Promise<import('../../types').Ra
   rotowire_rss: fetchRotoWireRSS,
   google_news_rss: fetchGoogleNewsRSS,
   espn_rss: fetchESPNRSS,
+}
+
+export function loadSkipRules(): Set<string> {
+  const rulesPath = path.resolve(process.cwd(), 'db/skip-rules.json')
+  try {
+    const raw = fs.readFileSync(rulesPath, 'utf-8')
+    const data = JSON.parse(raw)
+    return new Set(data.skipPhrases.map((p: string) => p.toLowerCase()))
+  } catch {
+    return new Set() // file doesn't exist yet — first boot
+  }
+}
+
+const DYNAMIC_SKIP_PHRASES = loadSkipRules()
+
+export async function extractPlayerNamesAI(title: string, body: string | null): Promise<string[]> {
+  try {
+    const client = getAnthropicClient()
+    const text = body ? `Headline: ${title}\nBody: ${body}` : `Headline: ${title}`
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 256,
+      system: `You extract athlete names from sports news headlines.
+Return ONLY a JSON array of full player names. Example: ["Luka Doncic", "Anthony Davis"]
+If no players mentioned, return []. Do NOT include team names, coaches, or non-players.`,
+      messages: [{ role: 'user', content: text }],
+    })
+    const content = message.content[0]
+    if (!content || content.type !== 'text') return []
+    const cleaned = content.text.trim().replace(/^```json?\s*/i, '').replace(/```\s*$/, '')
+    const parsed = JSON.parse(cleaned)
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((n: unknown) => typeof n === 'string' && (n as string).length > 1)
+  } catch {
+    return [] // AI not configured or API error — silently fall back to regex-only
+  }
 }
 
 /**
@@ -70,7 +109,7 @@ function resolveUnmappedItems(): void {
  * Extract player names from news text using simple heuristics.
  * Returns array of potential player name strings found in title + body.
  */
-function extractPlayerNames(title: string, body: string | null): string[] {
+export function extractPlayerNames(title: string, body: string | null): string[] {
   const text = `${title} ${body || ''}`
   // Look for capitalized name patterns (First Last or First Middle Last)
   const namePattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b/g
@@ -80,6 +119,7 @@ function extractPlayerNames(title: string, body: string | null): string[] {
     const name = match[1]
     // Skip common non-name phrases
     if (/^(New York|Los Angeles|San Francisco|San Diego|Kansas City|St Louis|Spring Training|World Series|All Star|National League|American League)$/i.test(name)) continue
+    if (DYNAMIC_SKIP_PHRASES.has(name.toLowerCase())) continue
     names.push(name)
   }
   return [...new Set(names)]
@@ -125,7 +165,14 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
       newCount++
 
       // 6. Extract player names from news text
-      const playerNames = extractPlayerNames(raw.title, raw.body)
+      let playerNames = extractPlayerNames(raw.title, raw.body)
+      let usedAIFallback = false
+
+      // 6a. AI fallback if regex found nothing
+      if (playerNames.length === 0) {
+        playerNames = await extractPlayerNamesAI(raw.title, raw.body)
+        if (playerNames.length > 0) usedAIFallback = true
+      }
 
       const mentionedPlayerIds: number[] = []
 
@@ -143,7 +190,7 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
         continue
       }
 
-      markProcessed(newsId, 1) // matched
+      markProcessed(newsId, usedAIFallback ? 4 : 1) // 4=ai_fallback, 1=matched
 
       // 7. For each mentioned player, find their cards and generate signals
       const classification = classifyEvent(raw.title, raw.body)
