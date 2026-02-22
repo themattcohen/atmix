@@ -12,6 +12,7 @@ import { StatusBadge } from './status-badge'
 import { WatcherCell } from './watcher-cell'
 import { SparklineCell } from './sparkline-cell'
 import { SignalBadge } from '@/components/signals/signal-badge'
+import { useQueueToggle } from '@/hooks/use-queue-toggle'
 
 interface WatchlistRowProps {
   item: WatchlistItem
@@ -23,6 +24,7 @@ interface WatchlistRowProps {
 
 export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading, heat, latestSignal }: WatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
+  const queueMutation = useQueueToggle()
 
   const {
     attributes,
@@ -159,6 +161,8 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
               item.isInQueue ? 'text-urgency-caution' : 'text-text-secondary hover:text-urgency-caution'
             }`}
             title={item.isInQueue ? 'Remove from queue' : 'Add to queue'}
+            onClick={() => queueMutation.mutate({ itemId: item.id, isInQueue: !item.isInQueue })}
+            disabled={queueMutation.isPending}
           >
             {item.isInQueue ? '\u2605' : '\u2606'}
           </button>

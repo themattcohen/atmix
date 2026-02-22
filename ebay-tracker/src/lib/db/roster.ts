@@ -32,14 +32,24 @@ export function upsertPlayers(players: Omit<RosterPlayer, 'updatedAt'>[]): void 
   }
 }
 
+function escapeLike(str: string): string {
+  return str.replace(/\0/g, '').replace(/[%_\\]/g, '\\$&')
+}
+
 export function search(query: string): RosterPlayer[] {
   const db = getDb()
   try {
+    // Escape LIKE wildcards and null bytes, then guard against empty queries
+    const escapedQuery = escapeLike(query).trim()
+    if (!escapedQuery) {
+      return []
+    }
+
     const rows = db.prepare(`
       SELECT * FROM player_roster
-      WHERE full_name LIKE ? AND active = 1
+      WHERE full_name LIKE ? ESCAPE '\\' AND active = 1
       ORDER BY full_name ASC
-    `).all(`%${query}%`) as any[]
+    `).all(`%${escapedQuery}%`) as any[]
 
     return rows.map(mapRow)
   } catch (err: any) {

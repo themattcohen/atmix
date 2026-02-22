@@ -76,32 +76,32 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
   const hasMore = unranked.length < unrankedTotal
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead className="sticky top-0 bg-surface z-10 border-b border-border">
-          <tr>
-            <th className="w-8" />
-            {visibleColumns.rank     && <th className={`w-10 ${headerClass} text-center`}>#</th>}
-            {visibleColumns.image    && <th className={`w-10 ${headerClass}`} />}
-            {visibleColumns.title    && <th className={headerClass}>Title</th>}
-            {visibleColumns.price    && <th className={headerClass}>Price</th>}
-            {visibleColumns.delta    && <th className={headerClass}>Delta</th>}
-            {visibleColumns.watchers && <th className={headerClass}>Watchers</th>}
-            {visibleColumns.bidCount && <th className={`w-12 ${headerClass} text-center`}>Bids</th>}
-            {visibleColumns.timeLeft && <th className={headerClass}>Time Left</th>}
-            {visibleColumns.status   && <th className={headerClass}>Status</th>}
-            {visibleColumns.signals  && <th className={headerClass}>Signal</th>}
-            {visibleColumns.queue    && <th className="w-8" />}
-          </tr>
-        </thead>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="sticky top-0 bg-surface z-10 border-b border-border">
+            <tr>
+              <th className="w-8" />
+              {visibleColumns.rank     && <th className={`w-10 ${headerClass} text-center`}>#</th>}
+              {visibleColumns.image    && <th className={`w-10 ${headerClass}`} />}
+              {visibleColumns.title    && <th className={headerClass}>Title</th>}
+              {visibleColumns.price    && <th className={headerClass}>Price</th>}
+              {visibleColumns.delta    && <th className={headerClass}>Delta</th>}
+              {visibleColumns.watchers && <th className={headerClass}>Watchers</th>}
+              {visibleColumns.bidCount && <th className={`w-12 ${headerClass} text-center`}>Bids</th>}
+              {visibleColumns.timeLeft && <th className={headerClass}>Time Left</th>}
+              {visibleColumns.status   && <th className={headerClass}>Status</th>}
+              {visibleColumns.signals  && <th className={headerClass}>Signal</th>}
+              {visibleColumns.queue    && <th className="w-8" />}
+            </tr>
+          </thead>
 
-        {/* Ranked items — draggable via dnd-kit */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis]}
-          onDragEnd={handleDragEnd}
-        >
+          {/* Ranked items — draggable via dnd-kit */}
           <SortableContext items={rankedIds} strategy={verticalListSortingStrategy}>
             <tbody>
               {ranked.map((item) => (
@@ -116,48 +116,48 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
               ))}
             </tbody>
           </SortableContext>
-        </DndContext>
 
-        {/* Unranked section divider */}
-        {(unranked.length > 0 || unrankedTotal > 0) && (
-          <tbody>
-            <tr>
-              <td
-                colSpan={colCount}
-                className="px-4 py-2 text-[10px] uppercase tracking-wider text-text-secondary font-semibold bg-background border-y border-border"
-              >
-                Unranked ({unrankedTotal.toLocaleString()} items)
-              </td>
-            </tr>
-          </tbody>
-        )}
-
-        {/* Unranked rows — static, no dnd-kit hooks */}
-        <tbody>
-          {unranked.map((item) => (
-            <StaticWatchlistRow key={item.id} item={item} />
-          ))}
-        </tbody>
-
-        {/* Load More row */}
-        {hasMore && (
-          <tbody>
-            <tr>
-              <td colSpan={colCount} className="px-4 py-3 text-center border-t border-border">
-                <button
-                  onClick={onLoadMore}
-                  disabled={isLoadingMore}
-                  className="text-xs text-accent hover:text-accent/80 disabled:text-text-secondary transition-colors"
+          {/* Unranked section divider */}
+          {(unranked.length > 0 || unrankedTotal > 0) && (
+            <tbody>
+              <tr>
+                <td
+                  colSpan={colCount}
+                  className="px-4 py-2 text-[10px] uppercase tracking-wider text-text-secondary font-semibold bg-background border-y border-border"
                 >
-                  {isLoadingMore
-                    ? 'Loading...'
-                    : `Load more (${(unrankedTotal - unranked.length).toLocaleString()} remaining)`}
-                </button>
-              </td>
-            </tr>
+                  Unranked ({unrankedTotal.toLocaleString()} items)
+                </td>
+              </tr>
+            </tbody>
+          )}
+
+          {/* Unranked rows — static, no dnd-kit hooks */}
+          <tbody>
+            {unranked.map((item) => (
+              <StaticWatchlistRow key={item.id} item={item} />
+            ))}
           </tbody>
-        )}
-      </table>
-    </div>
+
+          {/* Load More row */}
+          {hasMore && (
+            <tbody>
+              <tr>
+                <td colSpan={colCount} className="px-4 py-3 text-center border-t border-border">
+                  <button
+                    onClick={onLoadMore}
+                    disabled={isLoadingMore}
+                    className="text-xs text-accent hover:text-accent/80 disabled:text-text-secondary transition-colors"
+                  >
+                    {isLoadingMore
+                      ? 'Loading...'
+                      : `Load more (${(unrankedTotal - unranked.length).toLocaleString()} remaining)`}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          )}
+        </table>
+      </div>
+    </DndContext>
   )
 }

@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import type { WatchlistItem } from '@/types'
 import { useWatchlistStore } from '@/store/watchlist-store'
+import { useQueueToggle } from '@/hooks/use-queue-toggle'
 import { CountdownCell } from './countdown-cell'
 import { PriceCell } from './price-cell'
 import { StatusBadge } from './status-badge'
@@ -13,6 +14,7 @@ interface StaticWatchlistRowProps {
 
 export function StaticWatchlistRow({ item }: StaticWatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
+  const queueMutation = useQueueToggle()
 
   return (
     <tr className="border-b border-border hover:bg-raised transition-colors">
@@ -117,6 +119,8 @@ export function StaticWatchlistRow({ item }: StaticWatchlistRowProps) {
               item.isInQueue ? 'text-urgency-caution' : 'text-text-secondary hover:text-urgency-caution'
             }`}
             title={item.isInQueue ? 'Remove from queue' : 'Add to queue'}
+            onClick={() => queueMutation.mutate({ itemId: item.id, isInQueue: !item.isInQueue })}
+            disabled={queueMutation.isPending}
           >
             {item.isInQueue ? '\u2605' : '\u2606'}
           </button>
