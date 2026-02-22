@@ -4,10 +4,11 @@ import {
   recordFailure,
   openCircuit,
   closeCircuit,
+  getAll,
 } from '../db/source-health'
 
-const FAILURE_THRESHOLD = 3
-const PAUSE_MS = 30 * 60 * 1000 // 30 minutes
+const FAILURE_THRESHOLD = parseInt(process.env.CIRCUIT_FAILURE_THRESHOLD ?? '3', 10)
+const PAUSE_MS = parseInt(process.env.CIRCUIT_PAUSE_MS ?? '1800000', 10) // default 30 minutes
 
 interface CircuitState {
   failures: number
@@ -22,6 +23,35 @@ function getState(source: SourceName): CircuitState {
   }
   return circuitMap.get(source)!
 }
+
+function hydrateFromDb(): void {
+  try {
+    const rows = getAll()
+    for (const row of rows) {
+      const openUntil =
+        row.circuitOpen && row.circuitOpenUntil
+          ? new Date(row.circuitOpenUntil).getTime()
+          : null
+
+      circuitMap.set(row.source as SourceName, {
+        failures: row.consecutiveFailures,
+        openUntil,
+      })
+
+      const statusStr =
+        openUntil !== null && Date.now() < openUntil
+          ? `open until ${row.circuitOpenUntil}`
+          : 'ok'
+      console.log(`[CircuitBreaker] Hydrated: ${row.source}(${statusStr})`)
+    }
+  } catch (err) {
+    // DB may not be ready at import time (e.g., during migrations); skip silently
+    console.warn('[CircuitBreaker] Hydration skipped (DB not ready):', (err as Error).message)
+  }
+}
+
+// Populate in-memory state from persisted DB records on module load
+hydrateFromDb()
 
 export function isCircuitOpen(source: SourceName): boolean {
   const state = getState(source)

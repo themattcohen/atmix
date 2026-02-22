@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { CardSignal } from '@/types'
+import { useSignals } from '@/hooks/use-signals'
 
 interface Toast {
   id: number
@@ -12,7 +13,10 @@ interface Toast {
 const MAX_VISIBLE = 3
 const AUTO_DISMISS_MS = 8000
 
-export function SignalToastContainer({ signals }: { signals: CardSignal[] }) {
+export function SignalToastContainer() {
+  const { data } = useSignals({ limit: 20, acknowledged: false })
+  const signals: CardSignal[] = data?.signals ?? []
+
   const [toasts, setToasts] = useState<Toast[]>([])
   const [seenIds, setSeenIds] = useState<Set<number>>(new Set())
 

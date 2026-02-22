@@ -23,14 +23,8 @@ export function parsePlayerFromTitle(title: string): string | null {
   // Collapse multiple spaces
   cleaned = cleaned.replace(/\s{2,}/g, ' ').trim()
 
-  // Find all Title-Case words
-  const words: string[] = []
-  let match: RegExpExecArray | null
-  const re = new RegExp(TITLE_CASE_WORD.source, 'g')
-
-  while ((match = re.exec(cleaned)) !== null) {
-    words.push({ word: match[0], index: match.index } as any)
-  }
+  // Normalize ALL-CAPS words to Title Case: "MIKE TROUT" → "Mike Trout"
+  cleaned = cleaned.replace(/\b([A-Z]{2,})\b/g, (m) => m[0] + m.slice(1).toLowerCase())
 
   // Rebuild as array of { word, index } for consecutive run detection
   const wordPositions: { word: string; index: number }[] = []
@@ -42,16 +36,25 @@ export function parsePlayerFromTitle(title: string): string | null {
 
   if (wordPositions.length === 0) return null
 
+  // Lowercase name particles that can bridge two Title-Case runs into one name
+  const NAME_PARTICLES = /^(de|la|van|von|del|di|el|al|jr|sr|ii|iii)$/i
+
   // Find runs of consecutive title-case words (adjacent after whitespace only)
-  // Two words are "consecutive" if there is only whitespace between them
+  // Two words are "consecutive" if there is only whitespace between them,
+  // OR if there is only whitespace + a lowercase name particle between them.
   const runs: string[][] = []
   let currentRun: string[] = [wordPositions[0].word]
   let prevEnd = wordPositions[0].index + wordPositions[0].word.length
 
   for (let i = 1; i < wordPositions.length; i++) {
     const gap = cleaned.slice(prevEnd, wordPositions[i].index)
+    const gapTrimmed = gap.trim()
     if (/^\s+$/.test(gap)) {
+      // Adjacent Title-Case words — same run
       currentRun.push(wordPositions[i].word)
+    } else if (NAME_PARTICLES.test(gapTrimmed)) {
+      // A lowercase particle bridges the two Title-Case words — include it and continue
+      currentRun.push(gapTrimmed, wordPositions[i].word)
     } else {
       runs.push(currentRun)
       currentRun = [wordPositions[i].word]

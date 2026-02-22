@@ -45,6 +45,15 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   })
 
+  // ESPN RSS: every 30 min, 6-min offset
+  cron.schedule('6,36 * * * *', async () => {
+    try {
+      await runSourceIngestion('espn_rss')
+    } catch (err) {
+      console.error('ESPN RSS ingestion failed:', err)
+    }
+  })
+
   // Roster sync: weekly Monday 2am
   cron.schedule('0 2 * * 1', async () => {
     console.log('Weekly roster sync starting...')
@@ -67,7 +76,7 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   })
 
-  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), Roster(weekly), Cleanup(daily)')
+  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), Roster(weekly), Cleanup(daily)')
 
   // --- eBay sync crons (require credentials) ---
 

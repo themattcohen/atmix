@@ -3,7 +3,7 @@ import type { NewsEventType, SourceName, SignalScore } from '../../../types'
 const BASE_SCORES: Record<NewsEventType, number> = {
   callup: 2,
   injury_minor: -1,
-  injury_season: -2.5,
+  injury_season: -3,
   trade_up: 2,
   trade_down: -1,
   award: 2,
@@ -16,10 +16,27 @@ const BASE_SCORES: Record<NewsEventType, number> = {
   retirement: 1,
 }
 
+export const DECAY_DAYS: Record<NewsEventType, number | null> = {
+  callup: 30,
+  injury_minor: 14,
+  injury_season: null,
+  trade_up: 30,
+  trade_down: 30,
+  award: 30,
+  breakout: 14,
+  suspension: null,
+  optioned: 30,
+  release: null,
+  return_injury: 14,
+  contract: null,
+  retirement: 30,
+}
+
 const SOURCE_MULTIPLIERS: Record<SourceName, number> = {
   mlb_transactions: 0.95,
   rotowire_rss: 0.85,
   google_news_rss: 0.65,
+  espn_rss: 0.85,
 }
 
 export function calculateScore(

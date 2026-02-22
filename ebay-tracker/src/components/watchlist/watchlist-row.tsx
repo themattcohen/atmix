@@ -180,6 +180,3 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
     </tr>
   )
 }
-
-/** @deprecated Use SortableWatchlistRow instead. Kept for backward compatibility. */
-export const WatchlistRow = SortableWatchlistRow

@@ -365,7 +365,7 @@ export type NewsEventType =
   | 'contract'
   | 'retirement'
 
-export type SourceName = 'mlb_transactions' | 'rotowire_rss' | 'google_news_rss'
+export type SourceName = 'mlb_transactions' | 'rotowire_rss' | 'google_news_rss' | 'espn_rss'
 
 export interface RosterPlayer {
   id: number

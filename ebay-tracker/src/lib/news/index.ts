@@ -5,10 +5,11 @@ import { isCircuitOpen, recordSourceSuccess, recordSourceFailure } from './circu
 import { fetchMLBTransactions } from './sources/mlb-transactions'
 import { fetchRotoWireRSS } from './sources/rotowire-rss'
 import { fetchGoogleNewsRSS } from './sources/google-news-rss'
+import { fetchESPNRSS } from './sources/espn-rss'
 import { parsePlayerFromTitle } from './matching/title-parser'
 import { matchPlayerName } from './matching/player-matcher'
 import { classifyEvent } from './scoring/event-classifier'
-import { calculateScore } from './scoring/score-calculator'
+import { calculateScore, DECAY_DAYS } from './scoring/score-calculator'
 import { insertIfNew, markProcessed, insertMention } from '../db/news'
 import { insert as insertSignal } from '../db/signals'
 import { getUnmapped, upsert as upsertMapping } from '../db/card-mapping'
@@ -18,6 +19,7 @@ const SOURCE_FETCHERS: Record<SourceName, () => Promise<import('../../types').Ra
   mlb_transactions: fetchMLBTransactions,
   rotowire_rss: fetchRotoWireRSS,
   google_news_rss: fetchGoogleNewsRSS,
+  espn_rss: fetchESPNRSS,
 }
 
 /**
@@ -161,8 +163,10 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
           // Only create signals with meaningful scores
           if (score === 0) continue
 
-          // Set expiry: 72 hours from now
-          const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString()
+          const decayDays = DECAY_DAYS[classification.eventType]
+          const expiresAt = decayDays !== null
+            ? new Date(Date.now() + decayDays * 24 * 60 * 60 * 1000).toISOString()
+            : null
 
           insertSignal({
             newsItemId: newsId,

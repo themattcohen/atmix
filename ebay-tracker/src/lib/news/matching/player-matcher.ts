@@ -6,9 +6,10 @@ const FUSE_OPTIONS: IFuseOptions<RosterPlayer> = {
   keys: ['fullName', 'lastName'],
   threshold: 0.3,
   includeScore: true,
+  ignoreLocation: true,
 }
 
-const CONFIDENCE_THRESHOLD = 0.70
+const CONFIDENCE_THRESHOLD = 0.80
 const CACHE_TTL_MS = 3_600_000 // 1 hour
 
 let fuseIndex: Fuse<RosterPlayer> | null = null
@@ -35,7 +36,7 @@ export function matchPlayerName(
 
   const best = results[0]
   const score = best.score ?? 1
-  if (score >= 0.3) return null
+  if (score > 0.4) return null
 
   const confidence = 1 - score
   if (confidence < CONFIDENCE_THRESHOLD) return null

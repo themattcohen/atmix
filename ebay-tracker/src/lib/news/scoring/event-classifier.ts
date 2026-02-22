@@ -33,6 +33,11 @@ const RULES: ClassifierRule[] = [
       'strain',
       'bruise',
       'soreness',
+      // NFL
+      'placed on ir',
+      'injured reserve',
+      // NHL
+      'placed on ltir',
     ],
   },
   {
@@ -46,12 +51,24 @@ const RULES: ClassifierRule[] = [
       'traded to braves',
       'acquired by',
       'blockbuster trade',
+      // NBA high-profile teams
+      'traded to lakers',
+      'traded to celtics',
+      'traded to warriors',
+      // NFL high-profile teams
+      'traded to chiefs',
+      'traded to cowboys',
     ],
   },
   {
     eventType: 'trade_down',
     confidence: 0.70,
-    keywords: ['traded to', 'dealt to'],
+    keywords: [
+      'traded to',
+      'dealt to',
+      // NBA
+      'waived',
+    ],
   },
   {
     eventType: 'suspension',
@@ -75,6 +92,14 @@ const RULES: ClassifierRule[] = [
       'select the contract',
       'added to roster',
       'roster move',
+      // NBA
+      'signed 10-day',
+      'nba draft',
+      // NHL
+      'recalled from ahl',
+      'nhl draft',
+      // NFL
+      'nfl draft',
     ],
   },
   {
@@ -129,12 +154,24 @@ const RULES: ClassifierRule[] = [
       'dfa',
       'non-tendered',
       'outrighted',
+      // NFL
+      'cut from roster',
     ],
   },
   {
     eventType: 'optioned',
     confidence: 0.75,
-    keywords: ['optioned to', 'sent down', 'assigned to'],
+    keywords: [
+      'optioned to',
+      'sent down',
+      'assigned to',
+      // NBA
+      'g-league assignment',
+      // NFL
+      'practice squad',
+      // NHL
+      'assigned to ahl',
+    ],
   },
   {
     eventType: 'contract',
@@ -142,9 +179,14 @@ const RULES: ClassifierRule[] = [
     keywords: [
       'extension',
       'signs with',
-      'contract',
+      'contract extension',
+      'signs contract',
+      'new contract',
+      'extends with',
       'multi-year deal',
       'free agent signing',
+      // NFL
+      'franchise tag',
     ],
   },
 ]

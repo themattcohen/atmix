@@ -9,11 +9,13 @@ interface RSSItem {
   guid?: string | { '#text'?: string }
 }
 
+interface RSSChannel {
+  item?: RSSItem | RSSItem[]
+}
+
 interface RSSRoot {
   rss?: {
-    channel?: {
-      item?: RSSItem | RSSItem[]
-    }
+    channel?: RSSChannel
   }
 }
 
@@ -22,11 +24,11 @@ const PARSER = new XMLParser({
   attributeNamePrefix: '@_',
 })
 
-const QUERIES = [
-  'MLB+baseball+player+news', 'MLB+trade+injury+callup',
-  'NBA+basketball+player+trade+injury', 'NBA+draft+signing',
-  'NFL+football+player+trade+injury', 'NFL+draft+signing',
-  'NHL+hockey+player+trade+injury',
+const SPORT_FEEDS = [
+  'https://www.espn.com/espn/rss/mlb/news',
+  'https://www.espn.com/espn/rss/nba/news',
+  'https://www.espn.com/espn/rss/nfl/news',
+  'https://www.espn.com/espn/rss/nhl/news',
 ]
 
 function extractGuid(guid: RSSItem['guid']): string | null {
@@ -35,10 +37,11 @@ function extractGuid(guid: RSSItem['guid']): string | null {
   return guid['#text'] ?? null
 }
 
-async function fetchQuery(query: string): Promise<RSSItem[]> {
-  const url = `https://news.google.com/rss/search?q=${query}&hl=en-US&gl=US&ceid=US:en`
-
-  const res = await fetch(url, { signal: AbortSignal.timeout(15000) })
+async function fetchFeed(url: string): Promise<RSSItem[]> {
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(15000),
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EbayWatchlistMonitor/1.0)' },
+  })
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}: ${res.statusText}`)
   }
@@ -51,13 +54,19 @@ async function fetchQuery(query: string): Promise<RSSItem[]> {
   return Array.isArray(rawItems) ? rawItems : [rawItems]
 }
 
-export async function fetchGoogleNewsRSS(): Promise<RawNewsItem[]> {
+export async function fetchESPNRSS(): Promise<RawNewsItem[]> {
   const seen = new Set<string>()
   const results: RawNewsItem[] = []
 
-  for (const query of QUERIES) {
+  for (let i = 0; i < SPORT_FEEDS.length; i++) {
+    const url = SPORT_FEEDS[i]
+
+    if (i > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 1000))
+    }
+
     try {
-      const items = await fetchQuery(query)
+      const items = await fetchFeed(url)
 
       for (const item of items) {
         const titleKey = (item.title ?? '').toLowerCase().trim()
@@ -74,7 +83,7 @@ export async function fetchGoogleNewsRSS(): Promise<RawNewsItem[]> {
         }
 
         results.push({
-          source: 'google_news_rss',
+          source: 'espn_rss',
           sourceId: extractGuid(item.guid),
           title: item.title ?? '',
           body: item.description ?? null,
@@ -83,7 +92,7 @@ export async function fetchGoogleNewsRSS(): Promise<RawNewsItem[]> {
         })
       }
     } catch (err) {
-      console.error(`[GoogleNewsRSS] Fetch failed for query "${query}":`, err)
+      console.error(`[ESPNRSS] Fetch failed for feed "${url}":`, err)
     }
   }
 
