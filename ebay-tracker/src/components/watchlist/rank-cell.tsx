@@ -10,6 +10,7 @@ interface RankCellProps {
 export function RankCell({ itemId, rank }: RankCellProps) {
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState('')
+  const [error, setError] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const rankMutation = useDragRank()
 
@@ -20,10 +21,20 @@ export function RankCell({ itemId, rank }: RankCellProps) {
     }
   }, [editing])
 
+  // Clear error indicator after 2 seconds
+  useEffect(() => {
+    if (!error) return
+    const timer = setTimeout(() => setError(false), 2000)
+    return () => clearTimeout(timer)
+  }, [error])
+
   const handleConfirm = () => {
     const newRank = parseInt(value, 10)
     if (newRank > 0 && newRank !== rank) {
-      rankMutation.mutate({ itemId, newRank })
+      rankMutation.mutate(
+        { itemId, newRank },
+        { onError: () => setError(true) }
+      )
     }
     setEditing(false)
   }
@@ -54,7 +65,11 @@ export function RankCell({ itemId, rank }: RankCellProps) {
         setValue(rank?.toString() ?? '1')
         setEditing(true)
       }}
-      className="w-8 text-center text-xs font-mono text-text-secondary hover:text-text-primary cursor-pointer"
+      className={`w-8 text-center text-xs font-mono cursor-pointer border-b border-dashed transition-colors ${
+        error
+          ? 'text-status-sold border-status-sold/60'
+          : 'text-text-secondary hover:text-text-primary border-muted-foreground/40'
+      }`}
       title="Click to edit rank"
     >
       {rank ?? '—'}

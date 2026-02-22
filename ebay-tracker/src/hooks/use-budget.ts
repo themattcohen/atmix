@@ -4,6 +4,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useWatchlist } from '@/hooks/use-watchlist'
 import { optimizeBudget } from '@/lib/budget/optimizer'
+import { parseCents } from '@/lib/format'
 import type { AuctionMode, OptimizationResult } from '@/types'
 
 // ---------------------------------------------------------------------------
@@ -11,10 +12,7 @@ import type { AuctionMode, OptimizationResult } from '@/types'
 // ---------------------------------------------------------------------------
 
 export function parseBudgetCents(value: string): number {
-  const cleaned = value.replace(/[$,\s]/g, '')
-  const dollars = parseFloat(cleaned)
-  if (isNaN(dollars) || dollars <= 0) return 0
-  return Math.round(dollars * 100)
+  return parseCents(value) ?? 0
 }
 
 // ---------------------------------------------------------------------------
@@ -58,11 +56,12 @@ export interface UseBudgetReturn {
   setAuctionMode: (mode: AuctionMode) => void
   isLoading: boolean
   isError: boolean
+  refetch: () => void
 }
 
 export function useBudget(): UseBudgetReturn {
   const { budgetDollars, auctionMode, setBudgetDollars, setAuctionMode } = useBudgetStore()
-  const { data, isLoading, isError } = useWatchlist()
+  const { data, isLoading, isError, refetch } = useWatchlist()
 
   const result = useMemo<OptimizationResult | null>(() => {
     const budgetCents = parseBudgetCents(budgetDollars)
@@ -79,5 +78,6 @@ export function useBudget(): UseBudgetReturn {
     setAuctionMode,
     isLoading,
     isError,
+    refetch: () => { refetch() },
   }
 }

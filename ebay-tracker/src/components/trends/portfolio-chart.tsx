@@ -16,7 +16,7 @@ export function PortfolioChart({ data }: PortfolioChartProps) {
   if (chartData.length === 0) {
     return (
       <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-center h-64">
-        <p className="text-xs text-text-secondary">No portfolio data yet</p>
+        <p className="text-xs text-text-secondary">Portfolio chart fills in after at least two syncs. Sync your watchlist and check back later.</p>
       </div>
     )
   }

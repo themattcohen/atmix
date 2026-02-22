@@ -4,45 +4,32 @@ import Link from 'next/link'
 import type { OptimizationResult, ScoredItem } from '@/types'
 import { CountdownCell } from '@/components/watchlist/countdown-cell'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip } from '@/components/ui/tooltip'
 import { ScoreBreakdownChip } from './score-breakdown'
-import { estimatedCost } from '@/lib/budget/optimizer'
+import { formatDollars } from '@/lib/format'
 
 interface BudgetResultsProps {
   result: OptimizationResult
 }
 
-function formatDollars(cents: number): string {
-  return `$${(cents / 100).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`
-}
-
-// Display text for excluded reason — we infer from context since the existing
-// type only has 3 values but we need richer display text
-function getExclusionDisplay(item: ScoredItem, budgetCents: number): { short: string; long: string } {
-  if (item.excludedReason === 'unranked') {
-    return {
-      short: 'Not ranked',
-      long: 'Unranked items are not included in optimization. Assign a rank on the watchlist page to include this item.',
-    }
-  }
-  if (item.excludedReason === 'negative_score') {
-    return {
-      short: 'Not active',
-      long: `This item is not currently active and cannot be purchased.`,
-    }
-  }
-  // 'over_budget' — differentiate between over total budget vs insufficient remaining
-  if (item.estimatedCost > budgetCents) {
-    return {
-      short: 'Over budget',
-      long: `This item's estimated cost (${formatDollars(item.estimatedCost)}) exceeds your total budget. Even at the start with full budget, it wouldn't fit.`,
-    }
-  }
-  return {
-    short: 'Budget used up',
-    long: `Higher-priority items consumed the remaining budget before reaching this item. It would cost ${formatDollars(item.estimatedCost)} but the budget was already used.`,
+function getExclusionDisplay(item: ScoredItem): { short: string; long: string } {
+  switch (item.excludedReason) {
+    case 'unranked':
+      return {
+        short: 'Not ranked',
+        long: 'Unranked items are not included in optimization. Assign a rank on the watchlist page to include this item.',
+      }
+    case 'negative_score':
+      return {
+        short: 'Not active',
+        long: 'This item is not currently active and cannot be purchased.',
+      }
+    case 'over_budget':
+    default:
+      return {
+        short: 'Over budget',
+        long: `This item's estimated cost (${formatDollars(item.estimatedCost)}) did not fit within the remaining budget.`,
+      }
   }
 }
 
@@ -134,7 +121,7 @@ function PicksTable({ picks }: { picks: ScoredItem[] }) {
   )
 }
 
-function ExcludedTable({ excluded, budgetCents }: { excluded: ScoredItem[]; budgetCents: number }) {
+function ExcludedTable({ excluded }: { excluded: ScoredItem[] }) {
   if (excluded.length === 0) {
     return (
       <div
@@ -164,7 +151,7 @@ function ExcludedTable({ excluded, budgetCents }: { excluded: ScoredItem[]; budg
         <tbody>
           {excluded.map((scoredItem) => {
             const { item } = scoredItem
-            const { short: reasonShort, long: reasonLong } = getExclusionDisplay(scoredItem, budgetCents)
+            const { short: reasonShort, long: reasonLong } = getExclusionDisplay(scoredItem)
 
             return (
               <tr
@@ -197,12 +184,11 @@ function ExcludedTable({ excluded, budgetCents }: { excluded: ScoredItem[]; budg
                   />
                 </td>
                 <td className="w-40 px-2 py-1.5 hidden sm:table-cell">
-                  <span
-                    className="text-xs text-text-secondary truncate block"
-                    title={reasonLong}
-                  >
-                    {reasonShort}
-                  </span>
+                  <Tooltip content={reasonLong} wide>
+                    <span className="text-xs text-text-secondary truncate block cursor-help">
+                      {reasonShort}
+                    </span>
+                  </Tooltip>
                 </td>
               </tr>
             )
@@ -213,7 +199,7 @@ function ExcludedTable({ excluded, budgetCents }: { excluded: ScoredItem[]; budg
   )
 }
 
-export function BudgetResults({ result, budgetCents }: BudgetResultsProps & { budgetCents: number }) {
+export function BudgetResults({ result }: BudgetResultsProps) {
   const [tab, setTab] = useState<'picks' | 'excluded'>('picks')
 
   const picksCount = result.picks.length
@@ -265,7 +251,7 @@ export function BudgetResults({ result, budgetCents }: BudgetResultsProps & { bu
         </div>
       ) : (
         <div id="budget-excluded-panel" role="tabpanel">
-          <ExcludedTable excluded={result.excluded} budgetCents={budgetCents} />
+          <ExcludedTable excluded={result.excluded} />
         </div>
       )}
     </div>

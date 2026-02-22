@@ -6,6 +6,7 @@ import { PortfolioStats } from '@/components/trends/portfolio-stats'
 import { PortfolioChart } from '@/components/trends/portfolio-chart'
 import { MoversTable } from '@/components/trends/movers-table'
 import { ErrorState } from '@/components/watchlist/error-state'
+import { PageExplainer } from '@/components/ui/page-explainer'
 import { Skeleton } from '@/components/ui/skeleton'
 
 type Range = '7d' | '30d' | '90d'
@@ -37,6 +38,8 @@ export default function TrendsPage() {
             </button>
           ))}
         </div>
+
+        <PageExplainer text="A portfolio view of your watchlist. Stats reflect the latest sync snapshot. The chart shows how total tracked value changes over the selected period and fills in as syncs accumulate. Movers highlight items with the biggest price drops or watcher gains." />
 
         {isLoading ? (
           <div className="space-y-4">

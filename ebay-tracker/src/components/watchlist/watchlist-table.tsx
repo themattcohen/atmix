@@ -19,6 +19,7 @@ import {
 } from '@dnd-kit/sortable'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import type { WatchlistItem, HeatIndex, CardSignal } from '@/types'
+import { formatCents } from '@/lib/utils'
 import { useWatchlistStore, type SortKey } from '@/store/watchlist-store'
 import { useDragRank } from '@/hooks/use-drag-rank'
 import { useSparklines } from '@/hooks/use-sparklines'
@@ -77,7 +78,7 @@ function ResizableTh({
       {resizable && (
         <span
           onMouseDown={onMouseDown}
-          className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-accent/40 transition-colors z-10"
+          className="absolute right-0 top-0 bottom-0 w-0.5 cursor-col-resize bg-border/30 hover:bg-accent/60 transition-colors z-10"
         />
       )}
     </th>
@@ -384,7 +385,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
         {activeDragItem ? (
           <div className="bg-surface border border-accent/30 rounded px-3 py-2 shadow-lg text-xs text-text-primary max-w-xs truncate">
             <span className="font-mono text-accent mr-2">
-              ${(activeDragItem.currentPrice / 100).toFixed(2)}
+              {formatCents(activeDragItem.currentPrice)}
             </span>
             {activeDragItem.title}
           </div>

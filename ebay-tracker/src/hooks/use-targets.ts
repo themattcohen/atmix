@@ -1,6 +1,7 @@
 'use client'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { PriceTarget, CreateTargetInput, UpdateTargetInput } from '@/types'
+import { POLL_FAST_MS } from '@/lib/poll-intervals'
 
 export function useTargets(itemId?: string) {
   const qc = useQueryClient()
@@ -15,7 +16,7 @@ export function useTargets(itemId?: string) {
       if (!res.ok) throw new Error('Failed to fetch targets')
       return (await res.json()).data
     },
-    refetchInterval: 30_000,
+    refetchInterval: POLL_FAST_MS,
   })
 
   const create = useMutation({

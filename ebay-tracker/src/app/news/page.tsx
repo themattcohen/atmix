@@ -5,10 +5,12 @@ import { useNews } from '@/hooks/use-news'
 import { AppShell } from '@/components/layout/app-shell'
 import { TopBar } from '@/components/layout/top-bar'
 import { NewsStatusBadge } from '@/components/news/news-status-badge'
+import { ErrorState } from '@/components/watchlist/error-state'
 import { useNewsStore, type NewsSortKey } from '@/store/news-store'
 import { SIGNAL_CONFIG } from '@/lib/news/signal-config'
 import { Tooltip } from '@/components/ui/tooltip'
 import { timeAgo } from '@/lib/utils'
+import { PageExplainer } from '@/components/ui/page-explainer'
 import type { SourceName, NewsProcessedStatus, NewsItemDetail, NewsItemSignalDetail } from '@/types'
 
 const PAGE_SIZE = 50
@@ -113,7 +115,7 @@ function ResizableTh({
       {children}
       <span
         onMouseDown={onMouseDown}
-        className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-accent/40 transition-colors z-10"
+        className="absolute right-0 top-0 bottom-0 w-0.5 bg-border/30 hover:bg-accent/60 cursor-col-resize transition-colors z-10"
       />
     </th>
   )
@@ -241,8 +243,14 @@ function getDecayLabel(signal: NewsItemSignalDetail | null): string {
 export default function NewsPage() {
   const [sourceFilter, setSourceFilter] = useState<SourceName | ''>('')
   const [statusFilter, setStatusFilter] = useState<NewsProcessedStatus | ''>('')
-  const [playerSearch, setPlayerSearch] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [offset, setOffset] = useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300)
+    return () => clearTimeout(timer)
+  }, [searchInput])
 
   const sortBy = useNewsStore((s) => s.sortBy)
   const sortDir = useNewsStore((s) => s.sortDir)
@@ -254,12 +262,12 @@ export default function NewsPage() {
     useNewsStore.persist.rehydrate()
   }, [])
 
-  const { data, isLoading } = useNews({
+  const { data, isLoading, isError, refetch } = useNews({
     limit: PAGE_SIZE,
     offset,
     source: sourceFilter || undefined,
     status: statusFilter || undefined,
-    playerSearch: playerSearch || undefined,
+    playerSearch: debouncedSearch || undefined,
     sortBy,
     sortDir,
   })
@@ -280,6 +288,8 @@ export default function NewsPage() {
             <h1 className="text-lg font-semibold text-text-primary">News Pipeline</h1>
             <span className="text-xs text-text-secondary">{total} items</span>
           </div>
+
+          <PageExplainer text="Every headline the news pipeline has fetched. Headlines are matched to players in the roster; matches generate signals on your watchlist cards. Status shows whether a match was found by keyword, AI fallback, or not at all. Sources are polled continuously throughout the day." />
 
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-3 mb-4 p-3 bg-surface border border-border rounded-lg">
@@ -305,8 +315,8 @@ export default function NewsPage() {
 
             <input
               type="text"
-              value={playerSearch}
-              onChange={(e) => { setPlayerSearch(e.target.value); handleFilterChange() }}
+              value={searchInput}
+              onChange={(e) => { setSearchInput(e.target.value); handleFilterChange() }}
               placeholder="Search player..."
               className="bg-background border border-border rounded px-2 py-1.5 text-xs text-text-primary placeholder:text-text-secondary w-40"
             />
@@ -318,7 +328,9 @@ export default function NewsPage() {
 
           {/* Table */}
           <div className="overflow-x-auto border border-border rounded-lg" data-testid="news-feed">
-            {isLoading ? (
+            {isError ? (
+              <ErrorState message="Failed to load news" onRetry={() => refetch()} />
+            ) : isLoading ? (
               <div className="flex flex-col gap-1 p-4">
                 {[...Array(8)].map((_, i) => (
                   <div key={i} className="h-8 bg-surface border border-border rounded animate-pulse" />
@@ -326,10 +338,21 @@ export default function NewsPage() {
               </div>
             ) : items.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-sm text-text-secondary">No news items found</p>
-                <p className="text-xs text-text-secondary mt-1">
-                  Headlines appear here as the news pipeline fetches them
-                </p>
+                {(sourceFilter || statusFilter || searchInput) ? (
+                  <>
+                    <p className="text-sm text-text-secondary">No headlines match your filters</p>
+                    <p className="text-xs text-text-secondary mt-1">
+                      Try clearing the source, status, or player search.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm text-text-secondary">No headlines yet</p>
+                    <p className="text-xs text-text-secondary mt-1 max-w-md mx-auto">
+                      The news pipeline polls RotoWire, MLB Transactions, Google News, and ESPN. Headlines appear as they are fetched. If this stays empty, the pipeline may not have run yet.
+                    </p>
+                  </>
+                )}
               </div>
             ) : (
               <table className="w-full text-xs border-collapse">
@@ -387,7 +410,9 @@ export default function NewsPage() {
                     )}
                     {vis('decay') && (
                       <ResizableTh colKey="decay" className="px-2 py-2 text-center">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Decay</span>
+                        <Tooltip content="How long this signal type takes to expire. 14d/30d = days until full decay; perm = permanent.">
+                          <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide cursor-help">Decay</span>
+                        </Tooltip>
                       </ResizableTh>
                     )}
                     {vis('signalCount') && (
@@ -450,7 +475,7 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
     <tr className="border-b border-border/50 hover:bg-raised/50 transition-colors">
       {/* Time */}
       {vis('fetchedAt') && (
-        <td className="px-2 py-1.5 whitespace-nowrap">
+        <td className="px-2 py-1.5 whitespace-nowrap cursor-help">
           <Tooltip content={new Date(item.fetchedAt).toLocaleString()}>
             <span className="text-text-secondary">{timeAgo(item.fetchedAt)}</span>
           </Tooltip>
@@ -524,7 +549,10 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {vis('confidence') && (
         <td className="px-2 py-1.5 text-right tabular-nums">
           {highestConf !== null ? (
-            <span className={highestConf >= 0.8 ? 'text-green-400' : highestConf >= 0.65 ? 'text-amber-400' : 'text-red-400'}>
+            <span
+              className={highestConf >= 0.8 ? 'text-green-400' : highestConf >= 0.65 ? 'text-amber-400' : 'text-red-400'}
+              title="Match confidence — how certain the pipeline is that this headline refers to the detected player"
+            >
               {Math.round(highestConf * 100)}%
             </span>
           ) : (
@@ -572,7 +600,7 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
 
       {/* Decay */}
       {vis('decay') && (
-        <td className="px-2 py-1.5 text-center text-text-secondary">
+        <td className="px-2 py-1.5 text-center text-text-secondary cursor-help">
           {getDecayLabel(primary)}
         </td>
       )}

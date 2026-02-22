@@ -1,13 +1,10 @@
 'use client'
 import { useWatchlist } from '@/hooks/use-watchlist'
 import { Skeleton } from '@/components/ui/skeleton'
-
-function formatPrice(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`
-}
+import { formatCents } from '@/lib/format'
 
 export function QueuePanel() {
-  const { data, isLoading } = useWatchlist()
+  const { data, isLoading, isError, refetch } = useWatchlist()
 
   const queueItems = data
     ? [...data.ranked, ...data.unranked]
@@ -21,7 +18,12 @@ export function QueuePanel() {
         My Queue ({queueItems.length})
       </h3>
 
-      {isLoading ? (
+      {isError ? (
+        <div className="text-center py-4">
+          <p className="text-xs text-status-sold">Failed to load queue</p>
+          <button onClick={() => refetch()} className="text-xs text-accent hover:underline mt-1">Retry</button>
+        </div>
+      ) : isLoading ? (
         <div className="space-y-2">
           {[...Array(3)].map((_, i) => (
             <Skeleton key={i} className="h-8 w-full" />
@@ -41,7 +43,7 @@ export function QueuePanel() {
               </span>
               <span className="flex-1 truncate text-text-primary">{item.title}</span>
               <span className="text-text-secondary whitespace-nowrap font-mono text-[10px]">
-                {formatPrice(item.currentPrice)}
+                {formatCents(item.currentPrice)}
               </span>
             </li>
           ))}

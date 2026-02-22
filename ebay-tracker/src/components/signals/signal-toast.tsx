@@ -14,6 +14,24 @@ interface Toast {
 const MAX_VISIBLE = 3
 const AUTO_DISMISS_MS = 8000
 
+const borderColorMap: Record<string, string> = {
+  'text-status-active': 'border-status-active',
+  'text-status-sold': 'border-status-sold',
+  'text-emerald-400': 'border-emerald-400',
+  'text-orange-400': 'border-orange-400',
+  'text-red-400': 'border-red-400',
+  'text-blue-400': 'border-blue-400',
+  'text-purple-400': 'border-purple-400',
+  'text-amber-400': 'border-amber-400',
+  'text-cyan-400': 'border-cyan-400',
+  'text-violet-400': 'border-violet-400',
+  'text-rose-400': 'border-rose-400',
+  'text-lime-400': 'border-lime-400',
+  'text-teal-400': 'border-teal-400',
+  'text-slate-400': 'border-slate-400',
+  'text-text-secondary': 'border-text-secondary',
+}
+
 export function SignalToastContainer() {
   const { data } = useSignals({ limit: 20, acknowledged: false })
   const { data: config } = useSignalConfig()
@@ -68,7 +86,9 @@ export function SignalToastContainer() {
       {toasts.map((toast) => {
         const isPositive = toast.signal.score > 0
         const eventConfig = config?.signalConfig[toast.signal.eventType]
-        const borderColor = eventConfig ? eventConfig.color.replace('text-', 'border-') : (isPositive ? 'border-status-active' : 'border-status-sold')
+        const borderColor = eventConfig
+          ? (borderColorMap[eventConfig.color] ?? 'border-border')
+          : (isPositive ? 'border-status-active' : 'border-status-sold')
         const scoreColor = eventConfig?.color ?? (isPositive ? 'text-status-active' : 'text-status-sold')
         const eventLabel = eventConfig?.label ?? toast.signal.eventType.replace('_', ' ')
 

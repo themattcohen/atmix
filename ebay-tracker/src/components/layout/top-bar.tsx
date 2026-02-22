@@ -49,7 +49,7 @@ export function TopBar() {
       {/* Sidebar toggle (mobile) */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden p-1.5 text-text-secondary hover:text-text-primary hover:bg-raised rounded transition-colors"
+        className="p-1.5 text-text-secondary hover:text-text-primary hover:bg-raised rounded transition-colors"
         aria-label="Toggle sidebar"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

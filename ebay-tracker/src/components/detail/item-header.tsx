@@ -16,6 +16,7 @@ const statusVariants: Record<string, 'success' | 'danger' | 'default' | 'info'> 
 
 export function ItemHeader({ item }: ItemHeaderProps) {
   const [notes, setNotes] = useState(item.notes ?? '')
+  const [saved, setSaved] = useState(false)
 
   const handleBlur = () => {
     if (notes === (item.notes ?? '')) return
@@ -23,6 +24,11 @@ export function ItemHeader({ item }: ItemHeaderProps) {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ notes }),
+    }).then((res) => {
+      if (res.ok) {
+        setSaved(true)
+        setTimeout(() => setSaved(false), 2000)
+      }
     })
   }
 
@@ -49,14 +55,17 @@ export function ItemHeader({ item }: ItemHeaderProps) {
         </div>
       </div>
 
-      <textarea
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-        onBlur={handleBlur}
-        placeholder="Add notes..."
-        rows={2}
-        className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-text-primary placeholder:text-text-secondary outline-none focus:border-accent resize-none"
-      />
+      <div className="relative">
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          onBlur={handleBlur}
+          placeholder="Add notes..."
+          rows={2}
+          className="w-full bg-background border border-border rounded px-3 py-2 text-xs text-text-primary placeholder:text-text-secondary outline-none focus:border-accent resize-none"
+        />
+        {saved && <span className="absolute right-2 top-2 text-xs text-status-active animate-pulse">Saved</span>}
+      </div>
     </div>
   )
 }

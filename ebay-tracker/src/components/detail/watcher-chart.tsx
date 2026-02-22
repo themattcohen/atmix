@@ -26,7 +26,9 @@ export function WatcherChart({ snapshots }: WatcherChartProps) {
     }
   })
 
-  if (chartData.length === 0) {
+  const allWatchersNull = snapshots.every(s => s.watcherCount == null)
+
+  if (chartData.length === 0 || allWatchersNull) {
     return (
       <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-center h-64" data-testid="watcher-chart">
         <p className="text-xs text-text-secondary">No watcher data yet</p>

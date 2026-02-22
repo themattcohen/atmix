@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import type { NewsDetailPage, NewsDetailParams } from '@/types'
+import { POLL_SLOW_MS } from '@/lib/poll-intervals'
 
 interface NewsResponse {
   data: NewsDetailPage
@@ -21,9 +22,10 @@ export function useNews(params: NewsDetailParams = {}) {
       if (params.sortDir) searchParams.set('sortDir', params.sortDir)
 
       const res = await fetch(`/api/news?${searchParams}`)
+      if (!res.ok) throw new Error(res.statusText)
       const json: NewsResponse = await res.json()
       return json.data
     },
-    refetchInterval: 60_000,
+    refetchInterval: POLL_SLOW_MS,
   })
 }

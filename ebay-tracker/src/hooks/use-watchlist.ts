@@ -1,6 +1,7 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
 import type { WatchlistItem, HeatIndex } from '@/types'
+import { POLL_SLOW_MS } from '@/lib/poll-intervals'
 
 interface WatchlistResponse {
   ranked: WatchlistItem[]
@@ -40,6 +41,6 @@ export function useWatchlist(params: UseWatchlistParams = {}) {
       const json = await res.json()
       return json.data
     },
-    refetchInterval: 60_000,
+    refetchInterval: POLL_SLOW_MS,
   })
 }

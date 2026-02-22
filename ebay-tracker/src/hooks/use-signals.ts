@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { CardSignal, SourceHealth, NewsEventType } from '@/types'
+import { POLL_SLOW_MS } from '@/lib/poll-intervals'
 
 interface SignalParams {
   limit?: number
@@ -40,10 +41,11 @@ export function useSignals(params: SignalParams = {}) {
       if (params.acknowledged != null) searchParams.set('acknowledged', String(params.acknowledged))
 
       const res = await fetch(`/api/signals?${searchParams}`)
+      if (!res.ok) throw new Error(res.statusText)
       const json: SignalsResponse = await res.json()
       return json.data
     },
-    refetchInterval: 60_000,
+    refetchInterval: POLL_SLOW_MS,
   })
 }
 
@@ -52,10 +54,11 @@ export function useSignalStats() {
     queryKey: ['signal-stats'],
     queryFn: async () => {
       const res = await fetch('/api/signals/stats')
+      if (!res.ok) throw new Error(res.statusText)
       const json: SignalStatsResponse = await res.json()
       return json.data
     },
-    refetchInterval: 60_000,
+    refetchInterval: POLL_SLOW_MS,
   })
 }
 

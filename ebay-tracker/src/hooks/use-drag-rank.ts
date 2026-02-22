@@ -48,12 +48,10 @@ export function useDragRank() {
         const updatedItem = { ...item, rank: newRank }
         ranked.splice(newRank - 1, 0, updatedItem)
 
-        // Reassign sequential ranks
-        ranked.forEach((r, i) => {
-          r.rank = i + 1
-        })
+        // Reassign sequential ranks (immutable update for React Query cache)
+        const reranked = ranked.map((r, i) => ({ ...r, rank: i + 1 }))
 
-        return { ...old, ranked, unranked }
+        return { ...old, ranked: reranked, unranked }
       })
 
       return { previousData }

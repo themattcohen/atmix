@@ -11,6 +11,7 @@ import { WatchlistTable } from '@/components/watchlist/watchlist-table'
 import { EmptyState } from '@/components/watchlist/empty-state'
 import { ErrorState } from '@/components/watchlist/error-state'
 import { Skeleton } from '@/components/ui/skeleton'
+import { PageExplainer } from '@/components/ui/page-explainer'
 import type { WatchlistItem } from '@/types'
 
 const LIMIT = 2000
@@ -81,6 +82,7 @@ export default function WatchlistPage() {
       />
       <FilterBar />
       <AppShell>
+        <PageExplainer text="Your eBay watchlist, synced every time you hit the sync button. Ranked items appear at the top and feed the budget optimizer. Price and delta columns update with each sync. Drag the handle on any row to reorder your rankings." />
         {isLoading ? (
           <div className="p-4 space-y-2" data-testid="loading-skeleton">
             {[...Array(8)].map((_, i) => (

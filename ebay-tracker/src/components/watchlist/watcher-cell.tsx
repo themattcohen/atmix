@@ -1,6 +1,7 @@
 'use client'
 import type { HeatIndex } from '@/types'
 import { Sparkline } from '@/components/ui/sparkline'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface WatcherCellProps {
   count: number | null
@@ -37,7 +38,13 @@ export function WatcherCell({ count, trend, delta, heat }: WatcherCellProps) {
         title={dotTitle}
         aria-label={dotTitle}
       />
-      <span className="text-xs font-mono text-text-primary">{count ?? '—'}</span>
+      {count != null ? (
+        <span className="text-xs font-mono text-text-primary">{count}</span>
+      ) : (
+        <Tooltip content="Watcher data is only available to item owners via eBay's API. This count can't be retrieved for items you're watching." wide>
+          <span className="text-xs font-mono text-text-primary cursor-help border-b border-dashed border-text-secondary/40">—</span>
+        </Tooltip>
+      )}
       {trend && trend.length >= 2 && (
         <Sparkline data={trend} width={40} height={14} />
       )}

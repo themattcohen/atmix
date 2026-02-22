@@ -17,6 +17,7 @@ export function useSignalConfig() {
     queryKey: ['signal-config'],
     queryFn: async () => {
       const res = await fetch('/api/signals/config')
+      if (!res.ok) throw new Error(res.statusText)
       const json: SignalConfigResponse = await res.json()
       return json.data
     },

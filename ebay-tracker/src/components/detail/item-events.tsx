@@ -1,56 +1,9 @@
 'use client'
-import type { WatchlistEvent, EventType } from '@/types'
+import type { WatchlistEvent } from '@/types'
+import { eventIcons, eventLabels, formatEventValues } from '@/lib/event-display'
 
 interface ItemEventsProps {
   events: WatchlistEvent[]
-}
-
-const eventIcons: Record<EventType, string> = {
-  sold:             '\uD83D\uDD34',
-  expired:          '\u23F0',
-  price_drop:       '\uD83D\uDCB0',
-  price_increase:   '\uD83D\uDCC8',
-  watcher_spike:    '\uD83D\uDC40',
-  target_triggered: '\uD83C\uDFAF',
-}
-
-const eventLabels: Record<EventType, string> = {
-  sold:             'Sold',
-  expired:          'Expired',
-  price_drop:       'Price Drop',
-  price_increase:   'Price Increase',
-  watcher_spike:    'Watcher Spike',
-  target_triggered: 'Target Hit',
-}
-
-const priceEventTypes: Set<EventType> = new Set([
-  'price_increase',
-  'price_drop',
-  'target_triggered',
-])
-
-function formatCents(cents: number): string {
-  return `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
-
-function formatEventValues(event: WatchlistEvent): string | null {
-  if (!event.oldValue || !event.newValue) return null
-
-  if (event.eventType === 'target_triggered') {
-    const threshold = formatCents(parseInt(event.oldValue, 10))
-    const actual    = formatCents(parseInt(event.newValue, 10))
-    return `Target ${threshold} \u2014 hit at ${actual}`
-  }
-
-  if (priceEventTypes.has(event.eventType)) {
-    const oldCents = parseInt(event.oldValue, 10)
-    const newCents = parseInt(event.newValue, 10)
-    if (!isNaN(oldCents) && !isNaN(newCents)) {
-      return `${formatCents(oldCents)} \u2192 ${formatCents(newCents)}`
-    }
-  }
-
-  return `${event.oldValue} \u2192 ${event.newValue}`
 }
 
 function formatTimestamp(iso: string): string {

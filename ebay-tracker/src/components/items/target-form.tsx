@@ -1,20 +1,11 @@
 'use client'
 import { useState } from 'react'
 import { useTargets } from '@/hooks/use-targets'
+import { formatCents, parseCents } from '@/lib/format'
 import type { PriceTarget, TargetType } from '@/types'
 
 interface TargetFormProps {
   itemId: string
-}
-
-function formatCents(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`
-}
-
-function parseDollars(value: string): number | null {
-  const parsed = parseFloat(value)
-  if (isNaN(parsed) || parsed <= 0) return null
-  return Math.round(parsed * 100)
 }
 
 interface TargetInputRowProps {
@@ -29,7 +20,7 @@ function TargetInputRow({ label, targetType, existingTargets, onSubmit, isPendin
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const parsedCents = parseDollars(value)
+  const parsedCents = parseCents(value)
   const isValid = parsedCents !== null
 
   const duplicate = isValid
@@ -96,9 +87,10 @@ interface TargetRowProps {
   onAcknowledge: (id: number) => void
   onDeactivate: (id: number) => void
   onDelete: (id: number) => void
+  disabled: boolean
 }
 
-function TargetRow({ target, onAcknowledge, onDeactivate, onDelete }: TargetRowProps) {
+function TargetRow({ target, onAcknowledge, onDeactivate, onDelete, disabled }: TargetRowProps) {
   const label = target.targetType === 'buy_below' ? 'Buy below' : 'Sell above'
 
   const statusColors: Record<string, string> = {
@@ -137,7 +129,8 @@ function TargetRow({ target, onAcknowledge, onDeactivate, onDelete }: TargetRowP
         {target.status === 'triggered' && (
           <button
             onClick={() => onAcknowledge(target.id)}
-            className="px-2 py-0.5 text-[10px] font-medium bg-urgency-caution/20 text-urgency-caution rounded hover:bg-urgency-caution/30 transition-colors"
+            disabled={disabled}
+            className="px-2 py-0.5 text-[10px] font-medium bg-urgency-caution/20 text-urgency-caution rounded hover:bg-urgency-caution/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Dismiss
           </button>
@@ -145,14 +138,16 @@ function TargetRow({ target, onAcknowledge, onDeactivate, onDelete }: TargetRowP
         {(target.status === 'active' || target.status === 'triggered') && (
           <button
             onClick={() => onDeactivate(target.id)}
-            className="px-2 py-0.5 text-[10px] font-medium bg-raised text-text-secondary rounded hover:text-text-primary transition-colors"
+            disabled={disabled}
+            className="px-2 py-0.5 text-[10px] font-medium bg-raised text-text-secondary rounded hover:text-text-primary transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Disable
           </button>
         )}
         <button
           onClick={() => onDelete(target.id)}
-          className="px-2 py-0.5 text-[10px] font-medium text-status-sold/70 rounded hover:text-status-sold transition-colors"
+          disabled={disabled}
+          className="px-2 py-0.5 text-[10px] font-medium text-status-sold/70 rounded hover:text-status-sold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Delete
         </button>
@@ -161,30 +156,51 @@ function TargetRow({ target, onAcknowledge, onDeactivate, onDelete }: TargetRowP
   )
 }
 
-/**
- * Form + list for managing price targets on a specific item.
- * Intended for the item detail panel/page.
- */
 export function TargetForm({ itemId }: TargetFormProps) {
   const { data: targets = [], isLoading, create, update, remove } = useTargets(itemId)
+  const [pendingAction, setPendingAction] = useState<string | null>(null)
+  const [mutationError, setMutationError] = useState<string | null>(null)
 
   const activeTargets = targets.filter(t => t.status === 'active' || t.status === 'triggered')
   const closedTargets = targets.filter(t => t.status === 'acknowledged' || t.status === 'deactivated')
 
   async function handleCreate(targetType: TargetType, targetCents: number) {
-    await create.mutateAsync({ itemId, targetType, targetCents })
+    setPendingAction('creating')
+    setMutationError(null)
+    try {
+      await create.mutateAsync({ itemId, targetType, targetCents })
+    } catch (err) {
+      setMutationError(err instanceof Error ? err.message : 'Failed to create target')
+    } finally {
+      setPendingAction(null)
+    }
   }
 
   function handleAcknowledge(id: number) {
-    update.mutate({ id, action: 'acknowledge' })
+    setPendingAction('acknowledging')
+    setMutationError(null)
+    update.mutate({ id, action: 'acknowledge' }, {
+      onError: (err) => { setMutationError(err instanceof Error ? err.message : 'Failed to acknowledge target') },
+      onSettled: () => { setPendingAction(null) },
+    })
   }
 
   function handleDeactivate(id: number) {
-    update.mutate({ id, action: 'deactivate' })
+    setPendingAction('deactivating')
+    setMutationError(null)
+    update.mutate({ id, action: 'deactivate' }, {
+      onError: (err) => { setMutationError(err instanceof Error ? err.message : 'Failed to deactivate target') },
+      onSettled: () => { setPendingAction(null) },
+    })
   }
 
   function handleDelete(id: number) {
-    remove.mutate(id)
+    setPendingAction('deleting')
+    setMutationError(null)
+    remove.mutate(id, {
+      onError: (err) => { setMutationError(err instanceof Error ? err.message : 'Failed to delete target') },
+      onSettled: () => { setPendingAction(null) },
+    })
   }
 
   return (
@@ -199,16 +215,20 @@ export function TargetForm({ itemId }: TargetFormProps) {
           targetType="buy_below"
           existingTargets={targets}
           onSubmit={handleCreate}
-          isPending={create.isPending}
+          isPending={!!pendingAction}
         />
         <TargetInputRow
           label="Sell above"
           targetType="sell_above"
           existingTargets={targets}
           onSubmit={handleCreate}
-          isPending={create.isPending}
+          isPending={!!pendingAction}
         />
       </div>
+
+      {mutationError && (
+        <p className="text-xs text-status-sold mt-1">{mutationError}</p>
+      )}
 
       {isLoading ? (
         <p className="text-xs text-text-secondary">Loading targets...</p>
@@ -223,6 +243,7 @@ export function TargetForm({ itemId }: TargetFormProps) {
               onAcknowledge={handleAcknowledge}
               onDeactivate={handleDeactivate}
               onDelete={handleDelete}
+              disabled={!!pendingAction}
             />
           ))}
           {closedTargets.length > 0 && (
@@ -237,6 +258,7 @@ export function TargetForm({ itemId }: TargetFormProps) {
                   onAcknowledge={handleAcknowledge}
                   onDeactivate={handleDeactivate}
                   onDelete={handleDelete}
+                  disabled={!!pendingAction}
                 />
               ))}
             </>

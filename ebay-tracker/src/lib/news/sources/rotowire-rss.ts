@@ -1,28 +1,5 @@
-import { XMLParser } from 'fast-xml-parser'
 import type { RawNewsItem } from '../../../types'
-
-interface RSSItem {
-  title?: string
-  link?: string
-  description?: string
-  pubDate?: string
-  guid?: string | { '#text'?: string }
-}
-
-interface RSSChannel {
-  item?: RSSItem | RSSItem[]
-}
-
-interface RSSRoot {
-  rss?: {
-    channel?: RSSChannel
-  }
-}
-
-const PARSER = new XMLParser({
-  ignoreAttributes: false,
-  attributeNamePrefix: '@_',
-})
+import { fetchRSSFeed, extractGuid, parsePubDate } from './rss-utils'
 
 const SPORT_FEEDS = [
   'https://www.rotowire.com/rss/news.htm?sport=mlb',
@@ -31,28 +8,7 @@ const SPORT_FEEDS = [
   'https://www.rotowire.com/rss/news.htm?sport=nhl',
 ]
 
-function extractGuid(guid: RSSItem['guid']): string | null {
-  if (!guid) return null
-  if (typeof guid === 'string') return guid
-  return guid['#text'] ?? null
-}
-
-async function fetchFeed(url: string): Promise<RSSItem[]> {
-  const res = await fetch(url, {
-    signal: AbortSignal.timeout(15000),
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EbayWatchlistMonitor/1.0)' },
-  })
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}: ${res.statusText}`)
-  }
-
-  const xml = await res.text()
-  const parsed: RSSRoot = PARSER.parse(xml)
-  const rawItems = parsed?.rss?.channel?.item
-
-  if (!rawItems) return []
-  return Array.isArray(rawItems) ? rawItems : [rawItems]
-}
+const HEADERS = { 'User-Agent': 'Mozilla/5.0 (compatible; EbayWatchlistMonitor/1.0)' }
 
 export async function fetchRotoWireRSS(): Promise<RawNewsItem[]> {
   const seen = new Set<string>()
@@ -66,7 +22,7 @@ export async function fetchRotoWireRSS(): Promise<RawNewsItem[]> {
     }
 
     try {
-      const items = await fetchFeed(url)
+      const items = await fetchRSSFeed(url, { headers: HEADERS })
 
       if (items.length === 0) {
         const sport = url.split('sport=')[1] ?? 'unknown'
@@ -78,22 +34,13 @@ export async function fetchRotoWireRSS(): Promise<RawNewsItem[]> {
         if (!titleKey || seen.has(titleKey)) continue
         seen.add(titleKey)
 
-        let publishedAt: string | null = null
-        if (item.pubDate) {
-          try {
-            publishedAt = new Date(item.pubDate).toISOString()
-          } catch {
-            publishedAt = null
-          }
-        }
-
         results.push({
           source: 'rotowire_rss',
           sourceId: extractGuid(item.guid),
           title: item.title ?? '',
           body: item.description ?? null,
           url: item.link ?? null,
-          publishedAt,
+          publishedAt: parsePubDate(item.pubDate),
         })
       }
     } catch (err) {

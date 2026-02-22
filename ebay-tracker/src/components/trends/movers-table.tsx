@@ -1,14 +1,13 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 import type { WatchlistItem } from '@/types'
+import { formatCents } from '@/lib/format'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface MoversTableProps {
   priceDrops: WatchlistItem[]
   watcherGains: WatchlistItem[]
-}
-
-function formatPrice(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`
 }
 
 export function MoversTable({ priceDrops, watcherGains }: MoversTableProps) {
@@ -46,7 +45,11 @@ export function MoversTable({ priceDrops, watcherGains }: MoversTableProps) {
       {/* Table */}
       {items.length === 0 ? (
         <div className="p-6 text-center">
-          <p className="text-xs text-text-secondary">No movers in this period</p>
+          <p className="text-xs text-text-secondary">
+            {tab === 'drops'
+              ? "No price drops detected in this period. Drops appear when an item\u2019s price falls between syncs within the selected window."
+              : "No watcher gains detected. Watcher data is only available to item owners \u2014 if your counts show dashes in the main table, gains here will also be empty."}
+          </p>
         </div>
       ) : (
         <table className="w-full">
@@ -54,7 +57,13 @@ export function MoversTable({ priceDrops, watcherGains }: MoversTableProps) {
             <tr>
               <th className={`w-10 ${headerClass} text-center`}>#</th>
               <th className={headerClass}>Title</th>
-              <th className={headerClass}>{tab === 'drops' ? 'Price' : 'Watchers'}</th>
+              <th className={headerClass}>
+                {tab === 'drops' ? 'Price' : (
+                  <Tooltip content="Current number of eBay users watching this item">
+                    <span className="cursor-help">Watchers</span>
+                  </Tooltip>
+                )}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -64,13 +73,13 @@ export function MoversTable({ priceDrops, watcherGains }: MoversTableProps) {
                   <span className="text-[10px] font-mono text-text-secondary">{i + 1}</span>
                 </td>
                 <td className="px-2 py-1.5">
-                  <span className="text-xs text-text-primary truncate block max-w-[300px]">
+                  <Link href={`/items/${item.id}`} className="text-xs text-text-primary truncate block max-w-[300px] hover:underline">
                     {item.title}
-                  </span>
+                  </Link>
                 </td>
                 <td className="px-2 py-1.5">
                   <span className="text-xs font-mono text-text-primary">
-                    {tab === 'drops' ? formatPrice(item.currentPrice) : item.watcherCount ?? 0}
+                    {tab === 'drops' ? formatCents(item.currentPrice) : item.watcherCount ?? 0}
                   </span>
                 </td>
               </tr>

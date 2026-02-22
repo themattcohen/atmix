@@ -4,6 +4,7 @@ import { TopBar } from '@/components/layout/top-bar'
 import { BudgetForm } from '@/components/budget/budget-form'
 import { BudgetSummary } from '@/components/budget/budget-summary'
 import { BudgetResults } from '@/components/budget/budget-results'
+import { PageExplainer } from '@/components/ui/page-explainer'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ErrorState } from '@/components/watchlist/error-state'
 import { useBudget, parseBudgetCents } from '@/hooks/use-budget'
@@ -14,6 +15,7 @@ export default function BudgetPage() {
     budgetDollars,
     isLoading,
     isError,
+    refetch,
   } = useBudget()
 
   const budgetCents = parseBudgetCents(budgetDollars)
@@ -32,6 +34,8 @@ export default function BudgetPage() {
       <div className="p-4 space-y-4" data-testid="budget-page">
         <BudgetForm />
 
+        <PageExplainer text="Enter a budget and choose an auction cost estimate. The optimizer scores your ranked watchlist items by urgency, price, and competition, then picks the best combination that fits your budget. Only ranked active items are included." />
+
         {isLoading && hasValidBudget && (
           <div className="space-y-3">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -44,7 +48,7 @@ export default function BudgetPage() {
         )}
 
         {isError && (
-          <ErrorState message="Failed to load watchlist data" />
+          <ErrorState message="Failed to load watchlist data" onRetry={refetch} />
         )}
 
         {!isLoading && !isError && result !== null && (
@@ -85,7 +89,7 @@ export default function BudgetPage() {
             ) : (
               <>
                 <BudgetSummary result={result} />
-                <BudgetResults result={result} budgetCents={budgetCents} />
+                <BudgetResults result={result} />
               </>
             )}
           </>

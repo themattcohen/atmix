@@ -14,6 +14,8 @@ import Link from 'next/link'
 import { TargetForm } from '@/components/items/target-form'
 import { useHistorySummary } from '@/hooks/use-history'
 import { useItemMetadata } from '@/hooks/use-metadata'
+import { formatCents } from '@/lib/format'
+import { PageExplainer } from '@/components/ui/page-explainer'
 
 export default function ItemDetailPage() {
   const params = useParams()
@@ -51,6 +53,7 @@ export default function ItemDetailPage() {
         ) : data ? (
           <>
             <ItemHeader item={data.item} />
+            <PageExplainer text="Track price history with OHLC charts, monitor watcher trends, set buy/sell targets, and view listing events. Notes auto-save when you click away." />
             <ItemStatsGrid item={data.item} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <PriceChart snapshots={data.snapshots} signals={signalData?.signals} />
@@ -62,15 +65,15 @@ export default function ItemDetailPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="rounded-lg bg-raised p-3">
                   <p className="text-[10px] uppercase tracking-wider text-text-secondary">All-Time High</p>
-                  <p className="text-sm font-mono text-text-primary">${(historySummary.allTimeHigh / 100).toFixed(2)}</p>
+                  <p className="text-sm font-mono text-text-primary">{formatCents(historySummary.allTimeHigh)}</p>
                 </div>
                 <div className="rounded-lg bg-raised p-3">
                   <p className="text-[10px] uppercase tracking-wider text-text-secondary">All-Time Low</p>
-                  <p className="text-sm font-mono text-text-primary">${(historySummary.allTimeLow / 100).toFixed(2)}</p>
+                  <p className="text-sm font-mono text-text-primary">{formatCents(historySummary.allTimeLow)}</p>
                 </div>
                 <div className="rounded-lg bg-raised p-3">
                   <p className="text-[10px] uppercase tracking-wider text-text-secondary">Avg Price</p>
-                  <p className="text-sm font-mono text-text-primary">${(historySummary.avgPrice / 100).toFixed(2)}</p>
+                  <p className="text-sm font-mono text-text-primary">{formatCents(historySummary.avgPrice)}</p>
                 </div>
                 <div className="rounded-lg bg-raised p-3">
                   <p className="text-[10px] uppercase tracking-wider text-text-secondary">Snapshots</p>

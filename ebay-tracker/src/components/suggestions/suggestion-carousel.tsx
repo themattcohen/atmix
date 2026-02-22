@@ -37,6 +37,7 @@ export function SuggestionCarousel({
       {/* Left scroll button */}
       <button
         onClick={() => scroll('left')}
+        aria-label="Scroll left"
         className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center bg-raised/80 border border-border rounded-full text-text-secondary hover:text-text-primary"
       >
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,6 +55,7 @@ export function SuggestionCarousel({
             key={`end-${item.id}-${idx}`}
             type="ending_soon"
             title={item.title}
+            itemId={item.id}
             endTime={item.endTime}
           />
         ))}
@@ -64,6 +66,7 @@ export function SuggestionCarousel({
               key={`drop-${event.id}`}
               type="price_drop"
               title={item?.title ?? event.itemTitle ?? 'Unknown item'}
+              itemId={event.itemId}
               oldPrice={event.oldValue ? parseInt(event.oldValue, 10) : undefined}
               newPrice={event.newValue ? parseInt(event.newValue, 10) : undefined}
             />
@@ -76,6 +79,7 @@ export function SuggestionCarousel({
               key={`spike-${event.id}`}
               type="watcher_spike"
               title={item?.title ?? event.itemTitle ?? 'Unknown item'}
+              itemId={event.itemId}
               watcherCount={event.newValue ? parseInt(event.newValue, 10) : undefined}
             />
           )
@@ -85,6 +89,7 @@ export function SuggestionCarousel({
       {/* Right scroll button */}
       <button
         onClick={() => scroll('right')}
+        aria-label="Scroll right"
         className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center bg-raised/80 border border-border rounded-full text-text-secondary hover:text-text-primary"
       >
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

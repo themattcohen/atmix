@@ -18,6 +18,9 @@ export function useSync() {
       queryClient.invalidateQueries({ queryKey: ['events'] })
       queryClient.invalidateQueries({ queryKey: ['trends'] })
       queryClient.invalidateQueries({ queryKey: ['sparklines'] })
+      queryClient.invalidateQueries({ queryKey: ['item'] })
+      queryClient.invalidateQueries({ queryKey: ['signals'] })
+      queryClient.invalidateQueries({ queryKey: ['signal-stats'] })
     },
   })
 }

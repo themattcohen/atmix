@@ -3,51 +3,10 @@ import Link from 'next/link'
 import { useEvents } from '@/hooks/use-events'
 import { Skeleton } from '@/components/ui/skeleton'
 import { timeAgo } from '@/lib/utils'
-import type { EventType, WatchlistEvent } from '@/types'
-
-const eventIcons: Record<EventType, string> = {
-  sold:             '\uD83D\uDD34',
-  expired:          '\u23F0',
-  price_drop:       '\uD83D\uDCB0',
-  price_increase:   '\uD83D\uDCC8',
-  watcher_spike:    '\uD83D\uDC40',
-  target_triggered: '\uD83C\uDFAF',
-}
-
-const eventLabels: Record<EventType, string> = {
-  sold:             'Sold',
-  expired:          'Expired',
-  price_drop:       'Price drop',
-  price_increase:   'Price increase',
-  watcher_spike:    'Watcher spike',
-  target_triggered: 'Target hit',
-}
-
-function formatCents(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`
-}
-
-function formatEventValues(event: WatchlistEvent): string | null {
-  if (!event.oldValue || !event.newValue) return null
-
-  if (event.eventType === 'target_triggered') {
-    const threshold = formatCents(parseInt(event.oldValue, 10))
-    const actual    = formatCents(parseInt(event.newValue, 10))
-    return `Target ${threshold} \u2014 hit at ${actual}`
-  }
-
-  // Default: display as dollar amounts for price events
-  const oldCents = parseInt(event.oldValue, 10)
-  const newCents = parseInt(event.newValue, 10)
-  if (!isNaN(oldCents) && !isNaN(newCents)) {
-    return `${formatCents(oldCents)} \u2192 ${formatCents(newCents)}`
-  }
-
-  return `${event.oldValue} \u2192 ${event.newValue}`
-}
+import { eventIcons, eventLabels, formatEventValues } from '@/lib/event-display'
 
 export function ActivityFeed() {
-  const { data: events, isLoading } = useEvents({ limit: 20 })
+  const { data: events, isLoading, isError, refetch } = useEvents({ limit: 20 })
 
   return (
     <div className="p-3 flex-1 overflow-auto">
@@ -55,7 +14,12 @@ export function ActivityFeed() {
         Activity
       </h3>
 
-      {isLoading ? (
+      {isError ? (
+        <div className="text-center py-4">
+          <p className="text-xs text-status-sold">Failed to load activity</p>
+          <button onClick={() => refetch()} className="text-xs text-accent hover:underline mt-1">Retry</button>
+        </div>
+      ) : isLoading ? (
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
             <Skeleton key={i} className="h-10 w-full" />

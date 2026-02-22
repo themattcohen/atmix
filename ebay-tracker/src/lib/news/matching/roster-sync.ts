@@ -47,7 +47,7 @@ async function syncMLB(): Promise<number> {
   return players.length
 }
 
-// ─── NBA ────────────────────────────────────────────────────────────────────
+// ─── ESPN (NBA + NFL) ───────────────────────────────────────────────────────
 
 interface ESPNAthlete {
   id: string
@@ -63,12 +63,12 @@ interface ESPNAthletesResponse {
   items?: ESPNAthlete[]
 }
 
-async function syncNBA(): Promise<number> {
-  const url = 'https://sports.core.api.espn.com/v3/sports/basketball/nba/athletes?limit=1000'
+async function syncESPNSport(apiPath: string, sportLabel: string): Promise<number> {
+  const url = `https://sports.core.api.espn.com/v3/sports/${apiPath}/athletes?limit=1000`
 
   const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
   if (!res.ok) {
-    throw new Error(`NBA HTTP ${res.status}: ${res.statusText}`)
+    throw new Error(`${sportLabel} HTTP ${res.status}: ${res.statusText}`)
   }
 
   const data: ESPNAthletesResponse = await res.json()
@@ -87,48 +87,21 @@ async function syncNBA(): Promise<number> {
       team: p.team?.shortDisplayName ?? null,
       teamId: p.team?.id != null ? parseInt(p.team.id, 10) : null,
       active: p.active ?? true,
-      sport: 'NBA',
+      sport: sportLabel,
     }
   })
 
   upsertPlayers(players)
-  console.log(`[RosterSync] NBA: synced ${players.length} players`)
+  console.log(`[RosterSync] ${sportLabel}: synced ${players.length} players`)
   return players.length
 }
 
-// ─── NFL ────────────────────────────────────────────────────────────────────
+async function syncNBA(): Promise<number> {
+  return syncESPNSport('basketball/nba', 'NBA')
+}
 
 async function syncNFL(): Promise<number> {
-  const url = 'https://sports.core.api.espn.com/v3/sports/football/nfl/athletes?limit=1000'
-
-  const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
-  if (!res.ok) {
-    throw new Error(`NFL HTTP ${res.status}: ${res.statusText}`)
-  }
-
-  const data: ESPNAthletesResponse = await res.json()
-  const items = data.items ?? []
-
-  const players: Omit<RosterPlayer, 'updatedAt'>[] = items.map(p => {
-    const nameParts = p.fullName.split(' ')
-    const firstName = p.firstName ?? nameParts[0] ?? ''
-    const lastName = p.lastName ?? nameParts.slice(1).join(' ') ?? ''
-    return {
-      id: parseInt(p.id, 10),
-      fullName: p.fullName,
-      firstName,
-      lastName,
-      position: p.position?.abbreviation ?? null,
-      team: p.team?.shortDisplayName ?? null,
-      teamId: p.team?.id != null ? parseInt(p.team.id, 10) : null,
-      active: p.active ?? true,
-      sport: 'NFL',
-    }
-  })
-
-  upsertPlayers(players)
-  console.log(`[RosterSync] NFL: synced ${players.length} players`)
-  return players.length
+  return syncESPNSport('football/nfl', 'NFL')
 }
 
 // ─── NHL ────────────────────────────────────────────────────────────────────

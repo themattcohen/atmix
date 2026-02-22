@@ -198,7 +198,7 @@ export function OHLCChart({ itemId }: OHLCChartProps) {
       ) : !points || points.length === 0 ? (
         <div className="h-64 flex items-center justify-center">
           <p className="text-xs text-text-secondary">
-            No rollup data yet — history builds after the first nightly rollup
+            No rollup data yet. Daily candlesticks build automatically at midnight UTC after your watchlist has been synced at least once.
           </p>
         </div>
       ) : (

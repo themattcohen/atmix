@@ -1,11 +1,14 @@
 'use client'
+import Link from 'next/link'
 import { useCountdown } from '@/hooks/use-countdown'
+import { formatCents } from '@/lib/format'
 
 type SuggestionType = 'ending_soon' | 'price_drop' | 'watcher_spike'
 
 interface SuggestionCardProps {
   type: SuggestionType
   title: string
+  itemId?: string
   endTime?: string | null
   oldPrice?: number
   newPrice?: number
@@ -18,16 +21,14 @@ const typeConfig: Record<SuggestionType, { icon: string; label: string }> = {
   watcher_spike: { icon: '\uD83D\uDC40', label: 'Watcher Spike' },
 }
 
-function formatPrice(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`
-}
-
-export function SuggestionCard({ type, title, endTime, oldPrice, newPrice, watcherCount }: SuggestionCardProps) {
+export function SuggestionCard({ type, title, itemId, endTime, oldPrice, newPrice, watcherCount }: SuggestionCardProps) {
   const countdown = useCountdown(endTime ?? null)
   const config = typeConfig[type]
 
-  return (
-    <div className="flex-shrink-0 w-[200px] bg-surface border border-border rounded-lg p-3 snap-start">
+  const content = (
+    <div className={`flex-shrink-0 w-[200px] bg-surface border border-border rounded-lg p-3 snap-start${
+      itemId ? ' hover:bg-raised cursor-pointer transition-colors' : ''
+    }`}>
       <div className="flex items-center gap-1.5 mb-1.5">
         <span className="text-sm">{config.icon}</span>
         <span className="text-[10px] uppercase tracking-wider text-text-secondary font-semibold">
@@ -48,8 +49,8 @@ export function SuggestionCard({ type, title, endTime, oldPrice, newPrice, watch
       )}
       {type === 'price_drop' && oldPrice != null && newPrice != null && (
         <div className="text-xs">
-          <span className="text-text-secondary line-through">{formatPrice(oldPrice)}</span>
-          <span className="text-delta-drop ml-1">{formatPrice(newPrice)}</span>
+          <span className="text-text-secondary line-through">{formatCents(oldPrice)}</span>
+          <span className="text-delta-drop ml-1">{formatCents(newPrice)}</span>
         </div>
       )}
       {type === 'watcher_spike' && watcherCount != null && (
@@ -57,4 +58,10 @@ export function SuggestionCard({ type, title, endTime, oldPrice, newPrice, watch
       )}
     </div>
   )
+
+  if (itemId) {
+    return <Link href={`/items/${itemId}`}>{content}</Link>
+  }
+
+  return content
 }

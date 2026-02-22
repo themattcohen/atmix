@@ -6,8 +6,11 @@ import { useSignals, useSignalStats, useAcknowledgeSignal } from '@/hooks/use-si
 import { useSignalConfig } from '@/hooks/use-signal-config'
 import { AppShell } from '@/components/layout/app-shell'
 import { TopBar } from '@/components/layout/top-bar'
+import { ErrorState } from '@/components/watchlist/error-state'
 import { SignalBadge } from '@/components/signals/signal-badge'
+import { Tooltip } from '@/components/ui/tooltip'
 import { timeAgo } from '@/lib/utils'
+import { PageExplainer } from '@/components/ui/page-explainer'
 import type { NewsEventType } from '@/types'
 
 export default function SignalsPage() {
@@ -25,7 +28,7 @@ export default function SignalsPage() {
   const [minScore, setMinScore] = useState(0)
   const [showAcknowledged, setShowAcknowledged] = useState(false)
 
-  const { data, isLoading } = useSignals({
+  const { data, isLoading, isError, refetch } = useSignals({
     limit: 100,
     eventType: eventTypeFilter || undefined,
     minScore: minScore || undefined,
@@ -38,6 +41,8 @@ export default function SignalsPage() {
   const rawSignals = data?.signals ?? []
   const signals = showAcknowledged ? rawSignals : rawSignals.filter((s) => !s.acknowledged)
   const total = data?.total ?? 0
+
+  const hasFilters = eventTypeFilter !== '' || minScore > 0 || showAcknowledged
 
   return (
     <>
@@ -53,6 +58,8 @@ export default function SignalsPage() {
           </div>
         )}
       </div>
+
+      <PageExplainer text="Signals fire when sports news — trades, call-ups, injuries, awards — matches a player on one of your watchlist cards. Each signal has a score reflecting its impact. Signals expire automatically over time. Use the filters to narrow by event type or score." />
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4 p-3 bg-surface border border-border rounded-lg">
@@ -94,14 +101,33 @@ export default function SignalsPage() {
 
       {/* Signal feed */}
       <div data-testid="signal-feed">
-        {isLoading ? (
+        {isError ? (
+          <ErrorState message="Failed to load signals" onRetry={() => refetch()} />
+        ) : isLoading ? (
           <div className="text-center py-8 text-xs text-text-secondary">Loading signals...</div>
         ) : signals.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-sm text-text-secondary">No signals found</p>
-            <p className="text-xs text-text-secondary mt-1">
-              Signals appear when player news matches your watchlist cards
-            </p>
+            {hasFilters ? (
+              <>
+                <p className="text-sm text-text-secondary">No signals match your current filters</p>
+                <p className="text-xs text-text-secondary mt-1">
+                  Try lowering the minimum score or selecting &ldquo;All Events&rdquo;.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-text-secondary">No signals yet</p>
+                <p className="text-xs text-text-secondary mt-1 max-w-md mx-auto">
+                  Signals are generated when sports news matches a player on a card in your watchlist. This requires cards with a detected player name, a populated roster, and an active news pipeline.
+                </p>
+                <Link
+                  href="/news"
+                  className="inline-block mt-3 text-xs font-medium text-accent hover:underline"
+                >
+                  View news pipeline &rarr;
+                </Link>
+              </>
+            )}
           </div>
         ) : (
           <>
@@ -123,9 +149,11 @@ export default function SignalsPage() {
                       {signal.headline}
                     </Link>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[10px] text-text-secondary">
-                        {Math.round(signal.confidence * 100)}%
-                      </span>
+                      <Tooltip content="Signal confidence score — higher means more reliable">
+                        <span className="text-[10px] text-text-secondary cursor-help">
+                          conf {Math.round(signal.confidence * 100)}%
+                        </span>
+                      </Tooltip>
                       {signal.sourceUrl ? (
                         <a
                           href={signal.sourceUrl}
@@ -149,7 +177,7 @@ export default function SignalsPage() {
                   {!signal.acknowledged && (
                     <button
                       onClick={() => acknowledgeMutation.mutate(signal.id)}
-                      className="text-[10px] text-text-secondary hover:text-text-primary px-2 py-1 rounded hover:bg-background transition-colors shrink-0"
+                      className="border border-border px-2 py-0.5 rounded text-xs text-text-secondary hover:text-text-primary hover:bg-surface transition-colors shrink-0"
                       disabled={acknowledgeMutation.isPending}
                       data-testid="dismiss-signal"
                     >

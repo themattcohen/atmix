@@ -45,7 +45,7 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
     >
       {/* Drag handle — visible on hover to promote into ranked */}
       <td className="w-8 px-1 py-1.5">
-        <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="opacity-30 group-hover:opacity-100 transition-opacity">
           <DragHandle listeners={listeners} attributes={attributes} />
         </span>
       </td>

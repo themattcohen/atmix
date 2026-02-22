@@ -1,6 +1,7 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
 import type { WatchlistEvent, EventType } from '@/types'
+import { POLL_FAST_MS } from '@/lib/poll-intervals'
 
 interface UseEventsParams {
   type?: EventType
@@ -24,6 +25,6 @@ export function useEvents(params: UseEventsParams = {}) {
       const json = await res.json()
       return json.data
     },
-    refetchInterval: 30_000,
+    refetchInterval: POLL_FAST_MS,
   })
 }
