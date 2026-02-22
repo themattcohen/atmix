@@ -5,6 +5,7 @@ import { useWatchlistStore } from '@/store/watchlist-store'
 import { useQueueToggle } from '@/hooks/use-queue-toggle'
 import { SignalBadge } from '@/components/signals/signal-badge'
 import { TargetBadge } from '@/components/items/target-badge'
+import { RankCell } from './rank-cell'
 import { CountdownCell } from './countdown-cell'
 import { PriceCell } from './price-cell'
 import { StatusBadge } from './status-badge'
@@ -25,10 +26,10 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
       {/* No drag handle — static rows cannot be dragged */}
       <td className="w-8" />
 
-      {/* Rank — unranked rows show em dash */}
+      {/* Rank — clickable so unranked items can be promoted */}
       {visibleColumns.rank && (
         <td className="w-10 px-1 py-1.5 text-center">
-          <span className="text-xs text-text-secondary font-mono">&mdash;</span>
+          <RankCell itemId={item.id} rank={item.rank} />
         </td>
       )}
 
