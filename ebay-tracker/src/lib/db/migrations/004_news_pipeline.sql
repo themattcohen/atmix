@@ -20,7 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_roster_team ON player_roster(team_id);
 
 -- eBay title -> roster player mapping (cached, one-time parse per item)
 CREATE TABLE IF NOT EXISTS card_player_mapping (
-  item_id TEXT PRIMARY KEY REFERENCES items(id),
+  item_id TEXT PRIMARY KEY REFERENCES items(item_id),
   player_id INTEGER REFERENCES player_roster(id),
   player_name TEXT NOT NULL,
   confidence REAL NOT NULL DEFAULT 0,
@@ -61,7 +61,7 @@ CREATE INDEX IF NOT EXISTS idx_mentions_player ON news_player_mentions(player_id
 CREATE TABLE IF NOT EXISTS card_signals (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   news_item_id INTEGER NOT NULL REFERENCES news_items(id),
-  item_id TEXT NOT NULL REFERENCES items(id),
+  item_id TEXT NOT NULL REFERENCES items(item_id),
   player_id INTEGER NOT NULL REFERENCES player_roster(id),
   event_type TEXT NOT NULL,
   score INTEGER NOT NULL CHECK(score BETWEEN -3 AND 3),

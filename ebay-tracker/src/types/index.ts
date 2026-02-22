@@ -472,8 +472,8 @@ export interface NewsRepo {
 
 export interface SignalsRepo {
   insert(signal: Omit<CardSignal, 'id' | 'createdAt' | 'acknowledged'>): void
-  getRecent(params: { limit: number; offset?: number; itemId?: string; eventType?: NewsEventType; minScore?: number; acknowledged?: boolean }): CardSignal[]
-  acknowledge(id: number): void
+  getRecent(params: { limit: number; offset?: number; itemId?: string; eventType?: NewsEventType; minScore?: number; acknowledged?: boolean }): { signals: CardSignal[]; total: number }
+  acknowledge(id: number): number
   countToday(): number
   countUnacknowledged(): number
   deleteExpired(): number

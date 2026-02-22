@@ -42,6 +42,12 @@ export class NotFoundError extends AppError {
   }
 }
 
+export class ValidationError extends AppError {
+  constructor(message: string) {
+    super('VALIDATION_ERROR', message, 400)
+  }
+}
+
 export class AiConfigError extends AppError {
   constructor(message = 'AI service not configured') {
     super('AI_NOT_CONFIGURED', message, 503)

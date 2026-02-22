@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useSignals, useSignalStats, useAcknowledgeSignal } from '@/hooks/use-signals'
+import { AppShell } from '@/components/layout/app-shell'
+import { TopBar } from '@/components/layout/top-bar'
 import { SignalBadge } from '@/components/signals/signal-badge'
 import type { NewsEventType } from '@/types'
 
@@ -25,6 +28,7 @@ const EVENT_TYPE_OPTIONS: { value: NewsEventType | ''; label: string }[] = [
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime()
   const minutes = Math.floor(diff / 60000)
+  if (minutes < 1) return 'just now'
   if (minutes < 60) return `${minutes}m ago`
   const hours = Math.floor(minutes / 60)
   if (hours < 24) return `${hours}h ago`
@@ -52,7 +56,10 @@ export default function SignalsPage() {
   const total = data?.total ?? 0
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6" data-testid="signals-page">
+    <>
+      <TopBar />
+      <AppShell>
+        <div className="max-w-4xl mx-auto px-4 py-6" data-testid="signals-page">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold text-text-primary">Player Signals</h1>
         {stats && (
@@ -119,20 +126,36 @@ export default function SignalsPage() {
               {signals.map((signal) => (
                 <div
                   key={signal.id}
-                  className="flex items-center gap-3 px-3 py-2 bg-surface border border-border rounded hover:bg-raised transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2 bg-surface border border-border rounded hover:bg-raised transition-colors${signal.acknowledged ? ' opacity-50' : ''}`}
                   data-testid="signal-item"
                 >
                   <SignalBadge signal={signal} />
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-text-primary truncate">{signal.headline}</p>
+                    <Link
+                      href={`/items/${signal.itemId}`}
+                      className="text-xs text-text-primary truncate block hover:underline"
+                    >
+                      {signal.headline}
+                    </Link>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-[10px] text-text-secondary">
                         {Math.round(signal.confidence * 100)}%
                       </span>
-                      <span className="text-[10px] text-text-secondary">
-                        {signal.source}
-                      </span>
+                      {signal.sourceUrl ? (
+                        <a
+                          href={signal.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-text-secondary hover:underline"
+                        >
+                          {signal.source}
+                        </a>
+                      ) : (
+                        <span className="text-[10px] text-text-secondary">
+                          {signal.source}
+                        </span>
+                      )}
                       <span className="text-[10px] text-text-secondary">
                         {timeAgo(signal.createdAt)}
                       </span>
@@ -156,5 +179,7 @@ export default function SignalsPage() {
         )}
       </div>
     </div>
+      </AppShell>
+    </>
   )
 }

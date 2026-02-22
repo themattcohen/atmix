@@ -34,7 +34,7 @@ export function getRecent(params: {
   eventType?: NewsEventType
   minScore?: number
   acknowledged?: boolean
-}): CardSignal[] {
+}): { signals: CardSignal[]; total: number } {
   const db = getDb()
   try {
     const conditions: string[] = []
@@ -51,7 +51,7 @@ export function getRecent(params: {
     }
 
     if (params.minScore !== undefined) {
-      conditions.push('score >= ?')
+      conditions.push('ABS(score) >= ?')
       bindings.push(params.minScore)
     }
 
@@ -63,6 +63,11 @@ export function getRecent(params: {
 
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
 
+    const countRow = db.prepare(`
+      SELECT COUNT(*) AS cnt FROM card_signals ${where}
+    `).get(...bindings) as any
+    const total: number = countRow.cnt
+
     bindings.push(params.limit)
     bindings.push(params.offset ?? 0)
 
@@ -73,18 +78,19 @@ export function getRecent(params: {
       LIMIT ? OFFSET ?
     `).all(...bindings) as any[]
 
-    return rows.map(mapRow)
+    return { signals: rows.map(mapRow), total }
   } catch (err: any) {
     throw new DatabaseError(`Failed to get recent signals: ${err.message}`)
   }
 }
 
-export function acknowledge(id: number): void {
+export function acknowledge(id: number): number {
   const db = getDb()
   try {
-    db.prepare(`
+    const result = db.prepare(`
       UPDATE card_signals SET acknowledged = 1 WHERE id = ?
     `).run(id)
+    return result.changes
   } catch (err: any) {
     throw new DatabaseError(`Failed to acknowledge signal: ${err.message}`)
   }

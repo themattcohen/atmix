@@ -23,6 +23,36 @@ const eventLabels: Record<EventType, string> = {
   target_triggered: 'Target Hit',
 }
 
+const priceEventTypes: Set<EventType> = new Set([
+  'price_increase',
+  'price_drop',
+  'target_triggered',
+])
+
+function formatCents(cents: number): string {
+  return `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
+function formatEventValues(event: WatchlistEvent): string | null {
+  if (!event.oldValue || !event.newValue) return null
+
+  if (event.eventType === 'target_triggered') {
+    const threshold = formatCents(parseInt(event.oldValue, 10))
+    const actual    = formatCents(parseInt(event.newValue, 10))
+    return `Target ${threshold} \u2014 hit at ${actual}`
+  }
+
+  if (priceEventTypes.has(event.eventType)) {
+    const oldCents = parseInt(event.oldValue, 10)
+    const newCents = parseInt(event.newValue, 10)
+    if (!isNaN(oldCents) && !isNaN(newCents)) {
+      return `${formatCents(oldCents)} \u2192 ${formatCents(newCents)}`
+    }
+  }
+
+  return `${event.oldValue} \u2192 ${event.newValue}`
+}
+
 function formatTimestamp(iso: string): string {
   return new Date(iso).toLocaleString('en-US', {
     month: 'short',
@@ -62,7 +92,7 @@ export function ItemEvents({ events }: ItemEventsProps) {
               </p>
               {event.oldValue && event.newValue && (
                 <p className="text-[10px] text-text-secondary mt-0.5">
-                  {event.oldValue} → {event.newValue}
+                  {formatEventValues(event) ?? `${event.oldValue} → ${event.newValue}`}
                 </p>
               )}
             </div>
