@@ -164,25 +164,29 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
       if (!isNew) continue
       newCount++
 
-      // 6. Extract player names from news text
-      let playerNames = extractPlayerNames(raw.title, raw.body)
+      // 6. Extract player names from news text (regex first)
+      const regexNames = extractPlayerNames(raw.title, raw.body)
       let usedAIFallback = false
-
-      // 6a. AI fallback if regex found nothing
-      if (playerNames.length === 0) {
-        playerNames = await extractPlayerNamesAI(raw.title, raw.body)
-        if (playerNames.length > 0) usedAIFallback = true
-      }
-
       const mentionedPlayerIds: number[] = []
 
-      for (const name of playerNames) {
+      // 6a. Try matching regex results to roster
+      for (const name of regexNames) {
         const match = matchPlayerName(name)
         if (!match) continue
-
-        // Insert mention
         insertMention(newsId, match.player.id, match.confidence)
         mentionedPlayerIds.push(match.player.id)
+      }
+
+      // 6b. AI fallback if regex produced no roster matches
+      if (mentionedPlayerIds.length === 0) {
+        const aiNames = await extractPlayerNamesAI(raw.title, raw.body)
+        for (const name of aiNames) {
+          const match = matchPlayerName(name)
+          if (!match) continue
+          insertMention(newsId, match.player.id, match.confidence)
+          mentionedPlayerIds.push(match.player.id)
+        }
+        if (mentionedPlayerIds.length > 0) usedAIFallback = true
       }
 
       if (mentionedPlayerIds.length === 0) {
