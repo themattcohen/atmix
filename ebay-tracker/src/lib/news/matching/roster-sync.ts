@@ -64,7 +64,7 @@ interface ESPNAthletesResponse {
 }
 
 async function syncNBA(): Promise<number> {
-  const url = 'https://sports.core.api.espn.com/v3/sports/basketball/nba/athletes?limit=1000&active=true'
+  const url = 'https://sports.core.api.espn.com/v3/sports/basketball/nba/athletes?limit=1000'
 
   const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
   if (!res.ok) {
@@ -99,7 +99,7 @@ async function syncNBA(): Promise<number> {
 // ─── NFL ────────────────────────────────────────────────────────────────────
 
 async function syncNFL(): Promise<number> {
-  const url = 'https://sports.core.api.espn.com/v3/sports/football/nfl/athletes?limit=1000&active=true'
+  const url = 'https://sports.core.api.espn.com/v3/sports/football/nfl/athletes?limit=1000'
 
   const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
   if (!res.ok) {

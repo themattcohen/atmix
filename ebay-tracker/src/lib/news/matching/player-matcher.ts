@@ -9,7 +9,7 @@ const FUSE_OPTIONS: IFuseOptions<RosterPlayer> = {
   ignoreLocation: true,
 }
 
-const CONFIDENCE_THRESHOLD = 0.80
+const CONFIDENCE_THRESHOLD = 0.65
 const CACHE_TTL_MS = 3_600_000 // 1 hour
 
 let fuseIndex: Fuse<RosterPlayer> | null = null

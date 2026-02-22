@@ -479,6 +479,17 @@ export interface NewsItemSignalSummary {
   score: number
 }
 
+export interface NewsItemSignalDetail {
+  eventType: NewsEventType
+  score: number
+  confidence: number
+  matchedKeyword: string | null
+  itemId: string
+  expiresAt: string | null
+  acknowledged: boolean
+  createdAt: string
+}
+
 export interface NewsItemDetail {
   id: number
   source: SourceName
@@ -490,7 +501,7 @@ export interface NewsItemDetail {
   processedStatus: NewsProcessedStatus
   extractionMethod: NewsExtractionMethod
   mentions: NewsItemMention[]
-  signals: NewsItemSignalSummary[]
+  signals: NewsItemSignalDetail[]
 }
 
 export interface NewsDetailPage {
@@ -504,6 +515,8 @@ export interface NewsDetailParams {
   source?: SourceName
   status?: NewsProcessedStatus
   playerSearch?: string
+  sortBy?: 'fetched_at' | 'source' | 'status' | 'mentions' | 'signals'
+  sortDir?: 'asc' | 'desc'
 }
 
 export interface NewsRepo {

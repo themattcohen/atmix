@@ -47,7 +47,7 @@ export function search(query: string): RosterPlayer[] {
 
     const rows = db.prepare(`
       SELECT * FROM player_roster
-      WHERE full_name LIKE ? ESCAPE '\\' AND active = 1
+      WHERE full_name LIKE ? ESCAPE '\\'
       ORDER BY full_name ASC
     `).all(`%${escapedQuery}%`) as any[]
 
@@ -62,7 +62,6 @@ export function getAll(): RosterPlayer[] {
   try {
     const rows = db.prepare(`
       SELECT * FROM player_roster
-      WHERE active = 1
       ORDER BY full_name ASC
     `).all() as any[]
 
@@ -76,7 +75,7 @@ export function count(): number {
   const db = getDb()
   try {
     const row = db.prepare(`
-      SELECT COUNT(*) AS cnt FROM player_roster WHERE active = 1
+      SELECT COUNT(*) AS cnt FROM player_roster
     `).get() as any
     return row.cnt as number
   } catch (err: any) {

@@ -3,7 +3,7 @@ import type {
   NewsItem, RawNewsItem, SourceName, NewsRepo,
   NewsDetailParams, NewsDetailPage, NewsItemDetail,
   NewsProcessedStatus, NewsExtractionMethod,
-  NewsItemMention, NewsItemSignalSummary,
+  NewsItemMention, NewsItemSignalDetail,
 } from '../../types'
 import { getDb } from './client'
 import { DatabaseError } from '../errors'
@@ -151,12 +151,38 @@ function parseMentions(raw: string | null): NewsItemMention[] {
   })
 }
 
-function parseSignals(raw: string | null): NewsItemSignalSummary[] {
+function parseSignals(raw: string | null): NewsItemSignalDetail[] {
   if (!raw) return []
   return raw.split(';;').filter(Boolean).map((entry) => {
-    const [eventType, score] = entry.split('|')
-    return { eventType: eventType as NewsItemSignalSummary['eventType'], score: parseFloat(score) }
+    const parts = entry.split('|')
+    return {
+      eventType: parts[0] as NewsItemSignalDetail['eventType'],
+      score: parseFloat(parts[1] || '0'),
+      confidence: parseFloat(parts[2] || '0'),
+      matchedKeyword: parts[3] || null,
+      itemId: parts[4] || '',
+      expiresAt: parts[5] || null,
+      acknowledged: parts[6] === '1',
+      createdAt: parts[7] || '',
+    }
   })
+}
+
+function getOrderClause(sortBy?: string, sortDir?: string): string {
+  const dir = sortDir === 'asc' ? 'ASC' : 'DESC'
+  switch (sortBy) {
+    case 'source':
+      return `ni.source ${dir}, ni.id DESC`
+    case 'status':
+      return `ni.processed ${dir}, ni.id DESC`
+    case 'mentions':
+      return `(SELECT COUNT(*) FROM news_player_mentions npm3 WHERE npm3.news_item_id = ni.id) ${dir}, ni.id DESC`
+    case 'signals':
+      return `(SELECT COUNT(*) FROM card_signals cs2 WHERE cs2.news_item_id = ni.id) ${dir}, ni.id DESC`
+    case 'fetched_at':
+    default:
+      return `ni.fetched_at ${dir}, ni.id DESC`
+  }
 }
 
 export function getDetailed(params: NewsDetailParams): NewsDetailPage {
@@ -203,12 +229,17 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
          FROM news_player_mentions npm
          JOIN player_roster pr ON pr.id = npm.player_id
          WHERE npm.news_item_id = ni.id) AS mentions_raw,
-        (SELECT GROUP_CONCAT(cs.event_type || '|' || CAST(cs.score AS TEXT), ';;')
+        (SELECT GROUP_CONCAT(
+          cs.event_type || '|' || CAST(cs.score AS TEXT) || '|'
+          || CAST(cs.confidence AS TEXT) || '|' || COALESCE(cs.matched_keyword, '')
+          || '|' || cs.item_id || '|' || COALESCE(cs.expires_at, '')
+          || '|' || CAST(cs.acknowledged AS TEXT) || '|' || cs.created_at
+        , ';;')
          FROM card_signals cs
          WHERE cs.news_item_id = ni.id) AS signals_raw
       FROM news_items ni
       ${where}
-      ORDER BY ni.fetched_at DESC, ni.id DESC
+      ORDER BY ${getOrderClause(params.sortBy, params.sortDir)}
       LIMIT ? OFFSET ?
     `).all(...mainBindings) as any[]
 

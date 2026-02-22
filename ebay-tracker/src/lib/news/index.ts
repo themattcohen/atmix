@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
 import type { SourceName } from '../../types'
@@ -10,13 +11,15 @@ import { fetchRotoWireRSS } from './sources/rotowire-rss'
 import { fetchGoogleNewsRSS } from './sources/google-news-rss'
 import { fetchESPNRSS } from './sources/espn-rss'
 import { parsePlayerFromTitle } from './matching/title-parser'
-import { matchPlayerName } from './matching/player-matcher'
+import { matchPlayerName, invalidateFuseCache } from './matching/player-matcher'
 import { classifyEvent } from './scoring/event-classifier'
 import { calculateScore, DECAY_DAYS } from './scoring/score-calculator'
 import { insertIfNew, markProcessed, insertMention } from '../db/news'
 import { insert as insertSignal } from '../db/signals'
 import { getUnmapped, upsert as upsertMapping } from '../db/card-mapping'
 import { getByPlayerId } from '../db/card-mapping'
+import { getDb } from '../db/client'
+import { upsertPlayers } from '../db/roster'
 
 const SOURCE_FETCHERS: Record<SourceName, () => Promise<import('../../types').RawNewsItem[]>> = {
   mlb_transactions: fetchMLBTransactions,
@@ -37,6 +40,41 @@ export function loadSkipRules(): Set<string> {
 }
 
 const DYNAMIC_SKIP_PHRASES = loadSkipRules()
+
+/**
+ * Discover an unknown player from AI extraction — insert into roster for future matching.
+ * Returns the generated negative ID, or null if the name is too short.
+ */
+function discoverPlayer(name: string): number | null {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length < 2) return null
+
+  const firstName = parts[0]
+  const lastName = parts.slice(1).join(' ')
+
+  // Generate a stable negative ID from name hash to avoid collision with API-assigned positive IDs
+  const hash = crypto.createHash('md5').update(name.toLowerCase()).digest()
+  const id = -(hash.readUInt32BE(0) % 1_000_000_000)
+
+  const db = getDb()
+  const existing = db.prepare('SELECT id FROM player_roster WHERE id = ?').get(id) as any
+  if (existing) return existing.id as number
+
+  upsertPlayers([{
+    id,
+    fullName: name,
+    firstName,
+    lastName,
+    position: null,
+    team: null,
+    teamId: null,
+    active: false,
+    sport: 'UNKNOWN',
+  }])
+
+  invalidateFuseCache()
+  return id
+}
 
 export async function extractPlayerNamesAI(title: string, body: string | null): Promise<string[]> {
   try {
@@ -182,7 +220,14 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
       if (mentionedPlayerIds.length === 0) {
         const aiNames = await extractPlayerNamesAI(raw.title, raw.body)
         for (const name of aiNames) {
-          const match = matchPlayerName(name)
+          let match = matchPlayerName(name)
+          if (!match) {
+            // AI found a name but roster doesn't have them — discover & add
+            const discoveredId = discoverPlayer(name)
+            if (discoveredId !== null) {
+              match = matchPlayerName(name) // retry after adding
+            }
+          }
           if (!match) continue
           insertMention(newsId, match.player.id, match.confidence)
           mentionedPlayerIds.push(match.player.id)
