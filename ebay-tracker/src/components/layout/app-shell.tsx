@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { useWatchlistStore } from '@/store/watchlist-store'
 import { Sidebar } from './sidebar'
 
@@ -8,6 +9,15 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const sidebarOpen = useWatchlistStore((s) => s.sidebarOpen)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)')
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   return (
     <div className="flex h-[calc(100vh-49px)]">
@@ -17,17 +27,19 @@ export function AppShell({ children }: AppShellProps) {
       </main>
 
       {/* Desktop sidebar: fixed 320px */}
-      <div
-        className={`hidden lg:block w-80 flex-shrink-0 border-l border-border bg-surface overflow-auto transition-all ${
-          sidebarOpen ? 'w-80' : 'w-0 overflow-hidden border-l-0'
-        }`}
-      >
-        <Sidebar />
-      </div>
+      {!isMobile && (
+        <div
+          className={`w-80 flex-shrink-0 border-l border-border bg-surface overflow-auto transition-all ${
+            sidebarOpen ? 'w-80' : 'w-0 overflow-hidden border-l-0'
+          }`}
+        >
+          <Sidebar />
+        </div>
+      )}
 
       {/* Mobile sidebar: overlay */}
-      {sidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
+      {isMobile && sidebarOpen && (
+        <div className="fixed inset-0 z-40">
           <div
             className="absolute inset-0 bg-black/50"
             onClick={useWatchlistStore.getState().toggleSidebar}

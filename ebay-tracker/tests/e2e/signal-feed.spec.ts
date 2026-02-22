@@ -106,16 +106,18 @@ test.describe('Signal Feed Page', () => {
   test('T30: acknowledge removes from list', async ({ page }) => {
     let patchedUrl: string | null = null
 
-    await Promise.all([
-      page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse })),
-      page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse })),
-      page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse })),
-      page.route('**/api/signals/*/acknowledge', (route) => {
+    await page.route('**/api/items*', (route) => route.fulfill({ json: mockWatchlistResponse }))
+    await page.route('**/api/events*', (route) => route.fulfill({ json: mockEventsResponse }))
+    await page.route('**/api/signals/stats*', (route) => route.fulfill({ json: mockSignalStatsResponse }))
+    await page.route('**/api/signals/*', (route) => {
+      if (route.request().method() === 'PATCH') {
         patchedUrl = route.request().url()
         route.fulfill({ json: { data: { success: true } } })
-      }),
-      page.route('**/api/signals*', (route) => route.fulfill({ json: mockSignalsResponse })),
-    ])
+      } else {
+        route.fulfill({ json: mockSignalsResponse })
+      }
+    })
+    await page.route('**/api/signals?*', (route) => route.fulfill({ json: mockSignalsResponse }))
 
     await page.goto('/signals')
 

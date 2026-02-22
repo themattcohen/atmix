@@ -8,7 +8,8 @@ export function SignalSummary() {
   const { data: recent } = useSignals({ limit: 3, acknowledged: false })
 
   const unacknowledged = stats?.countUnacknowledged ?? 0
-  const previews = recent?.signals ?? []
+  const allPreviews = recent?.signals ?? []
+  const previews = allPreviews.filter((s) => !s.acknowledged).slice(0, 3)
 
   return (
     <div className="px-3 py-3" data-testid="signal-summary">
@@ -32,7 +33,7 @@ export function SignalSummary() {
             const scoreColor = isPositive ? 'text-status-active' : 'text-status-sold'
 
             return (
-              <div key={signal.id} className="flex items-start gap-1.5">
+              <div key={signal.id} className="flex items-start gap-1.5" data-testid="signal-preview-item">
                 <span className={`text-[10px] font-bold ${scoreColor} shrink-0`}>
                   {isPositive ? '+' : ''}{signal.score}
                 </span>

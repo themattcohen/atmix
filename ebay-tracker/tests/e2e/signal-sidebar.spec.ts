@@ -44,6 +44,7 @@ test.describe('Signal Sidebar', () => {
 
     // Up to 3 signal headline previews should be visible in the summary
     const previewItems = signalSummary.locator('[data-testid="signal-preview-item"]')
+    await expect(previewItems.first()).toBeVisible()
     const count = await previewItems.count()
     expect(count).toBeGreaterThanOrEqual(1)
     expect(count).toBeLessThanOrEqual(3)

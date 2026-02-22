@@ -81,6 +81,7 @@ export function PriceChart({ snapshots, signals }: PriceChartProps) {
               stroke={marker.color}
               strokeDasharray="4 4"
               strokeWidth={1.5}
+              ifOverflow="visible"
               label={{
                 value: marker.label,
                 position: 'top',

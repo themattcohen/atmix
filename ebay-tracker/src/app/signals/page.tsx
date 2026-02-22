@@ -47,7 +47,8 @@ export default function SignalsPage() {
   const { data: stats } = useSignalStats()
   const acknowledgeMutation = useAcknowledgeSignal()
 
-  const signals = data?.signals ?? []
+  const rawSignals = data?.signals ?? []
+  const signals = showAcknowledged ? rawSignals : rawSignals.filter((s) => !s.acknowledged)
   const total = data?.total ?? 0
 
   return (
@@ -130,7 +131,7 @@ export default function SignalsPage() {
                         {Math.round(signal.confidence * 100)}%
                       </span>
                       <span className="text-[10px] text-text-secondary">
-                        {signal.source.replace('_', ' ')}
+                        {signal.source}
                       </span>
                       <span className="text-[10px] text-text-secondary">
                         {timeAgo(signal.createdAt)}
@@ -143,6 +144,7 @@ export default function SignalsPage() {
                       onClick={() => acknowledgeMutation.mutate(signal.id)}
                       className="text-[10px] text-text-secondary hover:text-text-primary px-2 py-1 rounded hover:bg-background transition-colors shrink-0"
                       disabled={acknowledgeMutation.isPending}
+                      data-testid="dismiss-signal"
                     >
                       Dismiss
                     </button>

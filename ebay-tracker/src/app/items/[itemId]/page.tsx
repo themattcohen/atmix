@@ -1,6 +1,7 @@
 'use client'
 import { useParams } from 'next/navigation'
 import { useItemDetail } from '@/hooks/use-item-detail'
+import { useSignals } from '@/hooks/use-signals'
 import { TopBar } from '@/components/layout/top-bar'
 import { ItemHeader } from '@/components/detail/item-header'
 import { ItemStatsGrid } from '@/components/detail/item-stats-grid'
@@ -15,6 +16,7 @@ export default function ItemDetailPage() {
   const params = useParams()
   const itemId = params.itemId as string
   const { data, isLoading, isError, refetch } = useItemDetail(itemId)
+  const { data: signalData } = useSignals({ itemId })
 
   return (
     <>
@@ -38,7 +40,7 @@ export default function ItemDetailPage() {
             <ItemHeader item={data.item} />
             <ItemStatsGrid item={data.item} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <PriceChart snapshots={data.snapshots} />
+              <PriceChart snapshots={data.snapshots} signals={signalData?.signals} />
               <WatcherChart snapshots={data.snapshots} />
             </div>
             {/* Historical archive — empty state shown gracefully until first nightly rollup */}

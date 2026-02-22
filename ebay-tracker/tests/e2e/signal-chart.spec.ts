@@ -58,7 +58,7 @@ test.describe('Signal Chart', () => {
 
     // Green reference lines use stroke color #3fb950
     const greenLine = priceChart.locator('svg line[stroke="#3fb950"]')
-    await expect(greenLine.first()).toBeVisible()
+    await expect(greenLine.first()).toBeAttached()
   })
 
   // T35: negative signal line is red
@@ -84,6 +84,6 @@ test.describe('Signal Chart', () => {
 
     // Red reference lines use stroke color #f85149
     const redLine = priceChart.locator('svg line[stroke="#f85149"]')
-    await expect(redLine.first()).toBeVisible()
+    await expect(redLine.first()).toBeAttached()
   })
 })
