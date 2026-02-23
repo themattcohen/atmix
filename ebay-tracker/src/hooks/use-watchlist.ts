@@ -42,5 +42,6 @@ export function useWatchlist(params: UseWatchlistParams = {}) {
       return json.data
     },
     refetchInterval: POLL_SLOW_MS,
+    refetchIntervalInBackground: false,
   })
 }

@@ -28,7 +28,7 @@ export function Tooltip({ content, children, wide }: TooltipProps) {
     if (visible) updatePosition()
   }, [visible, updatePosition])
 
-  const widthClass = wide ? 'w-72' : 'whitespace-nowrap'
+  const widthClass = wide ? 'w-72 max-w-[calc(100vw-1rem)]' : 'whitespace-nowrap'
   const transformOrigin = coords.flipUp ? 'bottom center' : 'top center'
 
   return (

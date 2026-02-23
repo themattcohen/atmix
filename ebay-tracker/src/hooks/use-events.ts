@@ -26,5 +26,6 @@ export function useEvents(params: UseEventsParams = {}) {
       return json.data
     },
     refetchInterval: POLL_FAST_MS,
+    refetchIntervalInBackground: false,
   })
 }

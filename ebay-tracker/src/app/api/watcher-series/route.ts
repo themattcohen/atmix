@@ -14,7 +14,13 @@ export async function GET(request: NextRequest) {
     }
 
     const series = getWatcherSeries(ids, days)
-    return routeOk(Object.fromEntries(series))
+    return Response.json(
+      { data: Object.fromEntries(series) },
+      {
+        status: 200,
+        headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60' },
+      }
+    )
   } catch (err) {
     return routeError(err)
   }

@@ -22,7 +22,7 @@ export function FilterBar() {
   return (
     <div className="flex items-center gap-2 px-4 py-2 bg-surface border-b border-border flex-wrap">
       {/* Search */}
-      <div className="relative flex-1 min-w-[140px] max-w-xs">
+      <div className="relative flex-1 min-w-[140px] max-w-[180px] sm:max-w-xs w-full sm:w-auto">
         <svg
           className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-secondary"
           fill="none"

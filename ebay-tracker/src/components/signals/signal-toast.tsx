@@ -33,7 +33,7 @@ const borderColorMap: Record<string, string> = {
 }
 
 export function SignalToastContainer() {
-  const { data } = useSignals({ limit: 20, acknowledged: false })
+  const { data } = useSignals({ limit: 100, acknowledged: false })
   const { data: config } = useSignalConfig()
   const signals: CardSignal[] = data?.signals ?? []
 
@@ -82,7 +82,7 @@ export function SignalToastContainer() {
   if (toasts.length === 0) return null
 
   return (
-    <div className="fixed top-16 right-4 z-50 flex flex-col gap-2 max-w-sm" data-testid="signal-toast">
+    <div className="fixed top-16 right-4 z-50 flex flex-col gap-2 max-w-[90vw] sm:max-w-sm" data-testid="signal-toast">
       {toasts.map((toast) => {
         const isPositive = toast.signal.score > 0
         const eventConfig = config?.signalConfig[toast.signal.eventType]

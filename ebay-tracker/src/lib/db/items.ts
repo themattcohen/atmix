@@ -30,6 +30,10 @@ function rowToItem(row: any): WatchlistItem {
     notes: row.notes,
     firstSeenAt: row.first_seen_at,
     lastSyncedAt: row.last_synced_at,
+    heatScore: row.heat_score ?? null,
+    heatTier: row.heat_tier ?? null,
+    heatWatcherDelta: row.heat_watcher_delta ?? null,
+    heatWatcherTrend: row.heat_watcher_trend ?? null,
   }
 }
 
@@ -67,6 +71,28 @@ export function getAll(filters?: { status?: ListingStatus; search?: string; type
     return rows.map(rowToItem)
   } catch (err: any) {
     throw new DatabaseError(`Failed to get items: ${err.message}`)
+  }
+}
+
+export function getStatusCounts(): { active: number; sold: number; ended: number; total: number } {
+  const db = getDb()
+  try {
+    const row = db.prepare(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END) AS active,
+        SUM(CASE WHEN status = 'Sold' THEN 1 ELSE 0 END) AS sold,
+        SUM(CASE WHEN status = 'Ended' THEN 1 ELSE 0 END) AS ended
+      FROM items
+    `).get() as any
+    return {
+      active: row.active || 0,
+      sold: row.sold || 0,
+      ended: row.ended || 0,
+      total: row.total || 0,
+    }
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get status counts: ${err.message}`)
   }
 }
 

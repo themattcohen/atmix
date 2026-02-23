@@ -73,6 +73,45 @@ export function getPriceDeltas(): PriceDelta[] {
   }
 }
 
+export function getPriceDeltasForItems(itemIds: string[]): PriceDelta[] {
+  if (itemIds.length === 0) return []
+  const db = getDb()
+  try {
+    const placeholders = itemIds.map(() => '?').join(', ')
+    const rows = db.prepare(`
+      WITH latest AS (
+        SELECT
+          item_id,
+          price_cents,
+          ROW_NUMBER() OVER (PARTITION BY item_id ORDER BY recorded_at DESC) AS rn
+        FROM price_snapshots
+        WHERE item_id IN (${placeholders})
+      )
+      SELECT
+        l1.item_id,
+        l1.price_cents  AS current_price,
+        l2.price_cents  AS previous_price,
+        ROUND(
+          (l1.price_cents - l2.price_cents) * 100.0 / l2.price_cents,
+          1
+        ) AS delta_pct
+      FROM latest l1
+      LEFT JOIN latest l2
+        ON l1.item_id = l2.item_id AND l2.rn = 2
+      WHERE l1.rn = 1
+    `).all(...itemIds) as any[]
+
+    return rows.map(row => ({
+      itemId: row.item_id,
+      currentPrice: row.current_price,
+      previousPrice: row.previous_price ?? null,
+      deltaPct: row.delta_pct ?? null,
+    }))
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get price deltas for items: ${err.message}`)
+  }
+}
+
 export function getSnapshotSummaries(
   itemIds: string[],
   days: number
@@ -270,6 +309,23 @@ export function getHeatIndexBatch(itemIds: string[]): Map<string, HeatIndex> {
   }
 }
 
+export function computeAndCacheHeatIndex(itemIds: string[]): void {
+  if (itemIds.length === 0) return
+  const heatMap = getHeatIndexBatch(itemIds)
+  const db = getDb()
+  const stmt = db.prepare(`
+    UPDATE items
+    SET heat_score = ?, heat_tier = ?, heat_watcher_delta = ?, heat_watcher_trend = ?, heat_computed_at = datetime('now')
+    WHERE item_id = ?
+  `)
+  const updateAll = db.transaction(() => {
+    for (const [itemId, heat] of heatMap) {
+      stmt.run(heat.score, heat.tier, heat.watcherDelta, heat.watcherTrend, itemId)
+    }
+  })
+  updateAll()
+}
+
 export function getWatcherSeries(itemIds: string[], days: number): Map<string, number[]> {
   if (itemIds.length === 0) return new Map()
 
@@ -354,8 +410,10 @@ export const trendsRepo: TrendsRepo = {
   insertSnapshot,
   getSnapshots,
   getPriceDeltas,
+  getPriceDeltasForItems,
   getSnapshotSummaries,
   getHeatIndexBatch,
+  computeAndCacheHeatIndex,
   getStats,
   getPortfolio,
 }

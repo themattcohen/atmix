@@ -28,5 +28,6 @@ export function useNews(params: NewsDetailParams = {}) {
       return json.data
     },
     refetchInterval: POLL_SLOW_MS,
+    refetchIntervalInBackground: false,
   })
 }

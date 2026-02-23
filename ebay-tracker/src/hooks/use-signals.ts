@@ -46,6 +46,7 @@ export function useSignals(params: SignalParams = {}) {
       return json.data
     },
     refetchInterval: POLL_SLOW_MS,
+    refetchIntervalInBackground: false,
   })
 }
 
@@ -59,6 +60,7 @@ export function useSignalStats() {
       return json.data
     },
     refetchInterval: POLL_SLOW_MS,
+    refetchIntervalInBackground: false,
   })
 }
 

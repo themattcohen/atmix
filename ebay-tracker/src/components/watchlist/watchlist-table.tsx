@@ -269,7 +269,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
               )}
 
               {visibleColumns.delta && (
-                <ResizableTh colKey="delta" className={headerClass}>
+                <ResizableTh colKey="delta" className={`hidden sm:table-cell ${headerClass}`}>
                   <Tooltip content="Price change % between the two most recent sync snapshots. Green ↓ = price dropped. Red ↑ = price increased." wide>
                     <span className="cursor-help border-b border-dashed border-text-secondary/40">Delta</span>
                   </Tooltip>
@@ -277,13 +277,13 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
               )}
 
               {visibleColumns.watchers && (
-                <ResizableTh colKey="watchers" className={headerClass}>
+                <ResizableTh colKey="watchers" className={`hidden sm:table-cell ${headerClass}`}>
                   <SortableHeader colKey="watchers" label="Watchers" />
                 </ResizableTh>
               )}
 
               {visibleColumns.bidCount && (
-                <ResizableTh colKey="bidCount" className={`${headerClass} text-center`}>
+                <ResizableTh colKey="bidCount" className={`hidden sm:table-cell ${headerClass} text-center`}>
                   <SortableHeader colKey="bid_count" label="Bids" />
                 </ResizableTh>
               )}
@@ -301,7 +301,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
               )}
 
               {visibleColumns.signals && (
-                <ResizableTh colKey="signals" className={headerClass}>
+                <ResizableTh colKey="signals" className={`hidden sm:table-cell ${headerClass}`}>
                   <Tooltip content="Latest unacknowledged news signal (callup, trade, injury, etc.). Score reflects magnitude and source quality." wide>
                     <span className="cursor-help border-b border-dashed border-text-secondary/40">Signal</span>
                   </Tooltip>
@@ -309,7 +309,7 @@ export function WatchlistTable({ ranked, unranked, unrankedTotal, onLoadMore, is
               )}
 
               {visibleColumns.queue && (
-                <th className="w-8">
+                <th className="hidden sm:table-cell w-8">
                   <Tooltip content="Star items to add them to your Buy Queue for focused monitoring.">
                     <span className="cursor-help text-text-secondary text-xs">{'\u2606'}</span>
                   </Tooltip>

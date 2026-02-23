@@ -17,6 +17,7 @@ export function useTargets(itemId?: string) {
       return (await res.json()).data
     },
     refetchInterval: POLL_FAST_MS,
+    refetchIntervalInBackground: false,
   })
 
   const create = useMutation({

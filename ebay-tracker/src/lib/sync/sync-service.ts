@@ -1,7 +1,7 @@
 import { fetchWatchlist, getItemStatus } from '../ebay/client'
 import type { ItemStatusResult } from '../ebay/client'
 import { getAll, getById, upsert, markStatus, freeRank } from '../db/items'
-import { insertSnapshot } from '../db/trends'
+import { insertSnapshot, computeAndCacheHeatIndex } from '../db/trends'
 import { insert as insertEvent } from '../db/events'
 import { detectPriceChange, detectWatcherSpike } from './event-detector'
 import { evaluateTargets } from './target-evaluator'
@@ -124,6 +124,12 @@ export async function runSync(): Promise<SyncResult> {
 
     const durationMs = Date.now() - startTime
     console.log(`Sync complete: +${added} new, ${updated} updated, ${sold} sold, ${expired} expired (${durationMs}ms)`)
+
+    // Re-compute and cache heat index for all synced items
+    const syncedIds = Array.from(apiItemIds)
+    if (syncedIds.length > 0) {
+      computeAndCacheHeatIndex(syncedIds)
+    }
 
     // 5. Backfill unparsed items — parse up to 5 per sync cycle to avoid rate limits
     const unparsedIds = getUnparsed(5)

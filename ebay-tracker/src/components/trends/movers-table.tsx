@@ -73,7 +73,7 @@ export function MoversTable({ priceDrops, watcherGains }: MoversTableProps) {
                   <span className="text-[10px] font-mono text-text-secondary">{i + 1}</span>
                 </td>
                 <td className="px-2 py-1.5">
-                  <Link href={`/items/${item.id}`} className="text-xs text-text-primary truncate block max-w-[300px] hover:underline">
+                  <Link href={`/items/${item.id}`} className="text-xs text-text-primary truncate block max-w-0 sm:max-w-[300px] hover:underline">
                     {item.title}
                   </Link>
                 </td>

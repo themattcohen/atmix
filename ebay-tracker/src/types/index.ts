@@ -28,6 +28,10 @@ export interface WatchlistItem {
   lastSyncedAt: string          // ISO 8601
   deltaPct?: number | null       // price change % since previous snapshot
   targetCounts?: { active: number; triggered: number } | null
+  heatScore?: number | null       // cached heat index score (0-100)
+  heatTier?: string | null        // cached heat tier ('hot'|'warm'|'neutral'|'cold')
+  heatWatcherDelta?: number | null // cached watcher delta
+  heatWatcherTrend?: string | null // cached watcher trend ('up'|'down'|'flat')
 }
 
 export interface PriceSnapshot {
@@ -103,8 +107,10 @@ export interface TrendsRepo {
   getStats(): TrendStats
   getPortfolio(days: number): PortfolioDataPoint[]
   getPriceDeltas(): PriceDelta[]
+  getPriceDeltasForItems(itemIds: string[]): PriceDelta[]
   getSnapshotSummaries(itemIds: string[], days: number): Map<string, SparklineSummary>
   getHeatIndexBatch(itemIds: string[]): Map<string, HeatIndex>
+  computeAndCacheHeatIndex(itemIds: string[]): void
 }
 
 export interface EventsRepo {

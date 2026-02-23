@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useReducer, useEffect } from 'react'
 
 type Urgency = 'normal' | 'caution' | 'urgent' | 'critical'
 
@@ -8,14 +8,32 @@ interface CountdownResult {
   urgency: Urgency
 }
 
+// --- shared tick ---
+const subscribers = new Set<() => void>()
+let timerId: ReturnType<typeof setInterval> | null = null
+
+function subscribe(cb: () => void) {
+  subscribers.add(cb)
+  if (subscribers.size === 1) {
+    timerId = setInterval(() => {
+      for (const fn of subscribers) fn()
+    }, 1000)
+  }
+  return () => {
+    subscribers.delete(cb)
+    if (subscribers.size === 0 && timerId !== null) {
+      clearInterval(timerId)
+      timerId = null
+    }
+  }
+}
+
 function formatDuration(ms: number): string {
   if (ms <= 0) return 'Ended'
-
   const seconds = Math.floor(ms / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
-
   if (days > 0) return `${days}d ${hours % 24}h`
   if (hours > 0) return `${hours}h ${minutes % 60}m`
   if (minutes > 0) return `${minutes}m ${seconds % 60}s`
@@ -33,19 +51,18 @@ function getUrgency(ms: number): Urgency {
 }
 
 export function useCountdown(endTime: string | null): CountdownResult {
-  const [now, setNow] = useState(() => Date.now())
+  const [, forceRender] = useReducer((x: number) => x + 1, 0)
 
   useEffect(() => {
     if (!endTime) return
-    const interval = setInterval(() => setNow(Date.now()), 1000)
-    return () => clearInterval(interval)
+    return subscribe(forceRender)
   }, [endTime])
 
   if (!endTime) {
     return { timeLeft: '—', urgency: 'normal' }
   }
 
-  const ms = new Date(endTime).getTime() - now
+  const ms = new Date(endTime).getTime() - Date.now()
   return {
     timeLeft: formatDuration(ms),
     urgency: getUrgency(ms),

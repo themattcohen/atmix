@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { routeOk, routeError } from '@/lib/errors'
-import { getAll, getUnrankedPage } from '@/lib/db/items'
-import { getPriceDeltas, getHeatIndexBatch } from '@/lib/db/trends'
+import { getAll, getUnrankedPage, getStatusCounts } from '@/lib/db/items'
+import { getPriceDeltasForItems } from '@/lib/db/trends'
 import { getTargetCountsByItem } from '@/lib/db/targets'
 import type { ListingStatus, WatchlistItem } from '@/types'
 
@@ -40,10 +40,10 @@ export async function GET(request: NextRequest) {
       dir,
     })
 
-    // Build delta lookup map (one DB call, covers all returned items)
+    // Build delta lookup map (scoped to returned items only)
     const allReturnedIds = [...ranked.map(i => i.id), ...unranked.map(i => i.id)]
     const deltaMap = new Map<string, number | null>(
-      getPriceDeltas().map(d => [d.itemId, d.deltaPct])
+      getPriceDeltasForItems(allReturnedIds).map(d => [d.itemId, d.deltaPct])
     )
 
     // Annotate ranked with deltaPct
@@ -58,18 +58,22 @@ export async function GET(request: NextRequest) {
       deltaPct: deltaMap.get(item.id) ?? null,
     }))
 
-    // Status counts from full unfiltered set
-    const allForCounts = status === 'All' ? allFiltered : getAll()
-    const counts = {
-      active: allForCounts.filter((i) => i.status === 'Active').length,
-      sold:   allForCounts.filter((i) => i.status === 'Sold').length,
-      ended:  allForCounts.filter((i) => i.status === 'Ended').length,
-      total:  allForCounts.length,
-    }
+    // Status counts via lightweight aggregation (no full table scan)
+    const counts = getStatusCounts()
 
-    // Compute heat index for all returned items
-    const heatMap = getHeatIndexBatch(allReturnedIds)
-    const heatIndex = Object.fromEntries(heatMap)
+    // Heat index from cached columns (pre-computed during sync)
+    const heatIndex: Record<string, any> = {}
+    for (const item of [...annotatedRanked, ...annotatedUnranked]) {
+      if (item.heatScore != null) {
+        heatIndex[item.id] = {
+          itemId: item.id,
+          tier: item.heatTier,
+          score: item.heatScore,
+          watcherDelta: item.heatWatcherDelta,
+          watcherTrend: item.heatWatcherTrend,
+        }
+      }
+    }
 
     // Merge target counts onto items
     const targetCountsMap = getTargetCountsByItem(allReturnedIds)

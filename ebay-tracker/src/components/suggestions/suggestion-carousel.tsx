@@ -38,7 +38,7 @@ export function SuggestionCarousel({
       <button
         onClick={() => scroll('left')}
         aria-label="Scroll left"
-        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center bg-raised/80 border border-border rounded-full text-text-secondary hover:text-text-primary"
+        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-6 sm:h-6 flex items-center justify-center bg-raised/80 border border-border rounded-full text-text-secondary hover:text-text-primary"
       >
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -90,7 +90,7 @@ export function SuggestionCarousel({
       <button
         onClick={() => scroll('right')}
         aria-label="Scroll right"
-        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center bg-raised/80 border border-border rounded-full text-text-secondary hover:text-text-primary"
+        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-6 sm:h-6 flex items-center justify-center bg-raised/80 border border-border rounded-full text-text-secondary hover:text-text-primary"
       >
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

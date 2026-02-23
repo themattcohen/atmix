@@ -1,7 +1,9 @@
 'use client'
+import { memo } from 'react'
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { WatchlistItem, HeatIndex, CardSignal } from '@/types'
 import { useWatchlistStore } from '@/store/watchlist-store'
 import { useQueueToggle } from '@/hooks/use-queue-toggle'
@@ -20,7 +22,7 @@ interface StaticWatchlistRowProps {
   latestSignal?: CardSignal
 }
 
-export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlistRowProps) {
+function StaticWatchlistRowInner({ item, heat, latestSignal }: StaticWatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
   const queueMutation = useQueueToggle()
 
@@ -60,22 +62,20 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
       {/* Image */}
       {visibleColumns.image && (
         <td className="w-10 px-1 py-1.5">
-          {item.imageUrl ? (
-            <img
-              src={item.imageUrl}
-              alt=""
-              className="w-8 h-8 rounded object-cover bg-raised"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded bg-raised" />
-          )}
+          <Image
+            src={item.imageUrl || '/placeholder.png'}
+            alt={item.title}
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded object-cover bg-raised"
+            unoptimized
+          />
         </td>
       )}
 
       {/* Title */}
       {visibleColumns.title && (
-        <td className="px-2 py-1.5 max-w-[200px] lg:max-w-[300px]">
+        <td className="px-2 py-1.5 max-w-0">
           <Link
             href={`/items/${item.id}`}
             className="text-xs text-text-primary hover:text-accent truncate block"
@@ -104,9 +104,9 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
         </td>
       )}
 
-      {/* Delta */}
+      {/* Delta (hidden on mobile) */}
       {visibleColumns.delta && (
-        <td className="px-2 py-1.5">
+        <td className="hidden sm:table-cell px-2 py-1.5">
           {item.deltaPct != null && item.deltaPct !== 0 ? (
             <span className={`text-xs font-mono ${item.deltaPct < 0 ? 'text-status-active' : 'text-status-sold'}`}>
               {item.deltaPct < 0 ? '\u2193' : '\u2191'}{Math.abs(item.deltaPct).toFixed(1)}%
@@ -117,16 +117,16 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
         </td>
       )}
 
-      {/* Watchers */}
+      {/* Watchers (hidden on mobile) */}
       {visibleColumns.watchers && (
-        <td className="px-2 py-1.5">
+        <td className="hidden sm:table-cell px-2 py-1.5">
           <WatcherCell count={item.watcherCount} heat={heat} delta={heat?.watcherDelta ?? null} />
         </td>
       )}
 
-      {/* Bid count */}
+      {/* Bid count (hidden on mobile) */}
       {visibleColumns.bidCount && (
-        <td className="w-12 px-2 py-1.5 text-center">
+        <td className="hidden sm:table-cell w-12 px-2 py-1.5 text-center">
           <span className="text-xs font-mono text-text-primary">{item.bidCount}</span>
         </td>
       )}
@@ -145,9 +145,9 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
         </td>
       )}
 
-      {/* Signal */}
+      {/* Signal (hidden on mobile) */}
       {visibleColumns.signals && (
-        <td className="px-2 py-1.5">
+        <td className="hidden sm:table-cell px-2 py-1.5">
           {latestSignal ? (
             <SignalBadge signal={latestSignal} />
           ) : (
@@ -156,9 +156,9 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
         </td>
       )}
 
-      {/* Queue toggle */}
+      {/* Queue toggle (hidden on mobile) */}
       {visibleColumns.queue && (
-        <td className="w-8 px-1 py-1.5 text-center">
+        <td className="hidden sm:table-cell w-8 px-1 py-1.5 text-center">
           <button
             className={`text-sm transition-colors ${
               item.isInQueue ? 'text-urgency-caution' : 'text-text-secondary hover:text-urgency-caution'
@@ -174,3 +174,5 @@ export function StaticWatchlistRow({ item, heat, latestSignal }: StaticWatchlist
     </tr>
   )
 }
+
+export const StaticWatchlistRow = memo(StaticWatchlistRowInner)

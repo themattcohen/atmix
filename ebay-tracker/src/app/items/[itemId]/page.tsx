@@ -1,15 +1,13 @@
 'use client'
 import { useParams } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { useItemDetail } from '@/hooks/use-item-detail'
 import { useSignals } from '@/hooks/use-signals'
 import { TopBar } from '@/components/layout/top-bar'
 import { AppShell } from '@/components/layout/app-shell'
 import { ItemHeader } from '@/components/detail/item-header'
 import { ItemStatsGrid } from '@/components/detail/item-stats-grid'
-import { PriceChart } from '@/components/detail/price-chart'
-import { WatcherChart } from '@/components/detail/watcher-chart'
 import { ItemEvents } from '@/components/detail/item-events'
-import { OHLCChart } from '@/components/detail/ohlc-chart'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { TargetForm } from '@/components/items/target-form'
@@ -18,6 +16,30 @@ import { useItemMetadata } from '@/hooks/use-metadata'
 import { formatCents } from '@/lib/format'
 import { PageExplainer } from '@/components/ui/page-explainer'
 import { RelatedNews } from '@/components/detail/related-news'
+
+const PriceChart = dynamic(
+  () => import('@/components/detail/price-chart').then((mod) => mod.PriceChart),
+  {
+    ssr: false,
+    loading: () => <div className="h-[290px] animate-pulse bg-muted rounded-lg" />,
+  }
+)
+
+const WatcherChart = dynamic(
+  () => import('@/components/detail/watcher-chart').then((mod) => mod.WatcherChart),
+  {
+    ssr: false,
+    loading: () => <div className="h-[290px] animate-pulse bg-muted rounded-lg" />,
+  }
+)
+
+const OHLCChart = dynamic(
+  () => import('@/components/detail/ohlc-chart').then((mod) => mod.OHLCChart),
+  {
+    ssr: false,
+    loading: () => <div className="h-[340px] animate-pulse bg-muted rounded-lg" />,
+  }
+)
 
 export default function ItemDetailPage() {
   const params = useParams()

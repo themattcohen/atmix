@@ -1,7 +1,9 @@
 'use client'
+import { memo } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { WatchlistItem, SparklineSummary, HeatIndex, CardSignal } from '@/types'
 import { useWatchlistStore } from '@/store/watchlist-store'
 import { DragHandle } from './drag-handle'
@@ -24,7 +26,7 @@ interface WatchlistRowProps {
   watcherTrend?: number[]
 }
 
-export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading, heat, latestSignal, watcherTrend }: WatchlistRowProps) {
+function SortableWatchlistRowInner({ item, sparklineSummary, sparklinesLoading, heat, latestSignal, watcherTrend }: WatchlistRowProps) {
   const visibleColumns = useWatchlistStore((s) => s.visibleColumns)
   const queueMutation = useQueueToggle()
 
@@ -64,22 +66,20 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
       {/* Image */}
       {visibleColumns.image && (
         <td className="w-10 px-1 py-1.5">
-          {item.imageUrl ? (
-            <img
-              src={item.imageUrl}
-              alt=""
-              className="w-8 h-8 rounded object-cover bg-raised"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded bg-raised" />
-          )}
+          <Image
+            src={item.imageUrl || '/placeholder.png'}
+            alt={item.title}
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded object-cover bg-raised"
+            unoptimized
+          />
         </td>
       )}
 
       {/* Title */}
       {visibleColumns.title && (
-        <td className="px-2 py-1.5 max-w-[200px] lg:max-w-[300px]">
+        <td className="px-2 py-1.5 max-w-0">
           <Link
             href={`/items/${item.id}`}
             className="text-xs text-text-primary hover:text-accent truncate block"
@@ -108,9 +108,9 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
         </td>
       )}
 
-      {/* Delta — sparkline with price history + change % */}
+      {/* Delta — sparkline with price history + change % (hidden on mobile) */}
       {visibleColumns.delta && (
-        <td className="px-2 py-1.5">
+        <td className="hidden sm:table-cell px-2 py-1.5">
           <SparklineCell
             summary={sparklineSummary}
             isLoading={sparklinesLoading ?? false}
@@ -118,9 +118,9 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
         </td>
       )}
 
-      {/* Watchers */}
+      {/* Watchers (hidden on mobile) */}
       {visibleColumns.watchers && (
-        <td className="px-2 py-1.5">
+        <td className="hidden sm:table-cell px-2 py-1.5">
           <WatcherCell
             count={item.watcherCount}
             trend={watcherTrend}
@@ -130,9 +130,9 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
         </td>
       )}
 
-      {/* Bid count */}
+      {/* Bid count (hidden on mobile) */}
       {visibleColumns.bidCount && (
-        <td className="w-12 px-2 py-1.5 text-center">
+        <td className="hidden sm:table-cell w-12 px-2 py-1.5 text-center">
           <span className="text-xs font-mono text-text-primary">{item.bidCount}</span>
         </td>
       )}
@@ -151,9 +151,9 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
         </td>
       )}
 
-      {/* Signal */}
+      {/* Signal (hidden on mobile) */}
       {visibleColumns.signals && (
-        <td className="px-2 py-1.5">
+        <td className="hidden sm:table-cell px-2 py-1.5">
           {latestSignal ? (
             <SignalBadge signal={latestSignal} />
           ) : (
@@ -162,9 +162,9 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
         </td>
       )}
 
-      {/* Queue toggle */}
+      {/* Queue toggle (hidden on mobile) */}
       {visibleColumns.queue && (
-        <td className="w-8 px-1 py-1.5 text-center">
+        <td className="hidden sm:table-cell w-8 px-1 py-1.5 text-center">
           <button
             className={`text-sm transition-colors ${
               item.isInQueue ? 'text-urgency-caution' : 'text-text-secondary hover:text-urgency-caution'
@@ -180,3 +180,5 @@ export function SortableWatchlistRow({ item, sparklineSummary, sparklinesLoading
     </tr>
   )
 }
+
+export const SortableWatchlistRow = memo(SortableWatchlistRowInner)

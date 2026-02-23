@@ -1,13 +1,21 @@
 'use client'
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTrends } from '@/hooks/use-trends'
 import { TopBar } from '@/components/layout/top-bar'
 import { PortfolioStats } from '@/components/trends/portfolio-stats'
-import { PortfolioChart } from '@/components/trends/portfolio-chart'
 import { MoversTable } from '@/components/trends/movers-table'
 import { ErrorState } from '@/components/watchlist/error-state'
 import { PageExplainer } from '@/components/ui/page-explainer'
 import { Skeleton } from '@/components/ui/skeleton'
+
+const PortfolioChart = dynamic(
+  () => import('@/components/trends/portfolio-chart').then((mod) => mod.PortfolioChart),
+  {
+    ssr: false,
+    loading: () => <div className="h-[290px] animate-pulse bg-muted rounded-lg" />,
+  }
+)
 
 type Range = '7d' | '30d' | '90d'
 
