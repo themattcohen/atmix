@@ -208,6 +208,9 @@ export function TargetForm({ itemId }: TargetFormProps) {
       <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
         Price Targets
       </h3>
+      <p className="text-sm text-gray-500 mt-1">
+        Set price alerts for this card. Buy Below triggers when the price drops to your target. Sell Above triggers when it rises. Alerts are checked every time eBay data syncs (~15 min). Triggered alerts appear here with the actual price and date.
+      </p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <TargetInputRow

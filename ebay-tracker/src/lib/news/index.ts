@@ -16,7 +16,8 @@ import { parsePlayerFromTitle } from './matching/title-parser'
 import { matchPlayerName, invalidateFuseCache } from './matching/player-matcher'
 import { classifyEvent } from './scoring/event-classifier'
 import { calculateScore, DECAY_DAYS } from './scoring/score-calculator'
-import { insertIfNew, markProcessed, insertMention } from '../db/news'
+import { SIGNAL_CONFIG } from './signal-config'
+import { insertIfNew, markProcessed, insertMention, updateEventClassification } from '../db/news'
 import { insert as insertSignal } from '../db/signals'
 import { getUnmapped, upsert as upsertMapping } from '../db/card-mapping'
 import { getByPlayerId } from '../db/card-mapping'
@@ -246,8 +247,16 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
 
       markProcessed(newsId, usedAIFallback ? 4 : 1) // 4=ai_fallback, 1=matched
 
-      // 7. For each mentioned player, find their cards and generate signals
+      // 7. Classify the event and store on news_items regardless of card matches.
+      //    This ensures EVENT/SCORE/KEYWORD columns populate for all matched news,
+      //    not just items that happen to match a watchlist card.
       const classification = classifyEvent(raw.title, raw.body)
+      if (classification) {
+        const baseScore = SIGNAL_CONFIG[classification.eventType].baseScore
+        updateEventClassification(newsId, classification.eventType, baseScore, classification.matchedKeyword)
+      }
+
+      // 8. For each mentioned player, find their cards and generate signals
       if (!classification) continue
 
       for (const playerId of mentionedPlayerIds) {

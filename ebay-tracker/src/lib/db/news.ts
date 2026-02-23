@@ -60,6 +60,22 @@ export function markProcessed(id: number, status: number): void {
   }
 }
 
+export function updateEventClassification(
+  newsItemId: number,
+  eventType: string,
+  score: number,
+  keyword: string,
+): void {
+  const db = getDb()
+  try {
+    db.prepare(`
+      UPDATE news_items SET event_type = ?, event_score = ?, matched_keyword = ? WHERE id = ?
+    `).run(eventType, score, keyword, newsItemId)
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to update event classification: ${err.message}`)
+  }
+}
+
 export function insertMention(newsItemId: number, playerId: number, confidence: number): void {
   const db = getDb()
   try {
@@ -206,6 +222,11 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
       bindings.push(`%${params.playerSearch.toLowerCase()}%`)
     }
 
+    if (params.itemId !== undefined) {
+      conditions.push(`ni.id IN (SELECT cs.news_item_id FROM card_signals cs WHERE cs.item_id = ?)`)
+      bindings.push(params.itemId)
+    }
+
     const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
 
     // Count query
@@ -224,6 +245,7 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
       SELECT
         ni.id, ni.source, ni.title, ni.body, ni.url,
         ni.published_at, ni.fetched_at, ni.processed,
+        ni.event_type, ni.event_score, ni.matched_keyword,
         (SELECT GROUP_CONCAT(CAST(pr.id AS TEXT) || '|' || pr.full_name || '|'
           || CAST(ROUND(npm.confidence, 4) AS TEXT), ';;')
          FROM news_player_mentions npm
@@ -253,6 +275,9 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
       fetchedAt: row.fetched_at,
       processedStatus: toProcessedStatus(row.processed),
       extractionMethod: toExtractionMethod(row.processed),
+      eventType: row.event_type ?? null,
+      eventScore: row.event_score ?? null,
+      matchedKeyword: row.matched_keyword ?? null,
       mentions: parseMentions(row.mentions_raw),
       signals: parseSignals(row.signals_raw),
     }))
@@ -267,6 +292,7 @@ export const newsRepo: NewsRepo = {
   insertIfNew,
   markProcessed,
   insertMention,
+  updateEventClassification,
   getRecent,
   getDetailed,
 }

@@ -3,6 +3,7 @@ import { useParams } from 'next/navigation'
 import { useItemDetail } from '@/hooks/use-item-detail'
 import { useSignals } from '@/hooks/use-signals'
 import { TopBar } from '@/components/layout/top-bar'
+import { AppShell } from '@/components/layout/app-shell'
 import { ItemHeader } from '@/components/detail/item-header'
 import { ItemStatsGrid } from '@/components/detail/item-stats-grid'
 import { PriceChart } from '@/components/detail/price-chart'
@@ -16,6 +17,7 @@ import { useHistorySummary } from '@/hooks/use-history'
 import { useItemMetadata } from '@/hooks/use-metadata'
 import { formatCents } from '@/lib/format'
 import { PageExplainer } from '@/components/ui/page-explainer'
+import { RelatedNews } from '@/components/detail/related-news'
 
 export default function ItemDetailPage() {
   const params = useParams()
@@ -28,17 +30,33 @@ export default function ItemDetailPage() {
   return (
     <>
       <TopBar />
+      <AppShell>
       <div className="p-4 space-y-4" data-testid="item-detail-page">
         {isLoading ? (
           <div className="space-y-4">
-            <Skeleton className="h-16 w-full" />
+            {/* Header skeleton */}
+            <Skeleton className="h-20 w-full" />
+            {/* Target form skeleton */}
+            <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-3 w-full" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+              </div>
+            </div>
+            {/* Stats grid skeleton */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {[...Array(10)].map((_, i) => (
                 <Skeleton key={i} className="h-16 w-full" />
               ))}
             </div>
+            {/* Chart skeletons */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+            </div>
             <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-48 w-full" />
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center gap-3">
@@ -53,6 +71,7 @@ export default function ItemDetailPage() {
         ) : data ? (
           <>
             <ItemHeader item={data.item} />
+            <TargetForm itemId={data.item.id} />
             <PageExplainer text="Track price history with OHLC charts, monitor watcher trends, set buy/sell targets, and view listing events. Notes auto-save when you click away." />
             <ItemStatsGrid item={data.item} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -82,6 +101,7 @@ export default function ItemDetailPage() {
                 </div>
               </div>
             )}
+            <RelatedNews itemId={data.item.id} />
             {!metadataLoading && metadata === null && (
               <div className="rounded-lg bg-raised/50 border border-border px-4 py-2">
                 <p className="text-xs text-text-secondary">
@@ -90,10 +110,10 @@ export default function ItemDetailPage() {
               </div>
             )}
             <ItemEvents events={data.events} />
-            <TargetForm itemId={data.item.id} />
           </>
         ) : null}
       </div>
+      </AppShell>
     </>
   )
 }

@@ -205,6 +205,10 @@ export function BudgetResults({ result }: BudgetResultsProps) {
   const picksCount = result.picks.length
   const excludedCount = result.excluded.length
 
+  const allFixedPrice =
+    picksCount > 0 &&
+    result.picks.every((s) => s.item.listingType === 'FixedPrice')
+
   return (
     <div
       className="bg-surface border border-border rounded-lg"
@@ -247,6 +251,17 @@ export function BudgetResults({ result }: BudgetResultsProps) {
       {/* Content */}
       {tab === 'picks' ? (
         <div id="budget-picks-panel" role="tabpanel">
+          {allFixedPrice && (
+            <div
+              className="mx-3 mt-3 flex items-start gap-2 rounded border border-blue-200 bg-blue-50 px-3 py-2 dark:border-blue-800 dark:bg-blue-950/40"
+              role="note"
+            >
+              <span className="mt-0.5 shrink-0 text-blue-500 dark:text-blue-400" aria-hidden="true">ℹ</span>
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                All selected items are fixed-price listings — auction mode has no effect on these estimates.
+              </p>
+            </div>
+          )}
           <PicksTable picks={result.picks} />
         </div>
       ) : (

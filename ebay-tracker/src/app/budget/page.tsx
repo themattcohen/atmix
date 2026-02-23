@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { TopBar } from '@/components/layout/top-bar'
+import { AppShell } from '@/components/layout/app-shell'
 import { BudgetForm } from '@/components/budget/budget-form'
 import { BudgetSummary } from '@/components/budget/budget-summary'
 import { BudgetResults } from '@/components/budget/budget-results'
@@ -31,6 +32,7 @@ export default function BudgetPage() {
   return (
     <>
       <TopBar />
+      <AppShell>
       <div className="p-4 space-y-4" data-testid="budget-page">
         <BudgetForm />
 
@@ -95,6 +97,7 @@ export default function BudgetPage() {
           </>
         )}
       </div>
+      </AppShell>
     </>
   )
 }

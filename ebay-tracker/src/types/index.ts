@@ -500,6 +500,9 @@ export interface NewsItemDetail {
   fetchedAt: string
   processedStatus: NewsProcessedStatus
   extractionMethod: NewsExtractionMethod
+  eventType: NewsEventType | null
+  eventScore: number | null
+  matchedKeyword: string | null
   mentions: NewsItemMention[]
   signals: NewsItemSignalDetail[]
 }
@@ -515,6 +518,7 @@ export interface NewsDetailParams {
   source?: SourceName
   status?: NewsProcessedStatus
   playerSearch?: string
+  itemId?: string
   sortBy?: 'fetched_at' | 'source' | 'status' | 'mentions' | 'signals'
   sortDir?: 'asc' | 'desc'
 }
@@ -523,6 +527,7 @@ export interface NewsRepo {
   insertIfNew(item: RawNewsItem): { id: number; isNew: boolean }
   markProcessed(id: number, status: number): void
   insertMention(newsItemId: number, playerId: number, confidence: number): void
+  updateEventClassification(newsItemId: number, eventType: string, score: number, keyword: string): void
   getRecent(limit: number, source?: SourceName): NewsItem[]
   getDetailed(params: NewsDetailParams): NewsDetailPage
 }

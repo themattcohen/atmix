@@ -13,10 +13,11 @@ export async function GET(request: NextRequest) {
     const source = (params.get('source') as SourceName) ?? undefined
     const status = (params.get('status') as NewsProcessedStatus) ?? undefined
     const playerSearch = params.get('player') ?? undefined
+    const itemId = params.get('itemId') ?? undefined
     const sortBy = (params.get('sortBy') as 'fetched_at' | 'source' | 'status' | 'mentions' | 'signals') ?? undefined
     const sortDir = (params.get('sortDir') as 'asc' | 'desc') ?? undefined
 
-    const result = getDetailed({ limit, offset, source, status, playerSearch, sortBy, sortDir })
+    const result = getDetailed({ limit, offset, source, status, playerSearch, itemId, sortBy, sortDir })
 
     return routeOk(result)
   } catch (err) {

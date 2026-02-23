@@ -113,6 +113,10 @@ export function BudgetForm() {
             )
           })}
         </div>
+        <p className="text-xs text-text-secondary flex items-start gap-1 mt-1">
+          <span aria-hidden="true">ℹ</span>
+          <span>Auction mode adjusts estimated final price for Auction-type listings only. Fixed-price (Buy It Now) listings are unaffected.</span>
+        </p>
       </div>
     </div>
   )
