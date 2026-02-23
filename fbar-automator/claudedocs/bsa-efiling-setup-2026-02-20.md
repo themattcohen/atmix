@@ -1,7 +1,7 @@
 # BSA E-Filing Setup & FBAR Batch Testing
 
 **Date**: 2026-02-20
-**Status**: Sandbox test batch submitted, awaiting acknowledgment
+**Status**: Sandbox PASSED — awaiting production TCC (~03/06)
 **Phase**: D2C Phase 4 — FinCEN Pipeline
 
 ---
@@ -30,7 +30,7 @@
 | EIN | 883761328 |
 | PIN | 48623952 |
 | Account Email | matt@atmix.org |
-| TCC | *Not yet issued — requires passing sandbox test* |
+| TCC | *Pending — sandbox passed (T-FBX26-00000051, 26/26 accepted, 0 errors), awaiting issuance ~03/06* |
 
 ### Sandbox Site: bsaefiling-sandbox.fincen.gov
 

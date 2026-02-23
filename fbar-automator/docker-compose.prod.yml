@@ -221,6 +221,7 @@ services:
       - SDTM_REMOTE_DIR=${SDTM_REMOTE_DIR}
       - SDTM_SANDBOX_MODE=${SDTM_SANDBOX_MODE}
       - SDTM_HOST_KEY=${SDTM_HOST_KEY}
+      - CRON_SECRET=${CRON_SECRET}
       - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
       - SENTRY_DSN=${SENTRY_DSN}
       - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
@@ -270,6 +271,32 @@ services:
     networks:
       - backend
     restart: "no"
+
+  # ---------------------------------------------------------------------------
+  # D2C Cron — Lightweight cron to recover stuck filings (submit-paid + poll-submitted)
+  # ---------------------------------------------------------------------------
+  d2c-cron:
+    image: busybox:latest
+    command: >
+      sh -c 'echo "*/5 * * * * wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/submit-paid >> /proc/1/fd/1 2>&1 && wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/poll-submitted >> /proc/1/fd/1 2>&1" | crontab - && crond -f -l 2'
+    environment:
+      - CRON_SECRET=${CRON_SECRET}
+    depends_on:
+      d2c-app:
+        condition: service_healthy
+    networks:
+      - frontend
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 16M
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    restart: always
 
   # ---------------------------------------------------------------------------
   # PostgreSQL — Shared Database (fbar_automator + fbar_direct)

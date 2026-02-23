@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
+import { submitFiling } from "@/lib/fincen-submit";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
@@ -81,6 +82,23 @@ export async function POST(req: NextRequest) {
             stripePaymentId: session.payment_intent as string,
             stripeSessionId: session.id,
           },
+        });
+
+        // Trigger server-side FinCEN submission (fire-and-forget)
+        // Cron recovers if this fails or webhook times out
+        submitFiling(filingYearId, userId).then((submitResult) => {
+          if (!submitResult.success) {
+            console.error(
+              `[Webhook] FinCEN submission failed for filing ${filingYearId}:`,
+              submitResult.error
+            );
+          } else {
+            console.log(
+              `[Webhook] FinCEN submission initiated for filing ${filingYearId}, batchId: ${submitResult.batchId}`
+            );
+          }
+        }).catch((err) => {
+          console.error(`[Webhook] FinCEN submission error for filing ${filingYearId}:`, err);
         });
 
         // GA4 purchase event handled client-side on the confirmation page

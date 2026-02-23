@@ -176,12 +176,21 @@ function ConfirmationContent() {
   }, [status, sessionId, verifyStripeSession, loadFiling]);
 
   // Auto-submit after payment (once only)
+  // The Stripe webhook now submits server-side, so re-check status first
   useEffect(() => {
     if (status === "paid" && filing?.id && !hasSubmitted.current) {
       hasSubmitted.current = true;
-      setStatus("submitting");
 
-      const submit = async () => {
+      const checkAndSubmit = async () => {
+        // Re-check filing status — webhook may have already submitted server-side
+        const latestStatus = await loadFiling();
+        if (latestStatus && ["SUBMITTED", "ACCEPTED", "REJECTED", "SUBMITTING"].includes(latestStatus)) {
+          updateStatusFromFiling(latestStatus);
+          return;
+        }
+
+        // Still PAID — fall back to browser-initiated submission
+        setStatus("submitting");
         try {
           const res = await fetch("/api/sdtm/submit", {
             method: "POST",
@@ -193,13 +202,11 @@ function ConfirmationContent() {
             setStatus("submitted");
             await loadFiling();
           } else {
-            // Submission may have failed but could be idempotent
             const filingStatus = await loadFiling();
             if (filingStatus === "SUBMITTED" || filingStatus === "ACCEPTED") {
               updateStatusFromFiling(filingStatus);
             } else {
               console.error("Auto-submit failed, status:", res.status);
-              // Stay on paid status so user can retry
               setStatus("paid");
               hasSubmitted.current = false;
             }
@@ -210,7 +217,7 @@ function ConfirmationContent() {
           hasSubmitted.current = false;
         }
       };
-      submit();
+      checkAndSubmit();
     }
   }, [status, filing?.id, loadFiling]);
 
