@@ -509,6 +509,7 @@ export interface NewsItemDetail {
   eventType: NewsEventType | null
   eventScore: number | null
   matchedKeyword: string | null
+  classificationMethod: 'keyword' | 'ai' | null
   mentions: NewsItemMention[]
   signals: NewsItemSignalDetail[]
 }
@@ -533,7 +534,7 @@ export interface NewsRepo {
   insertIfNew(item: RawNewsItem): { id: number; isNew: boolean }
   markProcessed(id: number, status: number): void
   insertMention(newsItemId: number, playerId: number, confidence: number): void
-  updateEventClassification(newsItemId: number, eventType: string, score: number, keyword: string): void
+  updateEventClassification(newsItemId: number, eventType: string, score: number, keyword: string, method?: 'keyword' | 'ai'): void
   getRecent(limit: number, source?: SourceName): NewsItem[]
   getDetailed(params: NewsDetailParams): NewsDetailPage
 }

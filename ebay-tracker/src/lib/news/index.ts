@@ -14,7 +14,7 @@ import { fetchCBSSportsRSS } from './sources/cbs-sports-rss'
 import { fetchRotoBaller } from './sources/rotoballer-rss'
 import { parsePlayerFromTitle } from './matching/title-parser'
 import { matchPlayerName, invalidateFuseCache } from './matching/player-matcher'
-import { classifyEvent } from './scoring/event-classifier'
+import { classifyEvent, classifyEventAI } from './scoring/event-classifier'
 import { calculateScore, DECAY_DAYS } from './scoring/score-calculator'
 import { SIGNAL_CONFIG } from './signal-config'
 import { insertIfNew, markProcessed, insertMention, updateEventClassification } from '../db/news'
@@ -212,6 +212,7 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
       const regexNames = extractPlayerNames(raw.title, raw.body)
       let usedAIFallback = false
       const mentionedPlayerIds: number[] = []
+      const regexConfidences: number[] = []
 
       // 6a. Try matching regex results to roster
       for (const name of regexNames) {
@@ -219,10 +220,12 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
         if (!match) continue
         insertMention(newsId, match.player.id, match.confidence)
         mentionedPlayerIds.push(match.player.id)
+        regexConfidences.push(match.confidence)
       }
 
-      // 6b. AI fallback if regex produced no roster matches
-      if (mentionedPlayerIds.length === 0) {
+      // 6b. AI fallback if regex produced no matches OR low confidence
+      const maxRegexConfidence = Math.max(...regexConfidences, 0)
+      if (mentionedPlayerIds.length === 0 || maxRegexConfidence < 0.90) {
         const aiNames = await extractPlayerNamesAI(raw.title, raw.body)
         for (const name of aiNames) {
           let match = matchPlayerName(name)
@@ -250,10 +253,23 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
       // 7. Classify the event and store on news_items regardless of card matches.
       //    This ensures EVENT/SCORE/KEYWORD columns populate for all matched news,
       //    not just items that happen to match a watchlist card.
-      const classification = classifyEvent(raw.title, raw.body)
+      let classification = classifyEvent(raw.title, raw.body)
+      let classificationMethod: 'keyword' | 'ai' | undefined
+
+      if (classification) {
+        classificationMethod = 'keyword'
+      } else {
+        // AI fallback for event classification
+        classification = await classifyEventAI(raw.title, raw.body)
+        if (classification) {
+          classificationMethod = 'ai'
+          console.log(`[News] AI classified: ${classification.eventType} for "${raw.title.substring(0, 60)}"`)
+        }
+      }
+
       if (classification) {
         const baseScore = SIGNAL_CONFIG[classification.eventType].baseScore
-        updateEventClassification(newsId, classification.eventType, baseScore, classification.matchedKeyword)
+        updateEventClassification(newsId, classification.eventType, baseScore, classification.matchedKeyword, classificationMethod)
       }
 
       // 8. For each mentioned player, find their cards and generate signals

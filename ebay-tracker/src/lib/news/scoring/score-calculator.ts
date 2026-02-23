@@ -16,7 +16,7 @@ export function calculateScore(
     SCORING_FORMULA.matchWeight * matchConfidence
 
   return {
-    score: Math.round(baseScore),
+    score: Math.round(baseScore * composite),
     confidence: Math.round(composite * 100) / 100,
   }
 }

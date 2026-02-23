@@ -65,12 +65,13 @@ export function updateEventClassification(
   eventType: string,
   score: number,
   keyword: string,
+  method?: 'keyword' | 'ai',
 ): void {
   const db = getDb()
   try {
     db.prepare(`
-      UPDATE news_items SET event_type = ?, event_score = ?, matched_keyword = ? WHERE id = ?
-    `).run(eventType, score, keyword, newsItemId)
+      UPDATE news_items SET event_type = ?, event_score = ?, matched_keyword = ?, classification_method = ? WHERE id = ?
+    `).run(eventType, score, keyword, method ?? null, newsItemId)
   } catch (err: any) {
     throw new DatabaseError(`Failed to update event classification: ${err.message}`)
   }
@@ -245,7 +246,7 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
       SELECT
         ni.id, ni.source, ni.title, ni.body, ni.url,
         ni.published_at, ni.fetched_at, ni.processed,
-        ni.event_type, ni.event_score, ni.matched_keyword,
+        ni.event_type, ni.event_score, ni.matched_keyword, ni.classification_method,
         (SELECT GROUP_CONCAT(CAST(pr.id AS TEXT) || '|' || pr.full_name || '|'
           || CAST(ROUND(npm.confidence, 4) AS TEXT), ';;')
          FROM news_player_mentions npm
@@ -278,6 +279,7 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
       eventType: row.event_type ?? null,
       eventScore: row.event_score ?? null,
       matchedKeyword: row.matched_keyword ?? null,
+      classificationMethod: row.classification_method ?? null,
       mentions: parseMentions(row.mentions_raw),
       signals: parseSignals(row.signals_raw),
     }))

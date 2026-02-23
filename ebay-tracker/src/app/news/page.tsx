@@ -236,10 +236,23 @@ function getPrimarySignal(signals: NewsItemSignalDetail[]): NewsItemSignalDetail
 
 function getDecayLabel(signal: NewsItemSignalDetail | null): string {
   if (!signal) return '-'
-  const cfg = SIGNAL_CONFIG[signal.eventType]
-  if (!cfg) return '-'
-  if (cfg.decayDays === null) return 'perm'
-  return `${cfg.decayDays}d`
+  if (!signal.expiresAt) return 'perm'
+  const remaining = new Date(signal.expiresAt).getTime() - Date.now()
+  if (remaining <= 0) return 'expired'
+  const days = Math.ceil(remaining / (1000 * 60 * 60 * 24))
+  if (days >= 1) return `${days}d`
+  const hours = Math.ceil(remaining / (1000 * 60 * 60))
+  return `${hours}h`
+}
+
+function getDecayColor(signal: NewsItemSignalDetail | null): string {
+  if (!signal || !signal.expiresAt) return 'text-text-secondary'
+  const remaining = new Date(signal.expiresAt).getTime() - Date.now()
+  if (remaining <= 0) return 'text-text-secondary/50'
+  const days = remaining / (1000 * 60 * 60 * 24)
+  if (days > 7) return 'text-green-400'
+  if (days >= 1) return 'text-amber-400'
+  return 'text-red-400'
 }
 
 /* ------------------------------------------------------------------ */
@@ -366,64 +379,74 @@ export default function NewsPage() {
                   <tr>
                     {vis('fetchedAt') && (
                       <ResizableTh colKey="fetchedAt" className="px-2 py-2 text-left">
-                        <SortableHeader colKey="fetchedAt" label="Time" />
+                        <span title="When this article was ingested by the news pipeline">
+                          <SortableHeader colKey="fetchedAt" label="Time" />
+                        </span>
                       </ResizableTh>
                     )}
                     {vis('source') && (
                       <ResizableTh colKey="source" className="px-2 py-2 text-left">
-                        <SortableHeader colKey="source" label="Source" />
+                        <span title="RSS feed source. Confidence: MLB Txns 95%, RotoWire 85%, ESPN 85%, CBS 80%, RotoBaller 75%, Google 65%">
+                          <SortableHeader colKey="source" label="Source" />
+                        </span>
                       </ResizableTh>
                     )}
                     {vis('title') && (
                       <ResizableTh colKey="title" className="px-2 py-2 text-left">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Headline</span>
+                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide" title="Article headline. Click to open source URL">Headline</span>
                       </ResizableTh>
                     )}
                     {vis('status') && (
                       <ResizableTh colKey="status" className="px-2 py-2 text-left">
-                        <SortableHeader colKey="status" label="Status" />
+                        <span title="Processing result: matched, ai_fallback, no_match, pending">
+                          <SortableHeader colKey="status" label="Status" />
+                        </span>
                       </ResizableTh>
                     )}
                     {vis('method') && (
                       <ResizableTh colKey="method" className="px-2 py-2 text-left">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Method</span>
+                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide" title="How player was identified: regex or AI extraction">Method</span>
                       </ResizableTh>
                     )}
                     {vis('mentions') && (
                       <ResizableTh colKey="mentions" className="px-2 py-2 text-left">
-                        <SortableHeader colKey="mentions" label="Players" />
+                        <span title="Players mentioned matching your watchlist">
+                          <SortableHeader colKey="mentions" label="Players" />
+                        </span>
                       </ResizableTh>
                     )}
                     {vis('confidence') && (
                       <ResizableTh colKey="confidence" className="px-2 py-2 text-right">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Conf%</span>
+                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide" title="Composite: 40% source + 30% classification + 30% match">Conf%</span>
                       </ResizableTh>
                     )}
                     {vis('eventType') && (
                       <ResizableTh colKey="eventType" className="px-2 py-2 text-left">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Event</span>
+                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide" title="Classified event type. Determines base score and decay period">Event</span>
                       </ResizableTh>
                     )}
                     {vis('score') && (
                       <ResizableTh colKey="score" className="px-2 py-2 text-right">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Score</span>
+                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide" title="Base score × confidence. Range: -3 (season injury) to +2 (trade up)">Score</span>
                       </ResizableTh>
                     )}
                     {vis('keyword') && (
                       <ResizableTh colKey="keyword" className="px-2 py-2 text-left">
-                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide">Keyword</span>
+                        <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide" title="Phrase that triggered event classification">Keyword</span>
                       </ResizableTh>
                     )}
                     {vis('decay') && (
                       <ResizableTh colKey="decay" className="px-2 py-2 text-center">
-                        <Tooltip content="How long this signal type takes to expire. 14d/30d = days until full decay; perm = permanent.">
+                        <Tooltip content="Time until signal expires. 14d injuries/trades, 30d awards/contracts, perm retirement">
                           <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wide cursor-help">Decay</span>
                         </Tooltip>
                       </ResizableTh>
                     )}
                     {vis('signalCount') && (
                       <ResizableTh colKey="signalCount" className="px-2 py-2 text-right">
-                        <SortableHeader colKey="signalCount" label="Sig#" />
+                        <span title="Watchlist card signals generated from this article">
+                          <SortableHeader colKey="signalCount" label="Sig#" />
+                        </span>
                       </ResizableTh>
                     )}
                   </tr>
@@ -475,7 +498,7 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
     ? Math.max(...item.mentions.map((m) => m.confidence))
     : null
 
-  const eventCfg = primary ? SIGNAL_CONFIG[primary.eventType] : null
+  const eventCfg = primary ? SIGNAL_CONFIG[primary.eventType] : (item.eventType ? SIGNAL_CONFIG[item.eventType] : null)
 
   return (
     <tr className="border-b border-border/50 hover:bg-raised/50 transition-colors">
@@ -554,7 +577,14 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {/* Confidence */}
       {vis('confidence') && (
         <td className="px-2 py-1.5 text-right tabular-nums">
-          {highestConf !== null ? (
+          {primary ? (
+            <span
+              className={primary.confidence >= 0.8 ? 'text-green-400' : primary.confidence >= 0.6 ? 'text-amber-400' : 'text-red-400'}
+              title={`Composite: 40% source + 30% classification + 30% match`}
+            >
+              {Math.round(primary.confidence * 100)}%
+            </span>
+          ) : highestConf !== null ? (
             <span
               className={highestConf >= 0.8 ? 'text-green-400' : highestConf >= 0.65 ? 'text-amber-400' : 'text-red-400'}
               title="Match confidence — how certain the pipeline is that this headline refers to the detected player"
@@ -571,8 +601,13 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {vis('eventType') && (
         <td className="px-2 py-1.5">
           {eventCfg ? (
-            <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${eventCfg.bgColor} ${eventCfg.color}`}>
-              {eventCfg.label}
+            <span className="inline-flex items-center gap-1">
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${eventCfg.bgColor} ${eventCfg.color}`}>
+                {eventCfg.label}
+              </span>
+              {item.classificationMethod === 'ai' && (
+                <span className="px-1 py-0.5 rounded text-[9px] font-medium bg-violet-500/15 text-violet-400">AI</span>
+              )}
             </span>
           ) : (
             <span className="text-text-secondary">-</span>
@@ -584,8 +619,18 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {vis('score') && (
         <td className="px-2 py-1.5 text-right tabular-nums">
           {primary ? (
-            <span className={primary.score > 0 ? 'text-green-400' : primary.score < 0 ? 'text-red-400' : 'text-text-secondary'}>
+            <span
+              className={primary.score > 0 ? 'text-green-400' : primary.score < 0 ? 'text-red-400' : 'text-text-secondary'}
+              title={`Base: ${SIGNAL_CONFIG[primary.eventType]?.baseScore} × Conf: ${Math.round(primary.confidence * 100)}% = ${primary.score > 0 ? '+' : ''}${primary.score}`}
+            >
               {primary.score > 0 ? '+' : ''}{primary.score}
+            </span>
+          ) : item.eventScore !== null ? (
+            <span
+              className={item.eventScore > 0 ? 'text-green-400' : item.eventScore < 0 ? 'text-red-400' : 'text-text-secondary'}
+              title="Base score (no signal generated)"
+            >
+              {item.eventScore > 0 ? '+' : ''}{item.eventScore}
             </span>
           ) : (
             <span className="text-text-secondary">-</span>
@@ -598,6 +643,8 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
         <td className="px-2 py-1.5 max-w-[100px]">
           {primary?.matchedKeyword ? (
             <span className="text-text-secondary text-[10px] line-clamp-1">{primary.matchedKeyword}</span>
+          ) : item.matchedKeyword ? (
+            <span className="text-text-secondary text-[10px] line-clamp-1">{item.matchedKeyword}</span>
           ) : (
             <span className="text-text-secondary">-</span>
           )}
@@ -606,8 +653,13 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
 
       {/* Decay */}
       {vis('decay') && (
-        <td className="px-2 py-1.5 text-center text-text-secondary cursor-help">
-          {getDecayLabel(primary)}
+        <td className="px-2 py-1.5 text-center cursor-help">
+          <span
+            className={getDecayColor(primary)}
+            title={primary?.expiresAt ? `Expires: ${new Date(primary.expiresAt).toLocaleString()}` : primary ? 'Permanent — never expires' : ''}
+          >
+            {getDecayLabel(primary)}
+          </span>
         </td>
       )}
 
