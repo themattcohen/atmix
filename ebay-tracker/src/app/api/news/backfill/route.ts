@@ -95,18 +95,20 @@ export async function POST() {
 
     // Phase 2: generate signals for items that are classified + have card matches but no signals yet
     const missingSignals = db.prepare(`
-      SELECT DISTINCT ni.id, ni.title, ni.source, ni.event_type, ni.classification_confidence
+      SELECT DISTINCT ni.id, ni.title, ni.source, ni.event_type
       FROM news_items ni
       JOIN news_player_mentions npm ON npm.news_item_id = ni.id
       WHERE ni.event_type IS NOT NULL
-        AND ni.classification_confidence IS NOT NULL
         AND NOT EXISTS (
           SELECT 1 FROM card_signals cs WHERE cs.news_item_id = ni.id
         )
       ORDER BY ni.fetched_at DESC
-    `).all() as { id: number; title: string; source: string; event_type: string; classification_confidence: number }[]
+    `).all() as { id: number; title: string; source: string; event_type: string }[]
 
     for (const item of missingSignals) {
+      const eventCfg = SIGNAL_CONFIG[item.event_type as import('@/types').NewsEventType]
+      if (!eventCfg) continue
+
       const mentions = db.prepare(`
         SELECT npm.player_id, npm.confidence
         FROM news_player_mentions npm
@@ -117,10 +119,11 @@ export async function POST() {
         const cards = getByPlayerId(mention.player_id)
 
         for (const card of cards) {
+          // Use config confidence as proxy since original AI confidence isn't stored
           const { score, confidence } = calculateScore(
             item.event_type as import('@/types').NewsEventType,
             item.source as SourceName,
-            item.classification_confidence,
+            eventCfg.confidence,
             card.confidence
           )
 
