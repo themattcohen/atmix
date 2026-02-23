@@ -7,14 +7,17 @@ services:
       - "3005:3005"
     env_file:
       - .env
+    environment:
+      - DATABASE_PATH=/data/watchlist.db
+      - NODE_ENV=production
+      - PORT=3005
     volumes:
-      - watchlist-data:/data
+      - ./db:/data
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3005/api/items"]
       interval: 30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
+      start_period: 15s
 
-volumes:
-  watchlist-data:
-    driver: local
+volumes: {}
