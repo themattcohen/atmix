@@ -15,8 +15,11 @@ export function calculateScore(
     SCORING_FORMULA.classificationWeight * classificationConfidence +
     SCORING_FORMULA.matchWeight * matchConfidence
 
+  const raw = baseScore * composite
+  const score = raw === 0 ? 0 : (Math.abs(raw) < 0.5 ? Math.sign(raw) : Math.round(raw))
+
   return {
-    score: Math.round(baseScore * composite),
+    score,
     confidence: Math.round(composite * 100) / 100,
   }
 }

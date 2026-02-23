@@ -19,7 +19,6 @@ export async function POST() {
       WHERE ni.processed IN (1, 4)
         AND ni.event_type IS NULL
       ORDER BY ni.fetched_at DESC
-      LIMIT 200
     `).all() as { id: number; title: string; body: string | null; source: string }[]
 
     if (unclassified.length === 0) {
@@ -94,11 +93,72 @@ export async function POST() {
       }
     }
 
+    // Phase 2: generate signals for items that are classified + have card matches but no signals yet
+    const missingSignals = db.prepare(`
+      SELECT DISTINCT ni.id, ni.title, ni.source, ni.event_type, ni.classification_confidence
+      FROM news_items ni
+      JOIN news_player_mentions npm ON npm.news_item_id = ni.id
+      WHERE ni.event_type IS NOT NULL
+        AND ni.classification_confidence IS NOT NULL
+        AND NOT EXISTS (
+          SELECT 1 FROM card_signals cs WHERE cs.news_item_id = ni.id
+        )
+      ORDER BY ni.fetched_at DESC
+    `).all() as { id: number; title: string; source: string; event_type: string; classification_confidence: number }[]
+
+    for (const item of missingSignals) {
+      const mentions = db.prepare(`
+        SELECT npm.player_id, npm.confidence
+        FROM news_player_mentions npm
+        WHERE npm.news_item_id = ?
+      `).all(item.id) as { player_id: number; confidence: number }[]
+
+      for (const mention of mentions) {
+        const cards = getByPlayerId(mention.player_id)
+
+        for (const card of cards) {
+          const { score, confidence } = calculateScore(
+            item.event_type as import('@/types').NewsEventType,
+            item.source as SourceName,
+            item.classification_confidence,
+            card.confidence
+          )
+
+          if (score === 0) continue
+
+          const decayDays = DECAY_DAYS[item.event_type as import('@/types').NewsEventType]
+          const expiresAt = decayDays !== null
+            ? new Date(Date.now() + decayDays * 24 * 60 * 60 * 1000).toISOString()
+            : null
+
+          try {
+            insertSignal({
+              newsItemId: item.id,
+              itemId: card.itemId,
+              playerId: mention.player_id,
+              eventType: item.event_type as import('@/types').NewsEventType,
+              score,
+              confidence,
+              headline: item.title,
+              source: item.source as SourceName,
+              sourceUrl: null,
+              matchedKeyword: null,
+              expiresAt,
+            })
+            signalCount++
+          } catch {
+            // UNIQUE constraint violation — signal already exists for this news+card pair
+          }
+        }
+      }
+    }
+
     return NextResponse.json({
       classified: classifiedCount,
       signals: signalCount,
       total: unclassified.length,
-      message: `Backfilled ${classifiedCount}/${unclassified.length} items, generated ${signalCount} signals`
+      signalBackfill: missingSignals.length,
+      message: `Backfilled ${classifiedCount}/${unclassified.length} items, generated ${signalCount} signals (${missingSignals.length} items needed signal backfill)`
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)

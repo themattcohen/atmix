@@ -7,7 +7,7 @@ import { TopBar } from '@/components/layout/top-bar'
 import { NewsStatusBadge } from '@/components/news/news-status-badge'
 import { ErrorState } from '@/components/watchlist/error-state'
 import { useNewsStore, type NewsSortKey } from '@/store/news-store'
-import { SIGNAL_CONFIG } from '@/lib/news/signal-config'
+import { SIGNAL_CONFIG, SOURCE_CONFIG, SCORING_FORMULA } from '@/lib/news/signal-config'
 import { Tooltip } from '@/components/ui/tooltip'
 import { timeAgo } from '@/lib/utils'
 import { PageExplainer } from '@/components/ui/page-explainer'
@@ -256,6 +256,45 @@ function getDecayColor(signal: NewsItemSignalDetail | null): string {
 }
 
 /* ------------------------------------------------------------------ */
+/*  computeItemIntelligence                                            */
+/* ------------------------------------------------------------------ */
+
+interface ItemIntelligence {
+  composite: number
+  adjustedScore: number
+  decayDays: number | null
+  baseScore: number
+}
+
+function computeItemIntelligence(item: NewsItemDetail): ItemIntelligence | null {
+  if (!item.eventType) return null
+
+  const eventCfg = SIGNAL_CONFIG[item.eventType]
+  const sourceCfg = SOURCE_CONFIG[item.source]
+  if (!eventCfg || !sourceCfg) return null
+
+  const avgMatchConf = item.mentions.length > 0
+    ? item.mentions.reduce((sum, m) => sum + m.confidence, 0) / item.mentions.length
+    : 0
+
+  const composite =
+    SCORING_FORMULA.sourceWeight * sourceCfg.multiplier +
+    SCORING_FORMULA.classificationWeight * eventCfg.confidence +
+    SCORING_FORMULA.matchWeight * avgMatchConf
+
+  const adjustedScore = Math.round(eventCfg.baseScore * composite)
+
+  return {
+    composite: Math.round(composite * 100) / 100,
+    adjustedScore: adjustedScore === 0 && eventCfg.baseScore !== 0
+      ? Math.sign(eventCfg.baseScore)
+      : adjustedScore,
+    decayDays: eventCfg.decayDays,
+    baseScore: eventCfg.baseScore,
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  Main Page                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -499,6 +538,7 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
     : null
 
   const eventCfg = primary ? SIGNAL_CONFIG[primary.eventType] : (item.eventType ? SIGNAL_CONFIG[item.eventType] : null)
+  const computed = computeItemIntelligence(item)
 
   return (
     <tr className="border-b border-border/50 hover:bg-raised/50 transition-colors">
@@ -578,12 +618,21 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {vis('confidence') && (
         <td className="px-2 py-1.5 text-right tabular-nums">
           {primary ? (
-            <span
-              className={primary.confidence >= 0.8 ? 'text-green-400' : primary.confidence >= 0.6 ? 'text-amber-400' : 'text-red-400'}
-              title={`Composite: 40% source + 30% classification + 30% match`}
-            >
-              {Math.round(primary.confidence * 100)}%
-            </span>
+            <Tooltip content={`Source: ${Math.round(SOURCE_CONFIG[item.source].multiplier * 100)}% + Classification: ${Math.round((SIGNAL_CONFIG[primary.eventType]?.confidence ?? 0) * 100)}% + Match: ${Math.round(primary.confidence * 100)}% → ${Math.round(primary.confidence * 100)}%`}>
+              <span
+                className={primary.confidence >= 0.8 ? 'text-green-400' : primary.confidence >= 0.6 ? 'text-amber-400' : 'text-red-400'}
+              >
+                {Math.round(primary.confidence * 100)}%
+              </span>
+            </Tooltip>
+          ) : computed ? (
+            <Tooltip content={`Source: ${Math.round(SOURCE_CONFIG[item.source].multiplier * 100)}% + Classification: ${Math.round((SIGNAL_CONFIG[item.eventType!].confidence) * 100)}% + Match: ${Math.round((item.mentions.length > 0 ? item.mentions.reduce((s, m) => s + m.confidence, 0) / item.mentions.length : 0) * 100)}% → ${Math.round(computed.composite * 100)}%`}>
+              <span
+                className={computed.composite >= 0.8 ? 'text-green-400' : computed.composite >= 0.6 ? 'text-amber-400' : 'text-red-400'}
+              >
+                {Math.round(computed.composite * 100)}%
+              </span>
+            </Tooltip>
           ) : highestConf !== null ? (
             <span
               className={highestConf >= 0.8 ? 'text-green-400' : highestConf >= 0.65 ? 'text-amber-400' : 'text-red-400'}
@@ -619,12 +668,21 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {vis('score') && (
         <td className="px-2 py-1.5 text-right tabular-nums">
           {primary ? (
-            <span
-              className={primary.score > 0 ? 'text-green-400' : primary.score < 0 ? 'text-red-400' : 'text-text-secondary'}
-              title={`Base: ${SIGNAL_CONFIG[primary.eventType]?.baseScore} × Conf: ${Math.round(primary.confidence * 100)}% = ${primary.score > 0 ? '+' : ''}${primary.score}`}
-            >
-              {primary.score > 0 ? '+' : ''}{primary.score}
-            </span>
+            <Tooltip content={`Base: ${SIGNAL_CONFIG[primary.eventType]?.baseScore} × Composite: ${Math.round(primary.confidence * 100)}% = ${primary.score > 0 ? '+' : ''}${primary.score}`}>
+              <span
+                className={primary.score > 0 ? 'text-green-400' : primary.score < 0 ? 'text-red-400' : 'text-text-secondary'}
+              >
+                {primary.score > 0 ? '+' : ''}{primary.score}
+              </span>
+            </Tooltip>
+          ) : computed ? (
+            <Tooltip content={`Base: ${computed.baseScore} × Composite: ${Math.round(computed.composite * 100)}% = ${computed.adjustedScore > 0 ? '+' : ''}${computed.adjustedScore}`}>
+              <span
+                className={computed.adjustedScore > 0 ? 'text-green-400' : computed.adjustedScore < 0 ? 'text-red-400' : 'text-text-secondary'}
+              >
+                {computed.adjustedScore > 0 ? '+' : ''}{computed.adjustedScore}
+              </span>
+            </Tooltip>
           ) : item.eventScore !== null ? (
             <span
               className={item.eventScore > 0 ? 'text-green-400' : item.eventScore < 0 ? 'text-red-400' : 'text-text-secondary'}
@@ -654,12 +712,23 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
       {/* Decay */}
       {vis('decay') && (
         <td className="px-2 py-1.5 text-center cursor-help">
-          <span
-            className={getDecayColor(primary)}
-            title={primary?.expiresAt ? `Expires: ${new Date(primary.expiresAt).toLocaleString()}` : primary ? 'Permanent — never expires' : ''}
-          >
-            {getDecayLabel(primary)}
-          </span>
+          {primary ? (
+            <span
+              className={getDecayColor(primary)}
+              title={primary.expiresAt ? `Expires: ${new Date(primary.expiresAt).toLocaleString()}` : 'Permanent — never expires'}
+            >
+              {getDecayLabel(primary)}
+            </span>
+          ) : computed ? (
+            <span
+              className="text-text-secondary"
+              title={`Config decay for ${item.eventType}: ${computed.decayDays === null ? 'permanent' : `${computed.decayDays} days`} (no signal generated yet)`}
+            >
+              {computed.decayDays === null ? 'perm' : `${computed.decayDays}d`}
+            </span>
+          ) : (
+            <span className="text-text-secondary">-</span>
+          )}
         </td>
       )}
 
@@ -668,8 +737,14 @@ function NewsRow({ item, vis }: { item: NewsItemDetail; vis: (col: string) => bo
         <td className="px-2 py-1.5 text-right tabular-nums">
           {item.signals.length > 0 ? (
             <span className="text-amber-400">{item.signals.length}</span>
+          ) : item.eventType ? (
+            <Tooltip content="No watchlist cards for mentioned players">
+              <span className="text-text-secondary cursor-help">0</span>
+            </Tooltip>
           ) : (
-            <span className="text-text-secondary">0</span>
+            <Tooltip content="Unclassified — no event detected">
+              <span className="text-text-secondary cursor-help">0</span>
+            </Tooltip>
           )}
         </td>
       )}
