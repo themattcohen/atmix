@@ -10,6 +10,8 @@ import { fetchMLBTransactions } from './sources/mlb-transactions'
 import { fetchRotoWireRSS } from './sources/rotowire-rss'
 import { fetchGoogleNewsRSS } from './sources/google-news-rss'
 import { fetchESPNRSS } from './sources/espn-rss'
+import { fetchCBSSportsRSS } from './sources/cbs-sports-rss'
+import { fetchRotoBaller } from './sources/rotoballer-rss'
 import { parsePlayerFromTitle } from './matching/title-parser'
 import { matchPlayerName, invalidateFuseCache } from './matching/player-matcher'
 import { classifyEvent } from './scoring/event-classifier'
@@ -26,6 +28,8 @@ const SOURCE_FETCHERS: Record<SourceName, () => Promise<import('../../types').Ra
   rotowire_rss: fetchRotoWireRSS,
   google_news_rss: fetchGoogleNewsRSS,
   espn_rss: fetchESPNRSS,
+  cbs_sports_rss: fetchCBSSportsRSS,
+  rotoballer_rss: fetchRotoBaller,
 }
 
 export function loadSkipRules(): Set<string> {

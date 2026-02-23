@@ -21,6 +21,8 @@ const sourceOptions: { value: SourceName | ''; label: string }[] = [
   { value: 'mlb_transactions', label: 'MLB Transactions' },
   { value: 'google_news_rss', label: 'Google News' },
   { value: 'espn_rss', label: 'ESPN' },
+  { value: 'cbs_sports_rss', label: 'CBS Sports' },
+  { value: 'rotoballer_rss', label: 'RotoBaller' },
 ]
 
 const statusOptions: { value: NewsProcessedStatus | ''; label: string }[] = [
@@ -36,6 +38,8 @@ const sourceLabels: Record<SourceName, string> = {
   mlb_transactions: 'MLB',
   google_news_rss: 'Google',
   espn_rss: 'ESPN',
+  cbs_sports_rss: 'CBS',
+  rotoballer_rss: 'Roto',
 }
 
 const sourceColors: Record<SourceName, string> = {
@@ -43,6 +47,8 @@ const sourceColors: Record<SourceName, string> = {
   mlb_transactions: 'bg-blue-500/15 text-blue-400',
   google_news_rss: 'bg-orange-500/15 text-orange-400',
   espn_rss: 'bg-red-500/15 text-red-400',
+  cbs_sports_rss: 'bg-purple-500/15 text-purple-400',
+  rotoballer_rss: 'bg-teal-500/15 text-teal-400',
 }
 
 const columnLabels: Record<string, string> = {

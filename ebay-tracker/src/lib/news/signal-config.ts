@@ -337,6 +337,16 @@ export const SOURCE_CONFIG: Record<SourceName, SignalSourceConfig> = {
     multiplier: 0.65,
     reliability: 'Moderate',
   },
+  cbs_sports_rss: {
+    label: 'CBS Sports RSS',
+    multiplier: 0.80,
+    reliability: 'High',
+  },
+  rotoballer_rss: {
+    label: 'RotoBaller RSS',
+    multiplier: 0.75,
+    reliability: 'Moderate-High',
+  },
 }
 
 export const SCORING_FORMULA = {

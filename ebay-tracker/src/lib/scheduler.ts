@@ -55,6 +55,24 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   })
 
+  // RotoBaller RSS: every 30 min, 14-min offset
+  cron.schedule('14,44 * * * *', async () => {
+    try {
+      await runSourceIngestion('rotoballer_rss')
+    } catch (err) {
+      console.error('RotoBaller RSS ingestion failed:', err)
+    }
+  })
+
+  // CBS Sports RSS: every 30 min, 10-min offset
+  cron.schedule('10,40 * * * *', async () => {
+    try {
+      await runSourceIngestion('cbs_sports_rss')
+    } catch (err) {
+      console.error('CBS Sports RSS ingestion failed:', err)
+    }
+  })
+
   // Roster sync: weekly Monday 2am
   cron.schedule('0 2 * * 1', async () => {
     console.log('Weekly roster sync starting...')
@@ -86,7 +104,7 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   }, { timezone: 'UTC' })
 
-  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), Roster(weekly), Cleanup(daily), RegexImprove(daily)')
+  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), CBS(30m), RotoBaller(30m), Roster(weekly), Cleanup(daily), RegexImprove(daily)')
 
   // --- eBay sync crons (require credentials) ---
 
