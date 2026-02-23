@@ -103,18 +103,13 @@ function mockFetchNetworkError() {
 
 afterEach(async () => {
   vi.resetAllMocks();
-  // Clean up any ExchangeRate records created during tests
-  await prisma.exchangeRate.deleteMany({
-    where: {
-      OR: [
-        { currencyCode: "EUR" },
-        { currencyCode: "JPY" },
-        { currencyCode: "GBP" },
-        { currencyCode: "INVALID" },
-        { currencyCode: "CHF" },
-      ],
-    },
+  // Re-establish fetch mock after resetAllMocks so no test accidentally hits the network
+  mockFetch.mockResolvedValue({
+    ok: true,
+    json: async () => makeTreasuryApiResponse([]),
   });
+  // Clean up ALL ExchangeRate records (real treasury module may sync many currencies)
+  await prisma.exchangeRate.deleteMany({});
 });
 
 afterAll(async () => {
@@ -129,46 +124,44 @@ describe("P4-1: getRate — exchange rate lookup", () => {
   // to look up exchange rates from the Treasury API or cached DB records.
 
   it("P4-1: getRate('EUR', 2024) returns a numeric rate", async () => {
-    // Seed an exchange rate in the DB so getRate can find it
-    await prisma.exchangeRate.create({
-      data: {
+    // Seed an exchange rate in the DB so getRate can find it (upsert to handle any leftover data)
+    await prisma.exchangeRate.upsert({
+      where: {
+        currencyCode_recordDate_source: {
+          currencyCode: "EUR",
+          recordDate: new Date("2024-12-31"),
+          source: "TREASURY",
+        },
+      },
+      create: {
         currencyCode: "EUR",
         countryName: "Euro Zone",
         rate: 1.1,
         recordDate: new Date("2024-12-31"),
         source: "TREASURY",
       },
+      update: {
+        rate: 1.1,
+        countryName: "Euro Zone",
+      },
     });
 
     const result = await getRate("EUR", 2024);
 
-    // IMPLEMENTATION NEEDED: Once P4-1 replaces the stub, this should return
-    // a RateLookupResult with a numeric rate.
-    // Current stub returns null — these assertions document the expected contract.
-    if (result !== null) {
-      expect(typeof result.rate).toBe("number");
-      expect(result.rate).toBeGreaterThan(0);
-      expect(result.source).toBeDefined();
-      expect(result.recordDate).toBeInstanceOf(Date);
-    } else {
-      // Stub behavior: skip assertion but mark test as pending intent
-      expect(result).toBeNull(); // Expected from stub
-    }
+    expect(result).not.toBeNull();
+    expect(typeof result!.rate).toBe("number");
+    expect(result!.rate).toBeGreaterThan(0);
+    expect(result!.source).toBeDefined();
+    expect(result!.recordDate).toBeInstanceOf(Date);
   });
 
   it("P4-1: getRate('USD', 2024) returns rate of 1.0 (identity)", async () => {
     const result = await getRate("USD", 2024);
 
-    // IMPLEMENTATION NEEDED: USD should always return 1.0 without API call.
-    // The implementation must handle USD as a special case.
-    if (result !== null) {
-      expect(result.rate).toBe(1.0);
-      // No fetch should be needed for USD
-      expect(mockFetch).not.toHaveBeenCalled();
-    } else {
-      // Stub behavior
-      expect(result).toBeNull();
-    }
+    expect(result).not.toBeNull();
+    expect(result!.rate).toBe(1.0);
+    // No fetch should be needed for USD
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it("P4-1: getRate('INVALID', 2024) returns null for unknown currency", async () => {
@@ -180,14 +173,25 @@ describe("P4-1: getRate — exchange rate lookup", () => {
   });
 
   it("P4-1: getRate returns DB-cached rate when Treasury API is unreachable", async () => {
-    // Pre-seed a cached rate in the ExchangeRate table
-    await prisma.exchangeRate.create({
-      data: {
+    // Pre-seed a cached rate in the ExchangeRate table (upsert to handle any leftover data)
+    await prisma.exchangeRate.upsert({
+      where: {
+        currencyCode_recordDate_source: {
+          currencyCode: "GBP",
+          recordDate: new Date("2024-12-31"),
+          source: "TREASURY",
+        },
+      },
+      create: {
         currencyCode: "GBP",
         countryName: "United Kingdom",
         rate: 1.27,
         recordDate: new Date("2024-12-31"),
         source: "TREASURY",
+      },
+      update: {
+        rate: 1.27,
+        countryName: "United Kingdom",
       },
     });
 
@@ -196,15 +200,9 @@ describe("P4-1: getRate — exchange rate lookup", () => {
 
     const result = await getRate("GBP", 2024);
 
-    // IMPLEMENTATION NEEDED: P4-1 must fall back to DB when fetch fails.
-    // When the fallback is implemented, result should come from DB.
-    if (result !== null) {
-      expect(result.rate).toBeCloseTo(1.27, 2);
-      expect(result.source).toBeDefined();
-    } else {
-      // Stub behavior — will pass once P4-1 is implemented
-      expect(result).toBeNull();
-    }
+    expect(result).not.toBeNull();
+    expect(result!.rate).toBeCloseTo(1.27, 2);
+    expect(result!.source).toBeDefined();
   });
 });
 
@@ -213,14 +211,25 @@ describe("P4-1: getRate — caching behavior", () => {
   // Calling getRate twice with the same params should only trigger one API call.
 
   it("P4-1: calling getRate twice with same params makes only 1 API call", async () => {
-    // Seed DB with rate so the implementation has data to return
-    await prisma.exchangeRate.create({
-      data: {
+    // Seed DB with rate so the implementation has data to return (upsert to handle any leftover data)
+    await prisma.exchangeRate.upsert({
+      where: {
+        currencyCode_recordDate_source: {
+          currencyCode: "CHF",
+          recordDate: new Date("2024-12-31"),
+          source: "TREASURY",
+        },
+      },
+      create: {
         currencyCode: "CHF",
         countryName: "Switzerland",
         rate: 1.13,
         recordDate: new Date("2024-12-31"),
         source: "TREASURY",
+      },
+      update: {
+        rate: 1.13,
+        countryName: "Switzerland",
       },
     });
 
@@ -269,24 +278,18 @@ describe("P4-1: fetchTreasuryRates — API fetch", () => {
 
     const rates = await fetchTreasuryRates(2024);
 
-    // IMPLEMENTATION NEEDED: Current stub returns []. Once implemented:
-    if (rates.length > 0) {
-      expect(rates).toHaveLength(3);
+    expect(rates).toHaveLength(3);
 
-      // Verify TreasuryRate shape
-      for (const rate of rates) {
-        expect(rate).toHaveProperty("currencyCode");
-        expect(rate).toHaveProperty("countryName");
-        expect(rate).toHaveProperty("rate");
-        expect(rate).toHaveProperty("recordDate");
-        expect(typeof rate.currencyCode).toBe("string");
-        expect(typeof rate.countryName).toBe("string");
-        expect(typeof rate.rate).toBe("number");
-        expect(rate.recordDate).toBeInstanceOf(Date);
-      }
-    } else {
-      // Stub behavior
-      expect(rates).toEqual([]);
+    // Verify TreasuryRate shape
+    for (const rate of rates) {
+      expect(rate).toHaveProperty("currencyCode");
+      expect(rate).toHaveProperty("countryName");
+      expect(rate).toHaveProperty("rate");
+      expect(rate).toHaveProperty("recordDate");
+      expect(typeof rate.currencyCode).toBe("string");
+      expect(typeof rate.countryName).toBe("string");
+      expect(typeof rate.rate).toBe("number");
+      expect(rate.recordDate).toBeInstanceOf(Date);
     }
   });
 
@@ -344,27 +347,21 @@ describe("P4-1: syncTreasuryRates — DB upsert", () => {
 
     const count = await syncTreasuryRates(2024);
 
-    // IMPLEMENTATION NEEDED: Current stub returns 0. Once implemented:
-    if (count > 0) {
-      expect(count).toBe(2);
+    expect(count).toBe(2);
 
-      // Verify records exist in DB
-      const eurRate = await prisma.exchangeRate.findFirst({
-        where: { currencyCode: "EUR" },
-      });
-      expect(eurRate).not.toBeNull();
-      expect(Number(eurRate!.rate)).toBeCloseTo(1.1, 2);
-      expect(eurRate!.source).toBe("TREASURY");
+    // Verify records exist in DB
+    const eurRate = await prisma.exchangeRate.findFirst({
+      where: { currencyCode: "EUR" },
+    });
+    expect(eurRate).not.toBeNull();
+    expect(Number(eurRate!.rate)).toBeCloseTo(1.1, 2);
+    expect(eurRate!.source).toBe("TREASURY");
 
-      const jpyRate = await prisma.exchangeRate.findFirst({
-        where: { currencyCode: "JPY" },
-      });
-      expect(jpyRate).not.toBeNull();
-      expect(Number(jpyRate!.rate)).toBeCloseTo(0.007, 4);
-    } else {
-      // Stub behavior
-      expect(count).toBe(0);
-    }
+    const jpyRate = await prisma.exchangeRate.findFirst({
+      where: { currencyCode: "JPY" },
+    });
+    expect(jpyRate).not.toBeNull();
+    expect(Number(jpyRate!.rate)).toBeCloseTo(0.007, 4);
   });
 
   it("P4-1: syncTreasuryRates upserts (does not duplicate) on repeated calls", async () => {
@@ -409,50 +406,60 @@ describe("P4-1: getRatesForYear — DB query", () => {
   // ExchangeRate table for all rates for a given year.
 
   it("P4-1: getRatesForYear(2024) returns all rates for that year from DB", async () => {
-    // Seed multiple rates
-    await prisma.exchangeRate.createMany({
-      data: [
-        {
-          currencyCode: "EUR",
-          countryName: "Euro Zone",
-          rate: 1.1,
-          recordDate: new Date("2024-12-31"),
-          source: "TREASURY",
+    // Ensure fetch returns empty so auto-sync doesn't pull extra currencies
+    mockFetchSuccess([]);
+
+    // Seed multiple rates (upsert to handle any leftover data)
+    for (const data of [
+      {
+        currencyCode: "EUR",
+        countryName: "Euro Zone",
+        rate: 1.1,
+        recordDate: new Date("2024-12-31"),
+        source: "TREASURY" as const,
+      },
+      {
+        currencyCode: "JPY",
+        countryName: "Japan",
+        rate: 0.007,
+        recordDate: new Date("2024-12-31"),
+        source: "TREASURY" as const,
+      },
+    ]) {
+      await prisma.exchangeRate.upsert({
+        where: {
+          currencyCode_recordDate_source: {
+            currencyCode: data.currencyCode,
+            recordDate: data.recordDate,
+            source: data.source,
+          },
         },
-        {
-          currencyCode: "JPY",
-          countryName: "Japan",
-          rate: 0.007,
-          recordDate: new Date("2024-12-31"),
-          source: "TREASURY",
-        },
-      ],
-    });
+        create: data,
+        update: { rate: data.rate, countryName: data.countryName },
+      });
+    }
 
     const rates = await getRatesForYear(2024);
 
-    // IMPLEMENTATION NEEDED: Current stub returns []. Once implemented:
-    if (rates.length > 0) {
-      expect(rates).toHaveLength(2);
+    expect(rates).toHaveLength(2);
 
-      for (const rate of rates) {
-        expect(rate).toHaveProperty("currencyCode");
-        expect(rate).toHaveProperty("countryName");
-        expect(rate).toHaveProperty("rate");
-        expect(rate).toHaveProperty("recordDate");
-        expect(rate).toHaveProperty("source");
-        expect(typeof rate.rate).toBe("number");
-      }
-
-      const codes = rates.map((r) => r.currencyCode).sort();
-      expect(codes).toEqual(["EUR", "JPY"]);
-    } else {
-      // Stub behavior
-      expect(rates).toEqual([]);
+    for (const rate of rates) {
+      expect(rate).toHaveProperty("currencyCode");
+      expect(rate).toHaveProperty("countryName");
+      expect(rate).toHaveProperty("rate");
+      expect(rate).toHaveProperty("recordDate");
+      expect(rate).toHaveProperty("source");
+      expect(typeof rate.rate).toBe("number");
     }
+
+    const codes = rates.map((r) => r.currencyCode).sort();
+    expect(codes).toEqual(["EUR", "JPY"]);
   });
 
   it("P4-1: getRatesForYear returns empty array when no rates exist for that year", async () => {
+    // Ensure auto-sync returns nothing from the API
+    mockFetchSuccess([]);
+
     const rates = await getRatesForYear(1999);
 
     expect(rates).toEqual([]);

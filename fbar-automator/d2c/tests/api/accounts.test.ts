@@ -5,6 +5,12 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
+// Mock treasury so non-USD accounts get null rates (tests focus on account CRUD, not treasury integration)
+vi.mock("@/lib/treasury", () => ({
+  getRate: vi.fn().mockResolvedValue(null),
+  getRatesForYear: vi.fn().mockResolvedValue([]),
+}));
+
 import { GET, POST } from "@/app/api/accounts/route";
 import { PUT, DELETE } from "@/app/api/accounts/[accountId]/route";
 import { NextRequest } from "next/server";

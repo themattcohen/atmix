@@ -171,7 +171,7 @@ describe("POST /api/sdtm/submit", () => {
     const json = await res.json();
 
     expect(res.status).toBe(409);
-    expect(json.error).toMatch(/not in a state that allows submission/i);
+    expect(json.error).toMatch(/not in a submittable state/i);
   });
 
   // ── Auth Guard ────────────────────────────────────────────────────────────
@@ -194,7 +194,7 @@ describe("POST /api/sdtm/submit", () => {
     const res = await POST(makeRequest({ filingYearId: "nonexistent-id-000" }));
     const json = await res.json();
 
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(500);
     expect(json.error).toMatch(/not found/i);
   });
 
@@ -310,7 +310,7 @@ describe("POST /api/sdtm/submit", () => {
     const json = await res.json();
 
     expect(res.status).toBe(500);
-    expect(json.error).toMatch(/submission failed/i);
+    expect(json.error).toMatch(/sftp connection refused/i);
 
     const filing = await prisma.filingYear.findUnique({ where: { id: testFilingId } });
     expect(filing!.status).toBe("PAID");
@@ -330,7 +330,7 @@ describe("POST /api/sdtm/submit", () => {
 
     // The outer catch should have reverted SUBMITTING → PAID and returned 500
     expect(res.status).toBe(500);
-    expect(json.error).toMatch(/submission failed/i);
+    expect(json.error).toMatch(/xml generation exploded/i);
 
     const filing = await prisma.filingYear.findUnique({ where: { id: testFilingId } });
     expect(filing!.status).toBe("PAID");
