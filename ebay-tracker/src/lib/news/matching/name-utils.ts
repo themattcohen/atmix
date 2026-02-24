@@ -59,27 +59,63 @@ export function extractLastName(fullName: string): string {
   return parts[parts.length - 1] || cleaned
 }
 
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&#0?39;|&#x27;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+}
+
+const SKIP_PHRASES = /^(New York|Los Angeles|San Francisco|San Diego|Kansas City|St Louis|Spring Training|World Series|All Star|National League|American League|Green Bay|Tampa Bay|New England|Las Vegas|New Orleans|San Antonio)$/i
+
 /**
- * Extract player names from news text using capitalized name patterns.
- * Moved from index.ts — same logic, now reusable.
+ * Extract player names from news text using sliding-window approach.
+ * 1. Extract individual capitalized tokens (handles initials, apostrophes, hyphens)
+ * 2. Generate all 2-word and 3-word sliding windows of adjacent tokens
+ * This ensures "Michael Kopech" is always extracted even inside
+ * "After Michael Kopech Lands on IL".
  */
 export function extractPlayerNames(
   title: string,
   body: string | null,
   skipPhrases?: Set<string>,
 ): string[] {
-  const text = `${title} ${body || ''}`
-  const namePattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b/g
-  const names: string[] = []
-  let match: RegExpExecArray | null
-  const SKIP_PHRASES = /^(New York|Los Angeles|San Francisco|San Diego|Kansas City|St Louis|Spring Training|World Series|All Star|National League|American League)$/i
-  while ((match = namePattern.exec(text)) !== null) {
-    const name = match[1]
-    if (SKIP_PHRASES.test(name)) continue
-    if (skipPhrases?.has(name.toLowerCase())) continue
-    names.push(name)
+  const text = decodeHtmlEntities(`${title} ${body || ''}`)
+
+  // Step 1: Extract individual capitalized tokens with positions
+  const tokenPattern = /[A-Z](?:\.[A-Z]\.?|[a-z]*'[A-Za-z][a-z]*|[a-z]+-[A-Z][a-z]+|[a-z]+)/g
+  const tokens: { word: string; index: number; end: number }[] = []
+  let m: RegExpExecArray | null
+  while ((m = tokenPattern.exec(text)) !== null) {
+    tokens.push({ word: m[0], index: m.index, end: m.index + m[0].length })
   }
-  return [...new Set(names)]
+
+  // Step 2: Generate 2-word and 3-word sliding windows (adjacent tokens only)
+  const names = new Set<string>()
+
+  for (let i = 0; i < tokens.length - 1; i++) {
+    const gap1 = text.substring(tokens[i].end, tokens[i + 1].index)
+    if (!/^\s+$/.test(gap1)) continue // not adjacent (comma, colon, etc.)
+
+    const name2 = `${tokens[i].word} ${tokens[i + 1].word}`
+    if (!SKIP_PHRASES.test(name2) && !skipPhrases?.has(name2.toLowerCase())) {
+      names.add(name2)
+    }
+
+    if (i + 2 < tokens.length) {
+      const gap2 = text.substring(tokens[i + 1].end, tokens[i + 2].index)
+      if (/^\s+$/.test(gap2)) {
+        const name3 = `${tokens[i].word} ${tokens[i + 1].word} ${tokens[i + 2].word}`
+        if (!SKIP_PHRASES.test(name3) && !skipPhrases?.has(name3.toLowerCase())) {
+          names.add(name3)
+        }
+      }
+    }
+  }
+
+  return [...names]
 }
 
 /**

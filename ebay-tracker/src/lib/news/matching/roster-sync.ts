@@ -63,6 +63,16 @@ interface ESPNAthletesResponse {
   items?: ESPNAthlete[]
 }
 
+interface ESPNRosterGroup {
+  position: string
+  items?: ESPNAthlete[]
+}
+
+interface ESPNTeamRosterResponse {
+  athletes?: ESPNRosterGroup[]
+  team?: { id?: string; abbreviation?: string; shortDisplayName?: string }
+}
+
 async function syncESPNSport(apiPath: string, sportLabel: string): Promise<number> {
   const url = `https://sports.core.api.espn.com/v3/sports/${apiPath}/athletes?limit=1000`
 
@@ -100,8 +110,79 @@ async function syncNBA(): Promise<number> {
   return syncESPNSport('basketball/nba', 'NBA')
 }
 
+// ─── NFL (team-by-team — ESPN Core API caps at 1000, NFL has ~1700+) ────────
+
+const NFL_TEAM_IDS = [
+   1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+  33, 34,   // BAL, HOU (ESPN skips 31-32)
+] as const
+
 async function syncNFL(): Promise<number> {
-  return syncESPNSport('football/nfl', 'NFL')
+  const allPlayers: Omit<RosterPlayer, 'updatedAt'>[] = []
+  const seenIds = new Set<number>()
+
+  const BATCH_SIZE = 8
+  for (let i = 0; i < NFL_TEAM_IDS.length; i += BATCH_SIZE) {
+    const batch = NFL_TEAM_IDS.slice(i, i + BATCH_SIZE)
+
+    const results = await Promise.allSettled(
+      batch.map(async teamId => {
+        const url = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${teamId}/roster`
+        const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
+        if (!res.ok) {
+          throw new Error(`NFL team ${teamId} HTTP ${res.status}: ${res.statusText}`)
+        }
+        const data: ESPNTeamRosterResponse = await res.json()
+        const athletes: ESPNAthlete[] = []
+        for (const group of data.athletes ?? []) {
+          for (const item of group.items ?? []) {
+            athletes.push(item)
+          }
+        }
+        const teamName = data.team?.shortDisplayName ?? null
+        const teamIdNum = data.team?.id != null ? parseInt(data.team.id, 10) : null
+        return { teamId, teamName, teamIdNum, athletes }
+      }),
+    )
+
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        console.warn(`[RosterSync] NFL team fetch failed: ${result.reason}`)
+        continue
+      }
+      const { teamName, teamIdNum, athletes } = result.value
+      for (const p of athletes) {
+        const id = parseInt(p.id, 10)
+        if (seenIds.has(id)) continue
+        seenIds.add(id)
+        const nameParts = p.fullName.split(' ')
+        const firstName = p.firstName ?? nameParts[0] ?? ''
+        const lastName = p.lastName ?? nameParts.slice(1).join(' ') ?? ''
+        allPlayers.push({
+          id,
+          fullName: p.fullName,
+          firstName,
+          lastName,
+          position: p.position?.abbreviation ?? null,
+          team: teamName,
+          teamId: teamIdNum,
+          active: p.active ?? true,
+          sport: 'NFL',
+        })
+      }
+    }
+
+    // Small delay between batches to be respectful to the ESPN API
+    if (i + BATCH_SIZE < NFL_TEAM_IDS.length) {
+      await new Promise(r => setTimeout(r, 200))
+    }
+  }
+
+  upsertPlayers(allPlayers)
+  console.log(`[RosterSync] NFL: synced ${allPlayers.length} players`)
+  return allPlayers.length
 }
 
 // ─── NHL ────────────────────────────────────────────────────────────────────
