@@ -77,8 +77,6 @@ export const SIGNAL_CONFIG: Record<NewsEventType, SignalEventConfig> = {
       'placed on ltir',
       'injury',
       'injured',
-      'questionable',
-      'doubtful',
       'left the game',
       'exited with',
       'leaves game',

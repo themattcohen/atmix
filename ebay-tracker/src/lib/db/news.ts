@@ -18,9 +18,9 @@ export function insertIfNew(item: RawNewsItem): { id: number; isNew: boolean } {
 
     const result = db.prepare(`
       INSERT OR IGNORE INTO news_items
-        (source, source_id, content_hash, title, body, url, published_at, fetched_at, processed)
+        (source, source_id, content_hash, title, body, url, published_at, fetched_at, processed, sport)
       VALUES
-        (?, ?, ?, ?, ?, ?, ?, datetime('now'), 0)
+        (?, ?, ?, ?, ?, ?, ?, datetime('now'), 0, ?)
     `).run(
       item.source,
       item.sourceId,
@@ -29,6 +29,7 @@ export function insertIfNew(item: RawNewsItem): { id: number; isNew: boolean } {
       item.body,
       item.url,
       item.publishedAt,
+      item.sport ?? null,
     )
 
     const isNew = result.changes > 0
@@ -287,6 +288,31 @@ export function getDetailed(params: NewsDetailParams): NewsDetailPage {
     return { items, total }
   } catch (err: any) {
     throw new DatabaseError(`Failed to get detailed news items: ${err.message}`)
+  }
+}
+
+export function getClassifiedNewsForPlayer(
+  playerId: number,
+  itemId: string,
+): { id: number; title: string; source: string; url: string | null; eventType: string; matchConf: number; fetchedAt: string }[] {
+  const db = getDb()
+  try {
+    return db.prepare(`
+      SELECT ni.id, ni.title, ni.source, ni.url,
+             ni.event_type AS eventType,
+             npm.confidence AS matchConf,
+             ni.fetched_at AS fetchedAt
+      FROM news_items ni
+      JOIN news_player_mentions npm ON npm.news_item_id = ni.id
+      WHERE npm.player_id = ?
+        AND ni.event_type IS NOT NULL
+        AND NOT EXISTS (
+          SELECT 1 FROM card_signals cs
+          WHERE cs.news_item_id = ni.id AND cs.item_id = ?
+        )
+    `).all(playerId, itemId) as any[]
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get classified news for player: ${err.message}`)
   }
 }
 

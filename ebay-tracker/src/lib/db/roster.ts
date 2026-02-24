@@ -98,6 +98,61 @@ function mapRow(row: any): RosterPlayer {
   }
 }
 
+export function getByLastName(lastName: string, sport?: string | null): RosterPlayer[] {
+  const db = getDb()
+  try {
+    if (sport) {
+      return (db.prepare(`
+        SELECT * FROM player_roster
+        WHERE last_name = ? COLLATE NOCASE AND sport = ?
+        ORDER BY full_name ASC
+      `).all(lastName, sport) as any[]).map(mapRow)
+    }
+    return (db.prepare(`
+      SELECT * FROM player_roster
+      WHERE last_name = ? COLLATE NOCASE
+      ORDER BY full_name ASC
+    `).all(lastName) as any[]).map(mapRow)
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get players by last name: ${err.message}`)
+  }
+}
+
+export function getByExactName(fullName: string, sport?: string | null): RosterPlayer | null {
+  const db = getDb()
+  try {
+    let row: any
+    if (sport) {
+      row = db.prepare(`
+        SELECT * FROM player_roster
+        WHERE full_name = ? COLLATE NOCASE AND sport = ?
+        LIMIT 1
+      `).get(fullName, sport)
+    } else {
+      row = db.prepare(`
+        SELECT * FROM player_roster
+        WHERE full_name = ? COLLATE NOCASE
+        LIMIT 1
+      `).get(fullName)
+    }
+    return row ? mapRow(row) : null
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get player by exact name: ${err.message}`)
+  }
+}
+
+export function getById(id: number): RosterPlayer | null {
+  const db = getDb()
+  try {
+    const row = db.prepare(`
+      SELECT * FROM player_roster WHERE id = ?
+    `).get(id) as any
+    return row ? mapRow(row) : null
+  } catch (err: any) {
+    throw new DatabaseError(`Failed to get player by ID: ${err.message}`)
+  }
+}
+
 export const rosterRepo: RosterRepo = {
   upsertPlayers,
   search,

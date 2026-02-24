@@ -2,7 +2,7 @@ import type { RawNewsItem } from '../../../types'
 
 interface MLBTransaction {
   id: number | string
-  person?: { fullName?: string }
+  person?: { fullName?: string; fullFMLName?: string; id?: number }
   typeDesc?: string
   description?: string
   date?: string
@@ -16,6 +16,14 @@ interface MLBTransactionsResponse {
 
 function formatDate(d: Date): string {
   return d.toISOString().slice(0, 10)
+}
+
+function buildPlayerUrl(fullName: string, personId?: number): string {
+  if (personId) {
+    const slug = fullName.toLowerCase().replace(/\s+/g, '-')
+    return `https://www.mlb.com/player/${slug}-${personId}`
+  }
+  return 'https://www.mlb.com/transactions'
 }
 
 export async function fetchMLBTransactions(): Promise<RawNewsItem[]> {
@@ -43,8 +51,15 @@ export async function fetchMLBTransactions(): Promise<RawNewsItem[]> {
         sourceId: String(tx.id ?? ''),
         title: `${typeDesc}: ${personName}`,
         body: tx.description ?? null,
-        url: null,
+        url: buildPlayerUrl(tx.person?.fullFMLName || tx.person?.fullName || personName, tx.person?.id),
         publishedAt: tx.date ?? null,
+        sport: 'MLB',
+        structuredPlayers: tx.person?.id ? [{
+          id: tx.person.id,
+          fullName: tx.person.fullName ?? personName,
+          firstName: tx.person.fullName?.split(' ')[0],
+          lastName: tx.person.fullName?.split(' ').slice(1).join(' '),
+        }] : undefined,
       }
     })
   } catch (err) {

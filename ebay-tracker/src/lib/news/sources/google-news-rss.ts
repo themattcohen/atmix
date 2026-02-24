@@ -1,5 +1,6 @@
 import type { RawNewsItem } from '../../../types'
 import { fetchRSSFeed, extractGuid, parsePubDate } from './rss-utils'
+import { inferSportFromUrl } from '../matching/name-utils'
 
 const QUERIES = [
   'MLB+baseball+player+news', 'MLB+trade+injury+callup',
@@ -29,6 +30,7 @@ export async function fetchGoogleNewsRSS(): Promise<RawNewsItem[]> {
           body: item.description ?? null,
           url: item.link ?? null,
           publishedAt: parsePubDate(item.pubDate),
+          sport: inferSportFromUrl(query),
         })
       }
     } catch (err) {

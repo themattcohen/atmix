@@ -1,5 +1,6 @@
 import type { RawNewsItem } from '../../../types'
 import { fetchRSSFeed, extractGuid, parsePubDate } from './rss-utils'
+import { inferSportFromUrl } from '../matching/name-utils'
 
 const SPORT_FEEDS = [
   'https://www.rotoballer.com/category/mlb/feed',
@@ -40,6 +41,7 @@ export async function fetchRotoBaller(): Promise<RawNewsItem[]> {
           body: item.description ?? null,
           url: item.link ?? null,
           publishedAt: parsePubDate(item.pubDate),
+          sport: inferSportFromUrl(url),
         })
       }
     } catch (err) {

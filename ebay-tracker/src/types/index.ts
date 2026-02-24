@@ -401,6 +401,13 @@ export interface RawNewsItem {
   body: string | null
   url: string | null
   publishedAt: string | null
+  sport?: 'MLB' | 'NBA' | 'NFL' | 'NHL' | string | null
+  structuredPlayers?: {
+    id: number
+    fullName: string
+    firstName?: string
+    lastName?: string
+  }[]
 }
 
 export interface NewsItem {

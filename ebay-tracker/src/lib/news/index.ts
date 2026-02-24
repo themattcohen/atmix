@@ -1,9 +1,7 @@
-import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
 import type { SourceName } from '../../types'
 import { getByItemIds } from '../db/metadata'
-import { getAnthropicClient } from '../ai/client'
 import { acquireLock, releaseLock } from './rate-limiter'
 import { isCircuitOpen, recordSourceSuccess, recordSourceFailure } from './circuit-breaker'
 import { fetchMLBTransactions } from './sources/mlb-transactions'
@@ -13,16 +11,15 @@ import { fetchESPNRSS } from './sources/espn-rss'
 import { fetchCBSSportsRSS } from './sources/cbs-sports-rss'
 import { fetchRotoBaller } from './sources/rotoballer-rss'
 import { parsePlayerFromTitle } from './matching/title-parser'
-import { matchPlayerName, invalidateFuseCache } from './matching/player-matcher'
+import { matchPlayers, matchPlayerName, invalidateFuseCache } from './matching/player-matcher'
 import { classifyEvent, classifyEventAI } from './scoring/event-classifier'
 import { calculateScore, DECAY_DAYS } from './scoring/score-calculator'
+import { generateRetroactiveSignals } from './scoring/signal-generator'
 import { SIGNAL_CONFIG } from './signal-config'
 import { insertIfNew, markProcessed, insertMention, updateEventClassification } from '../db/news'
 import { insert as insertSignal } from '../db/signals'
 import { getUnmapped, upsert as upsertMapping } from '../db/card-mapping'
 import { getByPlayerId } from '../db/card-mapping'
-import { getDb } from '../db/client'
-import { upsertPlayers } from '../db/roster'
 
 const SOURCE_FETCHERS: Record<SourceName, () => Promise<import('../../types').RawNewsItem[]>> = {
   mlb_transactions: fetchMLBTransactions,
@@ -41,66 +38,6 @@ export function loadSkipRules(): Set<string> {
     return new Set(data.skipPhrases.map((p: string) => p.toLowerCase()))
   } catch {
     return new Set() // file doesn't exist yet — first boot
-  }
-}
-
-const DYNAMIC_SKIP_PHRASES = loadSkipRules()
-
-/**
- * Discover an unknown player from AI extraction — insert into roster for future matching.
- * Returns the generated negative ID, or null if the name is too short.
- */
-function discoverPlayer(name: string): number | null {
-  const parts = name.trim().split(/\s+/)
-  if (parts.length < 2) return null
-
-  const firstName = parts[0]
-  const lastName = parts.slice(1).join(' ')
-
-  // Generate a stable negative ID from name hash to avoid collision with API-assigned positive IDs
-  const hash = crypto.createHash('md5').update(name.toLowerCase()).digest()
-  const id = -(hash.readUInt32BE(0) % 1_000_000_000)
-
-  const db = getDb()
-  const existing = db.prepare('SELECT id FROM player_roster WHERE id = ?').get(id) as any
-  if (existing) return existing.id as number
-
-  upsertPlayers([{
-    id,
-    fullName: name,
-    firstName,
-    lastName,
-    position: null,
-    team: null,
-    teamId: null,
-    active: false,
-    sport: 'UNKNOWN',
-  }])
-
-  invalidateFuseCache()
-  return id
-}
-
-export async function extractPlayerNamesAI(title: string, body: string | null): Promise<string[]> {
-  try {
-    const client = getAnthropicClient()
-    const text = body ? `Headline: ${title}\nBody: ${body}` : `Headline: ${title}`
-    const message = await client.messages.create({
-      model: 'claude-haiku-4-5',
-      max_tokens: 256,
-      system: `You extract athlete names from sports news headlines.
-Return ONLY a JSON array of full player names. Example: ["Luka Doncic", "Anthony Davis"]
-If no players mentioned, return []. Do NOT include team names, coaches, or non-players.`,
-      messages: [{ role: 'user', content: text }],
-    })
-    const content = message.content[0]
-    if (!content || content.type !== 'text') return []
-    const cleaned = content.text.trim().replace(/^```json?\s*/i, '').replace(/```\s*$/, '')
-    const parsed = JSON.parse(cleaned)
-    if (!Array.isArray(parsed)) return []
-    return parsed.filter((n: unknown) => typeof n === 'string' && (n as string).length > 1)
-  } catch {
-    return [] // AI not configured or API error — silently fall back to regex-only
   }
 }
 
@@ -140,32 +77,18 @@ function resolveUnmappedItems(): void {
       playerName: match.player.fullName,
       confidence: match.confidence,
     })
+
+    const retroCount = generateRetroactiveSignals(item.id, match.player.id, match.confidence)
+    if (retroCount > 0) {
+      console.log(`[News] Retroactive: ${retroCount} signal(s) for item ${item.id} → player ${match.player.id}`)
+    }
+
     mapped++
   }
 
   if (mapped > 0) {
     console.log(`[News] Mapped ${mapped}/${unmapped.length} unmapped items to players`)
   }
-}
-
-/**
- * Extract player names from news text using simple heuristics.
- * Returns array of potential player name strings found in title + body.
- */
-export function extractPlayerNames(title: string, body: string | null): string[] {
-  const text = `${title} ${body || ''}`
-  // Look for capitalized name patterns (First Last or First Middle Last)
-  const namePattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b/g
-  const names: string[] = []
-  let match: RegExpExecArray | null
-  while ((match = namePattern.exec(text)) !== null) {
-    const name = match[1]
-    // Skip common non-name phrases
-    if (/^(New York|Los Angeles|San Francisco|San Diego|Kansas City|St Louis|Spring Training|World Series|All Star|National League|American League)$/i.test(name)) continue
-    if (DYNAMIC_SKIP_PHRASES.has(name.toLowerCase())) continue
-    names.push(name)
-  }
-  return [...new Set(names)]
 }
 
 /**
@@ -208,39 +131,14 @@ export async function runSourceIngestion(source: SourceName): Promise<void> {
       if (!isNew) continue
       newCount++
 
-      // 6. Extract player names from news text (regex first)
-      const regexNames = extractPlayerNames(raw.title, raw.body)
-      let usedAIFallback = false
+      // 6. Match players via 3-tier pipeline
+      const matches = await matchPlayers(raw)
       const mentionedPlayerIds: number[] = []
-      const regexConfidences: number[] = []
-
-      // 6a. Try matching regex results to roster
-      for (const name of regexNames) {
-        const match = matchPlayerName(name)
-        if (!match) continue
+      let usedAIFallback = false
+      for (const match of matches) {
         insertMention(newsId, match.player.id, match.confidence)
         mentionedPlayerIds.push(match.player.id)
-        regexConfidences.push(match.confidence)
-      }
-
-      // 6b. AI fallback if regex produced no matches OR low confidence
-      const maxRegexConfidence = Math.max(...regexConfidences, 0)
-      if (mentionedPlayerIds.length === 0 || maxRegexConfidence < 0.90) {
-        const aiNames = await extractPlayerNamesAI(raw.title, raw.body)
-        for (const name of aiNames) {
-          let match = matchPlayerName(name)
-          if (!match) {
-            // AI found a name but roster doesn't have them — discover & add
-            const discoveredId = discoverPlayer(name)
-            if (discoveredId !== null) {
-              match = matchPlayerName(name) // retry after adding
-            }
-          }
-          if (!match) continue
-          insertMention(newsId, match.player.id, match.confidence)
-          mentionedPlayerIds.push(match.player.id)
-        }
-        if (mentionedPlayerIds.length > 0) usedAIFallback = true
+        if (match.method === 'ai') usedAIFallback = true
       }
 
       if (mentionedPlayerIds.length === 0) {
