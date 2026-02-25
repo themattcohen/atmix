@@ -164,8 +164,13 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                           className="hover:bg-gray-50 transition-colors"
                         >
                           <td className="px-6 py-4 font-medium text-gray-900">
-                            {client.lastName}
-                            {client.firstName ? `, ${client.firstName}` : ""}
+                            <Link
+                              href={`/clients/${client.id}`}
+                              className="hover:text-blue-600 hover:underline"
+                            >
+                              {client.lastName}
+                              {client.firstName ? `, ${client.firstName}` : ""}
+                            </Link>
                           </td>
                           <td className="px-6 py-4 text-gray-600">
                             {client.type === "INDIVIDUAL"

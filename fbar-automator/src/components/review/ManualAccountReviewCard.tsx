@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   Check,
   AlertTriangle,
@@ -32,7 +33,6 @@ interface ManualAccountReviewCardProps {
     maxValueUsd: number | null
   } | null
   filingYearId: string
-  onSaved?: () => void
 }
 
 // ---------------------------------------------------------------------------
@@ -67,8 +67,9 @@ export function ManualAccountReviewCard({
   account,
   existingReview,
   filingYearId,
-  onSaved,
 }: ManualAccountReviewCardProps) {
+  const router = useRouter()
+
   // Form fields — pre-populated from existing review if present
   const [amount, setAmount] = useState<number>(
     existingReview?.maxValueLocal ?? 0
@@ -137,7 +138,7 @@ export function ManualAccountReviewCard({
     setSavedUsd(data.maxValueUsd ? parseFloat(data.maxValueUsd) : null)
     setIsSaved(true)
     setShowManualRate(false)
-    onSaved?.()
+    router.refresh()
     setSaving(false)
   }
 

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Users, Building2, Clock, CheckCircle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/Card"
 
@@ -27,24 +28,28 @@ export function StatsCards({
       value: totalClients,
       icon: Users,
       colorKey: "clients" as const,
+      href: "/clients",
     },
     {
       label: "Active Accounts",
       value: activeAccounts,
       icon: Building2,
       colorKey: "accounts" as const,
+      href: "/clients",
     },
     {
       label: "Active Filings",
       value: activeFilings,
       icon: Clock,
       colorKey: "active" as const,
+      href: "/clients",
     },
     {
       label: "Exported / Filed",
       value: exportedFilings,
       icon: CheckCircle,
       colorKey: "exported" as const,
+      href: "/clients",
     },
   ]
 
@@ -53,23 +58,25 @@ export function StatsCards({
       {stats.map((stat) => {
         const Icon = stat.icon
         return (
-          <Card key={stat.label} className="p-6">
-            <CardContent className="p-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    {stat.label}
-                  </p>
-                  <p className="mt-1 text-3xl font-semibold text-gray-900">
-                    {stat.value.toLocaleString()}
-                  </p>
+          <Link key={stat.label} href={stat.href}>
+            <Card className="p-6 cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-0">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">
+                      {stat.label}
+                    </p>
+                    <p className="mt-1 text-3xl font-semibold text-gray-900">
+                      {stat.value.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className={`rounded-full p-3 ${iconStyles[stat.colorKey]}`}>
+                    <Icon className="h-6 w-6" />
+                  </div>
                 </div>
-                <div className={`rounded-full p-3 ${iconStyles[stat.colorKey]}`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         )
       })}
     </div>

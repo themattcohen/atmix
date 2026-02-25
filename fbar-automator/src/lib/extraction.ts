@@ -194,7 +194,7 @@ function extractCsvProgrammatically(buffer: Buffer): ExtractionResult {
   // Build ExtractedAccount for each account
   const accounts: import("@/types/extraction").ExtractedAccount[] = []
 
-  for (const [acctNum, data] of accountMap) {
+  for (const [acctNum, data] of Array.from(accountMap)) {
     // Find max balance
     let maxBal = data.balances[0]
     for (const b of data.balances) {

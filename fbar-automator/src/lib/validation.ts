@@ -71,14 +71,15 @@ const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
  * are present. Warnings do not affect isValid.
  */
 export function validateExtractionResult(
-  result: ExtractionResult
+  result: ExtractionResult,
+  calendarYear?: number
 ): ValidationResult {
   const errors: ValidationError[] = []
   const warnings: ValidationWarning[] = []
 
   // Validate each account
   for (let i = 0; i < result.accounts.length; i++) {
-    const accountValidation = validateAccount(result.accounts[i], i)
+    const accountValidation = validateAccount(result.accounts[i], i, calendarYear)
     errors.push(...accountValidation.errors)
     warnings.push(...accountValidation.warnings)
   }
@@ -111,7 +112,8 @@ export function validateExtractionResult(
  */
 export function validateAccount(
   account: ExtractedAccount,
-  index: number
+  index: number,
+  calendarYear?: number
 ): { errors: ValidationError[]; warnings: ValidationWarning[] } {
   const errors: ValidationError[] = []
   const warnings: ValidationWarning[] = []
@@ -190,6 +192,52 @@ export function validateAccount(
       message: `End date "${account.statement_period.end_date}" is not a valid YYYY-MM-DD date.`,
       accountIndex: index,
     })
+  }
+
+  // -----------------------------------------------------------------------
+  // Rule 6b: Statement period coverage (soft warnings)
+  // -----------------------------------------------------------------------
+  if (calendarYear != null) {
+    const startDate = account.statement_period.start_date
+    const endDate = account.statement_period.end_date
+
+    if (validateDateString(startDate)) {
+      const [yearStr, monthStr] = startDate.split("-")
+      const year = parseInt(yearStr, 10)
+      const month = parseInt(monthStr, 10)
+      if (year === calendarYear && month > 1) {
+        warnings.push({
+          field: "statement_period.start_date",
+          message: `Statement starts on ${startDate}, which is after January 31 of the filing year (${calendarYear}). Verify full-year coverage.`,
+          accountIndex: index,
+        })
+      } else if (year > calendarYear) {
+        warnings.push({
+          field: "statement_period.start_date",
+          message: `Statement start date ${startDate} is after the filing year ${calendarYear}.`,
+          accountIndex: index,
+        })
+      }
+    }
+
+    if (validateDateString(endDate)) {
+      const [yearStr, monthStr] = endDate.split("-")
+      const year = parseInt(yearStr, 10)
+      const month = parseInt(monthStr, 10)
+      if (year === calendarYear && month < 12) {
+        warnings.push({
+          field: "statement_period.end_date",
+          message: `Statement ends on ${endDate}, which is before December 1 of the filing year (${calendarYear}). Verify full-year coverage.`,
+          accountIndex: index,
+        })
+      } else if (year < calendarYear) {
+        warnings.push({
+          field: "statement_period.end_date",
+          message: `Statement end date ${endDate} is before the filing year ${calendarYear}.`,
+          accountIndex: index,
+        })
+      }
+    }
   }
 
   // -----------------------------------------------------------------------
