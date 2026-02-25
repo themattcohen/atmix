@@ -8,6 +8,7 @@ import { calculateScore, DECAY_DAYS } from '@/lib/news/scoring/score-calculator'
 import { generateRetroactiveSignals } from '@/lib/news/scoring/signal-generator'
 import { SIGNAL_CONFIG } from '@/lib/news/signal-config'
 import { matchPlayers } from '@/lib/news/matching/player-matcher'
+import { loadSkipRules } from '@/lib/news'
 import type { SourceName, RawNewsItem } from '@/types'
 
 type BackfillMode = 'classify' | 'reclassify_keywords' | 'rematch' | 'all'
@@ -161,6 +162,7 @@ async function runRematch(db: ReturnType<typeof getDb>): Promise<{ rematched: nu
 
   let rematched = 0
   let improved = 0
+  const skipPhrases = loadSkipRules()
 
   for (const item of items) {
     const raw: RawNewsItem = {
@@ -173,7 +175,7 @@ async function runRematch(db: ReturnType<typeof getDb>): Promise<{ rematched: nu
       sport: item.sport,
     }
 
-    const matches = await matchPlayers(raw)
+    const matches = await matchPlayers(raw, skipPhrases)
     if (matches.length === 0) continue
 
     // Get existing mentions for comparison

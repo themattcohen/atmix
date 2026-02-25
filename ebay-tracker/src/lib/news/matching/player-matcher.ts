@@ -3,7 +3,7 @@
  * Replaces Fuse.js fuzzy matching with structured → DB → AI pipeline.
  */
 import type { RawNewsItem, RosterPlayer } from '../../../types'
-import { getById, getByExactName, getByLastName } from '../../db/roster'
+import { getById, getByExactName, getByLastName, upsertPlayers } from '../../db/roster'
 import { getAnthropicClient } from '../../ai/client'
 import {
   extractPlayerNames,
@@ -26,7 +26,22 @@ function matchStructured(raw: RawNewsItem): PlayerMatch[] {
   if (!raw.structuredPlayers?.length) return []
   const matches: PlayerMatch[] = []
   for (const sp of raw.structuredPlayers) {
-    const player = getById(sp.id)
+    let player = getById(sp.id)
+    if (!player && sp.fullName) {
+      // Auto-discover: MLB transaction told us this player exists
+      upsertPlayers([{
+        id: sp.id,
+        fullName: sp.fullName,
+        firstName: sp.firstName ?? sp.fullName.split(' ')[0] ?? '',
+        lastName: sp.lastName ?? sp.fullName.split(' ').slice(1).join(' ') ?? '',
+        position: null,
+        team: null,
+        teamId: null,
+        active: true,
+        sport: 'MLB',
+      }])
+      player = getById(sp.id)
+    }
     if (player) {
       matches.push({ player, confidence: 1.0, method: 'structured' })
     }
@@ -39,36 +54,127 @@ function matchStructured(raw: RawNewsItem): PlayerMatch[] {
 function matchByLastName(
   names: string[],
   sport?: string | null,
-): PlayerMatch[] {
+): { matches: PlayerMatch[]; unmatchedNames: string[] } {
   const matches: PlayerMatch[] = []
+  const unmatchedNames: string[] = []
   const seenIds = new Set<number>()
 
   for (const name of names) {
+    let matched = false
+
     // Fast path: exact full-name match
     const exact = getByExactName(name, sport)
-    if (exact && !seenIds.has(exact.id)) {
-      seenIds.add(exact.id)
-      matches.push({ player: exact, confidence: 1.0, method: 'db' })
-      continue
+    if (exact) {
+      if (!seenIds.has(exact.id)) {
+        seenIds.add(exact.id)
+        matches.push({ player: exact, confidence: 1.0, method: 'db' })
+      }
+      matched = true  // resolved even if deduped
     }
 
-    // Standard path: last-name lookup + confidence scoring
-    const lastName = extractLastName(name)
-    const candidates = getByLastName(lastName, sport)
-    if (candidates.length === 0) continue
+    if (!matched) {
+      // Standard path: last-name lookup + confidence scoring
+      const lastName = extractLastName(name)
+      const candidates = getByLastName(lastName, sport)
 
-    let bestMatch: { player: RosterPlayer; confidence: number } | null = null
-    for (const candidate of candidates) {
-      if (seenIds.has(candidate.id)) continue
-      const conf = nameConfidence(name, candidate.fullName)
-      if (conf >= MIN_DB_CONFIDENCE && (!bestMatch || conf > bestMatch.confidence)) {
-        bestMatch = { player: candidate, confidence: conf }
+      let bestMatch: { player: RosterPlayer; confidence: number } | null = null
+      for (const candidate of candidates) {
+        if (seenIds.has(candidate.id)) continue
+        const conf = nameConfidence(name, candidate.fullName)
+        if (conf >= MIN_DB_CONFIDENCE && (!bestMatch || conf > bestMatch.confidence)) {
+          bestMatch = { player: candidate, confidence: conf }
+        }
+      }
+
+      if (bestMatch) {
+        seenIds.add(bestMatch.player.id)
+        matches.push({ ...bestMatch, method: 'db' })
+        matched = true
       }
     }
 
-    if (bestMatch) {
-      seenIds.add(bestMatch.player.id)
-      matches.push({ ...bestMatch, method: 'db' })
+    if (!matched) {
+      unmatchedNames.push(name)
+    }
+  }
+
+  return { matches, unmatchedNames }
+}
+
+// ─── Tier 2.5: Live API search for unmatched names (MLB + NHL) ───
+
+async function searchAndDiscover(
+  names: string[],
+  sport?: string | null,
+): Promise<PlayerMatch[]> {
+  if (!sport || !['MLB', 'NHL'].includes(sport)) return []
+
+  const matches: PlayerMatch[] = []
+  const seenIds = new Set<number>()
+
+  for (const name of names.slice(0, 5)) {
+    try {
+      let found: Omit<RosterPlayer, 'updatedAt'> | null = null
+
+      if (sport === 'MLB') {
+        const res = await fetch(
+          `https://statsapi.mlb.com/api/v1/people/search?names=${encodeURIComponent(name)}&sportIds=1`,
+          { signal: AbortSignal.timeout(5000) },
+        )
+        if (!res.ok) continue
+        const data = await res.json()
+        const person = data.people?.[0]
+        if (!person || seenIds.has(person.id)) continue
+        found = {
+          id: person.id,
+          fullName: person.fullName,
+          firstName: person.firstName,
+          lastName: person.lastName,
+          position: person.primaryPosition?.abbreviation ?? null,
+          team: null,
+          teamId: null,
+          active: person.active ?? true,
+          sport: 'MLB',
+        }
+      } else if (sport === 'NHL') {
+        const res = await fetch(
+          `https://search.d3.nhle.com/api/v1/search/player?culture=en-us&limit=3&q=${encodeURIComponent(name)}`,
+          { signal: AbortSignal.timeout(5000) },
+        )
+        if (!res.ok) continue
+        const results = await res.json()
+        const player = results?.[0]
+        if (!player || !player.active) continue
+        const pid = parseInt(player.playerId, 10)
+        if (seenIds.has(pid)) continue
+        const nameParts = (player.name as string).split(' ')
+        found = {
+          id: pid,
+          fullName: player.name,
+          firstName: nameParts[0] ?? '',
+          lastName: nameParts.slice(1).join(' ') ?? '',
+          position: player.positionCode ?? null,
+          team: player.teamAbbrev ?? null,
+          teamId: player.teamId ? parseInt(player.teamId, 10) : null,
+          active: true,
+          sport: 'NHL',
+        }
+      }
+
+      if (found) {
+        const conf = nameConfidence(name, found.fullName)
+        if (conf < MIN_DB_CONFIDENCE) continue
+
+        seenIds.add(found.id)
+        upsertPlayers([found])
+        matches.push({
+          player: { ...found, updatedAt: new Date().toISOString() },
+          confidence: conf,
+          method: 'db',
+        })
+      }
+    } catch {
+      continue
     }
   }
 
@@ -154,24 +260,47 @@ If none are mentioned, return [].`
 
 // ─── Main entry point ───
 
-export async function matchPlayers(raw: RawNewsItem): Promise<PlayerMatch[]> {
-  // Tier 1: Structured data (MLB Transactions)
+export async function matchPlayers(
+  raw: RawNewsItem,
+  preloadedSkipPhrases?: Set<string>,
+): Promise<PlayerMatch[]> {
+  // Tier 1: Structured data (MLB Transactions) — short-circuit preserved
   const structured = matchStructured(raw)
   if (structured.length > 0) return structured
 
   // Tier 2: DB lookup from extracted names
-  const skipPhrases = loadSkipRules()
+  const skipPhrases = preloadedSkipPhrases ?? loadSkipRules()
   const names = extractPlayerNames(raw.title, raw.body, skipPhrases)
-  const dbMatches = matchByLastName(names, raw.sport)
+  if (names.length === 0) return []
 
-  // Tier 3: AI fallback only if Tier 2 found nothing
-  if (dbMatches.length === 0) {
-    const alreadyMatched = new Set<number>()
-    const aiMatches = await matchWithAI(raw.title, raw.body, raw.sport, alreadyMatched)
-    return aiMatches
+  const { matches: dbMatches, unmatchedNames } = matchByLastName(names, raw.sport)
+  const allMatches: PlayerMatch[] = [...dbMatches]
+  const matchedIds = new Set(dbMatches.map(m => m.player.id))
+
+  // All names resolved — done
+  if (unmatchedNames.length === 0) return allMatches
+
+  // Tier 2.5: Live API search for ONLY unmatched names (MLB + NHL)
+  const discovered = await searchAndDiscover(unmatchedNames, raw.sport)
+  for (const d of discovered) {
+    if (!matchedIds.has(d.player.id)) {
+      allMatches.push(d)
+      matchedIds.add(d.player.id)
+    }
   }
 
-  return dbMatches
+  // Tier 3: AI fallback if names still unresolved
+  if (discovered.length < unmatchedNames.length) {
+    const aiMatches = await matchWithAI(raw.title, raw.body, raw.sport, matchedIds)
+    for (const ai of aiMatches) {
+      if (!matchedIds.has(ai.player.id)) {
+        allMatches.push(ai)
+        matchedIds.add(ai.player.id)
+      }
+    }
+  }
+
+  return allMatches
 }
 
 // ─── Legacy wrapper for resolveUnmappedItems() ───

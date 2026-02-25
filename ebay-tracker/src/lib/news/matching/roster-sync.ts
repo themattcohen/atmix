@@ -1,53 +1,82 @@
 import type { RosterPlayer } from '../../../types'
 import { upsertPlayers, count } from '../../db/roster'
+import { withRetry } from '../../errors'
 import { invalidateFuseCache } from './player-matcher'
 
-// ─── MLB ────────────────────────────────────────────────────────────────────
+// ─── MLB (team-by-team fullSeason rosters) ──────────────────────────────────
 
-interface MLBPerson {
-  id: number
-  fullName: string
-  firstName: string
-  lastName: string
-  primaryPosition?: { abbreviation?: string }
-  currentTeam?: { name?: string; id?: number }
-  active: boolean
-}
+const MLB_TEAM_IDS = [
+  108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+  118, 119, 120, 121, 133, 134, 135, 136, 137, 138,
+  139, 140, 141, 142, 143, 144, 145, 146, 147, 158,
+] as const
 
-interface MLBPlayersResponse {
-  people?: MLBPerson[]
+interface MLBTeamRosterResponse {
+  roster?: {
+    person: { id: number; fullName: string }
+    position: { abbreviation?: string }
+    status?: { description?: string }
+  }[]
+  team?: { id: number; name: string }
 }
 
 async function syncMLB(): Promise<number> {
-  const season = new Date().getFullYear()
-  const url = `https://statsapi.mlb.com/api/v1/sports/1/players?season=${season}`
+  const allPlayers: Omit<RosterPlayer, 'updatedAt'>[] = []
+  const seenIds = new Set<number>()
 
-  const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
-  if (!res.ok) {
-    throw new Error(`MLB HTTP ${res.status}: ${res.statusText}`)
+  const BATCH_SIZE = 8
+  for (let i = 0; i < MLB_TEAM_IDS.length; i += BATCH_SIZE) {
+    const batch = MLB_TEAM_IDS.slice(i, i + BATCH_SIZE)
+
+    const results = await Promise.allSettled(
+      batch.map(async teamId => {
+        const url = `https://statsapi.mlb.com/api/v1/teams/${teamId}/roster?rosterType=fullSeason`
+        const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
+        if (!res.ok) {
+          throw new Error(`MLB team ${teamId} HTTP ${res.status}: ${res.statusText}`)
+        }
+        return (await res.json()) as MLBTeamRosterResponse
+      }),
+    )
+
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        console.warn(`[RosterSync] MLB team fetch failed: ${result.reason}`)
+        continue
+      }
+      const data = result.value
+      const teamName = data.team?.name ?? null
+      const teamIdNum = data.team?.id ?? null
+      for (const entry of data.roster ?? []) {
+        const id = entry.person.id
+        if (seenIds.has(id)) continue
+        seenIds.add(id)
+        const nameParts = entry.person.fullName.split(' ')
+        allPlayers.push({
+          id,
+          fullName: entry.person.fullName,
+          firstName: nameParts[0] ?? '',
+          lastName: nameParts.slice(1).join(' ') ?? '',
+          position: entry.position?.abbreviation ?? null,
+          team: teamName,
+          teamId: teamIdNum,
+          active: true,
+          sport: 'MLB',
+        })
+      }
+    }
+
+    if (i + BATCH_SIZE < MLB_TEAM_IDS.length) {
+      await new Promise(r => setTimeout(r, 200))
+    }
   }
 
-  const data: MLBPlayersResponse = await res.json()
-  const people = data.people ?? []
-
-  const players: Omit<RosterPlayer, 'updatedAt'>[] = people.map(p => ({
-    id: p.id,
-    fullName: p.fullName,
-    firstName: p.firstName,
-    lastName: p.lastName,
-    position: p.primaryPosition?.abbreviation ?? null,
-    team: p.currentTeam?.name ?? null,
-    teamId: p.currentTeam?.id ?? null,
-    active: p.active,
-    sport: 'MLB',
-  }))
-
-  upsertPlayers(players)
-  console.log(`[RosterSync] MLB: synced ${players.length} players`)
-  return players.length
+  upsertPlayers(allPlayers)
+  console.log(`[RosterSync] MLB: synced ${allPlayers.length} players`)
+  return allPlayers.length
 }
 
-// ─── ESPN (NBA + NFL) ───────────────────────────────────────────────────────
+// ─── ESPN team-by-team shared helper (NBA + NFL) ────────────────────────────
 
 interface ESPNAthlete {
   id: string
@@ -57,10 +86,6 @@ interface ESPNAthlete {
   position?: { abbreviation?: string }
   team?: { shortDisplayName?: string; id?: string }
   active?: boolean
-}
-
-interface ESPNAthletesResponse {
-  items?: ESPNAthlete[]
 }
 
 interface ESPNRosterGroup {
@@ -73,66 +98,24 @@ interface ESPNTeamRosterResponse {
   team?: { id?: string; abbreviation?: string; shortDisplayName?: string }
 }
 
-async function syncESPNSport(apiPath: string, sportLabel: string): Promise<number> {
-  const url = `https://sports.core.api.espn.com/v3/sports/${apiPath}/athletes?limit=1000`
-
-  const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
-  if (!res.ok) {
-    throw new Error(`${sportLabel} HTTP ${res.status}: ${res.statusText}`)
-  }
-
-  const data: ESPNAthletesResponse = await res.json()
-  const items = data.items ?? []
-
-  const players: Omit<RosterPlayer, 'updatedAt'>[] = items.map(p => {
-    const nameParts = p.fullName.split(' ')
-    const firstName = p.firstName ?? nameParts[0] ?? ''
-    const lastName = p.lastName ?? nameParts.slice(1).join(' ') ?? ''
-    return {
-      id: parseInt(p.id, 10),
-      fullName: p.fullName,
-      firstName,
-      lastName,
-      position: p.position?.abbreviation ?? null,
-      team: p.team?.shortDisplayName ?? null,
-      teamId: p.team?.id != null ? parseInt(p.team.id, 10) : null,
-      active: p.active ?? true,
-      sport: sportLabel,
-    }
-  })
-
-  upsertPlayers(players)
-  console.log(`[RosterSync] ${sportLabel}: synced ${players.length} players`)
-  return players.length
-}
-
-async function syncNBA(): Promise<number> {
-  return syncESPNSport('basketball/nba', 'NBA')
-}
-
-// ─── NFL (team-by-team — ESPN Core API caps at 1000, NFL has ~1700+) ────────
-
-const NFL_TEAM_IDS = [
-   1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
-  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-  33, 34,   // BAL, HOU (ESPN skips 31-32)
-] as const
-
-async function syncNFL(): Promise<number> {
+async function syncESPNTeamBySport(
+  espnPath: string,
+  teamIds: readonly number[],
+  sportLabel: string,
+): Promise<number> {
   const allPlayers: Omit<RosterPlayer, 'updatedAt'>[] = []
   const seenIds = new Set<number>()
 
   const BATCH_SIZE = 8
-  for (let i = 0; i < NFL_TEAM_IDS.length; i += BATCH_SIZE) {
-    const batch = NFL_TEAM_IDS.slice(i, i + BATCH_SIZE)
+  for (let i = 0; i < teamIds.length; i += BATCH_SIZE) {
+    const batch = teamIds.slice(i, i + BATCH_SIZE)
 
     const results = await Promise.allSettled(
       batch.map(async teamId => {
-        const url = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${teamId}/roster`
+        const url = `https://site.api.espn.com/apis/site/v2/sports/${espnPath}/teams/${teamId}/roster`
         const res = await fetch(url, { signal: AbortSignal.timeout(30000) })
         if (!res.ok) {
-          throw new Error(`NFL team ${teamId} HTTP ${res.status}: ${res.statusText}`)
+          throw new Error(`${sportLabel} team ${teamId} HTTP ${res.status}: ${res.statusText}`)
         }
         const data: ESPNTeamRosterResponse = await res.json()
         const athletes: ESPNAthlete[] = []
@@ -149,7 +132,7 @@ async function syncNFL(): Promise<number> {
 
     for (const result of results) {
       if (result.status === 'rejected') {
-        console.warn(`[RosterSync] NFL team fetch failed: ${result.reason}`)
+        console.warn(`[RosterSync] ${sportLabel} team fetch failed: ${result.reason}`)
         continue
       }
       const { teamName, teamIdNum, athletes } = result.value
@@ -169,20 +152,44 @@ async function syncNFL(): Promise<number> {
           team: teamName,
           teamId: teamIdNum,
           active: p.active ?? true,
-          sport: 'NFL',
+          sport: sportLabel,
         })
       }
     }
 
-    // Small delay between batches to be respectful to the ESPN API
-    if (i + BATCH_SIZE < NFL_TEAM_IDS.length) {
+    if (i + BATCH_SIZE < teamIds.length) {
       await new Promise(r => setTimeout(r, 200))
     }
   }
 
   upsertPlayers(allPlayers)
-  console.log(`[RosterSync] NFL: synced ${allPlayers.length} players`)
+  console.log(`[RosterSync] ${sportLabel}: synced ${allPlayers.length} players`)
   return allPlayers.length
+}
+
+// ─── NBA (team-by-team via ESPN site API) ───────────────────────────────────
+
+const NBA_TEAM_IDS = [
+   1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+] as const
+
+async function syncNBA(): Promise<number> {
+  return syncESPNTeamBySport('basketball/nba', NBA_TEAM_IDS, 'NBA')
+}
+
+// ─── NFL (team-by-team via ESPN site API) ───────────────────────────────────
+
+const NFL_TEAM_IDS = [
+   1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+  33, 34,   // BAL, HOU (ESPN skips 31-32)
+] as const
+
+async function syncNFL(): Promise<number> {
+  return syncESPNTeamBySport('football/nfl', NFL_TEAM_IDS, 'NFL')
 }
 
 // ─── NHL ────────────────────────────────────────────────────────────────────
@@ -211,7 +218,6 @@ async function syncNHL(): Promise<number> {
   const allPlayers: Omit<RosterPlayer, 'updatedAt'>[] = []
   const seenIds = new Set<number>()
 
-  // Process teams in batches of 8 to avoid hammering the API
   const BATCH_SIZE = 8
   for (let i = 0; i < NHL_TEAMS.length; i += BATCH_SIZE) {
     const batch = NHL_TEAMS.slice(i, i + BATCH_SIZE)
@@ -258,7 +264,6 @@ async function syncNHL(): Promise<number> {
       }
     }
 
-    // Small delay between batches to be respectful to the NHL API
     if (i + BATCH_SIZE < NHL_TEAMS.length) {
       await new Promise(r => setTimeout(r, 200))
     }
@@ -271,17 +276,42 @@ async function syncNHL(): Promise<number> {
 
 // ─── Public API ─────────────────────────────────────────────────────────────
 
-export async function syncRoster(): Promise<number> {
-  let total = 0
+export interface RosterSyncResult {
+  total: number
+  failures: string[]
+}
 
-  total += await syncMLB()
-  total += await syncNBA()
-  total += await syncNFL()
-  total += await syncNHL()
+export async function syncRoster(): Promise<RosterSyncResult> {
+  const sports: { name: string; fn: () => Promise<number> }[] = [
+    { name: 'MLB', fn: syncMLB },
+    { name: 'NBA', fn: syncNBA },
+    { name: 'NFL', fn: syncNFL },
+    { name: 'NHL', fn: syncNHL },
+  ]
+
+  let total = 0
+  const failures: string[] = []
+
+  for (const sport of sports) {
+    try {
+      const count = await withRetry(sport.fn, 2, 5000)
+      total += count
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      console.error(`[RosterSync] ${sport.name} failed after retries: ${message}`)
+      failures.push(sport.name)
+    }
+  }
 
   invalidateFuseCache()
-  console.log(`[RosterSync] Complete: ${total} players upserted across all sports`)
-  return total
+
+  if (failures.length > 0) {
+    console.warn(`[RosterSync] Partial: ${failures.join(', ')} failed. ${total} players from ${4 - failures.length} sport(s).`)
+  } else {
+    console.log(`[RosterSync] Complete: ${total} players upserted across all sports`)
+  }
+
+  return { total, failures }
 }
 
 export async function initRosterIfEmpty(): Promise<void> {

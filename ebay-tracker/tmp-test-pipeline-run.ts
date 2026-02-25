@@ -10,10 +10,35 @@ dotenv.config()
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import { extractPlayerNames, extractPlayerNamesAI, loadSkipRules } from './src/lib/news/index'
+import { loadSkipRules } from './src/lib/news/index'
+import { extractPlayerNames } from './src/lib/news/matching/name-utils'
 import { fetchESPNRSS } from './src/lib/news/sources/espn-rss'
 import { insertIfNew, markProcessed } from './src/lib/db/news'
 import { matchPlayerName } from './src/lib/news/matching/player-matcher'
+import { getAnthropicClient } from './src/lib/ai/client'
+
+async function extractPlayerNamesAI(title: string, body: string | null): Promise<string[]> {
+  try {
+    const client = getAnthropicClient()
+    const text = body ? `Headline: ${title}\nBody: ${body}` : `Headline: ${title}`
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 256,
+      system: `You extract athlete names from sports news headlines.
+Return ONLY a JSON array of full player names. Example: ["Luka Doncic", "Anthony Davis"]
+If no players mentioned, return []. Do NOT include team names, coaches, or non-players.`,
+      messages: [{ role: 'user', content: text }],
+    })
+    const content = message.content[0]
+    if (!content || content.type !== 'text') return []
+    const cleaned = content.text.trim().replace(/^```json?\s*/i, '').replace(/```\s*$/, '')
+    const parsed = JSON.parse(cleaned)
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((n: unknown) => typeof n === 'string' && (n as string).length > 1)
+  } catch {
+    return []
+  }
+}
 import { runRegexImprovementJob } from './src/lib/news/regex-improvement-service'
 import { getDb } from './src/lib/db/client'
 import type { RawNewsItem } from './src/types'

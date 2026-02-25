@@ -1,0 +1,608 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#content"
+  - banner [ref=e3]:
+    - generic [ref=e9]:
+      - link [ref=e14] [cursor=pointer]:
+        - /url: https://appleabacare.com
+      - generic [ref=e18]:
+        - navigation "Menu" [ref=e19]:
+          - list [ref=e20]:
+            - listitem [ref=e21]:
+              - link "Home" [ref=e22] [cursor=pointer]:
+                - /url: https://appleabacare.com/
+            - listitem [ref=e23]:
+              - link "About" [ref=e24] [cursor=pointer]:
+                - /url: "#"
+                - text: About
+                - img [ref=e26]
+            - listitem [ref=e28]:
+              - link "Therapy" [ref=e29] [cursor=pointer]:
+                - /url: "#"
+                - text: Therapy
+                - img [ref=e31]
+            - listitem [ref=e33]:
+              - link "Enrollment Form" [ref=e34] [cursor=pointer]:
+                - /url: https://appleabacare.com/enrollment-form/
+            - listitem [ref=e35]:
+              - link "Careers" [ref=e36] [cursor=pointer]:
+                - /url: https://appleabacare.com/careers/
+            - listitem [ref=e37]:
+              - link "Contact Us" [ref=e38] [cursor=pointer]:
+                - /url: https://appleabacare.com/contact-us/
+        - text:  
+      - link "201-2700-ABA" [ref=e44] [cursor=pointer]:
+        - /url: tel:12012700222
+        - generic [ref=e45]:
+          - img [ref=e47]
+          - generic [ref=e49]: 201-2700-ABA
+    - text:  
+  - main [ref=e50]:
+    - generic [ref=e52]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - heading "PREMIER CONCIERGE" [level=6] [ref=e58]
+          - heading "ABA Therapy in New Jersey" [level=1] [ref=e61]
+          - generic [ref=e64]:
+            - link "Call Expert" [ref=e66] [cursor=pointer]:
+              - /url: tel:2012700222
+              - generic [ref=e67]: 
+            - generic [ref=e68]:
+              - link "Call Expert" [ref=e70] [cursor=pointer]:
+                - /url: tel:2012700222
+              - paragraph [ref=e71]:
+                - link "201-2700-ABA" [ref=e72] [cursor=pointer]:
+                  - /url: tel:2012700222
+          - generic [ref=e75]: Experience high-end, personalized ABA therapy in the comfort of your home with our certified ABA therapists in New Jersey. Apple ABA offers concierge-level in-home therapy with no waitlist.
+        - generic [ref=e76]:
+          - heading "SCHEDULE A FREE CONSULTATION" [level=2] [ref=e79]
+          - form "Request A Phone Call Home Page" [ref=e82]:
+            - generic [ref=e83]:
+              - generic [ref=e84]:
+                - generic [ref=e85] [cursor=pointer]: Your Name
+                - textbox "Your Name Your Name" [ref=e86]:
+                  - /placeholder: Your Name
+              - generic [ref=e87]:
+                - generic [ref=e88] [cursor=pointer]: Phone
+                - textbox "Phone Phone" [ref=e89]:
+                  - /placeholder: Phone
+              - generic [ref=e90]:
+                - generic [ref=e91] [cursor=pointer]: Email
+                - textbox "Email Email" [ref=e92]:
+                  - /placeholder: Email
+              - generic [ref=e93]:
+                - generic [ref=e94] [cursor=pointer]: Insurance
+                - generic [ref=e95]:
+                  - generic:
+                    - img
+                  - combobox "Insurance Insurance" [ref=e96]:
+                    - option [selected]
+                    - option "Commercial Insurance"
+                    - option "Medicaid Insurance"
+                    - option "No Insurance"
+              - generic [ref=e97]:
+                - generic [ref=e98] [cursor=pointer]: Zipcode
+                - textbox "Zipcode" [ref=e99]
+              - generic [ref=e100]:
+                - text: By clicking “Speak With a Specialist” I agree to the
+                - link "Terms of Use" [ref=e101] [cursor=pointer]:
+                  - /url: https://appleabacare.com/terms-and-conditions/
+                - text: and Privacy Policy. I consent to receive emails, texts, and calls, which may be automated. Consent is not required to buy services, and I can opt out anytime. Message and data rates may apply.
+              - button "Speak With a Specialist" [ref=e103] [cursor=pointer]:
+                - generic [ref=e105]: Speak With a Specialist
+            - generic [ref=e106]:
+              - generic [ref=e107]: "Alternative:"
+              - 'textbox "Alternative: Alternative:" [ref=e108]'
+        - generic [ref=e109]:
+          - generic [ref=e112]: Most Insurances Accepted
+          - region "Image Carousel" [ref=e115]:
+            - generic [ref=e116]:
+              - group [ref=e117]:
+                - figure [ref=e118]:
+                  - img [ref=e119]
+              - group [ref=e120]:
+                - figure [ref=e121]:
+                  - img [ref=e122]
+              - group [ref=e123]:
+                - figure [ref=e124]:
+                  - img [ref=e125]
+              - group [ref=e126]:
+                - figure [ref=e127]:
+                  - img [ref=e128]
+              - group [ref=e129]:
+                - figure [ref=e130]:
+                  - img [ref=e131]
+              - group [ref=e132]:
+                - figure [ref=e133]:
+                  - img [ref=e134]
+              - group [ref=e676]:
+                - figure [ref=e136]:
+                  - img [ref=e677]
+              - group "2 / 7" [ref=e138]:
+                - figure [ref=e139]:
+                  - img "image-removebg-preview (1)" [ref=e140]
+              - group "3 / 7" [ref=e141]:
+                - figure [ref=e142]:
+                  - img "United-Healthcare-logo-3-1-2048x1097-removebg-preview" [ref=e143]
+              - group "4 / 7" [ref=e144]:
+                - figure [ref=e145]:
+                  - img "image (2)" [ref=e146]
+              - group "5 / 7" [ref=e147]:
+                - figure [ref=e148]:
+                  - img "avo3pg2o2 (1)" [ref=e149]
+              - group "6 / 7" [ref=e150]:
+                - figure [ref=e151]:
+                  - img "agp-logo" [ref=e152]
+              - group "7 / 7" [ref=e678]:
+                - figure [ref=e154]:
+                  - img "image-removebg-preview" [ref=e679]
+              - group [ref=e156]:
+                - figure [ref=e157]:
+                  - img [ref=e158]
+              - group [ref=e159]:
+                - figure [ref=e160]:
+                  - img [ref=e161]
+              - group [ref=e162]:
+                - figure [ref=e163]:
+                  - img [ref=e164]
+              - group [ref=e165]:
+                - figure [ref=e166]:
+                  - img [ref=e167]
+              - group [ref=e168]:
+                - figure [ref=e169]:
+                  - img [ref=e170]
+              - group [ref=e171]:
+                - figure [ref=e172]:
+                  - img [ref=e173]
+      - generic [ref=e175]:
+        - heading "What we offer" [level=6] [ref=e178]
+        - 'heading "Apple ABA: Helping children discover their inner strength and resilience" [level=2] [ref=e181]'
+      - generic [ref=e185]:
+        - generic [ref=e186]:
+          - img "Apple ABA Therapy" [ref=e189]
+          - heading "Home Base Therapy" [level=2] [ref=e192]
+          - paragraph [ref=e195]: This ensures comfort and consistency for your child. This allows consistency as well as comfort for your child.
+          - link "Learn More" [ref=e199] [cursor=pointer]:
+            - /url: https://appleabacare.com/home-based-aba-therapy/
+            - generic [ref=e201]: Learn More
+        - generic [ref=e202]:
+          - img "ABA Therapy New Jersey Apple ABA" [ref=e205]
+          - heading "Assessment" [level=2] [ref=e208]
+          - paragraph [ref=e211]: We conduct thorough evaluations so that we know exactly what your child’s unique challenges and needs are.
+          - link "Learn More" [ref=e215] [cursor=pointer]:
+            - /url: https://appleabacare.com/assessment/
+            - generic [ref=e217]: Learn More
+        - generic [ref=e218]:
+          - img "Kids ABA Therapy" [ref=e221]
+          - heading "Concierge Care" [level=2] [ref=e224]
+          - paragraph [ref=e227]: Our New Jersey ABA therapists deliver high-end, one-on-one care with personalized attention and flexible scheduling.
+          - link "Learn More" [ref=e231] [cursor=pointer]:
+            - /url: https://appleabacare.com/concierge-care/
+            - generic [ref=e233]: Learn More
+      - generic [ref=e235]:
+        - generic [ref=e237]:
+          - heading "Our Process" [level=2] [ref=e240]
+          - paragraph [ref=e243]: Learn more about how we adapt our restorative ABA therapy approach to your child’s unique needs and promote their development.
+          - link "Get Started" [ref=e247] [cursor=pointer]:
+            - /url: "#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6Ijc2OCIsInRvZ2dsZSI6ZmFsc2V9"
+            - generic [ref=e249]: Get Started
+        - generic [ref=e253]:
+          - generic [ref=e255]:
+            - heading "Enrollment" [level=2] [ref=e256]
+            - paragraph [ref=e257]: Easy and efficient enrollment procedure to allow easy integration of your child in our ABA Autism therapy program.
+          - generic [ref=e259]:
+            - heading "Insurance Intake" [level=2] [ref=e260]
+            - paragraph [ref=e261]: Simple process to assist in navigating through insurance coverage of ABA Autism therapy services.
+          - generic [ref=e263]:
+            - heading "Insurance Approval" [level=2] [ref=e264]
+            - paragraph [ref=e265]: Help obtaining insurance approval when accessing ABA Autism therapy services.
+          - generic [ref=e267]:
+            - heading "Schedule Initial Assessment" [level=2] [ref=e268]
+            - paragraph [ref=e269]: ASchedule an initial assessment to discover what your child needs and goals are.
+          - generic [ref=e271]:
+            - heading "Begin Therapy" [level=2] [ref=e272]
+            - paragraph [ref=e273]: Start personalized ABA Autism therapy sessions that can help your child’s growth and development.
+          - generic [ref=e275]:
+            - heading "Coordination of Care" [level=2] [ref=e276]
+            - paragraph [ref=e277]: An effort to collaboratively align therapy efforts across settings in order to provide comprehensive support and long term progress.
+      - generic [ref=e280]:
+        - iframe [ref=e680]:
+          - generic "YouTube Video Player" [ref=f3e3]:
+            - generic [ref=f3e5]:
+              - link "Photo image of Apple ABA" [ref=f3e7] [cursor=pointer]:
+                - /url: https://www.youtube.com/channel/UChGb33FbgHZoSivdiSJvRew?embeds_referring_euri=https%3A%2F%2Fappleabacare.com%2F&embeds_referring_origin=https%3A%2F%2Fappleabacare.com
+              - 'link "Get Started with Apple ABA: Easy Steps to Concierge Care ABA Therapy in New Jersey" [ref=f3e10] [cursor=pointer]':
+                - /url: https://www.youtube.com/watch?v=KNfAtU5lchI
+              - button "Copy link" [ref=f3e12] [cursor=pointer]:
+                - generic [ref=f3e13]:
+                  - img
+                - generic [ref=f3e14]: Copy link
+            - generic [ref=f3e16]:
+              - generic [ref=f3e17] [cursor=pointer]:
+                - slider "Seek slider" [ref=f3e18]
+                - generic:
+                  - generic:
+                    - generic:
+                      - slider "Click or scroll the panel for the precise seeking."
+              - generic [ref=f3e29]:
+                - generic [ref=f3e30]:
+                  - button "Pause (k)" [ref=f3e31] [cursor=pointer]:
+                    - img
+                  - generic [ref=f3e32]:
+                    - button "Unmute (m)" [ref=f3e33] [cursor=pointer]:
+                      - generic [ref=f3e34]:
+                        - img
+                    - slider "Volume"
+                  - generic "0 Minutes 0 Seconds of 2 Minutes 43 Seconds" [ref=f3e38]: 0:00 / 2:43
+                - generic [ref=f3e39]:
+                  - button "Subtitles/closed captions unavailable" [ref=f3e40] [cursor=pointer]:
+                    - img
+                  - button "Settings" [ref=f3e41] [cursor=pointer]:
+                    - img
+                  - link "Watch on YouTube" [ref=f3e42] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=KNfAtU5lchI
+                    - img
+                  - button "Full screen (f)" [ref=f3e43] [cursor=pointer]:
+                    - img
+        - generic [ref=e285]:
+          - heading "Building a brighter future for children, one step at a time." [level=2] [ref=e288]
+          - paragraph [ref=e291]: At Apple ABA, our mission is to provide New Jersey families with exceptional in-home ABA therapy, delivered by experienced, licensed ABA therapists in New Jersey to achieve meaningful, lasting results.
+          - link "Get Started" [ref=e295] [cursor=pointer]:
+            - /url: "#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6Ijc2OCIsInRvZ2dsZSI6ZmFsc2V9"
+            - generic [ref=e297]: Get Started
+      - generic [ref=e298]:
+        - generic [ref=e300]:
+          - group "1 / 5"
+          - group "2 / 5"
+          - group "3 / 5"
+          - group "4 / 5"
+          - group "5 / 5"
+          - group "1 / 5"
+          - group "2 / 5" [ref=e681]
+          - group "3 / 5"
+          - group "4 / 5"
+          - group "5 / 5"
+          - group "1 / 5"
+          - group "2 / 5"
+          - group "3 / 5"
+          - group "4 / 5"
+          - group "5 / 5"
+        - generic [ref=e303]:
+          - heading "Empowering Children with Personalized ABA Therapy at Apple ABA" [level=2] [ref=e306]
+          - paragraph [ref=e309]: Navigating Autism Spectrum Disorder requires a specialized approach. At Apple ABA, we provide life changing therapy to your child based on their individual needs.
+          - generic [ref=e310]:
+            - generic [ref=e314]:
+              - img [ref=e317]
+              - generic [ref=e320]:
+                - generic [ref=e321]: Overcoming Developmental Challenges
+                - paragraph [ref=e322]: ABA therapy helps children overcome many behavioral obstacles, so they can truly begin to thrive within educational, social, and home environments.
+            - generic [ref=e326]:
+              - img [ref=e329]
+              - generic [ref=e336]:
+                - generic [ref=e337]: Tracking Progress and Celebrating Success
+                - paragraph [ref=e338]: Our dedicated ABA specialists in New Jersey track progress closely, documenting insights from every session to guide continuous growth.
+      - region "Slides" [ref=e352]:
+        - generic [ref=e353]:
+          - group "3 / 5" [ref=e354]:
+            - generic [ref=e355]:
+              - generic [ref=e356]:
+                - generic [ref=e357]:
+                  - generic [ref=e358]: Andrina S.
+                  - generic [ref=e359]:
+                    - generic [ref=e360]: ★ ☆
+                    - generic [ref=e361]: ★ ☆
+                    - generic [ref=e362]: ★ ☆
+                    - generic [ref=e363]: ★ ☆
+                    - generic [ref=e364]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e366]: Choosing Apple ABA was the best decision we made for our family. Their expertise and dedication have exceeded our expectations.
+          - group "4 / 5" [ref=e367]:
+            - generic [ref=e368]:
+              - generic [ref=e369]:
+                - generic [ref=e370]:
+                  - generic [ref=e371]: Jasmine M.
+                  - generic [ref=e372]:
+                    - generic [ref=e373]: ★ ☆
+                    - generic [ref=e374]: ★ ☆
+                    - generic [ref=e375]: ★ ☆
+                    - generic [ref=e376]: ★ ☆
+                    - generic [ref=e377]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e379]: Our daughter has shown remarkable improvement since starting with Apple ABA. Their team's commitment to her success is truly inspiring.
+          - group "5 / 5" [ref=e380]:
+            - generic [ref=e381]:
+              - generic [ref=e382]:
+                - generic [ref=e383]:
+                  - generic [ref=e384]: Kim R.
+                  - generic [ref=e385]:
+                    - generic [ref=e386]: ★ ☆
+                    - generic [ref=e387]: ★ ☆
+                    - generic [ref=e388]: ★ ☆
+                    - generic [ref=e389]: ★ ☆
+                    - generic [ref=e390]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e392]: The team at Apple goes above and beyond. They've created a supportive environment where our child feels comfortable and motivated.
+          - group "1 / 5" [ref=e393]:
+            - generic [ref=e394]:
+              - generic [ref=e395]:
+                - generic [ref=e396]:
+                  - generic [ref=e397]: Koby K.
+                  - generic [ref=e398]:
+                    - generic [ref=e399]: ★ ☆
+                    - generic [ref=e400]: ★ ☆
+                    - generic [ref=e401]: ★ ☆
+                    - generic [ref=e402]: ★ ☆
+                    - generic [ref=e403]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e405]: We can’t say enough about Apple ABA! The concierge care they provide is unmatched! They really know how to provide exceptional care for the children. I did not know white glove service was an option in ABA until we used Apple ABA!
+          - group "2 / 5" [ref=e406]:
+            - generic [ref=e407]:
+              - generic [ref=e408]:
+                - generic [ref=e409]:
+                  - generic [ref=e410]: Emma H.
+                  - generic [ref=e411]:
+                    - generic [ref=e412]: ★ ☆
+                    - generic [ref=e413]: ★ ☆
+                    - generic [ref=e414]: ★ ☆
+                    - generic [ref=e415]: ★ ☆
+                    - generic [ref=e416]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e418]: We are so grateful for Apple ABA. They've not only supported our child but also provided us with invaluable guidance and understanding.
+          - group "3 / 5" [ref=e419]:
+            - generic [ref=e420]:
+              - generic [ref=e421]:
+                - generic [ref=e422]:
+                  - generic [ref=e423]: Andrina S.
+                  - generic [ref=e424]:
+                    - generic [ref=e425]: ★ ☆
+                    - generic [ref=e426]: ★ ☆
+                    - generic [ref=e427]: ★ ☆
+                    - generic [ref=e428]: ★ ☆
+                    - generic [ref=e429]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e431]: Choosing Apple ABA was the best decision we made for our family. Their expertise and dedication have exceeded our expectations.
+          - group "4 / 5" [ref=e432]:
+            - generic [ref=e433]:
+              - generic [ref=e434]:
+                - generic [ref=e435]:
+                  - generic [ref=e436]: Jasmine M.
+                  - generic [ref=e437]:
+                    - generic [ref=e438]: ★ ☆
+                    - generic [ref=e439]: ★ ☆
+                    - generic [ref=e440]: ★ ☆
+                    - generic [ref=e441]: ★ ☆
+                    - generic [ref=e442]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e444]: Our daughter has shown remarkable improvement since starting with Apple ABA. Their team's commitment to her success is truly inspiring.
+          - group "5 / 5" [ref=e445]:
+            - generic [ref=e446]:
+              - generic [ref=e447]:
+                - generic [ref=e448]:
+                  - generic [ref=e449]: Kim R.
+                  - generic [ref=e450]:
+                    - generic [ref=e451]: ★ ☆
+                    - generic [ref=e452]: ★ ☆
+                    - generic [ref=e453]: ★ ☆
+                    - generic [ref=e454]: ★ ☆
+                    - generic [ref=e455]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e457]: The team at Apple goes above and beyond. They've created a supportive environment where our child feels comfortable and motivated.
+          - group "1 / 5" [ref=e458]:
+            - generic [ref=e459]:
+              - generic [ref=e460]:
+                - generic [ref=e461]:
+                  - generic [ref=e462]: Koby K.
+                  - generic [ref=e463]:
+                    - generic [ref=e464]: ★ ☆
+                    - generic [ref=e465]: ★ ☆
+                    - generic [ref=e466]: ★ ☆
+                    - generic [ref=e467]: ★ ☆
+                    - generic [ref=e468]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e470]: We can’t say enough about Apple ABA! The concierge care they provide is unmatched! They really know how to provide exceptional care for the children. I did not know white glove service was an option in ABA until we used Apple ABA!
+          - group "2 / 5" [ref=e471]:
+            - generic [ref=e472]:
+              - generic [ref=e473]:
+                - generic [ref=e474]:
+                  - generic [ref=e475]: Emma H.
+                  - generic [ref=e476]:
+                    - generic [ref=e477]: ★ ☆
+                    - generic [ref=e478]: ★ ☆
+                    - generic [ref=e479]: ★ ☆
+                    - generic [ref=e480]: ★ ☆
+                    - generic [ref=e481]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e483]: We are so grateful for Apple ABA. They've not only supported our child but also provided us with invaluable guidance and understanding.
+          - group "3 / 5" [ref=e484]:
+            - generic [ref=e485]:
+              - generic [ref=e486]:
+                - generic [ref=e487]:
+                  - generic [ref=e488]: Andrina S.
+                  - generic [ref=e489]:
+                    - generic [ref=e490]: ★ ☆
+                    - generic [ref=e491]: ★ ☆
+                    - generic [ref=e492]: ★ ☆
+                    - generic [ref=e493]: ★ ☆
+                    - generic [ref=e494]: ★ ☆
+                - generic "Read More"
+              - generic [ref=e496]: Choosing Apple ABA was the best decision we made for our family. Their expertise and dedication have exceeded our expectations.
+      - generic [ref=e504]:
+        - heading "Have questions as a parent? Our team has the answers!" [level=3] [ref=e507]:
+          - text: Have questions as a parent?
+          - text: Our team has the answers!
+        - heading "Request A Free Consultation Today!" [level=4] [ref=e510]:
+          - generic [ref=e511]:
+            - text: Request A
+            - strong [ref=e512]: Free Consultation
+            - text: Today!
+        - form "Request A Phone Call" [ref=e515]:
+          - generic [ref=e516]:
+            - generic [ref=e517]:
+              - generic [ref=e518] [cursor=pointer]: Your Name
+              - textbox "Your Name" [ref=e519]
+            - generic [ref=e520]:
+              - generic [ref=e521] [cursor=pointer]: Phone
+              - textbox "Only numbers and phone characters (#, -, *, etc) are accepted." [ref=e522]:
+                - /placeholder: Phone
+            - generic [ref=e523]:
+              - generic [ref=e524] [cursor=pointer]: Email
+              - textbox "Email" [ref=e525]
+            - generic [ref=e526]:
+              - generic [ref=e527] [cursor=pointer]: Insurance
+              - generic [ref=e528]:
+                - generic:
+                  - img
+                - combobox [ref=e529]:
+                  - option [selected]
+                  - option "Medicaid Insurance"
+                  - option "Commercial Insurance"
+                  - option "No Insurance"
+                  - option
+            - generic [ref=e530]:
+              - text: By clicking “Speak With a Specialist” I agree to the
+              - link "Terms of Use" [ref=e531] [cursor=pointer]:
+                - /url: https://appleabacare.com/terms-and-conditions/
+              - text: and
+              - link "Privacy Policy" [ref=e532] [cursor=pointer]:
+                - /url: https://appleabacare.com/privacy-policy/
+              - text: . I consent to receive emails, texts, and calls, which may be automated. Consent is not required to buy services, and I can opt out anytime. Message and data rates may apply.
+            - button "Speak With a Specialist" [ref=e534] [cursor=pointer]:
+              - generic [ref=e536]: Speak With a Specialist
+          - generic [ref=e537]:
+            - generic [ref=e538]: "Alternative:"
+            - textbox [ref=e539]
+  - contentinfo [ref=e541]:
+    - generic [ref=e543]:
+      - generic [ref=e545]:
+        - link [ref=e548] [cursor=pointer]:
+          - /url: https://appleabacare.com
+        - paragraph [ref=e551]: Apple ABA specializes in providing premier, personalized ABA therapy services in New Jersey, ensuring exceptional care for children with autism. Our expert team delivers in-home, high-end ABA therapy to help children thrive in a familiar and comfortable environment.
+      - generic [ref=e555]:
+        - generic [ref=e557]:
+          - heading "Menu" [level=4] [ref=e560]
+          - navigation "Menu" [ref=e563]:
+            - list [ref=e564]:
+              - listitem [ref=e565]:
+                - link "Home" [ref=e566] [cursor=pointer]:
+                  - /url: https://appleabacare.com/
+              - listitem [ref=e567]:
+                - link "About Us" [ref=e568] [cursor=pointer]:
+                  - /url: https://appleabacare.com/about-us/
+              - listitem [ref=e569]:
+                - link "Contact Us" [ref=e570] [cursor=pointer]:
+                  - /url: https://appleabacare.com/contact-us/
+              - listitem [ref=e571]:
+                - link "Careers" [ref=e572] [cursor=pointer]:
+                  - /url: https://appleabacare.com/careers/
+              - listitem [ref=e573]:
+                - link "Areas We Serve" [ref=e574] [cursor=pointer]:
+                  - /url: https://appleabacare.com/areas-we-serve/
+              - listitem [ref=e575]:
+                - link "Insurance FAQ" [ref=e576] [cursor=pointer]:
+                  - /url: https://appleabacare.com/insurance-faq/
+              - listitem [ref=e577]:
+                - link "Concierge Care FAQ" [ref=e578] [cursor=pointer]:
+                  - /url: https://appleabacare.com/concierge-care-faq/
+              - listitem [ref=e579]:
+                - link "Blog" [ref=e580] [cursor=pointer]:
+                  - /url: https://appleabacare.com/blog/
+        - generic [ref=e582]:
+          - heading "Services" [level=4] [ref=e585]
+          - navigation "Menu" [ref=e588]:
+            - list [ref=e589]:
+              - listitem [ref=e590]:
+                - link "Enrollment Form" [ref=e591] [cursor=pointer]:
+                  - /url: https://appleabacare.com/enrollment-form/
+              - listitem [ref=e592]:
+                - link "Home Based ABA Therapy" [ref=e593] [cursor=pointer]:
+                  - /url: https://appleabacare.com/home-based-aba-therapy/
+              - listitem [ref=e594]:
+                - link "Concierge Care" [ref=e595] [cursor=pointer]:
+                  - /url: https://appleabacare.com/concierge-care/
+              - listitem [ref=e596]:
+                - link "Assessment" [ref=e597] [cursor=pointer]:
+                  - /url: https://appleabacare.com/assessment/
+        - generic [ref=e599]:
+          - heading "Company" [level=4] [ref=e602]
+          - list [ref=e605]:
+            - listitem [ref=e606]:
+              - link "201-270-0222" [ref=e607] [cursor=pointer]:
+                - /url: tel:2012700222
+                - generic [ref=e609]: 
+                - generic [ref=e610]: 201-270-0222
+            - listitem [ref=e611]:
+              - link "info@appleabacare.com" [ref=e612] [cursor=pointer]:
+                - /url: mailto:info@appleabacare.com
+                - generic [ref=e614]: 
+                - generic [ref=e615]: info@appleabacare.com
+            - listitem [ref=e616]:
+              - generic [ref=e618]: 
+              - generic [ref=e619]:
+                - text: "447 Broadway 2nd FL #615"
+                - text: New York, NY 10013
+            - listitem [ref=e620]:
+              - generic [ref=e622]: 
+              - generic [ref=e623]:
+                - text: "479 State Route 17 N #2026"
+                - text: Mahwah, NJ 07430
+          - list [ref=e626]:
+            - listitem [ref=e627]:
+              - link "Instagram" [ref=e628] [cursor=pointer]:
+                - /url: https://www.instagram.com/appleabacare?igsh=eHcxeG11eHQxYWls
+                - generic [ref=e629]: Instagram
+                - img [ref=e630]
+            - listitem [ref=e632]:
+              - link "Facebook-f" [ref=e633] [cursor=pointer]:
+                - /url: https://www.facebook.com/profile.php?id=61560814697088
+                - generic [ref=e634]: Facebook-f
+                - img [ref=e635]
+            - listitem [ref=e637]:
+              - link "X-twitter" [ref=e638] [cursor=pointer]:
+                - /url: https://x.com/AppleABA_Autism
+                - generic [ref=e639]: X-twitter
+                - img [ref=e640]
+            - listitem [ref=e642]:
+              - link "Linkedin" [ref=e643] [cursor=pointer]:
+                - /url: https://www.linkedin.com/company/104877591/admin/dashboard/
+                - generic [ref=e644]: Linkedin
+                - img [ref=e645]
+            - listitem [ref=e647]:
+              - link "Youtube" [ref=e648] [cursor=pointer]:
+                - /url: https://www.youtube.com/@apppleABA
+                - generic [ref=e649]: Youtube
+                - img [ref=e650]
+    - generic [ref=e653]:
+      - generic [ref=e658]: Copyright © 2026 | Apple ABA | All Rights Reserved
+      - navigation "Menu" [ref=e663]:
+        - list [ref=e664]:
+          - listitem [ref=e665]:
+            - link "Privacy Policy" [ref=e666] [cursor=pointer]:
+              - /url: https://appleabacare.com/privacy-policy/
+          - listitem [ref=e667]:
+            - link "Terms and Conditions" [ref=e668] [cursor=pointer]:
+              - /url: https://appleabacare.com/terms-and-conditions/
+          - listitem [ref=e669]:
+            - link "Notice of Information" [ref=e670] [cursor=pointer]:
+              - /url: https://appleabacare.com/notice-of-information/
+          - listitem [ref=e671]:
+            - link "Billing" [ref=e672] [cursor=pointer]:
+              - /url: https://appleabacare.com/billing/
+  - generic [ref=e675]: desktop
+  - generic:
+    - generic:
+      - generic:
+        - generic [ref=e683]:
+          - generic [ref=e684]:
+            - button [ref=e685] [cursor=pointer]
+            - generic [ref=e687]: How can we help you today? I am looking...
+          - generic [ref=e689]:
+            - button "For ABA Therapy" [ref=e690] [cursor=pointer]
+            - button "To Enroll for ABA Therapy" [ref=e691] [cursor=pointer]
+            - button "just to browse" [ref=e692] [cursor=pointer]
+          - button "Close chat widget" [ref=e694] [cursor=pointer]:
+            - img [ref=e695]
+        - generic "Minimize":
+          - button "Close chat widget" [ref=e698] [cursor=pointer]:
+            - img [ref=e700]
+            - img [ref=e704]
+          - generic: "1"

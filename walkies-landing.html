@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walkies — Skip the Conference Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --forest: #2d4a3e;
+            --sage: #7d9b8a;
+            --cream: #f8f5f0;
+            --warm-white: #fffef9;
+            --bark: #3d3129;
+            --trail: #c4b49a;
+            --sunrise: #e8a87c;
+            --sky: #89b4c8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--bark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grain texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 24px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--cream) 60%, transparent);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-cta {
+            background: var(--forest);
+            color: var(--cream);
+            padding: 12px 24px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--bark);
+            transform: translateY(-2px);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 720px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--trail);
+            color: var(--bark);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 32px;
+            animation: fadeSlideUp 0.6s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            color: var(--forest);
+            margin-bottom: 24px;
+            animation: fadeSlideUp 0.6s ease-out 0.1s backwards;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--sage);
+        }
+
+        .hero-subtitle {
+            font-size: 1.35rem;
+            color: var(--bark);
+            margin-bottom: 16px;
+            animation: fadeSlideUp 0.6s ease-out 0.2s backwards;
+            opacity: 0.85;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--bark);
+            opacity: 0.7;
+            margin-bottom: 40px;
+            max-width: 540px;
+            animation: fadeSlideUp 0.6s ease-out 0.3s backwards;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--forest);
+            color: var(--cream);
+            padding: 18px 36px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeSlideUp 0.6s ease-out 0.4s backwards;
+        }
+
+        .hero-cta:hover {
+            background: var(--bark);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(45, 74, 62, 0.25);
+        }
+
+        .hero-cta svg {
+            transition: transform 0.3s ease;
+        }
+
+        .hero-cta:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Floating shapes */
+        .hero-shapes {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 400px;
+            height: 400px;
+            opacity: 0.6;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 180px;
+            height: 180px;
+            background: var(--sage);
+            top: 20%;
+            left: 30%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 120px;
+            height: 120px;
+            background: var(--trail);
+            top: 50%;
+            left: 60%;
+            animation-delay: -2s;
+        }
+
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            background: var(--sunrise);
+            top: 70%;
+            left: 20%;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Anti-pitch section */
+        .anti-pitch {
+            padding: 100px 0;
+            background: var(--forest);
+            color: var(--cream);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .anti-pitch::before {
+            content: '"';
+            font-family: 'Fraunces', serif;
+            font-size: 40rem;
+            position: absolute;
+            top: -120px;
+            right: -40px;
+            opacity: 0.05;
+            line-height: 1;
+        }
+
+        .anti-pitch-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .anti-pitch h2 {
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+        }
+
+        .anti-pitch h2 span {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .anti-pitch-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .strike-list {
+            list-style: none;
+        }
+
+        .strike-list li {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            font-size: 1.1rem;
+        }
+
+        .strike-list .fake {
+            text-decoration: line-through;
+            opacity: 0.4;
+            flex: 1;
+        }
+
+        .strike-list .real {
+            color: var(--sunrise);
+            flex: 1;
+            font-weight: 500;
+        }
+
+        /* How it works */
+        .how-it-works {
+            padding: 120px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--forest);
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            color: var(--bark);
+            opacity: 0.7;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 40px 32px;
+            background: var(--warm-white);
+            border-radius: 24px;
+            border: 1px solid rgba(125, 155, 138, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 48px rgba(45, 74, 62, 0.1);
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: var(--trail);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--bark);
+            margin: 0 auto 24px;
+        }
+
+        .step h3 {
+            font-size: 1.35rem;
+            color: var(--forest);
+            margin-bottom: 12px;
+        }
+
+        .step p {
+            color: var(--bark);
+            opacity: 0.7;
+        }
+
+        /* Problems section */
+        .problems {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--sage) 0%, var(--forest) 100%);
+            color: var(--cream);
+        }
+
+        .problems h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .problem-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+        }
+
+        .problem-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .problem-card p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 120px 0;
+            background: var(--warm-white);
+        }
+
+        .testimonials h2 {
+            font-size: 2.5rem;
+            color: var(--forest);
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .testimonial {
+            background: var(--cream);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--trail);
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '"';
+            font-family: 'Fraunces', serif;
+            font-size: 6rem;
+            color: var(--sage);
+            opacity: 0.3;
+            position: absolute;
+            top: 10px;
+            left: 24px;
+            line-height: 1;
+        }
+
+        .testimonial-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--bark);
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--sage);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--cream);
+        }
+
+        .testimonial-info h5 {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            color: var(--forest);
+            margin-bottom: 2px;
+        }
+
+        .testimonial-info span {
+            font-size: 0.85rem;
+            color: var(--bark);
+            opacity: 0.6;
+        }
+
+        /* Credentials (subtle) */
+        .credentials {
+            padding: 80px 0;
+            border-top: 1px solid var(--trail);
+        }
+
+        .credentials-content {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .credentials-text {
+            flex: 1;
+        }
+
+        .credentials-text h3 {
+            font-size: 1.5rem;
+            color: var(--forest);
+            margin-bottom: 16px;
+        }
+
+        .credentials-text p {
+            color: var(--bark);
+            opacity: 0.8;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .credentials-stats {
+            display: flex;
+            gap: 40px;
+            flex-shrink: 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--forest);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--bark);
+            opacity: 0.6;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 120px 0;
+            background: var(--bark);
+            color: var(--cream);
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .final-cta h2 em {
+            font-style: italic;
+            color: var(--sunrise);
+        }
+
+        .final-cta p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .final-cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--cream);
+            color: var(--bark);
+            padding: 20px 48px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.15rem;
+            transition: all 0.3s ease;
+        }
+
+        .final-cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+        }
+
+        .final-note {
+            margin-top: 24px;
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            background: var(--bark);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p {
+            color: var(--cream);
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--cream);
+            opacity: 0.7;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero-shapes {
+                display: none;
+            }
+
+            .anti-pitch-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .problems-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .credentials-content {
+                flex-direction: column;
+            }
+
+            .credentials-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2,
+            .anti-pitch h2,
+            .problems h2,
+            .testimonials h2 {
+                font-size: 2rem;
+            }
+
+            .final-cta h2 {
+                font-size: 2.25rem;
+            }
+
+            .nav-cta {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">
+                <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/>
+                    <path d="M10 18 Q16 24 22 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <circle cx="11" cy="12" r="2" fill="currentColor"/>
+                    <circle cx="21" cy="12" r="2" fill="currentColor"/>
+                </svg>
+                walkies
+            </a>
+            <a href="#book" class="nav-cta">Book a Walkie</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-badge">🚶 Not a webinar. Not a mastermind.</span>
+                <h1>Let's go for a <em>walkie</em></h1>
+                <p class="hero-subtitle">You walk. I walk. We talk about whatever's breaking your business.</p>
+                <p class="hero-description">1-2 hours on the phone with someone who's seen the chaos before—and somehow survived it. No slides. No frameworks. Just real conversation while we both get our steps in.</p>
+                <a href="#book" class="hero-cta">
+                    Book a Walkie
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="hero-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- Anti-pitch -->
+    <section class="anti-pitch">
+        <div class="container">
+            <div class="anti-pitch-grid">
+                <div>
+                    <h2>Other people call it <span>coaching</span></h2>
+                    <p class="anti-pitch-text">
+                        I'm a CPA who's been employee #5 at a startup that hit 150 people, built systems that pushed $85 million through AP every month, and just sold an accounting practice on Tax Day. I've also failed at a bunch of stuff—which is honestly more useful.
+                        <br><br>
+                        So when your CFO quits mid-fundraise or your books look like a crime scene, I've probably seen it. Or something weirder.
+                    </p>
+                </div>
+                <ul class="strike-list">
+                    <li>
+                        <span class="fake">Leadership Summit</span>
+                        <span class="real">→ A phone call</span>
+                    </li>
+                    <li>
+                        <span class="fake">Strategic Advisory Session</span>
+                        <span class="real">→ A phone call</span>
+                    </li>
+                    <li>
+                        <span class="fake">C-Suite Mastermind</span>
+                        <span class="real">→ Still just a phone call</span>
+                    </li>
+                    <li>
+                        <span class="fake">Executive Coaching Package</span>
+                        <span class="real">→ Walking and talking</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>Dead simple</h2>
+                <p>No intake forms. No "discovery calls" to book the real call. Just book it.</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>You book</h3>
+                    <p>Pick a time. Grab your walking shoes. That's the prep.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>We walk</h3>
+                    <p>1-2 hours, wherever you are. I'll be outside too. Bring the dog if you want.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>You leave with clarity</h3>
+                    <p>A plan, a gut-check, a new way to think about it—or just validation that you're not crazy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problems -->
+    <section class="problems">
+        <div class="container">
+            <h2>Stuff I can actually help with</h2>
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <h4>💸 "Our cash flow is a mystery"</h4>
+                    <p>Forecasting, runway, burn rate—figuring out what's actually happening with your money.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>📊 "We're scaling and everything's on fire"</h4>
+                    <p>Migrated startups from QuickBooks to real systems. Happy to talk you off the ledge.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>🔍 "Something feels off in the numbers"</h4>
+                    <p>Forensic accounting background. I can help you figure out what's actually going on.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>🎯 "We need a finance person but can't afford one"</h4>
+                    <p>Fractional controller work, interim help, or just figuring out what role you actually need.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>🚀 "Investors want numbers I don't have"</h4>
+                    <p>Due diligence prep, financial models, making sure you don't look like an amateur.</p>
+                </div>
+                <div class="problem-card">
+                    <h4>🤷 "I just need to talk to someone who gets it"</h4>
+                    <p>Sometimes you don't need a solution. You need someone to think out loud with.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>People seemed to like it</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p class="testimonial-text">Booked expecting standard consulting advice. Got two hours of someone who actually listened and told me the thing I didn't want to hear but needed to. Worth every penny.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">S</div>
+                        <div class="testimonial-info">
+                            <h5>Sarah K.</h5>
+                            <span>Series A Founder</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">I've done the executive coaches. The masterminds. This was different—like calling the one friend who actually knows finance and won't sugarcoat it.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">M</div>
+                        <div class="testimonial-info">
+                            <h5>Marcus T.</h5>
+                            <span>CEO, 40-person SaaS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">The walking thing seemed gimmicky until I realized I think better on my feet too. Somehow made a stressful conversation about runway feel like a normal talk with a smart friend.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">J</div>
+                        <div class="testimonial-info">
+                            <h5>Jamie R.</h5>
+                            <span>COO, E-commerce</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Credentials (understated) -->
+    <section class="credentials">
+        <div class="container">
+            <div class="credentials-content">
+                <div class="credentials-text">
+                    <h3>The boring stuff, since you're probably wondering</h3>
+                    <p>CPA. Built and sold an accounting practice. Spent years doing audit and forensics (the "something's wrong with these books" kind). Was employee #5 at a startup that grew to 150 people through a liquidity event—so yes, I've lived the chaos. Currently do fractional controller work for companies that need senior finance help without the full-time hire.</p>
+                </div>
+                <div class="credentials-stats">
+                    <div class="stat">
+                        <span class="stat-number">$85M</span>
+                        <span class="stat-label">Monthly AP managed</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5→150</span>
+                        <span class="stat-label">Startup growth lived</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta" id="book">
+        <div class="container">
+            <h2>Ready for a <em>walkie</em>?</h2>
+            <p>Grab a time. We'll figure out the rest on the walk.</p>
+            <a href="#" class="final-cta-button">
+                Book Your Walkie
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+            <p class="final-note">No commitment, no weird follow-up sequences. Just a conversation.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Walkies</p>
+            <a href="mailto:matt@example.com">Get in touch</a>
+        </div>
+    </footer>
+</body>
+</html>

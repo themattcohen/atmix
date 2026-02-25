@@ -1,7 +1,7 @@
 import cron from 'node-cron'
 import { runSync, isSyncing } from './sync/sync-service'
 import { runNightlyRollup } from './archive/rollup-service'
-import { runSourceIngestion } from './news/index'
+import { runSourceIngestion, rematchNoMatchItems } from './news/index'
 import { runRegexImprovementJob } from './news/regex-improvement-service'
 import { initRosterIfEmpty } from './news/matching/roster-sync'
 import { syncRoster } from './news/matching/roster-sync'
@@ -73,13 +73,29 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   })
 
-  // Roster sync: weekly Monday 2am
-  cron.schedule('0 2 * * 1', async () => {
-    console.log('Weekly roster sync starting...')
+  // Roster sync: daily 2am (trades/signings happen daily, full sync is ~124 API calls in <60s)
+  cron.schedule('0 2 * * *', async () => {
+    // Phase 1: Roster sync
+    let rosterOk = false
     try {
-      await syncRoster()
+      const result = await syncRoster()
+      rosterOk = result.failures.length < 4  // at least 1 sport succeeded
+      if (result.failures.length > 0) {
+        console.warn(`[Scheduler] Roster partial: ${result.failures.join(', ')} failed`)
+      }
     } catch (err) {
-      console.error('Weekly roster sync failed:', err)
+      console.error('[Scheduler] Roster sync failed completely:', err)
+    }
+
+    // Phase 2: Rematch (only if roster has usable data)
+    if (rosterOk) {
+      try {
+        await rematchNoMatchItems()
+      } catch (err) {
+        console.error('[Scheduler] Rematch failed:', err)
+      }
+    } else {
+      console.warn('[Scheduler] Skipping rematch: roster sync produced no data')
     }
   })
 
@@ -104,7 +120,7 @@ export async function startScheduler(config: AppConfig): Promise<void> {
     }
   }, { timezone: 'UTC' })
 
-  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), CBS(30m), RotoBaller(30m), Roster(weekly), Cleanup(daily), RegexImprove(daily)')
+  console.log('News pipeline scheduler started: RotoWire(10m), MLB(30m), Google(30m), ESPN(30m), CBS(30m), RotoBaller(30m), Roster(daily), Cleanup(daily), RegexImprove(daily)')
 
   // --- eBay sync crons (require credentials) ---
 

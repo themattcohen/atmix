@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working With Me - Audit Trail Mix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --text: #1a1a1a;
+            --text-muted: #666;
+            --accent: #1a1a1a;
+            --bg: #fff;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            padding: 60px 24px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 80px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--text);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            color: var(--accent);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .logo-name {
+            font-weight: normal;
+        }
+
+        .logo-tagline {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1.3;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 64px;
+            margin-bottom: 24px;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .intro {
+            font-size: 18px;
+            margin-bottom: 48px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .intro p:last-child {
+            margin-bottom: 0;
+            font-weight: bold;
+        }
+
+        .pullquote {
+            font-size: 20px;
+            line-height: 1.5;
+            margin: 40px 0;
+            padding-left: 20px;
+            border-left: 3px solid var(--accent);
+            font-style: italic;
+        }
+
+        section {
+            margin-bottom: 48px;
+        }
+
+        ul {
+            margin-bottom: 24px;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 16px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 8px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .fit-section {
+            display: grid;
+            gap: 48px;
+            margin-top: 32px;
+        }
+
+        @media (min-width: 600px) {
+            .fit-section {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .fit-column h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+        }
+
+        .fit-column.good h3 {
+            color: var(--accent);
+        }
+
+        .contact {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--text);
+            text-align: center;
+        }
+
+        .contact h2 {
+            margin-top: 0;
+        }
+
+        .contact a {
+            font-size: 20px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .contact a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 80px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        a {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M12 12v8"/>
+                <path d="M8 16h8"/>
+            </svg>
+            <div class="logo-text">
+                <span class="logo-name">audit trail mix</span>
+                <span class="logo-tagline">because the name was available and I thought it was funny</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1>Working With Me</h1>
+
+        <div class="intro">
+            <p>If we're talking, it's probably because something in your business isn't working the way you want it to. Maybe you're stuck. Maybe you're frustrated. Maybe you know you could be doing more but you can't figure out how to get there.</p>
+            <p>I'm going to be honest with you. That's the whole point.</p>
+        </div>
+
+        <section>
+            <h2>Why I Do This</h2>
+            <p>I've had a few careers. I've seen what works and what doesn't. At this point, I'm doing this for the work itself and for fair compensation. I'm not trying to pay my mortgage or put food on the table.</p>
+            <p>That changes things. It means I'm never going to sell you something you don't need. My only metric for success is whether I actually helped you. If we have a 30-minute conversation and realize I'm not the right person, we go our separate ways. No harm, no foul.</p>
+        </section>
+
+        <section>
+            <h2>Expect Hard Truths</h2>
+            <p>There's a good chance I'm going to share some things that are hard to hear. Not because I'm trying to be difficult, but because the reason we're having this conversation is probably because there's something in your business or your life that you already know deep down, but haven't addressed. You're busy. You don't have the time. You don't have the money. There are always a million reasons not to do something.</p>
+            <p>This isn't about judgment. It's about seeing things clearly so we can actually fix them.</p>
+            <p>I'll tell you what I see. And then I'll help you build a path forward.</p>
+        </section>
+
+        <section>
+            <h2>How I Work</h2>
+            <p>I always start at the end. The first question I'm going to ask is: what are we solving for?</p>
+            <p>This sounds simple. It's not. Are you trying to make more money? Get your time back? Build something you're proud of? Stop feeling like you're drowning? Most business owners are so deep in the day-to-day that they can't step back and answer clearly.</p>
+            
+            <p class="pullquote">If you're worried about making payroll, we're not talking about your legacy. If you're drowning, we're not optimizing. We deal with what's fundamental first, then build from there.</p>
+            
+            <p>If you don't know what you're solving for, that's fine. I'll ask questions. About your life, your business, what takes your time, what frustrates you, what excites you, what you're best at, what you're worst at. No judgment. We'll figure it out together.</p>
+            <p>Once we know where we're going, we talk about where you are today. Your processes, your systems, your people, what works, what doesn't. You know your business better than anyone. My job is to understand, without judgment, how things actually work.</p>
+            <p>Then we take inventory. What resources do we have? Your time. My time. Your team's time. And money, which we can think about a few ways: return on investment, available cash flow, and revenue that's sitting there waiting to be captured but you don't have the bandwidth to go get it.</p>
+            <p>Only after we understand the destination, the starting point, and the resources do we start talking tactics.</p>
+        </section>
+
+        <section>
+            <h2>Technology Is Never the First Step</h2>
+            <p>I love automation. I love good software. But trying to automate something before you understand the process is a recipe for disaster, wasted money, and failed implementations.</p>
+            <p>I'll spend hours, days, sometimes weeks testing new tools before I recommend them to anyone. The gap between what software companies promise and what their products actually do for regular people is enormous. I've done that work so you don't have to.</p>
+            <p>Technology is a lever. But you need to know what you're lifting first.</p>
+        </section>
+
+        <section>
+            <h2>Accountability Goes Both Ways</h2>
+            <p>One of the most valuable things I bring is accountability. I'm going to hold you to what you say you want. And I'm going to hold myself to delivering what I promise.</p>
+            <p>I like solving problems. Elegant, efficient solutions to hard puzzles are what get me out of bed in the morning. Sometimes they keep me up at night. That's how I'm wired.</p>
+        </section>
+
+        <section>
+            <h2>Fee Arrangements</h2>
+            <p>I'm not interested in billing hours. If you want to engage me hourly, the minimum is $275, and that's rarely the best structure for either of us. In my experience, one hour of focused conversation typically returns 4-5X for small business owners. But hourly billing creates the wrong incentives.</p>
+            <p>What I prefer are arrangements where we both have skin in the game. We agree on what success looks like, and we share in the upside. My incentives will always be aligned with yours. If I can't help you, I'll tell you.</p>
+            <p>The specifics depend on the situation. We'll figure out what makes sense after we understand what we're solving for.</p>
+        </section>
+
+        <section>
+            <h2>This Might Not Be a Fit</h2>
+            <div class="fit-section">
+                <div class="fit-column bad">
+                    <h3>Not the right person if:</h3>
+                    <ul>
+                        <li>You need someone 40+ hours a week indefinitely. I'm not looking for a full-time role.</li>
+                        <li>You've already decided what needs to be done and just want someone to execute. I can help find a vendor and project manage for a fixed fee, but that's a different engagement.</li>
+                        <li>You're not open to trying new things. Skepticism is healthy. Resistance to advice you asked for is something else.</li>
+                    </ul>
+                </div>
+                <div class="fit-column good">
+                    <h3>The right person if:</h3>
+                    <ul>
+                        <li>You're stuck or frustrated and you know something needs to change.</li>
+                        <li>You want a partner, not a vendor.</li>
+                        <li>You're willing to invest in doing things right, not just doing things fast.</li>
+                        <li>There's asymmetric upside for both of us. You get more revenue, more time, better systems. I get a piece of the value I helped create.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="contact">
+            <h2>Let's Talk</h2>
+            <p>If we haven't already, reach out.</p>
+            <p><a href="mailto:matt@atmix.org">matt@atmix.org</a></p>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 Matt Cohen
+    </footer>
+</body>
+</html>
