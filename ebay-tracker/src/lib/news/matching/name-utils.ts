@@ -85,7 +85,7 @@ export function extractPlayerNames(
   const text = decodeHtmlEntities(`${title} ${body || ''}`)
 
   // Step 1: Extract individual capitalized tokens with positions
-  const tokenPattern = /[A-Z](?:\.[A-Z]\.?|[a-z]*'[A-Za-z][a-z]*|[a-z]+-[A-Z][a-z]+|[a-z]+)/g
+  const tokenPattern = /[A-Z](?:\.[A-Z]\.?|[a-z]*'[A-Za-z][a-z]+|[a-z]+-[A-Z][a-z]+|[a-z]+)/g
   const tokens: { word: string; index: number; end: number }[] = []
   let m: RegExpExecArray | null
   while ((m = tokenPattern.exec(text)) !== null) {
