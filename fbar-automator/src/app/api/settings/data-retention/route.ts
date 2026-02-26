@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db"
 import { Prisma } from "@prisma/client"
 import { z } from "zod"
 
+export const dynamic = "force-dynamic"
+
 const retentionSchema = z.object({
   statementRetentionDays: z.number().int().min(30).max(3650),
   auditLogRetentionDays: z.number().int().min(365).max(3650),

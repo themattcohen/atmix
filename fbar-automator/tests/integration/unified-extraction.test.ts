@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import type { ExtractionResult } from "@/types/extraction"
 import { extractFromStatement } from "@/lib/extraction"
-import * as XLSX from "xlsx"
+import ExcelJS from "exceljs"
 
 // ---------------------------------------------------------------------------
 // Hoisted shared mocks — survive vi.mock hoisting and module resets
@@ -118,18 +118,17 @@ function createValidClaudeResponse() {
 /**
  * Creates an XLSX buffer programmatically for testing
  */
-function createXlsxBuffer(): Buffer {
-  const workbook = XLSX.utils.book_new()
-  const worksheetData = [
+async function createXlsxBuffer(): Promise<Buffer> {
+  const workbook = new ExcelJS.Workbook()
+  const worksheet = workbook.addWorksheet("Sheet1")
+  worksheet.addRows([
     ["Date", "Description", "Amount"],
     ["2024-01-15", "Transfer", "5000.00"],
     ["2024-02-20", "Payment", "2500.00"],
     ["2024-03-10", "Deposit", "7500.00"],
-  ]
-  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData)
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1")
-
-  return XLSX.write(workbook, { type: "buffer", bookType: "xlsx" }) as Buffer
+  ])
+  const arrayBuffer = await workbook.xlsx.writeBuffer()
+  return Buffer.from(arrayBuffer)
 }
 
 // ---------------------------------------------------------------------------
@@ -189,7 +188,7 @@ describe("Unified Extraction Pipeline", () => {
 
   describe("XLSX extraction", () => {
     it("converts XLSX to text and sends as text content block to Claude", async () => {
-      const xlsxBuffer = createXlsxBuffer()
+      const xlsxBuffer = await createXlsxBuffer()
       mockGetFileBuffer.mockResolvedValue(xlsxBuffer)
       mockCreate.mockResolvedValue(createValidClaudeResponse())
 

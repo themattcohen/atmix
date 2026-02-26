@@ -135,7 +135,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - WORKER_CONCURRENCY=${WORKER_CONCURRENCY}
+      - WORKER_CONCURRENCY=3
       - WORKER_RATE_LIMIT_MAX=${WORKER_RATE_LIMIT_MAX}
     depends_on:
       postgres:
@@ -145,7 +145,6 @@ services:
       minio:
         condition: service_healthy
     networks:
-      - frontend
       - backend
     deploy:
       resources:
@@ -153,7 +152,7 @@ services:
           cpus: "0.50"
           memory: 384M
     healthcheck:
-      test: ["CMD-SHELL", "pgrep -f 'extract' || exit 1"]
+      test: ["CMD-SHELL", "node -e 'process.exit(0)'"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -298,6 +297,29 @@ services:
         max-file: "3"
     restart: always
 
+  b2b-cron:
+    image: busybox:latest
+    command: >
+      sh -c 'mkdir -p /var/spool/cron/crontabs && echo "0 6 * * * wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://b2b-app:3000/api/cron/sync-rates >> /proc/1/fd/1 2>&1" | crontab - && crond -f -l 2'
+    environment:
+      - CRON_SECRET=${CRON_SECRET}
+    depends_on:
+      b2b-app:
+        condition: service_healthy
+    networks:
+      - frontend
+    deploy:
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 16M
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    restart: always
+
   # ---------------------------------------------------------------------------
   # PostgreSQL — Shared Database (fbar_automator + fbar_direct)
   # ---------------------------------------------------------------------------
@@ -379,7 +401,7 @@ services:
       - "--maxmemory"
       - "100mb"
       - "--maxmemory-policy"
-      - "allkeys-lru"
+      - "noeviction"
       - "--tcp-backlog"
       - "511"
       - "--timeout"

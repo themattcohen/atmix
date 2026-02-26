@@ -19,6 +19,11 @@ export async function GET(
 
     const { key } = await params
 
+    const keyPracticeId = key[0]
+    if (!keyPracticeId || keyPracticeId !== session.user.practiceId) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+
     // Join path segments — catch-all handles slashes in S3 keys natively
     const decodedKey = key.join("/")
 
@@ -44,7 +49,7 @@ export async function GET(
         "Content-Type": contentType,
         "Cache-Control": "private, max-age=3600",
         // Add CORS headers to allow client-side PDF libraries to fetch
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": process.env.NEXTAUTH_URL || "",
         "Access-Control-Allow-Methods": "GET",
       },
     })

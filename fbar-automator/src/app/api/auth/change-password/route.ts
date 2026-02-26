@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     await prisma.$transaction([
       prisma.user.update({
         where: { id: user.id },
-        data: { passwordHash: newPasswordHash },
+        data: { passwordHash: newPasswordHash, tokenVersion: { increment: 1 } },
       }),
       prisma.auditLog.create({
         data: {

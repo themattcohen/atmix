@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
 import { getRedisConnection } from "@/lib/redis"
+import { prisma } from "@/lib/db"
 
 export const dynamic = "force-dynamic"
 
 export async function GET() {
   const checks: Record<string, string> = {}
 
-  // Check Redis connectivity
   try {
     const redis = getRedisConnection()
     await redis.ping()
@@ -15,14 +15,16 @@ export async function GET() {
     checks.redis = "unreachable"
   }
 
-  const allHealthy = Object.values(checks).every((v) => v === "ok")
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    checks.postgres = "ok"
+  } catch {
+    checks.postgres = "unreachable"
+  }
 
+  const allHealthy = Object.values(checks).every((v) => v === "ok")
   return NextResponse.json(
-    {
-      status: allHealthy ? "ok" : "degraded",
-      timestamp: new Date().toISOString(),
-      checks,
-    },
+    { status: allHealthy ? "ok" : "degraded", timestamp: new Date().toISOString(), checks },
     { status: allHealthy ? 200 : 503 }
   )
 }

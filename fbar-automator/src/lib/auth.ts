@@ -26,6 +26,8 @@ declare module "@auth/core/jwt" {
     name: string
     role: string
     practiceId: string
+    tokenVersion: number
+    tokenVersionCheckedAt?: number
   }
 }
 
@@ -52,6 +54,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const user = await prisma.user.findUnique({
           where: { email: email.toLowerCase().trim() },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            practiceId: true,
+            passwordHash: true,
+            tokenVersion: true,
+          },
         })
 
         if (!user) {
@@ -72,6 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           role: user.role,
           practiceId: user.practiceId,
+          tokenVersion: user.tokenVersion,
         }
       },
     }),
@@ -96,6 +108,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.name = user.name as string
         token.role = (user as Record<string, unknown>).role as string
         token.practiceId = (user as Record<string, unknown>).practiceId as string
+        token.tokenVersion = (user as any).tokenVersion
+      } else {
+        // On subsequent refreshes, periodically validate tokenVersion against DB.
+        const now = Date.now()
+        const FIVE_MINUTES = 5 * 60 * 1000
+        if (!token.tokenVersionCheckedAt || now - (token.tokenVersionCheckedAt as number) > FIVE_MINUTES) {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.userId as string },
+            select: { tokenVersion: true },
+          })
+          if (!dbUser || dbUser.tokenVersion !== token.tokenVersion) {
+            return null as unknown as typeof token // Invalidate session
+          }
+          token.tokenVersionCheckedAt = now
+        }
       }
       return token
     },

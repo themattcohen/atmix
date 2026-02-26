@@ -12,6 +12,8 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { encrypt, safeDecrypt } from "@/lib/encryption"
 
+export const dynamic = "force-dynamic"
+
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
