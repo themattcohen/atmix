@@ -118,7 +118,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             where: { id: token.userId as string },
             select: { tokenVersion: true },
           })
-          if (!dbUser || dbUser.tokenVersion !== token.tokenVersion) {
+          if (!dbUser) {
+            return null as unknown as typeof token // User deleted
+          }
+          // Pre-upgrade sessions lack tokenVersion — backfill from DB
+          if (token.tokenVersion == null) {
+            token.tokenVersion = dbUser.tokenVersion
+          } else if (dbUser.tokenVersion !== token.tokenVersion) {
             return null as unknown as typeof token // Invalidate session
           }
           token.tokenVersionCheckedAt = now
