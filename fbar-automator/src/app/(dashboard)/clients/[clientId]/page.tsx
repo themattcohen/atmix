@@ -114,7 +114,6 @@ export default async function ClientDetailPage({
   const activeAccountCount = client.foreignAccounts.filter((a) => a.isActive).length
 
   const hasFilingYears = client.filingYears.length > 0
-  const hasAccounts = activeAccountCount > 0
   const hasData = client.filingYears.some(
     (fy) => fy._count.statements > 0 || fy._count.reviewedAccountYears > 0
   )
@@ -157,7 +156,6 @@ export default async function ClientDetailPage({
 
         <WorkflowChecklist
           hasFilingYears={hasFilingYears}
-          hasAccounts={hasAccounts}
           hasData={hasData}
           hasReviewedFiling={hasReviewedFiling}
           clientId={clientId}
@@ -263,7 +261,7 @@ export default async function ClientDetailPage({
               />
             ) : (
               <p className="text-sm text-gray-500">
-                No foreign accounts yet. Add accounts to begin FBAR filing.
+                No accounts yet — upload bank statements to get started. Accounts are detected automatically during extraction.
               </p>
             )}
           </CollapsibleAccountsSection>

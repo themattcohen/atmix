@@ -70,7 +70,7 @@ export function AddAccountForm({ clientId }: AddAccountFormProps) {
     return (
       <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
         <Plus className="mr-1 h-3 w-3" />
-        Add Account
+        Add Account Manually
       </Button>
     )
   }

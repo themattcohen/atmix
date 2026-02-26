@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 
 interface WorkflowChecklistProps {
   hasFilingYears: boolean
-  hasAccounts: boolean
   hasData: boolean
   hasReviewedFiling: boolean
   clientId: string
@@ -25,14 +24,13 @@ interface Step {
 
 export function WorkflowChecklist({
   hasFilingYears,
-  hasAccounts,
   hasData,
   hasReviewedFiling,
   clientId,
   latestFilingYear,
   accountCount,
 }: WorkflowChecklistProps) {
-  const allDone = hasFilingYears && hasAccounts && hasData && hasReviewedFiling
+  const allDone = hasFilingYears && hasData && hasReviewedFiling
   const [collapsed, setCollapsed] = useState(false)
 
   const steps: Step[] = [
@@ -44,18 +42,11 @@ export function WorkflowChecklist({
       href: null,
     },
     {
-      label: "Add foreign accounts",
-      done: hasAccounts,
-      incompleteDescription: "Add each foreign account your client holds",
-      completeDescription: `${accountCount} account${accountCount !== 1 ? "s" : ""} added`,
-      href: null,
-    },
-    {
-      label: "Upload statements or enter values",
+      label: "Upload statements",
       done: hasData,
       incompleteDescription:
-        "Upload bank statements for automatic extraction, or enter values manually on the Review tab",
-      completeDescription: "Account data entered",
+        "Upload bank statements and accounts will be detected automatically. You can also add accounts manually.",
+      completeDescription: `Account data entered${accountCount > 0 ? ` — ${accountCount} account${accountCount !== 1 ? "s" : ""}` : ""}`,
       href: latestFilingYear
         ? `/clients/${clientId}/${latestFilingYear}/upload`
         : null,
