@@ -16,7 +16,7 @@
 | **App directory** | `/opt/fbar/fbar-automator` |
 | **Git remote** | `https://github.com/themattcohen/atmix.git` (cloned at `/opt/fbar`) |
 | **Compose file** | `docker-compose.prod.yml` (unified — B2B + D2C) |
-| **Server RAM** | 1.9 GB (no swap) — build images ONE AT A TIME |
+| **Server RAM** | 1.9 GB + 2 GB swap (`/swapfile`, fstab) — still build images ONE AT A TIME |
 
 The local Mac SSH key is authorized on the server. No password needed.
 
@@ -46,7 +46,7 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main &&
 ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build b2b-app b2b-worker"
 ```
 
-**WARNING**: Server has only 1.9 GB RAM. Never build more than one image at a time or the OOM killer will strike. Use `--build <service>` to target specific services.
+**WARNING**: Server has 1.9 GB RAM + 2 GB swap. Still build one image at a time to avoid excessive swapping. Use `--build <service>` to target specific services.
 
 ### Run Database Migrations
 
@@ -64,13 +64,15 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml ps --format 'table {{.Name}}\t{{.Status}}'"
 ```
 
-All 7 services should show `Up` and `(healthy)`:
+All 9 services should show `Up` and `(healthy)` where applicable:
 - `b2b-app` — B2B Next.js application (port 3000)
 - `b2b-worker` — B2B background job processor (LLM extraction)
+- `b2b-cron` — BusyBox cron: daily sync-rates at 06:00 UTC
 - `d2c-app` — D2C Next.js application (port 3001)
+- `d2c-cron` — BusyBox cron: D2C scheduled tasks
 - `caddy` — Reverse proxy + auto-TLS (routes by hostname)
 - `postgres` — Shared database (fbar_automator + fbar_direct)
-- `redis` — Cache + job queue (B2B only)
+- `redis` — Cache + job queue (B2B only, `noeviction` policy)
 - `minio` — S3-compatible object storage
 
 ### View Logs
@@ -226,7 +228,7 @@ Internet → Caddy (:443)
 |---------|-------|-----------|---------|
 | caddy | Custom (caddy + rate_limit) | 0.25 CPU, 128M | frontend |
 | b2b-app | Custom (Node 20 alpine) | 0.50 CPU, 384M | frontend + backend |
-| b2b-worker | Custom (Node 20 alpine) | 0.50 CPU, 384M | frontend + backend |
+| b2b-worker | Custom (Node 20 alpine) | 0.50 CPU, 384M | backend |
 | d2c-app | Custom (Node 22 alpine) | 0.50 CPU, 384M | frontend + backend |
 | postgres | `postgres:16-alpine` | 0.75 CPU, 768M | backend |
 | redis | `redis:7-alpine` | 0.25 CPU, 128M | backend |
@@ -281,15 +283,15 @@ ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-comp
 Common causes: missing env var, database migration needed, port conflict.
 
 ### OOM during Docker build
-Server has only 1.9 GB RAM with no swap. **Always build ONE image at a time:**
+Server has 1.9 GB RAM + 2 GB swap (`/swapfile`). **Still build ONE image at a time:**
 ```bash
 # GOOD — build one service
 docker compose -f docker-compose.prod.yml build b2b-app
 
-# BAD — builds all at once, will OOM
+# BAD — builds all at once, will thrash swap
 docker compose -f docker-compose.prod.yml up -d --build
 ```
-If OOM kills sshd, wait 15-30 seconds and reconnect. Run `docker system prune -f` to recover disk/memory.
+If swap gets exhausted and OOM kills sshd, wait 15-30 seconds and reconnect. Run `docker system prune -f` to recover disk/memory. Verify swap is active: `swapon --show` (should show `/swapfile 2G`).
 
 ### TLS cert not provisioning
 ```bash

@@ -24,6 +24,6 @@ Both apps are deployed on a single Hetzner VPS. **Read the ops runbook before to
 
 ## Key Constraints
 
-- **Server has 1.9 GB RAM, no swap.** Build Docker images ONE AT A TIME or OOM kills sshd.
+- **Server has 1.9 GB RAM + 2 GB swap** (`/swapfile`, persisted in fstab). Still build Docker images ONE AT A TIME to avoid excessive swapping.
 - D2C Stripe, email (Resend), and FinCEN SFTP are placeholder/sandbox — not yet configured for production.
 - Both apps share one Postgres instance but use separate databases (`fbar_automator` for B2B, `fbar_direct` for D2C).
