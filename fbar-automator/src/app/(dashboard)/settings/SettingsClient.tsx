@@ -48,7 +48,7 @@ function RoleBadge({ role }: { role: string }) {
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClass}`}
     >
-      {role}
+      {role.charAt(0) + role.slice(1).toLowerCase()}
     </span>
   )
 }
@@ -385,7 +385,7 @@ function TeamSection({
               }}
             >
               <UserPlus className="mr-1.5 h-4 w-4" />
-              Invite Member
+              Add Member
             </Button>
           )}
         </div>
@@ -398,7 +398,7 @@ function TeamSection({
             className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4"
           >
             <h4 className="mb-3 text-sm font-medium text-gray-900">
-              Invite New Team Member
+              Add New Team Member
             </h4>
             <div className="grid gap-3 sm:grid-cols-3">
               <div>
@@ -459,7 +459,7 @@ function TeamSection({
                 {inviting && (
                   <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
                 )}
-                Create Member
+                Add Member
               </Button>
               <Button
                 type="button"
@@ -629,6 +629,30 @@ function PasswordChangeSection() {
       return
     }
 
+    if (!/[A-Z]/.test(newPassword)) {
+      setMessage({
+        type: "error",
+        text: "New password must contain at least 1 uppercase letter.",
+      })
+      return
+    }
+
+    if (!/[a-z]/.test(newPassword)) {
+      setMessage({
+        type: "error",
+        text: "New password must contain at least 1 lowercase letter.",
+      })
+      return
+    }
+
+    if (!/[0-9]/.test(newPassword)) {
+      setMessage({
+        type: "error",
+        text: "New password must contain at least 1 number.",
+      })
+      return
+    }
+
     setSaving(true)
 
     try {
@@ -706,6 +730,9 @@ function PasswordChangeSection() {
               minLength={12}
               className="mt-1 max-w-sm"
             />
+            <p className="mt-1 text-xs text-gray-500">
+              At least 12 characters with 1 uppercase, 1 lowercase, and 1 number.
+            </p>
           </div>
 
           <div>

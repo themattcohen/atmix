@@ -34,7 +34,7 @@ function StatusBadge({ status }: { status: string }) {
     IN_PROGRESS: "bg-blue-100 text-blue-700",
     REVIEWED: "bg-yellow-100 text-yellow-800",
     EXPORTED: "bg-green-100 text-green-700",
-    FILED: "bg-purple-100 text-purple-700",
+    FILED: "bg-green-100 text-green-700",
   }
   const colorClass = colorMap[status] || "bg-gray-100 text-gray-700"
   const label = status.replace(/_/g, " ")
@@ -256,7 +256,17 @@ export default async function ExportPage({ params }: ExportPageProps) {
                   <p className="mt-0.5 text-xs">
                     All accounts must be reviewed and the filing must be
                     submitted for review before exporting. Current status:{" "}
-                    {progress.status.replace(/_/g, " ")}.
+                    {progress.status
+                      .replace(/_/g, " ")
+                      .toLowerCase()
+                      .replace(/^\w/, (c) => c.toUpperCase())}
+                    .{" "}
+                    <Link
+                      href={`/clients/${clientId}/${filingYear}/review`}
+                      className="font-medium underline underline-offset-2 hover:text-amber-900"
+                    >
+                      Go to Review page to complete account reviews.
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -333,7 +343,7 @@ export default async function ExportPage({ params }: ExportPageProps) {
                   <div className="rounded-md bg-gray-50 p-3">
                     <p className="text-xs text-gray-500">
                       XML export is available after the filing has been approved
-                      for export (status: EXPORTED or FILED).
+                      for export.
                     </p>
                   </div>
                 )}

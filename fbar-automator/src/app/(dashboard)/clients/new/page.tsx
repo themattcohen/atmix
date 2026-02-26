@@ -82,8 +82,13 @@ export default function NewClientPage() {
     setGlobalError(null)
 
     // Cross-validate TIN and TIN Type: if one is provided, both must be
-    if ((tin && !tinType) || (!tin && tinType)) {
-      setGlobalError("Both TIN and TIN Type must be provided together.")
+    if (tin && !tinType) {
+      setGlobalError("You entered a TIN — please also select a TIN Type.")
+      setIsSubmitting(false)
+      return
+    }
+    if (tinType && !tin) {
+      setGlobalError("You selected a TIN Type — please also enter the TIN.")
       setIsSubmitting(false)
       return
     }

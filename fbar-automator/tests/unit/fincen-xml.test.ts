@@ -147,6 +147,7 @@ function createMockFilingYear() {
           institutionName: "Swiss Bank Corp",
           accountNumber: "CH-123456",
           accountType: "BANK",
+          accountTypeDescription: null as string | null,
           ownershipType: "FINANCIAL_INTEREST",
           isJointlyOwned: false,
           institutionAddressStreet: "Bahnhofstrasse 1",

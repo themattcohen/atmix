@@ -1,15 +1,16 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import {
-  DollarSign,
   FileText,
   LayoutDashboard,
   Users,
   Settings,
   LogOut,
+  Loader2,
 } from "lucide-react"
 
 interface SidebarProps {
@@ -24,11 +25,11 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings },
-  { href: "/settings/exchange-rates", label: "Exchange Rates", icon: DollarSign },
 ]
 
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname()
+  const [isSigningOut, setIsSigningOut] = useState(false)
 
   function isActive(href: string): boolean {
     if (href === "/") {
@@ -82,11 +83,19 @@ export function Sidebar({ user }: SidebarProps) {
           </p>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+          onClick={async () => {
+            setIsSigningOut(true)
+            await signOut({ callbackUrl: "/login" })
+          }}
+          disabled={isSigningOut}
+          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
-          Sign out
+          {isSigningOut ? (
+            <Loader2 className="h-5 w-5 flex-shrink-0 animate-spin" />
+          ) : (
+            <LogOut className="h-5 w-5 flex-shrink-0" />
+          )}
+          {isSigningOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
     </aside>

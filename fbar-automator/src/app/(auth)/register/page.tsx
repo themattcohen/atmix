@@ -183,6 +183,9 @@ export default function RegisterPage() {
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
             placeholder="Minimum 12 characters"
           />
+          <p className="mt-1 text-xs text-gray-500">
+            At least 12 characters with 1 uppercase, 1 lowercase, and 1 number.
+          </p>
         </div>
 
         <div>

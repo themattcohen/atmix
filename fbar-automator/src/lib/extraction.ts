@@ -194,7 +194,7 @@ function extractCsvProgrammatically(buffer: Buffer): ExtractionResult {
   // Build ExtractedAccount for each account
   const accounts: import("@/types/extraction").ExtractedAccount[] = []
 
-  for (const [acctNum, data] of Array.from(accountMap)) {
+  for (const [acctNum, data] of Array.from(accountMap.entries())) {
     // Find max balance
     let maxBal = data.balances[0]
     for (const b of data.balances) {
@@ -223,7 +223,7 @@ function extractCsvProgrammatically(buffer: Buffer): ExtractionResult {
         start_date: startDate || "1970-01-01",
         end_date: endDate || "1970-01-01",
       },
-      balances: data.balances.map((b) => ({
+      balances: data.balances.map((b: { date: string | null; amount: number; label: string }) => ({
         date: b.date,
         amount: b.amount,
         label: b.label,

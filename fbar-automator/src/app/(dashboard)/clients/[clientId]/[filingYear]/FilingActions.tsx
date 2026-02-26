@@ -54,7 +54,19 @@ export function FilingActions({
         return
       }
 
-      setSuccess(`Successfully ${action}.`)
+      // Generate context-aware success messages with next-step hints
+      let successMessage = `Successfully ${action}.`
+      if (action === "submitted for review") {
+        successMessage = "Successfully submitted for review. An admin or reviewer can now approve for export."
+      } else if (action === "approved for export") {
+        successMessage = "Successfully approved for export. The filing can now be exported and submitted to FinCEN."
+      } else if (action === "marked as filed") {
+        successMessage = "Successfully marked as filed. The filing is now complete."
+      } else if (action === "reopened filing") {
+        successMessage = "Successfully reopened. You can now make additional edits and resubmit."
+      }
+
+      setSuccess(successMessage)
       router.refresh()
     } catch {
       setError("Network error. Please try again.")

@@ -288,10 +288,10 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
                 <div className="mt-8">
                   <div className="mb-4 border-t border-gray-200 pt-6">
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Accounts Without Statement Data
+                      Accounts Needing Manual Entry
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">
-                      These accounts were added manually and don&apos;t appear in any uploaded statement. Enter their financial data below.
+                      These accounts don&apos;t have uploaded statements. Enter their financial data below.
                     </p>
                   </div>
                   <div className="space-y-4">
