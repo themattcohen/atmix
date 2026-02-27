@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
+import { pushDataLayer } from "@/lib/gtm";
 
 interface FilingData {
   id: string;
@@ -26,6 +27,10 @@ export default function SignPage() {
   const [typedName, setTypedName] = useState("");
   const [userName, setUserName] = useState<UserData>({ firstName: "", lastName: "", middleName: "" });
   const [filing, setFiling] = useState<{ id: string; calendarYear: number; accountCount: number } | null>(null);
+
+  useEffect(() => {
+    pushDataLayer({ event: "fbar_step_view", step: 5, step_name: "sign" });
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -99,6 +104,7 @@ export default function SignPage() {
         return;
       }
 
+      pushDataLayer({ event: "fbar_step_complete", step: 5, step_name: "sign" });
       // Track which filing was just signed so downstream pages select the right one
       sessionStorage.setItem("activeFilingYearId", filing.id);
       router.push("/payment");

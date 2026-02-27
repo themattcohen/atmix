@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect, useRef } from "react";
 
 export default function Error({
@@ -12,9 +13,9 @@ export default function Error({
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    // Move focus to the error heading when the error boundary renders
+    Sentry.captureException(error);
     headingRef.current?.focus();
-  }, []);
+  }, [error]);
 
   return (
     <div role="alert" aria-live="assertive" className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

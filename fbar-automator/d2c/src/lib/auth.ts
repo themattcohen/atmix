@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -86,6 +87,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         (session.user as any).mfaEnabled = token.mfaEnabled ?? false;
       }
       (session as any).tokenVersion = token.tokenVersion;
+      if (session.user?.id) {
+        Sentry.setUser({ id: session.user.id, email: session.user.email ?? undefined });
+      }
       return session;
     },
   },

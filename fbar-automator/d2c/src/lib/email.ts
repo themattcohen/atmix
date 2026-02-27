@@ -147,6 +147,35 @@ export async function sendPasswordResetEmail(
   });
 }
 
+export async function sendPaymentReceiptEmail(
+  to: string,
+  data: { firstName: string; calendarYear: number; amountDollars: number; tier: string }
+): Promise<void> {
+  await getResend().emails.send({
+    from: fromEmail,
+    to,
+    subject: `Payment confirmed - Your ${data.calendarYear} FBAR is being filed`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #112e51; padding: 24px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">FBAR Direct</h1>
+        </div>
+        <div style="padding: 32px 24px;">
+          <h2 style="color: #112e51;">Payment Confirmed</h2>
+          <p>Hi ${escapeHtml(data.firstName)},</p>
+          <p>We received your payment of <strong>$${data.amountDollars}.00</strong> for your
+             ${data.calendarYear} FBAR filing (${escapeHtml(data.tier)} plan).</p>
+          <p>We are now submitting your FBAR to FinCEN. You will receive another email with
+             your BSA tracking ID within 1-2 business days.</p>
+        </div>
+        <div style="background: #f5f5f5; padding: 16px 24px; font-size: 12px; color: #666; text-align: center;">
+          <p>FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S. government agency.</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 export async function sendWelcomeEmail(
   to: string,
   data: { firstName: string }

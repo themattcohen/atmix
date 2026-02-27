@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { US_STATES } from "@/lib/validation";
 import { formatSSN } from "@/lib/utils";
+import { pushDataLayer } from "@/lib/gtm";
 
 export default function PersonalPage() {
   const router = useRouter();
@@ -28,6 +29,10 @@ export default function PersonalPage() {
     usAddress: { street: "", street2: "", city: "", state: "", zip: "" },
     phone: "",
   });
+
+  useEffect(() => {
+    pushDataLayer({ event: "fbar_step_view", step: 2, step_name: "personal" });
+  }, []);
 
   useEffect(() => {
     async function loadUser() {
@@ -139,6 +144,7 @@ export default function PersonalPage() {
         return;
       }
 
+      pushDataLayer({ event: "fbar_step_complete", step: 2, step_name: "personal" });
       router.push("/accounts");
     } catch {
       setError("An unexpected error occurred");

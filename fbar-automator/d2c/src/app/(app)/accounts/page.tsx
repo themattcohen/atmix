@@ -10,6 +10,7 @@ import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountRevie
 import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
 import { ImportBanner } from "@/components/ImportBanner";
 import { PRICING } from "@/lib/pricing";
+import { pushDataLayer } from "@/lib/gtm";
 import type { AccountDisplay, PriorYearInfo } from "@/types";
 
 interface MappedAccount {
@@ -121,6 +122,10 @@ export default function AccountsPage() {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    pushDataLayer({ event: "fbar_step_view", step: 3, step_name: "accounts" });
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -414,7 +419,10 @@ export default function AccountsPage() {
             {/* Continue */}
             {accounts.length > 0 && !showForm && !extractedAccounts && (
               <button
-                onClick={() => router.push("/review")}
+                onClick={() => {
+                  pushDataLayer({ event: "fbar_step_complete", step: 3, step_name: "accounts", account_count: accounts.length });
+                  router.push("/review");
+                }}
                 className="w-full mt-6 py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-medium"
               >
                 Continue to Review ({accounts.length} account{accounts.length !== 1 ? "s" : ""})

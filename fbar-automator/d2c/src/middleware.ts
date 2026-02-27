@@ -13,12 +13,12 @@ function buildCspHeader(nonce: string): string {
     : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
   return [
     "default-src 'self'",
-    `script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com`,
+    `script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
+    "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net",
     "font-src 'self' data:",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io",
-    "frame-src https://www.googletagmanager.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io https://www.googleadservices.com https://googleads.g.doubleclick.net",
+    "frame-src https://www.googletagmanager.com https://bid.g.doubleclick.net",
     "frame-ancestors 'none'",
   ].join("; ");
 }

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
 import { submitFiling } from "@/lib/fincen-submit";
+import { sendPaymentReceiptEmail, sendEmailWithRetry } from "@/lib/email";
+import * as Sentry from "@sentry/nextjs";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest) {
         // Status guard: verify filing is in an appropriate state before processing payment
         const filing = await prisma.filingYear.findFirst({
           where: { id: filingYearId, userId },
-          select: { status: true },
+          select: { status: true, calendarYear: true, tier: true },
         });
 
         if (!filing) {
@@ -83,6 +85,23 @@ export async function POST(req: NextRequest) {
             stripeSessionId: session.id,
           },
         });
+
+        // Payment receipt email (fire-and-forget)
+        if (process.env.RESEND_API_KEY) {
+          prisma.user.findUnique({ where: { id: userId }, select: { email: true, firstName: true } })
+            .then((user) => {
+              if (!user) return;
+              const tier = filing.tier || 'BASIC';
+              const amt = tier.toUpperCase() === 'PREMIUM' ? 79 : 59;
+              return sendEmailWithRetry(() => sendPaymentReceiptEmail(user.email, {
+                firstName: user.firstName || 'there',
+                calendarYear: filing.calendarYear,
+                amountDollars: amt,
+                tier: tier.charAt(0) + tier.slice(1).toLowerCase(),
+              }));
+            })
+            .catch((err) => console.error('[Webhook] Payment receipt email failed:', err));
+        }
 
         // Trigger server-side FinCEN submission (fire-and-forget)
         // Cron recovers if this fails or webhook times out
@@ -157,6 +176,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ received: true });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Webhook processing error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Processing failed" }, { status: 500 });
   }

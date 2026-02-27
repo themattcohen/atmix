@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { PRICING } from "@/lib/pricing";
+import { pushDataLayer } from "@/lib/gtm";
 import type { PricingTier } from "@/lib/pricing";
 
 interface FilingData {
@@ -26,6 +27,10 @@ export default function PaymentPage() {
 
   const tier = (filing?.tier?.toLowerCase() || "basic") as PricingTier;
   const pricing = PRICING[tier];
+
+  useEffect(() => {
+    pushDataLayer({ event: "fbar_step_view", step: 6, step_name: "payment" });
+  }, []);
 
   useEffect(() => {
     async function loadFiling() {
@@ -83,19 +88,17 @@ export default function PaymentPage() {
         return;
       }
 
-      if (typeof window !== 'undefined' && window.dataLayer) {
-        window.dataLayer.push({
-          event: 'begin_checkout',
-          ecommerce: {
-            currency: 'USD',
-            value: pricing.amountDollars,
-            items: [{
-              item_name: pricing.stripeProductName,
-              price: pricing.amountDollars,
-            }],
-          },
-        });
-      }
+      pushDataLayer({
+        event: 'begin_checkout',
+        ecommerce: {
+          currency: 'USD',
+          value: pricing.amountDollars,
+          items: [{
+            item_name: pricing.stripeProductName,
+            price: pricing.amountDollars,
+          }],
+        },
+      });
 
       window.location.href = data.url;
     } catch {

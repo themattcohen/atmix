@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { ReviewTable } from "@/components/wizard/ReviewTable";
 import { maskTIN, formatDate } from "@/lib/utils";
+import { pushDataLayer } from "@/lib/gtm";
 import type { AccountDisplay, UserProfile } from "@/types";
 import Link from "next/link";
 
@@ -21,6 +22,10 @@ export default function ReviewPage() {
   const [accounts, setAccounts] = useState<AccountDisplay[]>([]);
   const [filing, setFiling] = useState<FilingInfo | null>(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    pushDataLayer({ event: "fbar_step_view", step: 4, step_name: "review" });
+  }, []);
 
   useEffect(() => {
     async function loadAll() {
@@ -107,6 +112,7 @@ export default function ReviewPage() {
       }
     }
 
+    pushDataLayer({ event: "fbar_step_complete", step: 4, step_name: "review" });
     router.push(config.path);
   };
 
