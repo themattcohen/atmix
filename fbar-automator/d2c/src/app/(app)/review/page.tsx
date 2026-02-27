@@ -32,9 +32,15 @@ export default function ReviewPage() {
         let year = new Date().getFullYear() - 1;
         let activeFiling: FilingInfo | null = null;
         if (filingData.data?.length > 0) {
-          const active = filingData.data.find((f: FilingInfo) =>
-            ["IN_PROGRESS", "REVIEWED", "SIGNED", "PAID"].includes(f.status)
-          );
+          // Prefer actively-being-worked-on filings over already-signed ones
+          // (prevents a SIGNED filing from a different year overshadowing an IN_PROGRESS one)
+          const active =
+            filingData.data.find((f: FilingInfo) =>
+              ["IN_PROGRESS", "REVIEWED"].includes(f.status)
+            ) ||
+            filingData.data.find((f: FilingInfo) =>
+              ["SIGNED", "PAID"].includes(f.status)
+            );
           if (active) {
             activeFiling = active;
             year = active.calendarYear;
