@@ -390,8 +390,10 @@ PartyName
 | Item | Value |
 |------|-------|
 | Organization | All Solutions Consulting |
+| FO Enrollment Code | ASC258076 |
 | EIN | 883761328 |
 | PIN | 48623952 |
+| BSA User ID | matt@atmix.org |
 | Email | matt@atmix.org |
 | TCC | **PBSA8180** (issued 02/27/2026) |
 
@@ -402,6 +404,7 @@ PartyName
 | Organization | All Solutions Consulting |
 | Enrollment Code | ASC877083 |
 | PIN | 92922117 |
+| BSA User ID | matt@atmix.org |
 | Email | matt@atmix.org |
 | TCC (test) | TBSATEST |
 

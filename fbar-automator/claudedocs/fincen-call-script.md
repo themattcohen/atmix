@@ -128,7 +128,7 @@ Write down and send Matt:
 ### Action Items from Call
 
 - [ ] Confirm receipt of batch filing instructions email from FinCEN
-- [ ] Open SDTM ticket for production server-to-server submission
+- [ ] Reply to SDTM ticket 00488354 (due within 7 days of 02/27) with: Org=All Solutions Consulting, FO Code=ASC258076, Email=matt@atmix.org, User ID=matt@atmix.org
 - [ ] Open SDTM ticket for test environment (if needed — separate ticket)
 - [ ] Contact IRS FBAR re: preparer requirements — **(313) 234-6146 Option 1** (Mon–Fri 8am–4:30pm)
 - [ ] Add `FINCEN_TRANSMITTER_*` vars to production `.env` on VPS and redeploy
