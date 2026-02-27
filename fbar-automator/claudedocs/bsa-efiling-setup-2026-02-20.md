@@ -1,7 +1,7 @@
 # BSA E-Filing Setup & FBAR Batch Testing
 
 **Date**: 2026-02-20
-**Status**: Sandbox PASSED — awaiting production TCC (~03/06)
+**Status**: Production TCC RECEIVED: **PBSA8180** (02/27/2026)
 **Phase**: D2C Phase 4 — FinCEN Pipeline
 
 ---
@@ -30,7 +30,7 @@
 | EIN | 883761328 |
 | PIN | 48623952 |
 | Account Email | matt@atmix.org |
-| TCC | *Pending — sandbox passed (T-FBX26-00000051, 26/26 accepted, 0 errors), awaiting issuance ~03/06* |
+| TCC | **PBSA8180** (issued 02/27/2026 — confirmed via phone call to BSA E-Filing Help Desk) |
 
 ### Sandbox Site: bsaefiling-sandbox.fincen.gov
 
@@ -393,7 +393,7 @@ PartyName
 | EIN | 883761328 |
 | PIN | 48623952 |
 | Email | matt@atmix.org |
-| TCC | *Pending — issued after sandbox testing* |
+| TCC | **PBSA8180** (issued 02/27/2026) |
 
 ### Sandbox (bsaefiling-sandbox.fincen.gov)
 
@@ -411,6 +411,7 @@ PartyName
 |---------|---------|
 | Help Desk Phone | 1-866-346-9478 (Mon-Fri 8am-6pm EST) |
 | Help Desk Email | BSAEFilingHelp@fincen.gov |
+| IRS FBAR Helpline | (313) 234-6146 Option 1 (Mon-Fri 8am-4:30pm) — for FBAR regulation & preparer questions |
 
 ---
 
@@ -438,6 +439,8 @@ PartyName
 | 2026-02-20 | Generated + validated `test-fbar-batch-2025.xml` (26 activities, 51 accounts) |
 | 2026-02-20 | Fixed 3 bugs in B2B code (`src/lib/export/fincen-xml.ts`) — 62/62 tests pass |
 | 2026-02-20 | Submitted test batch on sandbox — Tracking ID **T-FBX26-00000047** |
-| *Pending* | Review acknowledgment file in Secure Messenger (up to 2 business days) |
-| *~10 days* | Receive production TCC from FinCEN |
-| *Pending* | Build D2C XML generation (currently stub at `d2c/src/lib/fincen-xml.ts`) |
+| 2026-02-20 | Acknowledgment received — 26/26 accepted, 0 errors (T-FBX26-00000051) |
+| 2026-02-27 | **Production TCC received: PBSA8180** (confirmed via phone call) |
+| *Pending* | Open SDTM ticket for production server-to-server submission |
+| *Pending* | Open SDTM ticket for test environment (separate ticket required) |
+| *Pending* | Contact IRS FBAR re: preparer requirements (FinCEN emailing contact info) |

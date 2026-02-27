@@ -109,3 +109,26 @@ Write down and send Matt:
 4. SDTM next steps and timeline
 5. Whether manual portal upload works as interim
 6. Any surprises or things we didn't expect
+
+---
+
+## Call Results (2026-02-27)
+
+**Status**: COMPLETED
+
+| Q# | Question | Answer |
+|----|----------|--------|
+| 1 | Production TCC Status | **TCC provided: PBSA8180** — confirmed good to go for production filing |
+| 2 | How TCC Arrives | N/A — already provided in answer to Q1 |
+| 3 | Filing Requirements Checklist | Instructions emailed to Matt — **confirm receipt** |
+| 4 | SDTM Setup | Must create a **new ticket** for production SDTM account (separate tickets required for prod vs test environments) |
+| 5 | Manual Upload as Interim | **Yes** — manual portal upload is allowed before, during, or after SDTM setup |
+| 6 | Preparer Requirements | Rep couldn't answer — recommended contacting IRS FBAR: **(313) 234-6146** Option 1 (Mon–Fri 8am–4:30pm) |
+
+### Action Items from Call
+
+- [ ] Confirm receipt of batch filing instructions email from FinCEN
+- [ ] Open SDTM ticket for production server-to-server submission
+- [ ] Open SDTM ticket for test environment (if needed — separate ticket)
+- [ ] Contact IRS FBAR re: preparer requirements — **(313) 234-6146 Option 1** (Mon–Fri 8am–4:30pm)
+- [ ] Add `FINCEN_TRANSMITTER_*` vars to production `.env` on VPS and redeploy

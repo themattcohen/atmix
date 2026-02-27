@@ -95,7 +95,7 @@ Add these environment variables (they don't block development — use test value
 ```
 FINCEN_TRANSMITTER_NAME="ATMIX LLC"
 FINCEN_TRANSMITTER_EIN="XX-XXXXXXX"
-FINCEN_TRANSMITTER_TCC="TBSATEST"      # test TCC; update to "PBSA8180" for production
+FINCEN_TRANSMITTER_TCC="PBSA8180"       # production TCC (issued 2026-02-27)
 FINCEN_TRANSMITTER_PHONE="XXX-XXX-XXXX"
 FINCEN_TRANSMITTER_STREET="..."
 FINCEN_TRANSMITTER_CITY="..."
@@ -255,7 +255,7 @@ Add to D2C service environment (Hetzner `/opt/fbar/.env.d2c` or `docker-compose.
 ```
 FINCEN_TRANSMITTER_NAME=ATMIX LLC
 FINCEN_TRANSMITTER_EIN=<EIN>
-FINCEN_TRANSMITTER_TCC=TBSATEST        # Replace with PBSA8180 after FinCEN approval
+FINCEN_TRANSMITTER_TCC=PBSA8180         # Production TCC (issued 2026-02-27)
 FINCEN_TRANSMITTER_PHONE=<phone>
 FINCEN_TRANSMITTER_STREET=<street>
 FINCEN_TRANSMITTER_CITY=<city>
@@ -308,7 +308,7 @@ Run `validateFincenXml(xml)` after every `generateFincenXml()` call. The validat
 
 ## Risks / Notes
 
-1. **TCC required for test submission**: FinCEN test submissions need TCC `TBSATEST` (not a real TCC). The D2C will use this for testing. Production TCC (`PBSA8180`) is only issued after FinCEN validates 25-50 sample filings. Plan this as a 2-step process: implement → test with TBSATEST → receive production TCC → go live.
+1. **TCC received**: Production TCC **PBSA8180** issued 2026-02-27. Sandbox testing uses `TBSATEST`. Production `.env` should set `FINCEN_TRANSMITTER_TCC=PBSA8180`.
 
 2. **No `isValueUnknown` in D2C**: The B2B schema has `ReviewedAccountYear.isValueUnknown` which triggers `UnknownMaximumValueIndicator`. D2C has no such field. If `maxValueUsd` is null (currency not yet converted), XML generation should fail loudly rather than silently output `0`. Consider adding a guard: `if (account.maxValueUsd === null) throw new Error(...)` — or ensure the treasury rate sync (Gap #02) always runs before submission.
 
