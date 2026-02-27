@@ -44,6 +44,8 @@ export default function ReviewPage() {
           if (active) {
             activeFiling = active;
             year = active.calendarYear;
+            // Track the active filing for downstream wizard pages
+            sessionStorage.setItem("activeFilingYearId", active.id);
           }
         }
 

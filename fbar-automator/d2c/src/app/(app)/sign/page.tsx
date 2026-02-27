@@ -99,6 +99,8 @@ export default function SignPage() {
         return;
       }
 
+      // Track which filing was just signed so downstream pages select the right one
+      sessionStorage.setItem("activeFilingYearId", filing.id);
       router.push("/payment");
     } catch {
       setError("An unexpected error occurred");

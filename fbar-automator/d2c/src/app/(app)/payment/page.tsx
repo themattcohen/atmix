@@ -43,8 +43,11 @@ export default function PaymentPage() {
           return;
         }
 
-        // P1-8: Find SIGNED filing or show message
-        const signedFiling = filings.find((f: FilingData) => f.status === "SIGNED");
+        // P1-8: Find SIGNED filing — prefer the one tracked through the wizard flow
+        const activeId = sessionStorage.getItem("activeFilingYearId");
+        const signedFiling =
+          (activeId && filings.find((f: FilingData) => f.id === activeId && f.status === "SIGNED")) ||
+          filings.find((f: FilingData) => f.status === "SIGNED");
         if (signedFiling) {
           setFiling(signedFiling);
         }
