@@ -1,5 +1,8 @@
 # Gap #17: GTM/GA4 Disabled in Production
 
+> **STATUS: COMPLETE (2026-02-28)**
+> Google Tag `GT-P3JRZMRX` configured via `NEXT_PUBLIC_GTM_ID` env var, loaded via gtag.js (not GTM container). GA4 stream `G-W2KXELPKZE` auto-linked. Sentry v10.39.0 configured with DSN baked into Docker image. CSP updated to allow `*.ingest.us.sentry.io` (US-region). Commits: cec5376 (gtag.js swap), 41d0027 (Sentry CSP fix).
+
 **Severity:** Low
 **Effort:** S (< 1 hour)
 **Depends on:** None

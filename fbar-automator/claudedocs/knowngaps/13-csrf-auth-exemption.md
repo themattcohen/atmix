@@ -1,5 +1,8 @@
 # Gap #13: CSRF Exempts All `/api/auth/*`
 
+> **STATUS: COMPLETE (2026-02-28)**
+> CSRF exemption narrowed from blanket `/api/auth/*` to explicit NextAuth-only allowlist (`/api/auth/callback`, `/api/auth/signin`, `/api/auth/signout`). Custom auth routes (`signup`, `forgot-password`, `reset-password`, `verify-email`, `resend-verification`) now require `X-Requested-With: XMLHttpRequest` header. All browser-side fetch calls confirmed to include the header. Unit test added in `tests/api/csrf.test.ts`.
+
 **Severity:** Medium
 **Effort:** S (< 1 hour)
 **Depends on:** None

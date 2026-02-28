@@ -1,5 +1,8 @@
 # Gap #10: MFA / 2FA
 
+> **STATUS: COMPLETE (2026-02-28) — enrollment infrastructure built; login enforcement deferred**
+> MFA schema (mfaEnabled, mfaSecret, MfaRecoveryCode), TOTP library (`d2c/src/lib/mfa.ts`), API routes (setup, verify-setup, verify, disable, recovery-codes), HMAC cookie (`mfa-cookie.ts`), middleware gate, `/mfa-verify` page — all implemented and deployed. Login enforcement (redirecting mfaPending users to `/mfa-verify`) is deferred; 7 E2E test skips in `mfa.spec.ts` track this. Email verification gate (added 2026-02-28) runs before MFA gate in middleware.
+
 **Severity:** Medium
 **Effort:** XL (1-3 days)
 **Depends on:** None

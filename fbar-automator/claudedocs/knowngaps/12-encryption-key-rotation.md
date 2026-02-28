@@ -1,5 +1,8 @@
 # Gap #12: No Encryption Key Rotation
 
+> **STATUS: COMPLETE (2026-02-21)**
+> Versioned ciphertext format (`v1:iv:authTag:ciphertext`) implemented. Multi-key support via `ENCRYPTION_KEYS` JSON map. `safeDecrypt` fix in sign flow (hard error on decryption failure instead of silent empty string). Migration script `d2c/scripts/rotate-encryption-key.ts` created. Committed as part of Phase 5 security hardening sprint.
+
 **Severity:** Medium
 **Effort:** L (4-8 hours)
 **Depends on:** None

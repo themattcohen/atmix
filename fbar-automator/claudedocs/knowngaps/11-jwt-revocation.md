@@ -1,5 +1,8 @@
 # Gap #11: JWT Revocation Non-Functional
 
+> **STATUS: PARTIALLY COMPLETE (2026-02-28)**
+> Fix A applied: JWT maxAge reduced from 30d to 8h (`d2c/src/lib/auth.ts`). Fix B (Redis blocklist for immediate revocation) and Fix C (tokenVersion re-check) are deferred — not critical for launch with the 8h window. The 8h maxAge was chosen over the original 7d plan as a stronger security posture for financial data.
+
 **Severity:** Medium
 **Effort:** S (< 1 hour) for maxAge reduction; M (1-4 hours) for Redis blocklist
 **Depends on:** None (maxAge fix is standalone; blocklist optionally depends on Redis already in the stack)

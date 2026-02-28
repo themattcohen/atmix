@@ -187,27 +187,31 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 |---|---|---|
 | **Domain** | `D2C_DOMAIN` | `fbardirect.com` — live with TLS |
 | **Stripe** | `D2C_STRIPE_SECRET_KEY`, `D2C_STRIPE_WEBHOOK_SECRET` | Placeholder values — payment flow won't work |
-| **Email (Resend)** | `D2C_RESEND_API_KEY`, `D2C_RESEND_FROM_EMAIL` | Not yet configured (see below) |
-| **FinCEN SFTP** | `SDTM_HOST`, `SDTM_USERNAME`, `SDTM_PRIVATE_KEY_PATH` | Empty — sandbox mode |
+| **Email (Resend)** | `D2C_RESEND_API_KEY`, `D2C_RESEND_FROM_EMAIL` | **LIVE** (2026-02-28) — API key configured, domain verified (SPF/DKIM/DMARC) |
+| **FinCEN SFTP** | `SDTM_HOST`, `SDTM_USERNAME`, `SDTM_PRIVATE_KEY_PATH` | Empty — SDTM not yet set up (requires separate FinCEN ticket) |
+| **Google Tag** | `NEXT_PUBLIC_GTM_ID` | **LIVE** — `GT-P3JRZMRX` via gtag.js, GA4 `G-W2KXELPKZE` |
+| **Sentry** | DSN baked into Docker image | **LIVE** — v10.39.0, CSP allows `*.ingest.us.sentry.io` |
+| **Email Verification** | (no new env vars) | **LIVE** (2026-02-28) — signup sends verification email, middleware gate blocks unverified users |
 
-### Resend Email Setup
+### Resend Email Setup — DONE
 
-D2C sends transactional emails (password reset, filing confirmation) via [Resend](https://resend.com).
+D2C sends transactional emails (email verification, password reset, filing confirmation) via [Resend](https://resend.com).
 
-1. **Create Resend account** at [resend.com](https://resend.com)
-2. **Verify domain** — Resend dashboard → Domains → Add Domain → `fbardirect.com`
-   - Add the DKIM, SPF, and DMARC DNS records Resend provides to Namecheap:
-     - Namecheap → Domain List → `fbardirect.com` → Manage → Advanced DNS
-     - Add each TXT/CNAME record Resend requires (typically 3 records)
-   - Wait for Resend to show "Verified" status
-3. **Get API key** — Resend dashboard → API Keys → Create Key (domain-scoped to `fbardirect.com`)
-4. **Set env vars on server:**
+**Current status (2026-02-28):** Fully configured. API key set on Hetzner, domain verified with all DNS records:
+- SPF: `send.fbardirect.com` → `v=spf1 include:amazonses.com ~all`
+- DKIM: `resend._domainkey.fbardirect.com` → RSA public key
+- DMARC: `_dmarc.fbardirect.com` → `v=DMARC1; p=none;`
+- MX: `send.fbardirect.com` → `feedback-smtp.us-east-1.amazonses.com`
+
+**If you need to reconfigure:**
+1. Resend dashboard → API Keys → Create Key (domain-scoped to `fbardirect.com`)
+2. **Set env vars on server:**
    ```bash
    ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && \
      sed -i 's|^D2C_RESEND_API_KEY=.*|D2C_RESEND_API_KEY=re_your_key_here|' .env && \
      sed -i 's|^D2C_RESEND_FROM_EMAIL=.*|D2C_RESEND_FROM_EMAIL=noreply@fbardirect.com|' .env"
    ```
-5. **Restart D2C:**
+3. **Restart D2C:**
    ```bash
    ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate d2c-app"
    ```

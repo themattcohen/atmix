@@ -1,5 +1,8 @@
 # Gap #22: No welcome/signup email sent on account creation
 
+> **STATUS: COMPLETE (2026-02-28)**
+> Superseded by email verification gate. Instead of a welcome email, signup now sends a verification email with a tokenized link. Users must verify their email before accessing protected routes. Implementation: `sendVerificationEmail()` in `d2c/src/lib/email.ts`, token generation in signup route, `/verify-email` page, middleware gate. Resend domain verified in production (SPF, DKIM, DMARC all configured on `fbardirect.com`).
+
 **Severity:** Low
 **Effort:** S (< 1 hour)
 **Depends on:** None (Resend integration already wired; `RESEND_API_KEY` and `RESEND_FROM_EMAIL` already used by existing email functions)

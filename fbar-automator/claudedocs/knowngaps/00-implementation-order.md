@@ -74,43 +74,43 @@ Mostly ops changes. Some code. Independent of each other unless noted.
 
 **Estimated total: 4-6 hours**
 
-### Phase 3: Filing Pipeline
+### Phase 3: Filing Pipeline — DONE
 **MUST be sequential.** Each step depends on the previous.
 
 | Order | Gap | Effort | Description | Depends On | Status |
 |-------|-----|--------|-------------|------------|--------|
-| 1st   | #2  | M | Treasury exchange rates (copy from B2B, adapt schema) | — | BLOCKED |
+| ~~1st~~ | ~~#2~~ | ~~M~~ | ~~Treasury exchange rates (copy from B2B, adapt schema)~~ | ~~—~~ | **DONE** (2026-02-23) |
 | ~~2nd~~ | ~~#1~~ | ~~L~~ | ~~FinCEN XML generation (port from B2B, 6 schema diffs)~~ | ~~Gap #2~~ | **DONE** (2026-02-21) |
-| 3rd   | #6  | L | Submission architecture + cron (absorbs Gap #14) | ~~Gap #1~~ Gap #2 | BLOCKED on #2 |
+| ~~3rd~~ | ~~#6~~ | ~~L~~ | ~~Submission architecture + cron (absorbs Gap #14)~~ | ~~Gap #1, Gap #2~~ | **DONE** (2026-02-23) |
 
-**Estimated total: ~~12-20~~ 4-12 hours remaining (Gap #1 complete)**
+**All complete.**
 
-### Phase 4: Security Hardening
-Implement as **one coordinated middleware pass**. Internal order matters.
+### Phase 4: Security Hardening — DONE (2026-02-28)
+Implemented as **one coordinated middleware pass**.
 
-| Order | Gap | Effort | Description |
-|-------|-----|--------|-------------|
-| 1st   | #13 | S | CSRF exemption narrowing (change `isExempt` logic) |
-| 2nd   | #11 | S | JWT maxAge 30d → 7d (Fix A only) |
-| 3rd   | #10 | XL | MFA/2FA — largest single gap (schema + 8 new files + middleware + UI) |
-| 4th   | #12 | L | Encryption key rotation mechanism |
+| Order | Gap | Effort | Description | Status |
+|-------|-----|--------|-------------|--------|
+| ~~1st~~ | ~~#13~~ | ~~S~~ | ~~CSRF exemption narrowing~~ | **DONE** (2026-02-28) |
+| ~~2nd~~ | ~~#11~~ | ~~S~~ | ~~JWT maxAge 30d → 8h~~ | **DONE** (2026-02-28) |
+| ~~3rd~~ | ~~#10~~ | ~~XL~~ | ~~MFA/2FA (enrollment infra built; login enforcement deferred)~~ | **DONE** (2026-02-28) |
+| ~~4th~~ | ~~#12~~ | ~~L~~ | ~~Encryption key rotation~~ | **DONE** (2026-02-21) |
 
 Gap #19 (rate limiter) is already implemented with Option C — accept as-is, no changes needed.
 
-**Estimated total: 16-28 hours**
+**All complete. MFA login enforcement deferred (7 E2E test skips track this).**
 
-### Phase 5: Low Priority / Post-Launch
+### Phase 5: Low Priority / Post-Launch — MOSTLY DONE
 No urgency. Implement when convenient.
 
-| Gap | Effort | Description |
-|-----|--------|-------------|
-| #15 | M | Drawn signatures embedded in PDF (jsPDF `addImage`) |
-| #18 | M | Replace `xlsx` package with `exceljs` (licensing) |
-| #19 | S | Rate limiter — already acceptable (Option C), document decision |
-| #20 | M | Blog content pages |
-| #22 | S | Welcome/signup email via Resend |
+| Gap | Effort | Description | Status |
+|-----|--------|-------------|--------|
+| ~~#15~~ | ~~M~~ | ~~Drawn signatures embedded in PDF~~ | **DONE** (Phase 7) |
+| ~~#18~~ | ~~M~~ | ~~Replace `xlsx` with `exceljs`~~ | **DONE** (Phase 7) |
+| ~~#19~~ | ~~S~~ | ~~Rate limiter — Option C accepted~~ | **DONE** (accepted as-is) |
+| #20 | M | Blog content pages | Deferred |
+| ~~#22~~ | ~~S~~ | ~~Welcome/signup email~~ | **DONE** (2026-02-28, superseded by email verification gate) |
 
-**Estimated total: 8-12 hours**
+**Only Gap #20 (blog) remains. All others complete.**
 
 ## Dependency Graph
 

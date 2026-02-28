@@ -357,16 +357,18 @@ Maps to original Phase 4. Gaps #10, #11, #13 all touch `d2c/src/middleware.ts` -
 
 **Note (2026-02-21):** P5-1 (CSRF narrowing), P5-2 (JWT 24h maxAge), P5-3 (MFA enrollment/setup/verify/disable/recovery), P5-4 (encryption key rotation + safeDecrypt fix) are all DONE. MFA *login enforcement* (redirecting to `/mfa-verify` on login) was deferred — the infrastructure exists (`/mfa-verify` page, middleware gate, HMAC cookie) but is not wired into the login flow. 7 E2E test skips in `mfa.spec.ts` track this.
 
-**Middleware execution order after all changes:**
+**Middleware execution order after all changes (updated 2026-02-28):**
 
 1. Static file bypass (existing, unchanged)
 2. Rate limiting (existing, Gap #19 accepted as-is)
 3. CSRF check (P5-1 narrows exemption list)
 4. Auth passthrough for NextAuth/Stripe (existing, unchanged)
 5. API auth check (existing, unchanged)
-6. Revocation check (P5-2) -- must come before MFA
-7. MFA pending redirect (P5-3) -- must come after revocation
+6. **Email verification gate (NEW, 2026-02-28)** -- blocks unverified users from app routes
+7. MFA pending redirect (P5-3) -- must come after email verification
 8. Page auth / redirect to login (existing, unchanged)
+
+**Note (2026-02-28):** Email verification gate added as part of Go-to-Market security sprint. JWT maxAge set to 8h (not 7d as originally planned). Revocation check (Fix B, Redis blocklist) deferred.
 
 | Order | ID | Task | Agent | Effort | Files | Source |
 |-------|----|------|-------|--------|-------|--------|
