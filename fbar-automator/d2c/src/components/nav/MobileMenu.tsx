@@ -66,6 +66,7 @@ export function MobileMenu() {
               <a href="/#how-to-file" className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100" onClick={closeMobileMenu}>How to File</a>
               <a href="/#pricing" className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100" onClick={closeMobileMenu}>Pricing</a>
               <a href="/#faq" className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100" onClick={closeMobileMenu}>FAQ</a>
+              <Link href="/contact" className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100" onClick={closeMobileMenu}>Contact</Link>
               <Link href="/login" className="block py-2 text-gov-blue text-sm font-semibold border-b border-gray-100" onClick={closeMobileMenu}>Log In</Link>
               <Link href="/signup" className="block bg-gov-blue hover:bg-gov-blue-dark text-white font-semibold text-sm px-4 py-3 text-center w-full mt-2" onClick={closeMobileMenu}>Begin Filing</Link>
             </div>

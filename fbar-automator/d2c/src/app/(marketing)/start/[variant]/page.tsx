@@ -58,6 +58,51 @@ export default async function LandingPage({
         </ul>
       </div>
 
+      {/* Why use a service? */}
+      <div className="mt-16 text-left max-w-lg mx-auto">
+        <h2 className="text-xl font-bold text-navy-900 mb-4 text-center">
+          Why Use FBAR Direct?
+        </h2>
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="py-2 px-4 text-left font-medium text-gray-500">&nbsp;</th>
+                <th className="py-2 px-4 text-center font-medium text-gray-500">BSA E-Filing (Free)</th>
+                <th className="py-2 px-4 text-center font-medium text-gold-700 bg-gold-50">FBAR Direct ($59)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              <tr>
+                <td className="py-2 px-4 text-gray-700">Time to file</td>
+                <td className="py-2 px-4 text-center text-gray-600">45–90 min</td>
+                <td className="py-2 px-4 text-center font-medium text-navy-900 bg-gold-50">~10 min</td>
+              </tr>
+              <tr>
+                <td className="py-2 px-4 text-gray-700">Currency conversion</td>
+                <td className="py-2 px-4 text-center text-gray-600">Manual lookup</td>
+                <td className="py-2 px-4 text-center font-medium text-navy-900 bg-gold-50">Automatic</td>
+              </tr>
+              <tr>
+                <td className="py-2 px-4 text-gray-700">Error protection</td>
+                <td className="py-2 px-4 text-center text-gray-600">None</td>
+                <td className="py-2 px-4 text-center font-medium text-navy-900 bg-gold-50">Built-in validation</td>
+              </tr>
+              <tr>
+                <td className="py-2 px-4 text-gray-700">Filing status</td>
+                <td className="py-2 px-4 text-center text-gray-600">Email only</td>
+                <td className="py-2 px-4 text-center font-medium text-navy-900 bg-gold-50">Dashboard + BSA ID</td>
+              </tr>
+              <tr>
+                <td className="py-2 px-4 text-gray-700">Support</td>
+                <td className="py-2 px-4 text-center text-gray-600">None</td>
+                <td className="py-2 px-4 text-center font-medium text-navy-900 bg-gold-50">Email support</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* 3-step process */}
       <div className="mt-16 grid grid-cols-3 gap-4 text-center">
         <div>

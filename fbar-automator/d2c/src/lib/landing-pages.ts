@@ -61,6 +61,24 @@ export const LANDING_VARIANTS: LandingVariant[] = [
     metaDescription: 'Submit FinCEN Form 114 through our guided platform. Save progress, auto-convert currencies, get your BSA tracking ID.',
   },
   {
+    slug: 'fbar-filing',
+    adGroup: 'FBAR Filing',
+    headline: 'FBAR Filing Made Simple — From $59',
+    subheadline: 'We handle FinCEN Form 114 submission. You review and sign.',
+    ctaText: 'Start Your FBAR Filing',
+    ctaUrl: '/threshold',
+    priceHighlight: 'From $59',
+    features: [
+      'We file directly with FinCEN for you',
+      'Auto currency conversion (170+ currencies)',
+      'BSA tracking ID confirmation',
+      'Done in ~10 minutes',
+    ],
+    metaTitle: 'FBAR Filing Service — From $59 | FBAR Direct',
+    metaDescription:
+      'Professional FBAR filing service. We submit FinCEN Form 114 for you. FinCEN-registered. AES-256 encrypted. From $59.',
+  },
+  {
     slug: 'default',
     adGroup: 'General',
     headline: 'File Your FBAR Online — From $59',

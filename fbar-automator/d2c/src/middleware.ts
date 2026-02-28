@@ -14,12 +14,12 @@ function buildCspHeader(nonce: string): string {
     : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
   return [
     "default-src 'self'",
-    `script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com`,
+    `script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://challenges.cloudflare.com`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net",
     "font-src 'self' data:",
     "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://www.googleadservices.com https://googleads.g.doubleclick.net",
-    "frame-src https://www.googletagmanager.com https://bid.g.doubleclick.net",
+    "frame-src https://www.googletagmanager.com https://bid.g.doubleclick.net https://challenges.cloudflare.com",
     "frame-ancestors 'none'",
   ].join("; ");
 }
@@ -198,6 +198,13 @@ export default auth(async (req) => {
     }
   }
 
+  // Chat rate limit: 10 messages/min per IP
+  if (normalizedPath === "/api/chat") {
+    if (!rateLimit(`chat:${ip}`, 10, 60_000)) {
+      return NextResponse.json({ error: "Too many messages" }, { status: 429 });
+    }
+  }
+
   // General API rate limit: 60 req/min per IP (exempt: /api/health, /api/stripe/webhook)
   if (
     normalizedPath.startsWith("/api/") &&
@@ -224,6 +231,8 @@ export default auth(async (req) => {
     "/api/auth/signout",     // NextAuth signout
     "/api/stripe/webhook",   // Stripe (has own signature verification)
     "/api/health",           // Health check
+    "/api/chat",             // Public AI chat (useChat hook doesn't send CSRF header)
+    "/api/contact",          // Public contact form (Turnstile-protected)
   ];
   const method = request.method;
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
@@ -243,7 +252,9 @@ export default auth(async (req) => {
     normalizedPath.startsWith("/api/auth/") ||
     normalizedPath === "/api/stripe/webhook" ||
     normalizedPath === "/api/health" ||
-    normalizedPath.startsWith("/api/internal/")
+    normalizedPath.startsWith("/api/internal/") ||
+    normalizedPath === "/api/chat" ||
+    normalizedPath === "/api/contact"
   ) {
     return NextResponse.next();
   }
