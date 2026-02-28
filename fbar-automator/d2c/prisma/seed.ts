@@ -18,6 +18,7 @@ async function main() {
       passwordHash,
       firstName: "Debug",
       lastName: "User",
+      emailVerified: true,
     },
   });
   console.log(`  User: ${user.email} (${user.id})`);
@@ -32,6 +33,7 @@ async function main() {
       passwordHash: negativeTestHash,
       firstName: "Lockout",
       lastName: "Tester",
+      emailVerified: true,
     },
   });
   console.log(`  Lockout test user: ${lockoutUser.email} (${lockoutUser.id})`);

@@ -54,7 +54,7 @@ test.describe("Signup Page", () => {
     await expect(page).toHaveURL(/\/signup/);
   });
 
-  test("signup with valid data creates account and redirects to threshold", async ({
+  test("signup with valid data creates account and redirects to verify-email", async ({
     page,
   }) => {
     test.slow(); // signup + bcrypt + auto-login + page transition can exceed 30s
@@ -66,8 +66,8 @@ test.describe("Signup Page", () => {
     await page.fill("#password", "TestPass123!");
     await page.fill("#confirmPassword", "TestPass123!");
     await page.click('button[type="submit"]');
-    await page.waitForURL("**/threshold", { timeout: 60000 });
-    await expect(page).toHaveURL(/\/threshold/);
+    await page.waitForURL("**/verify-email", { timeout: 60000 });
+    await expect(page).toHaveURL(/\/verify-email/);
   });
 
   test("signup with duplicate email redirects to login (anti-enumeration)", async ({ page }) => {
