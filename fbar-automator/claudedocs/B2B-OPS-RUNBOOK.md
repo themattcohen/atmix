@@ -186,7 +186,7 @@ ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docke
 | Integration | Env Var | Status |
 |---|---|---|
 | **Domain** | `D2C_DOMAIN` | `fbardirect.com` — live with TLS |
-| **Stripe** | `D2C_STRIPE_SECRET_KEY`, `D2C_STRIPE_WEBHOOK_SECRET` | Placeholder values — payment flow won't work |
+| **Stripe** | `D2C_STRIPE_SECRET_KEY`, `D2C_STRIPE_WEBHOOK_SECRET` | **LIVE** — `sk_live_` key + webhook secret configured |
 | **Email (Resend)** | `D2C_RESEND_API_KEY`, `D2C_RESEND_FROM_EMAIL` | **LIVE** (2026-02-28) — API key configured, domain verified (SPF/DKIM/DMARC) |
 | **FinCEN SFTP** | `SDTM_HOST`, `SDTM_USERNAME`, `SDTM_PRIVATE_KEY_PATH` | Empty — SDTM not yet set up (requires separate FinCEN ticket) |
 | **Google Tag** | `NEXT_PUBLIC_GTM_ID` | **LIVE** — `GT-P3JRZMRX` via gtag.js, GA4 `G-W2KXELPKZE` |
