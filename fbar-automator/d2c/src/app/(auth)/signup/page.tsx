@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { pushDataLayer, trackGadsConversion } from "@/lib/gtm";
+import { pushDataLayer, trackGadsConversion, setGtagUserData } from "@/lib/gtm";
 
 function getUTMFromCookie(): Record<string, string> {
   if (typeof document === 'undefined') return {};
@@ -100,6 +100,7 @@ function SignupForm() {
       }
 
       pushDataLayer({ event: "fbar_signup_complete" });
+      setGtagUserData(form.email);
       trackGadsConversion(process.env.NEXT_PUBLIC_GADS_SIGNUP_LABEL || '');
       router.push("/verify-email");
     } catch {

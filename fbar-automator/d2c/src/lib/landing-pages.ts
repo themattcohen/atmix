@@ -60,4 +60,21 @@ export const LANDING_VARIANTS: LandingVariant[] = [
     metaTitle: 'File FinCEN Form 114 Online — Skip the BSA Portal',
     metaDescription: 'Submit FinCEN Form 114 through our guided platform. Save progress, auto-convert currencies, get your BSA tracking ID.',
   },
+  {
+    slug: 'default',
+    adGroup: 'General',
+    headline: 'File Your FBAR Online — From $59',
+    subheadline: 'FinCEN-registered. AI-assisted. Done in minutes.',
+    ctaText: 'Start Filing Now',
+    ctaUrl: '/threshold',
+    priceHighlight: 'From $59',
+    features: [
+      'Guided step-by-step process',
+      'AI bank statement extraction (Premium)',
+      'Auto foreign currency conversion',
+      'Direct FinCEN submission + BSA tracking ID',
+    ],
+    metaTitle: 'File Your FBAR Online — From $59 | FBAR Direct',
+    metaDescription: 'File FinCEN Form 114 online. FinCEN-registered. AI-powered statement extraction. AES-256 encryption. From $59.',
+  },
 ];

@@ -7,6 +7,23 @@ export function pushDataLayer(payload: GtmEvent): void {
 }
 
 /**
+ * Set hashed user data for Google Ads Enhanced Conversions.
+ * Uses SHA-256 via SubtleCrypto (browser-native, no dependencies).
+ */
+export async function setGtagUserData(email: string): Promise<void> {
+  if (typeof window === "undefined" || !window.gtag) return;
+  if (!email) return;
+  const normalized = email.trim().toLowerCase();
+  const encoder = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(normalized));
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  window.gtag("set", "user_data", {
+    sha256_email_address: hashHex,
+  });
+}
+
+/**
  * Fire a Google Ads conversion event via gtag().
  * Requires NEXT_PUBLIC_GADS_ID to be set (e.g. "AW-17983090187").
  */

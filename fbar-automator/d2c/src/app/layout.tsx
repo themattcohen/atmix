@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import { Inter, Merriweather, Source_Sans_3 } from "next/font/google";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
 import { UTMCapture } from "@/components/analytics/UTMCapture";
+import { CookieConsent } from "@/components/analytics/CookieConsent";
+
+const ChatWidget = dynamic(
+  () => import("@/components/chat/ChatWidget").then((m) => m.ChatWidget),
+  { ssr: false }
+);
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const merriweather = Merriweather({
@@ -74,6 +81,8 @@ export default async function RootLayout({
           <UTMCapture />
         </Suspense>
         {children}
+        <ChatWidget />
+        <CookieConsent />
       </body>
     </html>
   );

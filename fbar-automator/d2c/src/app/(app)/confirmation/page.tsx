@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
-import { pushDataLayer, trackGadsConversion } from "@/lib/gtm";
+import { pushDataLayer, trackGadsConversion, setGtagUserData } from "@/lib/gtm";
 import { Suspense } from "react";
 
 type ConfirmationStatus =
@@ -43,6 +43,13 @@ function ConfirmationContent() {
     if (status === 'paid' && !hasFiredPurchase.current) {
       hasFiredPurchase.current = true;
       const value = filing?.tier?.toUpperCase() === 'PREMIUM' ? 79 : 59;
+
+      // Set Enhanced Conversions user data (hashed email)
+      fetch("/api/auth/session")
+        .then((r) => r.json())
+        .then((s) => { if (s?.user?.email) setGtagUserData(s.user.email); })
+        .catch(() => {});
+
       pushDataLayer({
         event: 'purchase',
         ecommerce: {
