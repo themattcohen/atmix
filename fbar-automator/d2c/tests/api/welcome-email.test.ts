@@ -1,13 +1,8 @@
 import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from "vitest";
 
-// IMPLEMENTATION NEEDED: P7-4 will add sendWelcomeEmail() to d2c/src/lib/email.ts:
-//   export async function sendWelcomeEmail(to: string, data: { firstName: string }): Promise<void>
-// P7-4 will also modify the signup route (d2c/src/app/api/auth/signup/route.ts) to
-// call sendWelcomeEmail() after successful user creation. Email failure must NOT
-// block signup (fire-and-forget or try/catch with logging).
-
 // Mock email module BEFORE importing the route
 vi.mock("@/lib/email", () => ({
+  sendVerificationEmail: vi.fn().mockResolvedValue(undefined),
   sendWelcomeEmail: vi.fn().mockResolvedValue(undefined),
   sendPasswordResetEmail: vi.fn().mockResolvedValue(undefined),
   sendSubmissionEmail: vi.fn().mockResolvedValue(undefined),
@@ -19,7 +14,7 @@ vi.mock("@/lib/email", () => ({
 import { POST } from "@/app/api/auth/signup/route";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import { sendWelcomeEmail } from "@/lib/email";
+import { sendVerificationEmail } from "@/lib/email";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -65,8 +60,18 @@ afterAll(async () => {
   } else {
     delete process.env.RESEND_API_KEY;
   }
-  // Clean up all users created during tests
+  // Clean up all users and their verification tokens created during tests
   if (createdEmails.length > 0) {
+    const users = await prisma.user.findMany({
+      where: { email: { in: createdEmails } },
+      select: { id: true },
+    });
+    const userIds = users.map((u) => u.id);
+    if (userIds.length > 0) {
+      await prisma.emailVerificationToken.deleteMany({
+        where: { userId: { in: userIds } },
+      });
+    }
     await prisma.user.deleteMany({
       where: { email: { in: createdEmails } },
     });
@@ -76,8 +81,8 @@ afterAll(async () => {
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-describe("P7-4: Welcome email on signup", () => {
-  it("P7-4: successful signup calls sendWelcomeEmail with correct email and firstName", async () => {
+describe("Verification email on signup", () => {
+  it("successful signup calls sendVerificationEmail with correct email and firstName", async () => {
     const data = validSignupData();
     createdEmails.push(data.email as string);
 
@@ -86,16 +91,15 @@ describe("P7-4: Welcome email on signup", () => {
 
     expect(res.status).toBe(201);
 
-    // IMPLEMENTATION NEEDED: P7-4 will wire up sendWelcomeEmail in the signup route
-    // After P7-4, this assertion should pass:
-    expect(sendWelcomeEmail).toHaveBeenCalledTimes(1);
-    expect(sendWelcomeEmail).toHaveBeenCalledWith(
+    expect(sendVerificationEmail).toHaveBeenCalledTimes(1);
+    expect(sendVerificationEmail).toHaveBeenCalledWith(
       (data.email as string).toLowerCase().trim(),
-      { firstName: "Welcome" }
+      "Welcome",
+      expect.stringContaining("/verify-email?token=")
     );
   });
 
-  it("P7-4: sendWelcomeEmail receives the lowercase-trimmed email", async () => {
+  it("sendVerificationEmail receives the lowercase-trimmed email", async () => {
     const data = validSignupData({
       email: `  UPPER-${TIMESTAMP}-${Math.random().toString(36).slice(2, 6)}@TEST.COM  `,
     });
@@ -107,16 +111,16 @@ describe("P7-4: Welcome email on signup", () => {
 
     expect(res.status).toBe(201);
 
-    // Email should be normalized before being passed to the welcome email function
-    if ((sendWelcomeEmail as ReturnType<typeof vi.fn>).mock.calls.length > 0) {
-      const calledEmail = (sendWelcomeEmail as ReturnType<typeof vi.fn>).mock.calls[0][0];
+    // Email should be normalized before being passed to the verification email function
+    if ((sendVerificationEmail as ReturnType<typeof vi.fn>).mock.calls.length > 0) {
+      const calledEmail = (sendVerificationEmail as ReturnType<typeof vi.fn>).mock.calls[0][0];
       expect(calledEmail).toBe(normalizedEmail);
     }
   });
 
-  it("P7-4: signup still succeeds if sendWelcomeEmail throws (non-blocking)", async () => {
+  it("signup still succeeds if sendVerificationEmail throws (non-blocking)", async () => {
     // Make the email function throw to simulate a transient failure
-    (sendWelcomeEmail as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+    (sendVerificationEmail as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
       new Error("Resend API timeout")
     );
 
@@ -133,7 +137,7 @@ describe("P7-4: Welcome email on signup", () => {
     expect(json.message).toBeDefined();
   });
 
-  it("P7-4: sendWelcomeEmail is NOT called on validation failure", async () => {
+  it("sendVerificationEmail is NOT called on validation failure", async () => {
     // Missing required fields → 400 validation error
     const req = makeSignupRequest({
       email: "invalid",
@@ -145,11 +149,11 @@ describe("P7-4: Welcome email on signup", () => {
     // Should fail validation
     expect(res.status).toBe(400);
 
-    // Welcome email should NOT be called on failed signup
-    expect(sendWelcomeEmail).not.toHaveBeenCalled();
+    // Verification email should NOT be called on failed signup
+    expect(sendVerificationEmail).not.toHaveBeenCalled();
   });
 
-  it("P7-4: sendWelcomeEmail is NOT called when password is too weak", async () => {
+  it("sendVerificationEmail is NOT called when password is too weak", async () => {
     const req = makeSignupRequest({
       email: `weak-pw-${Date.now()}@test.com`,
       password: "ab",
@@ -163,10 +167,10 @@ describe("P7-4: Welcome email on signup", () => {
     // Validation should reject weak password
     expect(res.status).toBe(400);
 
-    expect(sendWelcomeEmail).not.toHaveBeenCalled();
+    expect(sendVerificationEmail).not.toHaveBeenCalled();
   });
 
-  it("P7-4: sendWelcomeEmail is NOT called when passwords do not match", async () => {
+  it("sendVerificationEmail is NOT called when passwords do not match", async () => {
     const req = makeSignupRequest({
       email: `mismatch-${Date.now()}@test.com`,
       password: "ValidPassword1!",
@@ -178,6 +182,6 @@ describe("P7-4: Welcome email on signup", () => {
     const res = await POST(req);
 
     expect(res.status).toBe(400);
-    expect(sendWelcomeEmail).not.toHaveBeenCalled();
+    expect(sendVerificationEmail).not.toHaveBeenCalled();
   });
 });

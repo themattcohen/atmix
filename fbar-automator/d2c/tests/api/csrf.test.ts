@@ -51,10 +51,10 @@ import { NextRequest, NextResponse } from "next/server";
 import middleware from "@/middleware";
 
 // Mutable auth state for test control
-let mockAuthState: { user: { id: string } } | null = null;
+let mockAuthState: { user: { id: string; emailVerified?: boolean } } | null = null;
 
 function setAuthState(userId: string | null) {
-  mockAuthState = userId ? { user: { id: userId } } : null;
+  mockAuthState = userId ? { user: { id: userId, emailVerified: true } } : null;
 }
 
 // ---------------------------------------------------------------------------
