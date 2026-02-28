@@ -69,7 +69,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} nonce={nonce} />
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} gadsId={process.env.NEXT_PUBLIC_GADS_ID || ''} nonce={nonce} />
         <Suspense fallback={null}>
           <UTMCapture />
         </Suspense>

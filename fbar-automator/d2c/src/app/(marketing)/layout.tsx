@@ -31,6 +31,8 @@ export default function MarketingLayout({
               <h3 className="font-heading font-bold text-lg text-white mb-2">FBAR Direct</h3>
               <p className="text-sm text-gray-300 mb-3">We file your FBAR directly to FinCEN. From $59.</p>
               <p className="text-xs text-gray-400">FinCEN-Registered BSA E-Filing Institution</p>
+              <p className="text-xs text-gray-400">Built by a Licensed CPA</p>
+              <p className="text-xs text-gray-500 mt-3">1201 N. Market Street, Suite 111<br />Wilmington, DE 19801</p>
             </div>
             {/* Links Column */}
             <div>

@@ -1,7 +1,8 @@
 import Script from 'next/script';
 
-export function GoogleTagManager({ gtmId, nonce }: { gtmId: string; nonce?: string }) {
+export function GoogleTagManager({ gtmId, gadsId, nonce }: { gtmId: string; gadsId?: string; nonce?: string }) {
   if (!gtmId) return null;
+  const gadsConfig = gadsId ? `gtag('config','${gadsId}');` : '';
   return (
     <>
       <Script
@@ -15,7 +16,7 @@ export function GoogleTagManager({ gtmId, nonce }: { gtmId: string; nonce?: stri
         strategy="afterInteractive"
         nonce={nonce}
         dangerouslySetInnerHTML={{
-          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gtmId}');`,
+          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gtmId}');${gadsConfig}`,
         }}
       />
     </>

@@ -13,6 +13,13 @@ export default function StartLayout({ children }: { children: React.ReactNode })
       </header>
       <main>{children}</main>
       <TrustBar />
+      <footer className="border-t border-gray-200 py-4 px-6 text-center text-xs text-gray-500">
+        <div className="max-w-3xl mx-auto flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <span>&copy; {new Date().getFullYear()} FBAR Direct</span>
+          <Link href="/privacy" className="hover:text-gray-700 hover:underline">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-gray-700 hover:underline">Terms of Service</Link>
+        </div>
+      </footer>
     </div>
   );
 }

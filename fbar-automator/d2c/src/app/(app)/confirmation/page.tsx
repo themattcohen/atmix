@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
-import { pushDataLayer } from "@/lib/gtm";
+import { pushDataLayer, trackGadsConversion } from "@/lib/gtm";
 import { Suspense } from "react";
 
 type ConfirmationStatus =
@@ -42,14 +42,20 @@ function ConfirmationContent() {
   useEffect(() => {
     if (status === 'paid' && !hasFiredPurchase.current) {
       hasFiredPurchase.current = true;
+      const value = filing?.tier?.toUpperCase() === 'PREMIUM' ? 79 : 59;
       pushDataLayer({
         event: 'purchase',
         ecommerce: {
           transaction_id: filing?.id || '',
           currency: 'USD',
-          value: filing?.tier?.toUpperCase() === 'PREMIUM' ? 79 : 59,
+          value,
         },
       });
+      trackGadsConversion(
+        process.env.NEXT_PUBLIC_GADS_PURCHASE_LABEL || '',
+        value,
+        filing?.id || '',
+      );
     }
   }, [status, filing]);
 
