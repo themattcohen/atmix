@@ -6,6 +6,10 @@ import { sendPaymentReceiptEmail, sendEmailWithRetry } from "@/lib/email";
 import * as Sentry from "@sentry/nextjs";
 import Stripe from "stripe";
 
+// Stripe event deduplication (in-memory, per-process — fine for single instance)
+const processedEvents = new Set<string>();
+const MAX_PROCESSED_EVENTS = 1000;
+
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
@@ -25,6 +29,17 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("Webhook signature verification failed:", err instanceof Error ? err.message : "Unknown error");
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Idempotency: skip already-processed events
+  if (processedEvents.has(event.id)) {
+    return NextResponse.json({ received: true });
+  }
+  processedEvents.add(event.id);
+  // Prevent memory leak — evict oldest entries when set is too large
+  if (processedEvents.size > MAX_PROCESSED_EVENTS) {
+    const first = processedEvents.values().next().value;
+    if (first) processedEvents.delete(first);
   }
 
   try {

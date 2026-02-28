@@ -208,6 +208,38 @@ export async function sendWelcomeEmail(
   });
 }
 
+export async function sendVerificationEmail(
+  email: string,
+  firstName: string,
+  verifyUrl: string
+): Promise<void> {
+  await getResend().emails.send({
+    from: fromEmail,
+    to: email,
+    subject: "Verify your email — FBAR Direct",
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #112e51; padding: 24px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">FBAR Direct</h1>
+        </div>
+        <div style="padding: 32px 24px;">
+          <h2 style="color: #112e51;">Verify Your Email</h2>
+          <p>Hi ${escapeHtml(firstName)},</p>
+          <p>Please verify your email address to access your FBAR Direct account.</p>
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="${escapeHtml(verifyUrl)}" style="background: #112e51; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600;">Verify Email</a>
+          </div>
+          <p style="color: #666; font-size: 14px;">This link will expire in 24 hours.</p>
+          <p style="color: #666; font-size: 14px;">If you didn't create an account, you can safely ignore this email.</p>
+        </div>
+        <div style="background: #f5f5f5; padding: 16px 24px; font-size: 12px; color: #666; text-align: center;">
+          <p>FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S. government agency.</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 function isPermanentError(err: unknown): boolean {
   const status = (err as Record<string, unknown>)?.status;
   return typeof status === "number" && status >= 400 && status < 500 && status !== 429;

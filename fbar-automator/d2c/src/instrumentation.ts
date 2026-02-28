@@ -18,6 +18,7 @@ export async function register() {
     STRIPE_WEBHOOK_SECRET: "Payment webhooks",
     RESEND_API_KEY: "Email sending",
     ENCRYPTION_KEY: "Data encryption",
+    CRON_SECRET: "Cron job authentication",
   };
   for (const [key, feature] of Object.entries(featureVars)) {
     if (!process.env[key]) {
@@ -37,6 +38,12 @@ export async function register() {
   if (!process.env.S3_ENDPOINT || !process.env.S3_ACCESS_KEY) {
     console.warn(
       "[STARTUP] WARNING: S3/MinIO not configured — file uploads will fail"
+    );
+  }
+
+  if (process.env.NODE_ENV === "production" && !process.env.SDTM_HOST_KEY) {
+    console.warn(
+      "[STARTUP] WARNING: SDTM_HOST_KEY not set — FinCEN SFTP submissions will reject unknown hosts"
     );
   }
 

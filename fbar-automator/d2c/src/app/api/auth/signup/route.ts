@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { signupSchema } from "@/lib/validation";
-import { sendWelcomeEmail, sendEmailWithRetry } from "@/lib/email";
+import { sendVerificationEmail, sendEmailWithRetry } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,8 +28,9 @@ export async function POST(req: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 12);
 
     let userCreated = false;
+    let userId: string | null = null;
     try {
-      await prisma.user.create({
+      const user = await prisma.user.create({
         data: {
           email,
           passwordHash,
@@ -42,6 +44,7 @@ export async function POST(req: NextRequest) {
         },
       });
       userCreated = true;
+      userId = user.id;
     } catch (err: unknown) {
       // Unique constraint = email exists. Fall through to return same response
       if (err instanceof Error && err.message.includes("Unique constraint")) {
@@ -51,13 +54,30 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Fire-and-forget welcome email — non-blocking, signup succeeds even if email fails
-    if (userCreated && process.env.RESEND_API_KEY) {
+    // Send verification email instead of welcome email
+    if (userCreated && userId && process.env.RESEND_API_KEY) {
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      const hashedToken = crypto
+        .createHash("sha256")
+        .update(rawToken)
+        .digest("hex");
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Create token (fire-and-forget the email, but token creation must succeed)
+      await prisma.emailVerificationToken.create({
+        data: {
+          userId,
+          token: hashedToken,
+          expiresAt,
+        },
+      });
+
+      const verifyUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${rawToken}`;
       sendEmailWithRetry(
-        () => sendWelcomeEmail(email, { firstName }),
+        () => sendVerificationEmail(email, firstName, verifyUrl),
         { maxRetries: 2, backoffMs: 500 }
       ).catch((err) => {
-        console.error("Welcome email failed:", err instanceof Error ? err.message : "Unknown error");
+        console.error("Verification email failed:", err instanceof Error ? err.message : "Unknown error");
       });
     }
 

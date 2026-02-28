@@ -58,11 +58,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
           tokenVersion: user.tokenVersion,
           mfaEnabled: user.mfaEnabled,
+          emailVerified: user.emailVerified,
         };
       },
     }),
   ],
-  session: { strategy: "jwt", maxAge: 24 * 60 * 60 }, // 24 hours
+  session: { strategy: "jwt", maxAge: 8 * 60 * 60 }, // 8 hours
   pages: {
     signIn: "/login",
   },
@@ -72,6 +73,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
         token.tokenVersion = (user as any).tokenVersion;
         token.mfaEnabled = (user as any).mfaEnabled ?? false;
+        token.emailVerified = (user as any).emailVerified ?? false;
       }
       // Token revocation is handled by bumping tokenVersion + short maxAge (Edge runtime has no Prisma).
       return token;
@@ -85,6 +87,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         (session.user as any).mfaEnabled = token.mfaEnabled ?? false;
+        (session.user as any).emailVerified = token.emailVerified ?? false;
       }
       (session as any).tokenVersion = token.tokenVersion;
       if (session.user?.id) {

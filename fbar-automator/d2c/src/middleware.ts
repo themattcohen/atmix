@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { validateMfaCookie } from "@/lib/mfa-cookie";
+import { validateEmailVerificationCookie } from "@/lib/email-verification-cookie";
 
 // ---------------------------------------------------------------------------
 // CSP nonce helpers
@@ -74,6 +75,8 @@ const AUTH_RATE_LIMIT_PATHS = [
   "/api/auth/mfa/setup",
   "/api/auth/mfa/disable",
   "/api/auth/mfa/login-verify",
+  "/api/auth/verify-email",
+  "/api/auth/resend-verification",
 ];
 
 const authRequiredPrefixes = [
@@ -86,6 +89,7 @@ const authRequiredPrefixes = [
   "/confirmation",
   "/settings",
   "/mfa-verify",
+  "/verify-email",
 ];
 
 // ---------------------------------------------------------------------------
@@ -98,6 +102,36 @@ function getClientIp(request: NextRequest): string {
     return forwarded.split(",")[0].trim();
   }
   return request.ip ?? "unknown";
+}
+
+// ---------------------------------------------------------------------------
+// Email verification gate: redirect/block unverified users
+// ---------------------------------------------------------------------------
+async function checkEmailVerificationGate(
+  req: { auth: any; url: string },
+  normalizedPath: string
+): Promise<NextResponse | null> {
+  // Skip if email already verified in session
+  if ((req.auth?.user as any)?.emailVerified) return null;
+
+  // Exempt paths: auth routes, health, verify-email page, MFA verify
+  if (normalizedPath.startsWith("/api/auth/")) return null;
+  if (normalizedPath === "/api/health") return null;
+  if (normalizedPath === "/verify-email" || normalizedPath.startsWith("/verify-email/")) return null;
+  if (normalizedPath === "/mfa-verify" || normalizedPath.startsWith("/mfa-verify/")) return null;
+
+  // Check for valid email verification cookie (handles JWT not yet refreshed)
+  const request = req as unknown as NextRequest;
+  const cookieValue = request.cookies.get("__email_verified")?.value;
+  const tokenVersion = (req.auth as any)?.tokenVersion ?? 0;
+  const isValid = await validateEmailVerificationCookie(cookieValue, req.auth.user.id, tokenVersion);
+  if (isValid) return null; // Email verified via cookie
+
+  // Not verified — block or redirect
+  if (normalizedPath.startsWith("/api/")) {
+    return NextResponse.json({ error: "Email verification required" }, { status: 403 });
+  }
+  return NextResponse.redirect(new URL("/verify-email", req.url));
 }
 
 // ---------------------------------------------------------------------------
@@ -219,6 +253,8 @@ export default auth(async (req) => {
     if (!req.auth) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
+    if (emailBlock) return emailBlock;
     const mfaBlock = await checkMfaGate(req, normalizedPath);
     if (mfaBlock) return mfaBlock;
     return NextResponse.next();
@@ -237,6 +273,9 @@ export default auth(async (req) => {
     loginUrl.searchParams.set("callbackUrl", normalizedPath);
     return withCspHeaders(NextResponse.redirect(loginUrl), nonce);
   }
+
+  const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
+  if (emailBlock) return withCspHeaders(emailBlock, nonce);
 
   const mfaBlock = await checkMfaGate(req, normalizedPath);
   if (mfaBlock) return withCspHeaders(mfaBlock, nonce);

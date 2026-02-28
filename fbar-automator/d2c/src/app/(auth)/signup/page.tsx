@@ -100,30 +100,7 @@ function SignupForm() {
       }
 
       pushDataLayer({ event: "fbar_signup_complete" });
-
-      // Check if coming from threshold flow
-      const from = searchParams.get("from");
-      const calendarYear = searchParams.get("calendarYear");
-
-      if (from === "threshold" && calendarYear) {
-        // Create filing and skip threshold
-        try {
-          const filingRes = await fetch("/api/filing", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
-            body: JSON.stringify({ calendarYear: parseInt(calendarYear, 10) }),
-          });
-
-          if (filingRes.ok || filingRes.status === 409) {
-            router.push("/personal");
-            return;
-          }
-        } catch {
-          // If filing creation fails, still navigate to threshold
-        }
-      }
-
-      router.push("/threshold");
+      router.push("/verify-email");
     } catch {
       setGeneralError("An unexpected error occurred");
     } finally {
