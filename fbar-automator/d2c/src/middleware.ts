@@ -17,7 +17,7 @@ function buildCspHeader(nonce: string): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net",
     "font-src 'self' data:",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io https://www.googleadservices.com https://googleads.g.doubleclick.net",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://www.googleadservices.com https://googleads.g.doubleclick.net",
     "frame-src https://www.googletagmanager.com https://bid.g.doubleclick.net",
     "frame-ancestors 'none'",
   ].join("; ");
