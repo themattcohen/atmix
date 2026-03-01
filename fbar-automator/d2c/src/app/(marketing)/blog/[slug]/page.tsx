@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getBlogPost, getBlogPosts } from '@/lib/blog';
+import { getBlogPost, getBlogPosts, renderMarkdownToHtml } from '@/lib/blog';
 import { JsonLd } from '@/components/JsonLd';
 import Link from 'next/link';
 
@@ -39,6 +39,8 @@ export default async function BlogPostPage({
   const post = getBlogPost(slug);
   if (!post) notFound();
 
+  const htmlContent = await renderMarkdownToHtml(post.content);
+
   return (
     <article className="py-20 px-4">
       <div className="max-w-3xl mx-auto">
@@ -52,6 +54,12 @@ export default async function BlogPostPage({
             author: {
               '@type': 'Person',
               name: post.meta.author,
+              jobTitle: 'CPA',
+              affiliation: {
+                '@type': 'Organization',
+                name: 'FBAR Direct',
+                url: 'https://fbardirect.com',
+              },
             },
             publisher: {
               '@type': 'Organization',
@@ -68,19 +76,18 @@ export default async function BlogPostPage({
           <h1 className="text-4xl font-bold text-navy-900 mb-4">{post.meta.title}</h1>
           <p className="text-gray-500">
             {post.meta.author} ·{' '}
-            {new Date(post.meta.publishedDate).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
+            <time dateTime={post.meta.publishedDate}>
+              {new Date(post.meta.publishedDate + 'T00:00:00').toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </time>
           </p>
         </header>
 
         <div className="prose prose-gray max-w-none">
-          {/* MDX content will be rendered here in the future */}
-          {/* For now, display raw content */}
-          {/* Content is sanitized in lib/blog.ts via sanitize-html */}
-          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
         </div>
 
         <div className="mt-16 p-6 bg-navy-50 rounded-lg text-center">

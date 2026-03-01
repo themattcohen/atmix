@@ -16,9 +16,9 @@ function buildCspHeader(nonce: string): string {
     "default-src 'self'",
     `script-src ${scriptSrc} https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://challenges.cloudflare.com`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net",
+    "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com",
     "font-src 'self' data:",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://www.googleadservices.com https://googleads.g.doubleclick.net",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com",
     "frame-src https://www.googletagmanager.com https://bid.g.doubleclick.net https://challenges.cloudflare.com",
     "frame-ancestors 'none'",
   ].join("; ");

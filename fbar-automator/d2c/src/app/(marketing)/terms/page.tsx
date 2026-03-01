@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'FBAR Direct terms of service. Agreement for using our FBAR filing platform.',
+  description: 'Terms of service for FBAR Direct, a FinCEN-registered BSA E-Filing institution. Covers FBAR filing service usage, data handling, and dispute resolution.',
   alternates: { canonical: '/terms' },
 };
 

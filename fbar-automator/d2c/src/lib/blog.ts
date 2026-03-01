@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import sanitizeHtml from 'sanitize-html';
+import { remark } from 'remark';
+import remarkGfm from 'remark-gfm';
+import remarkHtml from 'remark-html';
 
 export interface BlogPost {
   slug: string;
@@ -29,6 +32,21 @@ export function getBlogPosts(): BlogPost[] {
     );
 }
 
+export async function renderMarkdownToHtml(markdown: string): Promise<string> {
+  const result = await remark()
+    .use(remarkGfm)
+    .use(remarkHtml, { sanitize: false })
+    .process(markdown);
+  // Sanitize after HTML conversion to prevent XSS
+  return sanitizeHtml(String(result), {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ['src', 'alt', 'width', 'height'],
+    },
+  });
+}
+
 export function getBlogPost(
   slug: string
 ): { meta: BlogPost; content: string } | null {
@@ -36,13 +54,5 @@ export function getBlogPost(
   if (!fs.existsSync(filePath)) return null;
   const raw = fs.readFileSync(filePath, 'utf-8');
   const { data, content } = matter(raw);
-  // Sanitize content to prevent XSS — strips script tags, event handlers, etc.
-  const sanitizedContent = sanitizeHtml(content, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
-    allowedAttributes: {
-      ...sanitizeHtml.defaults.allowedAttributes,
-      img: ['src', 'alt', 'width', 'height'],
-    },
-  });
-  return { meta: { slug, ...data } as BlogPost, content: sanitizedContent };
+  return { meta: { slug, ...data } as BlogPost, content };
 }

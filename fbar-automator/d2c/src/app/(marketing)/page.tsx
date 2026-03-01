@@ -40,6 +40,14 @@ export default function LandingPage() {
             "@type": "EducationalOccupationalCredential",
             "credentialCategory": "Certified Public Accountant (CPA)",
           },
+          "sameAs": "https://www.linkedin.com/in/matt-cohen-cpa/",
+          "knowsAbout": [
+            "FBAR Filing",
+            "FinCEN Form 114",
+            "BSA E-Filing",
+            "Foreign Bank Account Reporting",
+            "Tax Compliance",
+          ],
         },
         "address": {
           "@type": "PostalAddress",
@@ -68,6 +76,15 @@ export default function LandingPage() {
           "Automatic currency conversion",
           "Form 114a digital signature",
         ],
+        // TODO: Activate AggregateRating once customer reviews are collected.
+        // Requires real review data — do not fabricate.
+        // "aggregateRating": {
+        //   "@type": "AggregateRating",
+        //   "ratingValue": "4.9",
+        //   "reviewCount": "50",
+        //   "bestRating": "5",
+        //   "worstRating": "1",
+        // },
       }} />
       <JsonLd data={{
         "@context": "https://schema.org",

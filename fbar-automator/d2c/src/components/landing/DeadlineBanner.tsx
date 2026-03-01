@@ -51,10 +51,10 @@ export function DeadlineBanner() {
         </div>
         <button
           onClick={handleDismiss}
-          className="text-text-secondary hover:text-text-primary p-1 ml-4"
+          className="text-text-secondary hover:text-text-primary p-3 -m-2 ml-2"
           aria-label="Dismiss notification"
         >
-          <X className="h-4 w-4" aria-hidden="true" />
+          <X className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
     </div>

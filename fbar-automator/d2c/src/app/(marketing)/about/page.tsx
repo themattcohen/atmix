@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: 'About FBAR Direct — FinCEN-Registered E-Filing Institution',
-  description: 'FBAR Direct is a FinCEN-registered BSA E-Filing institution authorized to submit FinCEN Form 114 directly to FinCEN.',
+  description: 'FBAR Direct is a FinCEN-registered BSA E-Filing institution founded by a licensed CPA. We file your FBAR (FinCEN Form 114) directly to FinCEN from $59.',
   alternates: { canonical: '/about' },
   openGraph: { title: 'About FBAR Direct', url: '/about' },
 };

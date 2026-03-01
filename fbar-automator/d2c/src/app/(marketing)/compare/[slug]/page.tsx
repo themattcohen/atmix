@@ -20,6 +20,11 @@ const COMPARISON_FAQS: Record<string, { question: string; answer: string }[]> = 
     { question: 'What is the best FBAR filing service in 2026?', answer: 'The best service depends on your needs. For a guided modern experience with AI statement extraction, FBAR Direct ($59-$79) is the best choice. For free filing, use the BSA E-Filing portal. For complex situations, hire a CPA ($200-$500+). For expats who also need tax filing, consider MyExpatTaxes or Expatfile.' },
     { question: 'Do all FBAR filing services submit directly to FinCEN?', answer: 'Not all services file directly. Some services only prepare the form and leave you to submit it yourself through the BSA E-Filing portal. FBAR Direct, H&R Block, and CPAs file directly on your behalf. Always verify that your chosen service actually submits the filing to FinCEN.' },
   ],
+  'fbar-direct-vs-turbotax': [
+    { question: 'Can TurboTax file my FBAR?', answer: 'No. TurboTax does not support FBAR (FinCEN Form 114) filing. TurboTax handles federal and state tax returns but not FBARs, which are filed separately with FinCEN through the BSA E-Filing system.' },
+    { question: 'What is the difference between an FBAR and a tax return?', answer: 'Your tax return (Form 1040) is filed with the IRS and reports income and taxes owed. The FBAR (FinCEN Form 114) is filed separately with FinCEN and reports foreign financial accounts with an aggregate value exceeding $10,000 at any point during the calendar year. They are separate obligations with separate deadlines.' },
+    { question: 'How much does FBAR Direct cost compared to TurboTax?', answer: 'FBAR Direct costs $59 (Basic) or $79 (Premium) for FBAR filing. TurboTax does not offer FBAR filing at any price. If you use TurboTax for your tax return, you still need a separate service like FBAR Direct to file your FBAR.' },
+  ],
 };
 
 export function generateStaticParams() {
@@ -91,6 +96,7 @@ export default async function ComparisonPage({
         {slug === 'fbar-direct-vs-bsa-efiling' && <BsaComparison />}
         {slug === 'fbar-direct-vs-cpa' && <CpaComparison />}
         {slug === 'best-fbar-filing-services-2026' && <ServicesListicle />}
+        {slug === 'fbar-direct-vs-turbotax' && <TurboTaxComparison />}
 
         {/* CTA */}
         <div className="text-center mt-12 p-8 bg-navy-50 rounded-lg">
@@ -224,6 +230,123 @@ function CpaComparison() {
           <li>You want to save $150-400+ compared to CPA fees</li>
           <li>You want to file immediately without scheduling an appointment</li>
         </ul>
+      </section>
+    </>
+  );
+}
+
+function TurboTaxComparison() {
+  return (
+    <>
+      <section className="mb-10">
+        <h2 className="text-2xl font-semibold text-navy-900 mb-4">TurboTax Does Not File FBARs</h2>
+        <p className="text-gray-700 leading-relaxed mb-4">
+          TurboTax is a tax preparation software that handles federal and state income tax returns (Form 1040). However, <strong>TurboTax does not support FBAR filing</strong>. The FBAR (FinCEN Form 114) is a completely separate obligation filed with the Financial Crimes Enforcement Network (FinCEN), not the IRS.
+        </p>
+        <p className="text-gray-700 leading-relaxed mb-4">
+          Even if you use TurboTax to prepare your tax return, you still need to file your FBAR separately. TurboTax will not remind you to file an FBAR, and there is no FBAR add-on available.
+        </p>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-semibold text-navy-900 mb-4">FBAR vs Tax Return — Key Differences</h2>
+        <div className="overflow-x-auto mb-6">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="text-left p-3 border border-gray-200 font-semibold text-navy-900">Detail</th>
+                <th className="text-left p-3 border border-gray-200 font-semibold text-navy-900">Tax Return (Form 1040)</th>
+                <th className="text-left p-3 border border-gray-200 font-semibold text-navy-900">FBAR (FinCEN Form 114)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Filed with</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">IRS</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">FinCEN (Treasury)</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Reports</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">Income, deductions, taxes owed</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">Foreign financial account balances</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">TurboTax support</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">Yes</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">No</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Deadline</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">April 15 (ext. to Oct 15)</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">April 15 (auto ext. to Oct 15)</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Penalty for not filing</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">Failure-to-file penalty (5% per month)</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">Up to $12,909 per account (non-willful)</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Filing method</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">E-file via IRS</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">E-file via BSA E-Filing System</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-semibold text-navy-900 mb-4">How to File Your FBAR</h2>
+        <p className="text-gray-700 leading-relaxed mb-4">
+          Since TurboTax cannot file your FBAR, you have three options:
+        </p>
+        <ol className="list-decimal pl-5 space-y-3 text-gray-700">
+          <li><strong>FBAR Direct ($59-79)</strong> — A guided filing service that submits your FBAR directly to FinCEN through the BSA E-Filing system. AI-powered bank statement extraction, automatic currency conversion, and you receive a BSA tracking ID as proof of filing.</li>
+          <li><strong>BSA E-Filing Portal (Free)</strong> — FinCEN&apos;s free government portal. Requires manual data entry, no save/resume, and manual currency conversion.</li>
+          <li><strong>CPA ($200-500+)</strong> — A tax professional can file your FBAR as part of a broader engagement. Recommended for complex situations.</li>
+        </ol>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-semibold text-navy-900 mb-4">FBAR Direct vs TurboTax: Quick Summary</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="text-left p-3 border border-gray-200 font-semibold text-navy-900">Feature</th>
+                <th className="text-left p-3 border border-gray-200 font-semibold text-navy-900">TurboTax</th>
+                <th className="text-left p-3 border border-gray-200 font-semibold text-navy-900">FBAR Direct</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Files FBARs</td>
+                <td className="p-3 border border-gray-200 text-sm text-red-600 font-medium">No</td>
+                <td className="p-3 border border-gray-200 text-sm text-green-600 font-medium">Yes</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Files tax returns</td>
+                <td className="p-3 border border-gray-200 text-sm text-green-600 font-medium">Yes</td>
+                <td className="p-3 border border-gray-200 text-sm text-red-600 font-medium">No</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">Price for FBAR</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">N/A — not available</td>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700">$59-79</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">FinCEN submission</td>
+                <td className="p-3 border border-gray-200 text-sm text-red-600 font-medium">No</td>
+                <td className="p-3 border border-gray-200 text-sm text-green-600 font-medium">Yes — direct BSA E-Filing</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-200 text-sm text-gray-700 font-medium">BSA tracking ID</td>
+                <td className="p-3 border border-gray-200 text-sm text-red-600 font-medium">No</td>
+                <td className="p-3 border border-gray-200 text-sm text-green-600 font-medium">Yes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </>
   );

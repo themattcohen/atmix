@@ -72,9 +72,9 @@ test.describe("P7-3: Blog Pages", () => {
       const href = await firstPostLink.getAttribute("href");
       expect(href).not.toBeNull();
 
-      // Navigate to the individual post
+      // Navigate to the individual post (Next.js Link does soft navigation)
       await firstPostLink.click();
-      await page.waitForLoadState("load");
+      await page.waitForURL(/\/blog\/.+/);
 
       // URL should be /blog/[slug]
       expect(page.url()).toMatch(/\/blog\/.+/);
@@ -133,9 +133,9 @@ test.describe("P7-3: Blog Pages", () => {
       const linkHref = await firstPostLink.getAttribute("href");
       expect(linkHref).not.toBeNull();
 
-      // Click the post
+      // Click the post (Next.js Link does soft navigation)
       await firstPostLink.click();
-      await page.waitForLoadState("load");
+      await page.waitForURL(`**${linkHref!}`);
 
       // Should have navigated to the post URL
       expect(page.url()).toContain(linkHref!);

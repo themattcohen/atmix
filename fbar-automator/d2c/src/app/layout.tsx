@@ -69,6 +69,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+      </head>
       <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} gadsId={process.env.NEXT_PUBLIC_GADS_ID || ''} nonce={nonce} />
         <Suspense fallback={null}>

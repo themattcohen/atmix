@@ -40,15 +40,15 @@ export default function MarketingLayout({
             {/* Links Column */}
             <div>
               <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">Site Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="/#who-must-file" className="text-gray-300 hover:text-white hover:underline">Who Must File</a></li>
-                <li><a href="/#how-to-file" className="text-gray-300 hover:text-white hover:underline">How to File</a></li>
-                <li><a href="/#pricing" className="text-gray-300 hover:text-white hover:underline">Pricing</a></li>
-                <li><a href="/#faq" className="text-gray-300 hover:text-white hover:underline">FAQ</a></li>
-                <li><Link href="/contact" className="text-gray-300 hover:text-white hover:underline">Contact</Link></li>
-                <li><Link href="/login" className="text-gray-300 hover:text-white hover:underline">Log In</Link></li>
-                <li><Link href="/privacy" className="text-gray-300 hover:text-white hover:underline">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="text-gray-300 hover:text-white hover:underline">Terms of Service</Link></li>
+              <ul className="space-y-1 text-sm">
+                <li><a href="/#who-must-file" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Who Must File</a></li>
+                <li><a href="/#how-to-file" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">How to File</a></li>
+                <li><a href="/#pricing" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Pricing</a></li>
+                <li><a href="/#faq" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">FAQ</a></li>
+                <li><Link href="/contact" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Contact</Link></li>
+                <li><Link href="/login" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Log In</Link></li>
+                <li><Link href="/privacy" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Terms of Service</Link></li>
               </ul>
             </div>
             {/* Contact + Resources Column */}
@@ -56,15 +56,15 @@ export default function MarketingLayout({
               <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">Contact &amp; Resources</h4>
               <p className="text-sm text-gray-300 mb-4">
                 Questions?{" "}
-                <a href="mailto:support@fbardirect.com" className="text-white hover:underline font-medium">
+                <a href="mailto:support@fbardirect.com" className="text-white hover:underline font-medium min-h-[44px] inline-flex items-center">
                   support@fbardirect.com
                 </a>
               </p>
               <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">External Resources</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="https://www.fincen.gov" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline">FinCEN.gov</a></li>
-                <li><a href="https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline">IRS FBAR Reference Guide</a></li>
-                <li><a href="https://bsaefiling.fincen.treas.gov/main.html" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline">BSA E-Filing System</a></li>
+              <ul className="space-y-1 text-sm">
+                <li><a href="https://www.fincen.gov" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">FinCEN.gov</a></li>
+                <li><a href="https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">IRS FBAR Reference Guide</a></li>
+                <li><a href="https://bsaefiling.fincen.treas.gov/main.html" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">BSA E-Filing System</a></li>
               </ul>
             </div>
           </div>

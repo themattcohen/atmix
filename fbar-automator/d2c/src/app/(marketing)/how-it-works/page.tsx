@@ -55,7 +55,7 @@ export default function HowItWorksPage() {
                 {step.num}
               </div>
               <div className="flex-1 pb-8 border-b border-gray-200 last:border-0">
-                <h3 className="text-lg font-semibold text-navy-900 mb-1">{step.title}</h3>
+                <h2 className="text-lg font-semibold text-navy-900 mb-1">{step.title}</h2>
                 <p className="text-gray-600">{step.desc}</p>
               </div>
             </div>

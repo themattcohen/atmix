@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'FBAR Direct privacy policy. How we collect, use, and protect your personal and financial information.',
+  description: 'FBAR Direct privacy policy. AES-256 encryption protects your SSN and financial data. We never sell your information. Full GLBA-aligned data handling practices.',
   alternates: { canonical: '/privacy' },
 };
 

@@ -4,7 +4,7 @@ import { getBlogPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'FBAR Filing Blog — Guides, Deadlines & Compliance Tips',
-  description: 'Expert guides on FBAR filing requirements, deadlines, penalties, and compliance tips from a licensed CPA.',
+  description: 'FBAR filing guides written by Matt Cohen, CPA. Deadlines, penalties, account value calculations, cryptocurrency reporting, and compliance tips.',
   alternates: { canonical: '/blog' },
 };
 

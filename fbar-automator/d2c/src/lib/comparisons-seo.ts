@@ -28,4 +28,11 @@ export const COMPARISONS: ComparisonData[] = [
     metaDescription: 'Compare the top FBAR filing services: FBAR Direct, H&R Block, MyExpatTaxes, Expatfile, BSA E-Filing, and CPA services. Pricing and features.',
     intro: 'There are several ways to file your FBAR (FinCEN Form 114). Here is a factual comparison of the most common options, including pricing, features, and when each one makes sense.',
   },
+  {
+    slug: 'fbar-direct-vs-turbotax',
+    title: 'FBAR Direct vs TurboTax — Can TurboTax File Your FBAR?',
+    metaTitle: 'FBAR Direct vs TurboTax — Can TurboTax File Your FBAR?',
+    metaDescription: 'TurboTax does not support FBAR filing. Compare FBAR Direct ($59) with TurboTax for FinCEN Form 114 foreign bank account reporting.',
+    intro: 'Many people search for FBAR filing in TurboTax, but TurboTax does not support FinCEN Form 114 filing. Here is what you need to know.',
+  },
 ];
