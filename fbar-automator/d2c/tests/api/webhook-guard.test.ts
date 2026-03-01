@@ -17,6 +17,11 @@ vi.mock("@/lib/stripe", () => ({
   }),
 }));
 
+// Mock submitFiling to prevent fire-and-forget PAID→SUBMITTING race in tests
+vi.mock("@/lib/fincen-submit", () => ({
+  submitFiling: vi.fn().mockResolvedValue({ success: false, error: "mocked" }),
+}));
+
 import { POST } from "@/app/api/stripe/webhook/route";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
