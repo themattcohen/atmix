@@ -817,3 +817,25 @@ For a working FinCEN submission pipeline (minimum viable go-live):
 ---
 
 *This document is the authoritative implementation plan for the D2C FBAR Direct application. All work should reference this plan for sequencing, file ownership, and agent assignment. Updated: 2026-02-21 (Phases 0-3, 5-7 DONE; P4-2 FinCEN XML ported; E2E test suite T16-T28 added; frontend fixes F1-F6 applied. Remaining: P4-1 Treasury + P4-3 submission (~12 hr), P0-5 swap + P0-6 monitoring, MFA login enforcement wiring).*
+
+---
+
+## Post-Launch Additions
+
+### Customer Support System (2026-02-28) — DONE (code), PENDING (manual infra)
+
+AI-powered chat widget + contact form with email routing. Full documentation: [`d2c-support-system-2026-02-28.md`](./d2c-support-system-2026-02-28.md)
+
+**Completed**:
+- Floating chat widget (Claude Haiku 4.5, Vercel AI SDK v6, 19KB knowledge base)
+- Contact form with Cloudflare Turnstile spam protection
+- Contact page, nav links, sitemap updates, FAQ expansion (8 → 26 entries)
+- Middleware CSP + auth exemptions for chat/contact endpoints
+
+**Pending manual setup**:
+- Cloudflare Turnstile widget creation + env vars (`TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`)
+- Namecheap email forwarding (`support@fbardirect.com` → personal inbox)
+- Docker rebuild + deploy (NEXT_PUBLIC_ vars baked at build time)
+- Twilio toll-free number + voicemail TwiML Bin (~$2–3/mo) — CA Civil Code 1789.3 compliance + trust signal
+- ForwardEmail.net Enhanced for reply-as `support@fbardirect.com` ($3/mo) — Gmail "Send mail as" integration
+- Update contact page/footer/knowledge-base with phone number + UPS Store address

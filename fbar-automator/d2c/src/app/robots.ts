@@ -2,11 +2,18 @@ import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/api/', '/dashboard', '/personal', '/accounts', '/review', '/sign', '/payment', '/confirmation'],
-    },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/api/', '/dashboard', '/personal', '/accounts', '/review', '/sign', '/payment', '/confirmation'],
+      },
+      {
+        userAgent: ['OAI-SearchBot', 'ChatGPT-User', 'PerplexityBot', 'ClaudeBot', 'Applebot-Extended'],
+        allow: '/',
+        disallow: ['/api/', '/dashboard', '/personal', '/accounts', '/review', '/sign', '/payment', '/confirmation'],
+      },
+    ],
     sitemap: 'https://fbardirect.com/sitemap.xml',
   };
 }

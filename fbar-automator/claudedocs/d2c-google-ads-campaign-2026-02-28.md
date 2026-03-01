@@ -4,7 +4,8 @@
 **Account**: 217-281-2717 (1mattcohen@gmail.com)
 **Status**: PAUSED (ready to unpause)
 **Budget**: $33/day (~$1,000/month)
-**Date**: February 28, 2026
+**Bidding**: Maximize Clicks (max CPC $3.50)
+**Date**: February 28, 2026 (last updated March 1, 2026)
 
 ---
 
@@ -23,12 +24,55 @@
 
 ### Ads (4 responsive search ads)
 
-| Ad Group | Headlines (sample) | Ad Strength |
-|----------|-------------------|-------------|
-| Intent | "File Your FBAR Online -- $59" / "FBAR Filing -- $59 or $79" / "FinCEN-Registered FBAR Filer" | Poor |
-| Deadline | "FBAR Due April 15. File Now." / "FBAR Deadline -- $59 or $79" | Average |
-| Expat | "American Abroad? File FBAR" / "Expat FBAR Filing -- $59" | Poor |
-| Late/Penalty | "Late FBAR? File Now. $59." / "Missed FBAR Deadline? We Help" | Average |
+| Ad Group | Headlines | Descriptions | Ad Strength | DKI Headline |
+|----------|-----------|-------------|-------------|--------------|
+| Intent | 15/15 | 4/4 | **Excellent** | `{KeyWord:FBAR Filing Online}` |
+| Deadline | 15/15 | 4/4 | **Excellent** | `{KeyWord:File FBAR by Apr 15}` |
+| Expat | 15/15 | 4/4 | **Excellent** | `{KeyWord:Expat FBAR Filing}` |
+| Late/Penalty | 15/15 | 4/4 | **Excellent** | `{KeyWord:Late FBAR Filing}` |
+
+All ads unpinned (no headline pinning), maximizing Google's flexibility to test combinations. Each ad has one Dynamic Keyword Insertion headline for improved relevance.
+
+### Sitelinks (6 Campaign Level — March 1, 2026)
+
+| Sitelink Title | URL | Description |
+|---|---|---|
+| How It Works | /how-it-works | 3 steps. Done in 10 minutes. / We handle FinCEN submission. |
+| Pricing | /pricing | Basic $59 or Premium $79. / No hidden fees. Ever. |
+| Contact Us | /contact | Questions about FBAR filing? / We respond within 24 hours. |
+| About FBAR Direct | /about | FinCEN-registered preparers. / Trusted by US expats. |
+| FBAR vs CPA Filing | /compare/fbar-direct-vs-cpa | Save $150-400+ vs CPA fees. / Same FinCEN submission, less cost. |
+| Start Filing Now | /start/default | File your FBAR in 10 minutes. / Secure online filing from $59. |
+
+### Callout Assets (10 Campaign Level — March 1, 2026)
+
+| # | Callout |
+|---|---------|
+| 1 | FinCEN-Registered |
+| 2 | File in 10 Minutes |
+| 3 | Plans From $59 |
+| 4 | 170+ Currencies |
+| 5 | Money-Back Guarantee |
+| 6 | AES-256 Encryption |
+| 7 | No BSA Portal Needed |
+| 8 | Direct FinCEN Filing |
+| 9 | Auto Currency Rates |
+| 10 | 24-Hour Support |
+
+### Structured Snippets (Campaign Level — March 1, 2026)
+
+**Header**: Services
+**Values**: FBAR Filing, FinCEN Form 114, Currency Conversion, Expat Filing, Late Filing, Multi-Account Filing
+
+### Negative Keywords (41 Campaign Level — March 1, 2026)
+
+**Informational/DIY**: fbar form download, fbar instructions, fbar form pdf, fbar blank form, fbar template, what is fbar, fbar definition, fbar meaning, fbar requirements, fbar tutorial, how to fill out fbar
+
+**Penalty/Legal**: fbar penalty calculator, fbar penalty waiver, fbar amnesty, fbar lawyer, fbar attorney, fbar tax attorney, fbar audit, irs fbar audit
+
+**Irrelevant**: fbar login, bsa efiling login, fincen login, fbar threshold, fbar limit, fbar vs fatca, fatca, fatca filing, fbar extension, fbar automatic extension
+
+**Additional negatives added from review**: free fbar filing, fbar software free, fbar pdf, fbar excel, fbar deadline extension, fbar form 114a, fbar for business, fbar crypto, fbar bitcoin, fbar cryptocurrency, fbar irs
 
 ### Landing Pages
 
@@ -51,7 +95,8 @@ All landing pages include:
 
 - **Google Tag**: `GT-P3JRZMRX` (gtag.js, NOT GTM container)
 - **GA4 Stream**: `G-W2KXELPKZE`
-- **Conversion action**: Configured for signup/payment events
+- **Conversion actions**: Purchase + Sign-up (both Inactive — need events firing to activate)
+- **Click-through conversion window**: 90 days (both actions — long consideration cycle for FBAR)
 - **Enhanced Conversions**: Enabled
 - **Cookie consent**: Implemented
 
@@ -144,6 +189,34 @@ At realistic CPA ($63): LTV:CAC = 2.2:1 (acceptable)
 
 ---
 
+### Google Ads Optimization Sprint (March 1, 2026 — via Chrome DevTools)
+
+Goal: Push ad strength from Good/Average to **Excellent** on all 4 RSAs.
+
+1. **Added 2 more sitelinks** (4 → 6 total) — "FBAR vs CPA Filing" + "Start Filing Now". Google requires 6+ sitelinks for Excellent scoring.
+
+2. **Added 10 callout assets** — Trust, speed, price, and feature callouts (all <=25 chars). Covers benefit signaling for ad extensions.
+
+3. **Added structured snippets** — "Services" header with 6 values covering all filing types.
+
+4. **Added DKI headlines** — 1 Dynamic Keyword Insertion headline per RSA. Inserts user's search term into the headline for improved relevance/CTR.
+
+5. **Added 41 negative keywords** — Blocks informational (form downloads, tutorials), legal (attorneys, penalty calculators), and irrelevant (login, FATCA, crypto) queries to prevent wasted spend.
+
+6. **Campaign settings optimized**:
+   - Bidding: Manual CPC → **Maximize Clicks** with $3.50 max CPC cap (Smart Bidding needs 30-50 conv/month — won't have at launch)
+   - Location: "Presence or interest" → **"Presence" only** (blocks users who are just "interested in" US topics)
+   - Ad rotation: Already "Optimize" (no change needed)
+   - Conversion window: Purchase **30 → 90 days** (FBAR has long consideration cycle); Sign-up already 90 days
+   - Broad match keywords: OFF (confirmed)
+   - AI Max: OFF (confirmed)
+   - Auto-created assets: OFF (confirmed)
+   - Auto-apply recommendations: N/A (not available for new accounts with no data)
+
+**Result**: All 4 RSAs now show **Excellent** ad strength (was Average/Good).
+
+---
+
 ## How to Unpause
 
 1. Go to [Google Ads](https://ads.google.com) > Campaigns > "FBAR Filing Search"
@@ -205,19 +278,16 @@ Review Search Terms report. For keywords where phrase match is triggering irrele
 - Requires: Google Ads remarketing audience, display/search remarketing campaign
 - This is the cheapest path to conversions after initial setup
 
-### Ad Strength Improvement
-- Intent and Expat ads rated "Poor" -- need more unique headline variations
-- Google favors ads with 10+ unique headlines and 3+ descriptions
-- Higher ad strength = lower CPC and better positions
-
-### Sitelinks
-- Google recommends adding sitelinks (shown in Ads UI recommendation)
-- Sitelinks improve CTR by 10-20%
-- Suggested sitelinks: "Pricing", "How It Works", "FAQ", "Contact"
+### ~~Ad Strength → Excellent~~ — DONE (March 1, 2026)
+- All 4 RSAs at **Excellent** (was Average/Good)
+- 15/15 headlines + 4/4 descriptions, all unpinned
+- 1 DKI headline per ad for keyword relevance
+- 6 sitelinks, 10 callouts, 1 structured snippet (Services)
+- 41 negative keywords pre-loaded
 
 ### Late/Penalty Ad Group
 - Currently paused -- enable if you want to target delinquent filers
-- Has 4 keywords + 1 ad ready to go
+- Has 4 keywords + 1 ad ready to go (ad strength: **Excellent**)
 - High-intent audience (facing penalties) but sensitive messaging
 
 ### Budget Scaling

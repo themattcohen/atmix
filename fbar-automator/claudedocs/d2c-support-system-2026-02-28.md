@@ -97,7 +97,37 @@ TURNSTILE_SECRET_KEY=0x...      # Server-side verification
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x...  # Client-side widget (baked into Docker at build)
 ```
 
-### 4. Deploy
+### 4. Twilio Toll-Free Number (~$2–3/mo, voicemail only)
+
+Professional phone number for CA Civil Code 1789.3 compliance and trust signals.
+
+1. Log in to Twilio console → **Buy a Number** → Toll-Free (1-800/888)
+2. Create a **TwiML Bin** with voicemail greeting:
+   ```xml
+   <Response>
+     <Say>You've reached FBAR Direct. Please leave a message after the tone.</Say>
+     <Record maxLength="120" transcribe="true" transcribeCallback="YOUR_EMAIL_WEBHOOK"/>
+   </Response>
+   ```
+3. Assign the TwiML Bin as the **Voice** handler for the number
+4. Voicemail transcriptions are emailed automatically — no server needed
+5. Add the number to the contact page footer and `/contact` page
+6. Update `knowledge-base.ts` system prompt with the phone number
+
+> Cost: $2.15/mo for the number + $0.0085/min inbound (voicemail recording only — pennies). No outbound calls needed.
+
+### 5. ForwardEmail.net Enhanced ($3/mo, reply-as support@)
+
+Replaces Namecheap forwarding with reply-capable email. Recipients never see your personal Gmail.
+
+1. Sign up at [forwardemail.net](https://forwardemail.net), add `fbardirect.com`
+2. Add DNS records (MX + TXT) per their dashboard instructions
+3. In Gmail: **Settings → Accounts → "Send mail as"** → add `support@fbardirect.com` with ForwardEmail SMTP credentials
+4. Test: send email to `support@fbardirect.com`, confirm it arrives, reply from Gmail as that address
+
+> Note: Resend continues handling transactional email (`noreply@fbardirect.com`). ForwardEmail handles human support correspondence (`support@fbardirect.com`). No conflict — different purposes.
+
+### 6. Deploy
 
 Since `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is baked at build time:
 
@@ -118,7 +148,9 @@ Since `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is baked at build time:
 | Cloudflare Turnstile | Free |
 | Namecheap email forwarding | Free (included with domain) |
 | Resend (contact form emails) | Free tier (100 emails/day) |
-| **Total** | **~$0.20–$2.00/mo** |
+| Twilio toll-free + voicemail | ~$2–3 (number + pennies for recordings) |
+| ForwardEmail.net Enhanced | $3 (reply-as support@fbardirect.com via Gmail) |
+| **Total** | **~$5–8/mo** |
 
 Assuming ~50–200 chat conversations/month at launch volume.
 
@@ -163,7 +195,7 @@ Assuming ~50–200 chat conversations/month at launch volume.
 ## What's NOT Included
 
 - No ticket/case tracking system
-- No phone support
+- No live phone support (voicemail-only via Twilio toll-free — planned)
 - No CRM integration
 - No live agent handoff
 - No conversation persistence (chat resets on page reload)
@@ -177,8 +209,10 @@ These can be added later as volume justifies the complexity.
 ## Status
 
 - **Code**: Complete and deployed (build passes: tsc, lint, next build)
-- **Manual setup**: Pending (Turnstile keys + email forwarding)
+- **Manual setup**: Pending (Turnstile keys + email forwarding + Twilio phone + ForwardEmail reply-as)
 - **Functional without setup**: Chat widget works immediately (uses ANTHROPIC_API_KEY already in env). Contact form will fail without Turnstile keys. Email forwarding needed for contact form destination.
+- **Phone**: Twilio toll-free number + voicemail TwiML Bin (pending purchase + setup)
+- **Reply-as email**: ForwardEmail.net Enhanced + Gmail "Send mail as" (pending signup + DNS)
 
 ---
 

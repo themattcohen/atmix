@@ -21,10 +21,34 @@ export default function LandingPage() {
     <>
       <JsonLd data={{
         "@context": "https://schema.org",
-        "@type": "Organization",
+        "@type": ["Organization", "FinancialService"],
         "name": "FBAR Direct",
         "url": "https://fbardirect.com",
         "description": "FinCEN-registered BSA E-Filing institution for FBAR (FinCEN Form 114) electronic filing.",
+        "areaServed": "US",
+        "serviceType": "Foreign Bank Account Report (FBAR) Filing",
+        "hasCredential": {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "FinCEN BSA E-Filing Registration",
+          "recognizedBy": { "@type": "GovernmentOrganization", "name": "Financial Crimes Enforcement Network (FinCEN)" },
+        },
+        "founder": {
+          "@type": "Person",
+          "name": "Matt Cohen",
+          "jobTitle": "Founder & CPA",
+          "hasCredential": {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "Certified Public Accountant (CPA)",
+          },
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "1201 N. Market Street, Suite 111",
+          "addressLocality": "Wilmington",
+          "addressRegion": "DE",
+          "postalCode": "19801",
+          "addressCountry": "US",
+        },
       }} />
       <JsonLd data={{
         "@context": "https://schema.org",

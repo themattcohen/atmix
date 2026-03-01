@@ -39,7 +39,7 @@ export default function AboutPage() {
                 </svg>
                 <div>
                   <p className="font-semibold text-navy-900">FinCEN-Registered BSA E-Filing Institution</p>
-                  <p className="text-sm text-gray-600">Authorized to submit FBARs electronically through FinCEN&apos;s BSA E-Filing system.</p>
+                  <p className="text-sm text-gray-600">Authorized to submit FBARs electronically through FinCEN&apos;s BSA E-Filing system. Transmitter Control Code: <strong>PBSA8180</strong>.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">

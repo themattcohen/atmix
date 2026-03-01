@@ -285,8 +285,8 @@ The decision was **filesystem MDX**, not database-stored content. Rationale:
 | Favicon + manifest + OG image | DONE | `public/favicon.svg`, `src/app/manifest.ts`, `src/app/opengraph-image.tsx` (edge-rendered) |
 | Sitemap | DONE | `src/app/sitemap.ts` — dynamic, includes blog/country/comparison pages |
 | Robots.txt | DONE | `src/app/robots.ts` — disallows api/wizard routes |
-| JSON-LD structured data | DONE | `src/components/JsonLd.tsx` + JSON-LD on homepage (Organization, WebApplication, FAQPage) and how-it-works (HowTo) |
-| FAQ data extraction | DONE | `src/lib/faq-data.ts` — FAQ.tsx refactored to use shared data for both rendering and JSON-LD |
+| JSON-LD structured data | DONE | `src/components/JsonLd.tsx` + JSON-LD on homepage (Organization, WebApplication, FAQPage), how-it-works (HowTo), BreadcrumbList (all marketing pages via `BreadcrumbJsonLd.tsx`), Article+FAQPage (3 comparison pages), Product/Offer (pricing page) |
+| FAQ data extraction | DONE | `src/lib/faq-data.ts` — 33 items in shared data file + 9 comparison-page Q&As = 42 total across site (7 AEO-targeted added 2026-03-01) |
 | CPA credential on About page | DONE | Added to about page |
 
 ### Phase 2 — Analytics (DONE)
@@ -353,11 +353,12 @@ Landing page variants: `file-fbar-online`, `fbar-software`, `fbar-expat`, `fince
 | **Blog content** | HIGH | MDX infrastructure exists but zero articles. Need first 5 high-intent articles |
 | **Semrush keyword research** | HIGH | No keyword data has been collected. Need to run Semrush API batch |
 | **Google Search Console** | MEDIUM | Verification meta tag is in root layout but needs actual GSC account setup |
-| **Google Ads campaigns** | MEDIUM | Landing pages exist but no ad campaigns created |
-| **GTM/GA4 container setup** | MEDIUM | Component renders GTM script tag but no actual GTM container ID configured |
+| ~~**Google Ads campaigns**~~ | ~~MEDIUM~~ | DONE — Configured but paused. See `d2c-google-ads-campaign-2026-02-28.md` |
+| ~~**GTM/GA4 container setup**~~ | ~~MEDIUM~~ | DONE — GT-P3JRZMRX + GA4 G-W2KXELPKZE live since 2026-02-28 |
 | **Trustpilot integration** | LOW | Start collecting reviews from day one after launch |
 | **FBAR Eligibility Checker (free tool)** | LOW | Threshold page partially serves this purpose but not optimized as a lead magnet |
 | **Exchange Rate Lookup Tool** | LOW | No competitor offers this as standalone. High utility but not launch-blocking |
+| ~~**AEO schema optimization**~~ | ~~HIGH~~ | DONE — BreadcrumbList, Article+FAQPage, Product/Offer schemas + 7 AEO FAQs (2026-03-01) |
 
 ---
 
