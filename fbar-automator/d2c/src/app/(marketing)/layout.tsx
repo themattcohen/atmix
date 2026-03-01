@@ -46,6 +46,7 @@ export default function MarketingLayout({
                 <li><a href="/#pricing" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Pricing</a></li>
                 <li><a href="/#faq" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">FAQ</a></li>
                 <li><Link href="/contact" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Contact</Link></li>
+                <li><Link href="/blog" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Blog</Link></li>
                 <li><Link href="/login" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Log In</Link></li>
                 <li><Link href="/privacy" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Terms of Service</Link></li>

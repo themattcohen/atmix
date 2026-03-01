@@ -26,6 +26,7 @@ export function MarketingHeader() {
           <a href="/#how-to-file" className="text-gov-blue text-sm font-semibold hover:underline">How to File</a>
           <a href="/#pricing" className="text-gov-blue text-sm font-semibold hover:underline">Pricing</a>
           <a href="/#faq" className="text-gov-blue text-sm font-semibold hover:underline">FAQ</a>
+          <Link href="/blog" className="text-gov-blue text-sm font-semibold hover:underline">Blog</Link>
           <Link href="/contact" className="text-gov-blue text-sm font-semibold hover:underline">Contact</Link>
           <Link href="/login" className="text-gov-blue text-sm font-semibold hover:underline ml-4">Log In</Link>
           <Link href="/signup" className="bg-gov-blue hover:bg-gov-blue-dark text-white font-semibold text-sm px-4 py-2 transition-colors ml-4">Begin Filing</Link>
