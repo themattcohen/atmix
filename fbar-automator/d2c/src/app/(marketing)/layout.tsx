@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DeadlineBanner } from "@/components/landing/DeadlineBanner";
 import { MarketingHeader } from "@/components/nav/MarketingHeader";
+import { BreadcrumbJsonLd } from "@/components/BreadcrumbJsonLd";
 
 export default function MarketingLayout({
   children,
@@ -16,6 +17,7 @@ export default function MarketingLayout({
         Skip to main content
       </a>
 
+      <BreadcrumbJsonLd />
       <DeadlineBanner />
       <MarketingHeader />
 

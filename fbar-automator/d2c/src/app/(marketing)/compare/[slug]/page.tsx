@@ -2,6 +2,25 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { COMPARISONS } from '@/lib/comparisons-seo';
+import { JsonLd } from '@/components/JsonLd';
+
+const COMPARISON_FAQS: Record<string, { question: string; answer: string }[]> = {
+  'fbar-direct-vs-bsa-efiling': [
+    { question: 'Is the BSA E-Filing portal free?', answer: 'Yes, the FinCEN BSA E-Filing portal is completely free. However, it requires you to complete the filing in one session, manually convert currencies to USD, and navigate a dated Java-based interface.' },
+    { question: 'Can I save my progress on the BSA E-Filing portal?', answer: 'No. The free BSA E-Filing portal does not support saving progress. You must complete your entire filing in a single session. FBAR Direct allows you to save and resume at any time.' },
+    { question: 'Does FBAR Direct file through the same system as the BSA E-Filing portal?', answer: 'Yes. FBAR Direct is a FinCEN-registered BSA E-Filing institution. We generate the required XML and submit it through the same official BSA E-Filing system, providing you with a BSA tracking ID as proof of filing.' },
+  ],
+  'fbar-direct-vs-cpa': [
+    { question: 'How much does a CPA charge to file an FBAR?', answer: 'CPAs typically charge $200-$500+ per FBAR filing, often as part of a broader tax preparation engagement. FBAR Direct costs $59 for Basic or $79 for Premium, a savings of $150-$400+.' },
+    { question: 'Can I file my FBAR without a CPA?', answer: 'Yes. If you have a straightforward individual FBAR filing, you can file it yourself through FBAR Direct in under 10 minutes. A CPA is recommended for complex situations like trusts, entities, delinquent filings, or if you are under IRS examination.' },
+    { question: 'When should I hire a CPA instead of using FBAR Direct?', answer: 'You should hire a CPA if you have complex FBAR situations involving trusts, entities, or signature authority over business accounts; if you need integrated tax planning; if you are filing delinquent FBARs under the Streamlined Filing Compliance Procedures; or if you are under IRS examination.' },
+  ],
+  'best-fbar-filing-services-2026': [
+    { question: 'What is the cheapest way to file an FBAR?', answer: 'The cheapest option is the free BSA E-Filing portal from FinCEN. Among paid services, FBAR Direct ($59 Basic), MyExpatTaxes ($59), and Expatfile ($59) are the most affordable standalone FBAR filing options. H&R Block offers FBAR as a $49 add-on but requires their tax return service.' },
+    { question: 'What is the best FBAR filing service in 2026?', answer: 'The best service depends on your needs. For a guided modern experience with AI statement extraction, FBAR Direct ($59-$79) is the best choice. For free filing, use the BSA E-Filing portal. For complex situations, hire a CPA ($200-$500+). For expats who also need tax filing, consider MyExpatTaxes or Expatfile.' },
+    { question: 'Do all FBAR filing services submit directly to FinCEN?', answer: 'Not all services file directly. Some services only prepare the form and leave you to submit it yourself through the BSA E-Filing portal. FBAR Direct, H&R Block, and CPAs file directly on your behalf. Always verify that your chosen service actually submits the filing to FinCEN.' },
+  ],
+};
 
 export function generateStaticParams() {
   return COMPARISONS.map((c) => ({ slug: c.slug }));
@@ -32,7 +51,32 @@ export default async function ComparisonPage({
   const page = COMPARISONS.find((c) => c.slug === slug);
   if (!page) notFound();
 
+  const faqs = COMPARISON_FAQS[slug] ?? [];
+
   return (
+    <>
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": page.metaTitle,
+        "description": page.metaDescription,
+        "author": { "@type": "Organization", "name": "FBAR Direct", "url": "https://fbardirect.com" },
+        "publisher": { "@type": "Organization", "name": "FBAR Direct", "url": "https://fbardirect.com" },
+        "datePublished": "2026-01-15",
+        "dateModified": "2026-03-01",
+        "mainEntityOfPage": `https://fbardirect.com/compare/${slug}`,
+      }} />
+      {faqs.length > 0 && (
+        <JsonLd data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqs.map((faq) => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": { "@type": "Answer", "text": faq.answer },
+          })),
+        }} />
+      )}
     <div className="py-20 px-4">
       <div className="max-w-3xl mx-auto">
         <nav className="mb-8">
@@ -61,6 +105,7 @@ export default async function ComparisonPage({
         </div>
       </div>
     </div>
+    </>
   );
 }
 

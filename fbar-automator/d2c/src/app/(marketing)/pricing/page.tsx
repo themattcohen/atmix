@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PRICING } from "@/lib/pricing";
+import { JsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: 'FBAR Filing Pricing — $59 Basic or $79 Premium',
@@ -11,6 +12,34 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
+    <>
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "FBAR Direct — FBAR Filing Service",
+        "description": "File FinCEN Form 114 (FBAR) directly to FinCEN. FinCEN-registered BSA E-Filing institution.",
+        "brand": { "@type": "Organization", "name": "FBAR Direct" },
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": PRICING.basic.name,
+            "price": PRICING.basic.amountDollars,
+            "priceCurrency": "USD",
+            "description": PRICING.basic.features.join(". "),
+            "url": "https://fbardirect.com/pricing",
+            "availability": "https://schema.org/InStock",
+          },
+          {
+            "@type": "Offer",
+            "name": PRICING.premium.name,
+            "price": PRICING.premium.amountDollars,
+            "priceCurrency": "USD",
+            "description": PRICING.premium.features.join(". "),
+            "url": "https://fbardirect.com/pricing",
+            "availability": "https://schema.org/InStock",
+          },
+        ],
+      }} />
     <div className="py-20 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
@@ -83,5 +112,6 @@ export default function PricingPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

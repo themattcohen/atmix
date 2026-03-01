@@ -104,4 +104,33 @@ export const FAQ_ITEMS = [
     question: "Do I need to report a foreign account that was closed during the year?",
     answer: "Yes. If a foreign financial account was open at any point during the calendar year and contributed to exceeding the $10,000 aggregate threshold, it must be reported on the FBAR. This applies even if the account was opened and closed within the same year, or if the balance was zero at the time of closure. Report the maximum value the account held at any time during the year, per FinCEN instructions.",
   },
+  // --- AEO-targeted high-volume queries ---
+  {
+    question: "Can I file my FBAR myself without a CPA?",
+    answer: "Yes. You are not required to hire a CPA or tax professional to file your FBAR. FinCEN allows individuals to file FinCEN Form 114 directly through the BSA E-Filing system, or through a registered filing service like FBAR Direct. FBAR Direct costs $59-$79 compared to $200-$500+ for a CPA. A CPA is recommended only for complex situations such as trusts, entities, delinquent filings, or if you are under IRS examination.",
+  },
+  {
+    question: "Do I need to report a foreign pension on my FBAR?",
+    answer: "Yes, in most cases. Foreign pension accounts and retirement funds are considered foreign financial accounts under BSA regulations and must be reported on the FBAR if you have a financial interest in or signature authority over the account and the aggregate value of all your foreign accounts exceeds $10,000. This includes employer-sponsored pension plans, government pension schemes, and private retirement accounts held at foreign financial institutions. Some notable examples include UK pensions (SIPP, workplace pensions), Australian superannuation funds, and Canadian RRSPs.",
+  },
+  {
+    question: "What happens if I file my FBAR late?",
+    answer: "If you file late but have not been contacted by the IRS, you may be eligible for the IRS Delinquent FBAR Submission Procedures, which generally do not impose penalties if the IRS determines the failure was non-willful. However, if you fail to file and the IRS discovers the omission, penalties can be severe: up to $16,117 per account per year for non-willful violations, and up to the greater of $161,175 or 50% of the account balance for willful violations. The safest course is to file as soon as possible. FBAR Direct supports filing for prior calendar years.",
+  },
+  {
+    question: "Is FBAR the same as FATCA?",
+    answer: "No. FBAR (FinCEN Form 114) and FATCA (IRS Form 8938) are separate requirements filed with different agencies. The FBAR is filed with FinCEN and has a $10,000 aggregate account threshold. Form 8938 is filed with the IRS as part of your tax return and has higher thresholds ($50,000-$200,000 depending on filing status and residency). If you meet both thresholds, you must file both forms — one does not replace the other. FBAR Direct handles FBAR filing only.",
+  },
+  {
+    question: "How long does it take to file an FBAR?",
+    answer: "With FBAR Direct, most people complete their filing in under 10 minutes. The process involves entering your personal information, adding your foreign account details (or uploading bank statements for AI extraction with the Premium tier), reviewing the information, and paying. We then generate the FinCEN-compliant XML and submit it through the BSA E-Filing system. You receive a BSA tracking ID as proof of filing, typically within minutes of submission.",
+  },
+  {
+    question: "What is the FBAR penalty for not filing?",
+    answer: "FBAR penalties are among the harshest in tax law. For non-willful violations, the penalty is up to $16,117 per account per year (adjusted annually for inflation). For willful violations, the penalty is the greater of $161,175 or 50% of the account balance at the time of the violation, per account per year. Criminal penalties for willful violations can include fines up to $250,000 and imprisonment up to 5 years. These penalties apply per account, per year — meaning multiple unfiled years with multiple accounts can result in penalties exceeding the total account balances.",
+  },
+  {
+    question: "Do US expats need to file an FBAR?",
+    answer: "Yes. U.S. citizens living abroad are still required to file an FBAR if the aggregate value of their foreign financial accounts exceeds $10,000 at any time during the calendar year. Living overseas does not exempt you from FBAR filing requirements. In fact, expats often have more foreign accounts (local bank accounts, pension funds, investment accounts) that trigger the filing requirement. The FBAR deadline is April 15 with an automatic extension to October 15. FBAR Direct supports filings for expats in any country.",
+  },
 ];
