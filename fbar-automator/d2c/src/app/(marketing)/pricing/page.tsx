@@ -18,6 +18,7 @@ export default function PricingPage() {
         "@type": "Product",
         "name": "FBAR Direct — FBAR Filing Service",
         "description": "File FinCEN Form 114 (FBAR) directly to FinCEN. FinCEN-registered BSA E-Filing institution.",
+        "image": "https://fbardirect.com/opengraph-image",
         "brand": { "@type": "Organization", "name": "FBAR Direct" },
         "offers": [
           {
