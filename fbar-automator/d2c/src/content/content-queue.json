@@ -51,7 +51,7 @@
       "keyword": "fbar first time filer",
       "intent": "transactional",
       "brief": "Step-by-step guide for first-time FBAR filers. Covers who must file under 31 USC 5314, the $10,000 threshold per 31 CFR 1010.350, what counts as a foreign financial account, and how to file through BSA E-Filing.",
-      "status": "pending",
+      "status": "published",
       "pillar": "fbar-requirements",
       "publishedDate": "2026-03-08"
     },
