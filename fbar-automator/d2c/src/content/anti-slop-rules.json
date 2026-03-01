@@ -1,0 +1,60 @@
+{
+  "bannedPhrases": [
+    "in today's fast-paced world",
+    "navigating the complex landscape",
+    "it's important to note",
+    "it's worth mentioning",
+    "without further ado",
+    "let's dive in",
+    "when it comes to",
+    "at the end of the day",
+    "the bottom line is",
+    "in conclusion",
+    "comprehensive guide",
+    "everything you need to know",
+    "unlock the power of",
+    "streamline your",
+    "leverage",
+    "utilize",
+    "empower",
+    "seamless",
+    "robust",
+    "cutting-edge",
+    "game-changer",
+    "in this comprehensive guide",
+    "let's explore",
+    "it goes without saying",
+    "in a nutshell",
+    "rest assured",
+    "needless to say",
+    "as we all know",
+    "crucial",
+    "essential",
+    "vital",
+    "transform",
+    "unlock"
+  ],
+  "structuralRequirements": {
+    "minWordCount": 2000,
+    "maxWordCountWarning": 3500,
+    "citationDensity": { "minPer500Words": 2 },
+    "dollarAmountDensity": { "minPer500Words": 3 },
+    "requiredH1Count": 1,
+    "minCTACount": 2,
+    "minCrosslinkCountWarning": 2,
+    "semrushMinScore": 7
+  },
+  "disclaimers": {
+    "topDisclaimer": "FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You are responsible for reviewing all information for accuracy before submission to FinCEN. This article is for informational purposes only and does not constitute tax, legal, or financial advice.",
+    "bottomDisclaimer": "Tax regulations change frequently. Always verify current requirements at IRS.gov or FinCEN.gov. For advice specific to your situation, consult a qualified tax professional."
+  },
+  "patternChecks": {
+    "penaltyClaimPattern": "\\$[\\d,]+.*(?:penalty|penalt|fine|violation)",
+    "penaltyRequiresCitation": ["USC", "CFR", "IRC", "U.S.C.", "C.F.R."],
+    "deadlineClaimPattern": "(?:due|deadline|must file|filing date).*\\d{4}",
+    "deadlineRequiresCitation": ["CFR", "IRS", "Notice", "Rev. Proc.", "IRC"]
+  },
+  "ctaPatterns": {
+    "ctaLinkPatterns": ["fbardirect.com", "/threshold", "/pricing", "/how-it-works", "/signup"]
+  }
+}

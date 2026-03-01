@@ -20,7 +20,7 @@ const BLOG_DIR = path.join(process.cwd(), 'src/content/blog');
 export function getBlogPosts(): BlogPost[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
   const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith('.mdx'));
-  return files
+  const posts = files
     .map((file) => {
       const content = fs.readFileSync(path.join(BLOG_DIR, file), 'utf-8');
       const { data } = matter(content);
@@ -30,6 +30,12 @@ export function getBlogPosts(): BlogPost[] {
       (a, b) =>
         new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
     );
+
+  if (process.env.NODE_ENV === 'production') {
+    const now = new Date();
+    return posts.filter((p) => new Date(p.publishedDate) <= now);
+  }
+  return posts;
 }
 
 export async function renderMarkdownToHtml(markdown: string): Promise<string> {
