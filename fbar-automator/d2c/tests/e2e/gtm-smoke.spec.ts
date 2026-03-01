@@ -90,8 +90,9 @@ test.describe("Country SEO Pages", () => {
     await page.goto("/fbar/canada");
     const jsonLd = page.locator('script[type="application/ld+json"]');
     await expect(jsonLd.first()).toBeAttached();
-    const content = await jsonLd.first().textContent();
-    expect(content).toContain("FAQPage");
+    const allBlocks = await jsonLd.allTextContents();
+    const hasFaqPage = allBlocks.some((block) => block.includes("FAQPage"));
+    expect(hasFaqPage).toBe(true);
   });
 
   test("invalid country slug returns 404", async ({ page }) => {
