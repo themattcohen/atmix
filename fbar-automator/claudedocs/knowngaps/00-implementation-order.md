@@ -107,10 +107,10 @@ No urgency. Implement when convenient.
 | ~~#15~~ | ~~M~~ | ~~Drawn signatures embedded in PDF~~ | **DONE** (Phase 7) |
 | ~~#18~~ | ~~M~~ | ~~Replace `xlsx` with `exceljs`~~ | **DONE** (Phase 7) |
 | ~~#19~~ | ~~S~~ | ~~Rate limiter — Option C accepted~~ | **DONE** (accepted as-is) |
-| #20 | M | Blog content pages | Deferred |
+| ~~#20~~ | ~~M~~ | ~~Blog content pages~~ | **DONE 2026-03-01** (5 articles published, rendering bug fixed, typography plugin installed. n8n pipeline remains for automation.) |
 | ~~#22~~ | ~~S~~ | ~~Welcome/signup email~~ | **DONE** (2026-02-28, superseded by email verification gate) |
 
-**Only Gap #20 (blog) remains. All others complete.**
+**All 22 gaps complete (code-wise).** The n8n content automation pipeline is a separate infrastructure project, not a known gap.
 
 ## Dependency Graph
 

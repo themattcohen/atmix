@@ -1,7 +1,7 @@
 # GTM v1 Revised Strategy — FBARDirect.com
 
 **Date:** 2026-02-18
-**Status:** Strategy locked. Implementation Phases 0-5 code-complete. Content pipeline NOT yet implemented.
+**Status:** Strategy locked. Implementation Phases 0-5 code-complete. Blog launched (5 articles, 2026-03-01). Content pipeline (n8n automation) NOT yet implemented.
 **Source sessions:** Planning (`cecdad6a`), Implementation (`cff78b9d`)
 **Supersedes:** `gtm_v1.md` (original, contains fabricated data — do not cite)
 
@@ -305,10 +305,14 @@ The decision was **filesystem MDX**, not database-stored content. Rationale:
 | Task | Status | Files |
 |------|--------|-------|
 | MDX packages installed | DONE | `@next/mdx`, `@mdx-js/loader`, `@mdx-js/react`, `remark-gfm`, `gray-matter` |
-| Blog library | DONE | `src/lib/blog.ts` — MDX frontmatter parsing, slug generation |
+| Blog library | DONE | `src/lib/blog.ts` — `remark` + `remark-html` pipeline (replaces raw markdown display bug) |
 | Blog routes | DONE | `src/app/(marketing)/blog/page.tsx` (index), `src/app/(marketing)/blog/[slug]/page.tsx` (detail) |
-| Blog content directory | DONE | `src/content/blog/` (empty — no articles yet) |
+| Blog content directory | DONE | `src/content/blog/` — 5 published articles (2026-03-01) |
+| `@tailwindcss/typography` plugin | DONE | Installed; blog detail pages use `prose` classes for article rendering |
 | next.config.js MDX support | DONE | MDX loader configured |
+| Blog articles published | DONE | 5 articles: FBAR deadline 2026, FBAR cryptocurrency, FBAR max account value, FBAR green card, FBAR penalty (10,186 total words, 1,500–2,500 words each) |
+
+Build now passes 65+ pages.
 
 ### Phase 4 — Programmatic SEO (DONE)
 
@@ -324,6 +328,7 @@ Comparisons implemented:
 - FBAR Direct vs BSA E-Filing Portal
 - FBAR Direct vs Hiring a CPA
 - Best FBAR Filing Services 2026
+- FBAR Direct vs TurboTax (`fbar-direct-vs-turbotax`) — added 2026-03-01 (fixes the 404 noted in audit)
 
 ### Phase 5 — Paid Acquisition Infrastructure (DONE)
 
@@ -336,7 +341,7 @@ Landing page variants: `file-fbar-online`, `fbar-software`, `fbar-expat`, `fince
 
 ### Build Status
 
-- `npm run build` passes with 60 pages generated
+- `npm run build` passes with 65+ pages generated (5 blog articles added 2026-03-01, 4th comparison page added)
 - **E2E tests verified (2026-02-19):**
   - 2 known test breakages fixed (auth.spec.ts threshold redirect, marketing.spec.ts hero CTA target)
   - 41 new GTM smoke tests written and passing (`d2c/tests/e2e/gtm-smoke.spec.ts`)
@@ -350,8 +355,14 @@ Landing page variants: `file-fbar-online`, `fbar-software`, `fbar-expat`, `fince
 |------|----------|-------|
 | ~~E2E test verification~~ | ~~DONE~~ | Fixed 2 tests, wrote 41 GTM smoke tests, all passing (2026-02-19) |
 | **n8n content pipeline** | HIGH | The entire automated article production system. See Section 5 |
-| **Blog content** | HIGH | MDX infrastructure exists but zero articles. Need first 5 high-intent articles |
+| ~~**Blog content**~~ | ~~HIGH~~ | DONE — 5 articles published 2026-03-01 (first 5 from Section 5 keyword list: deadline, crypto, max value, green card, penalty) |
+| **Blog content (scale)** | HIGH | Need 10+ articles total for D→B+→A content grade. 5 published, 5+ more needed |
 | **Semrush keyword research** | HIGH | No keyword data has been collected. Need to run Semrush API batch |
+| CSP Google Ads conversion unblock | DONE | 2026-03-01 — added `https://www.google.com` to `img-src` and `connect-src` |
+| TurboTax comparison page | DONE | 2026-03-01 — `/compare/fbar-direct-vs-turbotax` with FAQPage schema (fixes sitemap 404) |
+| A11y touch targets + heading hierarchy | DONE | 2026-03-01 — footer links `min-h-[44px]`, banner dismiss expanded, how-it-works `h3`→`h2` |
+| Meta description expansion | DONE | 2026-03-01 — about (155 chars), terms (150 chars), privacy (150 chars), blog (155 chars) |
+| Person schema enhancement | DONE | 2026-03-01 — founder `sameAs` (LinkedIn), `knowsAbout` array, blog author `jobTitle: 'CPA'` |
 | **Google Search Console** | MEDIUM | Verification meta tag is in root layout but needs actual GSC account setup |
 | ~~**Google Ads campaigns**~~ | ~~MEDIUM~~ | DONE — Configured but paused. See `d2c-google-ads-campaign-2026-02-28.md` |
 | ~~**GTM/GA4 container setup**~~ | ~~MEDIUM~~ | DONE — GT-P3JRZMRX + GA4 G-W2KXELPKZE live since 2026-02-28 |

@@ -1,5 +1,25 @@
 # Gap #20: Blog placeholder — zero published articles
 
+## Status: DONE (2026-03-01)
+
+All items in this gap have been resolved:
+- **Rendering bug fixed**: Added `remark` + `remark-html` pipeline to `d2c/src/lib/blog.ts`. Raw markdown is now converted to HTML before rendering via `renderMarkdownToHtml()`. XSS protection preserved via `sanitize-html` post-conversion.
+- **Typography plugin installed**: `@tailwindcss/typography` added to `package.json` and `tailwind.config.ts`. `prose` classes now render correctly on blog posts.
+- **5 blog articles published** (commit 4dbe9a5):
+  1. `how-to-calculate-maximum-account-value-fbar.mdx` — 2,154 words
+  2. `fbar-green-card-holders.mdx` — 2,044 words
+  3. `fbar-cryptocurrency-foreign-exchanges.mdx` — 2,279 words
+  4. `fbar-filing-deadline-2026.mdx` — 2,176 words
+  5. `fbar-penalties-what-happens-if-you-dont-file.mdx` — 2,533 words
+- **Blog E2E tests passing**: All 9 tests in `tests/e2e/blog.spec.ts` pass (fixed navigation tests for Next.js soft navigation).
+- **Author schema enhanced**: BlogPosting JSON-LD includes `jobTitle: 'CPA'` and `affiliation: FBAR Direct`.
+
+### Remaining (not code):
+- n8n content pipeline (GTM_V1_REVISED.md Section 5) — not yet implemented
+- Additional articles beyond first 5 — needed for Content grade A
+
+---
+
 **Severity:** Low
 **Effort:** XL (1-3 days for first 5 articles + n8n pipeline setup; S for a single manual article)
 **Depends on:** None (infrastructure is complete)
