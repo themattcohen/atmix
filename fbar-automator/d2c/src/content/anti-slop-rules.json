@@ -42,7 +42,74 @@
     "requiredH1Count": 1,
     "minCTACount": 2,
     "minCrosslinkCountWarning": 2,
-    "semrushMinScore": 7
+    "semrushMinScore": 9
+  },
+  "semrushOptimization": {
+    "_doc": "Rules for achieving 9+/10 in Semrush SEO Writing Assistant. SWA scores 4 sub-categories: SEO, Readability, Tone of Voice, Originality. ALL must be optimized to hit 9+.",
+    "seo": {
+      "targetKeywordInH1": true,
+      "addAllRecommendedKeywords": true,
+      "_note": "After entering the target keyword in SWA, it generates ~20 recommended keywords from competitor analysis. ALL must be naturally incorporated — each missing keyword drags the SEO sub-score down.",
+      "keywordInsertionStrategy": "Weave each recommended keyword into existing sentences or add new content sections that naturally include them. Never keyword-stuff — each phrase should appear 1-2 times max.",
+      "altTextOnImages": true,
+      "internalLinks": { "min": 2, "_note": "SWA checks for links. In .mdx markdown links count when rendered but NOT when pasted as plain text into SWA. Still include them in the article." },
+      "externalLinks": { "min": 3 }
+    },
+    "readability": {
+      "meetWordCountTarget": true,
+      "_wordCountNote": "SWA calculates a word count target based on top-10 competitor average. Article MUST meet or exceed this target. If SWA says 2,181, don't stop at 1,862.",
+      "maxSentenceWords": 25,
+      "_sentenceNote": "Split any sentence over 25 words. SWA flags 'hard-to-read' sentences — the single biggest readability penalty. Split at conjunctions (and, but, or, which). Target 15-20 words per sentence.",
+      "noPassiveVoice": true,
+      "_passiveNote": "Convert ALL passive voice to active: 'penalties are assessed' → 'the IRS assesses penalties'. 'The FBAR must be filed' → 'You must file the FBAR'.",
+      "maxParagraphSentences": 4,
+      "_paragraphNote": "Split any paragraph over 4 sentences. Use bullet lists for requirements, steps, and lists of 3+ items.",
+      "avoidComplexWords": [
+        { "complex": "denominated", "simple": "held in" },
+        { "complex": "electronically", "simple": "online" },
+        { "complex": "authorization", "simple": "approval" },
+        { "complex": "superannuation", "simple": "retirement fund" },
+        { "complex": "independently", "simple": "separately" },
+        { "complex": "approximately", "simple": "about" },
+        { "complex": "subsequently", "simple": "then" },
+        { "complex": "determination", "simple": "decision" },
+        { "complex": "constitute", "simple": "make up" },
+        { "complex": "requirements", "simple": "rules" }
+      ],
+      "_complexWordsNote": "Replace multi-syllable words with simpler synonyms where meaning is preserved. Tax-specific terms (FBAR, FinCEN, CFR) are exempt — only replace general vocabulary."
+    },
+    "toneOfVoice": {
+      "targetTone": "somewhat formal",
+      "consistencyTarget": 95,
+      "_toneNote": "Tax compliance content should be 'somewhat formal' — professional but accessible. SWA measures consistency percentage. Every casual sentence in an otherwise formal article drags consistency down.",
+      "bannedFillerWords": [
+        "add up",
+        "basically",
+        "actually",
+        "just",
+        "really",
+        "simply",
+        "sort of",
+        "kind of",
+        "definitely",
+        "pretty much",
+        "a ton of",
+        "in order to"
+      ],
+      "_fillerNote": "Replace 'add up' → 'total/sum', 'in order to' → 'to'. Remove the rest entirely or restructure the sentence.",
+      "avoidCasualPatterns": [
+        "Sentence-fragment headings should still read as complete thoughts",
+        "Avoid question-only headings when a statement works ('Who Must File' → 'Filing Requirements by Person Type')",
+        "Don't start sentences with 'If the process feels...' or emotional appeals in instructional content",
+        "Replace colloquial phrases: 'a frequent surprise' → 'commonly overlooked', 'the good news' → omit or restructure"
+      ],
+      "avoidItIsConstructions": true,
+      "_itIsNote": "'It is not filed...' → 'The FBAR is not filed...' or 'You do not file the FBAR...'. SWA flags 'it is' as an unnecessary placeholder."
+    },
+    "originality": {
+      "mustRunPlagiarismCheck": true,
+      "_note": "Always run the Copyleaks originality check in SWA before scoring. Unscored originality may cap the overall score. Paraphrase regulatory boilerplate — threshold amounts, filing deadlines, and legal definitions commonly match other FBAR articles online."
+    }
   },
   "disclaimers": {
     "topDisclaimer": "FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You are responsible for reviewing all information for accuracy before submission to FinCEN. This article is for informational purposes only and does not constitute tax, legal, or financial advice.",
