@@ -40,6 +40,11 @@ next-env.d.ts
 /playwright-report/
 *.mjs
 !scripts/*.mjs
+!scripts/competitor/*.mjs
+!scripts/seo-scorer/**/*.mjs
+
+# Competitor monitor snapshots (generated data)
+scripts/competitor/snapshots/
 
 # IDE
 .idea/
