@@ -36,7 +36,7 @@ test.describe("Landing Page Sections: TrustBar + WhoNeedsToFile + WhatYouNeed", 
         checkmarkCount++;
       }
     }
-    expect(checkmarkCount).toBe(3);
+    expect(checkmarkCount).toBe(4);
   });
 
   test("TrustBar is positioned after Hero section", async ({ page }) => {
