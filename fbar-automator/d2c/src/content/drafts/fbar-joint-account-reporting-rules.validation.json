@@ -1,0 +1,39 @@
+{
+  "slug": "fbar-joint-account-reporting-rules",
+  "validatedAt": "2026-03-02T02:22:48.543Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (2799 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (2)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (6.3 per 500 words)",
+    "dollar_density": "PASS (13.2 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "hero_image": "PASS",
+    "published_date": "PASS (2026-03-15)"
+  },
+  "warnings": [],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/uscode/text/31/5314",
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://www.fincen.gov/sites/default/files/shared/FBAR_SpecAuth114a.pdf",
+    "https://www.law.cornell.edu/cfr/text/31/1010.420",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar",
+    "https://fiscaldata.treasury.gov/datasets/treasury-reporting-rates-exchange/treasury-reporting-rates-of-exchange",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 USC 5314",
+    "31 CFR 1010.350",
+    "31 CFR 1010.306",
+    "31 CFR 1010.420",
+    "31 USC 5321"
+  ]
+}

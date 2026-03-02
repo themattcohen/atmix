@@ -60,7 +60,7 @@
       "keyword": "fbar vs fatca form 8938",
       "intent": "informational",
       "brief": "Side-by-side comparison of FBAR (FinCEN 114) vs FATCA (Form 8938). Different thresholds, different agencies (FinCEN vs IRS), different penalties. Cite 26 USC 6038D for FATCA and 31 USC 5314 for FBAR.",
-      "status": "pending",
+      "status": "published",
       "pillar": "fbar-vs-others",
       "publishedDate": "2026-03-10"
     },
@@ -69,7 +69,7 @@
       "keyword": "fbar uk bank accounts",
       "intent": "informational",
       "brief": "FBAR reporting for US persons with UK bank accounts, ISAs, building society accounts, and NS&I savings. Covers HMRC data-sharing under FATCA IGA and why failing to report UK accounts is especially risky.",
-      "status": "pending",
+      "status": "published",
       "pillar": "country-specific",
       "publishedDate": "2026-03-13"
     },
@@ -78,7 +78,7 @@
       "keyword": "fbar joint account rules",
       "intent": "informational",
       "brief": "How to report jointly-held foreign accounts on FBAR. Both account holders must file if US persons. Covers spousal filing under 31 CFR 1010.350(g), community property implications, and the FinCEN 114a spousal form.",
-      "status": "pending",
+      "status": "published",
       "pillar": "account-types",
       "publishedDate": "2026-03-15"
     },
