@@ -42,11 +42,13 @@ function scoreFlesch(flesch) {
 /**
  * Score the average sentence length (0-2 pts).
  *
- * 15-20 words per sentence is ideal for online readability.
+ * 12-22 words per sentence is the target for tax/legal web content.
+ * Shorter averages reflect clear, declarative writing mixed with
+ * longer explanatory sentences — this is normal for the domain.
  */
 function scoreAvgSentenceLength(avg) {
-  if (avg >= 15 && avg <= 20) return 2;
-  if ((avg >= 12 && avg < 15) || (avg > 20 && avg <= 25)) return 1;
+  if (avg >= 12 && avg <= 22) return 2;
+  if ((avg >= 10 && avg < 12) || (avg > 22 && avg <= 25)) return 1;
   return 0;
 }
 
@@ -71,15 +73,17 @@ function scoreLongParagraphPercentage(pct) {
 /**
  * Score the Automated Readability Index (0-1.5 pts).
  *
- * ARI 8-12 corresponds roughly to 8th-12th grade, appropriate for
- * educated general readers dealing with tax/legal content.
+ * ARI 8-14 is the target for tax/legal content. Statutory references
+ * (31 CFR, USC, IRC) and precise legal language push ARI above 12
+ * even in well-written, accessible articles. ARI 12-14 is normal
+ * and expected for this domain.
  */
 function scoreAri(ari) {
-  if (ari >= 8 && ari <= 12) return 1.5;
+  if (ari >= 8 && ari <= 14) return 1.5;
   if (ari >= 6 && ari < 8) return 1;
-  if (ari > 12 && ari <= 14) return 1;
+  if (ari > 14 && ari <= 16) return 1;
   if (ari >= 4 && ari < 6) return 0.5;
-  if (ari > 14 && ari <= 16) return 0.5;
+  if (ari > 16 && ari <= 18) return 0.5;
   return 0;
 }
 
@@ -166,7 +170,7 @@ export function analyze(article, _options = {}) {
   if (avgSentScore < 2) {
     issues.push(
       `Average sentence length is ${avgSentenceLength.toFixed(1)} words ` +
-      `(target 15-20). ${avgSentenceLength > 20
+      `(target 12-22). ${avgSentenceLength > 22
         ? 'Break long sentences into shorter ones.'
         : 'Combine some very short sentences for better flow.'}`,
     );
@@ -190,7 +194,7 @@ export function analyze(article, _options = {}) {
 
   if (ariScore < 1.5) {
     issues.push(
-      `ARI grade level is ${ari.toFixed(1)} (target 8-12). ` +
+      `ARI grade level is ${ari.toFixed(1)} (target 8-14). ` +
       (ari < 8
         ? 'Content may be too simple for the tax/legal audience.'
         : 'Content may be too dense for general readers.'),

@@ -1,0 +1,145 @@
+{
+  "slug": "fbar-vs-fatca-form-8938-differences",
+  "keyword": "fbar vs fatca form 8938",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T17:14:23.524Z",
+  "wordCount": 2838,
+  "overall": 9,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 8.5,
+      "weight": 0.12,
+      "details": {
+        "flesch": 55.3,
+        "ari": 15.5,
+        "avgSentenceLength": 16.5,
+        "longSentPct": 10.5,
+        "longParaPct": 1.7
+      },
+      "issues": [
+        "18 sentences exceed 25 words (10.5% of total). Shorten these for better readability.",
+        "ARI grade level is 15.5 (target 8-14). Content may be too dense for general readers."
+      ]
+    },
+    "writingQuality": {
+      "score": 8,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 8.5,
+        "passiveCount": 4,
+        "weaselCount": 3,
+        "adverbCount": 9,
+        "adverbDensity": 0.32,
+        "clicheCount": 0,
+        "transitionCount": 10,
+        "transitionRate": 1.06
+      },
+      "issues": [
+        "48 writing issues detected (8.5 per 500 words). Review write-good suggestions to tighten prose."
+      ]
+    },
+    "structure": {
+      "score": 9.5,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 11,
+        "h3Count": 24,
+        "hasFAQ": true,
+        "internalLinkCount": 8,
+        "authLinkCount": 49,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2838,
+        "hasDisclaimer": true,
+        "ctaCount": 1,
+        "hierarchyValid": true
+      },
+      "issues": []
+    },
+    "keywordCoverage": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "density": 1.72,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "4/4",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 3,
+        "relatedKeywordsTotal": 8
+      },
+      "issues": []
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 122,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 6,
+          "total": 11,
+          "ratio": 0.55
+        },
+        "questionHeadingCount": 15,
+        "citationDensity": {
+          "total": 83,
+          "per500Words": 14.62
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 3,
+        "paaMatched": [
+          "Is form 8938 the same as FBAR?",
+          "Do I need to file both FBAR and FATCA?",
+          "Is form 8938 the same as FATCA?"
+        ],
+        "paaUnmatched": [],
+        "definitionCount": 6,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Next Steps\" — current: does not reference heading topic"
+      ]
+    }
+  },
+  "topIssues": [
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Next Steps\" — current: does not reference heading topic",
+    "[Readability] 18 sentences exceed 25 words (10.5% of total). Shorten these for better readability.",
+    "[Readability] ARI grade level is 15.5 (target 8-14). Content may be too dense for general readers.",
+    "[Writing] 48 writing issues detected (8.5 per 500 words). Review write-good suggestions to tighten prose."
+  ],
+  "meta": {
+    "title": "FBAR vs FATCA Form 8938: Key Differences Every Filer Should Know",
+    "description": "FBAR vs FATCA Form 8938 compared side-by-side: thresholds, agencies, penalties, and filing rules with statutory citations.",
+    "publishedDate": "2026-03-10"
+  }
+}

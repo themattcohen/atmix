@@ -1,0 +1,138 @@
+{
+  "slug": "fbar-green-card-holders",
+  "keyword": "fbar green card holders",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T16:43:57.059Z",
+  "wordCount": 2300,
+  "overall": 9,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 10,
+      "weight": 0.12,
+      "details": {
+        "flesch": 58.7,
+        "ari": 13.3,
+        "avgSentenceLength": 14.7,
+        "longSentPct": 5.1,
+        "longParaPct": 0
+      },
+      "issues": []
+    },
+    "writingQuality": {
+      "score": 8,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 9.6,
+        "passiveCount": 3,
+        "weaselCount": 2,
+        "adverbCount": 11,
+        "adverbDensity": 0.48,
+        "clicheCount": 0,
+        "transitionCount": 14,
+        "transitionRate": 1.83
+      },
+      "issues": [
+        "44 writing issues detected (9.6 per 500 words). Review write-good suggestions to tighten prose."
+      ]
+    },
+    "structure": {
+      "score": 9.5,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 10,
+        "h3Count": 5,
+        "hasFAQ": true,
+        "internalLinkCount": 10,
+        "authLinkCount": 18,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2300,
+        "hasDisclaimer": true,
+        "ctaCount": 3,
+        "hierarchyValid": true
+      },
+      "issues": []
+    },
+    "keywordCoverage": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "density": 2.09,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "4/4",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 4,
+        "relatedKeywordsTotal": 8
+      },
+      "issues": []
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 141,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 8.25,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 9,
+          "total": 10,
+          "ratio": 0.9
+        },
+        "questionHeadingCount": 7,
+        "citationDensity": {
+          "total": 27,
+          "per500Words": 5.87
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 1,
+        "paaMatched": [
+          "Are green card holders considered U.S. citizens for tax purposes?"
+        ],
+        "paaUnmatched": [],
+        "definitionCount": 14,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic"
+      ]
+    }
+  },
+  "topIssues": [
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic",
+    "[Writing] 44 writing issues detected (9.6 per 500 words). Review write-good suggestions to tighten prose."
+  ],
+  "meta": {
+    "title": "FBAR Green Card Holders: What Permanent Residents Must Know",
+    "description": "FBAR green card holders must report foreign accounts over $10,000. Learn permanent resident FBAR rules, penalties, and how to file correctly.",
+    "publishedDate": "2026-03-01"
+  }
+}

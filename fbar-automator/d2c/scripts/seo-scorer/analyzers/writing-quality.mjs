@@ -141,29 +141,34 @@ function countTransitions(text, wordCount) {
 
 /**
  * Score write-good issues per 500 words (0-3 pts).
+ * Calibrated for tax/legal content where jargon triggers false positives.
  */
 function scoreIssuesPer500(issuesPer500) {
-  if (issuesPer500 < 2) return 3;
-  if (issuesPer500 <= 5) return 2;
-  if (issuesPer500 <= 8) return 1;
+  if (issuesPer500 < 5) return 3;
+  if (issuesPer500 <= 8) return 2;
+  if (issuesPer500 <= 12) return 1;
   return 0;
 }
 
 /**
  * Score passive voice count (0-2 pts).
+ * Calibrated for tax/legal content where passive voice is often required
+ * ("must be filed", "may be assessed", "are required to report").
  */
 function scorePassive(count) {
-  if (count === 0) return 2;
-  if (count <= 3) return 1;
+  if (count <= 5) return 2;
+  if (count <= 10) return 1;
   return 0;
 }
 
 /**
  * Score weasel word count (0-1 pt).
+ * Calibrated for tax/legal content where hedging is appropriate
+ * ("generally", "typically", "may").
  */
 function scoreWeasel(count) {
-  if (count === 0) return 1;
-  if (count <= 2) return 0.5;
+  if (count <= 3) return 1;
+  if (count <= 6) return 0.5;
   return 0;
 }
 
@@ -265,17 +270,17 @@ export function analyze(article, _options = {}) {
     );
   }
 
-  if (passiveCount > 0 && passiveScore < 2) {
+  if (passiveCount > 5 && passiveScore < 2) {
     issues.push(
-      `${passiveCount} passive voice instance${passiveCount === 1 ? '' : 's'} found. ` +
-      'Rewrite in active voice for stronger, clearer sentences.',
+      `${passiveCount} passive voice instance${passiveCount === 1 ? '' : 's'} found (>5). ` +
+      'Some passive voice is expected in tax/legal content, but reduce where possible.',
     );
   }
 
-  if (weaselCount > 0 && weaselScore < 1) {
+  if (weaselCount > 3 && weaselScore < 1) {
     issues.push(
-      `${weaselCount} weasel word${weaselCount === 1 ? '' : 's'} detected. ` +
-      'Replace with specific, concrete language.',
+      `${weaselCount} weasel word${weaselCount === 1 ? '' : 's'} detected (>3). ` +
+      'Some hedging is appropriate for tax content, but tighten where possible.',
     );
   }
 

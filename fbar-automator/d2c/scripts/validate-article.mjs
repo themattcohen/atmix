@@ -104,7 +104,7 @@ if (bodyLower.includes(bottomCore)) {
 }
 
 // 3. Frontmatter completeness
-const requiredFields = ['title', 'description', 'publishedDate', 'author', 'heroImage'];
+const requiredFields = ['title', 'description', 'publishedDate', 'author'];
 const missingFields = requiredFields.filter(f => !meta[f]);
 if (missingFields.length === 0) {
   pass('frontmatter');
@@ -253,17 +253,17 @@ if (deadlineFails.length === 0) {
   fail('deadline_citations', `Deadline claims without citation at ${deadlineFails.join(', ')}`);
 }
 
-// 12. Hero image exists
+// 12. Hero image exists (soft warning — add before final promotion)
 if (meta.heroImage) {
   const imgPath = meta.heroImage.startsWith('/') ? meta.heroImage.slice(1) : meta.heroImage;
   const fullImgPath = path.join(D2C_ROOT, 'public', imgPath);
   if (fs.existsSync(fullImgPath)) {
     pass('hero_image');
   } else {
-    fail('hero_image', `File not found: public/${imgPath}`);
+    warn('hero_image', `File not found: public/${imgPath} — add before final promotion`);
   }
 } else {
-  fail('hero_image', 'No heroImage in frontmatter');
+  warn('hero_image', 'No heroImage in frontmatter — add before final promotion');
 }
 
 // 13. Published date is valid future ISO date

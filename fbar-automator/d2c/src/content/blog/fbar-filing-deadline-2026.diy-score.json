@@ -1,0 +1,138 @@
+{
+  "slug": "fbar-filing-deadline-2026",
+  "keyword": "fbar filing deadline 2026",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T15:30:49.888Z",
+  "wordCount": 2417,
+  "overall": 9.4,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 10,
+      "weight": 0.12,
+      "details": {
+        "flesch": 51.3,
+        "ari": 13.5,
+        "avgSentenceLength": 13.5,
+        "longSentPct": 6.1,
+        "longParaPct": 0
+      },
+      "issues": []
+    },
+    "writingQuality": {
+      "score": 8,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 9.7,
+        "passiveCount": 5,
+        "weaselCount": 2,
+        "adverbCount": 14,
+        "adverbDensity": 0.58,
+        "clicheCount": 0,
+        "transitionCount": 9,
+        "transitionRate": 1.12
+      },
+      "issues": [
+        "47 writing issues detected (9.7 per 500 words). Review write-good suggestions to tighten prose."
+      ]
+    },
+    "structure": {
+      "score": 9.5,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 12,
+        "h3Count": 9,
+        "hasFAQ": true,
+        "internalLinkCount": 11,
+        "authLinkCount": 10,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2417,
+        "hasDisclaimer": true,
+        "ctaCount": 2,
+        "hierarchyValid": true
+      },
+      "issues": []
+    },
+    "keywordCoverage": {
+      "score": 8.5,
+      "weight": 0.2,
+      "details": {
+        "density": 1.53,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "4/4",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 0,
+        "relatedKeywordsTotal": 0
+      },
+      "issues": []
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 154,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 10,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 10,
+          "total": 12,
+          "ratio": 0.83
+        },
+        "questionHeadingCount": 12,
+        "citationDensity": {
+          "total": 22,
+          "per500Words": 4.55
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 0,
+        "paaMatched": [],
+        "paaUnmatched": [],
+        "definitionCount": 11,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Key Dates Summary for 2026\" — current: does not reference heading topic",
+        "Add a concise answer paragraph (30-100 words) after H2 \"FAQ\" — current: does not reference heading topic"
+      ]
+    }
+  },
+  "topIssues": [
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Key Dates Summary for 2026\" — current: does not reference heading topic",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"FAQ\" — current: does not reference heading topic",
+    "[Writing] 47 writing issues detected (9.7 per 500 words). Review write-good suggestions to tighten prose."
+  ],
+  "meta": {
+    "title": "FBAR Filing Deadline 2026: Key Dates and What Happens If You Miss It",
+    "description": "The FBAR filing deadline 2026 is April 15, with an automatic extension to October 15. Learn the key dates, penalties for late filing, and how to catch up.",
+    "publishedDate": "2026-03-01"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "slug": "fbar-penalties-what-happens-if-you-dont-file",
+  "keyword": "fbar penalties",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T17:13:48.455Z",
+  "wordCount": 3047,
+  "overall": 9,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 8.5,
+      "weight": 0.12,
+      "details": {
+        "flesch": 49.4,
+        "ari": 14.6,
+        "avgSentenceLength": 15.2,
+        "longSentPct": 9.5,
+        "longParaPct": 0
+      },
+      "issues": [
+        "Flesch Reading Ease is 49.4 (below ideal 50-70). Simplify sentence structure and use shorter words.",
+        "ARI grade level is 14.6 (target 8-14). Content may be too dense for general readers."
+      ]
+    },
+    "writingQuality": {
+      "score": 9,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 7.5,
+        "passiveCount": 3,
+        "weaselCount": 0,
+        "adverbCount": 11,
+        "adverbDensity": 0.36,
+        "clicheCount": 0,
+        "transitionCount": 12,
+        "transitionRate": 1.18
+      },
+      "issues": [
+        "46 writing issues detected (7.5 per 500 words). Review write-good suggestions to tighten prose."
+      ]
+    },
+    "structure": {
+      "score": 9,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 11,
+        "h3Count": 12,
+        "hasFAQ": true,
+        "internalLinkCount": 10,
+        "authLinkCount": 8,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 3047,
+        "hasDisclaimer": true,
+        "ctaCount": 2,
+        "hierarchyValid": true
+      },
+      "issues": [
+        "Word count is 3047 (target 1500-3000). Consider trimming for focus."
+      ]
+    },
+    "keywordCoverage": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "density": 0.98,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "2/2",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 4,
+        "relatedKeywordsTotal": 8
+      },
+      "issues": []
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 146,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 9,
+          "total": 11,
+          "ratio": 0.82
+        },
+        "questionHeadingCount": 8,
+        "citationDensity": {
+          "total": 22,
+          "per500Words": 3.61
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 3,
+        "paaMatched": [
+          "What is an example of a FBAR penalty?",
+          "How to calculate FBAR penalty?",
+          "Is the IRS waiving penalties for late FBAR if all income is properly reported?"
+        ],
+        "paaUnmatched": [],
+        "definitionCount": 16,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Key Takeaways\" — current: does not reference heading topic"
+      ]
+    }
+  },
+  "topIssues": [
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Key Takeaways\" — current: does not reference heading topic",
+    "[Readability] Flesch Reading Ease is 49.4 (below ideal 50-70). Simplify sentence structure and use shorter words.",
+    "[Readability] ARI grade level is 14.6 (target 8-14). Content may be too dense for general readers.",
+    "[Structure] Word count is 3047 (target 1500-3000). Consider trimming for focus.",
+    "[Writing] 46 writing issues detected (7.5 per 500 words). Review write-good suggestions to tighten prose."
+  ],
+  "meta": {
+    "title": "FBAR Penalties: What Happens If You Don't File?",
+    "description": "FBAR penalties range from $12,909 per non-willful violation to 50% of account balance for willful failures. Learn the full FBAR penalty structure.",
+    "publishedDate": "2026-03-01"
+  }
+}

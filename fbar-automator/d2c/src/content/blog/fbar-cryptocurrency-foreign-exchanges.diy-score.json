@@ -1,0 +1,145 @@
+{
+  "slug": "fbar-cryptocurrency-foreign-exchanges",
+  "keyword": "fbar cryptocurrency foreign exchanges",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T17:13:42.505Z",
+  "wordCount": 2520,
+  "overall": 9.2,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 10,
+      "weight": 0.12,
+      "details": {
+        "flesch": 58.4,
+        "ari": 14,
+        "avgSentenceLength": 14.2,
+        "longSentPct": 8.4,
+        "longParaPct": 0
+      },
+      "issues": []
+    },
+    "writingQuality": {
+      "score": 8.5,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 6.9,
+        "passiveCount": 4,
+        "weaselCount": 4,
+        "adverbCount": 5,
+        "adverbDensity": 0.2,
+        "clicheCount": 0,
+        "transitionCount": 9,
+        "transitionRate": 1.07
+      },
+      "issues": [
+        "35 writing issues detected (6.9 per 500 words). Review write-good suggestions to tighten prose.",
+        "4 weasel words detected (>3). Some hedging is appropriate for tax content, but tighten where possible."
+      ]
+    },
+    "structure": {
+      "score": 9.5,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 13,
+        "h3Count": 10,
+        "hasFAQ": true,
+        "internalLinkCount": 8,
+        "authLinkCount": 5,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2520,
+        "hasDisclaimer": true,
+        "ctaCount": 2,
+        "hierarchyValid": true
+      },
+      "issues": []
+    },
+    "keywordCoverage": {
+      "score": 8.5,
+      "weight": 0.2,
+      "details": {
+        "density": 1.59,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "4/4",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 1,
+        "relatedKeywordsTotal": 8
+      },
+      "issues": [
+        "Only 1 of 8 SERP-related keywords found. Consider adding: \"Fbar cryptocurrency foreign exchanges reddit\", \"Fbar cryptocurrency foreign exchanges requirements\", \"Fbar cryptocurrency foreign exchanges 2021\", \"Fbar cryptocurrency foreign exchanges 2022\", \"Do you pay taxes on crypto before withdrawal\"."
+      ]
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 155,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 11,
+          "total": 13,
+          "ratio": 0.85
+        },
+        "questionHeadingCount": 12,
+        "citationDensity": {
+          "total": 11,
+          "per500Words": 2.18
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 3,
+        "paaMatched": [
+          "Do foreign crypto exchanges report to the IRS?",
+          "What exchange to use for FBAR?",
+          "What triggers an FBAR audit?"
+        ],
+        "paaUnmatched": [],
+        "definitionCount": 10,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic"
+      ]
+    }
+  },
+  "topIssues": [
+    "[Keyword] Only 1 of 8 SERP-related keywords found. Consider adding: \"Fbar cryptocurrency foreign exchanges reddit\", \"Fbar cryptocurrency foreign exchanges requirements\", \"Fbar cryptocurrency foreign exchanges 2021\", \"Fbar cryptocurrency foreign exchanges 2022\", \"Do you pay taxes on crypto before withdrawal\".",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic",
+    "[Writing] 35 writing issues detected (6.9 per 500 words). Review write-good suggestions to tighten prose.",
+    "[Writing] 4 weasel words detected (>3). Some hedging is appropriate for tax content, but tighten where possible."
+  ],
+  "meta": {
+    "title": "FBAR Cryptocurrency Foreign Exchanges: Complete Reporting Guide (2026)",
+    "description": "Learn how FBAR cryptocurrency foreign exchanges reporting works. Which crypto exchanges are foreign, how to calculate max value, and how to stay compliant.",
+    "publishedDate": "2026-03-01"
+  }
+}

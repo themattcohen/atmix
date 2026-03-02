@@ -326,6 +326,119 @@ program
   });
 
 // ---------------------------------------------------------------------------
+// CLI: revise command
+// ---------------------------------------------------------------------------
+
+program
+  .command('revise <slug>')
+  .description(
+    'Generate a prioritized revision checklist from the latest DIY score',
+  )
+  .option('--published', 'Look in published blog directory', false)
+  .action(async (slug, opts) => {
+    try {
+      // 1. Find the latest score file
+      const dirs = opts.published ? [BLOG_DIR] : [BLOG_DIR, DRAFTS_DIR];
+      let scoreData = null;
+      let scorePath = null;
+
+      for (const dir of dirs) {
+        const candidate = path.join(dir, `${slug}.diy-score.json`);
+        try {
+          const raw = await fs.readFile(candidate, 'utf-8');
+          scoreData = JSON.parse(raw);
+          scorePath = candidate;
+          break;
+        } catch {
+          // not found in this dir
+        }
+      }
+
+      if (!scoreData) {
+        console.error(
+          `\nNo DIY score found for "${slug}". Run \`score ${slug} --save\` first.\n`,
+        );
+        process.exit(2);
+      }
+
+      console.log('');
+      console.log(`=== Revision Checklist: ${slug} ===`);
+      console.log(`  Current score: ${scoreData.overall.toFixed(1)}/10`);
+      console.log(`  Target: >=${PASS_THRESHOLD.toFixed(1)}`);
+      console.log(`  Source: ${scorePath}`);
+      console.log('');
+
+      if (scoreData.overall >= PASS_THRESHOLD) {
+        console.log('  This article already meets the target score. No revisions needed.');
+        console.log('');
+        process.exit(0);
+      }
+
+      // 2. Sort dimensions by weighted gap: (10 - score) * weight
+      const dims = scoreData.dimensions || {};
+      const ranked = Object.entries(dims)
+        .map(([dim, data]) => {
+          const weight = DIMENSION_WEIGHTS[dim] ?? data.weight ?? 0;
+          const gap = 10 - (data.score ?? 0);
+          const weightedGap = gap * weight;
+          return { dim, score: data.score ?? 0, weight, gap, weightedGap, issues: data.issues || [] };
+        })
+        .sort((a, b) => b.weightedGap - a.weightedGap);
+
+      // 3. Print prioritized checklist
+      const DISPLAY_NAMES = {
+        readability: 'Readability',
+        writingQuality: 'Writing Quality',
+        structure: 'Structure',
+        keywordCoverage: 'Keyword Coverage',
+        schemaMarkup: 'Schema Markup',
+        aeoSignals: 'AEO Signals',
+        llmQuality: 'LLM Quality',
+      };
+
+      let itemNum = 0;
+      for (const r of ranked) {
+        if (r.issues.length === 0 && r.gap <= 1) continue; // skip near-perfect dimensions
+
+        const label = DISPLAY_NAMES[r.dim] || r.dim;
+        const potentialGain = (r.gap * r.weight).toFixed(2);
+
+        console.log(
+          `  [${label}] ${r.score.toFixed(1)}/10 (weight ${(r.weight * 100).toFixed(0)}%) — up to +${potentialGain} pts recoverable`,
+        );
+
+        if (r.issues.length > 0) {
+          for (const issue of r.issues) {
+            itemNum++;
+            console.log(`    ${itemNum}. ${issue}`);
+          }
+        } else {
+          itemNum++;
+          console.log(`    ${itemNum}. Score is ${r.score.toFixed(1)} — review dimension details in .diy-score.json`);
+        }
+        console.log('');
+      }
+
+      // 4. Summary
+      const totalRecoverable = ranked.reduce((sum, r) => sum + r.weightedGap, 0);
+      const neededGain = PASS_THRESHOLD - scoreData.overall;
+      console.log(`  Points needed: +${neededGain.toFixed(1)} (total recoverable: +${totalRecoverable.toFixed(1)})`);
+      console.log('');
+      console.log('  Workflow:');
+      console.log('    1. Edit src/content/drafts/' + slug + '.mdx (or blog/ if published)');
+      console.log('    2. Re-validate: node scripts/validate-article.mjs ' + slug);
+      console.log('    3. Re-score:   node scripts/seo-scorer/index.mjs score ' + slug + ' --save');
+      console.log('    4. Repeat until >=' + PASS_THRESHOLD.toFixed(1) + ' or 3 attempts exhausted');
+      console.log('');
+
+      process.exit(0);
+    } catch (err) {
+      console.error(`\nError: ${err.message}\n`);
+      process.exit(2);
+    }
+  });
+
+// ---------------------------------------------------------------------------
 // CLI: list command
 // ---------------------------------------------------------------------------
 

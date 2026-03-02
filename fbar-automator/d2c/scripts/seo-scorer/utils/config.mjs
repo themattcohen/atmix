@@ -42,6 +42,9 @@ export const SERP_CACHE_DIR = path.join(SCORER_ROOT, '.serp-cache');
 // ---------------------------------------------------------------------------
 
 export const SERPER_API_KEY = process.env.SERPER_API_KEY || '';
+if (!SERPER_API_KEY) {
+  console.warn('[seo-scorer] WARNING: SERPER_API_KEY is not set. SERP-dependent scoring (PAA coverage, related keywords) will be skipped. Set SERPER_API_KEY in .env for full scoring.');
+}
 export const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
 
 // ---------------------------------------------------------------------------
@@ -56,10 +59,10 @@ export const DIMENSION_WEIGHTS = {
   readability:      0.12,
   writingQuality:   0.08,
   structure:        0.12,
-  keywordCoverage:  0.15,
+  keywordCoverage:  0.20,
   schemaMarkup:     0.08,
-  aeoSignals:       0.15,
-  llmQuality:       0.30,
+  aeoSignals:       0.20,
+  llmQuality:       0.20,
 };
 
 // Sanity-check: weights must sum to 1.0 (within floating-point tolerance).

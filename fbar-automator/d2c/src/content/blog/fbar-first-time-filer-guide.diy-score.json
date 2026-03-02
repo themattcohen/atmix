@@ -1,0 +1,142 @@
+{
+  "slug": "fbar-first-time-filer-guide",
+  "keyword": "fbar first time filer",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T15:40:14.007Z",
+  "wordCount": 2632,
+  "overall": 9.1,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 10,
+      "weight": 0.12,
+      "details": {
+        "flesch": 50.2,
+        "ari": 14,
+        "avgSentenceLength": 14.7,
+        "longSentPct": 6.1,
+        "longParaPct": 0
+      },
+      "issues": []
+    },
+    "writingQuality": {
+      "score": 5.5,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 13.1,
+        "passiveCount": 9,
+        "weaselCount": 6,
+        "adverbCount": 12,
+        "adverbDensity": 0.46,
+        "clicheCount": 0,
+        "transitionCount": 10,
+        "transitionRate": 1.14
+      },
+      "issues": [
+        "69 writing issues detected (13.1 per 500 words). Review write-good suggestions to tighten prose.",
+        "9 passive voice instances found (>5). Some passive voice is expected in tax/legal content, but reduce where possible.",
+        "6 weasel words detected (>3). Some hedging is appropriate for tax content, but tighten where possible."
+      ]
+    },
+    "structure": {
+      "score": 9.5,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 10,
+        "h3Count": 14,
+        "hasFAQ": true,
+        "internalLinkCount": 10,
+        "authLinkCount": 25,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2632,
+        "hasDisclaimer": true,
+        "ctaCount": 1,
+        "hierarchyValid": true
+      },
+      "issues": []
+    },
+    "keywordCoverage": {
+      "score": 8.5,
+      "weight": 0.2,
+      "details": {
+        "density": 1.01,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "4/4",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 0,
+        "relatedKeywordsTotal": 0
+      },
+      "issues": []
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 144,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 10,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 8,
+          "total": 10,
+          "ratio": 0.8
+        },
+        "questionHeadingCount": 7,
+        "citationDensity": {
+          "total": 38,
+          "per500Words": 7.22
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 0,
+        "paaMatched": [],
+        "paaUnmatched": [],
+        "definitionCount": 8,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Common FBAR First-Time Filer Mistakes to Avoid\" — current: does not reference heading topic",
+        "Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic"
+      ]
+    }
+  },
+  "topIssues": [
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Common FBAR First-Time Filer Mistakes to Avoid\" — current: does not reference heading topic",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic",
+    "[Writing] 69 writing issues detected (13.1 per 500 words). Review write-good suggestions to tighten prose.",
+    "[Writing] 9 passive voice instances found (>5). Some passive voice is expected in tax/legal content, but reduce where possible.",
+    "[Writing] 6 weasel words detected (>3). Some hedging is appropriate for tax content, but tighten where possible."
+  ],
+  "meta": {
+    "title": "FBAR First-Time Filer Guide: How to Report Your Foreign Accounts",
+    "description": "FBAR first time filer guide: who must file, which accounts to report, how to calculate maximum values, and how to submit FinCEN Form 114 online.",
+    "publishedDate": "2026-03-08"
+  }
+}

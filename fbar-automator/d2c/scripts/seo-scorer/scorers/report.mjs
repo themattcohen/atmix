@@ -14,6 +14,7 @@ import {
   DIMENSION_WEIGHTS,
   BLOG_DIR,
   DRAFTS_DIR,
+  QUEUE_PATH,
 } from '../utils/config.mjs';
 
 // ---------------------------------------------------------------------------
@@ -194,6 +195,40 @@ export async function saveReport(slug, report, { published = false } = {}) {
   await fs.writeFile(scorePath, JSON.stringify(report, null, 2) + '\n', 'utf-8');
 
   console.log(`  Score saved: ${scorePath}`);
+
+  // Update content-queue.json with DIY score
+  await updateContentQueue(slug, report.overall, report.scoredAt);
+}
+
+/**
+ * Update content-queue.json with DIY score data for a given article.
+ *
+ * Mirrors what score-via-swa.mjs does for SWA scores: adds `diyScore`
+ * and `diyScoredAt` fields to the matching topic entry.
+ *
+ * @param {string} slug       Article slug.
+ * @param {number} score      Overall DIY score.
+ * @param {string} scoredAt   ISO timestamp of scoring.
+ */
+async function updateContentQueue(slug, score, scoredAt) {
+  try {
+    const raw = await fs.readFile(QUEUE_PATH, 'utf-8');
+    const queue = JSON.parse(raw);
+
+    const topic = (queue.topics || []).find((t) => t.slug === slug);
+    if (!topic) {
+      console.log(`  Note: "${slug}" not found in content-queue.json — skipping queue update.`);
+      return;
+    }
+
+    topic.diyScore = score;
+    topic.diyScoredAt = scoredAt;
+
+    await fs.writeFile(QUEUE_PATH, JSON.stringify(queue, null, 2) + '\n', 'utf-8');
+    console.log(`  Queue updated: diyScore=${score.toFixed(1)} for ${slug}`);
+  } catch (err) {
+    console.error(`  Warning: Could not update content-queue.json: ${err.message}`);
+  }
 }
 
 // ---------------------------------------------------------------------------

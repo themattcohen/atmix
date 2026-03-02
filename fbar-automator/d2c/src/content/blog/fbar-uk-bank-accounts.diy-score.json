@@ -1,0 +1,151 @@
+{
+  "slug": "fbar-uk-bank-accounts",
+  "keyword": "fbar uk bank accounts",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T17:22:40.699Z",
+  "wordCount": 3207,
+  "overall": 9,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 10,
+      "weight": 0.12,
+      "details": {
+        "flesch": 56.4,
+        "ari": 14,
+        "avgSentenceLength": 15.6,
+        "longSentPct": 8.3,
+        "longParaPct": 0
+      },
+      "issues": []
+    },
+    "writingQuality": {
+      "score": 7.5,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 6.7,
+        "passiveCount": 5,
+        "weaselCount": 3,
+        "adverbCount": 8,
+        "adverbDensity": 0.25,
+        "clicheCount": 0,
+        "transitionCount": 2,
+        "transitionRate": 0.19
+      },
+      "issues": [
+        "43 writing issues detected (6.7 per 500 words). Review write-good suggestions to tighten prose.",
+        "Transition word rate is 0.19 per 300 words (2 total). Add transitional phrases like \"however\", \"therefore\", \"additionally\" to improve logical flow."
+      ]
+    },
+    "structure": {
+      "score": 9,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 11,
+        "h3Count": 17,
+        "hasFAQ": true,
+        "internalLinkCount": 10,
+        "authLinkCount": 19,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 3207,
+        "hasDisclaimer": true,
+        "ctaCount": 1,
+        "hierarchyValid": true
+      },
+      "issues": [
+        "Word count is 3207 (target 1500-3000). Consider trimming for focus."
+      ]
+    },
+    "keywordCoverage": {
+      "score": 8.5,
+      "weight": 0.2,
+      "details": {
+        "density": 1.68,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "3/3",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 2,
+        "relatedKeywordsTotal": 8
+      },
+      "issues": [
+        "Only 2 of 8 SERP-related keywords found. Consider adding: \"Fbar uk bank accounts online\", \"FBAR form\", \"Fbar uk bank accounts 2022\", \"FBAR filing online\", \"FBAR Form PDF\"."
+      ]
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 151,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 10,
+          "total": 11,
+          "ratio": 0.91
+        },
+        "questionHeadingCount": 6,
+        "citationDensity": {
+          "total": 28,
+          "per500Words": 4.37
+        },
+        "entityCoverage": {
+          "count": 5,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": [
+            "foreign financial account"
+          ]
+        },
+        "paaMatchCount": 3,
+        "paaMatched": [
+          "Do I need to declare foreign bank accounts in the UK?",
+          "Can I keep a UK bank account if I live abroad?",
+          "What accounts must be reported on FBAR?"
+        ],
+        "paaUnmatched": [],
+        "definitionCount": 18,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic",
+        "Missing key FBAR entities: foreign financial account — mention these clearly for entity recognition by AI systems"
+      ]
+    }
+  },
+  "topIssues": [
+    "[Keyword] Only 2 of 8 SERP-related keywords found. Consider adding: \"Fbar uk bank accounts online\", \"FBAR form\", \"Fbar uk bank accounts 2022\", \"FBAR filing online\", \"FBAR Form PDF\".",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions\" — current: does not reference heading topic",
+    "[AEO] Missing key FBAR entities: foreign financial account — mention these clearly for entity recognition by AI systems",
+    "[Structure] Word count is 3207 (target 1500-3000). Consider trimming for focus.",
+    "[Writing] 43 writing issues detected (6.7 per 500 words). Review write-good suggestions to tighten prose.",
+    "[Writing] Transition word rate is 0.19 per 300 words (2 total). Add transitional phrases like \"however\", \"therefore\", \"additionally\" to improve logical flow."
+  ],
+  "meta": {
+    "title": "FBAR UK Bank Accounts: What US Persons Must Report",
+    "description": "Which FBAR UK bank accounts must US persons report? Learn about ISAs, building societies, NS&I, pensions, and how HMRC data-sharing affects compliance.",
+    "publishedDate": "2026-03-13"
+  }
+}

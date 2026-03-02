@@ -1,0 +1,146 @@
+{
+  "slug": "fbar-joint-account-reporting-rules",
+  "keyword": "fbar joint account rules",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-02T17:14:04.641Z",
+  "wordCount": 3180,
+  "overall": 9,
+  "pass": true,
+  "dimensions": {
+    "readability": {
+      "score": 10,
+      "weight": 0.12,
+      "details": {
+        "flesch": 60.6,
+        "ari": 13.1,
+        "avgSentenceLength": 13.8,
+        "longSentPct": 8.2,
+        "longParaPct": 0
+      },
+      "issues": []
+    },
+    "writingQuality": {
+      "score": 8,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 10.1,
+        "passiveCount": 3,
+        "weaselCount": 1,
+        "adverbCount": 15,
+        "adverbDensity": 0.47,
+        "clicheCount": 0,
+        "transitionCount": 11,
+        "transitionRate": 1.04
+      },
+      "issues": [
+        "64 writing issues detected (10.1 per 500 words). Review write-good suggestions to tighten prose."
+      ]
+    },
+    "structure": {
+      "score": 9,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 10,
+        "h3Count": 18,
+        "hasFAQ": true,
+        "internalLinkCount": 8,
+        "authLinkCount": 23,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 3180,
+        "hasDisclaimer": true,
+        "ctaCount": 1,
+        "hierarchyValid": true
+      },
+      "issues": [
+        "Word count is 3180 (target 1500-3000). Consider trimming for focus."
+      ]
+    },
+    "keywordCoverage": {
+      "score": 8.5,
+      "weight": 0.2,
+      "details": {
+        "density": 2,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "4/4",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 2,
+        "relatedKeywordsTotal": 8
+      },
+      "issues": [
+        "Only 2 of 8 SERP-related keywords found. Consider adding: \"Fbar joint account rules pdf\", \"Fbar joint account rules reddit\", \"FBAR joint account with non US citizen\", \"FBAR instructions\", \"FBAR form\"."
+      ]
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 150,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 9,
+      "weight": 0.2,
+      "details": {
+        "answerParaQuality": {
+          "good": 8,
+          "total": 10,
+          "ratio": 0.8
+        },
+        "questionHeadingCount": 5,
+        "citationDensity": {
+          "total": 38,
+          "per500Words": 5.97
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 3,
+        "paaMatched": [
+          "Is FBAR required for joint accounts?",
+          "What are the rules of joint account holders?",
+          "Can US citizens have a foreign joint account?"
+        ],
+        "paaUnmatched": [],
+        "definitionCount": 4,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions About FBAR Joint Account Rules\" — current: 26 words (target 30-100)"
+      ]
+    }
+  },
+  "topIssues": [
+    "[Keyword] Only 2 of 8 SERP-related keywords found. Consider adding: \"Fbar joint account rules pdf\", \"Fbar joint account rules reddit\", \"FBAR joint account with non US citizen\", \"FBAR instructions\", \"FBAR form\".",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Frequently Asked Questions About FBAR Joint Account Rules\" — current: 26 words (target 30-100)",
+    "[Structure] Word count is 3180 (target 1500-3000). Consider trimming for focus.",
+    "[Writing] 64 writing issues detected (10.1 per 500 words). Review write-good suggestions to tighten prose."
+  ],
+  "meta": {
+    "title": "FBAR Joint Account Rules: How to Report Jointly-Held Foreign Accounts",
+    "description": "FBAR joint account rules require both holders to file separate reports for the full value. Learn spousal filing, Form 114a, and the $10,000 threshold.",
+    "publishedDate": "2026-03-15"
+  }
+}

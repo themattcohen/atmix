@@ -8,7 +8,9 @@
       "brief": "Whether cryptocurrency on foreign exchanges like Binance or Crypto.com must be reported on FBAR filing under FinCEN rules.",
       "status": "published",
       "pillar": "account-types",
-      "publishedDate": "2026-03-01"
+      "publishedDate": "2026-03-01",
+      "diyScore": 9.2,
+      "diyScoredAt": "2026-03-02T17:13:42.505Z"
     },
     {
       "slug": "fbar-filing-deadline-2026",
@@ -17,7 +19,9 @@
       "brief": "2026 FBAR deadline is April 15 with automatic extension to October 15. Penalties for late filing and how to catch up.",
       "status": "published",
       "pillar": "deadlines-extensions",
-      "publishedDate": "2026-03-01"
+      "publishedDate": "2026-03-01",
+      "diyScore": 9.4,
+      "diyScoredAt": "2026-03-02T15:30:49.888Z"
     },
     {
       "slug": "fbar-green-card-holders",
@@ -26,7 +30,9 @@
       "brief": "FBAR filing requirements for green card holders with foreign financial accounts.",
       "status": "published",
       "pillar": "fbar-requirements",
-      "publishedDate": "2026-03-01"
+      "publishedDate": "2026-03-01",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T16:43:57.059Z"
     },
     {
       "slug": "fbar-penalties-what-happens-if-you-dont-file",
@@ -35,7 +41,9 @@
       "brief": "Penalties for not filing FBAR including non-willful, willful, and criminal penalties.",
       "status": "published",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-03-01"
+      "publishedDate": "2026-03-01",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T17:13:48.455Z"
     },
     {
       "slug": "how-to-calculate-maximum-account-value-fbar",
@@ -44,7 +52,9 @@
       "brief": "How to determine the maximum value of foreign financial accounts for FBAR reporting.",
       "status": "published",
       "pillar": "exchange-rates-valuation",
-      "publishedDate": "2026-03-01"
+      "publishedDate": "2026-03-01",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T17:13:36.868Z"
     },
     {
       "slug": "fbar-first-time-filer-guide",
@@ -53,7 +63,9 @@
       "brief": "Step-by-step guide for first-time FBAR filers. Covers who must file under 31 USC 5314, the $10,000 threshold per 31 CFR 1010.350, what counts as a foreign financial account, and how to file through BSA E-Filing.",
       "status": "published",
       "pillar": "fbar-requirements",
-      "publishedDate": "2026-03-08"
+      "publishedDate": "2026-03-08",
+      "diyScore": 9.1,
+      "diyScoredAt": "2026-03-02T15:40:14.007Z"
     },
     {
       "slug": "fbar-vs-fatca-form-8938-differences",
@@ -62,7 +74,9 @@
       "brief": "Side-by-side comparison of FBAR (FinCEN 114) vs FATCA (Form 8938). Different thresholds, different agencies (FinCEN vs IRS), different penalties. Cite 26 USC 6038D for FATCA and 31 USC 5314 for FBAR.",
       "status": "published",
       "pillar": "fbar-vs-others",
-      "publishedDate": "2026-03-10"
+      "publishedDate": "2026-03-10",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T17:14:23.524Z"
     },
     {
       "slug": "fbar-uk-bank-accounts",
@@ -71,7 +85,9 @@
       "brief": "FBAR reporting for US persons with UK bank accounts, ISAs, building society accounts, and NS&I savings. Covers HMRC data-sharing under FATCA IGA and why failing to report UK accounts is especially risky.",
       "status": "published",
       "pillar": "country-specific",
-      "publishedDate": "2026-03-13"
+      "publishedDate": "2026-03-13",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T17:22:40.699Z"
     },
     {
       "slug": "fbar-joint-account-reporting-rules",
@@ -80,7 +96,9 @@
       "brief": "How to report jointly-held foreign accounts on FBAR. Both account holders must file if US persons. Covers spousal filing under 31 CFR 1010.350(g), community property implications, and the FinCEN 114a spousal form.",
       "status": "published",
       "pillar": "account-types",
-      "publishedDate": "2026-03-15"
+      "publishedDate": "2026-03-15",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T17:14:04.641Z"
     },
     {
       "slug": "fbar-canada-rrsp-tfsa-reporting",

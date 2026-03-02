@@ -21,13 +21,13 @@ content-queue.json          scripts/
 (50+ topics)                 validate-article.mjs
      |                       promote-article.mjs
      v                       score-via-swa.mjs
-src/content/drafts/          scripts/competitor/
-  <slug>.mdx                   monitor.mjs
-  <slug>.validation.json       config.mjs
-  <slug>.swa-score.json        snapshots/
-     |
-     v  (after validation passes)
-src/content/blog/
+src/content/drafts/          generate-hero-image.mjs
+  <slug>.mdx                 scripts/seo-scorer/
+  <slug>.validation.json       index.mjs (DIY scorer)
+  <slug>.swa-score.json      scripts/competitor/
+     |                         monitor.mjs
+     v  (after validation)     config.mjs
+src/content/blog/              snapshots/
   <slug>.mdx
      |
      v  (git push -> CI -> GHCR -> manual deploy)
@@ -42,9 +42,74 @@ SWA Score >= 9.0 ?
 ### Pipeline Stages
 
 ```
-Topic Selection -> Draft Writing -> Validation -> Promotion -> Deploy
-      -> SWA Scoring -> Revision Loop (if <9.0) -> Final Publish
+0. Keyword research (gap analysis + competitor monitor + Semrush)
+1. Write draft
+2. Validate (hero image = soft warning)
+3. DIY score loop (Serper auto-fetches PAA + related keywords) -> revise until >=9.0
+4. Generate hero image: node scripts/generate-hero-image.mjs <slug>
+5. Re-validate (confirm image present)
+6. Promote -> blog/
+7. Deploy
+8. [Optional] SWA score via Chrome DevTools
 ```
+
+---
+
+## 1.5. Keyword Research & Selection
+
+Before writing any article, validate the target keyword through a structured research process.
+
+### Sources
+
+| # | Source | Location | What It Provides |
+|---|--------|----------|------------------|
+| 1 | **Keyword Gap Analysis** | `claudedocs/d2c-keyword-gap-analysis-2026-03-01.md` | D1-D14 blog topics with demand signals from Semrush gap analysis |
+| 2 | **Competitor Monitor** | `scripts/competitor/monitor.mjs` | Weekly sitemap/RSS diffs revealing new competitor topics |
+| 3 | **Semrush** (via Chrome DevTools) | Keyword Overview, Keyword Gap | Volume, difficulty, SERP features, competitor rankings |
+| 4 | **Serper PAA data** | Auto-fetched during DIY scoring | Real Google "People Also Ask" questions for content validation |
+
+### Process
+
+1. **Run competitor monitor weekly**
+   ```bash
+   cd /c/Users/1matt/OneDrive/Documents/atmix/fbar-automator/d2c
+   node scripts/competitor/monitor.mjs
+   ```
+   Review the report at `claudedocs/competitor-reports/YYYY-MM-DD.md` for new competitor content.
+
+2. **Cross-reference gaps against content-queue.json**
+   Compare competitor topics, keyword gap analysis (D1-D14), and Semrush data against existing queue topics to find uncovered keywords.
+
+3. **Validate keyword with Semrush Keyword Overview**
+   - Monthly search volume ≥100
+   - Keyword difficulty (KD) ≤60
+   - Check SERP features (featured snippets, PAA boxes = opportunity)
+   - Review top-10 competitor content for word count benchmarks
+
+4. **Add to content-queue.json**
+   ```json
+   {
+     "slug": "fbar-new-topic",
+     "keyword": "validated target keyword",
+     "intent": "informational",
+     "brief": "Content brief with statutes, key points, audience...",
+     "status": "pending",
+     "pillar": "fbar-requirements",
+     "publishedDate": "2026-XX-XX",
+     "source": "gap-analysis:D5"
+   }
+   ```
+   Include `source` to track origin: `gap-analysis:D#`, `competitor:<domain>`, `semrush:keyword-gap`, `serper:paa`.
+
+### Keyword Validation Checklist
+
+| Check | Requirement |
+|-------|-------------|
+| Search volume | ≥100 monthly searches |
+| Keyword difficulty | ≤60 KD (Semrush scale) |
+| Content-queue conflict | No existing topic with same keyword |
+| FBAR relevance | Directly related to FBAR filing, compliance, or foreign accounts |
+| Pillar fit | Maps to one of the 7 content pillars |
 
 ---
 
@@ -190,10 +255,10 @@ node scripts/validate-article.mjs <slug>
 | `dollar_density` | >= 3 dollar amounts per 500 words |
 | `penalty_citations` | Every penalty claim cites a statute |
 | `deadline_citations` | Every deadline claim cites a source |
-| `hero_image` | Hero image file exists in `public/` |
 | `published_date` | Valid future ISO date |
 
 **Soft warnings (do not block promotion):**
+- `hero_image`: Hero image missing from frontmatter or file not found in `public/` (add before final promotion)
 - Average sentence length > 25 words
 - Fewer than 2 crosslinks to other blog articles
 - Word count > 3,500
@@ -411,6 +476,95 @@ ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2
 
 ---
 
+## 7b. DIY Score Revision Loop
+
+The DIY SEO/AEO scorer (`scripts/seo-scorer/`) provides a **local, free** alternative to SWA for iterative revision. Use it to tighten articles before spending SWA scoring attempts.
+
+### Environment Setup
+
+| Env Var | Required | Source |
+|---------|----------|--------|
+| `SERPER_API_KEY` | **Yes** (for full scoring) | https://serper.dev — free tier: 2,500 queries/mo |
+| `ANTHROPIC_API_KEY` | Optional | Only for `--llm` dimension (LLM Quality scoring) |
+
+**SERP data is fetched by default** via Serper.dev. What it adds:
+- **AEO dimension (+1.5 pts)**: Matches article Q&A headings against real Google "People Also Ask" questions for the target keyword
+- **Keyword Coverage dimension (+1 pt)**: Checks article against Google's "related searches" for the target keyword
+
+The `--no-serp` flag exists for CI/offline use but **should NOT be used for final scoring** — it skips PAA matching and related keyword checks, producing artificially lower scores.
+
+### Quick Start
+
+```bash
+cd /c/Users/1matt/OneDrive/Documents/atmix/fbar-automator/d2c
+
+# 1. Score an article (saves .diy-score.json + updates content-queue.json)
+node scripts/seo-scorer/index.mjs score <slug> --save
+
+# 2. Get a prioritized revision checklist
+node scripts/seo-scorer/index.mjs revise <slug>
+
+# 3. Edit the article based on the checklist
+#    (focus on highest-weighted-gap dimensions first)
+
+# 4. Re-validate
+node scripts/validate-article.mjs <slug>
+
+# 5. Re-score
+node scripts/seo-scorer/index.mjs score <slug> --save
+
+# 6. Repeat until >=9.0 or 3 attempts exhausted
+```
+
+### Batch Scoring
+
+```bash
+# Score all published articles that don't have a DIY score yet
+node scripts/seo-scorer/index.mjs batch --save
+
+# List all articles and their DIY scoring status
+node scripts/seo-scorer/index.mjs list
+```
+
+### What `--save` Does
+
+1. Writes score to `src/content/blog/<slug>.diy-score.json` (or `drafts/`)
+2. Archives any previous score as `<slug>.diy-score.attempt-N.json`
+3. Updates `content-queue.json` with `diyScore` and `diyScoredAt` fields
+
+### What `revise` Does
+
+1. Reads the latest `.diy-score.json` for the article
+2. Ranks dimensions by `(10 - score) * weight` (biggest weighted gap first)
+3. Prints each dimension's issues as a numbered checklist
+4. Shows estimated point gain per fix and the total points recoverable
+5. Prints the workflow steps to follow
+
+### Recommended Workflow
+
+```
+DIY Score Loop (free, unlimited attempts)
+  -> Reach >=8.5 DIY score
+  -> Then promote, deploy, and SWA score (Section 6-7)
+  -> SWA loop (max 3 attempts, >=9.0 target)
+```
+
+This two-stage approach lets you iterate freely with the DIY scorer before spending SWA scoring attempts on a more polished article.
+
+### Biggest Levers for Score Improvement
+
+| Dimension | Weight | Common Fixes |
+|-----------|--------|-------------|
+| LLM Quality | 30% | Improve accuracy, depth, actionability (hard to game — write better content) |
+| Keyword Coverage | 15% | Add keyword to H1, H2, meta description, first 150 words |
+| AEO Signals | 15% | Add Q&A headings ("What is...?", "How do I...?"), answer paragraphs, citations |
+| Readability | 12% | Shorten sentences (<25 words), break long paragraphs, simplify vocabulary |
+| Structure | 12% | Add H2/H3 headings, FAQ section, internal links, CTAs |
+| Schema Markup | 8% | Add FAQ schema, meta description 150-160 chars |
+| Writing Quality | 8% | Reduce passive voice, add transitions, remove cliches |
+
+---
+
 ## 8. Competitor Monitoring
 
 ### Weekly Routine
@@ -587,13 +741,18 @@ As of the initial pipeline setup, the queue contains:
 ## 11. Quick Reference Card
 
 ```
+KEYWORD:   (See Section 1.5 — validate via Semrush + competitor monitor)
 VALIDATE:  node scripts/validate-article.mjs <slug>
+DIY SCORE: node scripts/seo-scorer/index.mjs score <slug> --save [--published]
+DIY LIST:  node scripts/seo-scorer/index.mjs list
+HERO IMG:  node scripts/generate-hero-image.mjs <slug>
+HERO MISS: node scripts/generate-hero-image.mjs --missing
 PROMOTE:   node scripts/promote-article.mjs <slug> [--force]
-SCORE:     node scripts/score-via-swa.mjs --playbook --slug <slug> --keyword "<kw>"
-SAVE:      node scripts/score-via-swa.mjs --save --slug <slug> --keyword "<kw>" \
+SWA SCORE: node scripts/score-via-swa.mjs --playbook --slug <slug> --keyword "<kw>"
+SWA SAVE:  node scripts/score-via-swa.mjs --save --slug <slug> --keyword "<kw>" \
              --overall X --readability X --seo X --tone X --originality X \
              [--recommendations "rec 1" --recommendations "rec 2"]
-LIST:      node scripts/score-via-swa.mjs --list
+SWA LIST:  node scripts/score-via-swa.mjs --list
 COMPETE:   node scripts/competitor/monitor.mjs
 DEPLOY:    git push -> CI -> GHCR -> ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app'
 ```
@@ -601,16 +760,27 @@ DEPLOY:    git push -> CI -> GHCR -> ssh fbar 'cd /opt/fbar && docker compose pu
 ### Full Pipeline Sequence
 
 ```
+0. KEYWORD RESEARCH: Validate keyword (Section 1.5)
+   - Run competitor monitor, check Semrush, cross-reference content-queue.json
+   - Add validated keyword + topic to content-queue.json
 1. Pick topic from content-queue.json (status: pending)
 2. Write draft -> src/content/drafts/<slug>.mdx
 3. VALIDATE: node scripts/validate-article.mjs <slug>
-4. Fix any failures, re-validate until PASS
-5. PROMOTE: node scripts/promote-article.mjs <slug>
-6. git add + commit + push
-7. Wait for CI + Build & Push to complete
-8. DEPLOY: ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app'
-9. SCORE: Use Chrome DevTools MCP to score via SWA
-10. SAVE: node scripts/score-via-swa.mjs --save ...
-11. If score < 9.0: revise draft, repeat from step 3 (max 3 attempts)
-12. If score >= 9.0: done. Article is production-ready.
+   (hero image is a soft warning at this stage — does not block)
+4. Fix any hard failures, re-validate until PASS
+5. DIY SCORE: node scripts/seo-scorer/index.mjs score <slug> --save
+   (Serper auto-fetches PAA + related keywords — ensure SERPER_API_KEY is set)
+6. If DIY score < 9.0: revise draft, re-validate, re-score (repeat 3-6)
+7. HERO IMAGE: node scripts/generate-hero-image.mjs <slug>
+   (generates 1200x630 webp → public/blog/<slug>.webp, updates frontmatter)
+8. RE-VALIDATE: node scripts/validate-article.mjs <slug>
+   (confirm hero image warning is gone)
+9. PROMOTE: node scripts/promote-article.mjs <slug>
+10. git add + commit + push
+11. Wait for CI + Build & Push to complete
+12. DEPLOY: ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app'
+13. [Optional] SWA SCORE: Use Chrome DevTools MCP to score via SWA
+14. [Optional] SAVE: node scripts/score-via-swa.mjs --save ...
+15. If SWA score < 9.0: revise draft, repeat from step 3 (max 3 SWA attempts)
+16. If SWA score >= 9.0: done. Article is production-ready.
 ```
