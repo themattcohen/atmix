@@ -40,7 +40,7 @@ test.describe("Landing Page Hero + DeadlineBanner", () => {
     await page.reload({ waitUntil: "domcontentloaded" });
 
     // The banner text should contain deadline info
-    const bannerText = page.locator("text=FBAR Deadline");
+    const bannerText = page.locator("text=FBAR Deadline").first();
     await expect(bannerText).toBeVisible({ timeout: 15000 });
 
     // Verify key deadline details
