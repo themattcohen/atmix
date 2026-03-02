@@ -63,7 +63,7 @@ model ForeignAccount {
   maxValueLocal     Decimal       @db.Decimal(18, 2)
   maxValueUsd       Decimal?      @db.Decimal(18, 2)
   currencyCode      String        // ISO 4217
-  exchangeRate      Decimal?      @db.Decimal(12, 6)
+  exchangeRate      Decimal?      @db.Decimal(18, 8)
   exchangeRateSource ExchangeRateSource?
   calendarYear      Int
   createdAt         DateTime      @default(now())
@@ -137,7 +137,7 @@ model ExchangeRate {
   id            String              @id @default(cuid())
   currencyCode  String
   countryName   String
-  rate          Decimal             @db.Decimal(12, 6)
+  rate          Decimal             @db.Decimal(18, 8)
   recordDate    DateTime
   source        ExchangeRateSource  @default(TREASURY)
   createdAt     DateTime            @default(now())
