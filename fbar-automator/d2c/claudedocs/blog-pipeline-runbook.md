@@ -51,6 +51,8 @@ SWA Score >= 9.0 ?
 6. Promote -> blog/
 7. Deploy
 8. [Optional] SWA score via Chrome DevTools
+8.5. SurferSEO Content Editor optimization -> target 70-85 Content Score
+9. Production-ready
 ```
 
 ---
@@ -738,6 +740,119 @@ As of the initial pipeline setup, the queue contains:
 
 ---
 
+## 10.5. SurferSEO Content Editor Optimization (Final Phase)
+
+After an article is deployed and accessible at `fbardirect.com/blog/<slug>`, use SurferSEO Content Editor to optimize against SERP competitors.
+
+### Prerequisites
+
+- SurferSEO account logged in at https://app.surferseo.com
+- Chrome DevTools MCP connected
+- Article live at `fbardirect.com/blog/<slug>` (must return 200)
+- Credentials in `d2c/.env`: `SURFER_EMAIL`, `SURFER_PASSWORD`
+
+### Score Targets
+
+| Metric | Target | Notes |
+|--------|--------|-------|
+| Content Score | 70-85 | 10-20 points above top competitors |
+| NLP terms green | 80%+ | Check Terms panel |
+| Word count | Within recommended range | Finalize BEFORE optimizing terms |
+
+Scores above 90 often indicate over-optimization. Do not chase 100 — Surfer's own docs say it's "usually impossible." The average top-ranking blog scores 88.
+
+### Workflow: Create Content Editor Query
+
+1. Navigate to **Write** section in SurferSEO
+2. Click **New Content** → "Write Yourself"
+3. Enter the target keyword (from content-queue.json)
+4. Set location: **United States**, device: **Desktop**
+5. Toggle **Import content from URL** → enter `https://fbardirect.com/blog/<slug>`
+6. Review competitors list:
+   - Remove outliers (Wikipedia, IRS.gov mega-pages, 9,000+ word pages when avg is 1,500)
+   - Ensure 3+ different domains remain
+   - All competitors must match the same search intent
+7. Click **Create** → wait for SERP analysis to complete
+
+### Workflow: Optimize Content
+
+Follow this order — making changes out of sequence causes density miscalculations:
+
+1. **Word count first**: Get content within Surfer's recommended range. All density calculations depend on total length.
+2. **NLP/semantic terms**: Work through the Terms panel. Incorporate terms naturally into existing sections. Add new subsections if needed for missing topic areas. Aim for 80%+ green.
+3. **Heading structure**: Compare your H2/H3 count against Surfer's Outline Builder recommendations. Adjust as needed.
+4. **Images**: Meet the recommended image count. Add relevant alt text containing secondary keywords.
+5. **Internal links**: Link to related FBAR blog articles within the cluster.
+6. **Auto-Optimize (once)**: Run at the end for last-mile NLP term insertions. Review every change — do not accept blindly.
+
+### Applying Recommendations to MDX
+
+Based on SurferSEO feedback, edit `src/content/blog/<slug>.mdx`:
+
+- Add missing NLP terms naturally into existing sentences or new subsections
+- Adjust heading structure if Surfer shows a gap
+- Expand or trim content to hit the word count range
+- Bold recommended terms where natural
+- Add images with alt text if image count is below target
+
+After editing:
+```bash
+# Re-validate
+node scripts/validate-article.mjs <slug>
+# Re-promote (overwrites blog copy)
+node scripts/promote-article.mjs <slug> --force
+# Commit, push, wait for CI + Build & Push, deploy
+```
+
+### Re-Check in SurferSEO
+
+After deploying the updated article:
+1. In SurferSEO Content Editor, re-import from the live URL
+2. Verify the Content Score improved
+3. If below target: repeat optimization (max 3 iterations)
+
+### Iteration Strategy
+
+- **Max 3 iterations** per article
+- Make ALL recommended changes in one pass, not one-by-one
+- Batch multiple articles per deploy to reduce CI/deploy cycles (edit 3-5 articles, deploy once, then score all)
+- Stop optimizing when 10-20 points above top competitors or when changes degrade readability
+
+### Common SurferSEO Recommendations and Fixes
+
+| Recommendation | How to Apply |
+|----------------|-------------|
+| Missing NLP terms | Weave into existing sections where they fit contextually. Do not force-insert. |
+| Low word count | Add substantive content — new examples, deeper explanations, additional subtopics. |
+| Too few headings | Add H2/H3 headings for subtopics Surfer identifies. Match PAA questions where relevant. |
+| Missing images | Add infographics, process diagrams, comparison tables. Use relevant alt text. |
+| Terms overused | Back off — reduce repetition. Surfer marks overuse with exclamation marks. |
+
+### Important Caveats
+
+**SurferSEO does NOT evaluate E-E-A-T.** It only measures on-page content signals (terms, structure, density). You must separately verify:
+- Author byline and credentials
+- Source citations (FinCEN.gov, IRS.gov, law.cornell.edu)
+- Tax advice disclaimers
+- Schema markup (Article, FAQ)
+
+**Re-verify factual accuracy after every optimization edit.** Adding NLP terms or restructuring can introduce errors in FBAR/tax content.
+
+**When SurferSEO and DIY scorer conflict**, prioritize readability and factual accuracy for YMYL content, then address Surfer's structural gaps.
+
+### Content Editor vs Content Audit
+
+| Feature | Content Editor | Content Audit |
+|---------|---------------|---------------|
+| Best for | New/deep optimization | Monitoring published pages |
+| Scope | Article text only | Full page `<body>` (nav, sidebar, footer) |
+| Data source | SERP competitor analysis | GSC data + SERP analysis |
+| Use when | Writing or heavy optimization | Quarterly page freshness checks |
+
+Scores **will differ** between the two tools for the same content.
+
+---
+
 ## 11. Quick Reference Card
 
 ```
@@ -753,6 +868,9 @@ SWA SAVE:  node scripts/score-via-swa.mjs --save --slug <slug> --keyword "<kw>" 
              --overall X --readability X --seo X --tone X --originality X \
              [--recommendations "rec 1" --recommendations "rec 2"]
 SWA LIST:  node scripts/score-via-swa.mjs --list
+SURFER:    Login at https://app.surferseo.com → Write → New Content → keyword + URL import
+             Target: 70-85 Content Score. Optimize: word count → terms → headings → images.
+             Max 3 iterations. See Section 10.5 for full workflow.
 COMPETE:   node scripts/competitor/monitor.mjs
 DEPLOY:    git push -> CI -> GHCR -> ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app'
 ```
@@ -782,5 +900,9 @@ DEPLOY:    git push -> CI -> GHCR -> ssh fbar 'cd /opt/fbar && docker compose pu
 13. [Optional] SWA SCORE: Use Chrome DevTools MCP to score via SWA
 14. [Optional] SAVE: node scripts/score-via-swa.mjs --save ...
 15. If SWA score < 9.0: revise draft, repeat from step 3 (max 3 SWA attempts)
-16. If SWA score >= 9.0: done. Article is production-ready.
+16. SURFER: Create Content Editor query in SurferSEO (keyword + import from URL)
+17. Optimize: word count → NLP terms → headings → images → Auto-Optimize once
+18. Apply changes to MDX, re-promote, re-deploy, re-import in Surfer
+19. If Content Score < 70: repeat (max 3 iterations)
+20. If Content Score 70-85: done. Article is production-ready.
 ```
