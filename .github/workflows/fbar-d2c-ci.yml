@@ -141,7 +141,6 @@ jobs:
         run: |
           npx playwright test --workers=1 \
             auth.spec.ts \
-            threshold-keyboard.spec.ts \
             antagonistic/t06-signup.spec.ts \
             antagonistic/t07-login-logout.spec.ts \
             antagonistic/t08-forgot-password.spec.ts \

@@ -11,6 +11,7 @@ const LOCKOUT_TEST_EMAIL = "lockout-test@example.com";
 test.describe("Signup Page", () => {
   test("loads with all form fields", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await expect(page.locator("h1")).toContainText("Create Your Account");
     await expect(page.locator("#firstName")).toBeVisible();
     await expect(page.locator("#lastName")).toBeVisible();
@@ -24,6 +25,7 @@ test.describe("Signup Page", () => {
 
   test("has link to login page", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await expect(
       page.locator("text=Already have an account?")
     ).toBeVisible();
@@ -36,6 +38,7 @@ test.describe("Signup Page", () => {
 
   test("has link back to home", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     const homeLink = page.locator('a[href="/"]');
     await expect(homeLink).toBeVisible();
     await expect(homeLink.locator("text=FBAR Direct")).toBeVisible();
@@ -43,6 +46,7 @@ test.describe("Signup Page", () => {
 
   test("shows password requirements hint", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await expect(page.locator("text=8+ characters")).toBeVisible();
   });
 
@@ -50,6 +54,7 @@ test.describe("Signup Page", () => {
     page,
   }) => {
     await page.goto("/signup");
+    await page.locator('button[type="submit"]').waitFor({ state: "visible", timeout: 15000 });
     await page.click('button[type="submit"]');
     await expect(page).toHaveURL(/\/signup/);
   });
@@ -60,6 +65,7 @@ test.describe("Signup Page", () => {
     test.slow(); // signup + bcrypt + auto-login + page transition can exceed 30s
     const email = `pw-signup-${Date.now()}@test.com`;
     await page.goto("/signup");
+    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#firstName", "Playwright");
     await page.fill("#lastName", "Tester");
     await page.fill("#email", email);
@@ -72,6 +78,7 @@ test.describe("Signup Page", () => {
 
   test("signup with duplicate email redirects to login (anti-enumeration)", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#firstName", "Dup");
     await page.fill("#lastName", "User");
     await page.fill("#email", LOCKOUT_TEST_EMAIL);
@@ -86,6 +93,7 @@ test.describe("Signup Page", () => {
 
   test("signup with mismatched passwords shows error", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#firstName", "Test");
     await page.fill("#lastName", "User");
     await page.fill("#email", `mismatch-${Date.now()}@test.com`);
@@ -99,6 +107,7 @@ test.describe("Signup Page", () => {
 
   test("signup with weak password shows error", async ({ page }) => {
     await page.goto("/signup");
+    await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#firstName", "Test");
     await page.fill("#lastName", "User");
     await page.fill("#email", `weak-${Date.now()}@test.com`);
@@ -126,6 +135,7 @@ test.describe("Login Page", () => {
 
   test("loads with email and password fields", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await expect(page.locator("h1")).toContainText("Sign in");
     await expect(page.locator("#email")).toBeVisible();
     await expect(page.locator("#password")).toBeVisible();
@@ -136,6 +146,7 @@ test.describe("Login Page", () => {
 
   test("has Forgot Password link", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     const forgotLink = page.locator('a[href="/forgot-password"]');
     await expect(forgotLink).toBeVisible();
     await expect(forgotLink).toContainText("Forgot Password");
@@ -143,6 +154,7 @@ test.describe("Login Page", () => {
 
   test("has link to signup page", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await expect(
       page
         .locator("text=Don't have an account?")
@@ -157,12 +169,14 @@ test.describe("Login Page", () => {
 
   test("has link back to home", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     const homeLink = page.locator('a[href="/"]');
     await expect(homeLink).toBeVisible();
   });
 
   test("login with valid credentials redirects to app", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
@@ -172,6 +186,7 @@ test.describe("Login Page", () => {
 
   test("login with wrong password shows error", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", LOCKOUT_TEST_EMAIL);
     await page.fill("#password", "WrongPassword999!");
     await page.click('button[type="submit"]');
@@ -190,6 +205,7 @@ test.describe("Login Page", () => {
 
   test("login with non-existent email shows error", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", "nonexistent@example.com");
     await page.fill("#password", "SomePassword123!");
     await page.click('button[type="submit"]');
@@ -198,6 +214,7 @@ test.describe("Login Page", () => {
 
   test("submit button shows loading state during login", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
@@ -212,6 +229,7 @@ test.describe("Login Page", () => {
 test.describe("Forgot Password Page", () => {
   test("loads with email field", async ({ page }) => {
     await page.goto("/forgot-password");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await expect(page.locator("h1")).toContainText("Reset Your Password");
     await expect(page.locator("#email")).toBeVisible();
     await expect(page.locator('button[type="submit"]')).toContainText(
@@ -221,6 +239,7 @@ test.describe("Forgot Password Page", () => {
 
   test("has link back to login", async ({ page }) => {
     await page.goto("/forgot-password");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await expect(
       page.locator("text=Remember your password?")
     ).toBeVisible();
@@ -230,12 +249,14 @@ test.describe("Forgot Password Page", () => {
 
   test("has link to home", async ({ page }) => {
     await page.goto("/forgot-password");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     const homeLink = page.locator('a[href="/"]');
     await expect(homeLink).toBeVisible();
   });
 
   test("submit shows success message", async ({ page }) => {
     await page.goto("/forgot-password");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.click('button[type="submit"]');
     await expect(page.locator("text=Check Your Email")).toBeVisible({
@@ -250,6 +271,7 @@ test.describe("Forgot Password Page", () => {
 
   test("success page has back to sign in link", async ({ page }) => {
     await page.goto("/forgot-password");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.click('button[type="submit"]');
     await expect(page.locator("text=Check Your Email")).toBeVisible({
@@ -272,6 +294,7 @@ test.describe("Logout", () => {
 
   test("logout button exists when logged in and works", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
@@ -290,6 +313,7 @@ test.describe("Logout", () => {
 
   test("app header shows user email when logged in", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
@@ -302,6 +326,7 @@ test.describe("Logout", () => {
 
   test("app header has My Filings link", async ({ page }) => {
     await page.goto("/login");
+    await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", EXISTING_EMAIL);
     await page.fill("#password", EXISTING_PASSWORD);
     await page.click('button[type="submit"]');
