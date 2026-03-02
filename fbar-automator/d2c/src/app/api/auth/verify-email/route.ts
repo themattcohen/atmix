@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { createEmailVerificationCookie } from "@/lib/email-verification-cookie";
+import { sendWelcomeEmail, sendEmailWithRetry } from "@/lib/email";
 
 const verifySchema = z.object({
   token: z.string().min(1).max(128),
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     // Find valid, unused token
     const verificationToken = await prisma.emailVerificationToken.findUnique({
       where: { token: hashedToken },
-      include: { user: { select: { id: true, tokenVersion: true } } },
+      include: { user: { select: { id: true, tokenVersion: true, email: true, firstName: true } } },
     });
 
     if (!verificationToken) {
@@ -54,6 +55,16 @@ export async function POST(req: NextRequest) {
         data: { emailVerified: true, emailVerifiedAt: new Date() },
       }),
     ]);
+
+    // Send welcome email (fire-and-forget — do not block the response)
+    if (process.env.RESEND_API_KEY) {
+      sendEmailWithRetry(
+        () => sendWelcomeEmail(verificationToken.user.email, { firstName: verificationToken.user.firstName ?? "there" }),
+        { maxRetries: 2, backoffMs: 500 }
+      ).catch((err) => {
+        console.error("Welcome email failed:", err instanceof Error ? err.message : "Unknown error");
+      });
+    }
 
     // Set email verification cookie
     const cookie = await createEmailVerificationCookie(

@@ -30,6 +30,7 @@ export async function sendSubmissionEmail(
   await getResend().emails.send({
     from: fromEmail,
     to,
+    replyTo: "support@fbardirect.com",
     subject: `Your ${data.calendarYear} FBAR has been submitted to FinCEN`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -58,6 +59,7 @@ export async function sendConfirmationEmail(
   await getResend().emails.send({
     from: fromEmail,
     to,
+    replyTo: "support@fbardirect.com",
     subject: `Your FBAR has been filed — BSA ID: ${data.bsaId}`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -90,6 +92,7 @@ export async function sendRejectionEmail(
   await getResend().emails.send({
     from: fromEmail,
     to,
+    replyTo: "support@fbardirect.com",
     subject: `Action Required: Your ${data.calendarYear} FBAR submission needs attention`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -123,6 +126,7 @@ export async function sendPasswordResetEmail(
   await getResend().emails.send({
     from: fromEmail,
     to: email,
+    replyTo: "support@fbardirect.com",
     subject: "Reset your FBAR Direct password",
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -154,6 +158,7 @@ export async function sendPaymentReceiptEmail(
   await getResend().emails.send({
     from: fromEmail,
     to,
+    replyTo: "support@fbardirect.com",
     subject: `Payment confirmed - Your ${data.calendarYear} FBAR is being filed`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -183,6 +188,7 @@ export async function sendWelcomeEmail(
   await getResend().emails.send({
     from: fromEmail,
     to,
+    replyTo: "support@fbardirect.com",
     subject: "Welcome to FBAR Direct",
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -216,6 +222,7 @@ export async function sendVerificationEmail(
   await getResend().emails.send({
     from: fromEmail,
     to: email,
+    replyTo: "support@fbardirect.com",
     subject: "Verify your email — FBAR Direct",
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">

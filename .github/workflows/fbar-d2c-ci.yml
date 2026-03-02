@@ -115,7 +115,28 @@ jobs:
           DATABASE_URL: "postgresql://test:test@localhost:5432/test"
 
       - name: Run E2E smoke tests
-        run: npx playwright test marketing.spec.ts gtm-smoke.spec.ts auth.spec.ts
+        run: |
+          npx playwright test \
+            marketing.spec.ts \
+            gtm-smoke.spec.ts \
+            auth.spec.ts \
+            blog.spec.ts \
+            threshold-keyboard.spec.ts \
+            antagonistic/t01-hero.spec.ts \
+            antagonistic/t02-sections.spec.ts \
+            antagonistic/t03-howitworks-pricing.spec.ts \
+            antagonistic/t04-faq-footer.spec.ts \
+            antagonistic/t05-navigation.spec.ts \
+            antagonistic/t06-signup.spec.ts \
+            antagonistic/t07-login-logout.spec.ts \
+            antagonistic/t08-forgot-password.spec.ts \
+            antagonistic/t09-threshold.spec.ts \
+            antagonistic/t10-personal.spec.ts \
+            antagonistic/t11-accounts.spec.ts \
+            antagonistic/t12-review-sign.spec.ts \
+            antagonistic/t13-payment-dashboard.spec.ts \
+            antagonistic/t14-return-filer.spec.ts \
+            antagonistic/t15-form114a-download.spec.ts
         env:
           DATABASE_URL: "postgresql://test:test@localhost:5432/test"
           ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"

@@ -163,6 +163,7 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: fromEmail,
       to: email,
+      replyTo: supportEmail,
       subject: "We received your message — FBAR Direct",
       html: buildAcknowledgementHtml(name),
     });
