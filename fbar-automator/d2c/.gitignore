@@ -39,6 +39,7 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 *.mjs
+!scripts/*.mjs
 
 # IDE
 .idea/

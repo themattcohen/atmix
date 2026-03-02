@@ -50,3 +50,6 @@ playwright-report/
 test-results.json
 
 .vercel
+
+# Blog pipeline WIP
+fbar-automator/d2c/src/content/drafts/*.wip
