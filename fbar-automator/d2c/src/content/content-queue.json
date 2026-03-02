@@ -105,90 +105,110 @@
       "keyword": "fbar canada rrsp tfsa",
       "intent": "informational",
       "brief": "US persons with Canadian RRSP, TFSA, RESP, and RRIF accounts must report on FBAR. Covers treaty election under Article XVIII for RRSP tax deferral (Form 8891 was eliminated in 2014) and maximum value calculation for registered accounts.",
-      "status": "pending",
+      "status": "published",
       "pillar": "country-specific",
-      "publishedDate": "2026-03-17"
+      "publishedDate": "2026-03-16",
+      "diyScore": 9.2,
+      "diyScoredAt": "2026-03-02T17:58:18.454Z"
     },
     {
       "slug": "fbar-streamlined-filing-compliance-procedures",
       "keyword": "streamlined filing compliance procedures fbar",
       "intent": "transactional",
       "brief": "How to use the IRS Streamlined Filing Compliance Procedures to catch up on missed FBARs. Covers domestic vs offshore streamlined, certification requirements, 5% penalty for offshore, and non-willful conduct standard.",
-      "status": "pending",
+      "status": "published",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-03-20"
+      "publishedDate": "2026-03-17",
+      "diyScore": 9.3,
+      "diyScoredAt": "2026-03-02T18:01:24.446Z"
     },
     {
       "slug": "fbar-foreign-pension-retirement-accounts",
       "keyword": "fbar foreign pension accounts",
       "intent": "informational",
       "brief": "When foreign pension and retirement accounts must be reported on FBAR. Covers UK pensions (SIPP, workplace), Australian superannuation, Canadian RRSP, and whether you have financial interest under 31 CFR 1010.350(e).",
-      "status": "pending",
+      "status": "published",
       "pillar": "account-types",
-      "publishedDate": "2026-03-22"
+      "publishedDate": "2026-03-18",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T17:53:36.724Z"
     },
     {
       "slug": "fbar-australia-superannuation-bank-accounts",
       "keyword": "fbar australia superannuation",
       "intent": "informational",
       "brief": "FBAR reporting for US persons with Australian bank accounts and superannuation funds. Covers whether super is reportable (yes — financial interest exists), exchange rate conversion using Treasury rates, and dual-citizen obligations.",
-      "status": "pending",
+      "status": "published",
       "pillar": "country-specific",
-      "publishedDate": "2026-03-24"
+      "publishedDate": "2026-03-19",
+      "diyScore": 9.1,
+      "diyScoredAt": "2026-03-02T18:02:51.667Z"
     },
     {
       "slug": "fbar-exchange-rates-treasury-department",
       "keyword": "fbar exchange rate treasury",
       "intent": "informational",
       "brief": "How to convert foreign currency to USD for FBAR using the Treasury Department's year-end exchange rates. Cite fiscal.treasury.gov rates page. Covers what to do when Treasury doesn't publish a rate for your currency.",
-      "status": "pending",
+      "status": "published",
       "pillar": "exchange-rates-valuation",
-      "publishedDate": "2026-03-27"
+      "publishedDate": "2026-03-20",
+      "diyScore": 9.1,
+      "diyScoredAt": "2026-03-02T17:54:05.943Z"
     },
     {
       "slug": "fbar-india-nre-nro-accounts",
       "keyword": "fbar india nre nro accounts",
       "intent": "informational",
       "brief": "FBAR reporting for NRE, NRO, and FCNR accounts in India. Covers which account types are reportable, RBI regulations affecting US persons, PPF and fixed deposit reporting, and India-US tax treaty considerations.",
-      "status": "pending",
+      "status": "published",
       "pillar": "country-specific",
-      "publishedDate": "2026-03-29"
+      "publishedDate": "2026-03-23",
+      "diyScore": 9.1,
+      "diyScoredAt": "2026-03-02T18:15:28.850Z"
     },
     {
       "slug": "who-is-a-us-person-fbar-filing",
       "keyword": "who is a us person fbar",
       "intent": "informational",
       "brief": "Definition of 'United States person' for FBAR purposes under 31 CFR 1010.350(b). Covers citizens, green card holders, resident aliens under substantial presence test, and entities (corporations, partnerships, trusts) formed in the US.",
-      "status": "pending",
+      "status": "published",
       "pillar": "fbar-requirements",
-      "publishedDate": "2026-03-31"
+      "publishedDate": "2026-03-24",
+      "diyScore": 9.4,
+      "diyScoredAt": "2026-03-02T18:16:47.935Z"
     },
     {
       "slug": "fbar-willful-vs-non-willful-penalties",
       "keyword": "fbar willful vs non willful penalty",
       "intent": "informational",
       "brief": "Detailed breakdown of willful ($100,000 or 50% of account balance per violation) vs non-willful ($12,909 per violation, inflation-adjusted) FBAR penalties. Cite 31 USC 5321(a)(5), Bedrosian v. US, and Williams v. US cases.",
-      "status": "pending",
+      "status": "published",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-04-03"
+      "publishedDate": "2026-03-25",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T18:42:25.015Z"
     },
     {
       "slug": "fbar-israel-bank-accounts-pensions",
       "keyword": "fbar israel bank accounts",
       "intent": "informational",
       "brief": "FBAR reporting for US persons with Israeli bank accounts, kupot gemel, keren hishtalmut, and bituach menahalim. Covers Israel-US tax treaty, Israeli pension reporting complications, and the large US-Israeli dual-citizen population.",
-      "status": "pending",
+      "status": "published",
       "pillar": "country-specific",
-      "publishedDate": "2026-04-05"
+      "publishedDate": "2026-03-26",
+      "diyScore": 9,
+      "diyScoredAt": "2026-03-02T18:34:40.044Z"
     },
     {
       "slug": "fbar-business-accounts-signatory-authority",
       "keyword": "fbar business account signatory authority",
       "intent": "informational",
       "brief": "When individuals must report foreign business accounts on FBAR due to signatory authority or financial interest. Covers corporate officers, employees, 50%+ ownership under 31 CFR 1010.350(e)(2), and the signatory authority exception for certain employees.",
-      "status": "pending",
+      "status": "published",
       "pillar": "account-types",
-      "publishedDate": "2026-04-07"
+      "publishedDate": "2026-03-27",
+      "diyScore": 9.1,
+      "diyScoredAt": "2026-03-02T18:23:29.275Z"
     },
     {
       "slug": "fbar-delinquent-filing-procedures",
@@ -197,7 +217,7 @@
       "brief": "How to file late FBARs using the IRS Delinquent FBAR Submission Procedures (no penalties for non-willful taxpayers who owe no tax). Covers eligibility requirements, how to submit via BSA E-Filing, and the reasonable cause statement.",
       "status": "pending",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-04-10"
+      "publishedDate": "2026-03-30"
     },
     {
       "slug": "fbar-germany-bank-accounts-bausparen",
@@ -206,7 +226,7 @@
       "brief": "FBAR reporting for US persons with German bank accounts, Bausparen contracts, Riester-Rente, and Betriebliche Altersvorsorge. Covers Germany's CRS reporting to the US and implications for non-filers.",
       "status": "pending",
       "pillar": "country-specific",
-      "publishedDate": "2026-04-12"
+      "publishedDate": "2026-03-31"
     },
     {
       "slug": "fbar-vs-form-3520-foreign-trusts",
@@ -215,7 +235,7 @@
       "brief": "When you need FBAR, Form 3520/3520-A, or both for foreign trusts. FBAR covers financial interest in trust accounts; Form 3520 covers transactions with foreign trusts under IRC 6048. Different penalties, different filing requirements.",
       "status": "pending",
       "pillar": "fbar-vs-others",
-      "publishedDate": "2026-04-14"
+      "publishedDate": "2026-04-01"
     },
     {
       "slug": "fbar-foreign-life-insurance-policies",
@@ -224,7 +244,7 @@
       "brief": "Whether foreign life insurance policies with cash surrender value must be reported on FBAR. Covers whole life, endowment, and investment-linked policies. FinCEN guidance treats policies with cash value as reportable accounts.",
       "status": "pending",
       "pillar": "account-types",
-      "publishedDate": "2026-04-17"
+      "publishedDate": "2026-04-02"
     },
     {
       "slug": "fbar-reasonable-cause-defense",
@@ -233,7 +253,7 @@
       "brief": "How reasonable cause can eliminate non-willful FBAR penalties. Covers factors courts consider (reliance on professional advice, complexity of law, taxpayer's education), cite 31 USC 5321(a)(5)(B)(ii) and relevant case law.",
       "status": "pending",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-04-19"
+      "publishedDate": "2026-04-03"
     },
     {
       "slug": "fbar-france-livret-a-pea-accounts",
@@ -242,7 +262,7 @@
       "brief": "FBAR reporting for US persons with French bank accounts including Livret A, PEA, PEL, assurance vie, and retirement accounts (PERP/PER). France-US tax treaty implications and CRS data exchange.",
       "status": "pending",
       "pillar": "country-specific",
-      "publishedDate": "2026-04-21"
+      "publishedDate": "2026-04-06"
     },
     {
       "slug": "fbar-foreign-mutual-funds-pfic",
@@ -251,7 +271,7 @@
       "brief": "FBAR reporting for foreign mutual funds, which are also classified as PFICs (Passive Foreign Investment Companies) under IRC 1291. Double reporting obligation: FBAR to FinCEN and Form 8621 to IRS. Covers the punitive PFIC tax regime.",
       "status": "pending",
       "pillar": "account-types",
-      "publishedDate": "2026-04-24"
+      "publishedDate": "2026-04-07"
     },
     {
       "slug": "fbar-statute-of-limitations",
@@ -260,7 +280,7 @@
       "brief": "The 6-year statute of limitations for FBAR penalties under 31 USC 5321(b)(1). Covers when the clock starts, whether filing extends it, and how willful violations may have different assessment periods. Cite US v. Bussell.",
       "status": "pending",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-04-26"
+      "publishedDate": "2026-04-08"
     },
     {
       "slug": "fbar-japan-bank-accounts-nenkin",
@@ -269,7 +289,7 @@
       "brief": "FBAR reporting for US persons with Japanese bank accounts, postal savings (yucho), and nenkin (pension). Covers Japan-US tax treaty, yen-to-USD conversion complexities, and the large US military/civilian population in Japan.",
       "status": "pending",
       "pillar": "country-specific",
-      "publishedDate": "2026-04-28"
+      "publishedDate": "2026-04-09"
     },
     {
       "slug": "fbar-trust-reporting-requirements",
@@ -278,7 +298,7 @@
       "brief": "When trusts with foreign accounts must file FBAR. Covers the trust as filer, trustees with signatory authority, beneficiaries with financial interest, and how to determine who files. Cite 31 CFR 1010.350(e)(3) and (f)(4).",
       "status": "pending",
       "pillar": "account-types",
-      "publishedDate": "2026-05-01"
+      "publishedDate": "2026-04-10"
     },
     {
       "slug": "fbar-mexico-bank-accounts",
@@ -287,7 +307,7 @@
       "brief": "FBAR reporting for US persons with Mexican bank accounts, AFORE retirement accounts, and CETES investment accounts. Covers the large US-Mexico border population, peso conversion, and Mexico-US FATCA IGA.",
       "status": "pending",
       "pillar": "country-specific",
-      "publishedDate": "2026-05-03"
+      "publishedDate": "2026-04-13"
     },
     {
       "slug": "fbar-amending-correcting-filed-fbar",
@@ -296,7 +316,7 @@
       "brief": "How to amend or correct a previously filed FBAR through BSA E-Filing. Covers when to amend (errors in account values, missing accounts, wrong year), the amendment process, and whether amendments trigger audit risk.",
       "status": "pending",
       "pillar": "deadlines-extensions",
-      "publishedDate": "2026-05-05"
+      "publishedDate": "2026-04-14"
     },
     {
       "slug": "fbar-singapore-cpf-bank-accounts",
@@ -305,7 +325,7 @@
       "brief": "FBAR reporting for US persons with Singapore bank accounts, CPF (Central Provident Fund), and SRS (Supplementary Retirement Scheme). Covers Singapore's status as a major financial center and the US-Singapore tax treaty.",
       "status": "pending",
       "pillar": "country-specific",
-      "publishedDate": "2026-05-08"
+      "publishedDate": "2026-04-15"
     },
     {
       "slug": "fbar-voluntary-disclosure-practice",
@@ -314,7 +334,7 @@
       "brief": "History and current status of FBAR voluntary disclosure programs. OVDP closed in 2018. Current options: streamlined procedures, delinquent filing, and the IRS Updated Voluntary Disclosure Practice. Penalties and immunity considerations.",
       "status": "pending",
       "pillar": "penalties-compliance",
-      "publishedDate": "2026-05-10"
+      "publishedDate": "2026-04-16"
     },
     {
       "slug": "fbar-vs-form-8865-foreign-partnership",
@@ -323,7 +343,7 @@
       "brief": "When you need FBAR, Form 8865, or both for interests in foreign partnerships. FBAR covers partnership accounts; 8865 covers the partnership ownership itself under IRC 6038. Different thresholds and different penalties.",
       "status": "pending",
       "pillar": "fbar-vs-others",
-      "publishedDate": "2026-05-12"
+      "publishedDate": "2026-04-17"
     },
     {
       "slug": "fbar-switzerland-bank-accounts",
