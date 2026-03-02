@@ -9,6 +9,9 @@ const LOCKOUT_TEST_EMAIL = "lockout-test@example.com";
 // Signup Page
 // ---------------------------------------------------------------------------
 test.describe("Signup Page", () => {
+  // CI dev server is slow on first request (route compilation + Prisma init)
+  test.setTimeout(120_000);
+
   test("loads with all form fields", async ({ page }) => {
     await page.goto("/signup");
     await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
@@ -124,6 +127,9 @@ test.describe("Signup Page", () => {
 // Login Page
 // ---------------------------------------------------------------------------
 test.describe("Login Page", () => {
+  // CI dev server is slow — login involves session check + bcrypt + redirect
+  test.setTimeout(90_000);
+
   test.beforeEach(async () => {
     // Reset lockout state for debug user to prevent test pollution
     const request = await playwrightRequest.newContext({
@@ -227,6 +233,8 @@ test.describe("Login Page", () => {
 // Forgot Password Page
 // ---------------------------------------------------------------------------
 test.describe("Forgot Password Page", () => {
+  test.setTimeout(90_000);
+
   test("loads with email field", async ({ page }) => {
     await page.goto("/forgot-password");
     await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
@@ -346,6 +354,8 @@ test.describe("Logout", () => {
 // Auth Redirects
 // ---------------------------------------------------------------------------
 test.describe("Auth Redirects", () => {
+  test.setTimeout(90_000);
+
   test("unauthenticated user accessing /dashboard gets redirected to login", async ({
     page,
   }) => {
