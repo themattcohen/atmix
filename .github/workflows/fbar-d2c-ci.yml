@@ -114,19 +114,34 @@ jobs:
         env:
           DATABASE_URL: "postgresql://test:test@localhost:5432/test"
 
-      - name: Run E2E smoke tests
+      - name: Run E2E smoke tests (public pages)
         run: |
           npx playwright test \
             marketing.spec.ts \
             gtm-smoke.spec.ts \
-            auth.spec.ts \
             blog.spec.ts \
-            threshold-keyboard.spec.ts \
             antagonistic/t01-hero.spec.ts \
             antagonistic/t02-sections.spec.ts \
             antagonistic/t03-howitworks-pricing.spec.ts \
             antagonistic/t04-faq-footer.spec.ts \
-            antagonistic/t05-navigation.spec.ts \
+            antagonistic/t05-navigation.spec.ts
+        env:
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+          ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+          NEXTAUTH_SECRET: "test-secret-for-ci"
+          NEXTAUTH_URL: "http://localhost:3001"
+          S3_ENDPOINT: "http://localhost:9000"
+          S3_REGION: "us-east-1"
+          S3_ACCESS_KEY: "minioadmin"
+          S3_SECRET_KEY: "minioadmin"
+          S3_BUCKET: "fbar-direct"
+          NODE_ENV: "production"
+
+      - name: Run E2E auth tests (serial to avoid contention)
+        run: |
+          npx playwright test --workers=1 \
+            auth.spec.ts \
+            threshold-keyboard.spec.ts \
             antagonistic/t06-signup.spec.ts \
             antagonistic/t07-login-logout.spec.ts \
             antagonistic/t08-forgot-password.spec.ts \
