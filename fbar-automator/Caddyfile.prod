@@ -93,9 +93,9 @@ www.{$D2C_DOMAIN} {
 
 	encode gzip
 
-	# D2C limits to 1MB (no file uploads in D2C wizard)
+	# D2C allows up to 10MB (Premium tier PDF uploads)
 	request_body {
-		max_size 1MB
+		max_size 10MB
 	}
 
 	# Stripe webhook — no rate limiting (Stripe manages its own retry logic)
