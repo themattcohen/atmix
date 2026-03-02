@@ -13,6 +13,7 @@ export interface AcknowledgementResult {
   status: "pending" | "accepted" | "rejected";
   bsaId?: string;
   rejectionReason?: string;
+  messages?: Array<{ level: string; code: string; description: string }>;
 }
 
 const isSandbox = () => process.env.SDTM_SANDBOX_MODE === "true";
@@ -28,17 +29,28 @@ export function validateSdtmConfig(): void {
 function getSFTPConnectConfig(): Record<string, unknown> {
   const config: Record<string, unknown> = {
     host: process.env.SDTM_HOST,
-    port: parseInt(process.env.SDTM_PORT || "22"),
+    port: parseInt(process.env.SDTM_PORT || "2222"),
     username: process.env.SDTM_USERNAME,
     readyTimeout: 10000,
   };
 
+  // SSH key auth
   const keyPath = process.env.SDTM_PRIVATE_KEY_PATH;
   if (keyPath) {
     if (!fs.existsSync(keyPath)) {
       throw new Error(`SFTP private key not found at: ${keyPath}`);
     }
     config.privateKey = fs.readFileSync(keyPath);
+  }
+
+  // Password auth fallback (FinCEN uses "client ID and secret" = username/password)
+  const password = process.env.SDTM_PASSWORD;
+  if (password) {
+    config.password = password;
+  }
+
+  if (!keyPath && !password) {
+    console.warn("[SDTM] No SDTM_PRIVATE_KEY_PATH or SDTM_PASSWORD set — SFTP auth will fail");
   }
 
   const hostKey = process.env.SDTM_HOST_KEY;
@@ -51,7 +63,7 @@ function getSFTPConnectConfig(): Record<string, unknown> {
       return matches;
     };
   } else {
-    console.warn("[SDTM] SFTP_HOST_KEY not set — skipping host key verification (unsafe for production)");
+    console.warn("[SDTM] SDTM_HOST_KEY not set — skipping host key verification (unsafe for production)");
   }
 
   return config;
@@ -63,7 +75,7 @@ export async function submitBatch(
 ): Promise<SubmissionResult> {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const filename = `FBAR_DIRECT_${batchId}_${timestamp}.xml`;
-  const remoteDir = process.env.SDTM_REMOTE_DIR || "/upload";
+  const remoteDir = process.env.SDTM_REMOTE_DIR || "submissions";
   const remoteFilePath = `${remoteDir}/${filename}`;
 
   if (isSandbox()) {
@@ -107,13 +119,42 @@ export async function submitBatch(
   });
 }
 
+/**
+ * Extract search key for ack file matching.
+ * Accepts a full remote path (submissions/FBAR_DIRECT_xxx.xml) or a bare batchId.
+ */
+function extractAckSearchKey(submissionId: string): string {
+  if (submissionId.includes("/")) {
+    const parts = submissionId.split("/");
+    const filename = parts[parts.length - 1];
+    return filename.replace(/\.xml$/i, "");
+  }
+  return submissionId;
+}
+
+/** FinCEN ack file extensions: .MESSAGES.XML and .ACK */
+const ACK_EXTENSIONS = [".MESSAGES.XML", ".messages.xml", ".ACK", ".ack", ".xml", ".XML"];
+
+function isAckFile(filename: string, searchKey: string): boolean {
+  const hasMatchingExt = ACK_EXTENSIONS.some((ext) => filename.endsWith(ext));
+  if (!hasMatchingExt) return false;
+  return filename.includes(searchKey);
+}
+
+/**
+ * Check for FinCEN acknowledgement of a submission.
+ * @param submissionId - Full remote path (e.g. "submissions/FBAR_DIRECT_xxx.xml")
+ *                       or bare batchId for backward compatibility.
+ */
 export async function checkAcknowledgement(
-  batchId: string
+  submissionId: string
 ): Promise<AcknowledgementResult> {
   if (isSandbox()) {
-    console.warn("[SDTM SANDBOX] Checking acknowledgement for batch:", batchId);
+    console.warn("[SDTM SANDBOX] Checking acknowledgement for:", submissionId);
     return { status: "pending" };
   }
+
+  const searchKey = extractAckSearchKey(submissionId);
 
   return new Promise((resolve) => {
     const conn = new SFTPClient();
@@ -126,9 +167,7 @@ export async function checkAcknowledgement(
           return;
         }
 
-        const ackDir = process.env.SDTM_REMOTE_DIR
-          ? process.env.SDTM_REMOTE_DIR.replace(/\/upload\/?$/, "/download")
-          : "/download";
+        const ackDir = process.env.SDTM_ACK_DIR || "acks";
 
         sftp.readdir(ackDir, (readErr, list) => {
           if (readErr || !list) {
@@ -137,9 +176,7 @@ export async function checkAcknowledgement(
             return;
           }
 
-          const ackFile = list.find(
-            (f) => f.filename.includes(batchId) && f.filename.endsWith(".xml")
-          );
+          const ackFile = list.find((f) => isAckFile(f.filename, searchKey));
 
           if (!ackFile) {
             conn.end();
@@ -158,29 +195,7 @@ export async function checkAcknowledgement(
             }
 
             try {
-              const parser = new XMLParser();
-              const parsed = parser.parse(data.toString("utf-8"));
-              const ack = parsed?.EFilingBatchAcknowledgement || parsed?.acknowledgement;
-
-              if (!ack) {
-                resolve({ status: "pending" });
-                return;
-              }
-
-              const status = ack.Status || ack.status;
-              if (status === "A" || status === "Accepted") {
-                const bsaId = ack.BSAId || ack.bsaId || ack.TrackingId;
-              if (!bsaId) {
-                resolve({ status: "accepted" });
-                return;
-              }
-              resolve({ status: "accepted", bsaId: String(bsaId) });
-              } else if (status === "R" || status === "Rejected") {
-                const reason = ack.ErrorMessage || ack.Reason || "Unknown rejection reason";
-                resolve({ status: "rejected", rejectionReason: reason });
-              } else {
-                resolve({ status: "pending" });
-              }
+              resolve(parseAcknowledgement(data.toString("utf-8")));
             } catch {
               resolve({ status: "pending" });
             }
@@ -195,4 +210,75 @@ export async function checkAcknowledgement(
 
     conn.connect(getSFTPConnectConfig());
   });
+}
+
+/**
+ * Parse FinCEN BatchMessages XML (EFL_BatchMessagesSchema.xsd).
+ * Schema: BatchMessages > Batch[@status, @trackingID] > Message[@level, @code] > Description
+ */
+function parseAcknowledgement(xml: string): AcknowledgementResult {
+  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "" });
+  const parsed = parser.parse(xml);
+
+  // FinCEN schema: BatchMessages > Batch
+  const batch = parsed?.BatchMessages?.Batch;
+  if (!batch) {
+    // Fallback: try legacy field names for backward compatibility
+    const legacy = parsed?.EFilingBatchAcknowledgement || parsed?.acknowledgement;
+    if (legacy) {
+      return parseLegacyAck(legacy);
+    }
+    return { status: "pending" };
+  }
+
+  const status = batch.status as string | undefined;
+  const trackingId = batch.trackingID as string | undefined;
+
+  // Parse messages
+  const rawMessages: Record<string, string>[] = Array.isArray(batch.Message)
+    ? batch.Message
+    : batch.Message
+      ? [batch.Message]
+      : [];
+  const messages = rawMessages.map((m) => ({
+    level: m.level || "",
+    code: m.code || "",
+    description: m.Description || "",
+  }));
+
+  if (status === "ACCEPTED" || status === "ACCEPTED-WITH-WARNINGS") {
+    if (messages.length > 0) {
+      console.warn("[SDTM] Ack messages:", JSON.stringify(messages));
+    }
+    return {
+      status: "accepted",
+      bsaId: trackingId ? String(trackingId) : undefined,
+      messages: messages.length > 0 ? messages : undefined,
+    };
+  } else if (status === "REJECTED") {
+    const reasons = messages
+      .map((m) => m.description)
+      .filter(Boolean)
+      .join("; ");
+    return {
+      status: "rejected",
+      rejectionReason: reasons || "Unknown rejection reason",
+      messages: messages.length > 0 ? messages : undefined,
+    };
+  }
+
+  return { status: "pending" };
+}
+
+/** Parse legacy ack format for backward compatibility */
+function parseLegacyAck(ack: Record<string, unknown>): AcknowledgementResult {
+  const status = ack.Status || ack.status;
+  if (status === "A" || status === "Accepted") {
+    const bsaId = ack.BSAId || ack.bsaId || ack.TrackingId;
+    return { status: "accepted", bsaId: bsaId ? String(bsaId) : undefined };
+  } else if (status === "R" || status === "Rejected") {
+    const reason = (ack.ErrorMessage || ack.Reason || "Unknown rejection reason") as string;
+    return { status: "rejected", rejectionReason: reason };
+  }
+  return { status: "pending" };
 }

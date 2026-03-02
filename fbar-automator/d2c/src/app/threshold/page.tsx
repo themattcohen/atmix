@@ -8,6 +8,7 @@ function ThresholdContent() {
   const router = useRouter();
   const { status } = useSession();
   const isAuthenticated = status === "authenticated";
+  const isSessionLoading = status === "loading";
   const currentYear = new Date().getFullYear();
   const [calendarYear, setCalendarYear] = useState(currentYear - 1);
   const [hadAccounts, setHadAccounts] = useState<boolean | null>(null);
@@ -196,12 +197,14 @@ function ThresholdContent() {
         {canProceed && (
           <button
             onClick={handleContinue}
-            disabled={loading}
+            disabled={loading || isSessionLoading}
             className="w-full py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-medium disabled:opacity-50"
-            aria-busy={loading}
+            aria-busy={loading || isSessionLoading}
           >
             {loading
               ? "Setting up your filing..."
+              : isSessionLoading
+              ? "Loading..."
               : isAuthenticated
               ? "Continue to Personal Information"
               : "Create Account to Continue Filing"}

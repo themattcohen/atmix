@@ -41,8 +41,9 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ data: { status: "pending" } });
     }
 
-    // Check for acknowledgement
-    const ack = await checkAcknowledgement(filingYear.sdtmBatchId);
+    // Check for acknowledgement — prefer submission path for filename-based matching
+    const submissionId = filingYear.sdtmSubmissionId ?? filingYear.sdtmBatchId;
+    const ack = await checkAcknowledgement(submissionId);
 
     const user = await prisma.user.findUnique({ where: { id: session.user.id } });
 

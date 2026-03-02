@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
     if (!filing.sdtmBatchId) continue;
 
     try {
-      const ack = await checkAcknowledgement(filing.sdtmBatchId);
+      const submissionId = filing.sdtmSubmissionId ?? filing.sdtmBatchId;
+      const ack = await checkAcknowledgement(submissionId);
 
       if (ack.status === "accepted" && ack.bsaId) {
         await prisma.filingYear.update({
