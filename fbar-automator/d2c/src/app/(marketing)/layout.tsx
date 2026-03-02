@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DeadlineBanner } from "@/components/landing/DeadlineBanner";
 import { MarketingHeader } from "@/components/nav/MarketingHeader";
 import { BreadcrumbJsonLd } from "@/components/BreadcrumbJsonLd";
+import { CookieSettingsButton } from "@/components/analytics/CookieSettingsButton";
 
 export default function MarketingLayout({
   children,
@@ -50,6 +51,7 @@ export default function MarketingLayout({
                 <li><Link href="/login" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Log In</Link></li>
                 <li><Link href="/privacy" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="text-gray-300 hover:text-white hover:underline min-h-[44px] inline-flex items-center">Terms of Service</Link></li>
+                <li><CookieSettingsButton /></li>
               </ul>
             </div>
             {/* Contact + Resources Column */}

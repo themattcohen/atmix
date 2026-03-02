@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ManageCookiePreferences } from "@/components/analytics/ManageCookiePreferences";
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -131,6 +132,7 @@ export default function PrivacyPage() {
                 Google Analytics Opt-out Browser Add-on
               </a>.
             </p>
+            <ManageCookiePreferences />
           </section>
 
           <section>
