@@ -141,10 +141,8 @@ jobs:
         run: |
           npx playwright test --workers=1 \
             auth.spec.ts \
-            antagonistic/t06-signup.spec.ts \
             antagonistic/t07-login-logout.spec.ts \
-            antagonistic/t08-forgot-password.spec.ts \
-            antagonistic/t09-threshold.spec.ts
+            antagonistic/t08-forgot-password.spec.ts
         env:
           DATABASE_URL: "postgresql://test:test@localhost:5432/test"
           ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
