@@ -1,0 +1,18 @@
+{
+  "name": "blog-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone SEO article writer — input keywords, output articles + hero images",
+  "scripts": {
+    "validate": "node scripts/validate-article.mjs",
+    "hero": "node scripts/generate-hero-image.mjs",
+    "save-targets": "node scripts/save-surfer-targets.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "dotenv": "^16.4.0",
+    "gray-matter": "^4.0.3",
+    "sharp": "^0.33.0"
+  }
+}

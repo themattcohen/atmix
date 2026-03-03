@@ -1,0 +1,46 @@
+{
+  "name": "Tax General",
+  "author": { "name": "Matt Cohen", "credentials": "CPA" },
+  "seo": { "surferScoreTarget": 90 },
+  "research": {
+    "authorityDomains": ["irs.gov", "law.cornell.edu", "congress.gov", "treasury.gov", "gpo.gov"],
+    "primarySources": [
+      "https://www.irs.gov/forms-pubs/about-schedule-k-1-form-1065",
+      "https://www.irs.gov/forms-pubs/about-schedule-k-1-form-1041",
+      "https://www.irs.gov/forms-pubs/about-schedule-k-1-form-1120-s",
+      "https://www.irs.gov/businesses/small-businesses-self-employed/self-employed-individuals-tax-center"
+    ],
+    "competitorAnalysis": true
+  },
+  "content": {
+    "protectedWords": ["Schedule K-1", "Form 1065", "Form 1120-S", "Form 1041", "IRS", "IRC", "1099-NEC", "1099-K", "Schedule C", "Schedule SE"],
+    "disclaimerTop": "This article is for informational purposes only and does not constitute tax, legal, or financial advice. Consult a qualified tax professional for guidance specific to your situation.",
+    "disclaimerBottom": "Tax regulations change frequently. Always verify current requirements at [IRS.gov](https://www.irs.gov). For advice specific to your situation, consult a qualified tax professional.",
+    "bannedPhrases": [],
+    "toneGuidance": "Professional, clear, authoritative. Write like a CPA explaining to a client. Use 'you' and 'your' to address the reader directly.",
+    "ctaPatterns": [],
+    "ctaTemplates": [],
+    "internalLinkBase": "",
+    "crosslinks": []
+  },
+  "validation": {
+    "requireDisclaimers": true,
+    "requireCTAs": false,
+    "requireDollarAmounts": false,
+    "requireStatuteCitations": true,
+    "citationDensity": { "minPer500Words": 1 },
+    "dollarAmountDensity": { "minPer500Words": 0 },
+    "penaltyClaimPattern": "\\$[\\d,]+.*(?:penalty|penalt|fine|violation)",
+    "deadlineClaimPattern": "(?:due|deadline|must file|filing date).*\\d{4}"
+  },
+  "heroImage": {
+    "style": "Professional illustration, clean minimalist design",
+    "colorScheme": "navy blue, white, gold accents",
+    "imageryMap": {
+      "k-1|schedule k|partnership|s.corp": "partnership documents, business income distribution, tax form K-1, corporate structures",
+      "onlyfans|creator|content creator|self.employ": "self-employment, content creation, digital business, independent contractor",
+      "1099|freelance|gig": "freelance work, gig economy, multiple income sources, 1099 forms",
+      "default": "tax documents, IRS forms, financial planning, tax preparation"
+    }
+  }
+}
