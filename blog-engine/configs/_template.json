@@ -1,0 +1,36 @@
+{
+  "name": "",
+  "author": { "name": "", "credentials": "" },
+  "seo": { "surferScoreTarget": 90 },
+  "research": {
+    "authorityDomains": [],
+    "primarySources": [],
+    "competitorAnalysis": true
+  },
+  "content": {
+    "protectedWords": [],
+    "disclaimerTop": "",
+    "disclaimerBottom": "",
+    "bannedPhrases": [],
+    "toneGuidance": "Professional, clear, authoritative",
+    "ctaPatterns": [],
+    "ctaTemplates": [],
+    "internalLinkBase": "",
+    "crosslinks": []
+  },
+  "validation": {
+    "requireDisclaimers": false,
+    "requireCTAs": false,
+    "requireDollarAmounts": false,
+    "requireStatuteCitations": false,
+    "citationDensity": { "minPer500Words": 0 },
+    "dollarAmountDensity": { "minPer500Words": 0 },
+    "penaltyClaimPattern": "",
+    "deadlineClaimPattern": ""
+  },
+  "heroImage": {
+    "style": "Professional illustration, clean minimalist design",
+    "colorScheme": "navy blue, white, gold accents",
+    "imageryMap": {}
+  }
+}

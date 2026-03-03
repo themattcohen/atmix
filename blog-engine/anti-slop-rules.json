@@ -1,0 +1,97 @@
+{
+  "bannedPhrases": [
+    "in today's fast-paced world",
+    "navigating the complex landscape",
+    "it's important to note",
+    "it's worth mentioning",
+    "without further ado",
+    "let's dive in",
+    "when it comes to",
+    "at the end of the day",
+    "the bottom line is",
+    "in conclusion",
+    "comprehensive guide",
+    "everything you need to know",
+    "unlock the power of",
+    "streamline your",
+    "leverage",
+    "utilize",
+    "empower",
+    "seamless",
+    "robust",
+    "cutting-edge",
+    "game-changer",
+    "in this comprehensive guide",
+    "let's explore",
+    "it goes without saying",
+    "in a nutshell",
+    "rest assured",
+    "needless to say",
+    "as we all know",
+    "crucial",
+    "essential",
+    "vital",
+    "transform",
+    "unlock"
+  ],
+  "structuralRequirements": {
+    "minWordCount": 2000,
+    "maxWordCountWarning": 3500,
+    "requiredH1Count": 1
+  },
+  "semrushOptimization": {
+    "_doc": "Universal writing quality rules for achieving high SEO Writing Assistant scores. Applies to all niches.",
+    "readability": {
+      "maxSentenceWords": 25,
+      "_sentenceNote": "Split any sentence over 25 words. Target 15-20 words per sentence.",
+      "noPassiveVoice": true,
+      "_passiveNote": "Convert ALL passive voice to active.",
+      "maxParagraphSentences": 4,
+      "_paragraphNote": "Split any paragraph over 4 sentences. Use bullet lists for 3+ items.",
+      "avoidComplexWords": [
+        { "complex": "denominated", "simple": "held in" },
+        { "complex": "electronically", "simple": "online" },
+        { "complex": "authorization", "simple": "approval" },
+        { "complex": "independently", "simple": "separately" },
+        { "complex": "approximately", "simple": "about" },
+        { "complex": "subsequently", "simple": "then" },
+        { "complex": "determination", "simple": "decision" },
+        { "complex": "constitute", "simple": "make up" },
+        { "complex": "requirements", "simple": "rules" }
+      ],
+      "_complexWordsNote": "Replace multi-syllable words with simpler synonyms where meaning is preserved. Niche-specific technical terms are exempt — only replace general vocabulary."
+    },
+    "toneOfVoice": {
+      "targetTone": "somewhat formal",
+      "consistencyTarget": 95,
+      "_toneNote": "Content should be 'somewhat formal' — professional but accessible. Measure consistency percentage.",
+      "bannedFillerWords": [
+        "add up",
+        "basically",
+        "actually",
+        "just",
+        "really",
+        "simply",
+        "sort of",
+        "kind of",
+        "definitely",
+        "pretty much",
+        "a ton of",
+        "in order to"
+      ],
+      "_fillerNote": "Replace 'add up' -> 'total/sum', 'in order to' -> 'to'. Remove the rest entirely or restructure the sentence.",
+      "avoidCasualPatterns": [
+        "Sentence-fragment headings should still read as complete thoughts",
+        "Avoid question-only headings when a statement works",
+        "Don't start sentences with emotional appeals in instructional content",
+        "Replace colloquial phrases with professional alternatives"
+      ],
+      "avoidItIsConstructions": true,
+      "_itIsNote": "'It is not filed...' -> 'The form is not filed...' or 'You do not file...'. 'It is' is an unnecessary placeholder."
+    },
+    "originality": {
+      "mustRunPlagiarismCheck": true,
+      "_note": "Always run a plagiarism/originality check before publishing. Paraphrase common boilerplate that may match other articles."
+    }
+  }
+}
