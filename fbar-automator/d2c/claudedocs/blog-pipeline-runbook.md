@@ -12,16 +12,16 @@ The fbardirect.com blog publishes SEO-optimized FBAR (Foreign Bank Account Repor
 
 | # | Scorer | Target | Role |
 |---|--------|--------|------|
-| 1 | **SurferSEO Content Score** | **≥90** | Primary SEO quality gate. NLP targets extracted BEFORE writing. |
+| 1 | **DIY scorer (`seo-scorer/`)** | **≥9.0** | Primary SEO quality gate. NLP targets extracted via `extract` command BEFORE writing. |
 | 2 | `validate-article.mjs` | PASS (zero hard fails) | Hard gate: anti-slop, structure, citations, disclaimers. |
 | 3 | `writer-guide.md` | Follow all rules | YMYL guardrails: legal accuracy, tone, banned phrases. |
-| 4 | DIY scorer (`seo-scorer/`) | ≥9.0 (optional) | Optional secondary check. May conflict with Surfer on word count. |
-| 5 | Semrush SWA | ≥9.0 (optional) | Optional tertiary check via Chrome DevTools. |
+| 4 | Semrush SWA | ≥9.0 (optional) | Optional secondary check via Chrome DevTools. |
+| 5 | SurferSEO Content Score | ≥90 (legacy, optional) | SurferSEO subscription cancelled as of March 2026. DIY pipeline provides equivalent NLP coverage at $0/mo. |
 
 **Goals:**
 - Publish high-quality, legally accurate FBAR content
-- Achieve ≥90 SurferSEO Content Score on every article (primary SEO gate)
-- Extract NLP targets from SurferSEO BEFORE writing (research-first pipeline)
+- Achieve ≥9.0 DIY SEO score on every article (primary SEO gate)
+- Extract NLP targets via DIY `extract` command BEFORE writing (research-first pipeline)
 - Maintain a 50+ topic content queue with regular publishing cadence
 - Track competitor content and fill coverage gaps
 
@@ -29,13 +29,14 @@ The fbardirect.com blog publishes SEO-optimized FBAR (Foreign Bank Account Repor
 
 ```
 content-queue.json          scripts/
-(50+ topics)                 validate-article.mjs
+(55+ topics)                 validate-article.mjs
      |                       promote-article.mjs
-     v                       score-via-swa.mjs
+     v                       score-via-swa.mjs (optional)
 src/content/drafts/          generate-hero-image.mjs
   <slug>.mdx                 scripts/seo-scorer/
-  <slug>.validation.json       index.mjs (DIY scorer)
-  <slug>.swa-score.json      scripts/competitor/
+  <slug>.validation.json       index.mjs (primary DIY scorer)
+  <slug>.diy-surfer-targets.json   extract, score, revise, batch
+  <slug>.diy-score.json      scripts/competitor/
      |                         monitor.mjs
      v  (after validation)     config.mjs
 src/content/blog/              snapshots/
@@ -44,30 +45,28 @@ src/content/blog/              snapshots/
      v  (git push -> CI -> GHCR -> manual deploy)
 fbardirect.com/blog/<slug>
      |
-     v  (SWA scoring via Chrome DevTools MCP)
-SWA Score >= 9.0 ?
+     v  (DIY score >= 9.0?)
   YES -> production-ready
-  NO  -> revision loop (max 3 attempts)
+  NO  -> revision loop (score -> fix -> re-score)
 ```
 
 ### Pipeline Stages (Research-First)
 
 ```
 Phase A. Keyword research (gap analysis + competitor monitor + Semrush)
-Phase B. Extract NLP targets from SurferSEO -> save .surfer-targets.json (GATE: must exist before writing)
-Phase C. Write draft WITH Surfer targets pre-loaded
+Phase B. Extract NLP targets via DIY extract command -> save .diy-surfer-targets.json (GATE: must exist before writing)
+Phase C. Write draft WITH NLP targets pre-loaded
    C1. Write draft -> src/content/drafts/<slug>.mdx
    C2. Validate (hero image = soft warning)
-   C3. [Optional] DIY score loop -> revise until >=9.0
+   C3. DIY score loop -> revise until >=9.0
    C4. Generate hero image
    C5. Re-validate (confirm image present)
 Phase D. Promote -> blog/
 Phase E. Deploy (git push -> CI -> GHCR -> manual deploy)
-Phase F. SurferSEO Content Score verification
-   F1. Create/re-import Content Editor query -> verify Content Score >=90
-   F2. If <90: revise, re-promote, re-deploy, re-import (max 3 iterations)
-   F3. [Optional] SWA score via Chrome DevTools
-   F4. Production-ready
+Phase F. Score verification
+   F1. DIY score >=9.0: article is production-ready
+   F2. [Optional] SWA score via Chrome DevTools
+   F3. [Optional, legacy] SurferSEO Content Editor verification
 ```
 
 ---
@@ -493,18 +492,59 @@ ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2
 
 ---
 
-## 7b. DIY Score Revision Loop
+## 7b. DIY Score Pipeline (Primary Scorer)
 
-> **Note:** The DIY scorer is an **optional secondary check**. SurferSEO Content Score ≥90 is the primary SEO quality gate. The DIY scorer may conflict with Surfer on word count targets (DIY warns at 3,500 words; Surfer may recommend 2,300-2,600). When they conflict, follow Surfer's targets.
+The DIY SEO/AEO scorer (`scripts/seo-scorer/`) is the **primary scoring tool** for the blog pipeline. It replaces SurferSEO ($89/mo) with a $0/mo pipeline built on TF-IDF, NLP entity extraction, SERP scraping, and local scoring.
 
-The DIY SEO/AEO scorer (`scripts/seo-scorer/`) provides a **local, free** alternative to SWA for iterative revision. Use it to tighten articles before spending SWA scoring attempts.
+> **SurferSEO subscription cancelled as of March 2026.** The DIY pipeline provides equivalent NLP coverage. Legacy `.surfer-targets.json` files from previous SurferSEO extractions are still loaded (and take precedence when both exist), but all new articles use `.diy-surfer-targets.json` generated by the DIY `extract` command.
 
-### Environment Setup
+### Scoring Dimensions
 
-| Env Var | Required | Source |
-|---------|----------|--------|
-| `SERPER_API_KEY` | **Yes** (for full scoring) | https://serper.dev — free tier: 2,500 queries/mo |
-| `ANTHROPIC_API_KEY` | Optional | Only for `--llm` dimension (LLM Quality scoring) |
+The scorer evaluates 8 dimensions with configurable weights:
+
+| Dimension | Weight | What It Measures |
+|-----------|--------|-----------------|
+| NLP Coverage | 22% | Term frequency vs competitor-derived targets (highest weight) |
+| AEO Signals | 15% | Answer Engine Optimization (AI citation readiness) |
+| LLM Quality | 15% | Claude-evaluated content quality (optional, costs money) |
+| Structure | 12% | Heading hierarchy, links, word count, CTA |
+| Readability | 10% | Flesch, ARI, sentence length |
+| Keyword Coverage | 10% | Primary keyword placement and density |
+| Schema Markup | 8% | FAQ schema, meta description, frontmatter |
+| Writing Quality | 8% | Passive voice, weasel words, transitions |
+
+**Pass threshold:** OVERALL >= 9.0/10
+
+When run with `--no-llm` (recommended for fast iteration), LLM Quality is excluded and the remaining 7 dimensions have their weights redistributed proportionally. When run with `--no-serp`, SERP-dependent sub-criteria (PAA questions, related keywords) are excluded and their scores are scaled up so articles are not penalized.
+
+### API Keys
+
+Set these in `d2c/.env`. The scorer works at different capability levels depending on which keys are configured:
+
+| Key | Required? | What It Enables | Free Tier |
+|-----|-----------|----------------|-----------|
+| `SERPER_API_KEY` | Recommended | SERP data, PAA questions, related keywords | 2,500 queries/mo at serper.dev |
+| `ANTHROPIC_API_KEY` | Optional | LLM Quality dimension | Pay-per-use |
+| `DATAFORSEO_LOGIN` / `_PASSWORD` | Optional | Keyword expansion for niche topics | Free trial at dataforseo.com |
+| `GOOGLE_NLP_API_KEY` | Optional | Entity salience enrichment | 5,000 units/mo |
+| `GSC_CLIENT_EMAIL` + `GSC_PRIVATE_KEY` | Optional | Google Search Console feedback loop | Free |
+
+Without any API keys, you can still score articles using `--no-llm --no-serp`. NLP extraction (`extract`) requires at least `SERPER_API_KEY` to fetch SERP results.
+
+### CLI Commands
+
+All commands run from the `d2c/` directory:
+
+```bash
+node scripts/seo-scorer/index.mjs score <slug> [options]     # Score one article
+node scripts/seo-scorer/index.mjs batch [options]             # Score all unscored published articles
+node scripts/seo-scorer/index.mjs list                        # List articles and scoring status
+node scripts/seo-scorer/index.mjs extract <keyword> [options] # Extract NLP targets from SERP competitors
+node scripts/seo-scorer/index.mjs validate-nlp <slug>         # Compare DIY targets vs Surfer targets
+node scripts/seo-scorer/index.mjs revise <slug>               # Generate prioritized revision checklist
+node scripts/seo-scorer/index.mjs gsc <slug> [options]        # GSC feedback for one article
+node scripts/seo-scorer/index.mjs gsc-batch [options]         # GSC feedback for all published articles
+```
 
 **SERP data is fetched by default** via Serper.dev. What it adds:
 - **AEO dimension (+1.5 pts)**: Matches article Q&A headings against real Google "People Also Ask" questions for the target keyword
@@ -517,32 +557,56 @@ The `--no-serp` flag exists for CI/offline use but **should NOT be used for fina
 ```bash
 cd /c/Users/1matt/OneDrive/Documents/atmix/fbar-automator/d2c
 
-# 1. Score an article (saves .diy-score.json + updates content-queue.json)
-node scripts/seo-scorer/index.mjs score <slug> --save
+# 1. Extract NLP targets for a new article
+node scripts/seo-scorer/index.mjs extract "fbar your keyword" --slug fbar-your-slug
 
-# 2. Get a prioritized revision checklist
+# 2. Write the article (see writer-guide.md)
+
+# 3. Score the article
+node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save
+
+# 4. Get a prioritized revision checklist
 node scripts/seo-scorer/index.mjs revise <slug>
 
-# 3. Edit the article based on the checklist
+# 5. Edit the article based on the checklist
 #    (focus on highest-weighted-gap dimensions first)
 
-# 4. Re-validate
+# 6. Re-validate
 node scripts/validate-article.mjs <slug>
 
-# 5. Re-score
-node scripts/seo-scorer/index.mjs score <slug> --save
+# 7. Re-score
+node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save
 
-# 6. Repeat until >=9.0 or 3 attempts exhausted
+# 8. Repeat until >=9.0
 ```
 
-### Batch Scoring
+For a full score with all dimensions (uses Serper API quota):
+```bash
+node scripts/seo-scorer/index.mjs score <slug> --save
+```
+
+### Batch Operations
 
 ```bash
 # Score all published articles that don't have a DIY score yet
-node scripts/seo-scorer/index.mjs batch --save
+node scripts/seo-scorer/index.mjs batch --no-llm --no-serp --save
 
-# List all articles and their DIY scoring status
+# Score a single article with report saved
+node scripts/seo-scorer/index.mjs score fbar-your-slug --no-llm --no-serp --save
+
+# List all articles and their scoring status
 node scripts/seo-scorer/index.mjs list
+
+# Extract NLP targets for a new keyword
+node scripts/seo-scorer/index.mjs extract "fbar your keyword" --slug fbar-your-slug
+# Output: src/content/drafts/fbar-your-slug.diy-surfer-targets.json
+
+# Validate DIY targets against legacy Surfer targets
+node scripts/seo-scorer/index.mjs validate-nlp fbar-your-slug
+
+# GSC feedback (after articles have been live for 2-4 weeks)
+node scripts/seo-scorer/index.mjs gsc fbar-your-slug --days 28 --save
+node scripts/seo-scorer/index.mjs gsc-batch --days 28 --save
 ```
 
 ### What `--save` Does
@@ -559,26 +623,44 @@ node scripts/seo-scorer/index.mjs list
 4. Shows estimated point gain per fix and the total points recoverable
 5. Prints the workflow steps to follow
 
-### Recommended Workflow
+### Optimization Loop
 
 ```
-DIY Score Loop (free, unlimited attempts)
-  -> Reach >=8.5 DIY score
-  -> Then promote, deploy, and SWA score (Section 6-7)
-  -> SWA loop (max 3 attempts, >=9.0 target)
+Score -> Read issues -> Fix weakest weighted dimension -> Re-score -> Repeat
 ```
 
-This two-stage approach lets you iterate freely with the DIY scorer before spending SWA scoring attempts on a more polished article.
+Typically takes 2-3 loops to reach 9.0. Save the final passing score with `--save`.
+
+**Step-by-step:**
+
+1. Run the scorer
+2. Identify the biggest opportunity: calculate weighted gap `(10 - score) * weight` per dimension. Fix the highest gap first.
+3. Or use the `revise` command for a prioritized checklist
+4. Fix the top issues in the MDX file
+5. Re-score. Repeat until >= 9.0.
+
+### Common Bottlenecks and Fixes
+
+| Issue | Fix |
+|-------|-----|
+| **Writing Quality vs NLP tension** | Some NLP terms force passive constructions. Restructure to active voice while keeping the term. NLP scorer counts occurrences anywhere in the article. |
+| **Word count outside competitor range** | Check `targets.wordCount` in `.diy-surfer-targets.json`. If over: trim redundant examples, merge sections. If under: add examples, citations, comparison tables, expand FAQ. |
+| **Flesch score below 50** | Replace jargon: "pursuant to" -> "under", "notwithstanding" -> "despite". Break compound sentences at conjunctions. |
+| **AEO answer paragraphs failing** | Two common failures: paragraph too short/long (<30 or >100 words), or paragraph does not reference heading's topic words. Convert statement headings to questions. |
+| **NLP high-priority terms below target** | Open `.diy-surfer-targets.json`, find terms with `targetMin` > current count. Add naturally throughout the article. |
+| **Missing internal links** | Add links to related articles using `/blog/<slug>` format. Run `list` command to see all published articles. |
+| **Missing authority links** | Add links to irs.gov, fincen.gov, law.cornell.edu (see Section 10 for common patterns). |
 
 ### Biggest Levers for Score Improvement
 
 | Dimension | Weight | Common Fixes |
 |-----------|--------|-------------|
-| LLM Quality | 30% | Improve accuracy, depth, actionability (hard to game — write better content) |
-| Keyword Coverage | 15% | Add keyword to H1, H2, meta description, first 150 words |
+| NLP Coverage | 22% | Hit high-priority NLP terms at their target frequencies |
 | AEO Signals | 15% | Add Q&A headings ("What is...?", "How do I...?"), answer paragraphs, citations |
-| Readability | 12% | Shorten sentences (<25 words), break long paragraphs, simplify vocabulary |
+| LLM Quality | 15% | Improve accuracy, depth, actionability (skip with `--no-llm` for fast iteration) |
 | Structure | 12% | Add H2/H3 headings, FAQ section, internal links, CTAs |
+| Readability | 10% | Shorten sentences (<25 words), break long paragraphs, simplify vocabulary |
+| Keyword Coverage | 10% | Add keyword to H1, H2, meta description, first 150 words |
 | Schema Markup | 8% | Add FAQ schema, meta description 150-160 chars |
 | Writing Quality | 8% | Reduce passive voice, add transitions, remove cliches |
 
@@ -659,10 +741,12 @@ node scripts/score-via-swa.mjs --list
 
 ### Current Queue Stats
 
-As of the initial pipeline setup, the queue contains:
-- **8 published** articles (status: `published`)
-- **42 pending** articles across all 7 pillars
-- Publishing dates range from March 2026 through July 2026
+As of March 2026:
+- **55 total articles** in the content queue (19 waves 1-2, 36 waves 3-5)
+- **19 published** articles (status: `published`, live since March 1-2)
+- **36 pending** articles (written and scored, staggered `publishedDate` values)
+- **54 articles score >=9.0 DIY**; 1 at 8.4 (`fbar-vs-form-8938-when-file-both`)
+- Publishing schedule: Mon-Fri 5/week, March 9 through April 27, 2026
 
 ### Adding Topics from Competitor Intelligence
 
@@ -757,9 +841,11 @@ As of the initial pipeline setup, the queue contains:
 
 ---
 
-## 10.5. SurferSEO Content Editor Optimization (Final Phase)
+## 10.5. SurferSEO Content Editor Optimization (Legacy — Optional)
 
-After an article is deployed and accessible at `fbardirect.com/blog/<slug>`, use SurferSEO Content Editor to optimize against SERP competitors.
+> **SurferSEO subscription cancelled as of March 2026.** This section is retained for reference only. The DIY scorer (Section 7b) is now the primary scoring tool. Use this workflow only if you reactivate SurferSEO.
+
+After an article is deployed and accessible at `fbardirect.com/blog/<slug>`, you can optionally use SurferSEO Content Editor to optimize against SERP competitors.
 
 ### Prerequisites
 
@@ -772,12 +858,10 @@ After an article is deployed and accessible at `fbardirect.com/blog/<slug>`, use
 
 | Metric | Target | Notes |
 |--------|--------|-------|
-| Content Score | **≥90** | Primary SEO quality gate. NLP targets extracted before writing. |
+| Content Score | **≥90** | Legacy SEO quality gate. |
 | NLP terms green | 90%+ high-priority, 70%+ medium-priority | Check Terms panel |
 | Word count | Within Surfer's recommended range | Finalize BEFORE optimizing terms |
 | Headings | Within Surfer's recommended range | Match H2/H3 count targets |
-
-A score of 90+ is achievable when articles are written WITH NLP targets pre-loaded. The research-first approach (Phase B) means articles start closer to the target, reducing post-deploy optimization iterations.
 
 ### Workflow: Create Content Editor Query
 
@@ -857,7 +941,7 @@ After deploying the updated article:
 
 **Re-verify factual accuracy after every optimization edit.** Adding NLP terms or restructuring can introduce errors in FBAR/tax content.
 
-**When SurferSEO and DIY scorer conflict**, SurferSEO targets take precedence (it is the primary scorer). However, legal accuracy ALWAYS wins over NLP targets — never change statute citations, dollar amounts, or penalty figures to hit an NLP term frequency. Readability is secondary to Surfer score but must not degrade below professional standards.
+**Legal accuracy ALWAYS wins over NLP targets** — never change statute citations, dollar amounts, or penalty figures to hit an NLP term frequency. Readability must not degrade below professional standards to hit NLP targets.
 
 ### Content Editor vs Content Audit
 
@@ -874,105 +958,68 @@ Scores **will differ** between the two tools for the same content.
 
 ## 10.6. NLP Target Extraction (Phase B)
 
-Before writing ANY article, NLP targets must be extracted from SurferSEO and saved as a JSON file. This is a **hard gate** — writing must not begin until `.surfer-targets.json` exists.
+Before writing ANY article, NLP targets must be extracted and saved as a JSON file. This is a **hard gate** — writing must not begin until NLP targets exist.
 
-### Prerequisites
+### Primary Method: DIY `extract` Command
 
-- SurferSEO account logged in at https://app.surferseo.com
-- Chrome DevTools MCP connected
-- Target keyword validated (Section 1.5)
-
-### Extraction Playbook
-
-**Step 1.** Navigate to SurferSEO and create a Content Editor draft:
-- Go to **Write** section → **New Content** → "Write Yourself"
-- Enter the target keyword (from content-queue.json)
-- Set location: **United States**, device: **Desktop**
-- If the article already exists at `fbardirect.com/blog/<slug>`: toggle **Import content from URL** → enter the URL
-- If the article is new (no URL yet): leave import off — Surfer will analyze SERP competitors without importing
-- Review competitors list: remove outliers (Wikipedia, IRS.gov mega-pages, 9,000+ word pages when avg is 1,500)
-- Click **Create** → wait for SERP analysis to complete
-
-**Step 2.** Expand the "Optimize for SEO" panel:
-- Click **Write & Optimize** if not already in the editor view
-- Open the **Terms to Use** panel on the right side
-- This shows all NLP entities with their frequency targets
-
-**Step 3.** Extract all NLP entities with frequency targets:
-- Record every term and its target frequency range (current count, min, max)
-- Categorize as `high_priority` (terms Surfer marks as most important / red when missing) and `medium_priority` (remaining terms)
-- Record the word count and heading count targets from the structure panel
-
-**Step 4.** Record content score baselines:
-- Note the current Content Score, average competitor score, and top competitor score
-
-**Step 5.** Save as `src/content/drafts/<slug>.surfer-targets.json`:
-
-```json
-{
-  "slug": "fbar-example-topic",
-  "keyword": "fbar example topic",
-  "surferDraftId": "abc123",
-  "extractedAt": "2026-03-02T12:00:00Z",
-  "contentScore": {
-    "current": 93,
-    "avg": 62,
-    "top": 71
-  },
-  "targets": {
-    "wordCount": { "min": 2300, "max": 2600 },
-    "headings": { "min": 18, "max": 32 }
-  },
-  "terms": {
-    "high_priority": [
-      { "term": "fbar filing", "current": 4, "targetMin": 1, "targetMax": null },
-      { "term": "foreign bank account", "current": 6, "targetMin": 3, "targetMax": 8 }
-    ],
-    "medium_priority": [
-      { "term": "financial institution", "current": 0, "targetMin": 1, "targetMax": 3 },
-      { "term": "tax year", "current": 2, "targetMin": 1, "targetMax": 4 }
-    ]
-  }
-}
+```bash
+cd /c/Users/1matt/OneDrive/Documents/atmix/fbar-automator/d2c
+node scripts/seo-scorer/index.mjs extract "fbar your target keyword" --slug fbar-your-topic-slug
 ```
 
-**JSON Schema Fields:**
+This does the following:
+1. Fetches top 10 SERP results for the keyword via Serper.dev
+2. If fewer than 7 results, expands the corpus via DataForSEO keyword suggestions, authority seed URLs (irs.gov, fincen.gov), and related published articles from your own blog
+3. Scrapes competitor article text (article-extractor primary, cheerio fallback)
+4. Runs TF-IDF + n-gram analysis (unigrams, bigrams, trigrams) across the corpus
+5. Enriches with entity extraction via compromise NLP
+6. Calculates per-term frequency targets (p25/p75 of competitor usage counts)
+7. Classifies terms into high/medium/low priority tiers
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `slug` | string | Article URL slug |
-| `keyword` | string | Target keyword from content-queue.json |
-| `surferDraftId` | string | SurferSEO Content Editor draft ID (from URL) |
-| `extractedAt` | string | ISO 8601 timestamp of extraction |
-| `contentScore.current` | number | Current Content Score (0 if no content imported) |
-| `contentScore.avg` | number | Average competitor Content Score |
-| `contentScore.top` | number | Top competitor Content Score |
-| `targets.wordCount.min` | number | Minimum recommended word count |
-| `targets.wordCount.max` | number | Maximum recommended word count |
-| `targets.headings.min` | number | Minimum recommended heading count |
-| `targets.headings.max` | number | Maximum recommended heading count |
-| `terms.high_priority` | array | High-importance NLP terms (red when missing in Surfer) |
-| `terms.medium_priority` | array | Medium-importance NLP terms |
-| `terms[].term` | string | The NLP entity/phrase |
-| `terms[].current` | number | Current frequency in article (0 if not yet written) |
-| `terms[].targetMin` | number | Minimum recommended frequency |
-| `terms[].targetMax` | number\|null | Maximum recommended frequency (null = no upper limit) |
+**Output:** `src/content/drafts/fbar-your-topic-slug.diy-surfer-targets.json`
 
-### GATE: `.surfer-targets.json` Must Exist Before Writing
+**Options:**
+- `--slug <slug>` — Override the output filename (default: auto-generated from keyword)
+- `--num <n>` — Number of SERP results to analyze (default: 10)
+- `--no-expand` — Skip corpus expansion (faster, but fewer terms for niche keywords)
+- `--no-google-nlp` — Skip Google NLP API enrichment
+- `--no-cache` — Force fresh scraping (ignore cached competitor texts)
+- `--json` — Output JSON only
 
-The writing agent (Phase C) must check for this file before beginning:
+**Requires:** `SERPER_API_KEY` in `d2c/.env` (free tier: 2,500 queries/mo at serper.dev)
+
+### Output Format
+
+The targets file contains:
+- `terms.high_priority` — must-have terms with `targetMin` / `targetMax` frequency ranges
+- `terms.medium_priority` — should-have terms
+- `terms.low_priority` — nice-to-have terms
+- `targets.wordCount.min` / `max` — competitor word count range
+
+Review the output. High-priority terms are the most important for your NLP Coverage score (22% of total weight).
+
+### GATE: NLP Targets Must Exist Before Writing
+
+The writing agent (Phase C) must check for one of these files before beginning:
 
 ```
-src/content/drafts/<slug>.surfer-targets.json
+src/content/drafts/<slug>.diy-surfer-targets.json   (DIY — primary)
+src/content/drafts/<slug>.surfer-targets.json        (legacy SurferSEO — still loaded if present)
 ```
 
-If the file does not exist, the agent must STOP and alert the operator that NLP targets need to be extracted first (Phase B). Writing without NLP targets produces articles that require extensive post-deploy optimization to reach ≥90.
+If neither file exists, run the `extract` command above to generate targets. Writing without NLP targets produces articles that score poorly on the NLP Coverage dimension (22% of total weight).
+
+### Legacy Method: SurferSEO Browser Extraction
+
+> **SurferSEO subscription cancelled as of March 2026.** This method is retained for reference only. Use the DIY `extract` command for all new articles.
+
+See Section 12.1 for the browser-automated SurferSEO extraction JavaScript function, which was used for Wave 1-2 articles.
 
 ### When to Re-Extract
 
 - **Keyword change**: If the target keyword changes, re-extract targets with the new keyword
 - **Major SERP shift**: If competitors change significantly (new entrants, major rewrites), re-extract
-- **Score plateau**: If Content Score is stuck below 90 after 2 iterations, re-extract to check for updated competitor data
+- **Score plateau**: If score is stuck below 9.0 after 2 iterations, re-extract to check for updated competitor data
 
 ---
 
@@ -980,22 +1027,19 @@ If the file does not exist, the agent must STOP and alert the operator that NLP 
 
 ```
 KEYWORD:     (See Section 1.5 — validate via Semrush + competitor monitor)
-NLP TARGETS: Extract from SurferSEO → save src/content/drafts/<slug>.surfer-targets.json
-               (GATE: must exist before writing — see Section 10.6)
+NLP EXTRACT: node scripts/seo-scorer/index.mjs extract "<keyword>" --slug <slug>
+               (GATE: .diy-surfer-targets.json must exist before writing — see Section 10.6)
 VALIDATE:    node scripts/validate-article.mjs <slug>
-DIY SCORE:   node scripts/seo-scorer/index.mjs score <slug> --save [--published]  (optional)
+DIY SCORE:   node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save  (primary gate)
+DIY REVISE:  node scripts/seo-scorer/index.mjs revise <slug>
 DIY LIST:    node scripts/seo-scorer/index.mjs list
+DIY BATCH:   node scripts/seo-scorer/index.mjs batch --no-llm --no-serp --save
 HERO IMG:    node scripts/generate-hero-image.mjs <slug>
 HERO MISS:   node scripts/generate-hero-image.mjs --missing
 PROMOTE:     node scripts/promote-article.mjs <slug> [--force]
 SWA SCORE:   node scripts/score-via-swa.mjs --playbook --slug <slug> --keyword "<kw>"  (optional)
-SWA SAVE:    node scripts/score-via-swa.mjs --save --slug <slug> --keyword "<kw>" \
-               --overall X --readability X --seo X --tone X --originality X \
-               [--recommendations "rec 1" --recommendations "rec 2"]
 SWA LIST:    node scripts/score-via-swa.mjs --list
-SURFER:      Login at https://app.surferseo.com → Write → New Content → keyword + URL import
-               Target: ≥90 Content Score. Optimize: word count → terms → headings → images.
-               Max 3 iterations. See Section 10.5 for full workflow.
+SURFER:      (cancelled March 2026 — use DIY scorer instead. See Section 10.5 for legacy reference.)
 COMPETE:     node scripts/competitor/monitor.mjs
 DEPLOY:      git push -> CI -> GHCR -> ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app'
 ```
@@ -1009,22 +1053,22 @@ A1. KEYWORD RESEARCH: Validate keyword (Section 1.5)
     - Add validated keyword + topic to content-queue.json
 
 === Phase B: NLP Target Extraction (GATE — must complete before writing) ===
-B1. Create SurferSEO Content Editor draft with target keyword (Section 10.6)
-B2. Extract all NLP entities + frequency targets from Surfer's Terms panel
-B3. Save to src/content/drafts/<slug>.surfer-targets.json
-B4. GATE CHECK: .surfer-targets.json must exist before proceeding
+B1. EXTRACT: node scripts/seo-scorer/index.mjs extract "<keyword>" --slug <slug>
+B2. Review output at src/content/drafts/<slug>.diy-surfer-targets.json
+B3. GATE CHECK: .diy-surfer-targets.json must exist before proceeding
 
-=== Phase C: Write Draft WITH Surfer Targets ===
+=== Phase C: Write Draft WITH NLP Targets ===
 C1. Pick topic from content-queue.json (status: pending)
-C2. Read .surfer-targets.json — target all high-priority NLP terms, 70%+ medium-priority
-C3. Write draft -> src/content/drafts/<slug>.mdx (within Surfer word count + heading ranges)
+C2. Read .diy-surfer-targets.json — target all high-priority NLP terms, 70%+ medium-priority
+C3. Write draft -> src/content/drafts/<slug>.mdx (within target word count + heading ranges)
 C4. VALIDATE: node scripts/validate-article.mjs <slug>
     (hero image is a soft warning at this stage — does not block)
 C5. Fix any hard failures, re-validate until PASS
-C6. [Optional] DIY SCORE: node scripts/seo-scorer/index.mjs score <slug> --save
-C7. HERO IMAGE: node scripts/generate-hero-image.mjs <slug>
+C6. DIY SCORE: node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save
+C7. If <9.0: revise and re-score (see Section 7b optimization loop)
+C8. HERO IMAGE: node scripts/generate-hero-image.mjs <slug>
     (generates 1200x630 webp → public/blog/<slug>.webp, updates frontmatter)
-C8. RE-VALIDATE: node scripts/validate-article.mjs <slug>
+C9. RE-VALIDATE: node scripts/validate-article.mjs <slug>
     (confirm hero image warning is gone)
 
 === Phase D: Promote ===
@@ -1035,14 +1079,10 @@ E1. git add + commit + push
 E2. Wait for CI + Build & Push to complete
 E3. DEPLOY: ssh fbar 'cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app'
 
-=== Phase F: SurferSEO Score Verification (Primary Gate) ===
-F1. SURFER: Create/re-import Content Editor query in SurferSEO (keyword + import from URL)
-F2. Verify Content Score ≥90
-F3. If <90: optimize (word count → NLP terms → headings → images), re-promote, re-deploy, re-import
-F4. Repeat F1-F3 (max 3 iterations) until Content Score ≥90
-F5. [Optional] SWA SCORE: Use Chrome DevTools MCP to score via SWA
-F6. [Optional] SAVE: node scripts/score-via-swa.mjs --save ...
-F7. Content Score ≥90: article is production-ready.
+=== Phase F: Score Verification ===
+F1. DIY score >=9.0: article is production-ready.
+F2. [Optional] SWA SCORE: Use Chrome DevTools MCP to score via SWA
+F3. [Optional] SAVE: node scripts/score-via-swa.mjs --save ...
 ```
 
 ---
@@ -1055,30 +1095,30 @@ Use this playbook when processing a batch of 5-7 articles in a single Claude Cod
 
 ```
 □ Read content-queue.json — identify next batch by publishedDate or priority
-□ Verify SurferSEO login persists in Chrome (navigate to app.surferseo.com)
-□ Check Surfer monthly Content Editor quota (limited to ~30/month on Scale plan)
+□ Verify SERPER_API_KEY is set in d2c/.env (needed for NLP extraction)
 □ Read this runbook + writer-guide.md to refresh context
 ```
 
-### Phase B — NLP Target Extraction (~25 min, browser-serial)
+### Phase B — NLP Target Extraction (~5 min, can parallelize)
 
 For each article in the batch:
 
-1. Navigate to `app.surferseo.com/workspace/1305270-fbar/drafts`
-2. Click **Create** → enter target keyword → wait for SERP analysis
-3. If rewriting: toggle **Import from URL** → enter `https://fbardirect.com/blog/<slug>`
-4. After draft loads, use the JS extraction function (see Section 12.1) to extract all NLP entities
-5. Save as `src/content/drafts/<slug>.surfer-targets.json`
+```bash
+cd /c/Users/1matt/OneDrive/Documents/atmix/fbar-automator/d2c
+node scripts/seo-scorer/index.mjs extract "<keyword>" --slug <slug>
+```
 
-**GATE**: Every article must have `.surfer-targets.json` before proceeding to Phase C.
+Output: `src/content/drafts/<slug>.diy-surfer-targets.json`
+
+**GATE**: Every article must have `.diy-surfer-targets.json` (or legacy `.surfer-targets.json`) before proceeding to Phase C.
 
 ### Phase C — Write/Rewrite (~10 min, parallel subagents)
 
 Spawn N parallel subagents (one per article). Each subagent receives:
-- `.surfer-targets.json` (NLP terms + target frequencies)
+- `.diy-surfer-targets.json` (NLP terms + target frequencies)
 - `writer-guide.md` (YMYL guardrails, structure rules)
 - Current `.mdx` file (if rewriting) or `content-queue.json` entry (if new)
-- Instructions: target ALL high-priority NLP terms, ≥70% medium-priority, word count within Surfer range, YMYL accuracy wins over NLP optimization
+- Instructions: target ALL high-priority NLP terms, ≥70% medium-priority, word count within target range, YMYL accuracy wins over NLP optimization
 
 ### Phase D — Validate + Images + Promote (~10 min)
 
@@ -1106,30 +1146,30 @@ ssh -i ~/.ssh/hetzner_claude root@178.156.250.116 \
    pull d2c-app && docker compose -f docker-compose.prod.yml up -d d2c-app"
 ```
 
-### Phase F — Surfer Injection + Verify (~25 min, browser-serial)
+### Phase F — DIY Score Verification (~5 min)
 
 For each article:
 
-1. Convert MDX to HTML: `node scripts/mdx-to-html.mjs <slug>`
-2. Open `file:///tmp/<slug>.html` in a new Chrome tab → Ctrl+A → Ctrl+C → close tab
-3. Navigate to Surfer draft → focus the editor body → Ctrl+A → Ctrl+V
-4. Wait 15 seconds for Surfer to recalculate the Content Score
-5. Read score from the UI:
-   - **≥90**: Done. Record in memory.
-   - **80-89**: One targeted optimization round (add missing NLP terms, adjust headings)
-   - **<80**: Deeper review — likely needs structural changes or word count adjustment
+```bash
+node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save
+```
+
+- **≥9.0**: Done. Article is production-ready.
+- **8.0-8.9**: Run `revise` command, fix top issues, re-score.
+- **<8.0**: Deeper review — likely needs structural changes or word count adjustment.
 
 ### Post-Flight
 
 ```
-□ Update memory/d2c-blog-pipeline.md with scores for each article
 □ Update content-queue.json status → "published" for newly published articles
-□ Note any deferred articles (e.g., Surfer quota exhausted) for next session
+□ Note any deferred articles for next session
 ```
 
 ---
 
-## 12.1. Browser-Automated NLP Extraction
+## 12.1. Browser-Automated NLP Extraction (Legacy — SurferSEO)
+
+> **SurferSEO subscription cancelled as of March 2026.** Use the DIY `extract` command instead (Section 10.6). This section is retained for reference only.
 
 When extracting NLP entities from SurferSEO via Chrome DevTools MCP, use this JavaScript function in `evaluate_script`:
 
@@ -1193,5 +1233,132 @@ function parseTarget(t) {
 ### Saving the JSON File
 
 Use the Write tool (not Bash) to create `src/content/drafts/<slug>.surfer-targets.json` directly. The inline Node.js approach via Bash fails on Windows due to `/dev/stdin` issues and quoting problems with en-dash characters.
+
+---
+
+## 13. Current Status
+
+As of 2026-03-03:
+
+- **55 total articles** in the content queue
+- **19 published** (waves 1-2, live since March 1-2)
+- **36 pending** (waves 3-5, articles written and scored)
+- **54 articles score >= 9.0**; 1 at 8.4 (`fbar-vs-form-8938-when-file-both`)
+- Publishing schedule: March 10 through April 28, 2026 (staggered `publishedDate` values, Mon-Fri 5/week)
+
+### How Scheduled Publishing Works
+
+The blog page in `src/lib/blog.ts` filters articles by `publishedDate <= now` at **build time** (when the Docker image is built). Articles with future `publishedDate` values exist in the Git repo and Docker image but are not rendered on the live site until:
+
+1. The `publishedDate` has passed, AND
+2. The Docker image is rebuilt
+
+This means you must rebuild the Docker image periodically for scheduled articles to go live. There is no automatic deployment trigger.
+
+### Recommended: Weekly Rebuild
+
+**Option A: Manual rebuild (simplest)**
+
+SSH in weekly and run:
+```bash
+cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app
+```
+
+**Option B: Server cron (recommended)**
+
+Add a weekly cron on Hetzner to auto-rebuild:
+```bash
+# Rebuilds every Monday at 6 AM UTC
+0 6 * * 1 cd /opt/fbar && docker compose pull d2c-app && docker compose up -d d2c-app >> /var/log/d2c-rebuild.log 2>&1
+```
+
+**Option C: Push a trivial commit**
+
+Push any commit to `main` to trigger the GitHub Actions CI/CD pipeline that builds and pushes a new Docker image. Then pull on Hetzner.
+
+### Verify After Deploy
+
+After rebuilding, check that new articles appear:
+```bash
+curl -s https://fbardirect.com/blog | grep -c "article"
+```
+
+Or visit `https://fbardirect.com/blog` in a browser.
+
+---
+
+## 14. File Conventions
+
+| Pattern | Location | Purpose | Regenerable? |
+|---------|----------|---------|-------------|
+| `<slug>.diy-surfer-targets.json` | drafts/ | DIY-generated NLP targets (primary) | Yes — via `extract` command |
+| `<slug>.surfer-targets.json` | drafts/ | Manual Surfer targets (legacy) | No — do not overwrite |
+| `<slug>.diy-score.attempt-N.json` | blog/ or drafts/ | Score history per iteration | Yes |
+| `<slug>.diy-score.json` | blog/ or drafts/ | Latest score (legacy naming) | Yes |
+| `<slug>.validation.json` | drafts/ | Article validation results | Yes |
+
+**NLP target loading priority:** The article fetcher loads `.surfer-targets.json` first. If not found, it falls back to `.diy-surfer-targets.json`. Manual Surfer targets always take precedence when both exist.
+
+**Caching:**
+- SERP results: `scripts/seo-scorer/.serp-cache/`
+- Competitor texts: `scripts/seo-scorer/.nlp-cache/<slug>/` (7-day TTL, keyed by URL SHA-256)
+- GSC snapshots: `scripts/seo-scorer/data/` (SQLite)
+
+---
+
+## 15. Architecture Reference
+
+### NLP Extraction Pipeline
+
+```
+SERP fetch (Serper.dev)
+  -> Corpus expansion (DataForSEO + authority seeds + self-reference articles)
+    -> Page scraping (Tier 1: article-extractor, Tier 2: cheerio fallback)
+      -> Tokenization + domain-aware stop-word filtering
+        -> N-gram generation (unigrams, bigrams, trigrams)
+          -> TF-IDF scoring across competitor corpus
+            -> Entity enrichment (compromise NLP)
+              -> Per-term frequency targets (p25/p75 of competitor counts)
+                -> Priority classification (high / medium / low)
+                  -> Output .diy-surfer-targets.json
+```
+
+### Key Source Files
+
+| File | Purpose |
+|------|---------|
+| `scripts/seo-scorer/index.mjs` | CLI entry point (commander-based) |
+| `scripts/seo-scorer/utils/config.mjs` | Central config: weights, paths, API keys, thresholds |
+| `scripts/seo-scorer/analyzers/nlp-extract.mjs` | Core NLP pipeline: tokenize, TF-IDF, n-grams, entity enrichment |
+| `scripts/seo-scorer/analyzers/nlp-coverage.mjs` | Scores article text against NLP targets |
+| `scripts/seo-scorer/analyzers/readability.mjs` | Flesch, ARI, sentence/paragraph analysis |
+| `scripts/seo-scorer/analyzers/writing-quality.mjs` | write-good, passive voice, transitions, cliches |
+| `scripts/seo-scorer/analyzers/structure.mjs` | Headings, links, word count, FAQ, CTA |
+| `scripts/seo-scorer/analyzers/keyword-coverage.mjs` | Keyword placement, density, TF-IDF, semantic |
+| `scripts/seo-scorer/analyzers/schema-markup.mjs` | FAQ/Article/HowTo schema signals |
+| `scripts/seo-scorer/analyzers/aeo-signals.mjs` | Answer paragraphs, citations, entities, PAA |
+| `scripts/seo-scorer/analyzers/llm-quality.mjs` | Claude API content quality check |
+| `scripts/seo-scorer/fetchers/article.mjs` | Article loader (keyword resolution, target loading) |
+| `scripts/seo-scorer/fetchers/serp.mjs` | SERP data fetcher (Serper.dev) |
+| `scripts/seo-scorer/fetchers/competitor-text.mjs` | Tiered page scraping with disk cache |
+| `scripts/seo-scorer/fetchers/keyword-expand.mjs` | Corpus expansion (DataForSEO + seeds) |
+| `scripts/seo-scorer/fetchers/gsc.mjs` | Google Search Console API client |
+| `scripts/seo-scorer/scorers/weighted.mjs` | Weighted score calculator with redistribution |
+| `scripts/seo-scorer/scorers/report.mjs` | Console and JSON report generation |
+
+### Publishing Checklist
+
+- [ ] NLP targets extracted (`extract` command or legacy `.surfer-targets.json`)
+- [ ] Article scores >= 9.0 OVERALL (`node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp`)
+- [ ] Validation passes (`node scripts/validate-article.mjs <slug>`)
+- [ ] Frontmatter complete: `title`, `description` (120-160 chars), `publishedDate`, `author`, `heroImage`
+- [ ] MDX copied from `drafts/` to `blog/` (`cp src/content/drafts/<slug>.mdx src/content/blog/<slug>.mdx`)
+- [ ] `content-queue.json` updated: `status` -> `"published"`, `diyScore`, `diyScoredAt` added
+- [ ] Hero image exists at `public/blog/<slug>.webp` (or use a shared placeholder)
+- [ ] Internal links point to existing published articles (check slugs against content queue)
+- [ ] Authority links are valid URLs (irs.gov, fincen.gov, law.cornell.edu)
+- [ ] No broken markdown (tables render, lists properly formatted, no unclosed tags)
+- [ ] Git committed and pushed to `main`
+- [ ] Docker rebuilt on Hetzner: `docker compose pull d2c-app && docker compose up -d d2c-app`
 
 ---
