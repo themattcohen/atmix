@@ -59,3 +59,9 @@ D2C-STATUS.md
 
 # Playwright auth state
 tests/e2e/.auth/
+
+# SEO scorer artifacts (scoring attempt logs, NLP caches)
+*.diy-score.*.json
+*.diy-score.json
+scripts/seo-scorer/.serp-cache/
+scripts/seo-scorer/.nlp-cache/

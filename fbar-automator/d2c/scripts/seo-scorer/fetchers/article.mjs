@@ -214,6 +214,20 @@ export async function loadArticle(
     plainText,
   );
 
+  // 8. Load NLP targets: Surfer (manual) first, DIY fallback second
+  let surferTargets = null;
+  const surferPath = path.join(DRAFTS_DIR, `${slug}.surfer-targets.json`);
+  const diySurferPath = path.join(DRAFTS_DIR, `${slug}.diy-surfer-targets.json`);
+  for (const candidatePath of [surferPath, diySurferPath]) {
+    try {
+      const raw = await fs.readFile(candidatePath, 'utf-8');
+      surferTargets = JSON.parse(raw);
+      break; // Use first found
+    } catch {
+      // Try next candidate
+    }
+  }
+
   return {
     slug,
     keyword,
@@ -233,5 +247,6 @@ export async function loadArticle(
     hasTable,
     hasList,
     hasDisclaimer,
+    surferTargets,
   };
 }

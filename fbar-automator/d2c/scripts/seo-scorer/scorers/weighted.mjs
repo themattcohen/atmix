@@ -116,6 +116,7 @@ function dimensionLabel(dimension) {
     schemaMarkup: 'Schema',
     aeoSignals: 'AEO',
     llmQuality: 'LLM',
+    nlpCoverage: 'NLP',
   };
   return labels[dimension] || dimension;
 }

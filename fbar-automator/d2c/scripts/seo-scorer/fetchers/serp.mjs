@@ -35,10 +35,12 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
  * @param {string} keyword
  * @returns {string}  SHA-256 hex digest (first 16 chars).
  */
-function cacheKey(keyword) {
+function cacheKey(keyword, num = 10) {
+  const base = keyword.toLowerCase().trim();
+  const suffix = num !== 10 ? `_n${num}` : '';
   return crypto
     .createHash('sha256')
-    .update(keyword.toLowerCase().trim())
+    .update(base + suffix)
     .digest('hex')
     .slice(0, 16);
 }
@@ -56,9 +58,9 @@ async function ensureCacheDir() {
  * @param {string} keyword
  * @returns {Promise<object|null>}  Cached data or null if missing/expired.
  */
-async function readCache(keyword) {
+async function readCache(keyword, num = 10) {
   try {
-    const filePath = path.join(SERP_CACHE_DIR, `${cacheKey(keyword)}.json`);
+    const filePath = path.join(SERP_CACHE_DIR, `${cacheKey(keyword, num)}.json`);
     const raw = await fs.readFile(filePath, 'utf-8');
     const cached = JSON.parse(raw);
 
@@ -82,9 +84,9 @@ async function readCache(keyword) {
  * @param {string} keyword
  * @param {object} data  Normalized SERP data.
  */
-async function writeCache(keyword, data) {
+async function writeCache(keyword, data, num = 10) {
   await ensureCacheDir();
-  const filePath = path.join(SERP_CACHE_DIR, `${cacheKey(keyword)}.json`);
+  const filePath = path.join(SERP_CACHE_DIR, `${cacheKey(keyword, num)}.json`);
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -197,15 +199,17 @@ function normalizeResponse(keyword, response) {
  *   - The API request fails
  *
  * @param {string} keyword  Search keyword or phrase.
+ * @param {object} [options]
+ * @param {number} [options.num=10]  Number of SERP results to request (max 20).
  * @returns {Promise<object|null>}  Normalized SERP data or null.
  */
-export async function fetchSerpData(keyword) {
+export async function fetchSerpData(keyword, { num = 10 } = {}) {
   if (!SERPER_API_KEY) {
     return null;
   }
 
   // Check cache first
-  const cached = await readCache(keyword);
+  const cached = await readCache(keyword, num);
   if (cached) {
     return cached;
   }
@@ -220,7 +224,7 @@ export async function fetchSerpData(keyword) {
       },
       body: JSON.stringify({
         q: keyword,
-        num: 10,
+        num: Math.min(num, 20),
       }),
     });
 
@@ -236,7 +240,7 @@ export async function fetchSerpData(keyword) {
     const data = normalizeResponse(keyword, raw);
 
     // Cache the result
-    await writeCache(keyword, data);
+    await writeCache(keyword, data, num);
 
     return data;
   } catch (err) {

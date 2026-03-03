@@ -52,6 +52,7 @@ export function printConsoleReport(slug, keyword, result, analyzerResults) {
     'writingQuality',
     'structure',
     'keywordCoverage',
+    'nlpCoverage',
     'schemaMarkup',
     'aeoSignals',
     'llmQuality',
@@ -241,6 +242,7 @@ const DIMENSION_DISPLAY_NAMES = {
   writingQuality: 'Writing Quality',
   structure: 'Structure',
   keywordCoverage: 'Keyword Coverage',
+  nlpCoverage: 'NLP Coverage',
   schemaMarkup: 'Schema Markup',
   aeoSignals: 'AEO Signals',
   llmQuality: 'LLM Quality',
@@ -340,6 +342,23 @@ function formatDetailSummary(dimension, details) {
         parts.push(`${details.entityCoverage.count} entities`);
       }
       return parts.join(', ') || 'no details';
+    }
+
+    case 'nlpCoverage': {
+      const parts = [];
+      if (details.highPriority != null) {
+        parts.push(`High: ${details.highPriority.met}/${details.highPriority.total}`);
+      }
+      if (details.mediumPriority != null) {
+        parts.push(`Med: ${details.mediumPriority.pctMet}%`);
+      }
+      if (details.lowPriority != null) {
+        parts.push(`Low: ${details.lowPriority.pctPresent}%`);
+      }
+      if (details.surferContentScore != null) {
+        parts.push(`Surfer: ${details.surferContentScore}`);
+      }
+      return parts.join(', ') || summarizeDetails(details);
     }
 
     case 'llmQuality': {

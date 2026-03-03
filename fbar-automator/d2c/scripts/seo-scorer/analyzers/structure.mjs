@@ -120,7 +120,7 @@ function countInternalLinks(links) {
  * @param {object} [_options] - Unused; present for interface consistency.
  * @returns {{ dimension: string, score: number, weight: number, details: object, issues: string[] }}
  */
-export function analyze(article, _options = {}) {
+export function analyze(article, options = {}) {
   const {
     headings = [],
     links = [],
@@ -185,11 +185,17 @@ export function analyze(article, _options = {}) {
   const listScore = hasList ? 0.5 : 0;
   score += Math.min(1, tableScore + listScore);
 
-  // Word count
+  // Word count — use Surfer targets when available, otherwise default ranges
+  const surfer = options?.surferTargets?.targets || {};
+  const wcMin = surfer?.wordCount?.min || 1500;
+  const wcMax = surfer?.wordCount?.max || 3000;
+  const wcSoftMin = Math.round(wcMin * 0.8); // 80% of min for partial credit
+  const wcSoftMax = Math.round(wcMax * 1.33); // 133% of max for partial credit
+
   let wordCountScore = 0;
-  if (wordCount >= 1500 && wordCount <= 3000) {
+  if (wordCount >= wcMin && wordCount <= wcMax) {
     wordCountScore = 1;
-  } else if ((wordCount >= 1200 && wordCount < 1500) || (wordCount > 3000 && wordCount <= 4000)) {
+  } else if ((wordCount >= wcSoftMin && wordCount < wcMin) || (wordCount > wcMax && wordCount <= wcSoftMax)) {
     wordCountScore = 0.5;
   }
   score += wordCountScore;
@@ -259,12 +265,12 @@ export function analyze(article, _options = {}) {
   }
 
   if (wordCountScore < 1) {
-    if (wordCount < 1200) {
-      issues.push(`Word count is ${wordCount} (target 1500-3000). Article needs more depth.`);
-    } else if (wordCount < 1500) {
-      issues.push(`Word count is ${wordCount} (target 1500-3000). Consider expanding content slightly.`);
+    if (wordCount < wcSoftMin) {
+      issues.push(`Word count is ${wordCount} (target ${wcMin}-${wcMax}). Article needs more depth.`);
+    } else if (wordCount < wcMin) {
+      issues.push(`Word count is ${wordCount} (target ${wcMin}-${wcMax}). Consider expanding content slightly.`);
     } else {
-      issues.push(`Word count is ${wordCount} (target 1500-3000). Consider trimming for focus.`);
+      issues.push(`Word count is ${wordCount} (target ${wcMin}-${wcMax}). Consider trimming for focus.`);
     }
   }
 

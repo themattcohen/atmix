@@ -37,6 +37,12 @@ export const SCORES_DIR = path.join(SCORER_ROOT, '.scores');
 /** Directory where cached SERP results are stored. */
 export const SERP_CACHE_DIR = path.join(SCORER_ROOT, '.serp-cache');
 
+/** Directory where cached NLP extraction results are stored. */
+export const NLP_CACHE_DIR = path.join(SCORER_ROOT, '.nlp-cache');
+
+/** Directory where GSC SQLite snapshots are stored. */
+export const DATA_DIR = path.join(SCORER_ROOT, 'data');
+
 // ---------------------------------------------------------------------------
 // API keys (read from environment — never hard-coded)
 // ---------------------------------------------------------------------------
@@ -47,6 +53,21 @@ if (!SERPER_API_KEY) {
 }
 export const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
 
+// DataForSEO (keyword expansion for corpus building)
+export const DATAFORSEO_LOGIN = process.env.DATAFORSEO_LOGIN || '';
+export const DATAFORSEO_PASSWORD = process.env.DATAFORSEO_PASSWORD || '';
+
+// Google NLP API (entity salience enrichment — optional)
+export const GOOGLE_NLP_API_KEY = process.env.GOOGLE_NLP_API_KEY || '';
+
+// Google Search Console (GSC feedback loop)
+export const GSC_CLIENT_EMAIL = process.env.GSC_CLIENT_EMAIL || '';
+export const GSC_PRIVATE_KEY = process.env.GSC_PRIVATE_KEY || '';
+
+// Site configuration
+export const SITE_URL = process.env.SITE_URL || 'https://fbardirect.com';
+export const GSC_SITE_URL = process.env.GSC_SITE_URL || 'sc-domain:fbardirect.com';
+
 // ---------------------------------------------------------------------------
 // Scoring dimensions — weights MUST sum to 1.0
 // ---------------------------------------------------------------------------
@@ -56,13 +77,14 @@ export const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
  * weighted sum:  sum(weight_i * subscore_i).
  */
 export const DIMENSION_WEIGHTS = {
-  readability:      0.12,
+  readability:      0.10,
   writingQuality:   0.08,
   structure:        0.12,
-  keywordCoverage:  0.20,
+  keywordCoverage:  0.10,
   schemaMarkup:     0.08,
-  aeoSignals:       0.20,
-  llmQuality:       0.20,
+  aeoSignals:       0.15,
+  llmQuality:       0.15,
+  nlpCoverage:      0.22,
 };
 
 // Sanity-check: weights must sum to 1.0 (within floating-point tolerance).
