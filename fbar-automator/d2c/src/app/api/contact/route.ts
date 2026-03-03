@@ -29,10 +29,12 @@ const contactSchema = z.object({
     "Filing Help",
     "Billing",
     "Technical Issue",
+    "Chat Escalation",
     "Other",
   ]),
   message: z.string().min(10, "Message must be at least 10 characters").max(5000),
   turnstileToken: z.string().min(1, "Security verification is required"),
+  chatTranscript: z.string().max(10000).optional(),
 });
 
 /* ---------- Turnstile verification ---------- */
@@ -75,7 +77,22 @@ function buildNotificationHtml(data: {
   email: string;
   subject: string;
   message: string;
+  chatTranscript?: string;
 }): string {
+  const transcriptSection = data.chatTranscript
+    ? `
+        <tr>
+          <td colspan="2" style="padding: 16px 12px 4px;">
+            <strong style="font-size: 14px;">Chat Transcript:</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding: 4px 12px 8px;">
+            <pre style="font-family: monospace; font-size: 13px; background: #f5f5f5; padding: 12px; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; margin: 0;">${escapeHtml(data.chatTranscript)}</pre>
+          </td>
+        </tr>`
+    : "";
+
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: #112e51; padding: 24px; text-align: center;">
@@ -98,7 +115,7 @@ function buildNotificationHtml(data: {
           <tr>
             <td style="padding: 8px 12px; font-weight: bold; vertical-align: top;">Message:</td>
             <td style="padding: 8px 12px; white-space: pre-wrap;">${escapeHtml(data.message)}</td>
-          </tr>
+          </tr>${transcriptSection}
         </table>
       </div>
     </div>
@@ -137,7 +154,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
-    const { name, email, subject, message, turnstileToken } = parsed.data;
+    const { name, email, subject, message, turnstileToken, chatTranscript } = parsed.data;
 
     // Verify Turnstile
     const turnstileOk = await verifyTurnstile(turnstileToken);
@@ -156,7 +173,7 @@ export async function POST(req: Request) {
       to: supportEmail,
       replyTo: email,
       subject: `[FBAR Direct Contact] ${subject} — from ${name}`,
-      html: buildNotificationHtml({ name, email, subject, message }),
+      html: buildNotificationHtml({ name, email, subject, message, chatTranscript }),
     });
 
     // Send acknowledgement to user

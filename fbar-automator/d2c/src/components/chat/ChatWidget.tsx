@@ -1,7 +1,8 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Mail, ArrowLeft } from "lucide-react";
+import { ChatEscalationForm } from "./ChatEscalationForm";
 import {
   useState,
   useRef,
@@ -13,6 +14,7 @@ import { ChatMessage } from "./ChatMessage";
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState<"chat" | "escalation">("chat");
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -117,89 +119,124 @@ export function ChatWidget() {
         >
           {/* Header */}
           <div className="flex items-center justify-between bg-gov-blue px-4 py-3">
-            <h2 className="font-heading text-sm font-bold text-white">
-              FBAR Direct Assistant
-            </h2>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="rounded p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-              aria-label="Close chat assistant"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          {/* Messages area */}
-          <div className="flex-1 overflow-y-auto px-4 py-3">
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                role={message.role as "user" | "assistant"}
-                content={getMessageContent(message)}
-              />
-            ))}
-
-            {/* Loading indicator */}
-            {isLoading &&
-              messages.length > 0 &&
-              (messages[messages.length - 1].role as string) === "user" && (
-                <div className="mb-3 flex justify-start">
-                  <div className="rounded-lg bg-gray-100 px-3 py-2 text-sm text-text-secondary">
-                    <span className="inline-flex items-center gap-1">
-                      <span
-                        className="animate-bounce"
-                        style={{ animationDelay: "0ms" }}
-                      >
-                        .
-                      </span>
-                      <span
-                        className="animate-bounce"
-                        style={{ animationDelay: "150ms" }}
-                      >
-                        .
-                      </span>
-                      <span
-                        className="animate-bounce"
-                        style={{ animationDelay: "300ms" }}
-                      >
-                        .
-                      </span>
-                    </span>
-                  </div>
-                </div>
+            <div className="flex items-center gap-2">
+              {view === "escalation" && (
+                <button
+                  onClick={() => setView("chat")}
+                  className="rounded p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  aria-label="Back to chat"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </button>
               )}
-
-            <div ref={messagesEndRef} />
+              <h2 className="font-heading text-sm font-bold text-white">
+                {view === "chat" ? "FBAR Direct Assistant" : "Email Support"}
+              </h2>
+            </div>
+            <div className="flex items-center gap-1">
+              {view === "chat" && (
+                <button
+                  onClick={() => setView("escalation")}
+                  className="rounded p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  aria-label="Email support"
+                  title="Email support"
+                >
+                  <Mail className="h-4 w-4" />
+                </button>
+              )}
+              <button
+                onClick={() => { setIsOpen(false); setView("chat"); }}
+                className="rounded p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                aria-label="Close chat assistant"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
-          {/* Input area */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="flex items-end gap-2 border-t border-border-gray px-3 py-2"
-          >
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder="Type your question..."
-              rows={1}
-              className="max-h-24 flex-1 resize-none rounded-lg border border-border-gray bg-gray-50 px-3 py-2 font-body text-sm text-text-primary placeholder:text-text-secondary focus:border-gov-blue focus:outline-none focus:ring-1 focus:ring-gov-blue"
-              aria-label="Chat message input"
-              disabled={isLoading}
+          {view === "chat" ? (
+            <>
+              {/* Messages area */}
+              <div className="flex-1 overflow-y-auto px-4 py-3">
+                {messages.map((message) => (
+                  <ChatMessage
+                    key={message.id}
+                    role={message.role as "user" | "assistant"}
+                    content={getMessageContent(message)}
+                  />
+                ))}
+
+                {/* Loading indicator */}
+                {isLoading &&
+                  messages.length > 0 &&
+                  (messages[messages.length - 1].role as string) === "user" && (
+                    <div className="mb-3 flex justify-start">
+                      <div className="rounded-lg bg-gray-100 px-3 py-2 text-sm text-text-secondary">
+                        <span className="inline-flex items-center gap-1">
+                          <span
+                            className="animate-bounce"
+                            style={{ animationDelay: "0ms" }}
+                          >
+                            .
+                          </span>
+                          <span
+                            className="animate-bounce"
+                            style={{ animationDelay: "150ms" }}
+                          >
+                            .
+                          </span>
+                          <span
+                            className="animate-bounce"
+                            style={{ animationDelay: "300ms" }}
+                          >
+                            .
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input area */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend();
+                }}
+                className="flex items-end gap-2 border-t border-border-gray px-3 py-2"
+              >
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={onKeyDown}
+                  placeholder="Type your question..."
+                  rows={1}
+                  className="max-h-24 flex-1 resize-none rounded-lg border border-border-gray bg-gray-50 px-3 py-2 font-body text-sm text-text-primary placeholder:text-text-secondary focus:border-gov-blue focus:outline-none focus:ring-1 focus:ring-gov-blue"
+                  aria-label="Chat message input"
+                  disabled={isLoading}
+                />
+                <button
+                  type="submit"
+                  disabled={!canSend}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gov-blue text-white transition-colors hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Send message"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+              </form>
+            </>
+          ) : (
+            <ChatEscalationForm
+              messages={messages.map((m) => ({
+                role: m.role,
+                content: getMessageContent(m),
+              }))}
+              onBack={() => setView("chat")}
             />
-            <button
-              type="submit"
-              disabled={!canSend}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gov-blue text-white transition-colors hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
-              aria-label="Send message"
-            >
-              <Send className="h-4 w-4" />
-            </button>
-          </form>
+          )}
         </div>
       )}
     </>
