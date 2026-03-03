@@ -2,6 +2,7 @@
 
 import json
 import os
+import sys
 import streamlit as st
 from pathlib import Path
 from dotenv import load_dotenv
@@ -96,19 +97,30 @@ with st.sidebar:
         if surfer_ok is not None:
             st.markdown(f"Surfer: {'✅' if surfer_ok else '❌'}")
     else:
-        headless = st.checkbox("Headless mode", value=True, key="sb_headless")
+        _is_headless_server = sys.platform == "linux" and not os.environ.get("DISPLAY")
+        if _is_headless_server:
+            headless = True
+            st.caption("Headless mode forced (no display server detected)")
+        else:
+            headless = st.checkbox("Headless mode", value=True, key="sb_headless")
         if st.button("Launch browser", key="sb_launch_browser", type="primary"):
             with st.spinner("Launching Chromium..."):
                 st.session_state.browser_manager = BrowserManager(headless=headless)
                 bm = st.session_state.browser_manager
-                components.run_async(bm.launch())
-                page = components.run_async(bm.new_page())
-                st.session_state.browser_page = page
+                try:
+                    components.run_async(bm.launch())
+                    page = components.run_async(bm.new_page())
+                    st.session_state.browser_page = page
+                except Exception as exc:
+                    st.session_state.browser_manager = BrowserManager()
+                    st.error(f"Browser launch failed: {exc}")
+                    return
             st.rerun()
-        st.caption(
-            "First run? Uncheck headless, launch, then manually log into "
-            "SEMRush and Surfer in the browser window. Cookies persist."
-        )
+        if not _is_headless_server:
+            st.caption(
+                "First run? Uncheck headless, launch, then manually log into "
+                "SEMRush and Surfer in the browser window. Cookies persist."
+            )
 
     # ---- New pipeline run ----
     st.markdown("---")
