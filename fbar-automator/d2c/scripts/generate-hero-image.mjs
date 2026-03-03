@@ -65,6 +65,24 @@ const IMAGERY_MAP = [
   { pattern: /child|minor/i, imagery: 'family finance, guardianship, youth savings, parental responsibility' },
   { pattern: /amend|correct|fix/i, imagery: 'correction marks, editing, revision, improvement arrows' },
   { pattern: /statute of limitation/i, imagery: 'hourglass, ticking clock, legal timeline, expiring deadline' },
+  // Wave 3-5 countries
+  { pattern: /mexico|mexican/i, imagery: 'Mexican motifs, Latin American banking, peso currency' },
+  { pattern: /singapore|cpf/i, imagery: 'Singapore skyline, Southeast Asian finance, CPF retirement' },
+  { pattern: /switzerland|swiss/i, imagery: 'Swiss motifs, Alpine banking, Swiss franc currency' },
+  { pattern: /hong kong|mpf/i, imagery: 'Hong Kong skyline, Asian financial hub, MPF retirement' },
+  { pattern: /uae|dubai|emirates/i, imagery: 'Dubai skyline, Middle Eastern finance, dirham currency' },
+  { pattern: /brazil|previdencia/i, imagery: 'Brazilian motifs, South American banking, real currency' },
+  { pattern: /taiwan/i, imagery: 'Taiwanese motifs, East Asian banking, TWD currency' },
+  { pattern: /south korea|korean|nps/i, imagery: 'South Korean motifs, Asian banking, won currency' },
+  // Wave 3-5 topics
+  { pattern: /closed account|reporting closed/i, imagery: 'closed folder, archived documents, completed filing' },
+  { pattern: /tax preparer|cpa|accountant/i, imagery: 'professional accountant, tax preparation desk, filing responsibility' },
+  { pattern: /what counts|foreign financial/i, imagery: 'checklist of account types, global banking icons, classification guide' },
+  { pattern: /nft|staking|defi/i, imagery: 'DeFi protocols, NFT tokens, blockchain staking, digital finance' },
+  { pattern: /form 3520|foreign trust/i, imagery: 'trust documents, foreign trust structures, dual form filing' },
+  { pattern: /form 8865|foreign partnership/i, imagery: 'partnership documents, business structures, cross-border entities' },
+  { pattern: /reasonable cause/i, imagery: 'defense shield, legal argument, compliance evidence, mitigation' },
+  { pattern: /willful.*non.willful|per account.*per form/i, imagery: 'legal scales, penalty comparison, per-item vs per-form' },
 ];
 
 /**
