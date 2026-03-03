@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpine Tax &amp; Consulting - Project Plan</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1B4965;
+    --teal: #2A9D8F;
+    --terracotta: #E76F51;
+    --bg: #FAFBFC;
+    --bg-alt: #F0F2F5;
+    --text: #1a1a2e;
+    --text-muted: #5a6175;
+    --border: #e2e5ea;
+    --radius: 10px;
+    --shadow: 0 2px 8px rgba(27,73,101,0.08);
+    --shadow-lg: 0 8px 32px rgba(27,73,101,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Login gate ---- */
+  #login-gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--blue) 0%, #264653 100%);
+  }
+  .login-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .login-card h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .login-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+  .login-card input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .login-card input:focus { border-color: var(--teal); }
+  .login-card button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--terracotta);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .login-card button:hover { background: #d45a3f; }
+  .login-card button:active { transform: scale(0.98); }
+  .login-error {
+    color: var(--terracotta);
+    font-size: 0.85rem;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ---- Main content (hidden until auth) ---- */
+  #plan-content { display: none; }
+
+  /* ---- Header ---- */
+  .plan-header {
+    background: linear-gradient(135deg, var(--blue) 0%, #264653 100%);
+    color: #fff;
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+  .plan-header h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .plan-header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .plan-header .meta {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    opacity: 0.65;
+  }
+
+  /* ---- Container ---- */
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- Executive summary ---- */
+  .exec-summary {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 36px;
+    margin: -32px auto 40px;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    border-left: 5px solid var(--teal);
+  }
+  .exec-summary h2 {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--blue);
+    font-size: 1.35rem;
+    margin-bottom: 16px;
+  }
+  .exec-summary p { color: var(--text-muted); margin-bottom: 12px; }
+  .exec-summary ul { margin: 12px 0 0 20px; color: var(--text-muted); }
+  .exec-summary li { margin-bottom: 6px; }
+
+  /* ---- Table of Contents ---- */
+  .toc {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow);
+  }
+  .toc h3 {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--blue);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 8px 24px;
+  }
+  .toc a {
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 0.92rem;
+    padding: 4px 0;
+    display: block;
+    transition: color 0.15s;
+  }
+  .toc a:hover { color: var(--blue); text-decoration: underline; }
+  .toc a .num { color: var(--text-muted); margin-right: 6px; font-weight: 500; }
+
+  /* ---- Sections ---- */
+  .section {
+    background: #fff;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { background: var(--bg-alt); }
+  .section-header h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--blue);
+    flex: 1;
+  }
+  .section-num {
+    background: var(--blue);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .chevron {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+  .section.open .chevron { transform: rotate(180deg); }
+  .section-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .section.open .section-body { max-height: 15000px; }
+  .section-inner {
+    padding: 0 28px 28px;
+    padding-left: 74px;
+  }
+
+  /* ---- Content elements ---- */
+  .section-inner h3 {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--blue);
+    font-size: 1.05rem;
+    margin: 24px 0 10px;
+  }
+  .section-inner h3:first-child { margin-top: 0; }
+  .section-inner p { color: var(--text-muted); margin-bottom: 10px; }
+  .section-inner ul, .section-inner ol {
+    margin: 8px 0 12px 20px;
+    color: var(--text-muted);
+  }
+  .section-inner li { margin-bottom: 5px; }
+  .section-inner strong { color: var(--text); }
+  .section-inner code {
+    background: var(--bg-alt);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+  }
+
+  /* ---- Tables ---- */
+  .plan-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px;
+    font-size: 0.9rem;
+  }
+  .plan-table th {
+    background: var(--bg-alt);
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: var(--blue);
+    border-bottom: 2px solid var(--border);
+  }
+  .plan-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .plan-table tr:hover td { background: #fafbfc; }
+
+  /* ---- Callout boxes ---- */
+  .callout {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 0.92rem;
+  }
+  .callout-critical {
+    background: #fef2f0;
+    border-left: 4px solid var(--terracotta);
+    color: #9b3c27;
+  }
+  .callout-info {
+    background: #eef7f6;
+    border-left: 4px solid var(--teal);
+    color: #1d7268;
+  }
+  .callout-title { font-weight: 700; margin-bottom: 4px; }
+
+  /* Site arch tree */
+  .site-tree {
+    background: var(--bg-alt);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    color: var(--text-muted);
+    margin: 12px 0 16px;
+    white-space: pre;
+  }
+
+  /* ---- Checklist ---- */
+  .checklist { list-style: none; margin-left: 0 !important; }
+  .checklist li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 8px !important;
+  }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* ---- Badge ---- */
+  .badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .badge-p0 { background: #fef2f0; color: var(--terracotta); }
+  .badge-p1 { background: #fff8e6; color: #b8860b; }
+  .badge-p2 { background: #eef7f6; color: var(--teal); }
+
+  /* ---- Footer ---- */
+  .plan-footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* ---- Expand/Collapse All ---- */
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+  .controls button {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .controls button:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  /* ---- Print ---- */
+  @media print {
+    #login-gate { display: none !important; }
+    #plan-content { display: block !important; }
+    .plan-header { padding: 24px; break-after: avoid; }
+    .section-body { max-height: none !important; overflow: visible !important; }
+    .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    .chevron, .controls { display: none; }
+    .exec-summary { box-shadow: none; border: 1px solid #ddd; }
+    .toc { box-shadow: none; border: 1px solid #ddd; }
+    body { font-size: 11pt; }
+  }
+
+  /* ---- Mobile ---- */
+  @media (max-width: 640px) {
+    .plan-header { padding: 36px 16px 32px; }
+    .exec-summary { padding: 28px 20px; margin: -24px 8px 28px; }
+    .section-header { padding: 16px 16px; gap: 10px; }
+    .section-inner { padding: 0 16px 20px; padding-left: 56px; }
+    .toc { padding: 20px; }
+    .toc-grid { grid-template-columns: 1fr; }
+    .login-card { margin: 16px; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN GATE ==================== -->
+<div id="login-gate">
+  <div class="login-card">
+    <h1>Alpine Tax &amp; Consulting</h1>
+    <p>Enter the password to view the project plan.</p>
+    <input type="password" id="pwd-input" placeholder="Password" autocomplete="off" autofocus>
+    <button id="pwd-btn" onclick="attemptLogin()">View Plan</button>
+    <div class="login-error" id="pwd-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- ==================== PLAN CONTENT ==================== -->
+<div id="plan-content">
+
+<header class="plan-header">
+  <h1>Alpine Tax &amp; Consulting</h1>
+  <div class="subtitle">Complete Digital Overhaul &mdash; Project Plan</div>
+  <div class="meta">Prepared March 2026 &nbsp;|&nbsp; Confidential</div>
+</header>
+
+<div class="container">
+
+<!-- ---- Executive Summary ---- -->
+<div class="exec-summary">
+  <h2>Executive Summary</h2>
+  <p>This plan covers a complete digital transformation for Alpine Tax &amp; Consulting LLC, a Denver-based tax practice serving 150&ndash;300 clients (individuals + small businesses, S-corps, partnerships).</p>
+  <p><strong>What we're building:</strong></p>
+  <ul>
+    <li><strong>New WordPress website</strong> &mdash; 22-25 pages replacing the current 5-page GoDaddy Website Builder site. Professional design, full SEO, blog, scheduling, and client portal integration.</li>
+    <li><strong>Google Business Profile</strong> &mdash; Created from scratch with proper SAB configuration, photos, and a weekly posting calendar.</li>
+    <li><strong>Local SEO foundation</strong> &mdash; 75+ citations within 3 months, NAP consistency, service-area pages for 7 Denver metro cities.</li>
+    <li><strong>Review generation</strong> &mdash; Automated pipeline via TaxDome targeting 120+ Google reviews within 12 months.</li>
+    <li><strong>Content strategy</strong> &mdash; S-Corp pillar content (primary differentiator), 2 blog posts/month, 12-month editorial calendar.</li>
+    <li><strong>EA transition plan</strong> &mdash; Same-day credential updates across all channels when Vincent passes the SEE.</li>
+  </ul>
+  <p style="margin-top:16px"><strong>Estimated Year 1 cost:</strong> $1,500&ndash;$2,500 (hosting, tools, memberships).</p>
+</div>
+
+<!-- ---- Table of Contents ---- -->
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <div class="toc-grid">
+    <a href="#s1"><span class="num">1.</span> Project Infrastructure</a>
+    <a href="#s2"><span class="num">2.</span> WordPress Website Rebuild</a>
+    <a href="#s3"><span class="num">3.</span> Google Business Profile</a>
+    <a href="#s4"><span class="num">4.</span> Citation Strategy</a>
+    <a href="#s5"><span class="num">5.</span> Review Generation</a>
+    <a href="#s6"><span class="num">6.</span> Content Strategy</a>
+    <a href="#s7"><span class="num">7.</span> Link Building</a>
+    <a href="#s8"><span class="num">8.</span> EA Transition Plan</a>
+    <a href="#s9"><span class="num">9.</span> Task Breakdown</a>
+    <a href="#s10"><span class="num">10.</span> KPIs &amp; Milestones</a>
+    <a href="#s11"><span class="num">11.</span> Verification Plan</a>
+    <a href="#s12"><span class="num">12.</span> Cost Summary</a>
+  </div>
+</div>
+
+<!-- ---- Controls ---- -->
+<div class="controls">
+  <button onclick="toggleAll(true)">Expand All</button>
+  <button onclick="toggleAll(false)">Collapse All</button>
+</div>
+
+<!-- ========== SECTION 1 ========== -->
+<div class="section" id="s1">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">1</span>
+    <h2>Project Infrastructure</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <h3>Project Management &mdash; Linear</h3>
+    <p>All three stakeholders (Matt, Vinnie, Claude) collaborate through Linear. Tasks are organized by owner with clear status lanes:</p>
+    <ul>
+      <li><strong>Pending Claude</strong> &mdash; tasks Claude executes autonomously</li>
+      <li><strong>Pending Vinnie</strong> &mdash; tasks requiring Vinnie's action (photos, credentials, config)</li>
+      <li><strong>Pending Matt</strong> &mdash; tasks for Matt to handle</li>
+      <li><strong>Ongoing Projects</strong> &mdash; long-running workstreams</li>
+    </ul>
+    <p>Labels: <code>P0-Critical</code>, <code>P1-High</code>, <code>P2-Medium</code>, <code>P3-Low</code>, plus domain tags (Website, SEO, Content, GBP, Reviews, Citations, EA-Transition).</p>
+
+    <h3>Documentation Hub</h3>
+    <p>Key reference files live in the monorepo under <code>alpinetax/claudedocs/</code>:</p>
+    <ul>
+      <li><strong>project-brief.md</strong> &mdash; Master project document</li>
+      <li><strong>nap-master.md</strong> &mdash; NAP consistency (single source of truth for all citations)</li>
+      <li><strong>copy-bank.md</strong> &mdash; All website copy drafts</li>
+      <li><strong>content-calendar.md</strong> &mdash; 12-month blog content calendar</li>
+      <li><strong>citation-tracker.md</strong> &mdash; Citation submission tracking</li>
+      <li><strong>ea-transition-checklist.md</strong> &mdash; EA day-of deployment checklist</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 2 ========== -->
+<div class="section" id="s2">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">2</span>
+    <h2>WordPress Website Rebuild</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+
+    <h3>Hosting &amp; Stack</h3>
+    <table class="plan-table">
+      <tr><th>Component</th><th>Choice</th><th>Notes</th></tr>
+      <tr><td>Hosting</td><td>GoDaddy Managed WordPress</td><td>Basic plan, ~$9/mo</td></tr>
+      <tr><td>Theme</td><td>Kadence (free)</td><td>Lightweight, block-editor native, fast on GoDaddy</td></tr>
+      <tr><td>Page builder</td><td>Kadence Blocks (free)</td><td>Native Gutenberg &mdash; no Elementor/Divi</td></tr>
+      <tr><td>SEO</td><td>Rank Math (free)</td><td>Schema, sitemaps, redirects, meta tags</td></tr>
+      <tr><td>Forms</td><td>WPForms Lite (free)</td><td>Contact form with service dropdown</td></tr>
+      <tr><td>Scheduling</td><td>Calendly (free tier)</td><td>Connects to Zoom + TaxDome</td></tr>
+      <tr><td>Analytics</td><td>Site Kit by Google</td><td>Reconnect existing GA4 G-BF2FDR6KMM</td></tr>
+      <tr><td>Security</td><td>Wordfence (free)</td><td></td></tr>
+      <tr><td>Backups</td><td>UpdraftPlus (free)</td><td>Supplements GoDaddy built-in</td></tr>
+    </table>
+
+    <h3>Site Architecture (22&ndash;25 pages)</h3>
+    <div class="site-tree">/                                    Homepage
+/about/                              About Vincent (E-E-A-T page)
+/services/                           Services overview
+  /services/individual-tax-preparation/
+  /services/small-business-tax-preparation/
+  /services/s-corp-partnership-returns/
+  /services/tax-planning-consultation/
+  /services/irs-representation/       (stub &rarr; full page after EA)
+/pricing/                            Transparent pricing
+/faq/                                FAQ with FAQPage schema
+/blog/                               Blog index + individual posts
+/schedule/                           Calendly inline embed
+/contact/                            Contact form + map + info
+/client-portal/                      TaxDome explainer + link
+/reviews/                            Testimonials + review CTA
+
+Service-area pages (local SEO):
+/denver-tax-preparation/
+/aurora-tax-preparation/
+/lakewood-tax-preparation/
+/centennial-tax-preparation/
+/littleton-tax-preparation/
+/highlands-ranch-tax-preparation/
+/virtual-tax-preparation/</div>
+
+    <h3>Design Direction</h3>
+    <ul>
+      <li><strong>Colors:</strong> Mountain blue (#1B4965) primary, teal (#2A9D8F) secondary, terracotta (#E76F51) accent CTAs, off-white (#FAFBFC) backgrounds</li>
+      <li><strong>Typography:</strong> DM Sans (headings), Inter (body)</li>
+      <li><strong>Imagery:</strong> Professional headshot of Vinnie (required), Colorado mountain/Denver skyline hero, no generic stock photos</li>
+      <li><strong>Layout:</strong> White space-forward, card-based service tiles, alternating white/light-gray sections</li>
+    </ul>
+
+    <div class="callout callout-critical">
+      <div class="callout-title">Credential Language Rules (Critical)</div>
+      <strong>NEVER use:</strong> CPA, Certified Public Accountant, licensed accountant<br>
+      <strong>SAFE to use:</strong> &ldquo;tax professional&rdquo;, &ldquo;tax preparer&rdquo;, &ldquo;IRS-registered tax preparer&rdquo;, &ldquo;PTIN holder&rdquo;<br>
+      <strong>EA progress:</strong> &ldquo;Currently pursuing Enrolled Agent designation&rdquo; (only if actively taking SEE exams)<br>
+      <strong>Positioning:</strong> Lead with EXPERIENCE + PERSONAL SERVICE + ACCESSIBILITY, not credentials.
+    </div>
+
+    <h3>Copy Requirements</h3>
+    <table class="plan-table">
+      <tr><th>Page</th><th>Words</th><th>Key Focus</th></tr>
+      <tr><td>Homepage</td><td>800&ndash;1,200</td><td>Hero headline, trust signals, 3-step process, testimonials, blog preview</td></tr>
+      <tr><td>About</td><td>600&ndash;900</td><td>Headshot, story, experience, credentials (carefully worded), philosophy</td></tr>
+      <tr><td>Services overview</td><td>500&ndash;700</td><td>Card tiles linking to sub-pages, starting prices</td></tr>
+      <tr><td>Each service page</td><td>400&ndash;600</td><td>Who it's for, what's included, process, FAQ, CTA</td></tr>
+      <tr><td>Pricing</td><td>400&ndash;600</td><td>Published pricing ($600 1040, $850 MFJ, $2K business)</td></tr>
+      <tr><td>FAQ</td><td>800&ndash;1,200</td><td>15&ndash;20 questions with FAQPage schema</td></tr>
+      <tr><td>Contact</td><td>300&ndash;400</td><td>Form with name, email, phone, service dropdown, message, preference</td></tr>
+      <tr><td>Each service-area page</td><td>400&ndash;500</td><td>UNIQUE local content per city (not find-and-replace)</td></tr>
+      <tr><td>Client Portal</td><td>150&ndash;200</td><td>TaxDome explainer + prominent link</td></tr>
+    </table>
+
+    <h3>Migration Steps</h3>
+    <ol>
+      <li><strong>Pre-migration (Day 1&ndash;2):</strong> Screenshot current pages, copy text, download images, document DNS records, note analytics IDs</li>
+      <li><strong>Build on staging (Day 3&ndash;10):</strong> Install WordPress + Kadence + plugins, build all pages, configure Rank Math/schema, embed Calendly, write all copy</li>
+      <li><strong>Review (Day 11&ndash;12):</strong> Vinnie reviews content + design, mobile testing</li>
+      <li><strong>Go live (Day 13):</strong> DNS cutover, 301 redirects, verify SSL, reconnect analytics, submit sitemap</li>
+      <li><strong>Post-launch (Day 14&ndash;21):</strong> Monitor 404s, verify forms, publish first blog posts, create GBP</li>
+    </ol>
+
+    <h3>301 Redirects</h3>
+    <table class="plan-table">
+      <tr><th>Old URL</th><th>New URL</th></tr>
+      <tr><td>/services-%26-fees</td><td>/pricing/</td></tr>
+      <tr><td>/schedule-a-meeting</td><td>/schedule/</td></tr>
+      <tr><td>/contact</td><td>/contact/</td></tr>
+      <tr><td>/client-portal</td><td>/client-portal/</td></tr>
+    </table>
+
+    <h3>Schema Markup</h3>
+    <ul>
+      <li><strong>Sitewide:</strong> <code>ProfessionalService</code> (name, address, phone, email, areaServed, priceRange, openingHours, founder Person)</li>
+      <li><strong>FAQ pages:</strong> <code>FAQPage</code> schema on FAQ + service pages</li>
+      <li><strong>Blog posts:</strong> <code>Article</code> schema with author Person (Vincent Boettcher)</li>
+      <li><strong>Breadcrumbs:</strong> <code>BreadcrumbList</code> on all pages</li>
+      <li>All managed via Rank Math free tier</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 3 ========== -->
+<div class="section" id="s3">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">3</span>
+    <h2>Google Business Profile</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><span class="badge badge-p0">P0 &mdash; Week 1</span></p>
+
+    <h3>Setup</h3>
+    <ul>
+      <li>Register at business.google.com</li>
+      <li><strong>Name:</strong> Alpine Tax &amp; Consulting LLC</li>
+      <li><strong>Type:</strong> Service Area Business (SAB) &mdash; address hidden from public</li>
+      <li><strong>Verification address:</strong> Vinnie's home address (Denver metro, hidden)</li>
+      <li><strong>Service areas:</strong> Denver, Aurora, Lakewood, Centennial, Littleton, Englewood, Greenwood Village, Highlands Ranch</li>
+      <li><strong>Primary category:</strong> Tax Preparation Service</li>
+      <li><strong>Secondary:</strong> Tax Consultant, Accountant, Financial Consultant</li>
+    </ul>
+
+    <div class="callout callout-critical">
+      <div class="callout-title">Important</div>
+      Do NOT use &ldquo;Certified Public Accountant&rdquo; as a GBP category. Vinnie is not a CPA.
+    </div>
+
+    <h3>Photos (10&ndash;15 at launch)</h3>
+    <ul>
+      <li>Professional headshot of Vinnie (mandatory &mdash; #1 trust signal)</li>
+      <li>Company logo</li>
+      <li>Denver skyline cover photo with branding</li>
+      <li>At-work photos (Vinnie at desk, dual monitors, professional setting)</li>
+      <li>3&ndash;4 Denver landmark photos (Red Rocks, Union Station, etc.)</li>
+    </ul>
+
+    <h3>Posting Calendar</h3>
+    <table class="plan-table">
+      <tr><th>Period</th><th>Frequency</th><th>Topics</th></tr>
+      <tr><td>Jan&ndash;Apr</td><td>2&ndash;3x/week</td><td>Deadline reminders, filing tips, availability</td></tr>
+      <tr><td>May&ndash;Aug</td><td>1x/week</td><td>Tax planning, S-Corp education, estimated tax reminders</td></tr>
+      <tr><td>Sep&ndash;Oct</td><td>2x/week</td><td>Extension deadline, year-end planning</td></tr>
+      <tr><td>Nov&ndash;Dec</td><td>1&ndash;2x/week</td><td>Year-end strategies, new year prep</td></tr>
+    </table>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 4 ========== -->
+<div class="section" id="s4">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">4</span>
+    <h2>Citation Strategy</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <h3>NAP Master Document</h3>
+    <div class="callout callout-info">
+      <div class="callout-title">Single Source of Truth</div>
+      Business Name, Phone, Website (alpinetax.co), Email (contact@alpinetax.co), Owner (Vincent Boettcher), Credentials (PTIN Holder &rarr; update to EA when obtained). Every citation must match this exactly.
+    </div>
+
+    <h3>4-Phase Build (target: 75 citations by month 3)</h3>
+    <table class="plan-table">
+      <tr><th>Phase</th><th>Timeline</th><th>Targets</th></tr>
+      <tr><td>1</td><td>Week 1&ndash;2</td><td>Google, Yelp, Facebook, Apple Business Connect, Bing Places, YP.com</td></tr>
+      <tr><td>2</td><td>Week 3&ndash;4</td><td>Data Axle, Neustar Localeze, Foursquare, Factual</td></tr>
+      <tr><td>3</td><td>Month 2&ndash;3</td><td>IRS Directory (via AFSP), TaxDome Advisor, Thumbtack, Bark, Alignable, BBB, Chamber</td></tr>
+      <tr><td>4</td><td>Month 3&ndash;6</td><td>General directories (Manta, Hotfrog, etc.) to reach 100+</td></tr>
+    </table>
+
+    <h3>AFSP (Annual Filing Season Program)</h3>
+    <div class="callout callout-info">
+      <div class="callout-title">Immediate Action for Vinnie</div>
+      Enroll in AFSP NOW (~$100&ndash;200, 18 hours CE, completable in 1&ndash;2 weeks). This gets Vinnie: listed in the official IRS Directory of Federal Tax Return Preparers, limited IRS representation rights, and a strong credibility signal before EA is obtained.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 5 ========== -->
+<div class="section" id="s5">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">5</span>
+    <h2>Review Generation</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><span class="badge badge-p0">P0 &mdash; Leverage 150&ndash;300 existing clients</span></p>
+
+    <h3>Targets</h3>
+    <table class="plan-table">
+      <tr><th>Milestone</th><th>Timeline</th><th>Reviews</th></tr>
+      <tr><td>Initial push</td><td>Month 1&ndash;2</td><td>20&ndash;30</td></tr>
+      <tr><td>Post tax season</td><td>Month 3&ndash;5</td><td>50&ndash;75 total</td></tr>
+      <tr><td>End of year 1</td><td>Month 12</td><td>100&ndash;125</td></tr>
+    </table>
+
+    <h3>TaxDome Pipeline Automation</h3>
+    <ul>
+      <li>Add automation to &ldquo;Return Filed/Delivered&rdquo; pipeline stage</li>
+      <li>2-day delay after stage entry, then auto-send review request email</li>
+      <li>Email template: short, personal, from Vincent, with direct Google review link</li>
+      <li>Tag to prevent re-sending (e.g., &ldquo;review-requested-2026&rdquo;)</li>
+    </ul>
+
+    <div class="callout callout-critical">
+      <div class="callout-title">IRC 7216 Compliance</div>
+      <strong>NEVER</strong> confirm or deny someone is a client in review responses. <strong>NEVER</strong> mention specific services rendered. Generic responses only: &ldquo;Thank you for the kind words!&rdquo; / &ldquo;Please contact me directly to discuss your concerns.&rdquo;
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 6 ========== -->
+<div class="section" id="s6">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">6</span>
+    <h2>Content Strategy</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <h3>S-Corp Pillar Content (Primary Differentiator)</h3>
+    <p>S-Corp content has less SEO competition, attracts higher-value clients, and generates year-round demand. This is the core content play.</p>
+    <ul>
+      <li><strong>Pillar page:</strong> &ldquo;Complete Guide to S-Corp Taxation&rdquo; (3,000+ words)</li>
+      <li><strong>10 cluster articles:</strong> S-Corp vs LLC, reasonable compensation, quarterly payroll, election timing, deductions, Form 2553 walkthrough, health insurance deduction, late election relief, retirement plans</li>
+    </ul>
+
+    <h3>Blog Calendar (2 posts/month, 24/year)</h3>
+    <table class="plan-table">
+      <tr><th>Category</th><th>Share</th><th>Examples</th></tr>
+      <tr><td>Educational</td><td>40%</td><td>S-Corp guides, tax how-tos</td></tr>
+      <tr><td>Service-focused</td><td>20%</td><td>What Alpine Tax offers</td></tr>
+      <tr><td>Local</td><td>15%</td><td>Denver/Colorado-specific content</td></tr>
+      <tr><td>Seasonal</td><td>15%</td><td>Deadline reminders, filing tips</td></tr>
+      <tr><td>Thought leadership</td><td>10%</td><td>Why S-Corp, freelancer guidance</td></tr>
+    </table>
+
+    <h3>Keyword Tiers</h3>
+    <ul>
+      <li><strong>Tier 1 (service pages):</strong> &ldquo;tax preparer Denver&rdquo;, &ldquo;S-Corp tax preparer Denver&rdquo;, &ldquo;small business tax preparation Denver&rdquo;</li>
+      <li><strong>Tier 2 (local info):</strong> &ldquo;Denver tax deadlines&rdquo;, &ldquo;Colorado state tax rate&rdquo;, &ldquo;Denver freelancer tax guide&rdquo;</li>
+      <li><strong>Tier 3 (national info):</strong> &ldquo;S-Corp tax benefits&rdquo;, &ldquo;S-Corp vs LLC taxes&rdquo;, &ldquo;S-Corp reasonable compensation&rdquo;</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 7 ========== -->
+<div class="section" id="s7">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">7</span>
+    <h2>Link Building</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p>No social media &mdash; must compensate through other channels.</p>
+
+    <h3>Channels</h3>
+    <ol>
+      <li><strong>HARO / Featured.com</strong> &mdash; Tax expert pitches to journalists (2&ndash;3 placements/quarter)</li>
+      <li><strong>Denver Metro Chamber of Commerce</strong> &mdash; Member directory listing (~$350&ndash;600/yr)</li>
+      <li><strong>BBB accreditation</strong> &mdash; Trust signal + DA 70+ backlink (~$400&ndash;600/yr)</li>
+      <li><strong>SCORE Denver</strong> &mdash; Mentor/speaker opportunities</li>
+      <li><strong>Linkable assets</strong> &mdash; S-Corp Tax Savings Calculator, Colorado Small Business Tax Guide, Tax Deadline Calendar</li>
+    </ol>
+
+    <h3>Targets</h3>
+    <table class="plan-table">
+      <tr><th>Timeline</th><th>Links</th></tr>
+      <tr><td>Months 1&ndash;3</td><td>5&ndash;10 (directories, Chamber, BBB)</td></tr>
+      <tr><td>Months 4&ndash;6</td><td>3&ndash;5/month (HARO, guest posts)</td></tr>
+      <tr><td>Year 1 total</td><td>30&ndash;50 referring domains</td></tr>
+    </table>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 8 ========== -->
+<div class="section" id="s8">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">8</span>
+    <h2>EA Transition Plan</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p>When Vincent passes the SEE and obtains EA designation, execute within 48 hours:</p>
+
+    <h3>P0 &mdash; Same Day <span class="badge badge-p0">Critical</span></h3>
+    <ul>
+      <li>Update GBP: add &ldquo;Enrolled Agent&rdquo; category, update description</li>
+      <li>Update website: About page, homepage hero, service pages, schema (<code>jobTitle: "Enrolled Agent (EA)"</code>)</li>
+      <li>Self-report in PTIN account for IRS Directory upgrade</li>
+    </ul>
+
+    <h3>P1 &mdash; Within 1 Week <span class="badge badge-p1">High</span></h3>
+    <ul>
+      <li>Join NAEA ($230/yr) + claim &ldquo;Find a Tax Expert&rdquo; listing</li>
+      <li>Update all citations with EA credential</li>
+      <li>Publish blog post: &ldquo;What Is an Enrolled Agent? Why It Matters&rdquo;</li>
+      <li>GBP announcement post</li>
+      <li>Unlock full IRS Representation service page</li>
+    </ul>
+
+    <h3>P2 &mdash; Within 2 Weeks <span class="badge badge-p2">Medium</span></h3>
+    <ul>
+      <li>Client email announcement</li>
+      <li>Email signature update</li>
+      <li>Add IRS Representation as full service with dedicated page</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 9 ========== -->
+<div class="section" id="s9">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">9</span>
+    <h2>Task Breakdown</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+
+    <h3>Pending Vinnie</h3>
+    <ul class="checklist">
+      <li>Get professional headshot taken (business casual, well-lit, smiling)</li>
+      <li>Provide home address for GBP verification (private, won't be public)</li>
+      <li>Confirm business phone number for NAP master document</li>
+      <li>Confirm business hours (standard + tax season extended hours)</li>
+      <li>Collect 3&ndash;5 client testimonial quotes (with permission)</li>
+      <li>Enroll in AFSP course ($100&ndash;200, 18 hours CE)</li>
+      <li>Review and approve all website copy before launch</li>
+      <li>Set up Calendly account and connect to Zoom</li>
+      <li>Configure TaxDome pipeline automation for review requests</li>
+      <li>Personally ask 10&ndash;15 best clients for Google reviews once GBP is live</li>
+      <li>Provide approximate number of returns filed (for trust signal)</li>
+      <li>Provide year he started in tax (for &ldquo;X years of experience&rdquo;)</li>
+      <li>Confirm if alpinetax.com domain is available / owned</li>
+    </ul>
+
+    <h3>Pending Matt</h3>
+    <ul class="checklist">
+      <li>Create Linear workspace + invite Vinnie and configure Claude access</li>
+      <li>Purchase GoDaddy Managed WordPress hosting plan</li>
+      <li>Set up <code>alpinetax/</code> directory in monorepo</li>
+      <li>Create NAP master document</li>
+      <li>Register GBP (needs Vinnie's home address first)</li>
+      <li>Coordinate headshot scheduling with Vinnie</li>
+      <li>Set up BrightLocal or Whitespark for citation tracking ($29&ndash;39/mo)</li>
+    </ul>
+
+    <h3>Pending Claude</h3>
+    <ul class="checklist">
+      <li>Draft all website copy (homepage, about, services, pricing, FAQ, contact, service-area pages)</li>
+      <li>Draft 12-month content calendar with keyword research</li>
+      <li>Draft first 4 blog posts (S-Corp pillar + 3 supporting articles)</li>
+      <li>Draft GBP description (750 chars)</li>
+      <li>Draft review request email template</li>
+      <li>Research Calendly&ndash;TaxDome&ndash;Zoom integration steps</li>
+      <li>Create EA transition checklist document</li>
+      <li>Create citation tracker with all target directories</li>
+      <li>Draft service-area page content (unique per city)</li>
+      <li>Research WordPress theme starter templates for tax practice aesthetic</li>
+    </ul>
+
+    <h3>Ongoing Projects</h3>
+    <ul class="checklist">
+      <li>Blog content production (2 posts/month)</li>
+      <li>GBP posting (weekly minimum)</li>
+      <li>Review solicitation via TaxDome automation</li>
+      <li>Citation submissions (phased over 6 months)</li>
+      <li>Link building outreach (HARO, Chamber, etc.)</li>
+      <li>Monthly SEO reporting (GA4, GSC, GBP Insights)</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 10 ========== -->
+<div class="section" id="s10">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">10</span>
+    <h2>KPIs &amp; Milestones</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <table class="plan-table">
+      <tr><th>KPI</th><th>3-Month</th><th>6-Month</th><th>12-Month</th></tr>
+      <tr><td>Google reviews</td><td>25</td><td>60</td><td>120</td></tr>
+      <tr><td>Citations</td><td>40</td><td>75</td><td>100+</td></tr>
+      <tr><td>Organic sessions/mo</td><td>200</td><td>500</td><td>1,500</td></tr>
+      <tr><td>Blog posts</td><td>4</td><td>12</td><td>24</td></tr>
+      <tr><td>Page 1 keywords</td><td>3&ndash;5 local</td><td>8&ndash;12 local</td><td>15+ local + 5 national</td></tr>
+      <tr><td>Backlinks (referring domains)</td><td>10</td><td>25</td><td>40&ndash;50</td></tr>
+    </table>
+
+    <h3>Tools (Minimum Viable)</h3>
+    <ul>
+      <li>Google Analytics 4 (free) &mdash; already have property</li>
+      <li>Google Search Console (free)</li>
+      <li>GBP Insights (free)</li>
+      <li>Rank Math (free WordPress plugin)</li>
+      <li>BrightLocal ($29/mo) &mdash; citation + local rank tracking</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 11 ========== -->
+<div class="section" id="s11">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">11</span>
+    <h2>Verification Plan</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <h3>After WordPress Build (Pre-Launch)</h3>
+    <ul class="checklist">
+      <li>All pages render correctly on mobile (Chrome DevTools device mode)</li>
+      <li>Contact form sends test email with all fields including message</li>
+      <li>Calendly embed loads and booking flow works end-to-end</li>
+      <li>Client Portal link reaches TaxDome correctly</li>
+      <li>Schema validation via Google Rich Results Test</li>
+      <li>Rank Math SEO audit shows green for all pages</li>
+      <li>GA4 fires pageviews (verify in Realtime report)</li>
+      <li>Facebook Pixel fires (verify in Meta Events Manager)</li>
+      <li>301 redirects from old URLs verified</li>
+    </ul>
+
+    <h3>After GBP Launch</h3>
+    <ul class="checklist">
+      <li>Profile appears in Google Maps search</li>
+      <li>NAP matches master document exactly</li>
+      <li>Photos display correctly</li>
+      <li>Business hours show correctly</li>
+      <li>Review link generates working URL</li>
+    </ul>
+
+    <h3>Monthly Ongoing</h3>
+    <ul class="checklist">
+      <li>Google Search Console: no crawl errors, sitemap indexed</li>
+      <li>BrightLocal: NAP consistency score &gt;90%</li>
+      <li>Review velocity: at least 2&ndash;3 new reviews/month</li>
+      <li>Blog: 2 new posts published per calendar</li>
+    </ul>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 12 ========== -->
+<div class="section" id="s12">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">12</span>
+    <h2>Cost Summary</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <table class="plan-table">
+      <tr><th>Item</th><th>Cost</th><th>Frequency</th></tr>
+      <tr><td>GoDaddy Managed WordPress</td><td>~$9/mo</td><td>Monthly</td></tr>
+      <tr><td>Domain (alpinetax.co)</td><td>Already owned</td><td>Annual renewal</td></tr>
+      <tr><td>Kadence + all plugins</td><td>Free</td><td>&mdash;</td></tr>
+      <tr><td>Calendly</td><td>Free (1 event type)</td><td>&mdash;</td></tr>
+      <tr><td>BrightLocal</td><td>~$29/mo</td><td>Monthly</td></tr>
+      <tr><td>Professional headshot</td><td>$150&ndash;300</td><td>One-time</td></tr>
+      <tr><td>AFSP course</td><td>$100&ndash;200</td><td>Annual</td></tr>
+      <tr><td>Chamber of Commerce</td><td>$350&ndash;600</td><td>Annual</td></tr>
+      <tr><td>BBB (optional)</td><td>$400&ndash;600</td><td>Annual</td></tr>
+    </table>
+    <p style="margin-top:16px"><strong>Estimated Year 1 total: $1,500&ndash;$2,500</strong></p>
+  </div></div>
+</div>
+
+<div class="plan-footer">
+  Alpine Tax &amp; Consulting LLC &mdash; Project Plan &mdash; Confidential<br>
+  Prepared March 2026
+</div>
+
+</div><!-- /container -->
+</div><!-- /plan-content -->
+
+<script>
+// SHA-256 hash of "virginia"
+const HASH = '0a4992ea442b53e3dca861deac09a8d4987004a8483079b12861080ea4aa1b52';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function attemptLogin() {
+  const input = document.getElementById('pwd-input');
+  const hash = await sha256(input.value.trim().toLowerCase());
+  if (hash === HASH) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('plan-content').style.display = 'block';
+    sessionStorage.setItem('alpine-auth', '1');
+  } else {
+    document.getElementById('pwd-error').style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+
+// Enter key on password field
+document.getElementById('pwd-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') attemptLogin();
+});
+
+// Session persistence (stay logged in within tab)
+if (sessionStorage.getItem('alpine-auth') === '1') {
+  document.getElementById('login-gate').style.display = 'none';
+  document.getElementById('plan-content').style.display = 'block';
+}
+
+// Section toggle
+function toggle(header) {
+  header.closest('.section').classList.toggle('open');
+}
+
+function toggleAll(open) {
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.toggle('open', open);
+  });
+}
+</script>
+</body>
+</html>
