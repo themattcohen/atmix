@@ -156,6 +156,7 @@ If we are unable to file your FBAR for any reason, you receive a full refund wit
 For questions not answered by this assistant or for situations requiring human assistance, users should:
 - Visit the Contact page on our website
 - Email support@fbardirect.com
+- Call (888) 863-5518 (voicemail — we return calls within one business day)
 - Responses are typically provided within one business day
 
 ## Behavioral Guidelines

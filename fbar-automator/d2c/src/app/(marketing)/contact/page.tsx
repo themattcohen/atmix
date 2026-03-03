@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail, Clock, CalendarDays, MessageSquare } from "lucide-react";
+import { Mail, Phone, Clock, CalendarDays, MessageSquare } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
@@ -36,6 +36,19 @@ export default function ContactPage() {
               >
                 support@fbardirect.com
               </a>
+            </InfoCard>
+
+            <InfoCard
+              icon={<Phone className="h-5 w-5 text-gov-blue" aria-hidden="true" />}
+              heading="Phone"
+            >
+              <a
+                href="tel:+18888635518"
+                className="text-gov-blue font-medium hover:underline"
+              >
+                (888) 863-5518
+              </a>
+              <p className="text-text-secondary text-xs mt-1">Voicemail &mdash; we&apos;ll call back within 1 business day</p>
             </InfoCard>
 
             <InfoCard

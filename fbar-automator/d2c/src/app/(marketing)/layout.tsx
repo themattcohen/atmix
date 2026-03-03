@@ -57,10 +57,15 @@ export default function MarketingLayout({
             {/* Contact + Resources Column */}
             <div>
               <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">Contact &amp; Resources</h4>
-              <p className="text-sm text-gray-300 mb-4">
+              <p className="text-sm text-gray-300 mb-2">
                 Questions?{" "}
                 <a href="mailto:support@fbardirect.com" className="text-white hover:underline font-medium min-h-[44px] inline-flex items-center">
                   support@fbardirect.com
+                </a>
+              </p>
+              <p className="text-sm text-gray-300 mb-4">
+                <a href="tel:+18888635518" className="text-white hover:underline font-medium min-h-[44px] inline-flex items-center">
+                  (888) 863-5518
                 </a>
               </p>
               <h4 className="font-bold mb-3 text-gray-200 text-sm uppercase tracking-wider">External Resources</h4>

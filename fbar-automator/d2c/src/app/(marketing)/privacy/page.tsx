@@ -153,6 +153,8 @@ export default function PrivacyPage() {
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <p className="text-gray-700">
                 <strong>Email:</strong> privacy@fbardirect.com<br />
+                <strong>Phone:</strong>{" "}
+                <a href="tel:+18888635518" className="text-blue-600 underline">(888) 863-5518</a><br />
                 <strong>Mail:</strong> FBAR Direct Privacy Team<br />
                 1201 N. Market Street, Suite 111, Wilmington, DE 19801
               </p>

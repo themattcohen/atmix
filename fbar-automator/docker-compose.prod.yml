@@ -233,6 +233,8 @@ services:
       - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
       - SENTRY_DSN=${SENTRY_DSN}
       - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+      - SERPER_API_KEY=${SERPER_API_KEY:-}
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY}
     depends_on:
       postgres:
         condition: service_healthy
