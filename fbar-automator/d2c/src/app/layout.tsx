@@ -5,6 +5,7 @@ import "./globals.css";
 import { GoogleTagManager } from "@/components/analytics/GoogleTagManager";
 import { UTMCapture } from "@/components/analytics/UTMCapture";
 import { CookieConsent } from "@/components/analytics/CookieConsent";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const merriweather = Merriweather({
@@ -79,6 +80,7 @@ export default async function RootLayout({
         </Suspense>
         {children}
         <CookieConsent />
+        <ChatWidget />
       </body>
     </html>
   );

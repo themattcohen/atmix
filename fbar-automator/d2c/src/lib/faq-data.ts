@@ -133,4 +133,37 @@ export const FAQ_ITEMS = [
     question: "Do US expats need to file an FBAR?",
     answer: "Yes. U.S. citizens living abroad are still required to file an FBAR if the aggregate value of their foreign financial accounts exceeds $10,000 at any time during the calendar year. Living overseas does not exempt you from FBAR filing requirements. In fact, expats often have more foreign accounts (local bank accounts, pension funds, investment accounts) that trigger the filing requirement. The FBAR deadline is April 15 with an automatic extension to October 15. FBAR Direct supports filings for expats in any country.",
   },
+  // --- App-specific FAQ entries ---
+  {
+    question: "How do I create an account on FBAR Direct?",
+    answer: "Visit fbardirect.com and click 'Get Started' or 'Sign Up.' Enter your email address and create a password. You will receive a verification email — click the link in that email to activate your account. Check your spam or junk folder if you do not see it within a few minutes. The verification link expires after 24 hours. Once verified, you can log in and start a new FBAR filing immediately.",
+  },
+  {
+    question: "How do I reset my password?",
+    answer: "On the login page, click the 'Forgot password' link. Enter your email address and we will send you a password reset link. The link expires after 1 hour. Click it to set a new password. If you do not receive the email, check your spam or junk folder. There is no separate settings page for changing your password — always use the forgot-password flow.",
+  },
+  {
+    question: "What do the filing statuses on my dashboard mean?",
+    answer: "Your dashboard shows the current status of each filing: 'Not Started' or 'In Progress' means you are still completing the form. 'Ready to Sign' means your information is entered and ready for your digital signature. 'Signed' means you have signed and are ready to pay. 'Processing' or 'Submitting' means payment was received and we are submitting to FinCEN. 'Submitted' means it has been sent to FinCEN and is awaiting their response (typically 1-2 business days). 'Filed (Accepted)' means FinCEN accepted it — your BSA tracking ID is your proof of filing. 'Needs Attention (Rejected)' means FinCEN rejected it — we will review and resubmit at no extra charge.",
+  },
+  {
+    question: "Can I file for multiple years at once?",
+    answer: "Yes. You can start a new filing for each calendar year you need to file (we support years 2010 through the current year). Each filing is completed and paid for separately. If you filed for a previous year through FBAR Direct, you can import your account details from that filing to save time. You cannot create two original filings for the same calendar year, but you can amend a previously accepted filing.",
+  },
+  {
+    question: "What file formats can I upload for the Premium tier?",
+    answer: "The Premium tier ($79) supports uploading bank statements in the following formats: PDF, JPEG, PNG, GIF, WebP, CSV, and XLSX. The maximum file size is 50 MB per file. Our AI system will extract account details (institution name, account number, account type, and maximum value) automatically. You can review and edit any extracted field before saving, or delete the extraction and enter details manually.",
+  },
+  {
+    question: "Is my Social Security Number safe on FBAR Direct?",
+    answer: "Yes. Your SSN or ITIN is encrypted with AES-256-GCM, the same encryption standard used by the U.S. government for classified information. Only the last 4 digits are stored for display on your dashboard — the full number is encrypted at rest and only decrypted when generating your FinCEN filing. All data in transit is protected with TLS encryption. We never share your personal data with anyone other than FinCEN for the purpose of filing your FBAR.",
+  },
+  {
+    question: "What should I do if the AI extraction got something wrong?",
+    answer: "You can edit any field that the AI extracted before saving the account. If the extraction is significantly off, you can delete the extracted account entirely and enter the details manually instead. The AI shows confidence indicators for each field to help you identify values that may need review. Premium tier users always have the option to enter accounts manually as well.",
+  },
+  {
+    question: "How do I contact FBAR Direct support?",
+    answer: "You can reach us by email at support@fbardirect.com, by phone at (888) 863-5518 (voicemail — we return calls within one business day), or by using the contact form on our website. You can also ask questions using the chat assistant on our website for immediate answers about FBAR filing and how our service works. We typically respond to all inquiries within one business day.",
+  },
 ];
