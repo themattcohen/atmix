@@ -128,6 +128,52 @@ with st.sidebar:
         )
         st.caption("Content rules for a specific site (author, sources, disclaimers, validation)")
 
+        # Show profile details so user knows what guardrails are active
+        try:
+            _preview_cfg = pipeline.load_config(selected_config)
+            with st.expander("View profile rules", expanded=False):
+                _author = _preview_cfg.get("author", {})
+                st.markdown(f"**Author:** {_author.get('name', '—')}, {_author.get('credentials', '—')}")
+                st.markdown(f"**Tone:** {_preview_cfg.get('content', {}).get('toneGuidance', '—')}")
+                st.markdown(f"**Surfer score target:** {_preview_cfg.get('seo', {}).get('surferScoreTarget', '—')}")
+
+                _domains = _preview_cfg.get("research", {}).get("authorityDomains", [])
+                if _domains:
+                    st.markdown(f"**Authority domains:** {', '.join(_domains)}")
+
+                _protected = _preview_cfg.get("content", {}).get("protectedWords", [])
+                if _protected:
+                    st.markdown(f"**Protected words:** {', '.join(_protected)}")
+
+                _val = _preview_cfg.get("validation", {})
+                active_rules = []
+                if _val.get("requireDisclaimers"):
+                    active_rules.append("Disclaimers required")
+                if _val.get("requireStatuteCitations"):
+                    active_rules.append("Statute citations required")
+                if _val.get("requireDollarAmounts"):
+                    active_rules.append("Dollar amounts required")
+                if _val.get("requireCTAs"):
+                    active_rules.append("CTAs required")
+                if active_rules:
+                    st.markdown(f"**Validation rules:** {' · '.join(active_rules)}")
+
+                _disc_top = _preview_cfg.get("content", {}).get("disclaimerTop", "")
+                _disc_bot = _preview_cfg.get("content", {}).get("disclaimerBottom", "")
+                if _disc_top or _disc_bot:
+                    st.markdown("**Disclaimers:**")
+                    if _disc_top:
+                        st.caption(f"Top: {_disc_top}")
+                    if _disc_bot:
+                        st.caption(f"Bottom: {_disc_bot}")
+
+                _hero = _preview_cfg.get("heroImage", {})
+                if _hero:
+                    st.markdown(f"**Hero style:** {_hero.get('style', '—')}")
+                    st.markdown(f"**Hero colors:** {_hero.get('colorScheme', '—')}")
+        except FileNotFoundError:
+            pass
+
         keyword_input = st.text_input("Primary keyword", key="sb_keyword")
         secondary_input = st.text_area(
             "Secondary keywords (one per line)",
