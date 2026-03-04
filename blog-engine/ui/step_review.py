@@ -8,6 +8,8 @@ from pathlib import Path
 from lib import db, pipeline, writer, scorer
 from lib.costs import format_cost
 from lib.imagen import generate_hero_images, select_hero_image
+from lib.nlp_parser import extract_score_overview, extract_entities_with_counts, extract_heading_counts
+from lib.gap_analysis import build_surfer_feedback
 from ui.components import (
     step_header,
     error_display,
@@ -73,23 +75,65 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
 
     st.divider()
 
+    # Surfer screenshot upload
+    with st.expander("Upload Surfer Screenshots for Analysis", expanded=False):
+        st.caption(
+            "Upload screenshots from Surfer's Content Editor to auto-generate "
+            "structured feedback with specific gaps."
+        )
+        ss_col1, ss_col2, ss_col3 = st.columns(3)
+        with ss_col1:
+            ss_overview = st.file_uploader(
+                "Score Overview",
+                type=["png", "jpg", "jpeg", "webp"],
+                key=f"ss_overview_v{iteration}_{run_id}",
+                help="Screenshot of the Surfer metrics bar (score, word count, headings)",
+            )
+        with ss_col2:
+            ss_entities = st.file_uploader(
+                "Entities Panel",
+                type=["png", "jpg", "jpeg", "webp"],
+                key=f"ss_entities_v{iteration}_{run_id}",
+                help="Screenshot of the NLP entities list with current/target counts",
+            )
+        with ss_col3:
+            ss_headings = st.file_uploader(
+                "Headings Panel",
+                type=["png", "jpg", "jpeg", "webp"],
+                key=f"ss_headings_v{iteration}_{run_id}",
+                help="Screenshot of the headings terms list",
+            )
+
+        if (ss_overview or ss_entities or ss_headings) and st.button(
+            "🔍 Analyze Screenshots",
+            key=f"analyze_ss_v{iteration}_{run_id}",
+            type="primary",
+        ):
+            _analyze_surfer_screenshots(
+                run_id, run, iteration, step_data,
+                ss_overview, ss_entities, ss_headings,
+            )
+            st.rerun()
+
     # Feedback input
     st.markdown("### Provide Feedback")
     st.info(
         "Paste your article HTML into Surfer's Content Editor, then report back:\n"
         "- Surfer content score\n"
         "- Missing or underused NLP terms\n"
-        "- Any other feedback or changes needed"
+        "- Any other feedback or changes needed\n\n"
+        "Or use the screenshot uploader above to auto-generate structured feedback."
     )
 
+    feedback_key = f"feedback_v{iteration}_{run_id}"
     feedback = st.text_area(
-        "Paste feedback from Surfer",
+        "Feedback for rewrite",
         height=200,
         placeholder=(
             "e.g., Score: 72/90. Missing terms: fbar penalty (need 3 more), "
             "filing deadline (need 2 more). Also, the intro is too long."
         ),
-        key=f"feedback_v{iteration}_{run_id}",
+        key=feedback_key,
     )
 
     col1, col2, col3 = st.columns(3)
@@ -128,6 +172,11 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
         for i, ci in enumerate(cost_history):
             st.caption(f"Rewrite {i + 1}: {format_cost(ci)}")
 
+    analysis_cost_history = step_data.get("analysis_cost_history", [])
+    if analysis_cost_history:
+        for i, ci in enumerate(analysis_cost_history):
+            st.caption(f"Screenshot analysis {i + 1}: {format_cost(ci)}")
+
     hero_cost = step_data.get("hero_cost")
     if hero_cost:
         st.caption(f"Hero images: {format_cost(hero_cost)}")
@@ -163,6 +212,87 @@ def _render_html_output(article_md: str, run_id: str):
         mime="text/html",
         key=f"download_html_review_{run_id}",
     )
+
+
+def _analyze_surfer_screenshots(
+    run_id: str,
+    run: dict,
+    iteration: int,
+    step_data: dict,
+    ss_overview,
+    ss_entities,
+    ss_headings,
+):
+    """Parse Surfer screenshots and generate structured feedback text."""
+    with st.status("Analyzing Surfer screenshots...", expanded=True) as status:
+        try:
+            analysis_costs: list[dict] = []
+            score_overview = None
+            entities_with_counts = None
+            heading_counts = None
+
+            if ss_overview is not None:
+                img_bytes = ss_overview.read()
+                media_type = _mime_from_name(ss_overview.name)
+                score_overview, ci = extract_score_overview(img_bytes, media_type)
+                analysis_costs.append(ci)
+                st.write(f"Score overview parsed: {format_cost(ci)}")
+
+            if ss_entities is not None:
+                img_bytes = ss_entities.read()
+                media_type = _mime_from_name(ss_entities.name)
+                entities_with_counts, ci = extract_entities_with_counts(img_bytes, media_type)
+                analysis_costs.append(ci)
+                st.write(f"Entities parsed ({len(entities_with_counts)} terms): {format_cost(ci)}")
+
+            if ss_headings is not None:
+                img_bytes = ss_headings.read()
+                media_type = _mime_from_name(ss_headings.name)
+                heading_counts, ci = extract_heading_counts(img_bytes, media_type)
+                analysis_costs.append(ci)
+                st.write(f"Headings parsed ({len(heading_counts)} terms): {format_cost(ci)}")
+
+            # Load surfer-targets.json
+            output_dir = pipeline.get_output_dir(run["slug"])
+            targets_path = Path(output_dir) / "surfer-targets.json"
+            if targets_path.exists():
+                surfer_targets = json.loads(targets_path.read_text(encoding="utf-8"))
+            else:
+                surfer_targets = {"terms": {}, "targets": {}}
+
+            # Build structured feedback
+            feedback_text = build_surfer_feedback(
+                score_overview, entities_with_counts, heading_counts, surfer_targets,
+            )
+
+            # Pre-populate the feedback text_area via its session state key
+            feedback_widget_key = f"feedback_v{iteration}_{run_id}"
+            st.session_state[feedback_widget_key] = feedback_text
+
+            # Persist analysis costs
+            existing_analysis_costs = step_data.get("analysis_cost_history", [])
+            step_data["analysis_cost_history"] = existing_analysis_costs + analysis_costs
+            save_step_data(run_id, STEP_INDEX, step_data)
+
+            total_cost = sum(c.get("cost_usd", 0) for c in analysis_costs)
+            status.update(
+                label=f"Analysis complete — ${total_cost:.3f}",
+                state="complete",
+            )
+        except Exception as exc:
+            status.update(label="Screenshot analysis failed", state="error")
+            st.error(f"Screenshot analysis failed: {exc}")
+
+
+def _mime_from_name(filename: str) -> str:
+    """Infer MIME type from file extension."""
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "png"
+    return {
+        "png": "image/png",
+        "jpg": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "webp": "image/webp",
+    }.get(ext, "image/png")
 
 
 def _do_rewrite(
