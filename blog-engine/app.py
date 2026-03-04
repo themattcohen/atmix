@@ -33,6 +33,7 @@ setup_api_keys()
 
 from lib import db, pipeline
 from lib.browser import BrowserManager
+from lib import vnc_login
 from ui import components
 from ui import step_keyword, step_nlp, step_research, step_write, step_score, step_image
 
@@ -60,6 +61,10 @@ if "browser_page" not in st.session_state:
     st.session_state.browser_page = None
 if "active_run_id" not in st.session_state:
     st.session_state.active_run_id = None
+if "vnc_session_active" not in st.session_state:
+    st.session_state.vnc_session_active = False
+if "vnc_login_result" not in st.session_state:
+    st.session_state.vnc_login_result = None
 
 
 # ---------------------------------------------------------------------------
@@ -105,22 +110,85 @@ with st.sidebar:
             headless = st.checkbox("Headless mode", value=True, key="sb_headless")
         if st.button("Launch browser", key="sb_launch_browser", type="primary"):
             with st.spinner("Launching Chromium..."):
+                status = st.empty()
+                status.info("Initializing BrowserManager...")
                 st.session_state.browser_manager = BrowserManager(headless=headless)
                 bm = st.session_state.browser_manager
                 try:
+                    status.info("Starting Playwright + Chromium (timeout 30s)...")
                     components.run_async(bm.launch())
+                    status.info("Creating new page...")
                     page = components.run_async(bm.new_page())
                     st.session_state.browser_page = page
+                    status.success("Browser launched successfully!")
                 except Exception as exc:
                     st.session_state.browser_manager = BrowserManager()
                     st.error(f"Browser launch failed: {exc}")
-                    return
-            st.rerun()
+                else:
+                    st.rerun()
         if not _is_headless_server:
             st.caption(
                 "First run? Uncheck headless, launch, then manually log into "
                 "SEMRush and Surfer in the browser window. Cookies persist."
             )
+
+    # ---- VNC Surfer Login (headless servers) ----
+    _show_vnc = sys.platform == "linux"
+    if _show_vnc:
+        st.markdown("---")
+        st.subheader("Surfer Login")
+
+        _VNC_URL = (
+            "https://blog-engine.89-167-72-220.sslip.io/vnc/vnc.html"
+            "?autoconnect=1&resize=scale&path=vnc/websockify&encrypt=1"
+        )
+
+        if st.session_state.vnc_session_active and vnc_login.is_session_active():
+            # State B: VNC session active
+            st.success("VNC session active")
+            st.link_button("Open Browser (new tab)", _VNC_URL)
+
+            col_done, col_cancel = st.columns(2)
+            with col_done:
+                if st.button("Done — Verify Login", key="vnc_verify"):
+                    with st.spinner("Verifying Surfer login..."):
+                        ok = components.run_async(vnc_login.verify_login())
+                        components.run_async(vnc_login.stop_login_session())
+                        st.session_state.vnc_session_active = False
+                        st.session_state.vnc_login_result = ok
+                        st.rerun()
+            with col_cancel:
+                if st.button("Cancel", key="vnc_cancel"):
+                    components.run_async(vnc_login.stop_login_session())
+                    st.session_state.vnc_session_active = False
+                    st.session_state.vnc_login_result = None
+                    st.rerun()
+
+        elif st.session_state.vnc_login_result is not None:
+            # State C: After verification
+            if st.session_state.vnc_login_result:
+                st.success("Surfer login verified! Click **Launch browser** above to resume.")
+            else:
+                st.warning("Surfer login could not be verified. Try again?")
+            st.session_state.vnc_login_result = None
+
+        else:
+            # State A: No VNC session
+            if st.button("Login to Surfer", key="vnc_start", type="primary"):
+                # Stop existing BrowserManager if running (frees browser-data lock)
+                if bm.is_launched:
+                    with st.spinner("Stopping pipeline browser..."):
+                        components.run_async(bm.close())
+                        st.session_state.browser_page = None
+
+                with st.spinner("Starting VNC session..."):
+                    result = components.run_async(vnc_login.start_login_session())
+                    if result.get("ok"):
+                        st.session_state.vnc_session_active = True
+                    else:
+                        st.error(f"VNC start failed: {result.get('error', 'unknown')}")
+                st.rerun()
+            st.caption("Opens Surfer in a browser-in-browser tab for manual login + CAPTCHA.")
 
     # ---- New pipeline run ----
     st.markdown("---")
