@@ -67,12 +67,14 @@ function LoginForm() {
           } else {
             router.push(callbackUrl);
           }
-        } catch {
+        } catch (sessionErr) {
+          console.error("Session check after login failed:", sessionErr);
           // If session check fails, proceed to callbackUrl (middleware will catch MFA)
           router.push(callbackUrl);
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("Login flow error:", err);
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);

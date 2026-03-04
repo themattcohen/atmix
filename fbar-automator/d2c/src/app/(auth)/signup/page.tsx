@@ -60,6 +60,7 @@ function SignupForm() {
     setGeneralError("");
     setLoading(true);
 
+    let signupSucceeded = false;
     try {
       const utmData = getUTMFromCookie();
       const res = await fetch("/api/auth/signup", {
@@ -86,6 +87,8 @@ function SignupForm() {
         return;
       }
 
+      signupSucceeded = true;
+
       // Auto-login after signup
       const result = await signIn("credentials", {
         email: form.email,
@@ -99,12 +102,23 @@ function SignupForm() {
         return;
       }
 
-      pushDataLayer({ event: "fbar_signup_complete" });
-      setGtagUserData(form.email);
-      trackGadsConversion(process.env.NEXT_PUBLIC_GADS_SIGNUP_LABEL || '');
+      try {
+        pushDataLayer({ event: "fbar_signup_complete" });
+        setGtagUserData(form.email);
+        trackGadsConversion(process.env.NEXT_PUBLIC_GADS_SIGNUP_LABEL || '');
+      } catch (gtmErr) {
+        console.error("GTM tracking error (non-blocking):", gtmErr);
+      }
       router.push("/verify-email");
-    } catch {
-      setGeneralError("An unexpected error occurred");
+    } catch (err) {
+      console.error("Signup flow error:", err);
+      if (signupSucceeded) {
+        // Account was created but auto-login threw (likely rate-limited 429).
+        setGeneralError("Account created! Auto-login failed — please sign in.");
+        setTimeout(() => router.push("/login"), 2000);
+      } else {
+        setGeneralError("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
