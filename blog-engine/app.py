@@ -2,9 +2,8 @@
 
 import json
 import os
-import sys
-import streamlit as st
 from pathlib import Path
+import streamlit as st
 from dotenv import load_dotenv
 
 # Load .env as fallback for non-secret config
@@ -32,10 +31,9 @@ def setup_api_keys() -> bool:
 setup_api_keys()
 
 from lib import db, pipeline
-from lib.browser import BrowserManager
-from lib import vnc_login
+from lib.costs import format_cost, format_cost_short, sum_costs
 from ui import components
-from ui import step_keyword, step_nlp, step_research, step_write, step_score, step_image
+from ui import step_nlp_input, step_research, step_write, step_review
 
 # ---------------------------------------------------------------------------
 # Page config
@@ -55,16 +53,8 @@ db.init_db()
 # ---------------------------------------------------------------------------
 # Session state defaults
 # ---------------------------------------------------------------------------
-if "browser_manager" not in st.session_state:
-    st.session_state.browser_manager = BrowserManager()
-if "browser_page" not in st.session_state:
-    st.session_state.browser_page = None
 if "active_run_id" not in st.session_state:
     st.session_state.active_run_id = None
-if "vnc_session_active" not in st.session_state:
-    st.session_state.vnc_session_active = False
-if "vnc_login_result" not in st.session_state:
-    st.session_state.vnc_login_result = None
 
 
 # ---------------------------------------------------------------------------
@@ -73,130 +63,6 @@ if "vnc_login_result" not in st.session_state:
 with st.sidebar:
     st.title("📝 Blog Engine")
     st.caption("SEO article production pipeline")
-
-    # ---- Browser controls ----
-    st.markdown("---")
-    st.subheader("Browser")
-    bm: BrowserManager = st.session_state.browser_manager
-
-    if bm.is_launched:
-        st.success("Browser: running")
-
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Check logins", key="sb_check_logins"):
-                semrush_ok = components.run_async(bm.check_login("semrush"))
-                surfer_ok = components.run_async(bm.check_login("surfer"))
-                st.session_state["login_semrush"] = semrush_ok
-                st.session_state["login_surfer"] = surfer_ok
-        with col2:
-            if st.button("Stop browser", key="sb_stop_browser"):
-                components.run_async(bm.close())
-                st.session_state.browser_page = None
-                st.rerun()
-
-        semrush_ok = st.session_state.get("login_semrush")
-        surfer_ok = st.session_state.get("login_surfer")
-        if semrush_ok is not None:
-            st.markdown(f"SEMRush: {'✅' if semrush_ok else '❌'}")
-        if surfer_ok is not None:
-            st.markdown(f"Surfer: {'✅' if surfer_ok else '❌'}")
-    else:
-        _is_headless_server = sys.platform == "linux" and not os.environ.get("DISPLAY")
-        if _is_headless_server:
-            headless = True
-            st.caption("Headless mode forced (no display server detected)")
-        else:
-            headless = st.checkbox("Headless mode", value=True, key="sb_headless")
-        if st.button("Launch browser", key="sb_launch_browser", type="primary"):
-            with st.spinner("Launching Chromium..."):
-                status = st.empty()
-                status.info("Initializing BrowserManager...")
-                st.session_state.browser_manager = BrowserManager(headless=headless)
-                bm = st.session_state.browser_manager
-                try:
-                    status.info("Starting Playwright + Chromium (timeout 30s)...")
-                    components.run_async(bm.launch())
-                    status.info("Creating new page...")
-                    page = components.run_async(bm.new_page())
-                    st.session_state.browser_page = page
-                    status.success("Browser launched successfully!")
-                except Exception as exc:
-                    st.session_state.browser_manager = BrowserManager()
-                    st.error(f"Browser launch failed: {exc}")
-                else:
-                    st.rerun()
-        if not _is_headless_server:
-            st.caption(
-                "First run? Uncheck headless, launch, then manually log into "
-                "SEMRush and Surfer in the browser window. Cookies persist."
-            )
-
-    # ---- VNC Surfer Login (headless servers) ----
-    _show_vnc = sys.platform == "linux"
-    if _show_vnc:
-        st.markdown("---")
-        st.subheader("Surfer Login")
-        with st.expander("How it works", expanded=False):
-            st.markdown(
-                "1. Click **Login to Surfer** below\n"
-                "2. Click **Open Browser (new tab)** — a remote browser appears\n"
-                "3. Log in to Surfer and solve the CAPTCHA\n"
-                "4. Come back here and click **Done — Verify Login**\n"
-                "5. Click **Launch browser** above to resume the pipeline"
-            )
-
-        _VNC_URL = (
-            "https://blog-engine.89-167-72-220.sslip.io/vnc/vnc.html"
-            "?autoconnect=1&resize=scale&path=vnc/websockify&encrypt=1"
-        )
-
-        if st.session_state.vnc_session_active and vnc_login.is_session_active():
-            # State B: VNC session active
-            st.success("VNC session active")
-            st.link_button("Open Browser (new tab)", _VNC_URL)
-
-            col_done, col_cancel = st.columns(2)
-            with col_done:
-                if st.button("Done — Verify Login", key="vnc_verify"):
-                    with st.spinner("Verifying Surfer login..."):
-                        ok = components.run_async(vnc_login.verify_login())
-                        components.run_async(vnc_login.stop_login_session())
-                        st.session_state.vnc_session_active = False
-                        st.session_state.vnc_login_result = ok
-                        st.rerun()
-            with col_cancel:
-                if st.button("Cancel", key="vnc_cancel"):
-                    components.run_async(vnc_login.stop_login_session())
-                    st.session_state.vnc_session_active = False
-                    st.session_state.vnc_login_result = None
-                    st.rerun()
-
-        elif st.session_state.vnc_login_result is not None:
-            # State C: After verification
-            if st.session_state.vnc_login_result:
-                st.success("Surfer login verified! Click **Launch browser** above to resume.")
-            else:
-                st.warning("Surfer login could not be verified. Try again?")
-            st.session_state.vnc_login_result = None
-
-        else:
-            # State A: No VNC session
-            if st.button("Login to Surfer", key="vnc_start", type="primary"):
-                # Stop existing BrowserManager if running (frees browser-data lock)
-                if bm.is_launched:
-                    with st.spinner("Stopping pipeline browser..."):
-                        components.run_async(bm.close())
-                        st.session_state.browser_page = None
-
-                with st.spinner("Starting VNC session..."):
-                    result = components.run_async(vnc_login.start_login_session())
-                    if result.get("ok"):
-                        st.session_state.vnc_session_active = True
-                    else:
-                        st.error(f"VNC start failed: {result.get('error', 'unknown')}")
-                st.rerun()
-            st.caption("Opens Surfer in a browser-in-browser tab for manual login + CAPTCHA.")
 
     # ---- New pipeline run ----
     st.markdown("---")
@@ -269,7 +135,7 @@ with st.sidebar:
             key="sb_secondary_keywords",
         )
 
-        if st.button("Start Pipeline", key="sb_start", type="primary"):
+        if st.button("Start Run", key="sb_start", type="primary"):
             if not keyword_input.strip():
                 st.error("Enter a keyword.")
             else:
@@ -341,31 +207,82 @@ except FileNotFoundError:
 steps = db.get_steps(run_id)
 current_step = run["current_step"]
 
+# ---------------------------------------------------------------------------
+# Sidebar — Run cost summary
+# ---------------------------------------------------------------------------
+def _build_cost_sidebar(steps_list):
+    """Render a cost summary from all steps' persisted data."""
+    # Build a dict of step_index -> step_data
+    step_data_map = {}
+    for s in steps_list:
+        idx = s.get("step_index")
+        if idx is not None and s.get("output_json"):
+            try:
+                step_data_map[idx] = json.loads(s["output_json"])
+            except (json.JSONDecodeError, TypeError):
+                step_data_map[idx] = {}
+
+    total = 0.0
+    has_any_cost = False
+
+    with st.sidebar.expander("Run Costs", expanded=False):
+        # Step 0 — NLP Input
+        s0_data = step_data_map.get(0, {})
+        s0_cost = s0_data.get("call_info")
+        if s0_cost:
+            has_any_cost = True
+            st.text(f"NLP Input:    {format_cost_short(s0_cost)}")
+            total += s0_cost.get("cost_usd", 0)
+
+        # Step 1 — Research Brief
+        s1_data = step_data_map.get(1, {})
+        s1_cost = s1_data.get("call_info")
+        if s1_cost:
+            has_any_cost = True
+            st.text(f"Research:     {format_cost_short(s1_cost)}")
+            total += s1_cost.get("cost_usd", 0)
+
+        # Step 2 — Write Article
+        s2_data = step_data_map.get(2, {})
+        s2_cost = s2_data.get("call_info")
+        if s2_cost:
+            has_any_cost = True
+            st.text(f"Write:        {format_cost_short(s2_cost)}")
+            total += s2_cost.get("cost_usd", 0)
+
+        # Step 3 — Review & Iterate
+        s3_data = step_data_map.get(3, {})
+        cost_history = s3_data.get("cost_history", [])
+        if cost_history:
+            has_any_cost = True
+            rw_total = sum_costs(cost_history)
+            st.text(f"Rewrites (x{len(cost_history)}): ${rw_total:.2f}")
+            total += rw_total
+
+        hero_cost = s3_data.get("hero_cost")
+        if hero_cost:
+            has_any_cost = True
+            st.text(f"Hero images:  {format_cost_short(hero_cost)}")
+            total += hero_cost.get("cost_usd", 0)
+
+        # Total
+        st.divider()
+        st.metric("Total Cost", f"${total:.2f}")
+
+        if not has_any_cost:
+            st.caption("No API costs recorded yet.")
+
+_build_cost_sidebar(steps)
+
 # Pipeline progress
 components.pipeline_progress(pipeline.STEPS, current_step)
 
 st.markdown(f"**Keyword:** {run['keyword']}  |  **Config:** {run['config_name']}  |  **Slug:** `{run['slug']}`")
 st.markdown("---")
 
-# Get browser page (may be None)
-browser_page = st.session_state.get("browser_page")
-
 # Render current step
-if current_step == 0:
-    step_keyword.render(run_id, run, browser_page)
-elif current_step == 1:
-    step_nlp.render(run_id, run, browser_page)
-elif current_step == 2:
-    step_research.render(run_id, run, config)
-elif current_step == 3:
-    step_write.render(run_id, run, config)
-elif current_step == 4:
-    step_score.render(run_id, run, config, browser_page)
-elif current_step == 5:
-    step_image.render(run_id, run, config)
-elif current_step == 6:
-    # Done step
-    st.markdown("## ✅ Pipeline Complete")
+if run["status"] == "completed":
+    st.markdown("## Pipeline Complete")
     st.success(f"Article for **{run['keyword']}** is ready!")
 
     output_dir = pipeline.get_output_dir(run["slug"])
@@ -375,20 +292,28 @@ elif current_step == 6:
             size_kb = f.stat().st_size / 1024
             st.markdown(f"- `{f.name}` ({size_kb:.1f} KB)")
 
-    # Show hero image if available
     hero_path = output_dir / "hero.webp"
     if hero_path.exists():
         st.image(str(hero_path), caption="Hero Image", use_container_width=True)
 
+elif current_step == 0:
+    step_nlp_input.render(run_id, run)
+elif current_step == 1:
+    step_research.render(run_id, run, config)
+elif current_step == 2:
+    step_write.render(run_id, run, config)
+elif current_step == 3:
+    step_review.render(run_id, run, config)
+
 # Advance button (shown when current step is approved)
-if current_step < len(pipeline.STEPS) - 1:
+if run["status"] != "completed" and current_step < len(pipeline.STEPS) - 1:
     current_step_data = db.get_step(run_id, current_step)
     if current_step_data and current_step_data.get("status") == "approved":
         st.markdown("---")
         next_info = pipeline.get_step_info(current_step + 1)
         if st.button(
-            f"➡️ Advance to {next_info['icon']} {next_info['label']}",
-            key="advance_step",
+            f"Advance to {next_info['icon']} {next_info['label']}",
+            key=f"advance_step_{run_id}",
             type="primary",
         ):
             pipeline.advance_step(run_id)
