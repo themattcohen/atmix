@@ -1,10 +1,16 @@
 """Claude API integration for research brief generation and article writing."""
 
 import json
+import logging
 import os
+import time
 from pathlib import Path
 
 import anthropic
+
+from lib.costs import calc_claude_cost
+
+logger = logging.getLogger("blog-engine.writer")
 
 ENGINE_ROOT = Path(__file__).resolve().parent.parent
 
@@ -95,6 +101,7 @@ Use this exact structure:
 - Key topics each section should cover
 """
 
+    t0 = time.time()
     response = client.messages.create(
         model=MODEL,
         max_tokens=4096,
@@ -102,8 +109,24 @@ Use this exact structure:
         system=system_prompt,
         messages=[{"role": "user", "content": user_prompt}],
     )
+    latency = time.time() - t0
 
-    return response.content[0].text
+    usage = response.usage
+    logger.info(
+        "[writer] generate_research_brief — model=%s input=%d output=%d cache_create=%d cache_read=%d",
+        MODEL,
+        usage.input_tokens,
+        usage.output_tokens,
+        getattr(usage, "cache_creation_input_tokens", 0),
+        getattr(usage, "cache_read_input_tokens", 0),
+    )
+
+    call_info = calc_claude_cost(MODEL, response.usage)
+    call_info["call_name"] = "generate_research_brief"
+    call_info["latency_s"] = round(latency, 2)
+
+    brief = response.content[0].text
+    return (brief, call_info)
 
 
 def write_article(
@@ -171,6 +194,7 @@ Do NOT force them — integrate them into the content organically.
 
 Output ONLY the MDX article content. Start with the --- frontmatter delimiter. Follow the writer guide structure exactly."""
 
+    t0 = time.time()
     response = client.messages.create(
         model=MODEL,
         max_tokens=8192,
@@ -178,61 +202,98 @@ Output ONLY the MDX article content. Start with the --- frontmatter delimiter. F
         system=system_prompt,
         messages=[{"role": "user", "content": user_prompt}],
     )
+    latency = time.time() - t0
 
-    return response.content[0].text
+    usage = response.usage
+    logger.info(
+        "[writer] write_article — model=%s input=%d output=%d cache_create=%d cache_read=%d",
+        MODEL,
+        usage.input_tokens,
+        usage.output_tokens,
+        getattr(usage, "cache_creation_input_tokens", 0),
+        getattr(usage, "cache_read_input_tokens", 0),
+    )
+
+    call_info = calc_claude_cost(MODEL, response.usage)
+    call_info["call_name"] = "write_article"
+    call_info["latency_s"] = round(latency, 2)
+
+    article = response.content[0].text
+    return (article, call_info)
 
 
-def suggest_edits(
-    article: str,
-    missing_entities: list,
-    current_score: int,
-    target_score: int,
-    config: dict,
-) -> str:
-    """Ask Claude to revise article to improve Surfer score."""
+
+def rewrite_with_feedback(article: str, feedback: str, nlp_targets: dict | None, config: dict, keyword: str = "") -> str:
+    """Rewrite an article incorporating user feedback while maintaining NLP targets.
+
+    Args:
+        article: Current article MDX content
+        feedback: User feedback text (Surfer score report, missing terms, general notes)
+        nlp_targets: NLP target dict (surfer-targets.json format), or None
+        config: Niche config dict
+        keyword: Primary keyword for context
+
+    Returns:
+        Rewritten article MDX string
+    """
     client = _get_client()
 
-    entities_list = "\n".join(
-        f"- **{e.get('term', '?')}**: currently {e.get('current', 0)}, target {e.get('target', '?')}"
-        for e in missing_entities
+    nlp_section = ""
+    if nlp_targets:
+        nlp_section = _format_nlp_targets_for_prompt(nlp_targets)
+
+    system = (
+        f"{WRITER_GUIDE}\n\n"
+        f"## Banned Phrases\n{json.dumps(ANTI_SLOP, indent=2)}\n\n"
+        f"## Niche Configuration\n{json.dumps(config.get('content', {}), indent=2)}\n\n"
+        "You are rewriting an existing article based on user feedback. "
+        "Maintain the article's structure, tone, and quality while incorporating the feedback. "
+        "Return the COMPLETE rewritten article in MDX format with frontmatter."
     )
 
-    banned_list = "\n".join(f"- {p}" for p in ANTI_SLOP.get("bannedPhrases", []))
-    protected_words = config.get("content", {}).get("protectedWords", [])
-
-    system_prompt = (
-        "You are an SEO article editor. Your job is to revise articles to improve their "
-        "Surfer SEO Content Score by naturally incorporating missing NLP entities.\n\n"
-        "Rules:\n"
-        "1. Naturally weave missing terms into existing paragraphs\n"
-        "2. NEVER break factual accuracy to hit a target\n"
-        "3. NEVER add any banned phrases\n"
-        "4. NEVER modify protected words/terms\n"
-        "5. Maintain the article's tone and structure\n"
-        "6. Add new examples, FAQ answers, or table rows if needed\n"
-        f"\n## Banned Phrases\n{banned_list}"
-        f"\n## Protected Words\n{', '.join(protected_words) if protected_words else 'None'}"
+    user_msg = (
+        f"## Current Article\n\n{article}\n\n"
+        f"## User Feedback\n\n{feedback}\n\n"
     )
 
-    user_prompt = f"""Revise this article to improve its Surfer SEO Content Score from {current_score} to {target_score}+.
+    if nlp_section:
+        user_msg += f"## NLP Targets (maintain these term frequencies)\n\n{nlp_section}\n\n"
 
-## Missing/Under-represented NLP Entities
-{entities_list}
+    if keyword:
+        user_msg += f"## Primary Keyword: {keyword}\n\n"
 
-## Current Article
-{article}
+    user_msg += (
+        "Rewrite the article incorporating the feedback above. "
+        "Return the COMPLETE article — do not summarize or truncate. "
+        "Keep the frontmatter intact, updating only if the feedback requires it."
+    )
 
-Return the COMPLETE revised article (frontmatter + full body). Start with --- frontmatter delimiter."""
-
+    t0 = time.time()
     response = client.messages.create(
         model=MODEL,
         max_tokens=8192,
         temperature=0.3,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_prompt}],
+        system=system,
+        messages=[{"role": "user", "content": user_msg}],
+    )
+    latency = time.time() - t0
+
+    usage = response.usage
+    logger.info(
+        "[writer] rewrite_with_feedback — model=%s input=%d output=%d cache_create=%d cache_read=%d",
+        MODEL,
+        usage.input_tokens,
+        usage.output_tokens,
+        getattr(usage, "cache_creation_input_tokens", 0),
+        getattr(usage, "cache_read_input_tokens", 0),
     )
 
-    return response.content[0].text
+    call_info = calc_claude_cost(MODEL, response.usage)
+    call_info["call_name"] = "rewrite_with_feedback"
+    call_info["latency_s"] = round(latency, 2)
+
+    rewritten = response.content[0].text
+    return (rewritten, call_info)
 
 
 def _format_nlp_targets_for_prompt(nlp_targets: dict) -> str:

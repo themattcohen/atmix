@@ -1,10 +1,11 @@
-"""UI for Step 2 -- Research Brief generation (Claude)."""
+"""UI for Step 1 -- Research Brief generation (Claude)."""
 
 import json
 import streamlit as st
 from pathlib import Path
 
 from lib import db, pipeline, writer
+from lib.costs import format_cost
 from ui.components import (
     step_header,
     approve_controls,
@@ -13,7 +14,7 @@ from ui.components import (
     save_step_data,
 )
 
-STEP_INDEX = 2
+STEP_INDEX = 1
 
 
 def render(run_id: str, run: dict, config: dict):
@@ -52,6 +53,7 @@ def render(run_id: str, run: dict, config: dict):
         )
 
         if st.button("Generate Research Brief", key=f"res_gen_{run_id}"):
+            st.session_state[f"res_notes_saved_{run_id}"] = extra_notes.strip()
             db.update_step(run_id, STEP_INDEX, status="running")
             st.rerun()
 
@@ -59,15 +61,18 @@ def render(run_id: str, run: dict, config: dict):
     # RUNNING -- spinner + actual generation
     # ------------------------------------------------------------------
     elif status == "running":
-        extra_notes = st.session_state.get(f"res_notes_{run_id}", "")
+        extra_notes = st.session_state.get(f"res_notes_saved_{run_id}", "")
         secondary_kws = json.loads(run.get("secondary_keywords", "[]"))
-        with st.spinner("Claude is generating the research brief..."):
+        with st.status("Generating research brief...", expanded=True) as gen_status:
             try:
-                brief = writer.generate_research_brief(run["keyword"], config, secondary_kws)
+                brief, call_info = writer.generate_research_brief(run["keyword"], config, secondary_kws)
             except Exception as exc:
+                gen_status.update(label="Generation failed", state="error")
                 db.update_step(run_id, STEP_INDEX, status="pending", error=str(exc))
                 st.error(f"Generation failed: {exc}")
                 return
+
+            gen_status.update(label=f"Done — {format_cost(call_info)}", state="complete")
 
             # Append extra notes if provided
             if extra_notes.strip():
@@ -82,6 +87,7 @@ def render(run_id: str, run: dict, config: dict):
             # Persist in step
             step_data["brief"] = brief
             step_data["brief_file"] = str(brief_path)
+            step_data["call_info"] = call_info
             save_step_data(run_id, STEP_INDEX, step_data)
             db.update_step(run_id, STEP_INDEX, status="review", error=None)
         st.rerun()
@@ -97,6 +103,11 @@ def render(run_id: str, run: dict, config: dict):
             _render_edit_mode(run_id, run, step_data)
         else:
             st.markdown("### Research Brief Preview")
+
+            call_info = step_data.get("call_info")
+            if call_info:
+                st.caption(f"API: {format_cost(call_info)}")
+
             st.markdown(brief_text)
 
             action = approve_controls(f"res_{run_id}")
@@ -120,6 +131,11 @@ def render(run_id: str, run: dict, config: dict):
         brief_text = step_data.get("brief", "")
         word_count = len(brief_text.split())
         st.metric("Brief Length", f"{word_count} words")
+
+        call_info = step_data.get("call_info")
+        if call_info:
+            st.caption(f"API: {format_cost(call_info)}")
+
         with st.expander("View Research Brief", expanded=False):
             st.markdown(brief_text)
         st.success("Research brief approved.")

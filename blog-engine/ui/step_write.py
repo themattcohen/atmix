@@ -1,10 +1,11 @@
-"""UI for Step 3 -- Article Writing (Claude + local validation)."""
+"""UI for Step 2 -- Article Writing (Claude + local validation)."""
 
 import json
 import streamlit as st
 from pathlib import Path
 
 from lib import db, pipeline, writer, scorer
+from lib.costs import format_cost
 from ui.components import (
     step_header,
     approve_controls,
@@ -14,7 +15,7 @@ from ui.components import (
     save_step_data,
 )
 
-STEP_INDEX = 3
+STEP_INDEX = 2
 
 
 def render(run_id: str, run: dict, config: dict):
@@ -60,21 +61,24 @@ def render(run_id: str, run: dict, config: dict):
     elif status == "running":
         additional = st.session_state.get(f"wr_additional_{run_id}", "")
 
-        with st.spinner("Claude is writing the article..."):
+        with st.status("Writing article...", expanded=True) as gen_status:
             # Load inputs from previous steps
             brief = _load_research_brief(run)
             nlp_targets = _load_nlp_targets(run)
 
             secondary_kws = json.loads(run.get("secondary_keywords", "[]"))
             try:
-                article = writer.write_article(
+                article, call_info = writer.write_article(
                     run["keyword"], config, brief, nlp_targets, additional,
                     secondary_keywords=secondary_kws,
                 )
             except Exception as exc:
+                gen_status.update(label="Article generation failed", state="error")
                 db.update_step(run_id, STEP_INDEX, status="pending", error=str(exc))
                 st.error(f"Article generation failed: {exc}")
                 return
+
+            gen_status.update(label=f"Done — {format_cost(call_info)}", state="complete")
 
             # Save article to disk
             output_dir = pipeline.get_output_dir(run["slug"])
@@ -88,6 +92,7 @@ def render(run_id: str, run: dict, config: dict):
             step_data["article"] = article
             step_data["article_file"] = str(article_path)
             step_data["validation"] = validation
+            step_data["call_info"] = call_info
             save_step_data(run_id, STEP_INDEX, step_data)
             db.update_step(run_id, STEP_INDEX, status="review", error=None)
         st.rerun()
@@ -100,7 +105,14 @@ def render(run_id: str, run: dict, config: dict):
             _render_edit_mode(run_id, run, step_data, config)
         else:
             _render_article_preview(step_data)
+
+            call_info = step_data.get("call_info")
+            if call_info:
+                st.caption(f"API: {format_cost(call_info)}")
+
             _render_validation(step_data.get("validation"))
+            st.divider()
+            _render_html_output(step_data.get("article", ""), run_id)
 
             action = approve_controls(f"wr_{run_id}")
             if action == "approve":
@@ -123,9 +135,16 @@ def render(run_id: str, run: dict, config: dict):
         article = step_data.get("article", "")
         word_count = len(article.split())
         st.metric("Article Length", f"{word_count} words")
+
+        call_info = step_data.get("call_info")
+        if call_info:
+            st.caption(f"API: {format_cost(call_info)}")
+
         with st.expander("View Article", expanded=False):
             st.markdown(article)
         _render_validation(step_data.get("validation"))
+        st.divider()
+        _render_html_output(article, run_id)
         st.success("Article approved.")
 
     error_display(step.get("error") if step else None)
@@ -253,6 +272,33 @@ def _render_validation(validation: dict | None):
         st.success("All validation checks passed.")
 
     json_viewer(validation, label="Full Validation Report")
+
+
+def _render_html_output(article_md: str, run_id: str):
+    """Render article as copyable HTML for pasting into Surfer."""
+    import re
+    html = scorer.md_to_html(article_md)
+
+    # Word count from HTML text
+    text_only = re.sub(r'<[^>]+>', '', html)
+    word_count = len(text_only.split())
+
+    st.markdown("### HTML Output for Surfer")
+    st.metric("Word Count (HTML)", word_count)
+
+    # Rendered HTML preview — user can select-all + copy
+    st.markdown("**Preview (select all + copy to paste into Surfer):**")
+    with st.container(height=400):
+        st.html(html)
+
+    # Download button
+    st.download_button(
+        "📥 Download HTML",
+        data=html,
+        file_name="article.html",
+        mime="text/html",
+        key=f"download_html_{run_id}",
+    )
 
 
 def _render_edit_mode(run_id: str, run: dict, step_data: dict, config: dict):
