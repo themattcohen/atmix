@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpine Tax - Personal Brand Strategy</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1B4965;
+    --teal: #2A9D8F;
+    --terracotta: #E76F51;
+    --bg: #FAFBFC;
+    --bg-alt: #F0F2F5;
+    --text: #1a1a2e;
+    --text-muted: #5a6175;
+    --border: #e2e5ea;
+    --radius: 10px;
+    --shadow: 0 2px 8px rgba(27,73,101,0.08);
+    --shadow-lg: 0 8px 32px rgba(27,73,101,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Login gate ---- */
+  #login-gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--blue) 0%, #264653 100%);
+  }
+  .login-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .login-card h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .login-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+  .login-card input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .login-card input:focus { border-color: var(--teal); }
+  .login-card button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--terracotta);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .login-card button:hover { background: #d45a3f; }
+  .login-card button:active { transform: scale(0.98); }
+  .login-error {
+    color: var(--terracotta);
+    font-size: 0.85rem;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ---- Main content (hidden until auth) ---- */
+  #plan-content { display: none; }
+
+  /* ---- Header ---- */
+  .plan-header {
+    background: linear-gradient(135deg, var(--blue) 0%, #264653 100%);
+    color: #fff;
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+  .plan-header h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .plan-header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .plan-header .meta {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    opacity: 0.65;
+  }
+
+  /* ---- Container ---- */
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- Executive summary ---- */
+  .exec-summary {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 36px;
+    margin: -32px auto 40px;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    border-left: 5px solid var(--teal);
+  }
+  .exec-summary h2 {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--blue);
+    font-size: 1.35rem;
+    margin-bottom: 16px;
+  }
+  .exec-summary p { color: var(--text-muted); margin-bottom: 12px; }
+  .exec-summary ul { margin: 12px 0 0 20px; color: var(--text-muted); }
+  .exec-summary li { margin-bottom: 6px; }
+
+  /* ---- Table of Contents ---- */
+  .toc {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow);
+  }
+  .toc h3 {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--blue);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 8px 24px;
+  }
+  .toc a {
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 0.92rem;
+    padding: 4px 0;
+    display: block;
+    transition: color 0.15s;
+  }
+  .toc a:hover { color: var(--blue); text-decoration: underline; }
+  .toc a .num { color: var(--text-muted); margin-right: 6px; font-weight: 500; }
+
+  /* ---- Sections ---- */
+  .section {
+    background: #fff;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { background: var(--bg-alt); }
+  .section-header h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--blue);
+    flex: 1;
+  }
+  .section-num {
+    background: var(--blue);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .chevron {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+  .section.open .chevron { transform: rotate(180deg); }
+  .section-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .section.open .section-body { max-height: 15000px; }
+  .section-inner {
+    padding: 0 28px 28px;
+    padding-left: 74px;
+  }
+
+  /* ---- Content elements ---- */
+  .section-inner h3 {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--blue);
+    font-size: 1.05rem;
+    margin: 24px 0 10px;
+  }
+  .section-inner h3:first-child { margin-top: 0; }
+  .section-inner p { color: var(--text-muted); margin-bottom: 10px; }
+  .section-inner ul, .section-inner ol {
+    margin: 8px 0 12px 20px;
+    color: var(--text-muted);
+  }
+  .section-inner li { margin-bottom: 5px; }
+  .section-inner strong { color: var(--text); }
+  .section-inner code {
+    background: var(--bg-alt);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+  }
+
+  /* ---- Tables ---- */
+  .plan-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px;
+    font-size: 0.9rem;
+  }
+  .plan-table th {
+    background: var(--bg-alt);
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: var(--blue);
+    border-bottom: 2px solid var(--border);
+  }
+  .plan-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .plan-table tr:hover td { background: #fafbfc; }
+
+  /* ---- Callout boxes ---- */
+  .callout {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 0.92rem;
+  }
+  .callout-verdict {
+    background: #eef7f6;
+    border-left: 4px solid var(--teal);
+    color: #1d7268;
+  }
+  .callout-warning {
+    background: #fff8e6;
+    border-left: 4px solid #d4a017;
+    color: #8b6914;
+  }
+  .callout-critical {
+    background: #fef2f0;
+    border-left: 4px solid var(--terracotta);
+    color: #9b3c27;
+  }
+  .callout-info {
+    background: #eef7f6;
+    border-left: 4px solid var(--teal);
+    color: #1d7268;
+  }
+  .callout-title { font-weight: 700; margin-bottom: 4px; }
+
+  /* ---- Verdict badge ---- */
+  .verdict {
+    display: inline-block;
+    background: #eef7f6;
+    color: var(--teal);
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    margin-top: 8px;
+  }
+
+  /* ---- Do/Don't grid ---- */
+  .do-dont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .do-col, .dont-col {
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .do-col {
+    background: #eef7f6;
+    border: 1px solid #c4e4df;
+  }
+  .dont-col {
+    background: #fef2f0;
+    border: 1px solid #f5d0c8;
+  }
+  .do-col h4 { color: var(--teal); margin-bottom: 10px; font-family: 'DM Sans', sans-serif; }
+  .dont-col h4 { color: var(--terracotta); margin-bottom: 10px; font-family: 'DM Sans', sans-serif; }
+  .do-col li, .dont-col li { margin-bottom: 6px; font-size: 0.9rem; }
+  .do-col ul, .dont-col ul { margin-left: 16px; }
+
+  /* ---- Blockquote ---- */
+  blockquote {
+    border-left: 4px solid var(--teal);
+    padding: 12px 20px;
+    margin: 16px 0;
+    background: #f8fafa;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ---- Footer ---- */
+  .plan-footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  .plan-footer a { color: var(--teal); text-decoration: none; }
+  .plan-footer a:hover { text-decoration: underline; }
+
+  /* ---- Expand/Collapse All ---- */
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+  .controls button {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .controls button:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  /* ---- Print ---- */
+  @media print {
+    #login-gate { display: none !important; }
+    #plan-content { display: block !important; }
+    .plan-header { padding: 24px; break-after: avoid; }
+    .section-body { max-height: none !important; overflow: visible !important; }
+    .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    .chevron, .controls { display: none; }
+    .exec-summary { box-shadow: none; border: 1px solid #ddd; }
+    .toc { box-shadow: none; border: 1px solid #ddd; }
+    body { font-size: 11pt; }
+  }
+
+  /* ---- Mobile ---- */
+  @media (max-width: 640px) {
+    .plan-header { padding: 36px 16px 32px; }
+    .exec-summary { padding: 28px 20px; margin: -24px 8px 28px; }
+    .section-header { padding: 16px 16px; gap: 10px; }
+    .section-inner { padding: 0 16px 20px; padding-left: 56px; }
+    .toc { padding: 20px; }
+    .toc-grid { grid-template-columns: 1fr; }
+    .login-card { margin: 16px; padding: 32px 24px; }
+    .do-dont { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN GATE ==================== -->
+<div id="login-gate">
+  <div class="login-card">
+    <h1>Alpine Tax &amp; Consulting</h1>
+    <p>Enter the password to view the strategy document.</p>
+    <input type="password" id="pwd-input" placeholder="Password" autocomplete="off" autofocus>
+    <button id="pwd-btn" onclick="attemptLogin()">View Strategy</button>
+    <div class="login-error" id="pwd-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- ==================== PLAN CONTENT ==================== -->
+<div id="plan-content">
+
+<header class="plan-header">
+  <h1>Personal Brand Strategy</h1>
+  <div class="subtitle">Should Alpine Tax Build Around Vinnie Being a Cool Dude?</div>
+  <div class="meta">Prepared March 2026 &nbsp;|&nbsp; Confidential</div>
+</header>
+
+<div class="container">
+
+<!-- ---- Executive Summary ---- -->
+<div class="exec-summary">
+  <h2>The Bottom Line: Yes &mdash; It Will Get Him Clients</h2>
+  <p>Not because &ldquo;cool&rdquo; sells tax prep. Because <strong>trust sells tax prep</strong>, and likability is the fastest path to trust in a market where every competitor looks identical.</p>
+  <p>Five independent strategic frameworks all reach the same conclusion: Vinnie&rsquo;s personality is the untapped competitive advantage Alpine Tax already has. The question isn&rsquo;t whether to use it &mdash; it&rsquo;s how to amplify it without the common pitfalls.</p>
+  <ul>
+    <li><strong>Zero Denver tax preparers</strong> have a recognizable personality brand</li>
+    <li><strong>68% of accountants</strong> have no social media presence at all</li>
+    <li><strong>60% of Americans</strong> rank trust as #1 factor choosing a financial professional</li>
+    <li><strong>Visible Experts</strong> command 13x higher fees than invisible peers</li>
+  </ul>
+  <p style="margin-top:16px"><strong>Expected ROI:</strong> 10&ndash;20 new clients in year 1 = $12K&ndash;$24K annual recurring revenue from near-zero marketing spend.</p>
+</div>
+
+<!-- ---- Table of Contents ---- -->
+<div class="toc">
+  <h3>Contents</h3>
+  <div class="toc-grid">
+    <a href="#s1"><span class="num">1.</span> Jobs-to-Be-Done (Christensen)</a>
+    <a href="#s2"><span class="num">2.</span> Competitive Strategy (Porter)</a>
+    <a href="#s3"><span class="num">3.</span> Customer Creation (Drucker)</a>
+    <a href="#s4"><span class="num">4.</span> Purple Cow (Godin)</a>
+    <a href="#s5"><span class="num">5.</span> Risk Analysis (Taleb)</a>
+    <a href="#s6"><span class="num">6.</span> The Evidence</a>
+    <a href="#s7"><span class="num">7.</span> What This Actually Means</a>
+    <a href="#s8"><span class="num">8.</span> Sources</a>
+  </div>
+</div>
+
+<!-- ---- Controls ---- -->
+<div class="controls">
+  <button onclick="toggleAll(true)">Expand All</button>
+  <button onclick="toggleAll(false)">Collapse All</button>
+</div>
+
+<!-- ========== SECTION 1: CHRISTENSEN ========== -->
+<div class="section" id="s1">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">1</span>
+    <h2>Jobs-to-Be-Done Analysis</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><em>Framework: Clayton Christensen &mdash; what &ldquo;job&rdquo; are clients hiring Alpine Tax to do?</em></p>
+    <p>Nobody hires a tax preparer because he&rsquo;s cool. They hire one because they need their taxes done right without stress. But here&rsquo;s the job nobody talks about:</p>
+    <blockquote>&ldquo;Give me confidence that my taxes are handled, without making me feel stupid for not understanding them.&rdquo;</blockquote>
+    <p>A likable, approachable person gets hired for that job every time over a credentialed stranger who makes you feel small. Vinnie&rsquo;s personality isn&rsquo;t the product &mdash; it&rsquo;s the <strong>trust unlock</strong> that gets people to hand over their financials to someone they&rsquo;ve never met.</p>
+    <div class="callout callout-verdict">
+      <div class="callout-title">Verdict</div>
+      Personality doesn&rsquo;t change what job gets done. It changes who gets hired to do it.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 2: PORTER ========== -->
+<div class="section" id="s2">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">2</span>
+    <h2>Competitive Strategy</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><em>Framework: Michael Porter &mdash; competitive positioning and sustainable advantage</em></p>
+    <h3>The Denver Tax Prep Market</h3>
+    <p>Three tiers:</p>
+    <ol>
+      <li><strong>H&amp;R Block / Jackson Hewitt</strong> &mdash; cheap, impersonal, revolving door</li>
+      <li><strong>CPA firms</strong> &mdash; credentialed, expensive, intimidating</li>
+      <li><strong>Solo preparers</strong> &mdash; the gap between 1 and 2</li>
+    </ol>
+    <p>Every solo preparer claims &ldquo;personal service.&rdquo; <strong>Zero Denver tax preparers have a recognizable personality brand.</strong> The positioning is uncontested.</p>
+    <p>68% of accountants have no social media presence at all. The competitive bar is on the floor. Vinnie doesn&rsquo;t need to be a TikTok star &mdash; he needs to be the one Denver tax guy whose face people recognize.</p>
+
+    <h3>Is This a Sustainable Moat?</h3>
+    <p>Personality alone isn&rsquo;t defensible. But personality + S-Corp specialization + consistent content + 100+ Google reviews = a <strong>compound moat</strong> that takes a competitor 2&ndash;3 years to replicate.</p>
+    <div class="callout callout-verdict">
+      <div class="callout-title">Verdict</div>
+      First-mover advantage in an uncontested local position.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 3: DRUCKER ========== -->
+<div class="section" id="s3">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">3</span>
+    <h2>Customer Creation</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><em>Framework: Peter Drucker &mdash; the purpose of a business is to create a customer</em></p>
+    <blockquote>&ldquo;The purpose of a business is to create a customer.&rdquo;</blockquote>
+    <p>Does Vinnie&rsquo;s personality reduce friction between &ldquo;I need a tax preparer&rdquo; and &ldquo;I&rsquo;m scheduling with Alpine Tax&rdquo;?</p>
+    <p>The data says yes:</p>
+    <ul>
+      <li><strong>60%</strong> of Americans rank trust as #1 factor when choosing a financial professional (YouGov)</li>
+      <li>Harvard research: clients need <strong>Competency Trust</strong> (can they do the work?) AND <strong>Integrity Trust</strong> (are they honest / do they care?). Credentials handle competency. Personality handles integrity.</li>
+      <li>Reviews mentioning the preparer by name outperform generic firm reviews for conversion</li>
+    </ul>
+    <p>Vinnie already has 150&ndash;300 clients who presumably like working with him. The brand doesn&rsquo;t need to fabricate personality &mdash; it needs to <strong>amplify what&rsquo;s already working</strong>.</p>
+    <div class="callout callout-verdict">
+      <div class="callout-title">Verdict</div>
+      Don&rsquo;t build a persona. Broadcast the real one.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 4: GODIN ========== -->
+<div class="section" id="s4">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">4</span>
+    <h2>Purple Cow &mdash; Being Remarkable</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><em>Framework: Seth Godin &mdash; be remarkable to the right tribe</em></p>
+    <p>In a sea of beige tax preparers who all say &ldquo;personalized service with integrity,&rdquo; a tax guy who&rsquo;s actually fun to talk to IS the Purple Cow.</p>
+    <h3>Target Tribe</h3>
+    <p>Denver small business owners (S-Corps, partnerships) who dread tax season and want someone who treats them like a human. These are the <strong>$2,000+ engagements</strong>.</p>
+    <div class="callout callout-warning">
+      <div class="callout-title">Cautionary Tale</div>
+      E-Commerce Accountants went viral on TikTok, got flooded with low-value drop-shipper clients who churned in 6 months (Accounting Today). Wrong audience, wrong channel.
+    </div>
+    <div class="callout callout-verdict">
+      <div class="callout-title">Verdict</div>
+      Be remarkable to the right 300 people, not famous to 30,000 wrong ones.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 5: TALEB ========== -->
+<div class="section" id="s5">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">5</span>
+    <h2>Risk Analysis</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <p><em>Framework: Nassim Taleb &mdash; antifragility and risk management</em></p>
+    <h3>Real Risks</h3>
+    <table class="plan-table">
+      <thead><tr><th>Risk</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Key-man risk</strong></td><td>If Vinnie IS the brand, business has near-zero sale value</td></tr>
+        <tr><td><strong>Burnout</strong></td><td>38% of professionals report personal brand maintenance causes stress</td></tr>
+        <tr><td><strong>Scalability ceiling</strong></td><td>Clients hire Vinnie, then won&rsquo;t work with any staff</td></tr>
+      </tbody>
+    </table>
+    <h3>Mitigation</h3>
+    <p>Alpine Tax already has the right architecture. &ldquo;Alpine Tax&rdquo; is the brand. Vinnie is the personality that makes people choose it.</p>
+    <p>This is the <strong>Walmart model</strong> (Sam Walton&rsquo;s face, Walmart&rsquo;s brand) &mdash; not the &ldquo;Jane Smith CPA&rdquo; model.</p>
+    <div class="callout callout-critical">
+      <div class="callout-title">Key Rule</div>
+      Never make Vinnie&rsquo;s name the brand name. Alpine Tax is the entity. Vinnie is the reason people pick it.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 6: EVIDENCE ========== -->
+<div class="section" id="s6">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">6</span>
+    <h2>The Evidence That It Gets Business</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <table class="plan-table">
+      <thead><tr><th>Signal</th><th>Data</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Fee premium</td><td>Visible Experts command <strong>13x higher fees</strong> than invisible peers</td><td>Hinge Marketing (220 professionals)</td></tr>
+        <tr><td>Trust factor</td><td><strong>60%</strong> rank trust #1 choosing financial professionals</td><td>YouGov</td></tr>
+        <tr><td>Competition gap</td><td><strong>68%</strong> of accountants have zero social presence</td><td>Industry survey</td></tr>
+        <tr><td>Denver gap</td><td><strong>Zero</strong> personality-driven tax brands in Denver</td><td>Expertise.com, Yelp audit</td></tr>
+        <tr><td>Content ROI</td><td>First viral post = 40K views, $0 ad spend</td><td>Karbon / DiNardo case</td></tr>
+        <tr><td>Wrong-audience risk</td><td>TikTok flood &rarr; low-value clients &rarr; 6-month churn</td><td>Accounting Today</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 7: WHAT THIS MEANS ========== -->
+<div class="section" id="s7">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">7</span>
+    <h2>What &ldquo;Building Around Vinnie&rdquo; Actually Means</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <div class="do-dont">
+      <div class="dont-col">
+        <h4>It Does NOT Mean</h4>
+        <ul>
+          <li>TikTok dances or &ldquo;cool tax guy&rdquo; persona</li>
+          <li>Rebranding to &ldquo;Vinnie Does Taxes&rdquo;</li>
+          <li>Personality over substance</li>
+          <li>Chasing followers</li>
+        </ul>
+      </div>
+      <div class="do-col">
+        <h4>It DOES Mean</h4>
+        <ul>
+          <li>GBP posts with Vinnie&rsquo;s face (not stock photos)</li>
+          <li>Video consultations prominently marketed &mdash; &ldquo;You work with Vinnie, not a stranger&rdquo;</li>
+          <li>Blog content in Vinnie&rsquo;s voice (already happening &mdash; 4 posts published)</li>
+          <li>Review responses signed by Vincent (already built)</li>
+          <li>&ldquo;Meet Vinnie&rdquo; section on the website with real photo</li>
+          <li>Client testimonials mentioning Vinnie by name</li>
+          <li>Optional: One 60-second tax tip per week on YouTube Shorts or Reels during tax season</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Time Investment</h3>
+    <p><strong>2&ndash;3 hours/week</strong> during tax season, <strong>1 hour/week</strong> off-season. No ad spend needed.</p>
+
+    <h3>Expected Return</h3>
+    <p>At ~$1,200 average client value, if personality-driven content brings 10&ndash;20 new clients in year 1, that&rsquo;s <strong>$12K&ndash;$24K annual recurring revenue</strong> from near-zero marketing spend.</p>
+
+    <div class="callout callout-info">
+      <div class="callout-title">Already Happening</div>
+      Several of these actions are already in motion &mdash; blog posts in Vinnie&rsquo;s voice, review response templates signed by Vincent. This strategy is about being intentional and consistent with what&rsquo;s already working.
+    </div>
+  </div></div>
+</div>
+
+<!-- ========== SECTION 8: SOURCES ========== -->
+<div class="section" id="s8">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="section-num">8</span>
+    <h2>Sources</h2>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="section-body"><div class="section-inner">
+    <ul>
+      <li><a href="https://hingemarketing.com/blog/story/new-visible-expert-study-released" target="_blank" rel="noopener">Hinge Marketing &mdash; Visible Expert Study</a> (13x fee premium data)</li>
+      <li><a href="https://yougov.com/en-us/articles/50180-27-americans-use-financial-advisors-60-prioritizing-trust-as-the-top-factor" target="_blank" rel="noopener">YouGov &mdash; 60% Prioritize Trust</a></li>
+      <li><a href="https://karbonhq.com/resources/tiktok-and-taxes-with-david-dinardo/" target="_blank" rel="noopener">Karbon &mdash; TikTok and Taxes / Envolta</a> (40K views case study)</li>
+      <li><a href="https://www.accountingtoday.com/news/practice-profile-tiktok-boom-and-busts" target="_blank" rel="noopener">Accounting Today &mdash; TikTok Boom and Busts</a> (wrong-audience cautionary tale)</li>
+      <li><a href="https://www.journalofaccountancy.com/newsletters/2021/may/build-small-firm-solo-practice-brand/" target="_blank" rel="noopener">Journal of Accountancy &mdash; Solo Practice Brand Building</a></li>
+      <li><a href="https://www.entrepreneur.com/business-news/5-ways-to-avoid-burnout-while-building-your-personal-brand/360933" target="_blank" rel="noopener">Entrepreneur &mdash; Personal Brand Burnout</a> (38% stress stat)</li>
+      <li><a href="https://support.google.com/business/answer/3038177?hl=en" target="_blank" rel="noopener">Google Business Profile &mdash; Representing Your Business</a></li>
+    </ul>
+  </div></div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="plan-footer">
+  <p>Alpine Tax &amp; Consulting &mdash; Personal Brand Strategy &nbsp;|&nbsp; March 2026</p>
+  <p>Prepared by <a href="https://atmix.org">atmix</a> &nbsp;|&nbsp; Confidential</p>
+</footer>
+
+</div><!-- /plan-content -->
+
+<script>
+// SHA-256 hash of "virginia"
+const HASH = '0a4992ea442b53e3dca861deac09a8d4987004a8483079b12861080ea4aa1b52';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function attemptLogin() {
+  const input = document.getElementById('pwd-input');
+  const hash = await sha256(input.value.trim().toLowerCase());
+  if (hash === HASH) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('plan-content').style.display = 'block';
+    sessionStorage.setItem('alpine-social-auth', '1');
+  } else {
+    document.getElementById('pwd-error').style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+
+// Enter key on password field
+document.getElementById('pwd-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') attemptLogin();
+});
+
+// Session persistence (stay logged in within tab)
+if (sessionStorage.getItem('alpine-social-auth') === '1') {
+  document.getElementById('login-gate').style.display = 'none';
+  document.getElementById('plan-content').style.display = 'block';
+}
+
+// Section toggle
+function toggle(header) {
+  header.closest('.section').classList.toggle('open');
+}
+
+function toggleAll(open) {
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.toggle('open', open);
+  });
+}
+</script>
+</body>
+</html>
