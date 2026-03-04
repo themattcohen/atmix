@@ -58,121 +58,296 @@ if "active_run_id" not in st.session_state:
 
 
 # ---------------------------------------------------------------------------
-# Sidebar
+# Helpers
 # ---------------------------------------------------------------------------
-with st.sidebar:
-    st.title("📝 Blog Engine")
-    st.caption("SEO article production pipeline")
-
-    # ---- New pipeline run ----
-    st.markdown("---")
-    st.subheader("New Run")
-
+def _render_new_run_form():
+    """Render the New Run form (config selection, keyword, start button)."""
     configs = pipeline.list_configs()
     if not configs:
         st.warning("No configs found in `configs/`.")
-    else:
-        config_filenames = [c["filename"] for c in configs]
-        config_names = {c["filename"]: c["name"] for c in configs}
-        selected_config = st.selectbox(
-            "Content profile",
-            config_filenames,
-            format_func=lambda f: config_names.get(f, f),
-            key="sb_config",
-        )
-        st.caption("Content rules for a specific site (author, sources, disclaimers, validation)")
+        return
 
-        # Show profile details so user knows what guardrails are active
-        try:
-            _preview_cfg = pipeline.load_config(selected_config)
-            with st.expander("View profile rules", expanded=False):
-                _author = _preview_cfg.get("author", {})
-                st.markdown(f"**Author:** {_author.get('name', '—')}, {_author.get('credentials', '—')}")
-                st.markdown(f"**Tone:** {_preview_cfg.get('content', {}).get('toneGuidance', '—')}")
-                st.markdown(f"**Surfer score target:** {_preview_cfg.get('seo', {}).get('surferScoreTarget', '—')}")
+    config_filenames = [c["filename"] for c in configs]
+    config_names = {c["filename"]: c["name"] for c in configs}
+    selected_config = st.selectbox(
+        "Content profile",
+        config_filenames,
+        format_func=lambda f: config_names.get(f, f),
+        key="sb_config",
+    )
+    st.caption("Content rules for a specific site (author, sources, disclaimers, validation)")
 
-                _domains = _preview_cfg.get("research", {}).get("authorityDomains", [])
-                if _domains:
-                    st.markdown(f"**Authority domains:** {', '.join(_domains)}")
+    # Show profile details so user knows what guardrails are active
+    try:
+        _preview_cfg = pipeline.load_config(selected_config)
+        with st.expander("View profile rules", expanded=False):
+            _author = _preview_cfg.get("author", {})
+            st.markdown(f"**Author:** {_author.get('name', '—')}, {_author.get('credentials', '—')}")
+            st.markdown(f"**Tone:** {_preview_cfg.get('content', {}).get('toneGuidance', '—')}")
+            st.markdown(f"**Surfer score target:** {_preview_cfg.get('seo', {}).get('surferScoreTarget', '—')}")
 
-                _protected = _preview_cfg.get("content", {}).get("protectedWords", [])
-                if _protected:
-                    st.markdown(f"**Protected words:** {', '.join(_protected)}")
+            _domains = _preview_cfg.get("research", {}).get("authorityDomains", [])
+            if _domains:
+                st.markdown(f"**Authority domains:** {', '.join(_domains)}")
 
-                _val = _preview_cfg.get("validation", {})
-                active_rules = []
-                if _val.get("requireDisclaimers"):
-                    active_rules.append("Disclaimers required")
-                if _val.get("requireStatuteCitations"):
-                    active_rules.append("Statute citations required")
-                if _val.get("requireDollarAmounts"):
-                    active_rules.append("Dollar amounts required")
-                if _val.get("requireCTAs"):
-                    active_rules.append("CTAs required")
-                if active_rules:
-                    st.markdown(f"**Validation rules:** {' · '.join(active_rules)}")
+            _protected = _preview_cfg.get("content", {}).get("protectedWords", [])
+            if _protected:
+                st.markdown(f"**Protected words:** {', '.join(_protected)}")
 
-                _disc_top = _preview_cfg.get("content", {}).get("disclaimerTop", "")
-                _disc_bot = _preview_cfg.get("content", {}).get("disclaimerBottom", "")
-                if _disc_top or _disc_bot:
-                    st.markdown("**Disclaimers:**")
-                    if _disc_top:
-                        st.caption(f"Top: {_disc_top}")
-                    if _disc_bot:
-                        st.caption(f"Bottom: {_disc_bot}")
+            _val = _preview_cfg.get("validation", {})
+            active_rules = []
+            if _val.get("requireDisclaimers"):
+                active_rules.append("Disclaimers required")
+            if _val.get("requireStatuteCitations"):
+                active_rules.append("Statute citations required")
+            if _val.get("requireDollarAmounts"):
+                active_rules.append("Dollar amounts required")
+            if _val.get("requireCTAs"):
+                active_rules.append("CTAs required")
+            if active_rules:
+                st.markdown(f"**Validation rules:** {' · '.join(active_rules)}")
 
-                _hero = _preview_cfg.get("heroImage", {})
-                if _hero:
-                    st.markdown(f"**Hero style:** {_hero.get('style', '—')}")
-                    st.markdown(f"**Hero colors:** {_hero.get('colorScheme', '—')}")
-        except FileNotFoundError:
-            pass
+            _disc_top = _preview_cfg.get("content", {}).get("disclaimerTop", "")
+            _disc_bot = _preview_cfg.get("content", {}).get("disclaimerBottom", "")
+            if _disc_top or _disc_bot:
+                st.markdown("**Disclaimers:**")
+                if _disc_top:
+                    st.caption(f"Top: {_disc_top}")
+                if _disc_bot:
+                    st.caption(f"Bottom: {_disc_bot}")
 
-        keyword_input = st.text_input("Primary keyword", key="sb_keyword")
+            _hero = _preview_cfg.get("heroImage", {})
+            if _hero:
+                st.markdown(f"**Hero style:** {_hero.get('style', '—')}")
+                st.markdown(f"**Hero colors:** {_hero.get('colorScheme', '—')}")
+    except FileNotFoundError:
+        pass
+
+    keyword_input = st.text_input("Keyword", key="sb_keyword")
+    with st.expander("Secondary keywords (optional)", expanded=False):
         secondary_input = st.text_area(
-            "Secondary keywords (one per line)",
+            "One per line",
             height=80,
             key="sb_secondary_keywords",
+            label_visibility="collapsed",
         )
+        st.caption("Added to research brief + article prompts")
 
-        if st.button("Start Run", key="sb_start", type="primary"):
-            if not keyword_input.strip():
-                st.error("Enter a keyword.")
-            else:
-                keyword = keyword_input.strip()
-                slug = pipeline.slugify(keyword)
-                secondary_list = [k.strip() for k in secondary_input.splitlines() if k.strip()]
-                run_id = db.create_run(selected_config, keyword, slug, json.dumps(secondary_list))
-                st.session_state.active_run_id = run_id
-                st.rerun()
-
-    # ---- Resume existing run ----
-    st.markdown("---")
-    st.subheader("Resume Run")
-
-    runs = db.list_runs(status="active")
-    if runs:
-        run_options = {
-            f"{r['keyword']} ({r['slug']}) — step {r['current_step']}": r["id"]
-            for r in runs
-        }
-        selected_run = st.selectbox(
-            "Active runs",
-            list(run_options.keys()),
-            key="sb_resume_select",
-        )
-        if st.button("Resume", key="sb_resume"):
-            st.session_state.active_run_id = run_options[selected_run]
+    if st.button("Start Run", key="sb_start", type="primary"):
+        if not keyword_input.strip():
+            st.error("Enter a keyword.")
+        else:
+            keyword = keyword_input.strip()
+            slug = pipeline.slugify(keyword)
+            secondary_list = [k.strip() for k in secondary_input.splitlines() if k.strip()]
+            new_run_id = db.create_run(selected_config, keyword, slug, json.dumps(secondary_list))
+            st.session_state.active_run_id = new_run_id
             st.rerun()
-    else:
-        st.caption("No active runs.")
 
-    # ---- Completed runs ----
+
+def _sidebar_step_list(steps_list, current_step):
+    """Render vertical pipeline step list in sidebar."""
+    for s in pipeline.STEPS:
+        idx = s["index"]
+        icon = s["icon"]
+        label = s["label"]
+
+        # Check step status from DB
+        step_status = "pending"
+        for db_step in steps_list:
+            if db_step.get("step_index") == idx:
+                step_status = db_step.get("status", "pending")
+                break
+
+        if idx < current_step or step_status == "approved":
+            marker = "✅"
+            style = ""
+        elif idx == current_step:
+            marker = "🔵"
+            style = "font-weight: bold;"
+        else:
+            marker = "○"
+            style = "color: #6c757d;"
+
+        st.markdown(
+            f'<div style="padding: 2px 0; {style}">{marker} {icon} {label}</div>',
+            unsafe_allow_html=True,
+        )
+
+
+def _build_cost_sidebar(steps_list):
+    """Render a cost summary from all steps' persisted data.
+
+    Must be called within a ``with st.sidebar:`` context.
+    """
+    # Build a dict of step_index -> step_data
+    step_data_map = {}
+    for s in steps_list:
+        idx = s.get("step_index")
+        if idx is not None and s.get("output_json"):
+            try:
+                step_data_map[idx] = json.loads(s["output_json"])
+            except (json.JSONDecodeError, TypeError):
+                step_data_map[idx] = {}
+
+    total = 0.0
+    has_any_cost = False
+
+    with st.expander("Run Costs", expanded=False):
+        # Step 0 — NLP Input
+        s0_data = step_data_map.get(0, {})
+        s0_cost = s0_data.get("call_info")
+        if s0_cost:
+            has_any_cost = True
+            st.text(f"NLP Input:    {format_cost_short(s0_cost)}")
+            total += s0_cost.get("cost_usd", 0)
+
+        # Step 1 — Research Brief
+        s1_data = step_data_map.get(1, {})
+        s1_cost = s1_data.get("call_info")
+        if s1_cost:
+            has_any_cost = True
+            st.text(f"Research:     {format_cost_short(s1_cost)}")
+            total += s1_cost.get("cost_usd", 0)
+
+        # Step 2 — Write Article
+        s2_data = step_data_map.get(2, {})
+        s2_cost = s2_data.get("call_info")
+        if s2_cost:
+            has_any_cost = True
+            st.text(f"Write:        {format_cost_short(s2_cost)}")
+            total += s2_cost.get("cost_usd", 0)
+
+        # Step 3 — Review & Iterate
+        s3_data = step_data_map.get(3, {})
+        cost_history = s3_data.get("cost_history", [])
+        if cost_history:
+            has_any_cost = True
+            rw_total = sum_costs(cost_history)
+            st.text(f"Rewrites (x{len(cost_history)}): ${rw_total:.2f}")
+            total += rw_total
+
+        analysis_costs = s3_data.get("analysis_cost_history", [])
+        if analysis_costs:
+            has_any_cost = True
+            an_total = sum_costs(analysis_costs)
+            st.text(f"Screenshot analysis (x{len(analysis_costs)}): ${an_total:.2f}")
+            total += an_total
+
+        hero_cost = s3_data.get("hero_cost")
+        if hero_cost:
+            has_any_cost = True
+            st.text(f"Hero images:  {format_cost_short(hero_cost)}")
+            total += hero_cost.get("cost_usd", 0)
+
+        # Total
+        st.divider()
+        st.metric("Total Cost", f"${total:.2f}")
+
+        if not has_any_cost:
+            st.caption("No API costs recorded yet.")
+
+
+# ---------------------------------------------------------------------------
+# Sidebar — context-aware layout
+# ---------------------------------------------------------------------------
+with st.sidebar:
+    st.title("📝 Blog Engine")
+
+    # Check if we have an active run
+    run_id = st.session_state.active_run_id
+
+    if run_id:
+        # --- Active run layout ---
+        run_preview = db.get_run(run_id)
+        if run_preview:
+            st.markdown("---")
+            # Run header with close + delete buttons
+            col_slug, col_close, col_delete = st.columns([4, 1, 1])
+            with col_slug:
+                st.markdown(f"🏷️ `{run_preview['slug']}`")
+            with col_close:
+                if st.button("✕", key="close_run", help="Close this run"):
+                    st.session_state.active_run_id = None
+                    st.rerun()
+            with col_delete:
+                if st.button("🗑️", key="delete_run", help="Delete this run permanently"):
+                    db.delete_run(run_id)
+                    st.session_state.active_run_id = None
+                    st.rerun()
+
+            st.caption(f"Keyword: {run_preview['keyword']}  ·  Config: {run_preview['config_name']}")
+
+            # Pipeline steps
+            st.markdown("---")
+            st.markdown("**Pipeline**")
+            steps_for_sidebar = db.get_steps(run_id)
+            _sidebar_step_list(steps_for_sidebar, run_preview["current_step"])
+
+            # Costs
+            _build_cost_sidebar(steps_for_sidebar)
+
+        st.markdown("---")
+
+        # New Run (collapsed)
+        with st.expander("➕ New Run", expanded=False):
+            _render_new_run_form()
+
+        # Switch Run (if other active runs exist)
+        other_runs = [r for r in db.list_runs(status="active") if r["id"] != run_id]
+        if other_runs:
+            with st.expander("🔀 Switch Run", expanded=False):
+                for r in other_runs:
+                    col_label, col_switch, col_del = st.columns([4, 1, 1])
+                    with col_label:
+                        st.text(f"{r['keyword']} — step {r['current_step']}")
+                    with col_switch:
+                        if st.button("↗", key=f"switch_{r['id']}", help="Switch to this run"):
+                            st.session_state.active_run_id = r["id"]
+                            st.rerun()
+                    with col_del:
+                        if st.button("🗑️", key=f"del_switch_{r['id']}", help="Delete this run"):
+                            db.delete_run(r["id"])
+                            st.rerun()
+    else:
+        # --- No active run layout ---
+        st.caption("SEO article production pipeline")
+
+        # Resume Run (show first if active runs exist)
+        runs = db.list_runs(status="active")
+        if runs:
+            st.markdown("---")
+            st.subheader("Resume Run")
+            for r in runs:
+                col_label, col_resume, col_del = st.columns([4, 1, 1])
+                with col_label:
+                    st.text(f"{r['keyword']} — step {r['current_step']}")
+                with col_resume:
+                    if st.button("▶", key=f"resume_{r['id']}", help="Resume this run"):
+                        st.session_state.active_run_id = r["id"]
+                        st.rerun()
+                with col_del:
+                    if st.button("🗑️", key=f"del_run_{r['id']}", help="Delete this run"):
+                        db.delete_run(r["id"])
+                        st.rerun()
+
+        # New Run
+        st.markdown("---")
+        st.subheader("New Run")
+        _render_new_run_form()
+
+    # Completed runs (always visible)
     completed = db.list_runs(status="completed")
     if completed:
         with st.expander(f"Completed ({len(completed)})", expanded=False):
             for r in completed:
-                st.markdown(f"- **{r['keyword']}** (`{r['slug']}`)")
+                col_label, col_del = st.columns([5, 1])
+                with col_label:
+                    st.markdown(f"**{r['keyword']}** (`{r['slug']}`)")
+                with col_del:
+                    if st.button("🗑️", key=f"del_done_{r['id']}", help="Delete this run"):
+                        db.delete_run(r["id"])
+                        st.rerun()
 
 
 # ---------------------------------------------------------------------------
@@ -207,77 +382,6 @@ except FileNotFoundError:
 steps = db.get_steps(run_id)
 current_step = run["current_step"]
 
-# ---------------------------------------------------------------------------
-# Sidebar — Run cost summary
-# ---------------------------------------------------------------------------
-def _build_cost_sidebar(steps_list):
-    """Render a cost summary from all steps' persisted data."""
-    # Build a dict of step_index -> step_data
-    step_data_map = {}
-    for s in steps_list:
-        idx = s.get("step_index")
-        if idx is not None and s.get("output_json"):
-            try:
-                step_data_map[idx] = json.loads(s["output_json"])
-            except (json.JSONDecodeError, TypeError):
-                step_data_map[idx] = {}
-
-    total = 0.0
-    has_any_cost = False
-
-    with st.sidebar.expander("Run Costs", expanded=False):
-        # Step 0 — NLP Input
-        s0_data = step_data_map.get(0, {})
-        s0_cost = s0_data.get("call_info")
-        if s0_cost:
-            has_any_cost = True
-            st.text(f"NLP Input:    {format_cost_short(s0_cost)}")
-            total += s0_cost.get("cost_usd", 0)
-
-        # Step 1 — Research Brief
-        s1_data = step_data_map.get(1, {})
-        s1_cost = s1_data.get("call_info")
-        if s1_cost:
-            has_any_cost = True
-            st.text(f"Research:     {format_cost_short(s1_cost)}")
-            total += s1_cost.get("cost_usd", 0)
-
-        # Step 2 — Write Article
-        s2_data = step_data_map.get(2, {})
-        s2_cost = s2_data.get("call_info")
-        if s2_cost:
-            has_any_cost = True
-            st.text(f"Write:        {format_cost_short(s2_cost)}")
-            total += s2_cost.get("cost_usd", 0)
-
-        # Step 3 — Review & Iterate
-        s3_data = step_data_map.get(3, {})
-        cost_history = s3_data.get("cost_history", [])
-        if cost_history:
-            has_any_cost = True
-            rw_total = sum_costs(cost_history)
-            st.text(f"Rewrites (x{len(cost_history)}): ${rw_total:.2f}")
-            total += rw_total
-
-        hero_cost = s3_data.get("hero_cost")
-        if hero_cost:
-            has_any_cost = True
-            st.text(f"Hero images:  {format_cost_short(hero_cost)}")
-            total += hero_cost.get("cost_usd", 0)
-
-        # Total
-        st.divider()
-        st.metric("Total Cost", f"${total:.2f}")
-
-        if not has_any_cost:
-            st.caption("No API costs recorded yet.")
-
-_build_cost_sidebar(steps)
-
-# Pipeline progress
-components.pipeline_progress(pipeline.STEPS, current_step)
-
-st.markdown(f"**Keyword:** {run['keyword']}  |  **Config:** {run['config_name']}  |  **Slug:** `{run['slug']}`")
 st.markdown("---")
 
 # Render current step

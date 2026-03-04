@@ -8,10 +8,10 @@ Comprehensive reference for autonomous article writing agents. Follow every rule
 
 Before writing ANY article, the agent MUST read the NLP targets file. Check for these files in order:
 
-1. `src/content/drafts/<slug>.surfer-targets.json` (legacy SurferSEO targets — takes precedence if present)
-2. `src/content/drafts/<slug>.diy-surfer-targets.json` (DIY-generated targets — used for all new articles)
+1. `src/content/drafts/<slug>.surfer-targets.json` **(PRIMARY — SurferSEO-extracted NLP targets, takes precedence)**
+2. `src/content/drafts/<slug>.diy-surfer-targets.json` (fallback — DIY-generated targets for offline use)
 
-**For new articles**, generate targets with the DIY extract command:
+**Fallback for offline use**: generate targets with the DIY extract command:
 ```bash
 cd d2c
 node scripts/seo-scorer/index.mjs extract "<keyword>" --slug <slug>
@@ -24,6 +24,8 @@ This outputs `src/content/drafts/<slug>.diy-surfer-targets.json` with NLP terms 
 - Word count within the `targets.wordCount` range (min-max)
 - Heading count within the `targets.headings` range (min-max)
 
+**PRIMARY GATE**: SurferSEO Content Score ≥90 (verified via `.surfer-targets.json`)
+
 ### YMYL Override:
 Legal accuracy ALWAYS wins over NLP term targets. Never change statute citations,
 dollar amounts, or penalty figures to hit an NLP target. If an NLP target conflicts
@@ -32,6 +34,30 @@ with legal accuracy, legal accuracy wins.
 ### If no targets file exists:
 Run the DIY extract command above to generate targets. Do NOT proceed with writing
 until `.diy-surfer-targets.json` exists. See the blog pipeline runbook Section 10.6.
+
+---
+
+## 0.5. Research Before Writing (Hard Gate)
+
+Before writing ANY article, the agent MUST have a research brief. Check for:
+
+```
+src/content/drafts/<slug>.research-brief.md
+```
+
+**If the brief does not exist, create it before writing.** Writing without a brief is not permitted.
+
+### What the brief must contain:
+- **Factual claims with citations** — every major fact the article will assert, traced to an authority source. Required sources to consult: IRS.gov, FinCEN.gov, law.cornell.edu (31 USC / 31 CFR text), treasury.gov
+- **Competitor analysis summary** — what the top 5-10 SERP results cover, and what they miss or get wrong
+- **Content gap opportunities** — at least 2 specific angles, sub-topics, or facts our article will cover that competitors do not
+- **Statutory references** — exact statute citations (31 USC, 31 CFR, IRC) in scope for this article
+
+### Rules:
+- Every factual claim in the finished article must be traceable to a source documented in the brief
+- The brief is a working document — no formatting requirements, bullet lists are fine
+- The brief is NOT published and does NOT go into the MDX draft
+- Legal accuracy ALWAYS wins. If a source contradicts a claim you planned to make, correct the claim
 
 ---
 
@@ -93,6 +119,11 @@ heroImage: "/blog/[slug].webp"
 - Include a "Frequently Asked Questions" section
 - Include at least 1 comparison table (use markdown `| | |` tables)
 - Include at least 1 bulleted or numbered list
+- **AI Overview snippet**: Include a short, direct definition or answer (1-2 sentences) immediately after the intro. This targets AI overview extraction and featured snippets.
+- **Keyword prominence**: Main keyword MUST appear in the first sentence and in at least 2 H2 headings.
+- **Blog images**: Include exactly 2 image placeholder comments:
+  - `<!-- blog-image-1: [descriptive alt text] -->` after the intro section
+  - `<!-- blog-image-2: [descriptive alt text] -->` before the FAQ section
 
 ---
 
@@ -217,11 +248,11 @@ The `validate-article.mjs` script checks all of these. ALL must pass:
 
 ---
 
-## 8. DIY Scorer Dimension Targets
+## 8. DIY Scorer Dimension Targets (Supplementary Reference)
 
-> **Note:** The DIY scorer (`seo-scorer/`) is the **primary SEO quality gate** (target >=9.0). SurferSEO subscription was cancelled as of March 2026. See Section 0 for the NLP targets workflow.
+> **Note:** The **primary SEO quality gate is SurferSEO Content Score ≥90** (verified via `.surfer-targets.json`). The DIY scorer (`seo-scorer/`) is now supplementary for reference only. See Section 0 for the NLP targets workflow.
 
-The `seo-scorer` scores 6 dimensions (7 with LLM, but we use `--no-llm`). When `--no-llm` is used, the 6 dimensions are re-weighted to sum to 1.0. Target ≥ 9.0/10 overall.
+The `seo-scorer` scores 6 dimensions (7 with LLM, but we use `--no-llm`). When `--no-llm` is used, the 6 dimensions are re-weighted to sum to 1.0. Reference score: ≥ 9.0/10 overall (supplementary).
 
 ### Readability (weight 0.12 → ~0.15 without LLM)
 - **Flesch Reading Ease**: 50-70 (3/3 pts). Write clear sentences about tax topics.
@@ -341,7 +372,7 @@ treasury.gov     — Treasury rates, regulations
 gpo.gov          — Government Publishing Office
 ```
 
-Every article needs ≥ 3 authority links. Common patterns:
+**Link budget**: 5-7 total links per article — approximately 5 internal crosslinks and 1-2 external authority links. Do not over-link. Common patterns:
 - `[31 CFR 1010.350](https://www.law.cornell.edu/cfr/text/31/1010.350)` — FBAR regulation
 - `[31 USC 5314](https://www.law.cornell.edu/uscode/text/31/5314)` — BSA reporting statute
 - `[31 USC 5321](https://www.law.cornell.edu/uscode/text/31/5321)` — BSA penalties
@@ -394,19 +425,23 @@ Place CTAs:
 - Include realistic scenarios with names and numbers
 
 ### FAQ Section Pattern
+- Include at least 4 FAQ questions sourced from Google People Also Ask and/or SEMrush high-intent queries
+- Write each FAQ answer as a short paragraph (~3 sentences), NOT as bullet lists
+- Repeat the key phrase from the question naturally in the answer
+- Start with Yes/No when the question is a yes/no question
+- Each answer should be self-contained for AI featured answer extraction
+
 ```markdown
 ## Frequently Asked Questions
 
 **Do I need to report [specific thing]?**
 
-[30-80 word answer paragraph. Start with Yes/No. Cite statute. Link to related article.]
+[~3 sentence answer paragraph. Start with Yes/No. Repeat key phrase from question. Cite statute. Link to related article.]
 
 **What happens if [specific scenario]?**
 
-[30-80 word answer paragraph. Concrete answer with dollar amounts and citations.]
+[~3 sentence answer paragraph. Concrete answer with dollar amounts and citations.]
 ```
-
-Aim for 4-6 FAQ questions per article. Each answer should be a self-contained paragraph that AI engines can extract as a featured answer.
 
 ---
 
@@ -445,7 +480,11 @@ FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You m
 
 # FBAR [Topic]: [Subtitle matching title]
 
-[2-3 intro paragraphs. Keyword in first sentence. Context, scope, why reader should care.]
+[AI Overview snippet: 1-2 sentence direct definition or answer targeting AI featured snippet extraction.]
+
+[2-3 intro paragraphs. Keyword in FIRST SENTENCE and in at least 2 H2 headings. Context, scope, why reader should care.]
+
+<!-- blog-image-1: [descriptive alt text for hero/intro image] -->
 
 ## [Question H2 — e.g., "Which Accounts Are Reportable?"]?
 
@@ -491,23 +530,31 @@ FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You m
 
 [FBAR Direct can help — [see our pricing](/pricing) for filing support.]
 
+<!-- blog-image-2: [descriptive alt text for mid-article image] -->
+
 ## Frequently Asked Questions
 
 **[Question about topic]?**
 
-[30-80 word answer. Start with Yes/No when applicable. Cite statute. Internal link.]
+[~3 sentence answer. Start with Yes/No when applicable. Repeat key phrase from question. Cite statute. Internal link.]
 
 **[Question about topic]?**
 
-[30-80 word answer.]
+[~3 sentence answer.]
 
 **[Question about topic]?**
 
-[30-80 word answer.]
+[~3 sentence answer.]
 
 **[Question about topic]?**
 
-[30-80 word answer.]
+[~3 sentence answer.]
+
+## Conclusion
+
+[2-3 sentence conclusion summarizing the key takeaway.]
+
+At FBAR Direct, [call-to-action paragraph, ~3 sentences. Link from config.content.ctaTemplates.]
 
 ## Let FBAR Direct Handle Your [Topic] Filing
 
@@ -523,12 +570,13 @@ This article is current as of [Month DD, YYYY]. Tax rules change — verify curr
 ## 15. Agent Execution Steps
 
 0. **READ THIS GUIDE** — internalize all rules before writing.
-1. **READ NLP TARGETS**: Read `src/content/drafts/<slug>.diy-surfer-targets.json` (or `.surfer-targets.json` for legacy articles) — target ALL high-priority NLP terms at specified frequencies, >=70% medium-priority terms, word count and heading count within target ranges. If no targets file exists, run: `node scripts/seo-scorer/index.mjs extract "<keyword>" --slug <slug>` (see Section 0).
-2. **WRITE** the draft to `src/content/drafts/<slug>.mdx` following this guide exactly, incorporating NLP targets throughout.
-3. **VALIDATE**: `node scripts/validate-article.mjs <slug>` — fix until all checks PASS.
-4. **SCORE**: `set -a && source .env && set +a && node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save`
-5. **If DIY score < 9.0**: Read the `.diy-score.json` file, identify lowest `(10 - score) * weight` dimensions, fix those issues, re-score. Max 4 iterations.
-6. **If DIY score >= 9.0**: DONE with writing phase. Report final score.
+1. **READ NLP TARGETS**: Read `src/content/drafts/<slug>.surfer-targets.json` (PRIMARY) or `src/content/drafts/<slug>.diy-surfer-targets.json` (fallback) — target ALL high-priority NLP terms at specified frequencies, >=70% medium-priority terms, word count and heading count within target ranges. If no targets file exists, run: `node scripts/seo-scorer/index.mjs extract "<keyword>" --slug <slug>` (see Section 0).
+2. **READ RESEARCH BRIEF**: Read `src/content/drafts/<slug>.research-brief.md` (see Section 0.5). If it does not exist, create it before proceeding — read IRS.gov, FinCEN.gov, law.cornell.edu for the topic and scan the top SERP competitors. Do NOT write the article without a brief.
+3. **WRITE** the draft to `src/content/drafts/<slug>.mdx` following this guide exactly, incorporating NLP targets throughout. Every factual claim must trace back to the research brief.
+4. **VALIDATE**: `node scripts/validate-article.mjs <slug>` — fix until all checks PASS.
+5. **VERIFY SURFER SCORE**: Verify that the article hits **SurferSEO Content Score ≥90** against the `.surfer-targets.json` file. This is the PRIMARY quality gate.
+6. **SCORE (SUPPLEMENTARY)**: `set -a && source .env && set +a && node scripts/seo-scorer/index.mjs score <slug> --no-llm --no-serp --save` — for reference/debugging only. Target ≥9.0 if helpful, but not required.
+7. **DONE**: Once Surfer score ≥90 is verified, writing phase is complete. Report final Surfer score.
 
 ### Common Score Fixes
 - **Low readability**: Split sentences over 25 words. Shorten paragraphs.

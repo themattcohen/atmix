@@ -7,13 +7,10 @@ from pathlib import Path
 ENGINE_ROOT = Path(__file__).resolve().parent.parent
 
 STEPS = [
-    {"index": 0, "name": "keyword", "label": "Keyword Research", "icon": "🔍"},
-    {"index": 1, "name": "nlp", "label": "Surfer NLP Targets", "icon": "🎯"},
-    {"index": 2, "name": "research", "label": "Research Brief", "icon": "📚"},
-    {"index": 3, "name": "write", "label": "Write Article", "icon": "✍️"},
-    {"index": 4, "name": "score", "label": "Surfer Score", "icon": "📊"},
-    {"index": 5, "name": "image", "label": "Hero Image", "icon": "🖼️"},
-    {"index": 6, "name": "done", "label": "Complete", "icon": "✅"},
+    {"index": 0, "name": "nlp_input",  "label": "Keywords & Surfer NLP Targets", "icon": "🎯"},
+    {"index": 1, "name": "research",   "label": "Research Brief",     "icon": "📚"},
+    {"index": 2, "name": "write",      "label": "Write Article",      "icon": "✍️"},
+    {"index": 3, "name": "review",     "label": "Review & Iterate",   "icon": "🔄"},
 ]
 
 
@@ -91,6 +88,6 @@ def advance_step(run_id: str) -> int:
         raise ValueError(f"Run not found: {run_id}")
     new_step = run["current_step"] + 1
     db.update_run(run_id, current_step=new_step)
-    if new_step == len(STEPS) - 1:
+    if new_step >= len(STEPS):
         db.update_run(run_id, status="completed")
     return new_step
