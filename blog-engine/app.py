@@ -137,6 +137,14 @@ with st.sidebar:
     if _show_vnc:
         st.markdown("---")
         st.subheader("Surfer Login")
+        with st.expander("How it works", expanded=False):
+            st.markdown(
+                "1. Click **Login to Surfer** below\n"
+                "2. Click **Open Browser (new tab)** — a remote browser appears\n"
+                "3. Log in to Surfer and solve the CAPTCHA\n"
+                "4. Come back here and click **Done — Verify Login**\n"
+                "5. Click **Launch browser** above to resume the pipeline"
+            )
 
         _VNC_URL = (
             "https://blog-engine.89-167-72-220.sslip.io/vnc/vnc.html"
