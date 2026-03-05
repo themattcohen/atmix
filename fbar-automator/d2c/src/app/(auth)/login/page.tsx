@@ -17,19 +17,20 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const verified = searchParams.get("verified") === "true";
 
   useEffect(() => {
     fetch("/api/auth/session")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.user) {
+        if (data?.user && !verified) {
           router.replace(callbackUrl);
         } else {
           setAuthChecked(true);
         }
       })
       .catch(() => setAuthChecked(true));
-  }, [router, callbackUrl]);
+  }, [router, callbackUrl, verified]);
 
   if (!authChecked) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -91,6 +92,12 @@ function LoginForm() {
           <h1 className="text-2xl font-bold text-navy-900">Sign in to FBAR Direct</h1>
           <p className="text-gray-600 mt-2">File your FBAR in 10 minutes</p>
         </div>
+
+        {verified && (
+          <div role="status" aria-live="polite" className="bg-green-50 text-green-700 p-3 rounded-md mb-4 text-sm">
+            Email verified! Please sign in to continue.
+          </div>
+        )}
 
         {error && (
           <div role="alert" aria-live="polite" className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
