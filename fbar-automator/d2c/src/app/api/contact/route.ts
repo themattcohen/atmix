@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { Resend } from "resend";
 
@@ -187,6 +188,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (err) {
+    Sentry.captureException(err);
     console.error("[contact] Error processing contact form:", err);
     return NextResponse.json(
       { error: "Unable to send your message. Please try again later." },

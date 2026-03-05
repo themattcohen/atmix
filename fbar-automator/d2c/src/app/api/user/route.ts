@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { personalInfoUpdateSchema } from "@/lib/validation";
@@ -40,6 +41,7 @@ export async function GET() {
       },
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("User get error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -97,6 +99,7 @@ export async function PUT(req: NextRequest) {
       },
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("User update error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

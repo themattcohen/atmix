@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { signupSchema } from "@/lib/validation";
 import { sendVerificationEmail, sendEmailWithRetry } from "@/lib/email";
+import { apiHandler } from "@/lib/api-handler";
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest) => {
   try {
     const body = await req.json();
     // Trim and normalize email before Zod validation so whitespace-padded emails pass
@@ -87,7 +89,8 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Signup error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});

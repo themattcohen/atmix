@@ -4,6 +4,40 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+function ResendOrSignIn({ resending, onResend }: { resending: boolean; onResend: () => void }) {
+  const [hasSession, setHasSession] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => setHasSession(!!data?.user))
+      .catch(() => setHasSession(false));
+  }, []);
+
+  if (hasSession === null) return null;
+
+  if (!hasSession) {
+    return (
+      <Link
+        href="/login"
+        className="w-full inline-block text-center py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-medium"
+      >
+        Sign in to resend verification email
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      onClick={onResend}
+      disabled={resending}
+      className="w-full py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+    >
+      {resending ? "Sending..." : "Resend Verification Email"}
+    </button>
+  );
+}
+
 function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,8 +64,11 @@ function VerifyEmailContent() {
       .then(async (res) => {
         if (res.ok) {
           setStatus("success");
-          // Redirect to dashboard after short delay
-          setTimeout(() => router.push("/threshold"), 2000);
+          // Check if user is authenticated to decide redirect target
+          const sessionRes = await fetch("/api/auth/session").catch(() => null);
+          const sessionData = sessionRes ? await sessionRes.json().catch(() => null) : null;
+          const redirectTo = sessionData?.user ? "/threshold" : "/login?verified=true";
+          setTimeout(() => router.push(redirectTo), 2000);
         } else {
           const data = await res.json();
           setError(data.error || "Verification failed");
@@ -124,13 +161,7 @@ function VerifyEmailContent() {
               </div>
             )}
 
-            <button
-              onClick={handleResend}
-              disabled={resending}
-              className="w-full py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              {resending ? "Sending..." : "Resend Verification Email"}
-            </button>
+            <ResendOrSignIn resending={resending} onResend={handleResend} />
           </div>
         )}
 

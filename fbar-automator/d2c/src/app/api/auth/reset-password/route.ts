@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -74,6 +75,7 @@ export async function POST(req: NextRequest) {
       message: "Password reset successfully",
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Reset password error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json(
       { error: "An unexpected error occurred" },

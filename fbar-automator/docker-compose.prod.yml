@@ -256,11 +256,13 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - d2c-logs:/app/logs
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: "50m"
+        max-file: "5"
     read_only: true
     tmpfs:
       - /tmp:size=100M
@@ -499,4 +501,6 @@ volumes:
   caddy_data:
     driver: local
   caddy_config:
+    driver: local
+  d2c-logs:
     driver: local

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db";
 import { submitFiling } from "@/lib/fincen-submit";
 
@@ -34,15 +35,21 @@ export async function GET(req: NextRequest) {
   const results: { id: string; outcome: string }[] = [];
 
   for (const filing of stuckFilings) {
-    const result = await submitFiling(filing.id, filing.userId);
-    results.push({
-      id: filing.id,
-      outcome: result.success
-        ? result.alreadySubmitted
-          ? "already_submitted"
-          : "submitted"
-        : `failed: ${result.error}`,
-    });
+    try {
+      const result = await submitFiling(filing.id, filing.userId);
+      results.push({
+        id: filing.id,
+        outcome: result.success
+          ? result.alreadySubmitted
+            ? "already_submitted"
+            : "submitted"
+          : `failed: ${result.error}`,
+      });
+    } catch (err) {
+      Sentry.captureException(err);
+      console.error(`[Cron] submitFiling failed for ${filing.id}:`, err);
+      results.push({ id: filing.id, outcome: "error" });
+    }
   }
 
   return NextResponse.json({

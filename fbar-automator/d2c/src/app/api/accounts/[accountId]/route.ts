@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { foreignAccountSchema } from "@/lib/validation";
@@ -32,6 +33,7 @@ export async function GET(
       },
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Account get error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -128,6 +130,7 @@ export async function PUT(
       },
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Account update error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -172,6 +175,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Account delete error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

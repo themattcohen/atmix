@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Verification email sent" });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Resend verification error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

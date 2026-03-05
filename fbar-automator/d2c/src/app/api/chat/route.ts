@@ -1,4 +1,5 @@
 import { anthropic } from "@ai-sdk/anthropic";
+import * as Sentry from "@sentry/nextjs";
 import { streamText, convertToModelMessages, type UIMessage } from "ai";
 import { FBAR_SYSTEM_PROMPT } from "@/lib/knowledge-base";
 
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
 
     return result.toUIMessageStreamResponse();
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Chat API error:", error);
     return new Response(
       JSON.stringify({ error: "Failed to process chat request" }),

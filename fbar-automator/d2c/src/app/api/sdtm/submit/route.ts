@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { submitFiling } from "@/lib/fincen-submit";
+import { apiHandler } from "@/lib/api-handler";
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest) => {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -32,7 +34,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("SDTM submission failed:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Submission failed" }, { status: 500 });
   }
-}
+});

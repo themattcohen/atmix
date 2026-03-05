@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { downloadFile } from "@/lib/s3";
@@ -33,6 +34,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("form114a download error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

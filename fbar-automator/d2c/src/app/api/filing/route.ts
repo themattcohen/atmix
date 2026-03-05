@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { FilingType } from "@prisma/client";
@@ -48,6 +49,7 @@ export async function GET() {
 
     return NextResponse.json({ data: filingData });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Filing list error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -126,6 +128,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Filing create error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

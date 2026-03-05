@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -85,6 +86,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set(cookie.name, cookie.value, cookie.options as any);
     return response;
   } catch (error) {
+    Sentry.captureException(error);
     console.error(
       "MFA login-verify error:",
       error instanceof Error ? error.message : "Unknown error"

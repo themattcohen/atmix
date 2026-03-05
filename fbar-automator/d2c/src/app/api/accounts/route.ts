@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { foreignAccountSchema, calendarYearSchema } from "@/lib/validation";
@@ -7,8 +8,9 @@ import { mapAccountToDisplay } from "@/lib/account-mapper";
 import { getRate } from "@/lib/treasury";
 import { Prisma, AccountType, OwnershipType } from "@prisma/client";
 import { PriorYearInfo } from "@/types";
+import { apiHandler } from "@/lib/api-handler";
 
-export async function GET(req: NextRequest) {
+export const GET = apiHandler(async (req: NextRequest) => {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -53,12 +55,13 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ data, priorYears });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Accounts list error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest) => {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -133,7 +136,8 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Account create error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});

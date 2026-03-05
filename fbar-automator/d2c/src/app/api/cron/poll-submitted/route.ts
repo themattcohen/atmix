@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db";
 import { checkAcknowledgement } from "@/lib/sdtm";
 import { sendConfirmationEmail, sendRejectionEmail } from "@/lib/email";
@@ -57,6 +58,7 @@ export async function GET(req: NextRequest) {
         results.push({ id: filing.id, outcome: "pending" });
       }
     } catch (err) {
+      Sentry.captureException(err);
       console.error(`[Cron] Failed to check acknowledgement for filing ${filing.id}:`, err);
       results.push({ id: filing.id, outcome: "error" });
     }

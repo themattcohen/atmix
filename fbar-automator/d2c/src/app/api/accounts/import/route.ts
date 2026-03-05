@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { importAccountsSchema } from "@/lib/validation";
@@ -118,6 +119,7 @@ export async function POST(request: NextRequest) {
       data: result.accounts.map(mapAccountToDisplay),
     }, { status: 201 });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Account import error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

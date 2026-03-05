@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createCheckoutSession } from "@/lib/stripe";
 import { PRICING } from "@/lib/pricing";
 import type { PricingTier } from "@/lib/pricing";
+import { apiHandler } from "@/lib/api-handler";
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest) => {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -121,7 +123,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Checkout error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { validateMfaCookie } from "@/lib/mfa-cookie";
 import { validateEmailVerificationCookie } from "@/lib/email-verification-cookie";
+import { log } from "@/lib/logger";
 
 // ---------------------------------------------------------------------------
 // CSP nonce helpers
@@ -89,7 +90,6 @@ const authRequiredPrefixes = [
   "/confirmation",
   "/settings",
   "/mfa-verify",
-  "/verify-email",
 ];
 
 // ---------------------------------------------------------------------------
@@ -184,24 +184,49 @@ export default auth(async (req) => {
     return NextResponse.next();
   }
 
+  const requestId = crypto.randomUUID();
+  const start = Date.now();
+  const method = request.method;
+  const ip = getClientIp(request);
+
+  log("info", "request", {
+    method,
+    path: normalizedPath,
+    ip,
+    requestId,
+  });
+
+  function finalize(response: NextResponse): NextResponse {
+    response.headers.set("x-request-id", requestId);
+    log("info", "response", {
+      method,
+      path: normalizedPath,
+      status: response.status,
+      duration: Date.now() - start,
+      requestId,
+    });
+    return response;
+  }
+
   // ------------------------------------------------------------------
   // Fix 1: Rate limiting (before auth so rate-limited requests are rejected fast)
   // ------------------------------------------------------------------
-  const ip = getClientIp(request);
 
   // Strict rate limit on auth-sensitive routes: 5 req/min per IP (relaxed in dev for testing)
   const authRateLimit = process.env.NODE_ENV === "production" ? 5 : 1000;
   const isAuthRoute = AUTH_RATE_LIMIT_PATHS.some((p) => normalizedPath.startsWith(p));
   if (isAuthRoute) {
     if (!rateLimit(`auth:${ip}`, authRateLimit, 60_000)) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      log("warn", "rate_limit_hit", { method, path: normalizedPath, ip, requestId });
+      return finalize(NextResponse.json({ error: "Too many requests" }, { status: 429 }));
     }
   }
 
   // Chat rate limit: 10 messages/min per IP
   if (normalizedPath === "/api/chat") {
     if (!rateLimit(`chat:${ip}`, 10, 60_000)) {
-      return NextResponse.json({ error: "Too many messages" }, { status: 429 });
+      log("warn", "rate_limit_hit", { method, path: normalizedPath, ip, requestId });
+      return finalize(NextResponse.json({ error: "Too many messages" }, { status: 429 }));
     }
   }
 
@@ -214,7 +239,8 @@ export default auth(async (req) => {
   ) {
     const generalLimit = process.env.NODE_ENV === "production" ? 60 : 600;
     if (!rateLimit(`api:${ip}`, generalLimit, 60_000)) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      log("warn", "rate_limit_hit", { method, path: normalizedPath, ip, requestId });
+      return finalize(NextResponse.json({ error: "Too many requests" }, { status: 429 }));
     }
   }
 
@@ -234,11 +260,11 @@ export default auth(async (req) => {
     "/api/chat",             // Public AI chat (useChat hook doesn't send CSRF header)
     "/api/contact",          // Public contact form (Turnstile-protected)
   ];
-  const method = request.method;
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
     const isExempt = csrfExemptPaths.some((p) => normalizedPath.startsWith(p));
     if (!isExempt && normalizedPath.startsWith("/api/") && !request.headers.get("x-requested-with")) {
-      return NextResponse.json({ error: "Missing CSRF header" }, { status: 403 });
+      log("warn", "csrf_rejected", { method, path: normalizedPath, requestId });
+      return finalize(NextResponse.json({ error: "Missing CSRF header" }, { status: 403 }));
     }
   }
 
@@ -257,19 +283,19 @@ export default auth(async (req) => {
     normalizedPath === "/api/chat" ||
     normalizedPath === "/api/contact"
   ) {
-    return NextResponse.next();
+    return finalize(NextResponse.next());
   }
 
   // API routes require auth (except the exempted ones above)
   if (normalizedPath.startsWith("/api/")) {
     if (!req.auth) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return finalize(NextResponse.json({ error: "Unauthorized" }, { status: 401 }));
     }
     const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
-    if (emailBlock) return emailBlock;
+    if (emailBlock) return finalize(emailBlock);
     const mfaBlock = await checkMfaGate(req, normalizedPath);
-    if (mfaBlock) return mfaBlock;
-    return NextResponse.next();
+    if (mfaBlock) return finalize(mfaBlock);
+    return finalize(NextResponse.next());
   }
 
   // Page routes: check if auth is required
@@ -277,27 +303,27 @@ export default auth(async (req) => {
   const requiresAuth = authRequiredPrefixes.some(
     (p) => normalizedPath === p || normalizedPath.startsWith(p + "/")
   );
-  if (!requiresAuth) return withCspHeaders(NextResponse.next(), nonce);
+  if (!requiresAuth) return finalize(withCspHeaders(NextResponse.next(), nonce));
 
   // Auth required but not authenticated — redirect to login
   if (!req.auth) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", normalizedPath);
-    return withCspHeaders(NextResponse.redirect(loginUrl), nonce);
+    return finalize(withCspHeaders(NextResponse.redirect(loginUrl), nonce));
   }
 
   const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
-  if (emailBlock) return withCspHeaders(emailBlock, nonce);
+  if (emailBlock) return finalize(withCspHeaders(emailBlock, nonce));
 
   const mfaBlock = await checkMfaGate(req, normalizedPath);
-  if (mfaBlock) return withCspHeaders(mfaBlock, nonce);
+  if (mfaBlock) return finalize(withCspHeaders(mfaBlock, nonce));
 
   // Guard: non-MFA users should not access /mfa-verify
   if (normalizedPath === "/mfa-verify" && !req.auth?.user?.mfaEnabled) {
-    return withCspHeaders(NextResponse.redirect(new URL("/threshold", req.url)), nonce);
+    return finalize(withCspHeaders(NextResponse.redirect(new URL("/threshold", req.url)), nonce));
   }
 
-  return withCspHeaders(NextResponse.next(), nonce);
+  return finalize(withCspHeaders(NextResponse.next(), nonce));
 });
 
 export const config = {

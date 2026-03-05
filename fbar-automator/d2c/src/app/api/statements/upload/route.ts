@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { randomUUID } from "crypto";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -7,10 +8,11 @@ import { validateFile, validateMagicBytes, normalizeMimeType, getFileExtension }
 import { extractFromStatement } from "@/lib/extraction";
 import { mapExtractedAccounts } from "@/lib/extraction-mapper";
 import { sanitizeFileName } from "@/lib/sanitize";
+import { apiHandler } from "@/lib/api-handler";
 
 export const maxDuration = 60;
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest) => {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -142,7 +144,8 @@ export async function POST(req: NextRequest) {
       warnings,
     });
   } catch (error) {
+    Sentry.captureException(error);
     console.error("Statement upload error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});

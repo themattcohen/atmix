@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { pushDataLayer, trackGadsConversion, setGtagUserData } from "@/lib/gtm";
 
 function getUTMFromCookie(): Record<string, string> {
@@ -30,6 +31,7 @@ function SignupForm() {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [generalError, setGeneralError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
@@ -62,6 +64,8 @@ function SignupForm() {
 
     let signupSucceeded = false;
     try {
+      Sentry.setContext("signup", { email: form.email });
+
       const utmData = getUTMFromCookie();
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -76,29 +80,48 @@ function SignupForm() {
         }),
       });
 
-      const data = await res.json();
+      if (res.status === 429) {
+        setGeneralError("Too many signup attempts. Please wait a minute and try again.");
+        return;
+      }
+
+      let data: Record<string, unknown>;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        const rawText = await res.text().catch(() => "(unreadable)");
+        console.error("Signup: failed to parse server response as JSON. Raw text:", rawText);
+        Sentry.captureException(jsonErr);
+        setGeneralError("Server returned an invalid response. Please try again or contact support.");
+        return;
+      }
 
       if (!res.ok) {
         if (data.details) {
-          setErrors(data.details);
+          setErrors(data.details as Record<string, string[]>);
         } else {
-          setGeneralError(data.error || "Signup failed");
+          setGeneralError((data.error as string) || "Signup failed");
         }
         return;
       }
 
       signupSucceeded = true;
+      setSignupSuccess(true);
 
-      // Auto-login after signup
-      const result = await signIn("credentials", {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      });
+      try {
+        const result = await signIn("credentials", {
+          email: form.email,
+          password: form.password,
+          redirect: false,
+        });
 
-      if (result?.error) {
-        setGeneralError("Account created but auto-login failed. Please sign in.");
-        router.push("/login");
+        if (result?.error) {
+          router.push("/verify-email");
+          return;
+        }
+      } catch (signInErr) {
+        console.error("Signup: auto-login threw, redirecting to verify-email:", signInErr);
+        router.push("/verify-email");
         return;
       }
 
@@ -112,10 +135,9 @@ function SignupForm() {
       router.push("/verify-email");
     } catch (err) {
       console.error("Signup flow error:", err);
+      Sentry.captureException(err);
       if (signupSucceeded) {
-        // Account was created but auto-login threw (likely rate-limited 429).
-        setGeneralError("Account created! Auto-login failed — please sign in.");
-        setTimeout(() => router.push("/login"), 2000);
+        router.push("/verify-email");
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
@@ -134,6 +156,12 @@ function SignupForm() {
           <h1 className="text-2xl font-bold text-navy-900">Create Your Account</h1>
           <p className="text-gray-600 mt-2">Start filing your FBAR today</p>
         </div>
+
+        {signupSuccess && (
+          <div role="status" aria-live="polite" className="bg-green-50 text-green-700 p-3 rounded-md mb-4 text-sm">
+            Account created! Redirecting...
+          </div>
+        )}
 
         {generalError && (
           <div role="alert" aria-live="polite" className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
