@@ -76,7 +76,11 @@ function LoginForm() {
       }
     } catch (err) {
       console.error("Login flow error:", err);
-      setError("An unexpected error occurred");
+      if (err instanceof Error && err.message.includes("fetch")) {
+        setError("Too many login attempts. Please wait a minute and try again.");
+      } else {
+        setError("An unexpected error occurred");
+      }
     } finally {
       setLoading(false);
     }

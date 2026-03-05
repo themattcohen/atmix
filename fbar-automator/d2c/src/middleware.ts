@@ -216,7 +216,8 @@ export default auth(async (req) => {
   const authRateLimit = process.env.NODE_ENV === "production" ? 5 : 1000;
   const isAuthRoute = AUTH_RATE_LIMIT_PATHS.some((p) => normalizedPath.startsWith(p));
   if (isAuthRoute) {
-    if (!rateLimit(`auth:${ip}`, authRateLimit, 60_000)) {
+    const authRouteKey = normalizedPath.split("/").slice(0, 4).join("/");
+    if (!rateLimit(`auth:${ip}:${authRouteKey}`, authRateLimit, 60_000)) {
       log("warn", "rate_limit_hit", { method, path: normalizedPath, ip, requestId });
       return finalize(NextResponse.json({ error: "Too many requests" }, { status: 429 }));
     }
