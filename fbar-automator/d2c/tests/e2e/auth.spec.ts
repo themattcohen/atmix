@@ -191,6 +191,11 @@ test.describe("Login Page", () => {
   });
 
   test("login with wrong password shows error", async ({ page }) => {
+    // Reset lockout state before test (signup duplicate email test may have created failed signIn attempts)
+    const preReq = await playwrightRequest.newContext({ baseURL: "http://localhost:3001" });
+    await resetLockout(preReq, LOCKOUT_TEST_EMAIL);
+    await preReq.dispose();
+
     await page.goto("/login");
     await page.locator("#email").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#email", LOCKOUT_TEST_EMAIL);
@@ -201,12 +206,10 @@ test.describe("Login Page", () => {
       page.locator("text=Invalid email or password")
     ).toBeVisible();
 
-    // Clean up lockout state for this test user
-    const request = await playwrightRequest.newContext({
-      baseURL: "http://localhost:3001",
-    });
-    await resetLockout(request, LOCKOUT_TEST_EMAIL);
-    await request.dispose();
+    // Clean up lockout state after test
+    const postReq = await playwrightRequest.newContext({ baseURL: "http://localhost:3001" });
+    await resetLockout(postReq, LOCKOUT_TEST_EMAIL);
+    await postReq.dispose();
   });
 
   test("login with non-existent email shows error", async ({ page }) => {
