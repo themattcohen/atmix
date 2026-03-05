@@ -247,6 +247,25 @@ export async function sendVerificationEmail(
   });
 }
 
+export async function sendAdminAckNotification(data: {
+  filingId: string;
+  userEmail: string;
+  calendarYear: number;
+  status: "accepted" | "rejected";
+  bsaId?: string;
+  rejectionReason?: string;
+}): Promise<void> {
+  const adminEmail = process.env.ADMIN_EMAIL || "matt@atmix.org";
+  await getResend().emails.send({
+    from: fromEmail,
+    to: adminEmail,
+    subject: `[FBAR Direct] Filing ${data.status.toUpperCase()}: ${data.userEmail} (${data.calendarYear})`,
+    html: `<p>Filing <strong>${escapeHtml(data.filingId)}</strong> for ${escapeHtml(data.userEmail)} (${data.calendarYear}) has been <strong>${data.status}</strong>.</p>
+${data.bsaId ? `<p>BSA ID: <strong>${escapeHtml(data.bsaId)}</strong></p>` : ""}
+${data.rejectionReason ? `<p>Reason: ${escapeHtml(data.rejectionReason)}</p>` : ""}`,
+  });
+}
+
 function isPermanentError(err: unknown): boolean {
   const status = (err as Record<string, unknown>)?.status;
   return typeof status === "number" && status >= 400 && status < 500 && status !== 429;

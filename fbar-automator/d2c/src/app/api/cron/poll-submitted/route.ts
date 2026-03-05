@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db";
 import { checkAcknowledgement } from "@/lib/sdtm";
-import { sendConfirmationEmail, sendRejectionEmail } from "@/lib/email";
+import { sendConfirmationEmail, sendRejectionEmail, sendAdminAckNotification } from "@/lib/email";
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -36,6 +36,13 @@ export async function GET(req: NextRequest) {
             bsaId: ack.bsaId,
           }).catch(() => {});
         }
+        sendAdminAckNotification({
+          filingId: filing.id,
+          userEmail: filing.user.email ?? "",
+          calendarYear: filing.calendarYear,
+          status: "accepted",
+          bsaId: ack.bsaId,
+        }).catch(() => {});
         results.push({ id: filing.id, outcome: "accepted" });
       } else if (ack.status === "rejected") {
         await prisma.filingYear.update({
@@ -53,6 +60,13 @@ export async function GET(req: NextRequest) {
             reason: ack.rejectionReason ?? "Unknown reason",
           }).catch(() => {});
         }
+        sendAdminAckNotification({
+          filingId: filing.id,
+          userEmail: filing.user.email ?? "",
+          calendarYear: filing.calendarYear,
+          status: "rejected",
+          rejectionReason: ack.rejectionReason ?? undefined,
+        }).catch(() => {});
         results.push({ id: filing.id, outcome: "rejected" });
       } else {
         results.push({ id: filing.id, outcome: "pending" });
