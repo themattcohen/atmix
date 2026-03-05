@@ -261,6 +261,7 @@ export default auth(async (req) => {
     "/api/health",           // Health check
     "/api/chat",             // Public AI chat (useChat hook doesn't send CSRF header)
     "/api/contact",          // Public contact form (Turnstile-protected)
+    "/api/internal/",        // Internal endpoints (own auth via secret header)
   ];
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
     const isExempt = csrfExemptPaths.some((p) => normalizedPath.startsWith(p));

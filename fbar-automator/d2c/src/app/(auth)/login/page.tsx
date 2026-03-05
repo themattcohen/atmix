@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -22,8 +22,23 @@ function LoginForm() {
   useEffect(() => {
     fetch("/api/auth/session")
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         if (data?.user && !verified) {
+          // Validate user still exists in DB (ghost session detection)
+          try {
+            const userRes = await fetch("/api/user");
+            if (!userRes.ok) {
+              // User was deleted — clear stale JWT cookie
+              await signOut({ redirect: false });
+              setAuthChecked(true);
+              return;
+            }
+          } catch {
+            // If /api/user fails, clear session to be safe
+            await signOut({ redirect: false });
+            setAuthChecked(true);
+            return;
+          }
           router.replace(callbackUrl);
         } else {
           setAuthChecked(true);

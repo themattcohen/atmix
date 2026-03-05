@@ -76,6 +76,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
+    // Verify user still exists in DB (prevents FK violation from ghost sessions)
+    const userExists = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true },
+    });
+    if (!userExists) {
+      return NextResponse.json({ error: "Session expired" }, { status: 401 });
+    }
+
     if (typeof calendarYear !== "number" || !Number.isInteger(calendarYear) || calendarYear < 2010 || calendarYear > 2030) {
       return NextResponse.json({ error: "Invalid calendar year" }, { status: 400 });
     }
