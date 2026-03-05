@@ -79,7 +79,7 @@ test.describe("Signup Page", () => {
     await expect(page).toHaveURL(/\/verify-email/);
   });
 
-  test("signup with duplicate email redirects to login (anti-enumeration)", async ({ page }) => {
+  test("signup with duplicate email redirects to verify-email (anti-enumeration)", async ({ page }) => {
     await page.goto("/signup");
     await page.locator("#firstName").waitFor({ state: "visible", timeout: 15000 });
     await page.fill("#firstName", "Dup");
@@ -89,9 +89,9 @@ test.describe("Signup Page", () => {
     await page.fill("#confirmPassword", "WrongPassword999!");
     await page.click('button[type="submit"]');
     // Anti-enumeration: API returns 201 for duplicates too.
-    // Frontend tries auto-login which fails (wrong password), then redirects to /login.
-    await page.waitForURL("**/login", { timeout: 30000 });
-    await expect(page).toHaveURL(/\/login/);
+    // Frontend tries auto-login which fails (wrong password), then redirects to /verify-email.
+    await page.waitForURL("**/verify-email", { timeout: 30000 });
+    await expect(page).toHaveURL(/\/verify-email/);
   });
 
   test("signup with mismatched passwords shows error", async ({ page }) => {
