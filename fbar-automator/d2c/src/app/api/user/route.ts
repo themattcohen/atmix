@@ -80,7 +80,7 @@ export async function PUT(req: NextRequest) {
         middleName: middleName || null,
         suffix: suffix || null,
         ...tinUpdate,
-        dateOfBirth: new Date(dateOfBirth),
+        dateOfBirth: new Date(dateOfBirth + "T12:00:00Z"),
         usAddress: usAddress as unknown as Prisma.InputJsonValue,
         phone: phone || null,
       },

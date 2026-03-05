@@ -96,12 +96,17 @@ ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-comp
 
 ### Restart a Service
 
+**⚠️ `docker compose restart` does NOT re-read `.env` changes.** It only stops and starts the existing container with its original environment. If you changed `.env`, you must use `up -d --force-recreate <service>` instead (see "Environment Variables" section below).
+
 ```bash
-# Restart B2B
+# Restart B2B (no env changes)
 ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml restart b2b-app"
 
-# Restart D2C
+# Restart D2C (no env changes)
 ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-compose.prod.yml restart d2c-app"
+
+# If .env was changed — MUST use force-recreate:
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && docker compose -f docker-compose.prod.yml up -d --force-recreate d2c-app"
 ```
 
 ### Backup Databases
