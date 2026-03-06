@@ -6,7 +6,7 @@
 // Filing Instructions v1.4 (August 2021).
 //
 // D2C DIFFERENCES FROM B2B:
-//   - Self-filed (ThirdPartyPreparerIndicator = "N"); no party 57 or 56.
+//   - Self-filed (PreparerFilingSignatureIndicator = "Y"); no party 57 or 56.
 //   - Transmitter config comes from FINCEN_TRANSMITTER_* environment variables.
 //   - Accounts queried directly from ForeignAccount table (no reviewedAccountYears).
 //   - User IS the filer (no separate Client model).
@@ -218,7 +218,10 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     "fc2:ApprovalOfficialSignatureDateText": today,
     // EFilingPriorDocumentNumber: omitted for non-amendments (type is xsd:long,
     // empty string is invalid). Only emit for amendments with a valid BSA ID.
-    "fc2:ThirdPartyPreparerIndicator": "N",
+    // D2C is self-filed → PreparerFilingSignatureIndicator = "Y" (no third-party preparer).
+    // XSD sequence: ApprovalOfficialSignatureDateText → EFilingPriorDocumentNumber →
+    //   PreparerFilingSignatureIndicator → ThirdPartyPreparerIndicator
+    "fc2:PreparerFilingSignatureIndicator": "Y",
   }
 
   // ActivityAssociation
@@ -622,7 +625,7 @@ export function validateFincenXml(
 
   // -----------------------------------------------------------------------
   // 11. Validate no conflicting PreparerFilingSignatureIndicator with ThirdPartyPreparer
-  //     (D2C always uses N so this should never fire, but keep as a guard)
+  //     (D2C uses PreparerFilingSignatureIndicator=Y; this guards against both appearing)
   // -----------------------------------------------------------------------
 
   if (

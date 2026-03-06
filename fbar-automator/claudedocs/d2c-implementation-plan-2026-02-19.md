@@ -317,7 +317,7 @@ Three blocking gaps for FinCEN submission. Maps to original Phase 3.
 **P4-1:** Port from B2B `src/lib/treasury.ts`. Implement `getExchangeRate(currencyCode, calendarYear)` fetching from the US Treasury Department's Exchange Rates API. Add rate caching (in-memory with TTL or in a new Prisma model). Add startup validation that fetches rates for the most common filing year (current year minus one). Agent reads B2B source for reference.
 
 **P4-2: COMPLETED (2026-02-21).** Ported from B2B `src/lib/export/fincen-xml.ts` with all D2C adaptations:
-- Self-filed (`ThirdPartyPreparerIndicator: "N"`, no party types 57/56)
+- Self-filed (`PreparerFilingSignatureIndicator: "Y"`, no party types 57/56)
 - Transmitter config from `FINCEN_TRANSMITTER_*` env vars (not function params)
 - Direct account query (`userId + calendarYear`, no `reviewedAccountYears`)
 - `isJointAccount` (not `isJointlyOwned`), `institutionAddress` as Json field

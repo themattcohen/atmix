@@ -178,15 +178,16 @@ describe("P4-2: generateFincenXml — single account", () => {
     }
   });
 
-  it("P4-2: D2C-specific: ThirdPartyPreparerIndicator is N (self-filed)", async () => {
+  it("P4-2: D2C-specific: PreparerFilingSignatureIndicator is Y (self-filed)", async () => {
     await createTestAccount();
 
     const xml = await generateFincenXml(testFilingId);
 
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml).toContain(
-        "<fc2:ThirdPartyPreparerIndicator>N</fc2:ThirdPartyPreparerIndicator>"
+        "<fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>"
       );
+      expect(xml).not.toContain("ThirdPartyPreparerIndicator");
     }
   });
 
@@ -462,7 +463,7 @@ describe("P4-2: validateFincenXml — structural validation", () => {
   <fc2:FormTypeCode>FBARX</fc2:FormTypeCode>
   <fc2:Activity SeqNum="1">
     <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
-    <fc2:ThirdPartyPreparerIndicator>N</fc2:ThirdPartyPreparerIndicator>
+    <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
     <fc2:ActivityAssociation SeqNum="2">
       <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
     </fc2:ActivityAssociation>
