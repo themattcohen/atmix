@@ -3,7 +3,7 @@ export const siteConfig = {
   legalName: 'Alpine Tax & Consulting LLC',
   tagline: 'Tax Preparation & Consulting',
   description: 'Personal tax preparation, small business tax services, and strategic tax planning for individuals and businesses. Transparent pricing, year-round support.',
-  url: 'https://alpinetaxandconsulting.com',
+  url: 'https://alpinetax.co',
   phone: '(720) 915-4051',
   phoneTel: '+17209154051',
   phone2: '(719) 402-1571',
@@ -78,8 +78,9 @@ export const siteConfig = {
     google: 'https://g.page/r/alpine-tax-consulting',
   },
 
+  calcomUsername: 'alpinetax/30min',
+
   taxdomeUrl: 'https://alpinetax.taxdome.com/login',
-  calendlyUrl: 'https://calendly.com/alpine-tax',
 
   analytics: {
     ga4Id: process.env.NEXT_PUBLIC_GA4_ID || '',
