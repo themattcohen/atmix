@@ -463,7 +463,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       "@_JointlyOwnedOwnerCount": "0",
       "@_NoFIOwnerCount": "0",
       "@_ConsolidatedOwnerCount": "0",
-      "@_xsi:schemaLocation": "www.fincen.gov/base/EFL_FBARXBatchSchema.xsd",
+      "@_xsi:schemaLocation": "www.fincen.gov/base EFL_FBARXBatchSchema.xsd",
       "@_xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
       "@_xmlns:fc2": "www.fincen.gov/base",
       "fc2:FormTypeCode": "FBARX",

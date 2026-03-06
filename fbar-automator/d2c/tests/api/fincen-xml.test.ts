@@ -456,7 +456,7 @@ describe("P4-2: validateFincenXml — structural validation", () => {
     const validXml = `<?xml version="1.0" encoding="UTF-8"?>
 <fc2:EFilingBatchXML ActivityCount="1" PartyCount="1" AccountCount="1"
   JointlyOwnedOwnerCount="0" NoFIOwnerCount="0" ConsolidatedOwnerCount="0"
-  xsi:schemaLocation="www.fincen.gov/base/EFL_FBARXBatchSchema.xsd"
+  xsi:schemaLocation="www.fincen.gov/base EFL_FBARXBatchSchema.xsd"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:fc2="www.fincen.gov/base">
   <fc2:FormTypeCode>FBARX</fc2:FormTypeCode>
