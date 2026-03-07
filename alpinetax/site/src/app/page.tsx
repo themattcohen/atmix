@@ -23,7 +23,7 @@ export default function HomePage() {
             postalCode: siteConfig.address.zip,
             addressCountry: siteConfig.address.country,
           },
-          openingHours: 'Mo-Fr 09:00-17:00',
+
           priceRange: '$$',
           areaServed: [
             { '@type': 'City', name: 'Denver' },
@@ -91,8 +91,8 @@ export default function HomePage() {
               <p className="text-text-secondary text-sm mt-1">Virtual &amp; Secure</p>
             </div>
             <div>
-              <p className="text-2xl font-heading font-bold text-alpine-blue">9 AM – 5 PM, Mon–Fri</p>
-              <p className="text-text-secondary text-sm mt-1">Year-Round Availability</p>
+              <p className="text-2xl font-heading font-bold text-alpine-blue">Year-Round</p>
+              <p className="text-text-secondary text-sm mt-1">Availability</p>
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function HomePage() {
                 step: 1,
                 title: 'Schedule',
                 description:
-                  'Book a free 15-minute consultation to discuss your situation.',
+                  'Book a free 30-minute consultation to discuss your situation.',
               },
               {
                 step: 2,

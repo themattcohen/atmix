@@ -84,8 +84,8 @@ export default function AboutPage() {
               <p className="text-text-secondary mt-1">PTIN Holder</p>
             </div>
             <div>
-              <p className="text-3xl font-heading font-bold text-alpine-blue">Monday–Friday</p>
-              <p className="text-text-secondary mt-1">9 AM – 5 PM Availability</p>
+              <p className="text-3xl font-heading font-bold text-alpine-blue">Year-Round</p>
+              <p className="text-text-secondary mt-1">Availability</p>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function AboutPage() {
 
       <CallToAction
         heading="Ready to Work Together?"
-        description="Schedule a free 15-minute consultation and see how Alpine Tax can help with your tax situation."
+        description="Schedule a free 30-minute consultation and see how Alpine Tax can help with your tax situation."
       />
     </>
   );

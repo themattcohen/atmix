@@ -4,19 +4,12 @@ export const siteConfig = {
   tagline: 'Tax Preparation & Consulting',
   description: 'Personal tax preparation, small business tax services, and strategic tax planning for individuals and businesses. Transparent pricing, year-round support.',
   url: 'https://alpinetax.co',
-  phone: '(720) 915-4051',
-  phoneTel: '+17209154051',
-  phone2: '(719) 402-1571',
-  phone2Tel: '+17194021571',
+  phone: '(719) 402-1571',
+  phoneTel: '+17194021571',
   email: 'contact@alpinetax.co',
   owner: 'Vinnie Boettcher',
   ownerTitle: 'Founder & Tax Consultant',
   experience: 'Nearly a decade',
-
-  hours: {
-    display: 'Monday–Friday: 9 AM – 5 PM',
-    structured: 'Mo-Fr 09:00-17:00',
-  },
 
   address: {
     street: '2000 S Colorado Blvd, Suite 1113',
@@ -78,7 +71,13 @@ export const siteConfig = {
     google: 'https://g.page/r/alpine-tax-consulting',
   },
 
-  calcomUsername: 'alpinetax/30min',
+  calcomUsername: 'alpinetax/initialconsultation',
+
+  clientEventTypes: [
+    { title: 'Tax Planning', slug: 'tax-planning-meeting', duration: 60, location: 'Zoom' },
+    { title: 'Tax Return Review', slug: 'tax-review-meeting', duration: 30, location: 'Zoom' },
+    { title: '15-Minute Phone Call', slug: 'phonecall', duration: 15, location: 'Phone' },
+  ],
 
   taxdomeUrl: 'https://alpinetax.taxdome.com/login',
 
