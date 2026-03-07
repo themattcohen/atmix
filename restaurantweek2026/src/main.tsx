@@ -12,7 +12,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <BrowserRouter basename="/drw">
+    <BrowserRouter basename="/restaurantweek2026">
       <App />
     </BrowserRouter>
   </StrictMode>,

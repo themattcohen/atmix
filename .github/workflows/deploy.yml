@@ -45,6 +45,17 @@ jobs:
           rm -rf dist/creami
           cp -r creami-app/dist dist/creami
 
+      - name: Install restaurantweek2026 dependencies
+        run: cd restaurantweek2026 && npm ci
+
+      - name: Build restaurantweek2026
+        run: cd restaurantweek2026 && npm run build
+
+      - name: Copy restaurantweek2026 into dist
+        run: |
+          rm -rf dist/restaurantweek2026
+          cp -r restaurantweek2026/dist dist/restaurantweek2026
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

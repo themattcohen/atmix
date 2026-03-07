@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/drw/",
+  base: "/restaurantweek2026/",
   build: {
     outDir: "dist",
   },
