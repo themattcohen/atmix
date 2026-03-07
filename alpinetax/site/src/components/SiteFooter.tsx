@@ -71,8 +71,7 @@ export function SiteFooter() {
 
           {/* Column 3: Hours & Service Areas */}
           <div>
-            <p className="font-heading font-bold text-lg mb-4">Hours &amp; Service Areas</p>
-            <p className="text-sm text-white/80 mb-4">{siteConfig.hours.display}</p>
+            <p className="font-heading font-bold text-lg mb-4">Service Areas</p>
             <p className="font-heading font-bold text-sm mb-2">Serving Clients Nationwide</p>
             <ul className="text-sm text-white/80 space-y-1">
               {siteConfig.serviceAreas.map((area) => (

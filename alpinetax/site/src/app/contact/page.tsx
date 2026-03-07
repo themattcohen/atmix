@@ -23,7 +23,6 @@ export default function ContactPage() {
             name: siteConfig.name,
             telephone: siteConfig.phoneTel,
             email: siteConfig.email,
-            openingHours: siteConfig.hours.structured,
           },
         }}
       />
@@ -184,13 +183,6 @@ export default function ContactPage() {
                   >
                     {siteConfig.email}
                   </a>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-1">
-                    Hours
-                  </h3>
-                  <p className="text-text-primary">{siteConfig.hours.display}</p>
                 </div>
 
                 <hr className="border-gray-200" />
