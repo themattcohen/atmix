@@ -20,6 +20,15 @@ const projects: Project[] = [
     hostUrl: 'https://share.streamlit.io/',
   },
   {
+    title: 'denver restaurant week 2026',
+    description:
+      'Searchable explorer for all 339 Denver Restaurant Week restaurants. Built because the official site had no real filtering — this adds instant search, multi-faceted filters (cuisine, neighborhood, price, dietary), sorting, and detail pages with full menus. Scraped and structured from the original site.',
+    url: '/restaurantweek2026',
+    lastUpdated: 'March 2026',
+    host: 'atmix.org',
+    hostUrl: 'https://atmix.org',
+  },
+  {
     title: 'ice creamery',
     description:
       '120+ tested Ninja Creami recipes with full nutritional data, scoopability scores (FPDF/PAC), and scientific formulation. Searchable, filterable, and designed for making frozen desserts that actually work.',
