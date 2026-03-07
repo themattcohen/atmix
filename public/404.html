@@ -9,6 +9,8 @@
       sessionStorage.redirect = location.href;
       if (location.pathname.startsWith('/creami')) {
         location.replace('/creami/');
+      } else if (location.pathname.startsWith('/restaurantweek2026')) {
+        location.replace('/restaurantweek2026/');
       } else {
         location.replace('/');
       }
