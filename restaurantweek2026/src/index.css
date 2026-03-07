@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-drw-red: #c41e3a;
+  --color-drw-red-light: #fef2f2;
+  --color-drw-gold: #d4a843;
+  --color-drw-dark: #1a1a2e;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body {
+  overflow-y: auto;
+  height: auto;
+}
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-drw-red);
+  outline-offset: 2px;
+}
