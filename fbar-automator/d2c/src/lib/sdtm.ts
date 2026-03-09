@@ -73,8 +73,16 @@ export async function submitBatch(
   xmlContent: string,
   batchId: string
 ): Promise<SubmissionResult> {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const filename = `FBAR_DIRECT_${batchId}_${timestamp}.xml`;
+  // FinCEN SDTM naming convention: FFBARST.yyyymmddhhss.<username>.xml
+  const now = new Date();
+  const ts =
+    String(now.getUTCFullYear()) +
+    String(now.getUTCMonth() + 1).padStart(2, "0") +
+    String(now.getUTCDate()).padStart(2, "0") +
+    String(now.getUTCHours()).padStart(2, "0") +
+    String(now.getUTCSeconds()).padStart(2, "0");
+  const sdtmUsername = process.env.SDTM_USERNAME || "unknown";
+  const filename = `FFBARST.${ts}.${sdtmUsername}.xml`;
   const remoteDir = process.env.SDTM_REMOTE_DIR || "submissions";
   const remoteFilePath = `${remoteDir}/${filename}`;
 
