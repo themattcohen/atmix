@@ -151,7 +151,7 @@ def _render_input(run_id: str, run: dict, step: dict):
     )
 
     # Slot 3 — Copy all SEO entities paste
-    st.markdown("#### 3. Copy All SEO Entities *(paste)*")
+    st.markdown("#### 3. Copy All SEO Entities *(optional)*")
     slot3_text = st.text_area(
         "Paste text from Surfer's 'Copy all SEO entities' button",
         height=200,
@@ -159,19 +159,19 @@ def _render_input(run_id: str, run: dict, step: dict):
         key=f"slot3_{run_id}",
     )
 
-    # Slot 4 — AI SEO Facts (optional)
-    with st.expander("4. AI SEO Facts *(optional)*", expanded=False):
-        slot4_text = st.text_area(
-            "Paste AI SEO facts",
-            height=150,
-            placeholder="Paste facts from Surfer's 'Optimize for AI Search' panel...",
-            key=f"slot4_text_{run_id}",
-        )
-        slot4_file = st.file_uploader(
-            "Or upload AI SEO screenshot",
-            type=["png", "jpg", "jpeg", "webp"],
-            key=f"slot4_file_{run_id}",
-        )
+    # Slot 4 — AI SEO Facts
+    st.markdown("#### 4. AI SEO Facts")
+    slot4_text = st.text_area(
+        "Paste AI SEO facts",
+        height=150,
+        placeholder="Paste facts from Surfer's 'Optimize for AI Search' panel...",
+        key=f"slot4_text_{run_id}",
+    )
+    slot4_file = st.file_uploader(
+        "Or upload AI SEO screenshot",
+        type=["png", "jpg", "jpeg", "webp"],
+        key=f"slot4_file_{run_id}",
+    )
 
     # Show existing AI facts if already stored
     step_data = load_step_data(step)
@@ -460,6 +460,54 @@ def _render_review(run_id: str, run: dict, step: dict):
         with st.expander(f"AI SEO Facts ({len(ai_facts)})", expanded=False):
             for i, fact in enumerate(ai_facts, 1):
                 st.markdown(f"{i}. {fact}")
+
+    # ---- Cross-Link Sources (optional) ----
+    st.divider()
+    st.markdown("### Cross-Link Sources (Optional)")
+    st.caption("Discover articles from your blog for internal cross-linking.")
+
+    # Pre-fill from config if available
+    default_url = ""
+    try:
+        config_dir = Path(__file__).resolve().parent.parent / "configs"
+        for candidate in config_dir.glob("*.json"):
+            if candidate.stem != "_template":
+                c = json.loads(candidate.read_text(encoding="utf-8"))
+                if c.get("name") == run.get("config_name", ""):
+                    default_url = c.get("content", {}).get("internalLinkBase", "")
+                    if default_url and not default_url.endswith("/blog"):
+                        default_url += "/blog"
+                    break
+    except Exception:
+        pass
+
+    blog_url = st.text_input(
+        "Blog index URL",
+        value=default_url,
+        placeholder="https://ofcpa.pro/blog",
+        key=f"crosslink_url_{run_id}",
+    )
+
+    if blog_url and st.button("🔗 Discover Articles", key=f"discover_cl_{run_id}"):
+        from lib.crosslinks import scrape_all_titles
+        with st.status("Discovering articles via sitemap...") as cl_status:
+            try:
+                output_dir = pipeline.get_output_dir(run["slug"])
+                # Extract base URL (strip /blog suffix for sitemap lookup)
+                base_url = blog_url.rstrip("/")
+                blog_prefix = ""
+                if base_url.endswith("/blog"):
+                    base_url = base_url[:-5]
+                    blog_prefix = "/blog"
+                articles = scrape_all_titles(base_url, output_dir, blog_path_prefix=blog_prefix)
+                cl_status.update(label=f"Found {len(articles)} articles", state="complete")
+                for a in articles[:15]:
+                    st.caption(f"- {a['title']}")
+                if len(articles) > 15:
+                    st.caption(f"... and {len(articles) - 15} more")
+            except Exception as e:
+                cl_status.update(label="Discovery failed", state="error")
+                st.error(str(e))
 
     # ---- Approve / Redo controls ----
     range_ok = wc_min <= wc_max and h_min <= h_max

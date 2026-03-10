@@ -1,14 +1,16 @@
 """Step 3: Review & Iterate — user provides feedback, Claude rewrites."""
 
+import base64
 import json
 import re
 import streamlit as st
+import streamlit.components.v1 as components
 from pathlib import Path
 
 from lib import db, pipeline, writer, scorer
 from lib.costs import format_cost
 from lib.imagen import generate_hero_images, select_hero_image
-from lib.nlp_parser import extract_score_overview, extract_entities_with_counts, extract_heading_counts
+from lib.nlp_parser import extract_score_overview, extract_entities_with_counts, extract_heading_counts, extract_ai_optimization
 from lib.gap_analysis import build_surfer_feedback
 from ui.components import (
     step_header,
@@ -58,6 +60,13 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
     step_data = load_step_data(step) or {}
     iteration = step_data.get("iteration", 1)
 
+    # Auto-persist: restore draft feedback from DB on fresh page load
+    feedback_key = f"feedback_v{iteration}_{run_id}"
+    if feedback_key not in st.session_state:
+        saved_draft = step_data.get("draft_feedback", "")
+        if saved_draft:
+            st.session_state[feedback_key] = saved_draft
+
     # Load current article
     output_dir = pipeline.get_output_dir(run["slug"])
     article_path = Path(output_dir) / "article.mdx"
@@ -70,6 +79,9 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
 
     st.markdown(f"### Article Review — Version {iteration}")
 
+    # Title similarity check
+    _show_title_similarity_warning(article_md, run)
+
     # Show article as copyable HTML
     _render_html_output(article_md, run_id)
 
@@ -81,7 +93,7 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
             "Upload screenshots from Surfer's Content Editor to auto-generate "
             "structured feedback with specific gaps."
         )
-        ss_col1, ss_col2, ss_col3 = st.columns(3)
+        ss_col1, ss_col2, ss_col3, ss_col4 = st.columns(4)
         with ss_col1:
             ss_overview = st.file_uploader(
                 "Score Overview",
@@ -103,15 +115,29 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
                 key=f"ss_headings_v{iteration}_{run_id}",
                 help="Screenshot of the headings terms list",
             )
+        with ss_col4:
+            ss_ai_opt = st.file_uploader(
+                "AI Optimization",
+                type=["png", "jpg", "jpeg", "webp"],
+                key=f"ss_ai_opt_v{iteration}_{run_id}",
+                help="Screenshot of Surfer's AI optimization panel",
+            )
+            ai_opt_text = st.text_area(
+                "Missing AI facts (text)",
+                height=120,
+                placeholder="Paste missing AI optimization facts here, one per line",
+                key=f"ai_opt_text_v{iteration}_{run_id}",
+            )
 
-        if (ss_overview or ss_entities or ss_headings) and st.button(
+        if (ss_overview or ss_entities or ss_headings or ai_opt_text) and st.button(
             "🔍 Analyze Screenshots",
             key=f"analyze_ss_v{iteration}_{run_id}",
             type="primary",
         ):
             _analyze_surfer_screenshots(
                 run_id, run, iteration, step_data,
-                ss_overview, ss_entities, ss_headings,
+                ss_overview, ss_entities, ss_headings, ss_ai_opt,
+                ai_opt_text=ai_opt_text,
             )
             st.rerun()
 
@@ -125,7 +151,6 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
         "Or use the screenshot uploader above to auto-generate structured feedback."
     )
 
-    feedback_key = f"feedback_v{iteration}_{run_id}"
     feedback = st.text_area(
         "Feedback for rewrite",
         height=200,
@@ -135,6 +160,12 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
         ),
         key=feedback_key,
     )
+
+    # Auto-persist: save feedback text to DB on every rerun
+    current_feedback = st.session_state.get(feedback_key, "")
+    if current_feedback and current_feedback != step_data.get("draft_feedback", ""):
+        step_data["draft_feedback"] = current_feedback
+        save_step_data(run_id, STEP_INDEX, step_data)
 
     col1, col2, col3 = st.columns(3)
 
@@ -191,6 +222,26 @@ def _render_review_loop(run_id: str, run: dict, config: dict, step: dict):
                 st.divider()
 
 
+def _clipboard_button(text: str, label: str = "Copy Article to Clipboard"):
+    """Render a one-click clipboard copy button using an HTML component."""
+    b64 = base64.b64encode(text.encode()).decode()
+    components.html(f"""
+    <button id="cpBtn" onclick="
+        const bytes = Uint8Array.from(atob('{b64}'), c => c.charCodeAt(0));
+        navigator.clipboard.writeText(new TextDecoder().decode(bytes)).then(() => {{
+            this.innerText = '\u2713 Copied!';
+            setTimeout(() => this.innerText = '\U0001f4cb {label}', 2000);
+        }}).catch(() => {{
+            this.innerText = 'Copy failed \u2014 use download';
+            setTimeout(() => this.innerText = '\U0001f4cb {label}', 3000);
+        }})
+    " style="padding:8px 16px;border:1px solid #ccc;border-radius:6px;
+             background:#f8f8f8;cursor:pointer;font-size:14px;">
+        \U0001f4cb {label}
+    </button>
+    """, height=50)
+
+
 def _render_html_output(article_md: str, run_id: str):
     """Render article as copyable HTML for pasting into Surfer."""
     html = scorer.md_to_html(article_md)
@@ -213,6 +264,10 @@ def _render_html_output(article_md: str, run_id: str):
         key=f"download_html_review_{run_id}",
     )
 
+    _clipboard_button(html, label="Copy HTML to Clipboard")
+
+    _clipboard_button(article_md, label="Copy Raw MDX to Clipboard")
+
 
 def _analyze_surfer_screenshots(
     run_id: str,
@@ -222,6 +277,8 @@ def _analyze_surfer_screenshots(
     ss_overview,
     ss_entities,
     ss_headings,
+    ss_ai_opt=None,
+    ai_opt_text: str = "",
 ):
     """Parse Surfer screenshots and generate structured feedback text."""
     with st.status("Analyzing Surfer screenshots...", expanded=True) as status:
@@ -230,6 +287,7 @@ def _analyze_surfer_screenshots(
             score_overview = None
             entities_with_counts = None
             heading_counts = None
+            ai_optimization = None
 
             if ss_overview is not None:
                 img_bytes = ss_overview.read()
@@ -252,6 +310,28 @@ def _analyze_surfer_screenshots(
                 analysis_costs.append(ci)
                 st.write(f"Headings parsed ({len(heading_counts)} terms): {format_cost(ci)}")
 
+            if ss_ai_opt is not None:
+                img_bytes = ss_ai_opt.read()
+                media_type = _mime_from_name(ss_ai_opt.name)
+                ai_optimization, ci = extract_ai_optimization(img_bytes, media_type)
+                analysis_costs.append(ci)
+                st.write(f"AI optimization parsed ({len(ai_optimization)} items): {format_cost(ci)}")
+
+            # Merge text-based AI facts with screenshot-extracted facts
+            if ai_opt_text:
+                text_facts = [
+                    {"fact": line.strip(), "covered": False}
+                    for line in ai_opt_text.strip().splitlines()
+                    if line.strip()
+                ]
+                if ai_optimization:
+                    existing_facts = {item["fact"].lower() for item in ai_optimization}
+                    for tf in text_facts:
+                        if tf["fact"].lower() not in existing_facts:
+                            ai_optimization.append(tf)
+                else:
+                    ai_optimization = text_facts
+
             # Load surfer-targets.json
             output_dir = pipeline.get_output_dir(run["slug"])
             targets_path = Path(output_dir) / "surfer-targets.json"
@@ -263,11 +343,15 @@ def _analyze_surfer_screenshots(
             # Build structured feedback
             feedback_text = build_surfer_feedback(
                 score_overview, entities_with_counts, heading_counts, surfer_targets,
+                ai_optimization=ai_optimization,
             )
 
             # Pre-populate the feedback text_area via its session state key
             feedback_widget_key = f"feedback_v{iteration}_{run_id}"
             st.session_state[feedback_widget_key] = feedback_text
+
+            # Also persist to DB so it survives rerun reliably
+            step_data["draft_feedback"] = feedback_text
 
             # Persist analysis costs
             existing_analysis_costs = step_data.get("analysis_cost_history", [])
@@ -321,8 +405,11 @@ def _do_rewrite(
                 nlp_targets=nlp_targets,
                 config=config,
                 keyword=run["keyword"],
+                slug=run["slug"],
             )
 
+            if call_info.get("truncated"):
+                st.warning("⚠️ Article was truncated — the model hit the token limit. Consider splitting the article or reducing the target word count.")
             rw_status.update(label=f"Done — {format_cost(call_info)}", state="complete")
 
             # Save new version to disk
@@ -479,3 +566,34 @@ def _render_approved(run_id: str, run: dict, step: dict, config: dict):
     for f in sorted(output_path.iterdir()):
         if f.is_file():
             st.text(f"  {f.name}")
+
+
+def _show_title_similarity_warning(article_md: str, run: dict):
+    """Check if the article's H1 is similar to existing titles and show a warning."""
+    if not article_md:
+        return
+
+    h1_match = re.search(r"^# (.+)$", article_md, re.MULTILINE)
+    if not h1_match:
+        return
+    h1_title = h1_match.group(1).strip()
+
+    from lib.crosslinks import check_title_similarity
+
+    output_dir = pipeline.get_output_dir(run["slug"])
+    crosslinks_path = Path(output_dir) / "crosslinks.json"
+    if not crosslinks_path.exists():
+        return
+
+    try:
+        existing = json.loads(crosslinks_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, TypeError):
+        return
+
+    matches = check_title_similarity(h1_title, existing)
+    if matches:
+        lines = [f"**\"{h1_title}\"** may overlap with existing articles:"]
+        for m in matches:
+            pct = int(m["similarity"] * 100)
+            lines.append(f"- **{m['title']}** — {pct}% similar ({m['type']})")
+        st.warning("⚠️ Similar existing titles detected\n\n" + "\n".join(lines))
