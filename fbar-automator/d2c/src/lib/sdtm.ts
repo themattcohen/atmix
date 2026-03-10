@@ -73,7 +73,8 @@ export async function submitBatch(
   xmlContent: string,
   batchId: string
 ): Promise<SubmissionResult> {
-  // FinCEN SDTM naming convention: FFBARST.yyyymmddhhmmss.<username>.xml
+  // FinCEN SDTM naming: FBARXST.<timestamp>.<sdtmuid>.xml
+  // See SDTMFilenameExamples.pdf — first position MUST be file type (FBARXST for FBAR)
   const now = new Date();
   const ts =
     String(now.getUTCFullYear()) +
@@ -83,9 +84,9 @@ export async function submitBatch(
     String(now.getUTCMinutes()).padStart(2, "0") +
     String(now.getUTCSeconds()).padStart(2, "0");
   const sdtmUsername = process.env.SDTM_USERNAME || "unknown";
-  const filename = `FFBARST.${ts}.${sdtmUsername}.xml`;
-  const remoteDir = process.env.SDTM_REMOTE_DIR || "submissions";
-  const remoteFilePath = `${remoteDir}/${filename}`;
+  const filename = `FBARXST.${ts}.${sdtmUsername}.xml`;
+  // "do NOT specify a landing spot for the file" — upload to root
+  const remoteFilePath = filename;
 
   if (isSandbox()) {
     console.warn("[SDTM SANDBOX] Would upload to:", remoteFilePath);
@@ -130,29 +131,28 @@ export async function submitBatch(
 
 /**
  * Extract search key for ack file matching.
- * Accepts a full remote path (submissions/FBAR_DIRECT_xxx.xml) or a bare batchId.
+ * Accepts a filename (FBARXST.xxx.sdtmuid.xml) or a bare batchId.
  */
 function extractAckSearchKey(submissionId: string): string {
   if (submissionId.includes("/")) {
     const parts = submissionId.split("/");
-    const filename = parts[parts.length - 1];
-    return filename.replace(/\.xml$/i, "");
+    return parts[parts.length - 1];
   }
   return submissionId;
 }
 
-/** FinCEN ack file extensions: .MESSAGES.XML and .ACK */
-const ACK_EXTENSIONS = [".MESSAGES.XML", ".messages.xml", ".ACK", ".ack", ".xml", ".XML"];
+/** FinCEN ack extensions per SDTMFilenameExamples.pdf: .MESSAGES.XML and .ACKED */
+const ACK_EXTENSIONS = [".MESSAGES.XML", ".messages.xml", ".ACKED", ".acked"];
 
 function isAckFile(filename: string, searchKey: string): boolean {
-  const hasMatchingExt = ACK_EXTENSIONS.some((ext) => filename.endsWith(ext));
-  if (!hasMatchingExt) return false;
-  return filename.includes(searchKey);
+  // FinCEN appends .MESSAGES.XML or .ACKED to the original filename
+  // e.g. FBARXST.20260310.sdtmuid.xml.MESSAGES.XML
+  return filename.startsWith(searchKey) && ACK_EXTENSIONS.some((ext) => filename.endsWith(ext));
 }
 
 /**
  * Check for FinCEN acknowledgement of a submission.
- * @param submissionId - Full remote path (e.g. "submissions/FBAR_DIRECT_xxx.xml")
+ * @param submissionId - Filename (e.g. "FBARXST.20260310120000.sdtmuid.xml")
  *                       or bare batchId for backward compatibility.
  */
 export async function checkAcknowledgement(
@@ -176,7 +176,8 @@ export async function checkAcknowledgement(
           return;
         }
 
-        const ackDir = process.env.SDTM_ACK_DIR || "acks";
+        // Per SDTMFilenameExamples.pdf: acks are in "Inbox" directory
+        const ackDir = process.env.SDTM_ACK_DIR || "Inbox";
 
         sftp.readdir(ackDir, (readErr, list) => {
           if (readErr || !list) {
