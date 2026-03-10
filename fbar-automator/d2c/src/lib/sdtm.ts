@@ -98,8 +98,10 @@ export async function submitBatch(
     const conn = new SFTPClient();
 
     conn.on("ready", () => {
+      console.log(`[SDTM] Connected. Uploading ${remoteFilePath} (${xmlContent.length} bytes)...`);
       conn.sftp((err, sftp) => {
         if (err) {
+          console.error(`[SDTM] SFTP session error: ${err.message}`);
           conn.end();
           resolve({ success: false, batchId, remoteFilePath, error: err.message });
           return;
@@ -108,6 +110,7 @@ export async function submitBatch(
         const writeStream = sftp.createWriteStream(remoteFilePath);
 
         writeStream.on("close", () => {
+          console.log(`[SDTM] Upload complete: ${remoteFilePath}`);
           conn.end();
           resolve({ success: true, batchId, remoteFilePath });
         });
@@ -122,6 +125,7 @@ export async function submitBatch(
     });
 
     conn.on("error", (connErr) => {
+      console.error(`[SDTM] Connection error: ${connErr.message}`);
       resolve({ success: false, batchId, remoteFilePath, error: connErr.message });
     });
 
