@@ -45,7 +45,7 @@
 	rate_limit @b2b_api {
 		zone b2b_api {
 			key    {remote_host}
-			events 10
+			events 30
 			window 1s
 		}
 	}

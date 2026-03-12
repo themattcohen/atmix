@@ -81,6 +81,8 @@ export function middleware(request: NextRequest) {
       tier = "auth"
     } else if (pathname === "/api/statements/upload") {
       tier = "upload"
+    } else if (pathname === "/api/statements/batch-status") {
+      tier = "status"
     } else if (pathname.startsWith("/api/statements/")) {
       tier = "status"
     }

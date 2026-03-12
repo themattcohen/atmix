@@ -29,25 +29,31 @@ interface UploadResponse {
   queueErrors?: string[]
 }
 
-interface StatusResponse {
-  processingStatus: string
-  processingError?: string
+interface BatchStatusResponse {
+  statuses: Record<string, {
+    processingStatus: string
+    processingError?: string | null
+  }>
 }
 
 const POLL_INTERVAL_MS = 3000
 const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
-const MAX_RETRIES = 3
-const RETRY_BACKOFF_MS = [3000, 6000, 12000]
+const BATCH_POLL_MAX_RETRIES = 3
+const BATCH_POLL_RETRY_MS = [3000, 6000, 12000]
 const UPLOAD_MAX_RETRIES = 5
 const UPLOAD_RETRY_BASE_MS = 5000 // 5s base, doubles each attempt
 
 export function UploadSection({ clientId, filingYearId, filingYear, existingFileNames = [], onActiveChange }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
   const router = useRouter()
-  const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
   const [workerWarning, setWorkerWarning] = useState(false)
   const [queueWarning, setQueueWarning] = useState(false)
   const workerWarningTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Batch polling state: maps uploadId → { statementId, startTime }
+  const pollMapRef = useRef<Map<string, { statementId: string; startTime: number }>>(new Map())
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const pollRetryCountRef = useRef(0)
 
   const updateFile = useCallback(
     (id: string, updates: Partial<UploadingFile>) => {
@@ -58,103 +64,168 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
     []
   )
 
-  const pollStatementStatus = useCallback(
-    async (statementId: string, uploadId: string, startTime: number, retryCount = 0) => {
-      try {
-        const response = await fetch(`/api/statements/${statementId}/status`)
+  // Single batch poll tick — called every POLL_INTERVAL_MS
+  const batchPollTick = useCallback(async () => {
+    const entries = Array.from(pollMapRef.current.entries())
+    if (entries.length === 0) {
+      // Nothing left to poll — stop the interval
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+        pollIntervalRef.current = null
+      }
+      return
+    }
 
-        if (!response.ok) {
-          const status = response.status
+    const idMap: Record<string, string> = {} // statementId → uploadId
+    const statementIds: string[] = []
+    const now = Date.now()
 
-          if (status === 401) {
+    for (const [uploadId, { statementId, startTime }] of entries) {
+      // Check timeout before even polling
+      if (now - startTime > POLL_TIMEOUT_MS) {
+        updateFile(uploadId, {
+          status: "error",
+          error: "Processing timeout (5 minutes)",
+        })
+        pollMapRef.current.delete(uploadId)
+        continue
+      }
+      idMap[statementId] = uploadId
+      statementIds.push(statementId)
+    }
+
+    if (statementIds.length === 0) {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+        pollIntervalRef.current = null
+      }
+      return
+    }
+
+    try {
+      const response = await fetch("/api/statements/batch-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: statementIds }),
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Session expired — mark all as error and stop
+          for (const uploadId of Object.values(idMap)) {
             updateFile(uploadId, {
               status: "error",
               error: "Session expired. Please refresh and log in again.",
             })
-            pollTimersRef.current.delete(uploadId)
-            return
+            pollMapRef.current.delete(uploadId)
           }
+          if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current)
+            pollIntervalRef.current = null
+          }
+          return
+        }
 
-          if (status === 429 || status >= 500) {
-            if (retryCount < MAX_RETRIES) {
-              console.warn(
-                `[UploadSection] Status poll retry ${retryCount + 1}/${MAX_RETRIES} for ${statementId} (${status})`
-              )
-              const delay = RETRY_BACKOFF_MS[retryCount]
-              const timer = setTimeout(
-                () => pollStatementStatus(statementId, uploadId, startTime, retryCount + 1),
-                delay
-              )
-              pollTimersRef.current.set(uploadId, timer)
-              return
-            }
+        // 429 or 5xx — retry with backoff
+        if (response.status === 429 || response.status >= 500) {
+          if (pollRetryCountRef.current < BATCH_POLL_MAX_RETRIES) {
+            console.warn(
+              `[UploadSection] Batch status poll retry ${pollRetryCountRef.current + 1}/${BATCH_POLL_MAX_RETRIES} (${response.status})`
+            )
+            pollRetryCountRef.current++
+            return // interval will fire again
+          }
+          // Retries exhausted — mark all as error
+          for (const uploadId of Object.values(idMap)) {
             updateFile(uploadId, {
               status: "error",
               error: "Failed to check processing status",
             })
-            pollTimersRef.current.delete(uploadId)
-            return
+            pollMapRef.current.delete(uploadId)
           }
+          if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current)
+            pollIntervalRef.current = null
+          }
+          return
+        }
 
-          // 404 or other 4xx — permanent failure
+        // Other error — mark all as error
+        for (const uploadId of Object.values(idMap)) {
           updateFile(uploadId, {
             status: "error",
             error: "Failed to check processing status",
           })
-          pollTimersRef.current.delete(uploadId)
-          return
+          pollMapRef.current.delete(uploadId)
         }
+        return
+      }
 
-        const data: StatusResponse = await response.json()
+      // Success — reset retry counter
+      pollRetryCountRef.current = 0
 
-        if (data.processingStatus === "COMPLETED") {
+      const data: BatchStatusResponse = await response.json()
+      let anyCompleted = false
+
+      for (const [statementId, uploadId] of Object.entries(idMap)) {
+        const status = data.statuses[statementId]
+        if (!status) continue // Not returned — still processing or not found
+
+        if (status.processingStatus === "COMPLETED") {
           updateFile(uploadId, { status: "completed" })
-          pollTimersRef.current.delete(uploadId)
-          router.refresh()
-        } else if (data.processingStatus === "FAILED") {
+          pollMapRef.current.delete(uploadId)
+          anyCompleted = true
+        } else if (status.processingStatus === "FAILED") {
           updateFile(uploadId, {
             status: "error",
-            error: data.processingError || "Extraction failed",
+            error: status.processingError || "Extraction failed",
           })
-          pollTimersRef.current.delete(uploadId)
-        } else if (Date.now() - startTime > POLL_TIMEOUT_MS) {
-          updateFile(uploadId, {
-            status: "error",
-            error: "Processing timeout (5 minutes)",
-          })
-          pollTimersRef.current.delete(uploadId)
-        } else {
-          // Still processing — successful response, reset retry count
-          const timer = setTimeout(
-            () => pollStatementStatus(statementId, uploadId, startTime, 0),
-            POLL_INTERVAL_MS
-          )
-          pollTimersRef.current.set(uploadId, timer)
+          pollMapRef.current.delete(uploadId)
         }
-      } catch (err) {
-        // Network error — retry with backoff
-        if (retryCount < MAX_RETRIES) {
-          console.warn(
-            `[UploadSection] Status poll retry ${retryCount + 1}/${MAX_RETRIES} for ${statementId} (network error)`
-          )
-          const delay = RETRY_BACKOFF_MS[retryCount]
-          const timer = setTimeout(
-            () => pollStatementStatus(statementId, uploadId, startTime, retryCount + 1),
-            delay
-          )
-          pollTimersRef.current.set(uploadId, timer)
-          return
-        }
-        const message =
-          err instanceof Error ? err.message : "Failed to check status"
-        updateFile(uploadId, {
-          status: "error",
-          error: message,
-        })
-        pollTimersRef.current.delete(uploadId)
+        // else still processing — leave in pollMap for next tick
+      }
+
+      if (anyCompleted) {
+        router.refresh()
+      }
+
+      // If nothing left to poll, stop the interval
+      if (pollMapRef.current.size === 0 && pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+        pollIntervalRef.current = null
+      }
+    } catch (err) {
+      // Network error — retry
+      if (pollRetryCountRef.current < BATCH_POLL_MAX_RETRIES) {
+        console.warn(
+          `[UploadSection] Batch status poll retry ${pollRetryCountRef.current + 1}/${BATCH_POLL_MAX_RETRIES} (network error)`
+        )
+        pollRetryCountRef.current++
+        return
+      }
+      // Retries exhausted
+      const message = err instanceof Error ? err.message : "Failed to check status"
+      for (const uploadId of Object.values(idMap)) {
+        updateFile(uploadId, { status: "error", error: message })
+        pollMapRef.current.delete(uploadId)
+      }
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+        pollIntervalRef.current = null
+      }
+    }
+  }, [updateFile, router])
+
+  // Register a statement for batch polling and ensure interval is running
+  const startPolling = useCallback(
+    (statementId: string, uploadId: string) => {
+      pollMapRef.current.set(uploadId, { statementId, startTime: Date.now() })
+
+      if (!pollIntervalRef.current) {
+        pollIntervalRef.current = setInterval(batchPollTick, POLL_INTERVAL_MS)
       }
     },
-    [updateFile, router]
+    [batchPollTick]
   )
 
   const uploadFile = useCallback(
@@ -163,8 +234,10 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
       formData.append("files", file)
       formData.append("filingYearId", filingYearId)
 
+      let skipNextDelay = false
+
       for (let attempt = 0; attempt <= UPLOAD_MAX_RETRIES; attempt++) {
-        if (attempt > 0) {
+        if (attempt > 0 && !skipNextDelay) {
           // Show as pending while waiting to retry (not error)
           updateFile(uploadId, { status: "pending", progress: 0 })
           const delay = UPLOAD_RETRY_BASE_MS * Math.pow(2, attempt - 1)
@@ -173,6 +246,7 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
           )
           await new Promise((r) => setTimeout(r, delay))
         }
+        skipNextDelay = false
 
         updateFile(uploadId, { status: "uploading", progress: 10 })
 
@@ -209,14 +283,7 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
           if (data.uploaded && data.uploaded.length > 0) {
             const statementId = data.uploaded[0].id
             updateFile(uploadId, { status: "processing", progress: 100 })
-
-            // Start polling for completion
-            const startTime = Date.now()
-            const timer = setTimeout(
-              () => pollStatementStatus(statementId, uploadId, startTime),
-              POLL_INTERVAL_MS
-            )
-            pollTimersRef.current.set(uploadId, timer)
+            startPolling(statementId, uploadId)
           } else {
             updateFile(uploadId, {
               status: "error",
@@ -238,6 +305,8 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
                 `[UploadSection] 429 Retry-After ${retrySeconds}s for "${file.name}"`
               )
               await new Promise((r) => setTimeout(r, retrySeconds * 1000))
+              // Already waited — skip the exponential backoff at top of loop
+              skipNextDelay = true
             }
           }
           continue
@@ -255,7 +324,7 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
         return
       }
     },
-    [filingYearId, updateFile, pollStatementStatus]
+    [filingYearId, updateFile, startPolling]
   )
 
   const handleFilesAccepted = useCallback(
@@ -320,11 +389,14 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
     [uploadFile, existingFileNames, files]
   )
 
-  // Cleanup polling timers on unmount
+  // Cleanup batch polling interval on unmount
   useEffect(() => {
     return () => {
-      pollTimersRef.current.forEach((timer) => clearTimeout(timer))
-      pollTimersRef.current.clear()
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+        pollIntervalRef.current = null
+      }
+      pollMapRef.current.clear()
     }
   }, [])
 
