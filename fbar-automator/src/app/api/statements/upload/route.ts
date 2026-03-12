@@ -3,6 +3,9 @@ import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { processUpload, validateFile } from "@/lib/upload"
 import { enqueueExtraction } from "@/lib/queue"
+import { createLogger } from "@/lib/logger"
+
+const log = createLogger({ module: "api.upload" })
 
 // ---------------------------------------------------------------------------
 // Types
@@ -112,6 +115,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    log.info("batch_start", { fileCount: fileEntries.length, filingYearId })
+
     // 7. Process each file in parallel
     const uploaded: StatementResult[] = []
     const errors: UploadError[] = []
@@ -163,7 +168,7 @@ export async function POST(request: NextRequest) {
             })
           } catch (queueError) {
             queued = false
-            console.error(`Failed to enqueue extraction for "${file.name}" (statement ${statement.id}):`, queueError)
+            log.error("enqueue_failed", { fileName: file.name, statementId: statement.id, error: queueError instanceof Error ? queueError.message : String(queueError) })
             queueErrors.push({
               fileName: uploadResult.fileName,
               statementId: statement.id,
@@ -201,7 +206,7 @@ export async function POST(request: NextRequest) {
             },
           }
         } catch (fileError) {
-          console.error(`Failed to process file "${file.name}":`, fileError)
+          log.error("file_processing_failed", { fileName: file.name, error: fileError instanceof Error ? fileError.message : String(fileError) })
           return {
             success: false,
             fileName: file.name,
@@ -226,6 +231,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 8. Return results
+    log.info("batch_done", { uploaded: uploaded.length, errors: errors.length, queueErrors: queueErrors.length })
     const status = uploaded.length > 0 ? 200 : 400
     const response: { uploaded: StatementResult[]; errors: UploadError[]; queueErrors?: QueueError[] } = { uploaded, errors }
     if (queueErrors.length > 0) {
@@ -233,7 +239,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(response, { status })
   } catch (error) {
-    console.error("Upload route error:", error)
+    log.error("upload_route_error", { error: error instanceof Error ? error.message : String(error) })
     return NextResponse.json(
       { error: "An internal error occurred. Please try again later." },
       { status: 500 }

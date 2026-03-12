@@ -32,6 +32,8 @@ interface StatusResponse {
 
 const POLL_INTERVAL_MS = 3000
 const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
+const MAX_RETRIES = 3
+const RETRY_BACKOFF_MS = [3000, 6000, 12000]
 
 export function UploadSection({ clientId, filingYearId, existingFileNames = [] }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
@@ -51,11 +53,44 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
   )
 
   const pollStatementStatus = useCallback(
-    async (statementId: string, uploadId: string, startTime: number) => {
+    async (statementId: string, uploadId: string, startTime: number, retryCount = 0) => {
       try {
         const response = await fetch(`/api/statements/${statementId}/status`)
 
         if (!response.ok) {
+          const status = response.status
+
+          if (status === 401) {
+            updateFile(uploadId, {
+              status: "error",
+              error: "Session expired. Please refresh and log in again.",
+            })
+            pollTimersRef.current.delete(uploadId)
+            return
+          }
+
+          if (status === 429 || status >= 500) {
+            if (retryCount < MAX_RETRIES) {
+              console.warn(
+                `[UploadSection] Status poll retry ${retryCount + 1}/${MAX_RETRIES} for ${statementId} (${status})`
+              )
+              const delay = RETRY_BACKOFF_MS[retryCount]
+              const timer = setTimeout(
+                () => pollStatementStatus(statementId, uploadId, startTime, retryCount + 1),
+                delay
+              )
+              pollTimersRef.current.set(uploadId, timer)
+              return
+            }
+            updateFile(uploadId, {
+              status: "error",
+              error: "Failed to check processing status",
+            })
+            pollTimersRef.current.delete(uploadId)
+            return
+          }
+
+          // 404 or other 4xx — permanent failure
           updateFile(uploadId, {
             status: "error",
             error: "Failed to check processing status",
@@ -83,14 +118,27 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
           })
           pollTimersRef.current.delete(uploadId)
         } else {
-          // Still processing, continue polling
+          // Still processing — successful response, reset retry count
           const timer = setTimeout(
-            () => pollStatementStatus(statementId, uploadId, startTime),
+            () => pollStatementStatus(statementId, uploadId, startTime, 0),
             POLL_INTERVAL_MS
           )
           pollTimersRef.current.set(uploadId, timer)
         }
       } catch (err) {
+        // Network error — retry with backoff
+        if (retryCount < MAX_RETRIES) {
+          console.warn(
+            `[UploadSection] Status poll retry ${retryCount + 1}/${MAX_RETRIES} for ${statementId} (network error)`
+          )
+          const delay = RETRY_BACKOFF_MS[retryCount]
+          const timer = setTimeout(
+            () => pollStatementStatus(statementId, uploadId, startTime, retryCount + 1),
+            delay
+          )
+          pollTimersRef.current.set(uploadId, timer)
+          return
+        }
         const message =
           err instanceof Error ? err.message : "Failed to check status"
         updateFile(uploadId, {

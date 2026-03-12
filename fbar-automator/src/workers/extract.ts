@@ -16,6 +16,9 @@ import { getRedisConnection } from "@/lib/redis"
 import { extractFromStatement } from "@/lib/extraction"
 import type { ExtractionJobData } from "@/lib/queue"
 import type { ExtractionResponse, ExtractionResult, ExtractedAccount } from "@/types/extraction"
+import { createLogger } from "@/lib/logger"
+
+const log = createLogger({ module: "worker" })
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -72,11 +75,10 @@ async function processExtractionJob(
   status: string
   accountsFound: number
 }> {
+  const startTime = Date.now()
   const { statementId, filingYearId, filePath, fileType } = job.data
 
-  console.log(
-    `[Worker] Processing extraction for statement: ${statementId} (${fileType})`
-  )
+  log.info("job_start", { statementId, fileType, jobId: job.id })
 
   // 1. Mark statement as processing
   await prisma.statement.update({
@@ -99,9 +101,7 @@ async function processExtractionJob(
     const errorMessage =
       response.error || "Extraction returned no result"
 
-    console.error(
-      `[Worker] Extraction failed for statement ${statementId}: ${errorMessage}`
-    )
+    log.error("extraction_failed", { statementId, error: errorMessage, jobId: job.id })
 
     await prisma.statement.update({
       where: { id: statementId },
@@ -248,9 +248,7 @@ async function processExtractionJob(
             },
           })
 
-          console.log(
-            `[Worker] Auto-created ForeignAccount for client ${filingYear.clientId}, account ${account.account_number}`
-          )
+          log.info("auto_created_foreign_account", { clientId: filingYear.clientId, accountNumber: account.account_number })
         }
       }
     }
@@ -272,9 +270,7 @@ async function processExtractionJob(
   await job.updateProgress(100)
 
   const accountsFound = result.accounts.length
-  console.log(
-    `[Worker] Completed extraction for statement ${statementId}: ${accountsFound} account(s) found`
-  )
+  log.info("job_complete", { statementId, accountsFound, jobId: job.id, elapsed: Date.now() - startTime })
 
   return { statementId, status: "completed", accountsFound }
 }
@@ -304,17 +300,19 @@ const worker = new Worker<ExtractionJobData>(
 // ---------------------------------------------------------------------------
 
 worker.on("completed", (job, result) => {
-  console.log(
-    `[Worker] Job ${job.id} completed — ${result?.accountsFound ?? 0} account(s) extracted`
-  )
+  log.info("job_completed_event", { jobId: job.id, accountsFound: result?.accountsFound ?? 0 })
 })
 
 worker.on("failed", (job, err) => {
-  console.error(`[Worker] Job ${job?.id} failed: ${err.message}`)
+  log.error("job_failed_event", { jobId: job?.id, message: err.message })
 })
 
 worker.on("error", (err) => {
-  console.error("[Worker] Worker error:", err)
+  log.error("worker_error", { message: err.message })
+})
+
+worker.on("stalled", (jobId) => {
+  log.warn("job_stalled", { jobId })
 })
 
 // ---------------------------------------------------------------------------
@@ -322,7 +320,7 @@ worker.on("error", (err) => {
 // ---------------------------------------------------------------------------
 
 async function shutdown(signal: string) {
-  console.log(`[Worker] Received ${signal}, shutting down gracefully...`)
+  log.info("shutdown", { signal })
   await worker.close()
   await connection.quit()
   process.exit(0)
@@ -335,8 +333,6 @@ process.on("SIGINT", () => shutdown("SIGINT"))
 // Startup
 // ---------------------------------------------------------------------------
 
-console.log("[Worker] Extraction worker started")
-console.log(`[Worker] Redis: ${process.env.REDIS_URL || "redis://localhost:6379"}`)
-console.log(`[Worker] Concurrency: ${WORKER_CONCURRENCY} | Rate limit: ${WORKER_RATE_LIMIT} jobs/min`)
+log.info("worker_started", { redis: process.env.REDIS_URL || "redis://localhost:6379", concurrency: WORKER_CONCURRENCY, rateLimit: WORKER_RATE_LIMIT })
 
 export default worker

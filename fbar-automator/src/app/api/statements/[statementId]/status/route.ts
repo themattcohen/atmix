@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { createLogger } from "@/lib/logger"
+
+const log = createLogger({ module: "api.status" })
 
 // ---------------------------------------------------------------------------
 // Types
@@ -16,9 +19,12 @@ type RouteContext = { params: Promise<{ statementId: string }> }
 // ---------------------------------------------------------------------------
 
 export async function GET(request: NextRequest, context: RouteContext) {
+  const requestId = crypto.randomUUID()
   try {
     const session = await auth()
     if (!session?.user) {
+      const rawParams = await context.params
+      log.warn("status_auth_missing", { requestId, statementId: rawParams.statementId })
       return NextResponse.json({ error: "Authentication required." }, { status: 401 })
     }
 
@@ -44,14 +50,17 @@ export async function GET(request: NextRequest, context: RouteContext) {
     })
 
     if (!statement) {
+      log.warn("status_not_found", { requestId, statementId })
       return NextResponse.json({ error: "Statement not found." }, { status: 404 })
     }
 
     // Verify the statement belongs to the user's practice
     if (!statement.filingYear?.client?.practiceId || statement.filingYear.client.practiceId !== session.user.practiceId) {
+      log.warn("status_practice_mismatch", { requestId, statementId })
       return NextResponse.json({ error: "Statement not found." }, { status: 404 })
     }
 
+    log.debug("status_ok", { requestId, statementId, processingStatus: statement.processingStatus })
     return NextResponse.json({
       id: statement.id,
       processingStatus: statement.processingStatus,
@@ -62,7 +71,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
         : null,
     })
   } catch (error) {
-    console.error("GET /api/statements/[statementId]/status error:", error)
+    log.error("status_error", { requestId, error: error instanceof Error ? error.message : String(error) })
     return NextResponse.json(
       { error: "An internal error occurred. Please try again later." },
       { status: 500 }

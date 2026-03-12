@@ -36,6 +36,10 @@ const RATE_LIMIT_TIERS: Record<string, RateLimitConfig> = {
     maxRequests: 60 * RATE_LIMIT_MULTIPLIER,
     windowMs: 60 * 1000, // 1 minute
   },
+  status: {
+    maxRequests: 300 * RATE_LIMIT_MULTIPLIER,
+    windowMs: 60_000, // 1 minute — generous for batch polling (12 files × 20 polls/min = 240)
+  },
 }
 
 // In-memory store: Map<key, RateLimitEntry>

@@ -11,6 +11,9 @@ import ExcelJS from "exceljs"
 import { getFileBuffer } from "./s3"
 import { EXTRACTION_SYSTEM_PROMPT, EXTRACTION_USER_PROMPT } from "./prompts"
 import type { ExtractionResult, ExtractionResponse } from "@/types/extraction"
+import { createLogger } from "@/lib/logger"
+
+const log = createLogger({ module: "extraction" })
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -295,6 +298,7 @@ export async function extractFromStatement(
     let fileBuffer: Buffer
     try {
       fileBuffer = await getFileBuffer(filePath)
+      log.info("s3_fetch_ok", { filePath, fileSizeBytes: fileBuffer.length })
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Unknown S3 error"
@@ -311,9 +315,7 @@ export async function extractFromStatement(
     if (mediaType === "text/csv") {
       const result = extractCsvProgrammatically(fileBuffer)
       const elapsed = Date.now() - startTime
-      console.log(
-        `[Extraction] CSV parsed programmatically in ${elapsed}ms | accounts=${result.accounts.length}`
-      )
+      log.info("csv_extracted", { filePath, elapsed, accountCount: result.accounts.length })
       return {
         success: true,
         result,
@@ -416,9 +418,7 @@ export async function extractFromStatement(
     }
 
     const elapsed = Date.now() - startTime
-    console.log(
-      `[Extraction] Completed in ${elapsed}ms | model=${MODEL} | tokens=${tokensUsed} | accounts=${result.accounts.length}`
-    )
+    log.info("extraction_ok", { filePath, model: MODEL, tokensUsed, accountCount: result.accounts.length, elapsed })
 
     return {
       success: true,
@@ -432,9 +432,11 @@ export async function extractFromStatement(
       const statusCode = err.status
       const errorMessage = err.message
 
-      console.error(
-        `[Extraction] Anthropic API error: status=${statusCode} message=${errorMessage}`
-      )
+      if (statusCode === 429) {
+        log.warn("claude_rate_limited", { status: 429, message: errorMessage })
+      } else {
+        log.error("claude_api_error", { status: statusCode, message: errorMessage })
+      }
 
       return {
         success: false,
@@ -447,7 +449,7 @@ export async function extractFromStatement(
 
     // ----- JSON parse and other known errors ---------------------------------
     if (err instanceof Error) {
-      console.error(`[Extraction] Error: ${err.message}`)
+      log.error("extraction_error", { message: err.message })
       return {
         success: false,
         result: null,
@@ -458,7 +460,7 @@ export async function extractFromStatement(
     }
 
     // ----- Truly unexpected --------------------------------------------------
-    console.error("[Extraction] Unexpected error:", err)
+    log.error("extraction_unexpected_error", { error: String(err) })
     return {
       success: false,
       result: null,

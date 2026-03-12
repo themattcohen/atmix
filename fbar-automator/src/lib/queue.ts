@@ -1,5 +1,8 @@
 import { Queue, Worker, Job } from "bullmq"
 import { getRedisConnection } from "@/lib/redis"
+import { createLogger } from "@/lib/logger"
+
+const logger = createLogger({ module: "queue" })
 
 // Re-export the shared Redis connection for backward compatibility
 const getConnection = getRedisConnection
@@ -46,10 +49,21 @@ export interface ExtractionJobData {
 }
 
 export async function enqueueExtraction(data: ExtractionJobData): Promise<string> {
-  const job = await getExtractionQueue().add("extract-statement", data, {
-    jobId: `extract-${data.statementId}`,
-  })
-  return job.id || data.statementId
+  const jobId = `extract-${data.statementId}`
+  logger.info("Enqueueing extraction job", { statementId: data.statementId, jobId })
+  try {
+    const job = await getExtractionQueue().add("extract-statement", data, { jobId })
+    const resolvedId = job.id || data.statementId
+    logger.info("Extraction job enqueued", { statementId: data.statementId, jobId: resolvedId })
+    return resolvedId
+  } catch (err) {
+    logger.error("Failed to enqueue extraction job", {
+      statementId: data.statementId,
+      jobId,
+      error: err instanceof Error ? err.message : String(err),
+    })
+    throw err
+  }
 }
 
 export async function getJobStatus(jobId: string) {

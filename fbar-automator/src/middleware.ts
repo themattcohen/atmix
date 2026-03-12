@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { checkRateLimit } from "@/lib/rate-limit"
+import { createLogger } from "@/lib/logger"
+
+const log = createLogger({ module: "middleware" })
 
 // ---------------------------------------------------------------------------
 // Next.js Middleware for route protection, rate limiting, and security headers
@@ -49,6 +52,7 @@ export function middleware(request: NextRequest) {
 
     if (!sessionToken) {
       // Redirect unauthenticated users to login
+      log.warn("auth_redirect", { pathname })
       const loginUrl = new URL("/login", request.url)
       return NextResponse.redirect(loginUrl)
     }
@@ -77,6 +81,8 @@ export function middleware(request: NextRequest) {
       tier = "auth"
     } else if (pathname === "/api/statements/upload") {
       tier = "upload"
+    } else if (pathname.startsWith("/api/statements/")) {
+      tier = "status"
     }
 
     // WARNING: x-forwarded-for can be spoofed. In production behind a trusted
@@ -90,6 +96,7 @@ export function middleware(request: NextRequest) {
 
     if (!allowed) {
       // Rate limit exceeded
+      log.warn("rate_limit_hit", { tier, ip, pathname, retryAfter })
       const errorResponse = NextResponse.json(
         { error: "Too many requests. Please try again later." },
         { status: 429 }
