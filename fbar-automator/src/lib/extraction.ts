@@ -21,6 +21,8 @@ const log = createLogger({ module: "extraction" })
 
 const MODEL = "claude-sonnet-4-5-20250929"
 const MAX_TOKENS = 16384
+const MAX_API_RETRIES = 3
+const API_RETRY_DELAYS = [10_000, 30_000, 60_000]
 
 /**
  * Supported media types mapped from common file extensions.
@@ -360,26 +362,61 @@ export async function extractFromStatement(
       }
     }
 
-    // ----- Call Claude API ---------------------------------------------------
+    // ----- Call Claude API with 429 retry ------------------------------------
     const anthropic = getAnthropicClient()
 
-    const response = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: EXTRACTION_SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: [
-            documentContentBlock,
+    let response: Anthropic.Messages.Message | null = null
+    for (let attempt = 0; attempt <= MAX_API_RETRIES; attempt++) {
+      try {
+        response = await anthropic.messages.create({
+          model: MODEL,
+          max_tokens: MAX_TOKENS,
+          system: EXTRACTION_SYSTEM_PROMPT,
+          messages: [
             {
-              type: "text",
-              text: EXTRACTION_USER_PROMPT,
+              role: "user",
+              content: [
+                documentContentBlock,
+                {
+                  type: "text",
+                  text: EXTRACTION_USER_PROMPT,
+                },
+              ],
             },
           ],
-        },
-      ],
-    })
+        })
+        break // success — exit retry loop
+      } catch (apiErr) {
+        if (
+          apiErr instanceof Anthropic.APIError &&
+          apiErr.status === 429 &&
+          attempt < MAX_API_RETRIES
+        ) {
+          const delay = API_RETRY_DELAYS[attempt]
+          log.warn("claude_rate_limited_retrying", {
+            status: 429,
+            attempt: attempt + 1,
+            delayMs: delay,
+            message: apiErr.message,
+          })
+          await new Promise((resolve) => setTimeout(resolve, delay))
+          continue // retry
+        }
+        // Non-429 or retries exhausted — rethrow for outer catch
+        throw apiErr
+      }
+    }
+
+    if (!response) {
+      // Should not happen, but guard for safety
+      return {
+        success: false,
+        result: null,
+        error: "Claude API call failed after all retry attempts.",
+        model: MODEL,
+        tokensUsed: 0,
+      }
+    }
 
     // ----- Check for truncated response --------------------------------------
     const wasResponseTruncated = response.stop_reason === "max_tokens"
@@ -433,7 +470,7 @@ export async function extractFromStatement(
       const errorMessage = err.message
 
       if (statusCode === 429) {
-        log.warn("claude_rate_limited", { status: 429, message: errorMessage })
+        log.warn("claude_rate_limited_exhausted", { status: 429, attempts: MAX_API_RETRIES, message: errorMessage })
       } else {
         log.error("claude_api_error", { status: statusCode, message: errorMessage })
       }

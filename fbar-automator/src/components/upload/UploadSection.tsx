@@ -12,6 +12,7 @@ interface UploadSectionProps {
   filingYearId: string
   filingYear: string
   existingFileNames?: string[]
+  onActiveChange?: (isActive: boolean) => void
 }
 
 interface StatementResult {
@@ -38,7 +39,7 @@ const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
 const MAX_RETRIES = 3
 const RETRY_BACKOFF_MS = [3000, 6000, 12000]
 
-export function UploadSection({ clientId, filingYearId, filingYear, existingFileNames = [] }: UploadSectionProps) {
+export function UploadSection({ clientId, filingYearId, filingYear, existingFileNames = [], onActiveChange }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
   const router = useRouter()
   const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
@@ -263,10 +264,23 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
 
       setFiles((prev) => [...prev, ...dupEntries, ...newFiles])
 
-      newFiles.forEach((uploadFile_entry, index) => {
-        const file = uniqueFiles[index]
-        uploadFile(file, uploadFile_entry.id)
-      })
+      // Concurrency-limited upload: max 3 in-flight at a time to avoid
+      // overwhelming the server and triggering 429 rate limits on Claude API.
+      const UPLOAD_CONCURRENCY = 3
+      let running = 0
+      let nextIndex = 0
+
+      const startNext = () => {
+        while (running < UPLOAD_CONCURRENCY && nextIndex < newFiles.length) {
+          const idx = nextIndex++
+          running++
+          uploadFile(uniqueFiles[idx], newFiles[idx].id).finally(() => {
+            running--
+            startNext()
+          })
+        }
+      }
+      startNext()
     },
     [uploadFile, existingFileNames, files]
   )
@@ -303,9 +317,29 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
     }
   }, [files, workerWarning])
 
+  const isActive = files.some(
+    (f) => f.status === "uploading" || f.status === "pending" || f.status === "processing"
+  )
+
   const isUploading = files.some(
     (f) => f.status === "uploading" || f.status === "pending"
   )
+
+  // Notify parent of active state changes
+  useEffect(() => {
+    onActiveChange?.(isActive)
+  }, [isActive, onActiveChange])
+
+  // Warn on browser close/refresh while active
+  useEffect(() => {
+    if (!isActive) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ""
+    }
+    window.addEventListener("beforeunload", handler)
+    return () => window.removeEventListener("beforeunload", handler)
+  }, [isActive])
 
   const counts = {
     uploaded: files.length,
