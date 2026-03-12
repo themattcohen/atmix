@@ -145,6 +145,7 @@ services:
       minio:
         condition: service_healthy
     networks:
+      - frontend   # Required: outbound HTTPS to api.anthropic.com (backend is internal-only)
       - backend
     deploy:
       resources:

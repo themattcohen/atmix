@@ -66,9 +66,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       processingStatus: statement.processingStatus,
       processingStartedAt: statement.processingStartedAt,
       processingCompletedAt: statement.processingCompletedAt,
-      processingError: statement.processingError
-        ? "Processing encountered an error. Contact support for details."
-        : null,
+      processingError: statement.processingError ?? null,
     })
   } catch (error) {
     log.error("status_error", { requestId, error: error instanceof Error ? error.message : String(error) })

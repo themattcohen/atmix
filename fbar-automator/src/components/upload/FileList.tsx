@@ -14,6 +14,7 @@ export interface StatementSummary {
   fileType: string
   fileSizeBytes: number
   processingStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
+  processingError?: string | null
   createdAt: string
   extractedAccountCount?: number
 }
@@ -26,12 +27,73 @@ interface FileListProps {
 }
 
 export function FileList({ statements, clientId, filingYear, isAdmin = false }: FileListProps) {
+  const router = useRouter()
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkDeleting, setBulkDeleting] = useState(false)
+
+  const selectableStatements = statements.filter(s => s.processingStatus !== "PROCESSING")
+  const allSelected = selectableStatements.length > 0 && selectableStatements.every(s => selectedIds.has(s.id))
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(selectableStatements.map(s => s.id)))
+    }
+  }
+
+  const toggleOne = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Delete ${selectedIds.size} statement(s)? This cannot be undone.`)) return
+    setBulkDeleting(true)
+    try {
+      const res = await fetch("/api/statements/bulk-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ statementIds: Array.from(selectedIds) }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        alert(data?.error ?? "Failed to delete statements.")
+        return
+      }
+      setSelectedIds(new Set())
+      router.refresh()
+    } catch {
+      alert("Failed to delete statements. Please try again.")
+    } finally {
+      setBulkDeleting(false)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Uploaded Statements</CardTitle>
       </CardHeader>
       <CardContent>
+        {selectedIds.size > 0 && isAdmin && (
+          <div className="mb-4 flex items-center gap-3 rounded-lg bg-gray-50 px-4 py-2">
+            <span className="text-sm text-gray-600">{selectedIds.size} selected</span>
+            <Button variant="destructive" size="sm" onClick={handleBulkDelete} disabled={bulkDeleting}>
+              {bulkDeleting ? "Deleting..." : `Delete ${selectedIds.size}`}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
+              Cancel
+            </Button>
+          </div>
+        )}
         {statements.length === 0 ? (
           <EmptyState />
         ) : (
@@ -39,48 +101,24 @@ export function FileList({ statements, clientId, filingYear, isAdmin = false }: 
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th
-                    scope="col"
-                    className="pb-3 pr-4 font-medium text-gray-500"
-                  >
-                    File Name
-                  </th>
-                  <th
-                    scope="col"
-                    className="pb-3 pr-4 font-medium text-gray-500"
-                  >
-                    Type
-                  </th>
-                  <th
-                    scope="col"
-                    className="pb-3 pr-4 font-medium text-gray-500"
-                  >
-                    Size
-                  </th>
-                  <th
-                    scope="col"
-                    className="pb-3 pr-4 font-medium text-gray-500"
-                  >
-                    Status
-                  </th>
-                  <th
-                    scope="col"
-                    className="pb-3 pr-4 font-medium text-gray-500"
-                  >
-                    Accounts Found
-                  </th>
-                  <th
-                    scope="col"
-                    className="pb-3 pr-4 font-medium text-gray-500"
-                  >
-                    Uploaded
-                  </th>
-                  <th
-                    scope="col"
-                    className="pb-3 font-medium text-gray-500"
-                  >
-                    Actions
-                  </th>
+                  {isAdmin && (
+                    <th scope="col" className="pb-3 pr-2">
+                      <input
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-gray-300"
+                        aria-label="Select all statements"
+                      />
+                    </th>
+                  )}
+                  <th scope="col" className="pb-3 pr-4 font-medium text-gray-500">File Name</th>
+                  <th scope="col" className="pb-3 pr-4 font-medium text-gray-500">Type</th>
+                  <th scope="col" className="pb-3 pr-4 font-medium text-gray-500">Size</th>
+                  <th scope="col" className="pb-3 pr-4 font-medium text-gray-500">Status</th>
+                  <th scope="col" className="pb-3 pr-4 font-medium text-gray-500">Accounts Found</th>
+                  <th scope="col" className="pb-3 pr-4 font-medium text-gray-500">Uploaded</th>
+                  <th scope="col" className="pb-3 font-medium text-gray-500">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -91,6 +129,8 @@ export function FileList({ statements, clientId, filingYear, isAdmin = false }: 
                     clientId={clientId}
                     filingYear={filingYear}
                     isAdmin={isAdmin}
+                    selected={selectedIds.has(statement.id)}
+                    onToggleSelect={() => toggleOne(statement.id)}
                   />
                 ))}
               </tbody>
@@ -107,15 +147,20 @@ function StatementRow({
   clientId,
   filingYear,
   isAdmin,
+  selected,
+  onToggleSelect,
 }: {
   statement: StatementSummary
   clientId: string
   filingYear: string
   isAdmin: boolean
+  selected: boolean
+  onToggleSelect: () => void
 }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [reprocessing, setReprocessing] = useState(false)
 
   const isImage = ["image/jpeg", "image/png", "image/heic", "image/tiff"].includes(
     statement.fileType
@@ -144,8 +189,39 @@ function StatementRow({
     }
   }
 
+  const handleReprocess = async () => {
+    setReprocessing(true)
+    try {
+      const res = await fetch(`/api/statements/${statement.id}/reprocess`, {
+        method: "POST",
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        alert(data?.error ?? "Failed to reprocess statement.")
+        return
+      }
+      router.refresh()
+    } catch {
+      alert("Failed to reprocess statement. Please try again.")
+    } finally {
+      setReprocessing(false)
+    }
+  }
+
   return (
     <tr className="group">
+      {isAdmin && (
+        <td className="py-3 pr-2">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleSelect}
+            disabled={statement.processingStatus === "PROCESSING"}
+            className="h-4 w-4 rounded border-gray-300 disabled:opacity-40"
+            aria-label={`Select ${statement.fileName}`}
+          />
+        </td>
+      )}
       <td className="py-3 pr-4">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100">
@@ -169,7 +245,7 @@ function StatementRow({
         {formatFileSize(statement.fileSizeBytes)}
       </td>
       <td className="py-3 pr-4">
-        <ProcessingStatusBadge status={statement.processingStatus} />
+        <ProcessingStatusBadge status={statement.processingStatus} error={statement.processingError} />
       </td>
       <td className="py-3 pr-4 text-gray-500">
         {statement.extractedAccountCount !== undefined
@@ -186,6 +262,16 @@ function StatementRow({
               View
             </Button>
           </Link>
+          {(statement.processingStatus === "FAILED" || statement.processingStatus === "PENDING") && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReprocess}
+              disabled={reprocessing}
+            >
+              {reprocessing ? "Retrying..." : "Retry"}
+            </Button>
+          )}
           {isAdmin && (
             <>
               {showConfirm ? (
@@ -231,8 +317,10 @@ function StatementRow({
 
 function ProcessingStatusBadge({
   status,
+  error,
 }: {
   status: StatementSummary["processingStatus"]
+  error?: string | null
 }) {
   const config = {
     PENDING: {
@@ -261,6 +349,7 @@ function ProcessingStatusBadge({
         "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
         classes
       )}
+      title={status === "FAILED" && error ? error : undefined}
     >
       {label}
     </span>

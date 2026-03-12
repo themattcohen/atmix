@@ -64,6 +64,7 @@ export default async function UploadPage({ params }: UploadPageProps) {
     fileType: stmt.fileType,
     fileSizeBytes: stmt.fileSizeBytes,
     processingStatus: stmt.processingStatus as "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED",
+    processingError: stmt.processingError,
     createdAt: stmt.createdAt.toISOString(),
     ...(stmt.extractedData ? { extractedAccountCount: 1 } : {}),
   }))

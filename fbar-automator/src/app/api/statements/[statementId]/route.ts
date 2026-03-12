@@ -87,7 +87,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       processingStatus: statement.processingStatus,
       processingStartedAt: statement.processingStartedAt,
       processingCompletedAt: statement.processingCompletedAt,
-      processingError: statement.processingError ? "Processing encountered an error. Contact support for details." : null,
+      processingError: statement.processingError ?? null,
       llmModelUsed: statement.llmModelUsed,
       llmTokensUsed: statement.llmTokensUsed,
       createdAt: statement.createdAt,
