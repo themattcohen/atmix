@@ -85,8 +85,8 @@ export async function submitBatch(
     String(now.getUTCSeconds()).padStart(2, "0");
   const sdtmUsername = process.env.SDTM_USERNAME || "unknown";
   const filename = `FBARXST.${ts}.${sdtmUsername}.xml`;
-  // "do NOT specify a landing spot for the file" — upload to root
-  const remoteFilePath = filename;
+  const uploadDir = process.env.SDTM_REMOTE_DIR || "submissions";
+  const remoteFilePath = `${uploadDir}/${filename}`;
 
   if (isSandbox()) {
     console.warn("[SDTM SANDBOX] Would upload to:", remoteFilePath);
@@ -180,8 +180,8 @@ export async function checkAcknowledgement(
           return;
         }
 
-        // Per SDTMFilenameExamples.pdf: acks are in "Inbox" directory
-        const ackDir = process.env.SDTM_ACK_DIR || "Inbox";
+        // Per SDTMRequirements.pdf v2.0 §4a.ii: acks are in "acks" directory
+        const ackDir = process.env.SDTM_ACK_DIR || "acks";
 
         sftp.readdir(ackDir, (readErr, list) => {
           if (readErr || !list) {

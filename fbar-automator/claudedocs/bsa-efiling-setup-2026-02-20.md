@@ -237,13 +237,23 @@ The BSA E-Filing web portal requires XML batch files to be embedded inside a **F
 14. If errors: fix and resubmit. If clean: wait for FinCEN review.
 15. **Production TCC** issued by email within **10 business days** of final passing test
 
-### Alternative: SDTM (Server-to-Server)
+### SDTM (Server-to-Server) — ACTIVE
 
-For automated high-volume filing, SDTM allows raw XML submission over:
-- FTP over VPN tunnel
-- Connect Direct over VPN tunnel
+SDTM accounts provisioned (Ticket #00488355 production, #00488354 sandbox) on 2026-03-02.
 
-Requires calling BSA E-Filing Help Desk (1-866-346-9478) to set up. Not needed for initial testing.
+| Environment | Host | IP | Port |
+|---|---|---|---|
+| **Production** | `bsaefiling-direct-transfer.fincen.gov` | `164.95.10.142` | `2222` |
+| **Sandbox** | `bsaefiling-direct-transfer-sandbox.fincen.gov` | `164.95.10.143` | `2222` |
+
+- **Protocol**: SFTP only (no FTP/FTPS)
+- **Auth**: username + password (client ID + secret)
+- **Production UID**: `sdtmmar0126p`
+- **Directories**: Upload XML to **submissions/** subfolder, acks appear in `acks/` (`.MESSAGES.XML` + `.ACKED`) per SDTMRequirements.pdf v2.0 §4a.ii
+- **Response times**: Messages file within ~5 hours, ACK with BSA IDs within 2-3 business days
+- **Sandbox UID**: `sdtmmar02264`
+- **Host keys**: Obtained for both production and sandbox environments
+- **Sandbox status**: ACTIVE on Hetzner (`SDTM_SANDBOX_MODE=false`, pointing at sandbox host for E2E testing)
 
 ---
 
@@ -444,6 +454,13 @@ PartyName
 | 2026-02-20 | Submitted test batch on sandbox — Tracking ID **T-FBX26-00000047** |
 | 2026-02-20 | Acknowledgment received — 26/26 accepted, 0 errors (T-FBX26-00000051) |
 | 2026-02-27 | **Production TCC received: PBSA8180** (confirmed via phone call) |
-| *Pending* | Open SDTM ticket for production server-to-server submission |
-| *Pending* | Open SDTM ticket for test environment (separate ticket required) |
+| 2026-03-02 | **SDTM production account created** (Ticket #00488355) — UID `sdtmmar0126p` |
+| 2026-03-02 | **SDTM sandbox account created** (Ticket #00488354) — UID `sdtmmar02264` |
+| 2026-03-02 | SDTM env vars configured on Hetzner (host, port, username, password, dirs) |
+| 2026-03-04 | **Sandbox SDTM credentials received** (username: `sdtmmar02264`, password obtained) |
+| 2026-03-04 | **Production SDTM credentials received** (username: `sdtmmar0126p`, password obtained) |
+| 2026-03-04 | **Host keys obtained** for both sandbox and production SDTM servers |
+| 2026-03-04 | **SDTM sandbox activated on Hetzner** for E2E testing |
+| *Pending* | SDTM sandbox E2E testing (in progress) |
+| *Pending* | Production cutover (Stripe live keys + SDTM production + TCC PBSA8180) |
 | *Pending* | Contact IRS FBAR re: preparer requirements (FinCEN emailing contact info) |
