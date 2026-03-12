@@ -24,9 +24,10 @@ interface FileListProps {
   clientId: string
   filingYear: string
   isAdmin?: boolean
+  onNavigate?: (href: string) => void
 }
 
-export function FileList({ statements, clientId, filingYear, isAdmin = false }: FileListProps) {
+export function FileList({ statements, clientId, filingYear, isAdmin = false, onNavigate }: FileListProps) {
   const router = useRouter()
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkDeleting, setBulkDeleting] = useState(false)
@@ -131,6 +132,7 @@ export function FileList({ statements, clientId, filingYear, isAdmin = false }: 
                     isAdmin={isAdmin}
                     selected={selectedIds.has(statement.id)}
                     onToggleSelect={() => toggleOne(statement.id)}
+                    onNavigate={onNavigate}
                   />
                 ))}
               </tbody>
@@ -149,6 +151,7 @@ function StatementRow({
   isAdmin,
   selected,
   onToggleSelect,
+  onNavigate,
 }: {
   statement: StatementSummary
   clientId: string
@@ -156,6 +159,7 @@ function StatementRow({
   isAdmin: boolean
   selected: boolean
   onToggleSelect: () => void
+  onNavigate?: (href: string) => void
 }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
@@ -283,7 +287,10 @@ function StatementRow({
       </td>
       <td className="py-3">
         <div className="flex items-center gap-1">
-          <Link href={`/clients/${clientId}/${filingYear}/review`}>
+          <Link
+            href={`/clients/${clientId}/${filingYear}/review`}
+            onClick={onNavigate ? (e) => { e.preventDefault(); onNavigate(`/clients/${clientId}/${filingYear}/review`) } : undefined}
+          >
             <Button variant="ghost" size="sm">
               View
             </Button>
@@ -421,10 +428,5 @@ function formatFileType(mimeType: string): string {
 }
 
 function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  })
+  return dateString
 }
