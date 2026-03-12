@@ -15,6 +15,7 @@ import { prisma } from "@/lib/db"
 import { getFilingProgress, getReviewSummary } from "@/lib/approval"
 import { ExportDownloadButtons } from "./ExportDownloadButtons"
 import { FilingActions } from "../FilingActions"
+import { NextStepBanner } from "@/components/workflow/NextStepBanner"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -174,6 +175,39 @@ export default async function ExportPage({ params }: ExportPageProps) {
               )
             })}
           </nav>
+        </div>
+
+        {/* Status-aware Next Step Banner (top) */}
+        <div className="mt-6">
+          <NextStepBanner
+            message={
+              progress.status === "FILED"
+                ? "Filing complete"
+                : progress.status === "EXPORTED"
+                  ? "Filing exported — mark as filed when submitted to FinCEN"
+                  : progress.status === "REVIEWED"
+                    ? "Ready to approve for export"
+                    : "Review all accounts and submit for review"
+            }
+            variant={
+              progress.status === "FILED" || progress.status === "EXPORTED"
+                ? "green"
+                : "blue"
+            }
+          >
+            <FilingActions
+              filingYearId={filingYearRecord.id}
+              status={progress.status}
+              isFullyReviewed={progress.isFullyReviewed}
+              isReadyForReview={progress.isReadyForReview}
+              userRole={userRole}
+              totalStatements={progress.totalStatements}
+              pendingStatements={progress.pendingStatements}
+              failedStatements={progress.failedStatements}
+              totalAccounts={progress.totalAccounts}
+              reviewedAccounts={progress.reviewedAccounts}
+            />
+          </NextStepBanner>
         </div>
 
         {/* Filing Summary */}
@@ -373,6 +407,39 @@ export default async function ExportPage({ params }: ExportPageProps) {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Status-aware Next Step Banner (bottom) */}
+        <div className="mt-6">
+          <NextStepBanner
+            message={
+              progress.status === "FILED"
+                ? "Filing complete"
+                : progress.status === "EXPORTED"
+                  ? "Filing exported — mark as filed when submitted to FinCEN"
+                  : progress.status === "REVIEWED"
+                    ? "Ready to approve for export"
+                    : "Review all accounts and submit for review"
+            }
+            variant={
+              progress.status === "FILED" || progress.status === "EXPORTED"
+                ? "green"
+                : "blue"
+            }
+          >
+            <FilingActions
+              filingYearId={filingYearRecord.id}
+              status={progress.status}
+              isFullyReviewed={progress.isFullyReviewed}
+              isReadyForReview={progress.isReadyForReview}
+              userRole={userRole}
+              totalStatements={progress.totalStatements}
+              pendingStatements={progress.pendingStatements}
+              failedStatements={progress.failedStatements}
+              totalAccounts={progress.totalAccounts}
+              reviewedAccounts={progress.reviewedAccounts}
+            />
+          </NextStepBanner>
         </div>
       </div>
     </>

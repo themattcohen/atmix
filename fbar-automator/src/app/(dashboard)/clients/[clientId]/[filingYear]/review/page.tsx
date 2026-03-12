@@ -10,6 +10,7 @@ import { consolidateAccounts } from "@/lib/consolidation"
 import type { StatementWithExtraction } from "@/lib/consolidation"
 import { ReviewPageClient } from "./ReviewPageClient"
 import { ManualAccountReviewCard } from "@/components/review/ManualAccountReviewCard"
+import { NextStepBanner } from "@/components/workflow/NextStepBanner"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -243,6 +244,21 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
           </nav>
         </div>
 
+        {/* Next Step: Proceed to Export */}
+        <div className="mt-6">
+          <NextStepBanner
+            message={
+              reviewedAccountCount >= totalAccountCount && totalAccountCount > 0
+                ? "All accounts reviewed"
+                : `${reviewedAccountCount} of ${totalAccountCount} accounts reviewed`
+            }
+            subtext="Proceed to export when all accounts are reviewed."
+            href={`/clients/${clientId}/${filingYear}/export`}
+            buttonLabel="Proceed to Export"
+            variant={reviewedAccountCount >= totalAccountCount && totalAccountCount > 0 ? "green" : "blue"}
+          />
+        </div>
+
         {/* Review Progress Banner */}
         {totalAccountCount > 0 && reviewedAccountCount < totalAccountCount && (
           <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -365,6 +381,21 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
             </CardContent>
           </Card>
         )}
+
+        {/* Bottom: Proceed to Export */}
+        <div className="mt-6">
+          <NextStepBanner
+            message={
+              reviewedAccountCount >= totalAccountCount && totalAccountCount > 0
+                ? "All accounts reviewed"
+                : `${reviewedAccountCount} of ${totalAccountCount} accounts reviewed`
+            }
+            subtext="Proceed to export when all accounts are reviewed."
+            href={`/clients/${clientId}/${filingYear}/export`}
+            buttonLabel="Proceed to Export"
+            variant={reviewedAccountCount >= totalAccountCount && totalAccountCount > 0 ? "green" : "blue"}
+          />
+        </div>
       </div>
     </>
   )

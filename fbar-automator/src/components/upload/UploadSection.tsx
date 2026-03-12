@@ -462,8 +462,29 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
 
   const resetFiles = () => setFiles([])
 
+  const successBanner = allDone && completedCount > 0 ? (
+    <div className="rounded-lg bg-green-50 border border-green-200 p-4">
+      <p className="text-sm font-medium text-green-800">
+        {completedCount} statement{completedCount !== 1 ? "s" : ""} processed successfully
+      </p>
+      <p className="text-xs text-green-600 mt-0.5">
+        Review extracted data to verify accuracy before approving.
+      </p>
+      <div className="mt-3 flex items-center gap-3">
+        <Link href={`/clients/${clientId}/${filingYear}/review`}>
+          <Button variant="default" size="sm">Proceed to Review</Button>
+        </Link>
+        <Button variant="outline" size="sm" onClick={resetFiles}>
+          Upload More Files
+        </Button>
+      </div>
+    </div>
+  ) : null
+
   return (
     <div className="space-y-6">
+      {successBanner}
+
       <DropZone onFilesAccepted={handleFilesAccepted} disabled={isUploading} />
 
       <UploadProgress files={files} />
@@ -514,24 +535,7 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
         </div>
       )}
 
-      {allDone && completedCount > 0 && (
-        <div className="rounded-lg bg-green-50 border border-green-200 p-4">
-          <p className="text-sm font-medium text-green-800">
-            {completedCount} statement{completedCount !== 1 ? "s" : ""} processed successfully
-          </p>
-          <p className="text-xs text-green-600 mt-0.5">
-            Review extracted data to verify accuracy before approving.
-          </p>
-          <div className="mt-3 flex items-center gap-3">
-            <Link href={`/clients/${clientId}/${filingYear}/review`}>
-              <Button variant="default" size="sm">Proceed to Review</Button>
-            </Link>
-            <Button variant="outline" size="sm" onClick={resetFiles}>
-              Upload More Files
-            </Button>
-          </div>
-        </div>
-      )}
+      {successBanner}
     </div>
   )
 }
