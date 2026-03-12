@@ -198,22 +198,49 @@ export function ConsolidatedAccountCard({
       </CardHeader>
 
       <CardContent className="space-y-6 pt-6">
-        {/* Warnings */}
-        {account.warnings.length > 0 && (
-          <div
-            className="rounded-md border border-yellow-300 bg-yellow-50 p-3"
-            role="alert"
-          >
+        {/* Categorized Warnings */}
+        {account.categorizedWarnings?.domestic && (
+          <div className="rounded-md border border-orange-300 bg-orange-50 p-3" role="alert">
             <div className="flex items-start gap-2">
-              <AlertTriangle
-                className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-600"
-                aria-hidden="true"
-              />
+              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-orange-600" aria-hidden="true" />
+              <p className="text-sm text-orange-800">
+                This appears to be a domestic account. FBAR reporting may not be required unless the account holder is a U.S. person.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {account.categorizedWarnings?.currency && (
+          <div className="rounded-md border border-blue-200 bg-blue-50 p-3">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-500" aria-hidden="true" />
+              <p className="text-sm text-blue-800">
+                Currency: {account.currency} (inferred from statement context — no explicit ISO currency code on document)
+              </p>
+            </div>
+          </div>
+        )}
+
+        {account.categorizedWarnings?.coverage && account.categorizedWarnings.coverage.length > 0 && (
+          <div className="rounded-md border border-yellow-300 bg-yellow-50 p-3" role="alert">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-600" aria-hidden="true" />
               <div className="space-y-1">
-                {account.warnings.map((w, i) => (
-                  <p key={i} className="text-sm text-yellow-800">
-                    {w}
-                  </p>
+                {account.categorizedWarnings.coverage.map((w, i) => (
+                  <p key={i} className="text-sm text-yellow-800">{w}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {account.categorizedWarnings?.other && account.categorizedWarnings.other.length > 0 && (
+          <div className="rounded-md border border-yellow-300 bg-yellow-50 p-3" role="alert">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-600" aria-hidden="true" />
+              <div className="space-y-1">
+                {account.categorizedWarnings.other.map((w, i) => (
+                  <p key={i} className="text-sm text-yellow-800">{w}</p>
                 ))}
               </div>
             </div>
@@ -378,6 +405,15 @@ export function ConsolidatedAccountCard({
             </button>
             {balancesOpen && (
               <div id="consolidated-balances" className="mt-2 overflow-x-auto">
+                <p className="mb-3 text-xs text-gray-500">
+                  Each entry represents a balance shown on the source statement at the time of a transaction.
+                  The highest value across all statements is highlighted as the maximum account value for FBAR reporting.
+                </p>
+                {account.categorizedWarnings?.methodology && account.categorizedWarnings.methodology.length > 0 && (
+                  <p className="mb-3 text-xs text-gray-400 italic">
+                    {account.categorizedWarnings.methodology.join(" ")}
+                  </p>
+                )}
                 <table className="w-full text-sm" role="table">
                   <thead>
                     <tr className="border-b border-gray-200 text-left text-gray-500">

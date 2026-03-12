@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FileText, Image, FolderOpen, Trash2, Table } from "lucide-react"
@@ -161,6 +161,7 @@ function StatementRow({
   const [deleting, setDeleting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [reprocessing, setReprocessing] = useState(false)
+  const [pollingStatus, setPollingStatus] = useState<string | null>(null)
 
   const isImage = ["image/jpeg", "image/png", "image/heic", "image/tiff"].includes(
     statement.fileType
@@ -201,12 +202,32 @@ function StatementRow({
         return
       }
       router.refresh()
+      setPollingStatus("PENDING")
     } catch {
       alert("Failed to reprocess statement. Please try again.")
     } finally {
       setReprocessing(false)
     }
   }
+
+  useEffect(() => {
+    if (!pollingStatus || pollingStatus === "COMPLETED" || pollingStatus === "FAILED") return
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/statements/${statement.id}/status`)
+        if (res.ok) {
+          const data = await res.json()
+          setPollingStatus(data.processingStatus)
+          if (data.processingStatus === "COMPLETED" || data.processingStatus === "FAILED") {
+            router.refresh()
+          }
+        }
+      } catch {
+        // silently retry on next interval
+      }
+    }, 3000)
+    return () => clearTimeout(timer)
+  }, [pollingStatus, statement.id, router])
 
   return (
     <tr className="group">
@@ -245,7 +266,12 @@ function StatementRow({
         {formatFileSize(statement.fileSizeBytes)}
       </td>
       <td className="py-3 pr-4">
-        <ProcessingStatusBadge status={statement.processingStatus} error={statement.processingError} />
+        <ProcessingStatusBadge
+          status={pollingStatus && pollingStatus !== "COMPLETED" && pollingStatus !== "FAILED"
+            ? pollingStatus as StatementSummary["processingStatus"]
+            : statement.processingStatus}
+          error={statement.processingError}
+        />
       </td>
       <td className="py-3 pr-4 text-gray-500">
         {statement.extractedAccountCount !== undefined
@@ -351,6 +377,9 @@ function ProcessingStatusBadge({
       )}
       title={status === "FAILED" && error ? error : undefined}
     >
+      {status === "PROCESSING" && (
+        <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-500" />
+      )}
       {label}
     </span>
   )

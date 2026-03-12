@@ -127,7 +127,7 @@ export default async function UploadPage({ params }: UploadPageProps) {
               </p>
             </div>
 
-            <UploadSection clientId={clientId} filingYearId={filingYearId} existingFileNames={existingStatements.map((s) => s.fileName)} />
+            <UploadSection clientId={clientId} filingYearId={filingYearId} filingYear={filingYear} existingFileNames={existingStatements.map((s) => s.fileName)} />
           </section>
 
           <section>

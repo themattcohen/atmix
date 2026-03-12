@@ -49,7 +49,16 @@ export interface ConsolidatedAccount {
   }>
   overallConfidence: "high" | "medium" | "low"
   warnings: string[]
+  categorizedWarnings: CategorizedWarnings
   foreignAccountId: string | null
+}
+
+export interface CategorizedWarnings {
+  currency: string | null
+  domestic: string | null
+  methodology: string[]
+  coverage: string[]
+  other: string[]
 }
 
 export interface StatementWithExtraction {
@@ -133,6 +142,41 @@ export function computeMonthsCovered(
   const monthsMissing = allMonths.filter((m) => !covered.has(m))
 
   return { monthsCovered, monthsMissing }
+}
+
+/**
+ * Categorizes raw LLM warning strings into typed buckets for standardized rendering.
+ */
+export function categorizeWarnings(warnings: string[], bankName: string | null): CategorizedWarnings {
+  const result: CategorizedWarnings = {
+    currency: null,
+    domestic: null,
+    methodology: [],
+    coverage: [],
+    other: [],
+  }
+
+  for (const w of warnings) {
+    const lower = w.toLowerCase()
+    if (lower.includes("currency") || lower.includes("inferred") || lower.includes("cad") || lower.includes("usd") || lower.includes("iso 4217")) {
+      // Take the first currency warning only
+      if (!result.currency) {
+        result.currency = w
+      }
+    } else if (lower.includes("domestic") || lower.includes("not a foreign") || lower.includes("not foreign")) {
+      if (!result.domestic) {
+        result.domestic = w
+      }
+    } else if (lower.includes("maximum balance") || lower.includes("highest balance") || lower.includes("max balance")) {
+      result.methodology.push(w)
+    } else if (lower.includes("missing") || lower.includes("partial") || lower.includes("coverage") || lower.includes("incomplete")) {
+      result.coverage.push(w)
+    } else {
+      result.other.push(w)
+    }
+  }
+
+  return result
 }
 
 // ---------------------------------------------------------------------------
@@ -296,6 +340,8 @@ export function consolidateAccounts(
       }
     }
 
+    const categorizedWarnings = categorizeWarnings(allWarnings, bestSource.bank_name)
+
     // Compute overall confidence
     let overallConfidence: "high" | "medium" | "low" = "low"
     for (const account of allAccounts) {
@@ -323,6 +369,7 @@ export function consolidateAccounts(
       sourceStatements,
       overallConfidence,
       warnings: allWarnings,
+      categorizedWarnings,
       foreignAccountId,
     })
   }

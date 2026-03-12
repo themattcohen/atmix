@@ -25,6 +25,7 @@ IMPORTANT RULES:
 - For currency, use the ISO 4217 code (e.g., "EUR", "JPY", "GBP").
 - For dates, use YYYY-MM-DD format.
 - If the document shows only transactions with no explicit balance, set document_metadata.is_transaction_only to true and add a warning.
+- For transaction and balance dates, use the exact date printed on the statement. If only a day number is shown (e.g., "17"), combine it with the month/year context from the statement period or column header. Do NOT adjust, shift, or offset dates — use them exactly as they appear. The opening balance date should match the statement period start date, and the closing balance date should match the statement period end date.
 
 Return your response as valid JSON matching this exact schema:
 {

@@ -2,12 +2,15 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { DropZone } from "@/components/upload/DropZone"
 import { UploadProgress, type UploadingFile } from "@/components/upload/UploadProgress"
+import { Button } from "@/components/ui/Button"
 
 interface UploadSectionProps {
   clientId: string
   filingYearId: string
+  filingYear: string
   existingFileNames?: string[]
 }
 
@@ -35,7 +38,7 @@ const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
 const MAX_RETRIES = 3
 const RETRY_BACKOFF_MS = [3000, 6000, 12000]
 
-export function UploadSection({ clientId, filingYearId, existingFileNames = [] }: UploadSectionProps) {
+export function UploadSection({ clientId, filingYearId, filingYear, existingFileNames = [] }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
   const router = useRouter()
   const pollTimersRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
@@ -311,6 +314,13 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
     errors: files.filter((f) => f.status === "error").length,
   }
 
+  const allDone = files.length > 0 && files.every(
+    (f) => f.status === "completed" || f.status === "error"
+  )
+  const completedCount = counts.completed
+
+  const resetFiles = () => setFiles([])
+
   return (
     <div className="space-y-6">
       <DropZone onFilesAccepted={handleFilesAccepted} disabled={isUploading} />
@@ -360,6 +370,25 @@ export function UploadSection({ clientId, filingYearId, existingFileNames = [] }
               {counts.errors} error{counts.errors !== 1 ? "s" : ""}
             </span>
           )}
+        </div>
+      )}
+
+      {allDone && completedCount > 0 && (
+        <div className="rounded-lg bg-green-50 border border-green-200 p-4">
+          <p className="text-sm font-medium text-green-800">
+            {completedCount} statement{completedCount !== 1 ? "s" : ""} processed successfully
+          </p>
+          <p className="text-xs text-green-600 mt-0.5">
+            Review extracted data to verify accuracy before approving.
+          </p>
+          <div className="mt-3 flex items-center gap-3">
+            <Link href={`/clients/${clientId}/${filingYear}/review`}>
+              <Button variant="default" size="sm">Proceed to Review</Button>
+            </Link>
+            <Button variant="outline" size="sm" onClick={resetFiles}>
+              Upload More Files
+            </Button>
+          </div>
         </div>
       )}
     </div>
