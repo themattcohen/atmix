@@ -38,6 +38,8 @@ const POLL_INTERVAL_MS = 3000
 const POLL_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
 const MAX_RETRIES = 3
 const RETRY_BACKOFF_MS = [3000, 6000, 12000]
+const UPLOAD_MAX_RETRIES = 5
+const UPLOAD_RETRY_BASE_MS = 5000 // 5s base, doubles each attempt
 
 export function UploadSection({ clientId, filingYearId, filingYear, existingFileNames = [], onActiveChange }: UploadSectionProps) {
   const [files, setFiles] = useState<UploadingFile[]>([])
@@ -157,26 +159,35 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
 
   const uploadFile = useCallback(
     async (file: File, uploadId: string) => {
-      updateFile(uploadId, { status: "uploading", progress: 10 })
-
       const formData = new FormData()
       formData.append("files", file)
       formData.append("filingYearId", filingYearId)
 
-      try {
-        updateFile(uploadId, { progress: 30 })
+      for (let attempt = 0; attempt <= UPLOAD_MAX_RETRIES; attempt++) {
+        if (attempt > 0) {
+          // Show as pending while waiting to retry (not error)
+          updateFile(uploadId, { status: "pending", progress: 0 })
+          const delay = UPLOAD_RETRY_BASE_MS * Math.pow(2, attempt - 1)
+          console.warn(
+            `[UploadSection] Upload retry ${attempt}/${UPLOAD_MAX_RETRIES} for "${file.name}" in ${delay}ms`
+          )
+          await new Promise((r) => setTimeout(r, delay))
+        }
 
-        const response = await fetch("/api/statements/upload", {
-          method: "POST",
-          body: formData,
-        })
+        updateFile(uploadId, { status: "uploading", progress: 10 })
 
-        updateFile(uploadId, { progress: 70 })
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null)
+        let response: Response
+        try {
+          updateFile(uploadId, { progress: 30 })
+          response = await fetch("/api/statements/upload", {
+            method: "POST",
+            body: formData,
+          })
+        } catch (err) {
+          // Network error — retry if attempts remain
+          if (attempt < UPLOAD_MAX_RETRIES) continue
           const message =
-            errorData?.error ?? `Upload failed (${response.status})`
+            err instanceof Error ? err.message : "Network error during upload"
           updateFile(uploadId, {
             status: "error",
             progress: 100,
@@ -185,39 +196,63 @@ export function UploadSection({ clientId, filingYearId, filingYear, existingFile
           return
         }
 
-        const data: UploadResponse = await response.json()
+        updateFile(uploadId, { progress: 70 })
 
-        // Warn if extraction queue is unavailable
-        if (data.queueErrors && data.queueErrors.length > 0) {
-          setQueueWarning(true)
+        if (response.ok) {
+          const data: UploadResponse = await response.json()
+
+          // Warn if extraction queue is unavailable
+          if (data.queueErrors && data.queueErrors.length > 0) {
+            setQueueWarning(true)
+          }
+
+          if (data.uploaded && data.uploaded.length > 0) {
+            const statementId = data.uploaded[0].id
+            updateFile(uploadId, { status: "processing", progress: 100 })
+
+            // Start polling for completion
+            const startTime = Date.now()
+            const timer = setTimeout(
+              () => pollStatementStatus(statementId, uploadId, startTime),
+              POLL_INTERVAL_MS
+            )
+            pollTimersRef.current.set(uploadId, timer)
+          } else {
+            updateFile(uploadId, {
+              status: "error",
+              progress: 100,
+              error: "Upload succeeded but no statement ID returned",
+            })
+          }
+          return
         }
 
-        if (data.uploaded && data.uploaded.length > 0) {
-          const statementId = data.uploaded[0].id
-          updateFile(uploadId, { status: "processing", progress: 100 })
-
-          // Start polling for completion
-          const startTime = Date.now()
-          const timer = setTimeout(
-            () => pollStatementStatus(statementId, uploadId, startTime),
-            POLL_INTERVAL_MS
-          )
-          pollTimersRef.current.set(uploadId, timer)
-        } else {
-          updateFile(uploadId, {
-            status: "error",
-            progress: 100,
-            error: "Upload succeeded but no statement ID returned",
-          })
+        // 429 — retry if attempts remain, respect Retry-After header
+        if (response.status === 429 && attempt < UPLOAD_MAX_RETRIES) {
+          const retryAfterHeader = response.headers.get("Retry-After")
+          if (retryAfterHeader) {
+            const retrySeconds = parseInt(retryAfterHeader, 10)
+            if (!isNaN(retrySeconds) && retrySeconds > 0) {
+              updateFile(uploadId, { status: "pending", progress: 0 })
+              console.warn(
+                `[UploadSection] 429 Retry-After ${retrySeconds}s for "${file.name}"`
+              )
+              await new Promise((r) => setTimeout(r, retrySeconds * 1000))
+            }
+          }
+          continue
         }
-      } catch (err) {
+
+        // Permanent error (non-429 or retries exhausted)
+        const errorData = await response.json().catch(() => null)
         const message =
-          err instanceof Error ? err.message : "Network error during upload"
+          errorData?.error ?? `Upload failed (${response.status})`
         updateFile(uploadId, {
           status: "error",
           progress: 100,
           error: message,
         })
+        return
       }
     },
     [filingYearId, updateFile, pollStatementStatus]

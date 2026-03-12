@@ -29,8 +29,8 @@ const RATE_LIMIT_TIERS: Record<string, RateLimitConfig> = {
     windowMs: 60 * 1000, // 1 minute
   },
   upload: {
-    maxRequests: 10 * RATE_LIMIT_MULTIPLIER,
-    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 30 * RATE_LIMIT_MULTIPLIER,
+    windowMs: 60 * 1000, // 1 minute — 30/min safe: auth-gated, Caddy still caps per-second abuse
   },
   general: {
     maxRequests: 60 * RATE_LIMIT_MULTIPLIER,
