@@ -330,14 +330,45 @@ export function consolidateAccounts(
       }
     }
 
-    // Aggregate warnings
+    // Aggregate warnings — collapse "no activity" variants into one summary
     const allWarnings: string[] = []
-    for (const account of allAccounts) {
-      for (const w of account.warnings) {
-        if (!allWarnings.includes(w)) {
+    const noActivityPeriods: string[] = []
+
+    for (const entry of entries) {
+      for (const w of entry.account.warnings) {
+        const lower = w.toLowerCase()
+        if (
+          lower.includes("no account activity") ||
+          lower.includes("no activity during") ||
+          lower.includes("no transaction activity") ||
+          (lower.includes("opening and closing balances") &&
+            lower.includes("identical"))
+        ) {
+          // Track the statement period instead of keeping each paraphrase
+          const start = entry.account.statement_period.start_date
+          if (start) {
+            const month = new Date(start + "T00:00:00").toLocaleDateString(
+              "en-US",
+              { month: "short", year: "numeric" }
+            )
+            if (!noActivityPeriods.includes(month)) {
+              noActivityPeriods.push(month)
+            }
+          }
+        } else if (!allWarnings.includes(w)) {
           allWarnings.push(w)
         }
       }
+    }
+
+    // Add a single collapsed "no activity" warning with month attribution
+    if (noActivityPeriods.length > 0) {
+      noActivityPeriods.sort(
+        (a, b) => new Date(a).getTime() - new Date(b).getTime()
+      )
+      allWarnings.push(
+        `No account activity in ${noActivityPeriods.length} statement period${noActivityPeriods.length !== 1 ? "s" : ""} — opening and closing balances are identical: ${noActivityPeriods.join(", ")}`
+      )
     }
 
     const categorizedWarnings = categorizeWarnings(allWarnings, bestSource.bank_name)
