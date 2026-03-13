@@ -30,23 +30,49 @@ The local Mac SSH key is authorized on the server. No password needed.
 
 ## Common Operations
 
-### Deploy a Code Change
+### Deploy D2C
+
+D2C is built locally on Hetzner via `scripts/deploy-d2c.sh`. No GHCR dependency.
 
 ```bash
-# 1. From local Mac — commit and push
+# 1. From local — commit and push
 git add <files> && git commit -m "message" && git push
 
-# 2. On server — pull and rebuild B2B
+# 2. On server — pull, build, and deploy D2C
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && ./scripts/deploy-d2c.sh"
+
+# With cache busted (after node_modules or Dockerfile changes):
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && ./scripts/deploy-d2c.sh --no-cache"
+```
+
+**What the script does:**
+1. Stops `d2c-app`, `d2c-cron`, `b2b-worker` to free ~750MB RAM
+2. Prunes dangling images
+3. Snapshots current `fbar-d2c:local` as `fbar-d2c:prev-<timestamp>` for rollback
+4. Builds `fbar-d2c:local` from `d2c/Dockerfile` (build args sourced from `.env` via compose)
+5. Restarts `b2b-worker`
+6. Runs `d2c-migrate` (Prisma migrations)
+7. Starts `d2c-app` and `d2c-cron`
+8. Health-checks for up to 120s; exits non-zero on failure
+
+**D2C is offline during build (~5-8 min).** B2B app stays up. Caddy returns 502 for D2C requests during this window.
+
+**Rollback D2C:**
+```bash
+ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && ./scripts/rollback-d2c.sh"
+```
+
+### Deploy B2B
+
+```bash
+# Pull and rebuild B2B app
 ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build b2b-app"
 
-# 2b. Or rebuild D2C
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build d2c-app"
-
-# 2c. Or rebuild B2B + worker (if worker code changed)
+# Rebuild B2B + worker (if worker code changed)
 ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && docker compose -f docker-compose.prod.yml up -d --build b2b-app b2b-worker"
 ```
 
-**WARNING**: Server has 1.9 GB RAM + 2 GB swap. Still build one image at a time to avoid excessive swapping. Use `--build <service>` to target specific services.
+**WARNING**: Server has 1.9 GB RAM + 2 GB swap. Never build B2B and D2C simultaneously. Use `--build <service>` to target specific services.
 
 ### Run Database Migrations
 
@@ -292,15 +318,19 @@ ssh root@178.156.250.116 "docker compose -f /opt/fbar/fbar-automator/docker-comp
 Common causes: missing env var, database migration needed, port conflict.
 
 ### OOM during Docker build
-Server has 1.9 GB RAM + 2 GB swap (`/swapfile`). **Still build ONE image at a time:**
-```bash
-# GOOD — build one service
-docker compose -f docker-compose.prod.yml build b2b-app
 
-# BAD — builds all at once, will thrash swap
-docker compose -f docker-compose.prod.yml up -d --build
-```
-If swap gets exhausted and OOM kills sshd, wait 15-30 seconds and reconnect. Run `docker system prune -f` to recover disk/memory. Verify swap is active: `swapon --show` (should show `/swapfile 2G`).
+**D2C builds:** Use `./scripts/deploy-d2c.sh` which automatically stops D2C + B2B worker (~750MB freed) before building. The Dockerfile has `--max-old-space-size=1024` hardcoded. **Do not increase this.**
+
+**B2B builds:** Never run alongside a D2C build. Use `--build b2b-app` to target one service.
+
+If OOM still occurs:
+1. Check memory: `free -h && docker stats --no-stream`
+2. If postgres is above 768M: `docker compose -f docker-compose.prod.yml restart postgres`
+3. Last resort: stop B2B app too before building, restart after
+4. Prune: `docker image prune -f` (safe) or `docker system prune -f` (removes stopped containers too)
+5. Verify swap: `swapon --show` (should show `/swapfile 2G`)
+
+If OOM kills sshd, wait 15-30 seconds and reconnect.
 
 ### TLS cert not provisioning
 ```bash

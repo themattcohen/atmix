@@ -188,18 +188,24 @@ services:
 
   # ---------------------------------------------------------------------------
   # D2C App — FBAR Direct Filing (Next.js on port 3001)
-  # Image built by GitHub Actions → ghcr.io/themattcohen/fbar-d2c
-  # Old build config (for reference):
-  #   build:
-  #     context: ./d2c
-  #     dockerfile: Dockerfile
-  #     target: runner
-  #     args:
-  #       - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
+  # Built locally on Hetzner via ./scripts/deploy-d2c.sh
   # ---------------------------------------------------------------------------
   d2c-app:
-    image: ghcr.io/themattcohen/fbar-d2c:${D2C_IMAGE_TAG:-latest}
-    command: ["node", "server.js"]
+    build:
+      context: ./d2c
+      dockerfile: Dockerfile
+      target: runner
+      args:
+        - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID}
+        - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+        - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+        - SENTRY_ORG=${SENTRY_ORG}
+        - SENTRY_PROJECT=${SENTRY_PROJECT}
+        - NEXT_PUBLIC_GADS_ID=${NEXT_PUBLIC_GADS_ID}
+        - NEXT_PUBLIC_GADS_PURCHASE_LABEL=${NEXT_PUBLIC_GADS_PURCHASE_LABEL}
+        - NEXT_PUBLIC_GADS_SIGNUP_LABEL=${NEXT_PUBLIC_GADS_SIGNUP_LABEL}
+        - NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+    image: fbar-d2c:local
     env_file:
       - .env
     environment:
@@ -276,7 +282,7 @@ services:
   # D2C Migrate — One-shot Prisma migration (D2C schema)
   # ---------------------------------------------------------------------------
   d2c-migrate:
-    image: ghcr.io/themattcohen/fbar-d2c:${D2C_IMAGE_TAG:-latest}
+    image: fbar-d2c:local
     command: ["npx", "prisma", "migrate", "deploy"]
     environment:
       - DATABASE_URL=${D2C_DATABASE_URL}
