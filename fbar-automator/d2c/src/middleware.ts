@@ -66,7 +66,7 @@ setInterval(() => {
 }, 60_000);
 
 // ---------------------------------------------------------------------------
-// Auth-sensitive routes that get strict rate limiting (5 req/min per IP)
+// Auth-sensitive routes that get strict rate limiting (15 req/min per IP per route)
 // ---------------------------------------------------------------------------
 const AUTH_RATE_LIMIT_PATHS = [
   "/api/auth/signup",
@@ -223,11 +223,11 @@ export default auth(async (req) => {
   // Fix 1: Rate limiting (before auth so rate-limited requests are rejected fast)
   // ------------------------------------------------------------------
 
-  // Strict rate limit on auth-sensitive routes: 5 req/min per IP (relaxed in dev for testing)
-  const authRateLimit = process.env.NODE_ENV === "production" ? 5 : 1000;
+  // Strict rate limit on auth-sensitive routes: 15 req/min per IP per route (relaxed in dev for testing)
+  const authRateLimit = process.env.NODE_ENV === "production" ? 15 : 1000;
   const isAuthRoute = AUTH_RATE_LIMIT_PATHS.some((p) => normalizedPath.startsWith(p));
   if (isAuthRoute) {
-    const authRouteKey = normalizedPath.split("/").slice(0, 4).join("/");
+    const authRouteKey = normalizedPath;
     if (!rateLimit(`auth:${ip}:${authRouteKey}`, authRateLimit, 60_000)) {
       log("warn", "rate_limit_hit", { method, path: normalizedPath, ip, requestId });
       return finalize(NextResponse.json({ error: "Too many requests" }, { status: 429 }));
