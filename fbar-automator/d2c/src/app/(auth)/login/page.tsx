@@ -17,7 +17,6 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
   const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
 
   useEffect(() => {
@@ -28,6 +27,7 @@ function LoginForm() {
     }
   }, []);
 
+  // Background redirect: if already authenticated, redirect without blocking the form render
   useEffect(() => {
     fetch("/api/auth/session")
       .then((res) => res.json())
@@ -37,32 +37,18 @@ function LoginForm() {
           try {
             const userRes = await fetch("/api/user");
             if (userRes.status === 404 || userRes.status === 401) {
-              // User was deleted — clear stale JWT cookie
               await signOut({ redirect: false });
-              setAuthChecked(true);
               return;
             }
-            if (!userRes.ok) {
-              // Transient error — don't destroy the session
-              setAuthChecked(true);
-              return;
-            }
+            if (!userRes.ok) return;
           } catch {
-            // Network error — don't destroy the session
-            setAuthChecked(true);
             return;
           }
           router.replace(callbackUrl);
-        } else {
-          setAuthChecked(true);
         }
       })
-      .catch(() => setAuthChecked(true));
+      .catch(() => {});
   }, [router, callbackUrl, showVerifiedBanner]);
-
-  if (!authChecked) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,6 +136,7 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               placeholder="you@example.com"
             />
@@ -165,6 +152,7 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
               maxLength={128}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
             />
@@ -197,7 +185,11 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+      </div>
+    }>
       <LoginForm />
     </Suspense>
   );

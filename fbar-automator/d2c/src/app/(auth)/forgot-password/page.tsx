@@ -23,6 +23,11 @@ export default function ForgotPasswordPage() {
 
       const data = await res.json();
 
+      if (res.status === 429) {
+        setError("Too many requests. Please wait a minute and try again.");
+        return;
+      }
+
       if (!res.ok) {
         setError(data.error || "An error occurred");
         return;
@@ -114,6 +119,7 @@ export default function ForgotPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               placeholder="you@example.com"
             />

@@ -9,7 +9,7 @@ function MfaVerifyForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawCallback = searchParams.get("callbackUrl") || "/threshold";
-  const callbackUrl = (rawCallback.startsWith("/") && !rawCallback.startsWith("//"))
+  const callbackUrl = (rawCallback.startsWith("/") && !rawCallback.startsWith("//") && !rawCallback.includes("\\"))
     ? rawCallback
     : "/threshold";
 
@@ -54,6 +54,9 @@ function MfaVerifyForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <Link href="/" className="flex justify-center mb-8">
+          <div className="text-2xl font-bold text-navy-900">FBAR Direct</div>
+        </Link>
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-navy-900">Two-Factor Authentication</h1>
           <p className="text-gray-600 mt-2">
@@ -147,7 +150,11 @@ function MfaVerifyForm() {
 
 export default function MfaVerifyPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+      </div>
+    }>
       <MfaVerifyForm />
     </Suspense>
   );

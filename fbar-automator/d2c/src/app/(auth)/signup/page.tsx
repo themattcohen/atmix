@@ -32,24 +32,16 @@ function SignupForm() {
   const [generalError, setGeneralError] = useState("");
   const [loading, setLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
+  const [existingSession, setExistingSession] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/session")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.user) {
-          router.replace("/threshold");
-        } else {
-          setAuthChecked(true);
-        }
+        if (data?.user) setExistingSession(true);
       })
-      .catch(() => setAuthChecked(true));
-  }, [router]);
-
-  if (!authChecked) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+      .catch(() => {});
+  }, []);
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -108,6 +100,8 @@ function SignupForm() {
       signupSucceeded = true;
       setSignupSuccess(true);
 
+      const verifyUrl = `/verify-email?email=${encodeURIComponent(form.email)}`;
+
       try {
         const result = await signIn("credentials", {
           email: form.email,
@@ -116,13 +110,13 @@ function SignupForm() {
         });
 
         if (result?.error) {
-          router.push("/verify-email");
+          router.push(verifyUrl);
           return;
         }
       } catch (signInErr) {
         Sentry.captureException(signInErr, { extra: { context: "post_signup_auto_login" } });
         console.error("Signup: auto-login threw, redirecting to verify-email:", signInErr);
-        router.push("/verify-email");
+        router.push(verifyUrl);
         return;
       }
 
@@ -133,12 +127,12 @@ function SignupForm() {
       } catch (gtmErr) {
         console.error("GTM tracking error (non-blocking):", gtmErr);
       }
-      router.push("/verify-email");
+      router.push(verifyUrl);
     } catch (err) {
       console.error("Signup flow error:", err);
       Sentry.captureException(err);
       if (signupSucceeded) {
-        router.push("/verify-email");
+        router.push(`/verify-email?email=${encodeURIComponent(form.email)}`);
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
@@ -158,11 +152,22 @@ function SignupForm() {
           <p className="text-gray-600 mt-2">Start filing your FBAR today</p>
         </div>
 
-        {signupSuccess && (
-          <div role="status" aria-live="polite" className="bg-green-50 text-green-700 p-3 rounded-md mb-4 text-sm">
-            Account created! Redirecting...
+        {existingSession && !signupSuccess && (
+          <div role="status" aria-live="polite" className="bg-blue-50 text-blue-700 p-3 rounded-md mb-4 text-sm">
+            You&apos;re already signed in.{" "}
+            <Link href="/threshold" className="font-medium underline">Go to Dashboard</Link>
+            {" "}or{" "}
+            <Link href="/api/auth/signout" className="font-medium underline">sign out</Link>
+            {" "}to create a new account.
           </div>
         )}
+
+        {signupSuccess ? (
+          <div role="status" aria-live="polite" className="bg-green-50 text-green-700 p-3 rounded-md mb-4 text-sm">
+            Account created! Redirecting to email verification...
+          </div>
+        ) : (
+        <>
 
         {generalError && (
           <div role="alert" aria-live="polite" className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
@@ -182,6 +187,7 @@ function SignupForm() {
                 value={form.firstName}
                 onChange={(e) => updateField("firstName", e.target.value)}
                 required
+                autoComplete="given-name"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               />
               {errors.firstName?.map((e, i) => (
@@ -198,6 +204,7 @@ function SignupForm() {
                 value={form.lastName}
                 onChange={(e) => updateField("lastName", e.target.value)}
                 required
+                autoComplete="family-name"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               />
               {errors.lastName?.map((e, i) => (
@@ -216,6 +223,7 @@ function SignupForm() {
               value={form.email}
               onChange={(e) => updateField("email", e.target.value)}
               required
+              autoComplete="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               placeholder="you@example.com"
             />
@@ -234,6 +242,7 @@ function SignupForm() {
               value={form.password}
               onChange={(e) => updateField("password", e.target.value)}
               required
+              autoComplete="new-password"
               maxLength={128}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
             />
@@ -255,6 +264,7 @@ function SignupForm() {
               value={form.confirmPassword}
               onChange={(e) => updateField("confirmPassword", e.target.value)}
               required
+              autoComplete="new-password"
               maxLength={128}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
             />
@@ -278,6 +288,8 @@ function SignupForm() {
             Sign in
           </Link>
         </p>
+        </>
+        )}
       </div>
     </div>
   );

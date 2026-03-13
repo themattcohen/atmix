@@ -153,7 +153,7 @@ function ResetPasswordForm() {
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
+          <div role="alert" aria-live="polite" className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm">
             {error}
           </div>
         )}
@@ -172,6 +172,7 @@ function ResetPasswordForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="new-password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               minLength={8}
               maxLength={128}
@@ -194,6 +195,7 @@ function ResetPasswordForm() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              autoComplete="new-password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
               minLength={8}
               maxLength={128}
