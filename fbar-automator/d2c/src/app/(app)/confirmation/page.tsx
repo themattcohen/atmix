@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { pushDataLayer, trackGadsConversion, setGtagUserData } from "@/lib/gtm";
 import { Suspense } from "react";
@@ -218,12 +219,14 @@ function ConfirmationContent() {
             if (filingStatus === "SUBMITTED" || filingStatus === "ACCEPTED") {
               updateStatusFromFiling(filingStatus);
             } else {
+              Sentry.captureException(new Error("Auto-submit failed"), { extra: { status: res.status, context: "auto_submit_status" } });
               console.error("Auto-submit failed, status:", res.status);
               setStatus("paid");
               hasSubmitted.current = false;
             }
           }
-        } catch {
+        } catch (err) {
+          Sentry.captureException(err, { extra: { context: "auto_submit" } });
           console.error("Auto-submit failed");
           setStatus("paid");
           hasSubmitted.current = false;
@@ -250,7 +253,8 @@ function ConfirmationContent() {
           await loadFiling();
           clearInterval(interval);
         }
-      } catch {
+      } catch (err) {
+        Sentry.captureException(err, { extra: { context: "ack_poll" } });
         console.error("Status poll failed");
       }
     }, 30000);

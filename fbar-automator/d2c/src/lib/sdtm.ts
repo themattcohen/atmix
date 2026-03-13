@@ -1,6 +1,8 @@
 import { Client as SFTPClient } from "ssh2";
 import fs from "fs";
 import { XMLParser } from "fast-xml-parser";
+import * as Sentry from "@sentry/nextjs";
+import { log } from "@/lib/logger";
 
 export interface SubmissionResult {
   success: boolean;
@@ -58,7 +60,7 @@ function getSFTPConnectConfig(): Record<string, unknown> {
     config.hostVerifier = (key: Buffer) => {
       const matches = key.toString("base64") === hostKey;
       if (!matches) {
-        console.error("[SDTM] SFTP host key mismatch — possible MITM attack");
+        Sentry.captureException(new Error("SDTM SFTP host key mismatch — possible MITM attack"), { level: "fatal" });
       }
       return matches;
     };
@@ -101,7 +103,8 @@ export async function submitBatch(
       console.log(`[SDTM] Connected. Uploading ${remoteFilePath} (${xmlContent.length} bytes)...`);
       conn.sftp((err, sftp) => {
         if (err) {
-          console.error(`[SDTM] SFTP session error: ${err.message}`);
+          Sentry.captureException(err);
+          log("error", "sdtm_sftp_session_error", { error: err instanceof Error ? err.message : String(err) });
           conn.end();
           resolve({ success: false, batchId, remoteFilePath, error: err.message });
           return;
@@ -125,7 +128,8 @@ export async function submitBatch(
     });
 
     conn.on("error", (connErr) => {
-      console.error(`[SDTM] Connection error: ${connErr.message}`);
+      Sentry.captureException(connErr);
+      log("error", "sdtm_connection_error", { error: connErr instanceof Error ? connErr.message : String(connErr) });
       resolve({ success: false, batchId, remoteFilePath, error: connErr.message });
     });
 

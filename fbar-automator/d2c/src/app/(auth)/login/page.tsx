@@ -4,12 +4,13 @@ import { useState, useEffect, Suspense } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawCallback = searchParams.get("callbackUrl") || "/threshold";
-  const callbackUrl = (rawCallback.startsWith("/") && !rawCallback.startsWith("//"))
+  const callbackUrl = (rawCallback.startsWith("/") && !rawCallback.startsWith("//") && !rawCallback.includes("\\"))
     ? rawCallback
     : "/threshold";
   const [email, setEmail] = useState("");
@@ -17,25 +18,37 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
-  const verified = searchParams.get("verified") === "true";
+  const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
+
+  useEffect(() => {
+    // Show verified banner only if set by the verify-email flow (sessionStorage), not from URL alone
+    if (sessionStorage.getItem("emailVerified") === "true") {
+      setShowVerifiedBanner(true);
+      sessionStorage.removeItem("emailVerified");
+    }
+  }, []);
 
   useEffect(() => {
     fetch("/api/auth/session")
       .then((res) => res.json())
       .then(async (data) => {
-        if (data?.user && !verified) {
+        if (data?.user && !showVerifiedBanner) {
           // Validate user still exists in DB (ghost session detection)
           try {
             const userRes = await fetch("/api/user");
-            if (!userRes.ok) {
+            if (userRes.status === 404 || userRes.status === 401) {
               // User was deleted — clear stale JWT cookie
               await signOut({ redirect: false });
               setAuthChecked(true);
               return;
             }
+            if (!userRes.ok) {
+              // Transient error — don't destroy the session
+              setAuthChecked(true);
+              return;
+            }
           } catch {
-            // If /api/user fails, clear session to be safe
-            await signOut({ redirect: false });
+            // Network error — don't destroy the session
             setAuthChecked(true);
             return;
           }
@@ -45,7 +58,7 @@ function LoginForm() {
         }
       })
       .catch(() => setAuthChecked(true));
-  }, [router, callbackUrl, verified]);
+  }, [router, callbackUrl, showVerifiedBanner]);
 
   if (!authChecked) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -84,12 +97,14 @@ function LoginForm() {
             router.push(callbackUrl);
           }
         } catch (sessionErr) {
+          Sentry.captureException(sessionErr, { extra: { context: "post_login_session_check" } });
           console.error("Session check after login failed:", sessionErr);
           // If session check fails, proceed to callbackUrl (middleware will catch MFA)
           router.push(callbackUrl);
         }
       }
     } catch (err) {
+      Sentry.captureException(err, { extra: { context: "login_flow" } });
       console.error("Login flow error:", err);
       if (err instanceof Error && err.message.includes("fetch")) {
         setError("Too many login attempts. Please wait a minute and try again.");
@@ -112,7 +127,7 @@ function LoginForm() {
           <p className="text-gray-600 mt-2">File your FBAR in 10 minutes</p>
         </div>
 
-        {verified && (
+        {showVerifiedBanner && (
           <div role="status" aria-live="polite" className="bg-green-50 text-green-700 p-3 rounded-md mb-4 text-sm">
             Email verified! Please sign in to continue.
           </div>

@@ -51,5 +51,6 @@ module.exports = withSentryConfig(withMDX(nextConfig), {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   silent: true,
-  disableSourceMapUpload: true,
+  hideSourceMaps: true,
+  widenClientFileUpload: true,
 });

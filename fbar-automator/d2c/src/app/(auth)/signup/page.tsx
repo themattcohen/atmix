@@ -120,6 +120,7 @@ function SignupForm() {
           return;
         }
       } catch (signInErr) {
+        Sentry.captureException(signInErr, { extra: { context: "post_signup_auto_login" } });
         console.error("Signup: auto-login threw, redirecting to verify-email:", signInErr);
         router.push("/verify-email");
         return;

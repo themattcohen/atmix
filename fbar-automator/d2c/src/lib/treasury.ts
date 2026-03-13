@@ -14,6 +14,8 @@
 
 import { prisma } from "@/lib/db"
 import { ExchangeRateSource } from "@prisma/client"
+import * as Sentry from "@sentry/nextjs"
+import { log } from "@/lib/logger"
 
 // ---------------------------------------------------------------------------
 // In-Memory Cache (OPT-5)
@@ -307,17 +309,13 @@ function resolveISOCode(desc: string): string | null {
 function parseRecord(record: TreasuryApiRecord): TreasuryRate | null {
   const currencyCode = resolveISOCode(record.country_currency_desc)
   if (!currencyCode) {
-    console.error(
-      `[treasury] Unknown currency description: "${record.country_currency_desc}"`
-    )
+    log("warn", "treasury_unknown_currency", { desc: record.country_currency_desc })
     return null
   }
 
   const rate = parseFloat(record.exchange_rate)
   if (isNaN(rate) || rate <= 0) {
-    console.error(
-      `[treasury] Invalid rate "${record.exchange_rate}" for ${record.country_currency_desc}`
-    )
+    log("warn", "treasury_unknown_currency", { desc: record.country_currency_desc })
     return null
   }
 
@@ -360,15 +358,15 @@ async function fetchPage(url: string): Promise<TreasuryApiResponse | null> {
     })
 
     if (!response.ok) {
-      console.error(
-        `[treasury] API returned ${response.status}: ${response.statusText} for ${url}`
-      )
+      Sentry.captureException(new Error("Treasury API HTTP error"), { extra: { status: response.status } })
+      log("error", "treasury_api_http_error", { status: response.status })
       return null
     }
 
     return (await response.json()) as TreasuryApiResponse
   } catch (error) {
-    console.error(`[treasury] Fetch failed for ${url}:`, error)
+    Sentry.captureException(error)
+    log("error", "treasury_api_fetch_error", { error: error instanceof Error ? error.message : String(error) })
     return null
   }
 }
@@ -414,9 +412,7 @@ export async function fetchTreasuryRates(
     await sleep(REQUEST_DELAY_MS)
   }
 
-  console.error(
-    `[treasury] No rates found for any quarter in year ${year}`
-  )
+  log("warn", "treasury_no_results", {})
   return []
 }
 
@@ -461,7 +457,8 @@ export async function syncTreasuryRates(year: number): Promise<number> {
   const rates = await fetchTreasuryRates(year)
 
   if (rates.length === 0) {
-    console.error(`[treasury] No rates to sync for year ${year}`)
+    Sentry.captureException(new Error("Treasury sync returned 0 rates"))
+    log("error", "treasury_sync_zero_rates", {})
     return 0
   }
 

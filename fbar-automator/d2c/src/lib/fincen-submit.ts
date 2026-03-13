@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { generateFincenXml } from "@/lib/fincen-xml";
 import { submitBatch } from "@/lib/sdtm";
 import { sendSubmissionEmail } from "@/lib/email";
+import { log } from "@/lib/logger";
 import crypto from "crypto";
 
 export type SubmitFilingResult =
@@ -91,7 +92,7 @@ export async function submitFiling(
         firstName: user.firstName ?? "",
         calendarYear: filingYear.calendarYear,
       }).catch((err) =>
-        console.error("Submission email failed:", err instanceof Error ? err.message : err)
+        log("warn", "fincen_email_send_failed", { error: err instanceof Error ? err.message : String(err) })
       );
     }
 

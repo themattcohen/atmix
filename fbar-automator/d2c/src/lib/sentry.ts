@@ -105,5 +105,20 @@ export function scrubPii(event: SentryEvent): SentryEvent {
     });
   }
 
+  // Scrub extra fields (defensive — prevent PII leaking via captureException extras)
+  if (result.extra) {
+    const scrubExtra = (obj: Record<string, unknown>): Record<string, unknown> => {
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(obj)) {
+        if (typeof v === "string") out[k] = scrubString(v);
+        else if (v !== null && typeof v === "object" && !Array.isArray(v))
+          out[k] = scrubExtra(v as Record<string, unknown>);
+        else out[k] = v;
+      }
+      return out;
+    };
+    result.extra = scrubExtra(result.extra);
+  }
+
   return result;
 }

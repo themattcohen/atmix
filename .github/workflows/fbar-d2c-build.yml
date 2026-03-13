@@ -48,6 +48,9 @@ jobs:
           build-args: |
             NEXT_PUBLIC_GTM_ID=${{ secrets.NEXT_PUBLIC_GTM_ID }}
             NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_ORG=${{ secrets.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
             NEXT_PUBLIC_GADS_ID=${{ secrets.NEXT_PUBLIC_GADS_ID }}
             NEXT_PUBLIC_GADS_PURCHASE_LABEL=${{ secrets.NEXT_PUBLIC_GADS_PURCHASE_LABEL }}
             NEXT_PUBLIC_GADS_SIGNUP_LABEL=${{ secrets.NEXT_PUBLIC_GADS_SIGNUP_LABEL }}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { log } from "./logger";
+import { recordRequest } from "./metrics";
 
 type RouteHandler = (req: NextRequest) => Promise<NextResponse> | NextResponse;
 
@@ -17,6 +18,7 @@ export function apiHandler(handler: RouteHandler): RouteHandler {
         duration: Date.now() - start,
         requestId,
       });
+      recordRequest(Date.now() - start, false);
       return response;
     } catch (error) {
       const duration = Date.now() - start;
@@ -28,6 +30,7 @@ export function apiHandler(handler: RouteHandler): RouteHandler {
         duration,
         requestId,
       });
+      recordRequest(duration, true);
       return NextResponse.json(
         { error: "Internal server error" },
         { status: 500 }

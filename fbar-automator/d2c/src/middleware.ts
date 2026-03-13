@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+import * as Sentry from "@sentry/nextjs";
 import { validateMfaCookie } from "@/lib/mfa-cookie";
 import { validateEmailVerificationCookie } from "@/lib/email-verification-cookie";
 import { log } from "@/lib/logger";
@@ -99,8 +100,9 @@ const authRequiredPrefixes = [
 function getClientIp(request: NextRequest): string {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
-    // x-forwarded-for can be a comma-separated list; first entry is the client
-    return forwarded.split(",")[0].trim();
+    // Use rightmost entry — set by our reverse proxy (Caddy), not the client
+    const parts = forwarded.split(",").map((s) => s.trim()).filter(Boolean);
+    return parts[parts.length - 1] || request.ip || "unknown";
   }
   return request.ip ?? "unknown";
 }
@@ -112,6 +114,9 @@ async function checkEmailVerificationGate(
   req: { auth: any; url: string },
   normalizedPath: string
 ): Promise<NextResponse | null> {
+  // Guard: if session is empty or user missing, skip gate
+  if (!req.auth?.user?.id) return null;
+
   // Skip if email already verified in session
   if ((req.auth?.user as any)?.emailVerified) return null;
 
@@ -142,6 +147,8 @@ async function checkMfaGate(
   req: { auth: any; url: string },
   normalizedPath: string
 ): Promise<NextResponse | null> {
+  // Guard: if session is empty or user missing, skip gate (symmetric with email gate)
+  if (!req.auth?.user?.id) return null;
   if (!req.auth?.user?.mfaEnabled) return null; // No MFA required
   if (normalizedPath === "/mfa-verify" || normalizedPath.startsWith("/mfa-verify/")) return null; // Exempt
   if (normalizedPath.startsWith("/api/auth/")) return null; // Auth routes must be accessible
@@ -177,10 +184,13 @@ export default auth(async (req) => {
   const nonce = btoa(crypto.randomUUID());
 
   // Allow static files and Next.js internals (check early to skip security overhead)
+  // Use file-extension check instead of broad .includes(".") to prevent middleware bypass
+  const STATIC_EXTENSIONS = /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|xml|txt|webp|map|avif|webmanifest)$/i;
+  const hasFileExtension = STATIC_EXTENSIONS.test(normalizedPath);
   if (
     normalizedPath.startsWith("/_next/") ||
     normalizedPath.startsWith("/favicon") ||
-    normalizedPath.includes(".")
+    hasFileExtension
   ) {
     return NextResponse.next();
   }
@@ -294,10 +304,25 @@ export default auth(async (req) => {
     if (!req.auth) {
       return finalize(NextResponse.json({ error: "Unauthorized" }, { status: 401 }));
     }
-    const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
-    if (emailBlock) return finalize(emailBlock);
-    const mfaBlock = await checkMfaGate(req, normalizedPath);
-    if (mfaBlock) return finalize(mfaBlock);
+    if (!req.auth?.user?.id) {
+      return finalize(NextResponse.json({ error: "Unauthorized" }, { status: 401 }));
+    }
+    try {
+      const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
+      if (emailBlock) return finalize(emailBlock);
+    } catch (err) {
+      Sentry.captureException(err, { extra: { path: normalizedPath, requestId, context: "api_email_gate" } });
+      log("error", "email_gate_error", { path: normalizedPath, requestId, err });
+      return finalize(NextResponse.json({ error: "Internal error" }, { status: 500 }));
+    }
+    try {
+      const mfaBlock = await checkMfaGate(req, normalizedPath);
+      if (mfaBlock) return finalize(mfaBlock);
+    } catch (err) {
+      Sentry.captureException(err, { extra: { path: normalizedPath, requestId, context: "api_mfa_gate" } });
+      log("error", "mfa_gate_error", { path: normalizedPath, requestId, err });
+      return finalize(NextResponse.json({ error: "Internal error" }, { status: 500 }));
+    }
     return finalize(NextResponse.next());
   }
 
@@ -314,12 +339,29 @@ export default auth(async (req) => {
     loginUrl.searchParams.set("callbackUrl", normalizedPath);
     return finalize(withCspHeaders(NextResponse.redirect(loginUrl), nonce));
   }
+  if (!req.auth?.user?.id) {
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", normalizedPath);
+    return finalize(withCspHeaders(NextResponse.redirect(loginUrl), nonce));
+  }
 
-  const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
-  if (emailBlock) return finalize(withCspHeaders(emailBlock, nonce));
+  try {
+    const emailBlock = await checkEmailVerificationGate(req, normalizedPath);
+    if (emailBlock) return finalize(withCspHeaders(emailBlock, nonce));
+  } catch (err) {
+    Sentry.captureException(err, { extra: { path: normalizedPath, requestId, context: "page_email_gate" } });
+    log("error", "email_gate_error", { path: normalizedPath, requestId, err });
+    return finalize(withCspHeaders(NextResponse.json({ error: "Internal error" }, { status: 500 }), nonce));
+  }
 
-  const mfaBlock = await checkMfaGate(req, normalizedPath);
-  if (mfaBlock) return finalize(withCspHeaders(mfaBlock, nonce));
+  try {
+    const mfaBlock = await checkMfaGate(req, normalizedPath);
+    if (mfaBlock) return finalize(withCspHeaders(mfaBlock, nonce));
+  } catch (err) {
+    Sentry.captureException(err, { extra: { path: normalizedPath, requestId, context: "page_mfa_gate" } });
+    log("error", "mfa_gate_error", { path: normalizedPath, requestId, err });
+    return finalize(withCspHeaders(NextResponse.json({ error: "Internal error" }, { status: 500 }), nonce));
+  }
 
   // Guard: non-MFA users should not access /mfa-verify
   if (normalizedPath === "/mfa-verify" && !req.auth?.user?.mfaEnabled) {
