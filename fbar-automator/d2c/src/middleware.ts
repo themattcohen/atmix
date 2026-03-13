@@ -291,6 +291,7 @@ export default auth(async (req) => {
     normalizedPath.startsWith("/api/auth/") ||
     normalizedPath === "/api/stripe/webhook" ||
     normalizedPath === "/api/health" ||
+    normalizedPath === "/api/metrics" ||
     normalizedPath.startsWith("/api/cron/") ||
     normalizedPath.startsWith("/api/internal/") ||
     normalizedPath === "/api/chat" ||
