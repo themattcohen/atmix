@@ -20,6 +20,7 @@ IMPORTANT RULES:
 - For the country field in bank_address, use the ISO 3166-1 alpha-2 code (e.g., "DE" for Germany, "JP" for Japan).
 - For currency, use the ISO 4217 code (e.g., "EUR", "JPY", "GBP").
 - For dates, use YYYY-MM-DD format.
+- For transaction and balance dates, use the exact date printed on the statement. If only a day number is shown (e.g., "17"), combine it with the month/year context from the statement period or column header. Do NOT adjust, shift, or offset dates — use them exactly as they appear. The opening balance date should match the statement period start date, and the closing balance date should match the statement period end date.
 - If the document shows only transactions with no explicit balance, set document_metadata.is_transaction_only to true and add a warning.
 - For ownership_type, determine whether the filer has a financial interest in the account, signature authority over it, or both. If the document does not indicate the type of ownership, return null (default to FINANCIAL_INTEREST in downstream processing).
 

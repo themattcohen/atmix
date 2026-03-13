@@ -8,34 +8,11 @@ import { AccountEditForm } from "@/components/forms/AccountEditForm";
 import { StatementUpload } from "@/components/forms/StatementUpload";
 import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountReview";
 import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
+import type { MappedAccount } from "@/lib/extraction-mapper";
 import { ImportBanner } from "@/components/ImportBanner";
 import { PRICING } from "@/lib/pricing";
 import { pushDataLayer } from "@/lib/gtm";
 import type { AccountDisplay, PriorYearInfo } from "@/types";
-
-interface MappedAccount {
-  account: {
-    institutionName: string;
-    accountNumber: string;
-    accountType: "BANK" | "SECURITIES" | "OTHER";
-    ownershipType: "FINANCIAL_INTEREST" | "SIGNATURE_AUTHORITY" | "BOTH";
-    countryCode: string;
-    currencyCode: string;
-    maxValueLocal: number;
-    isJointAccount: boolean;
-    calendarYear: number;
-    institutionAddress?: { street?: string; city?: string; country?: string };
-  };
-  confidence: {
-    bank_name: "high" | "medium" | "low";
-    account_number: "high" | "medium" | "low";
-    currency: "high" | "medium" | "low";
-    max_balance: "high" | "medium" | "low";
-    overall: "high" | "medium" | "low";
-  };
-  warnings: string[];
-  sourceIndex: number;
-}
 
 function AccountSkeleton() {
   return (
@@ -67,6 +44,7 @@ export default function AccountsPage() {
   const [tierSelected, setTierSelected] = useState(false);
   const [extractedAccounts, setExtractedAccounts] = useState<MappedAccount[] | null>(null);
   const [savingExtracted, setSavingExtracted] = useState(false);
+  const [uploadWarnings, setUploadWarnings] = useState<string[]>([]);
 
   const loadData = useCallback(async () => {
     try {
@@ -194,8 +172,9 @@ export default function AccountsPage() {
     }
   };
 
-  const handleExtracted = (mapped: MappedAccount[]) => {
+  const handleExtracted = (mapped: MappedAccount[], warnings: string[]) => {
     setExtractedAccounts(mapped);
+    setUploadWarnings(warnings);
   };
 
   const handleSaveExtracted = async (accountsToSave: AccountToSave[]) => {
@@ -382,6 +361,16 @@ export default function AccountsPage() {
                   onExtracted={handleExtracted}
                   onError={(err) => setError(err)}
                 />
+              </div>
+            )}
+
+            {/* Upload warnings */}
+            {uploadWarnings.length > 0 && extractedAccounts && (
+              <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-6" role="alert">
+                <p className="font-medium text-amber-800 mb-1">Extraction Warnings</p>
+                <ul className="list-disc list-inside text-sm text-amber-700 space-y-1">
+                  {uploadWarnings.map((w, i) => <li key={i}>{w}</li>)}
+                </ul>
               </div>
             )}
 

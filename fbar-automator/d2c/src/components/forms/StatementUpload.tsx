@@ -1,49 +1,24 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import type { MappedAccount } from "@/lib/extraction-mapper";
 
 interface StatementUploadProps {
   filingYearId: string;
-  onExtracted: (accounts: MappedAccount[]) => void;
+  onExtracted: (accounts: MappedAccount[], warnings: string[]) => void;
   onError: (error: string) => void;
-}
-
-interface MappedAccount {
-  account: {
-    institutionName: string;
-    accountNumber: string;
-    accountType: "BANK" | "SECURITIES" | "OTHER";
-    ownershipType: "FINANCIAL_INTEREST" | "SIGNATURE_AUTHORITY" | "BOTH";
-    countryCode: string;
-    currencyCode: string;
-    maxValueLocal: number;
-    isJointAccount: boolean;
-    calendarYear: number;
-    institutionAddress?: { street?: string; city?: string; country?: string };
-  };
-  confidence: {
-    bank_name: "high" | "medium" | "low";
-    account_number: "high" | "medium" | "low";
-    currency: "high" | "medium" | "low";
-    max_balance: "high" | "medium" | "low";
-    overall: "high" | "medium" | "low";
-  };
-  warnings: string[];
-  sourceIndex: number;
 }
 
 const ACCEPTED_TYPES = [
   "application/pdf",
   "image/jpeg",
   "image/png",
-  "image/heic",
-  "image/tiff",
   "text/csv",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ];
 
-const ACCEPTED_EXTENSIONS = ".pdf,.jpg,.jpeg,.png,.heic,.tiff,.tif,.csv,.xlsx";
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const ACCEPTED_EXTENSIONS = ".pdf,.jpg,.jpeg,.png,.csv,.xlsx";
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export function StatementUpload({ filingYearId, onExtracted, onError }: StatementUploadProps) {
   const [uploading, setUploading] = useState(false);
@@ -53,12 +28,12 @@ export function StatementUpload({ filingYearId, onExtracted, onError }: Statemen
 
   const handleFile = useCallback(async (file: File) => {
     // Client-side validation
-    if (!ACCEPTED_TYPES.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png|heic|tiff?|csv|xlsx)$/i)) {
-      onError("Unsupported file type. Accepted: PDF, JPEG, PNG, HEIC, TIFF, CSV, Excel.");
+    if (!ACCEPTED_TYPES.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png|csv|xlsx)$/i)) {
+      onError("Unsupported file type. Accepted: PDF, JPEG, PNG, CSV, Excel.");
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      onError(`File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds the 50MB limit.`);
+      onError(`File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds the 10MB limit.`);
       return;
     }
     if (file.size === 0) {
@@ -88,13 +63,9 @@ export function StatementUpload({ filingYearId, onExtracted, onError }: Statemen
       }
 
       if (data.extractedAccounts && data.extractedAccounts.length > 0) {
-        onExtracted(data.extractedAccounts);
+        onExtracted(data.extractedAccounts, data.warnings || []);
       } else {
         onError("No accounts could be extracted from this document. You can add accounts manually.");
-      }
-
-      if (data.warnings && data.warnings.length > 0) {
-        console.warn("Extraction warnings:", data.warnings);
       }
     } catch {
       onError("Upload failed. Please try again.");
@@ -172,7 +143,7 @@ export function StatementUpload({ filingYearId, onExtracted, onError }: Statemen
         Drag and drop or click to browse
       </p>
       <p className="text-xs text-gray-400">
-        PDF, JPEG, PNG, HEIC, TIFF, CSV, Excel &middot; Max 50MB
+        PDF, JPEG, PNG, CSV, Excel &middot; Max 10MB
       </p>
     </div>
   );

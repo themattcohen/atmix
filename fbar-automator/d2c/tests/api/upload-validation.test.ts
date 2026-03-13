@@ -8,7 +8,7 @@ import {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 function makeFile(
   name: string,
@@ -105,16 +105,16 @@ describe("validateFile — accepted types", () => {
 // ─── validateFile — Size limits ───────────────────────────────────────────────
 
 describe("validateFile — size limits", () => {
-  it("13. file exactly at 50 MB → returns null", () => {
+  it("13. file exactly at 10 MB → returns null", () => {
     const result = validateFile(makeFile("exact.pdf", "application/pdf", MAX_FILE_SIZE));
     expect(result).toBeNull();
   });
 
-  it("14. file over 50 MB → returns error with size in message", () => {
+  it("14. file over 10 MB → returns error with size in message", () => {
     const overLimit = MAX_FILE_SIZE + 1;
     const result = validateFile(makeFile("huge.pdf", "application/pdf", overLimit));
     expect(result).not.toBeNull();
-    expect(result).toContain("exceeds the 50MB limit");
+    expect(result).toContain("exceeds the 10MB limit");
   });
 
   it("15. empty file (size 0) → returns error 'File is empty.'", () => {

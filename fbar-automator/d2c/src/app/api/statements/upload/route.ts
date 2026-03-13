@@ -7,6 +7,7 @@ import { uploadFile } from "@/lib/s3";
 import { validateFile, validateMagicBytes, normalizeMimeType, getFileExtension } from "@/lib/upload-validation";
 import { extractFromStatement } from "@/lib/extraction";
 import { mapExtractedAccounts } from "@/lib/extraction-mapper";
+import type { MappedAccount } from "@/lib/extraction-mapper";
 import { sanitizeFileName } from "@/lib/sanitize";
 import { apiHandler } from "@/lib/api-handler";
 
@@ -60,6 +61,21 @@ export const POST = apiHandler(async (req: NextRequest) => {
       );
     }
 
+    // Check for duplicate filename
+    const existingStatement = await prisma.statement.findFirst({
+      where: {
+        filingYearId,
+        fileName: { equals: sanitizeFileName(file.name), mode: "insensitive" },
+      },
+      select: { id: true },
+    })
+    if (existingStatement) {
+      return NextResponse.json(
+        { error: `A file named "${file.name}" has already been uploaded for this filing year.` },
+        { status: 409 }
+      )
+    }
+
     // Read file buffer and validate magic bytes
     const buffer = Buffer.from(await file.arrayBuffer());
     if (!validateMagicBytes(buffer, normalizedType)) {
@@ -91,6 +107,10 @@ export const POST = apiHandler(async (req: NextRequest) => {
     const extractionResult = await extractFromStatement(s3Key, ext || normalizedType);
 
     if (!extractionResult.success || !extractionResult.result) {
+      Sentry.captureException(new Error(extractionResult.error || "Extraction failed"), {
+        extra: { statementId: statement.id, model: extractionResult.model },
+      })
+
       // Update statement as failed
       await prisma.statement.update({
         where: { id: statement.id },
@@ -114,6 +134,41 @@ export const POST = apiHandler(async (req: NextRequest) => {
       extractionResult.result.accounts,
       filingYear.calendarYear
     );
+
+    // Reconcile max values across prior uploads
+    const priorStatements = await prisma.statement.findMany({
+      where: {
+        filingYearId,
+        userId: session.user.id, // defense-in-depth
+        extractionStatus: "COMPLETED",
+      },
+      select: { extractedAccounts: true },
+    })
+
+    const normalize = (s: string) => (s || "").replace(/[\s\-\.\/]/g, "").toUpperCase()
+    const maxValueMap = new Map<string, number>()
+
+    for (const stmt of priorStatements) {
+      if (!Array.isArray(stmt.extractedAccounts)) continue
+      const accounts = stmt.extractedAccounts as unknown as MappedAccount[]
+      for (const a of accounts) {
+        if (!a?.account?.accountNumber) continue
+        const key = `${normalize(a.account.accountNumber)}::${normalize(a.account.institutionName || "")}`
+        const current = maxValueMap.get(key) ?? 0
+        if (a.account.maxValueLocal > current) maxValueMap.set(key, a.account.maxValueLocal)
+      }
+    }
+
+    for (const mapped of mappedAccounts) {
+      const key = `${normalize(mapped.account.accountNumber)}::${normalize(mapped.account.institutionName || "")}`
+      const priorMax = maxValueMap.get(key)
+      if (priorMax !== undefined && priorMax > mapped.account.maxValueLocal) {
+        mapped.warnings.push(
+          `Max value updated from ${mapped.account.maxValueLocal.toLocaleString()} to ${priorMax.toLocaleString()} based on a previously uploaded statement.`
+        )
+        mapped.account.maxValueLocal = priorMax
+      }
+    }
 
     // Update statement with results
     await prisma.statement.update({

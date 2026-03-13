@@ -9,6 +9,9 @@ const MODEL = "claude-sonnet-4-5-20250929"
 const MAX_TOKENS = 16384
 const MAX_EXCEL_ROWS = 5000
 
+const MAX_API_RETRIES = 1
+const API_RETRY_DELAYS = [5_000]
+
 const MEDIA_TYPE_MAP: Record<string, string> = {
   pdf: "application/pdf",
   jpeg: "image/jpeg",
@@ -31,7 +34,7 @@ function getAnthropicClient(): Anthropic {
         "Add it to your .env file to enable document extraction."
     )
   }
-  client = new Anthropic({ apiKey })
+  client = new Anthropic({ apiKey, timeout: 45_000 })
   return client
 }
 
@@ -149,20 +152,37 @@ export async function extractFromStatement(
     }
 
     const anthropic = getAnthropicClient()
-    const response = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system: EXTRACTION_SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: [
-            documentContentBlock,
-            { type: "text", text: EXTRACTION_USER_PROMPT },
+    let response: Anthropic.Messages.Message | null = null
+    for (let attempt = 0; attempt <= MAX_API_RETRIES; attempt++) {
+      try {
+        response = await anthropic.messages.create({
+          model: MODEL,
+          max_tokens: MAX_TOKENS,
+          system: EXTRACTION_SYSTEM_PROMPT,
+          messages: [
+            {
+              role: "user",
+              content: [
+                documentContentBlock,
+                { type: "text", text: EXTRACTION_USER_PROMPT },
+              ],
+            },
           ],
-        },
-      ],
-    })
+        })
+        break
+      } catch (apiErr) {
+        if (apiErr instanceof Anthropic.APIError && apiErr.status === 429 && attempt < MAX_API_RETRIES) {
+          const delay = API_RETRY_DELAYS[attempt]
+          log("warn", "[Extraction] Rate limited, retrying", { attempt: attempt + 1, delayMs: delay })
+          await new Promise((resolve) => setTimeout(resolve, delay))
+          continue
+        }
+        throw apiErr
+      }
+    }
+    if (!response) {
+      return { success: false, result: null, error: "Claude API call failed after retry.", model: MODEL, tokensUsed: 0 }
+    }
 
     const wasResponseTruncated = response.stop_reason === "max_tokens"
     const textBlock = response.content.find((block) => block.type === "text")

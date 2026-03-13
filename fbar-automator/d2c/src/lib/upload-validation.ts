@@ -8,7 +8,7 @@ const ALLOWED_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ])
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
 const MAGIC_BYTES: Record<string, Buffer[]> = {
   "application/pdf": [Buffer.from([0x25, 0x50, 0x44, 0x46])],
@@ -38,7 +38,7 @@ export function validateFile(file: { name: string; type: string; size: number })
     return `File type "${file.type}" is not supported. Accepted: PDF, JPEG, PNG, GIF, WebP, CSV, Excel (.xlsx).`
   }
   if (file.size > MAX_FILE_SIZE) {
-    return `File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds the 50MB limit.`
+    return `File size ${(file.size / 1024 / 1024).toFixed(1)}MB exceeds the 10MB limit.`
   }
   if (file.size === 0) {
     return "File is empty."

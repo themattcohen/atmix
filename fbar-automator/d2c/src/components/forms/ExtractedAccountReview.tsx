@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { COUNTRIES, CURRENCIES } from "@/lib/countries";
+import type { MappedAccount } from "@/lib/extraction-mapper";
 
 interface ExtractedAccountReviewProps {
   accounts: MappedAccount[];
@@ -10,29 +11,6 @@ interface ExtractedAccountReviewProps {
   onDismiss: () => void;
 }
 
-interface MappedAccount {
-  account: {
-    institutionName: string;
-    accountNumber: string;
-    accountType: "BANK" | "SECURITIES" | "OTHER";
-    ownershipType: "FINANCIAL_INTEREST" | "SIGNATURE_AUTHORITY" | "BOTH";
-    countryCode: string;
-    currencyCode: string;
-    maxValueLocal: number;
-    isJointAccount: boolean;
-    calendarYear: number;
-    institutionAddress?: { street?: string; city?: string; country?: string };
-  };
-  confidence: {
-    bank_name: "high" | "medium" | "low";
-    account_number: "high" | "medium" | "low";
-    currency: "high" | "medium" | "low";
-    max_balance: "high" | "medium" | "low";
-    overall: "high" | "medium" | "low";
-  };
-  warnings: string[];
-  sourceIndex: number;
-}
 
 export interface AccountToSave {
   institutionName: string;
