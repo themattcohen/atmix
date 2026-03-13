@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
           { maxRetries: 2, backoffMs: 500 }
         );
       } catch (emailError) {
+        Sentry.captureException(emailError, { extra: { email, context: "password_reset_email" } });
         console.error("Failed to send password reset email:", emailError instanceof Error ? emailError.message : "Unknown error");
         // Continue — don't reveal email sending failure to client
       }

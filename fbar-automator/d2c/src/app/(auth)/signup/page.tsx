@@ -155,7 +155,7 @@ function SignupForm() {
         {existingSession && !signupSuccess && (
           <div role="status" aria-live="polite" className="bg-blue-50 text-blue-700 p-3 rounded-md mb-4 text-sm">
             You&apos;re already signed in.{" "}
-            <Link href="/threshold" className="font-medium underline">Go to Dashboard</Link>
+            <Link href="/dashboard" className="font-medium underline">Go to Dashboard</Link>
             {" "}or{" "}
             <Link href="/api/auth/signout" className="font-medium underline">sign out</Link>
             {" "}to create a new account.
