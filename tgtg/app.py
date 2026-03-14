@@ -295,11 +295,10 @@ if st.session_state.items is not None:
     items = st.session_state.items
     coords = st.session_state.get("coords", (39.59, -105.01))
 
-    # Ensure items is a list
+    # Ensure items is a list — clear corrupt session state and restart
     if not isinstance(items, list):
-        st.error(f"Unexpected data from TGTG API (got {type(items).__name__}). Please try fetching again.")
         st.session_state.items = None
-        st.stop()
+        st.rerun()
 
     if not items:
         st.warning("No bags available right now. Try again later!")
