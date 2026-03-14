@@ -2,23 +2,16 @@
 
 import re
 from datetime import date, timedelta
-from itertools import groupby
 from typing import Any
 from zoneinfo import ZoneInfo
 
-import folium
 import streamlit as st
-from geopy.geocoders import Nominatim
-from streamlit_folium import st_folium
 
-from auth import TgtgClient, get_client, save_credentials
-from clustering import (
-    _bag_area,
-    _bag_coords,
-    _pickup_window,
-    cluster_bags,
-    distance_miles,
-)
+st.set_page_config(page_title="TGTG Pickup Optimizer", page_icon="\U0001f961", layout="wide")
+st.title("\U0001f961 TGTG Pickup Optimizer")
+
+# Lazy imports — only load heavy deps when needed
+# This avoids import crashes blocking the initial render
 
 Bag = dict[str, Any]
 Run = dict[str, Any]
@@ -89,44 +82,8 @@ def _short_address(bag: Bag) -> str:
     return parts[0] if parts else ""
 
 
-def _unique_stores(bags: list[Bag]) -> list[Bag]:
-    """Deduplicate bags by store coordinates, return one bag per unique location."""
-    seen = {}
-    unique = []
-    for b in bags:
-        lat, lng = _bag_coords(b)
-        key = (round(lat, 4), round(lng, 4))
-        if key not in seen:
-            seen[key] = True
-            unique.append(b)
-    return unique
-
-
-def _max_distance_miles_in_run(run: Run) -> float:
-    """Max pairwise distance in miles between unique store locations."""
-    unique = _unique_stores(run["bags"])
-    if len(unique) < 2:
-        return 0.0
-    max_mi = 0.0
-    for i, a in enumerate(unique):
-        for b in unique[i + 1:]:
-            la, lna = _bag_coords(a)
-            lb, lnb = _bag_coords(b)
-            d = distance_miles(la, lna, lb, lnb)
-            if d > max_mi:
-                max_mi = d
-    return max_mi
-
-
-def _estimate_drive_minutes(run: Run) -> int:
-    mi = _max_distance_miles_in_run(run)
-    # ~2.5 min per mile in suburban areas
-    return max(1, round(mi * 2.5)) if mi > 0 else 0
-
-
 def _geocode_input(address_input: str) -> tuple[float, float] | None:
     """Parse 'lat,lng' or geocode an address string."""
-    # Try parsing as lat,lng
     parts = [p.strip() for p in address_input.split(",")]
     if len(parts) == 2:
         try:
@@ -135,8 +92,8 @@ def _geocode_input(address_input: str) -> tuple[float, float] | None:
                 return lat, lng
         except ValueError:
             pass
-    # Geocode via Nominatim
     try:
+        from geopy.geocoders import Nominatim
         geo = Nominatim(user_agent="tgtg-optimizer")
         loc = geo.geocode(address_input)
         if loc:
@@ -145,11 +102,6 @@ def _geocode_input(address_input: str) -> tuple[float, float] | None:
         pass
     return None
 
-
-# ── Streamlit App ──────────────────────────────────────────────────────────────
-
-st.set_page_config(page_title="TGTG Pickup Optimizer", page_icon="\U0001f961", layout="wide")
-st.title("\U0001f961 TGTG Pickup Optimizer")
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 
@@ -171,13 +123,14 @@ with st.sidebar:
 
 tz = ZoneInfo(tz_name)
 
-# ── Auth State ─────────────────────────────────────────────────────────────────
+# ── Session State ──────────────────────────────────────────────────────────────
 
-if "auth_phase" not in st.session_state:
-    st.session_state.auth_phase = "idle"  # idle | polling | ready | done
-if "client" not in st.session_state:
-    st.session_state.client = None
-if "items" not in st.session_state or not isinstance(st.session_state.items, (list, type(None))):
+for key, default in [("auth_phase", "idle"), ("client", None), ("items", None)]:
+    if key not in st.session_state:
+        st.session_state[key] = default
+
+# Force-reset corrupt items
+if not isinstance(st.session_state.items, (list, type(None))):
     st.session_state.items = None
 
 # ── Auth Flow ──────────────────────────────────────────────────────────────────
@@ -195,10 +148,10 @@ if fetch_btn:
     st.session_state.email = email
 
     with st.spinner("Connecting to TGTG..."):
+        from auth import get_client
         client = get_client(email)
 
         if client.access_token and client.refresh_token:
-            # Have cached tokens — try refresh
             try:
                 client.login()
                 st.session_state.client = client
@@ -211,7 +164,6 @@ if fetch_btn:
             st.session_state.client = client
 
     if st.session_state.auth_phase == "need_email_login":
-        # Trigger email login
         try:
             client = st.session_state.client
             response = client._post("auth/v5/authByEmail", {
@@ -260,6 +212,7 @@ if st.session_state.auth_phase == "polling":
                     client.datadome_cookie = dd_match.group(1)
                 st.session_state.client = client
                 st.session_state.auth_phase = "ready"
+                from auth import save_credentials
                 save_credentials(client, st.session_state.email)
                 st.rerun()
             elif response.status_code == 202:
@@ -282,8 +235,9 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
                 radius=radius_km,
                 with_stock_only=True,
             )
+            from auth import save_credentials
             save_credentials(client, st.session_state.get("email", ""))
-            st.session_state.items = items
+            st.session_state.items = items if isinstance(items, list) else []
             st.session_state.auth_phase = "done"
             st.rerun()
         except Exception as e:
@@ -291,18 +245,11 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
 
 # ── Display Results ────────────────────────────────────────────────────────────
 
-if st.session_state.items is not None:
+if isinstance(st.session_state.items, list) and st.session_state.items:
     items = st.session_state.items
     coords = st.session_state.get("coords", (39.59, -105.01))
 
-    # Ensure items is a list — clear corrupt session state and restart
-    if not isinstance(items, list):
-        st.session_state.items = None
-        st.rerun()
-
-    if not items:
-        st.warning("No bags available right now. Try again later!")
-        st.stop()
+    from clustering import cluster_bags, _bag_area, _bag_coords, _pickup_window, distance_miles
 
     runs, singles = cluster_bags(
         items,
@@ -313,15 +260,44 @@ if st.session_state.items is not None:
 
     st.caption(f"Found **{total}** available bags \u2192 **{len(runs)}** runs, **{len(singles)}** singles")
 
+    # ── Helpers that need clustering imports ──
+    def _unique_stores(bags):
+        seen = {}
+        unique = []
+        for b in bags:
+            lat, lng = _bag_coords(b)
+            key = (round(lat, 4), round(lng, 4))
+            if key not in seen:
+                seen[key] = True
+                unique.append(b)
+        return unique
+
+    def _max_distance_miles_in_run(run):
+        unique = _unique_stores(run["bags"])
+        if len(unique) < 2:
+            return 0.0
+        max_mi = 0.0
+        for i, a in enumerate(unique):
+            for b in unique[i + 1:]:
+                la, lna = _bag_coords(a)
+                lb, lnb = _bag_coords(b)
+                d = distance_miles(la, lna, lb, lnb)
+                if d > max_mi:
+                    max_mi = d
+        return max_mi
+
+    def _estimate_drive_minutes(run):
+        mi = _max_distance_miles_in_run(run)
+        return max(1, round(mi * 2.5)) if mi > 0 else 0
+
     # ── Split by day ──
-    def _run_day_key(run: Run) -> str:
+    def _run_day_key(run):
         return _fmt_day(run["effective_start"], tz)
 
-    def _bag_day_key(bag: Bag) -> str:
+    def _bag_day_key(bag):
         s, _ = _pickup_window(bag)
         return _fmt_day(s, tz)
 
-    # Collect day labels
     day_labels = []
     for r in runs:
         d = _run_day_key(r)
@@ -349,9 +325,11 @@ if st.session_state.items is not None:
             all_day_bags.extend(day_singles)
 
             if all_day_bags:
+                import folium
+                from streamlit_folium import st_folium
+
                 m = folium.Map(location=[coords[0], coords[1]], zoom_start=11)
 
-                # Runs — colored pins
                 for ri, run in enumerate(day_runs):
                     color = RUN_COLORS[ri % len(RUN_COLORS)]
                     for bag in run["bags"]:
@@ -364,7 +342,6 @@ if st.session_state.items is not None:
                             icon=folium.Icon(color=color, icon="shopping-bag", prefix="fa"),
                         ).add_to(m)
 
-                # Singles — gray pins
                 for bag in day_singles:
                     lat, lng = _bag_coords(bag)
                     name = bag["store"].get("store_name", "Unknown")
