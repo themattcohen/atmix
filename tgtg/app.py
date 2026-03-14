@@ -186,39 +186,44 @@ if fetch_btn:
             st.error(f"Login error: {e}")
             st.stop()
 
-# ── Polling UI ─────────────────────────────────────────────────────────────────
+# ── PIN Entry UI ───────────────────────────────────────────────────────────────
 
 if st.session_state.auth_phase == "polling":
-    st.info("Check your email and click the TGTG login link (on a computer, not your phone).")
-    col1, col2 = st.columns([3, 1])
+    st.info("Check your email from Too Good To Go — enter the **6-digit PIN** below.")
+    col1, col2 = st.columns([2, 1])
     with col1:
-        st.write("After clicking the link, press the button below:")
+        pin = st.text_input("PIN from email", max_chars=6, placeholder="123456")
     with col2:
-        if st.button("I clicked the link"):
-            client = st.session_state.client
-            polling_id = st.session_state.polling_id
-            response = client._post("auth/v5/authByRequestPollingId", {
-                "device_type": "ANDROID",
-                "email": st.session_state.email,
-                "request_polling_id": polling_id,
-            })
-            if response.status_code == 200:
-                data = response.json()
-                client.access_token = data["access_token"]
-                client.refresh_token = data["refresh_token"]
-                set_cookie = response.headers.get("Set-Cookie", "")
-                dd_match = re.search(r"datadome=([^;]+)", set_cookie)
-                if dd_match:
-                    client.datadome_cookie = dd_match.group(1)
-                st.session_state.client = client
-                st.session_state.auth_phase = "ready"
-                from auth import save_credentials
-                save_credentials(client, st.session_state.email)
-                st.rerun()
-            elif response.status_code == 202:
-                st.warning("Not confirmed yet. Click the email link first, then try again.")
+        st.write("")  # spacer
+        if st.button("Submit PIN"):
+            if not pin or len(pin) != 6:
+                st.warning("Enter the 6-digit PIN from the TGTG email.")
             else:
-                st.error(f"Auth failed: {response.status_code}")
+                client = st.session_state.client
+                polling_id = st.session_state.polling_id
+                response = client._post("auth/v5/authByRequestPollingId", {
+                    "device_type": "ANDROID",
+                    "email": st.session_state.email,
+                    "request_polling_id": polling_id,
+                    "request_polling_verification_code": pin,
+                })
+                if response.status_code == 200:
+                    data = response.json()
+                    client.access_token = data["access_token"]
+                    client.refresh_token = data["refresh_token"]
+                    set_cookie = response.headers.get("Set-Cookie", "")
+                    dd_match = re.search(r"datadome=([^;]+)", set_cookie)
+                    if dd_match:
+                        client.datadome_cookie = dd_match.group(1)
+                    st.session_state.client = client
+                    st.session_state.auth_phase = "ready"
+                    from auth import save_credentials
+                    save_credentials(client, st.session_state.email)
+                    st.rerun()
+                elif response.status_code == 202:
+                    st.warning("PIN not accepted. Check the latest email and try again.")
+                else:
+                    st.error(f"Auth failed: {response.status_code}")
 
 # ── Fetch Items ────────────────────────────────────────────────────────────────
 
