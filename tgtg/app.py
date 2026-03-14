@@ -162,22 +162,27 @@ if fetch_btn:
 
     st.session_state.coords = coords
     st.session_state.email = email
+    st.session_state.items = None  # clear previous results
 
-    with st.spinner("Connecting to TGTG..."):
-        from auth import get_client
-        client = get_client(email)
+    # Reuse existing authenticated client if available
+    if st.session_state.client and st.session_state.auth_phase == "done":
+        st.session_state.auth_phase = "ready"
+    else:
+        with st.spinner("Connecting to TGTG..."):
+            from auth import get_client
+            client = get_client(email)
 
-        if client.access_token and client.refresh_token:
-            try:
-                client.login()
-                st.session_state.client = client
-                st.session_state.auth_phase = "ready"
-            except Exception:
+            if client.access_token and client.refresh_token:
+                try:
+                    client.login()
+                    st.session_state.client = client
+                    st.session_state.auth_phase = "ready"
+                except Exception:
+                    st.session_state.auth_phase = "need_email_login"
+                    st.session_state.client = client
+            else:
                 st.session_state.auth_phase = "need_email_login"
                 st.session_state.client = client
-        else:
-            st.session_state.auth_phase = "need_email_login"
-            st.session_state.client = client
 
     if st.session_state.auth_phase == "need_email_login":
         try:
