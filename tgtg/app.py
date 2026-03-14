@@ -9,6 +9,7 @@ import streamlit as st
 
 st.set_page_config(page_title="TGTG Pickup Optimizer", page_icon="\U0001f961", layout="wide")
 st.title("\U0001f961 TGTG Pickup Optimizer")
+st.caption("v2 — 2026-03-14")
 
 # Lazy imports — only load heavy deps when needed
 # This avoids import crashes blocking the initial render
