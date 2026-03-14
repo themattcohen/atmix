@@ -79,7 +79,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
         () => sendVerificationEmail(email, firstName, verifyUrl),
         { maxRetries: 2, backoffMs: 500 }
       ).catch((err) => {
-        console.error("Verification email failed:", err instanceof Error ? err.message : "Unknown error");
+        Sentry.captureException(err, { extra: { email, context: "signup_verification_email" } });
+        console.error("[signup] Verification email FAILED for:", email, err instanceof Error ? err.message : err);
       });
     }
 

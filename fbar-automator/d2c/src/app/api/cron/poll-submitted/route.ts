@@ -34,7 +34,10 @@ export async function GET(req: NextRequest) {
             firstName: filing.user.firstName ?? "",
             calendarYear: filing.calendarYear,
             bsaId: ack.bsaId,
-          }).catch(() => {});
+          }).catch((err) => {
+            Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_confirmation_email" } });
+            console.error("[Cron] Confirmation email failed for filing:", err);
+          });
         }
         sendAdminAckNotification({
           filingId: filing.id,
@@ -42,7 +45,10 @@ export async function GET(req: NextRequest) {
           calendarYear: filing.calendarYear,
           status: "accepted",
           bsaId: ack.bsaId,
-        }).catch(() => {});
+        }).catch((err) => {
+          Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_admin_accepted_notification" } });
+          console.error("[Cron] Admin accepted notification failed:", err);
+        });
         results.push({ id: filing.id, outcome: "accepted" });
       } else if (ack.status === "rejected") {
         await prisma.filingYear.update({
@@ -58,7 +64,10 @@ export async function GET(req: NextRequest) {
             firstName: filing.user.firstName ?? "",
             calendarYear: filing.calendarYear,
             reason: ack.rejectionReason ?? "Unknown reason",
-          }).catch(() => {});
+          }).catch((err) => {
+            Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_rejection_email" } });
+            console.error("[Cron] Rejection email failed for filing:", err);
+          });
         }
         sendAdminAckNotification({
           filingId: filing.id,
@@ -66,7 +75,10 @@ export async function GET(req: NextRequest) {
           calendarYear: filing.calendarYear,
           status: "rejected",
           rejectionReason: ack.rejectionReason ?? undefined,
-        }).catch(() => {});
+        }).catch((err) => {
+          Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_admin_rejected_notification" } });
+          console.error("[Cron] Admin rejected notification failed:", err);
+        });
         results.push({ id: filing.id, outcome: "rejected" });
       } else {
         results.push({ id: filing.id, outcome: "pending" });

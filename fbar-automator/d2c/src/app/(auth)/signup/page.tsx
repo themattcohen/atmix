@@ -142,13 +142,9 @@ function SignupForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <Link href="/" className="flex justify-center mb-8">
-          <div className="text-2xl font-bold text-navy-900">FBAR Direct</div>
-        </Link>
+    <>
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-navy-900">Create Your Account</h1>
+          <h1 className="text-2xl font-bold text-gov-blue">Create Your Account</h1>
           <p className="text-gray-600 mt-2">Start filing your FBAR today</p>
         </div>
 
@@ -188,7 +184,7 @@ function SignupForm() {
                 onChange={(e) => updateField("firstName", e.target.value)}
                 required
                 autoComplete="given-name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
               />
               {errors.firstName?.map((e, i) => (
                 <p key={i} className="text-red-600 text-xs mt-1">{e}</p>
@@ -205,7 +201,7 @@ function SignupForm() {
                 onChange={(e) => updateField("lastName", e.target.value)}
                 required
                 autoComplete="family-name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
               />
               {errors.lastName?.map((e, i) => (
                 <p key={i} className="text-red-600 text-xs mt-1">{e}</p>
@@ -224,7 +220,7 @@ function SignupForm() {
               onChange={(e) => updateField("email", e.target.value)}
               required
               autoComplete="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
               placeholder="you@example.com"
             />
             {errors.email?.map((e, i) => (
@@ -244,7 +240,7 @@ function SignupForm() {
               required
               autoComplete="new-password"
               maxLength={128}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
               8+ characters, 1 uppercase, 1 number
@@ -266,7 +262,7 @@ function SignupForm() {
               required
               autoComplete="new-password"
               maxLength={128}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
             />
             {errors.confirmPassword?.map((e, i) => (
               <p key={i} className="text-red-600 text-xs mt-1">{e}</p>
@@ -276,7 +272,7 @@ function SignupForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full py-2 px-4 bg-gov-blue text-white rounded-md hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>
@@ -284,22 +280,21 @@ function SignupForm() {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link href="/login" className="text-navy-900 font-medium hover:underline">
+          <Link href="/login" className="text-gov-blue font-medium hover:underline">
             Sign in
           </Link>
         </p>
         </>
         )}
-      </div>
-    </div>
+    </>
   );
 }
 
 export default function SignupPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue" />
       </div>
     }>
       <SignupForm />

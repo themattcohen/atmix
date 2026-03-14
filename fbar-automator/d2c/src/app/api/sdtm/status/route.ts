@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
             bsaId: ack.bsaId,
           });
         } catch (emailError) {
+          Sentry.captureException(emailError, { extra: { context: "sdtm_confirmation_email", filingYearId } });
           console.error("Failed to send confirmation email:", emailError instanceof Error ? emailError.message : "Unknown error");
         }
       }
@@ -97,6 +98,7 @@ export async function GET(req: NextRequest) {
             reason: ack.rejectionReason || "Unknown reason",
           });
         } catch (emailError) {
+          Sentry.captureException(emailError, { extra: { context: "sdtm_rejection_email", filingYearId } });
           console.error("Failed to send rejection email:", emailError instanceof Error ? emailError.message : "Unknown error");
         }
       }

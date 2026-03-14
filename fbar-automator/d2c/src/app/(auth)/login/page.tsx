@@ -103,13 +103,9 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <Link href="/" className="flex justify-center mb-8">
-          <div className="text-2xl font-bold text-navy-900">FBAR Direct</div>
-        </Link>
+    <>
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-navy-900">Sign in to FBAR Direct</h1>
+          <h1 className="text-2xl font-bold text-gov-blue">Sign in to FBAR Direct</h1>
           <p className="text-gray-600 mt-2">File your FBAR in 10 minutes</p>
         </div>
 
@@ -137,7 +133,7 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
               placeholder="you@example.com"
             />
           </div>
@@ -154,10 +150,10 @@ function LoginForm() {
               required
               autoComplete="current-password"
               maxLength={128}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
             />
             <div className="mt-2 text-right">
-              <Link href="/forgot-password" className="text-sm text-navy-900 hover:underline">
+              <Link href="/forgot-password" className="text-sm text-gov-blue hover:underline">
                 Forgot Password?
               </Link>
             </div>
@@ -166,7 +162,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full py-2 px-4 bg-gov-blue text-white rounded-md hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
@@ -174,20 +170,19 @@ function LoginForm() {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-navy-900 font-medium hover:underline">
+          <Link href="/signup" className="text-gov-blue font-medium hover:underline">
             Create one
           </Link>
         </p>
-      </div>
-    </div>
+    </>
   );
 }
 
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue" />
       </div>
     }>
       <LoginForm />

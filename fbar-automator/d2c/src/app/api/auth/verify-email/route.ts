@@ -34,28 +34,34 @@ export async function POST(req: NextRequest) {
     });
 
     if (!verificationToken) {
+      console.warn("[verify-email] Token not found in DB");
       return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
     }
 
     if (verificationToken.used) {
+      console.warn("[verify-email] Token already used:", hashedToken.slice(0, 8));
       return NextResponse.json({ error: "Token already used" }, { status: 400 });
     }
 
     if (verificationToken.expiresAt < new Date()) {
+      console.warn("[verify-email] Token expired, expiresAt:", verificationToken.expiresAt);
       return NextResponse.json({ error: "Token expired" }, { status: 400 });
     }
 
-    // Mark token as used and update user
-    await prisma.$transaction([
-      prisma.emailVerificationToken.update({
-        where: { id: verificationToken.id },
-        data: { used: true },
-      }),
-      prisma.user.update({
-        where: { id: verificationToken.userId },
-        data: { emailVerified: true, emailVerifiedAt: new Date() },
-      }),
-    ]);
+    // Atomic check-and-update to prevent race condition (double-tab scenario)
+    const result = await prisma.emailVerificationToken.updateMany({
+      where: { id: verificationToken.id, used: false },
+      data: { used: true },
+    });
+    if (result.count === 0) {
+      return NextResponse.json({ error: "Token already used" }, { status: 400 });
+    }
+
+    // Update user email verified status
+    await prisma.user.update({
+      where: { id: verificationToken.userId },
+      data: { emailVerified: true, emailVerifiedAt: new Date() },
+    });
 
     // Send welcome email (fire-and-forget — do not block the response)
     if (process.env.RESEND_API_KEY) {
@@ -63,6 +69,7 @@ export async function POST(req: NextRequest) {
         () => sendWelcomeEmail(verificationToken.user.email, { firstName: verificationToken.user.firstName ?? "there" }),
         { maxRetries: 2, backoffMs: 500 }
       ).catch((err) => {
+        Sentry.captureException(err, { extra: { email: verificationToken.user.email, context: "welcome_email" } });
         console.error("Welcome email failed:", err instanceof Error ? err.message : "Unknown error");
       });
     }

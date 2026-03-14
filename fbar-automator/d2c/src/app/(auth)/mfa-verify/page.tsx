@@ -3,7 +3,6 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
 
 function MfaVerifyForm() {
   const router = useRouter();
@@ -52,13 +51,9 @@ function MfaVerifyForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <Link href="/" className="flex justify-center mb-8">
-          <div className="text-2xl font-bold text-navy-900">FBAR Direct</div>
-        </Link>
+    <>
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-navy-900">Two-Factor Authentication</h1>
+          <h1 className="text-2xl font-bold text-gov-blue">Two-Factor Authentication</h1>
           <p className="text-gray-600 mt-2">
             {useRecovery
               ? "Enter one of your recovery codes"
@@ -85,7 +80,7 @@ function MfaVerifyForm() {
                 onChange={(e) => setRecoveryCode(e.target.value)}
                 required
                 autoFocus
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent font-mono"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent font-mono"
                 placeholder="XXXX-XXXXXX"
               />
             </div>
@@ -104,7 +99,7 @@ function MfaVerifyForm() {
                 onChange={(e) => setToken(e.target.value.replace(/\D/g, ""))}
                 required
                 autoFocus
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent text-center text-2xl tracking-widest font-mono"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent text-center text-2xl tracking-widest font-mono"
                 placeholder="000000"
               />
             </div>
@@ -113,7 +108,7 @@ function MfaVerifyForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full py-2 px-4 bg-gov-blue text-white rounded-md hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {loading ? "Verifying..." : "Verify"}
           </button>
@@ -128,7 +123,7 @@ function MfaVerifyForm() {
               setToken("");
               setRecoveryCode("");
             }}
-            className="text-sm text-navy-900 hover:underline"
+            className="text-sm text-gov-blue hover:underline"
           >
             {useRecovery ? "Use authenticator app instead" : "Use a recovery code instead"}
           </button>
@@ -143,16 +138,15 @@ function MfaVerifyForm() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 }
 
 export default function MfaVerifyPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-900" />
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue" />
       </div>
     }>
       <MfaVerifyForm />

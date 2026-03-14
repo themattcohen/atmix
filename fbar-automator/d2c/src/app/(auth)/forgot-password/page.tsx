@@ -43,12 +43,6 @@ export default function ForgotPasswordPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-          <Link href="/" className="flex justify-center mb-8">
-            <div className="text-2xl font-bold text-navy-900">FBAR Direct</div>
-          </Link>
-
           <div className="text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -65,7 +59,7 @@ export default function ForgotPasswordPage() {
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-navy-900 mb-4">Check Your Email</h1>
+            <h1 className="text-2xl font-bold text-gov-blue mb-4">Check Your Email</h1>
             <p className="text-gray-600 mb-6">
               If an account exists with that email, we&apos;ve sent password reset
               instructions.
@@ -75,25 +69,18 @@ export default function ForgotPasswordPage() {
             </p>
             <Link
               href="/login"
-              className="text-navy-900 font-medium hover:underline"
+              className="text-gov-blue font-medium hover:underline"
             >
               Back to sign in
             </Link>
           </div>
-        </div>
-      </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <Link href="/" className="flex justify-center mb-8">
-          <div className="text-2xl font-bold text-navy-900">FBAR Direct</div>
-        </Link>
-
+    <>
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-navy-900">Reset Your Password</h1>
+          <h1 className="text-2xl font-bold text-gov-blue">Reset Your Password</h1>
           <p className="text-gray-600 mt-2">
             Enter your email and we&apos;ll send you reset instructions
           </p>
@@ -120,7 +107,7 @@ export default function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"
               placeholder="you@example.com"
             />
           </div>
@@ -128,7 +115,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-navy-900 text-white rounded-md hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full py-2 px-4 bg-gov-blue text-white rounded-md hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {loading ? "Sending..." : "Send Reset Instructions"}
           </button>
@@ -136,11 +123,10 @@ export default function ForgotPasswordPage() {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Remember your password?{" "}
-          <Link href="/login" className="text-navy-900 font-medium hover:underline">
+          <Link href="/login" className="text-gov-blue font-medium hover:underline">
             Sign in
           </Link>
         </p>
-      </div>
-    </div>
+    </>
   );
 }

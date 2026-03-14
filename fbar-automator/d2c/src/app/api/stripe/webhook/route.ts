@@ -115,7 +115,10 @@ export async function POST(req: NextRequest) {
                 tier: tier.charAt(0) + tier.slice(1).toLowerCase(),
               }));
             })
-            .catch((err) => console.error('[Webhook] Payment receipt email failed:', err));
+            .catch((err) => {
+              Sentry.captureException(err, { extra: { context: "payment_receipt_email" } });
+              console.error('[Webhook] Payment receipt email failed:', err);
+            });
         }
 
         // Trigger server-side FinCEN submission (fire-and-forget)
