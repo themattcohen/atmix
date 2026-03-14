@@ -84,6 +84,7 @@ def _short_address(bag: Bag) -> str:
 
 def _geocode_input(address_input: str) -> tuple[float, float] | None:
     """Parse 'lat,lng' or geocode an address string."""
+    # Try parsing as lat,lng
     parts = [p.strip() for p in address_input.split(",")]
     if len(parts) == 2:
         try:
@@ -92,14 +93,15 @@ def _geocode_input(address_input: str) -> tuple[float, float] | None:
                 return lat, lng
         except ValueError:
             pass
+    # Geocode via Nominatim
     try:
         from geopy.geocoders import Nominatim
-        geo = Nominatim(user_agent="tgtg-optimizer")
-        loc = geo.geocode(address_input)
+        geo = Nominatim(user_agent="tgtg-pickup-optimizer/1.0", timeout=10)
+        loc = geo.geocode(address_input, exactly_one=True, country_codes="us")
         if loc:
             return loc.latitude, loc.longitude
-    except Exception:
-        pass
+    except Exception as e:
+        st.warning(f"Geocoding error: {e}")
     return None
 
 
