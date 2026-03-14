@@ -174,10 +174,11 @@ if fetch_btn:
 
             if client.access_token and client.refresh_token:
                 try:
-                    client.login()
+                    client._refresh()
                     st.session_state.client = client
                     st.session_state.auth_phase = "ready"
                 except Exception:
+                    # Refresh failed — show email login UI instead of blocking
                     st.session_state.auth_phase = "need_email_login"
                     st.session_state.client = client
             else:

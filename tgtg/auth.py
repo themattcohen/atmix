@@ -168,12 +168,16 @@ class TgtgClient:
             # Skip refresh if token was recently set (within 4 hours)
             if self._last_token_time and (time.time() - self._last_token_time) < 14400:
                 return
-            self._refresh()
+            try:
+                self._refresh()
+            except RuntimeError:
+                print("  Token refresh failed, trying email login...")
+                self._email_login()
         else:
             self._email_login()
 
     def _refresh(self) -> None:
-        """Refresh existing tokens."""
+        """Refresh existing tokens. Raises RuntimeError on failure."""
         response = self._post(REFRESH_ENDPOINT, {"refresh_token": self.refresh_token})
         if response.status_code == 200:
             data = response.json()
@@ -186,10 +190,9 @@ class TgtgClient:
             if dd_match:
                 self.datadome_cookie = dd_match.group(1)
         else:
-            print(f"  Token refresh failed ({response.status_code}), trying email login...")
             self.access_token = ""
             self.refresh_token = ""
-            self._email_login()
+            raise RuntimeError(f"Token refresh failed: {response.status_code}")
 
     def _email_login(self) -> None:
         """Magic-link email login flow."""
