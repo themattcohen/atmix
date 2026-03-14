@@ -156,6 +156,8 @@ if fetch_btn:
     if not address:
         st.error("Please enter an address or coordinates.")
         st.stop()
+    _status = st.empty()
+    _status.info("Geocoding address...")
     coords = _geocode_input(address)
     if not coords:
         st.error(f"Could not resolve '{address}'. Try a street address or lat,lng (e.g. 39.59,-105.01).")
@@ -169,19 +171,22 @@ if fetch_btn:
     if st.session_state.client and st.session_state.auth_phase == "done":
         st.session_state.auth_phase = "ready"
     else:
-        with st.spinner("Connecting to TGTG..."):
-            from auth import get_client
-            client = get_client(email)
+        _status.info("Creating TGTG client...")
+        from auth import get_client
+        client = get_client(email)
+        _status.info(f"Client ready (tokens: {'yes' if client.access_token else 'no'}, cookie: {'yes' if client.datadome_cookie else 'no'})")
 
-            if client.access_token and client.refresh_token:
-                try:
-                    client._refresh()
-                    st.session_state.client = client
-                    st.session_state.auth_phase = "ready"
-                except Exception:
-                    # Refresh failed — show email login UI instead of blocking
-                    st.session_state.auth_phase = "need_email_login"
-                    st.session_state.client = client
+        if client.access_token and client.refresh_token:
+            try:
+                _status.info("Refreshing tokens...")
+                client._refresh()
+                st.session_state.client = client
+                st.session_state.auth_phase = "ready"
+            except Exception as e:
+                _status.warning(f"Token refresh failed: {e}")
+                # Refresh failed — show email login UI instead of blocking
+                st.session_state.auth_phase = "need_email_login"
+                st.session_state.client = client
             else:
                 st.session_state.auth_phase = "need_email_login"
                 st.session_state.client = client
