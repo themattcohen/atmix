@@ -114,7 +114,7 @@ with st.sidebar:
     address = st.text_input(
         "Address or Coordinates",
         key="tgtg_address",
-        placeholder="5235 W Plymouth Dr, Littleton CO",
+        placeholder="Denver, CO",
         help="Street address, city, or lat,lng (e.g. 39.59,-105.01)",
     )
     radius_miles = st.slider("Search radius (miles)", 5, 50, 30, key="tgtg_radius")
@@ -264,12 +264,21 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
             from auth import save_credentials
             save_credentials(client, st.session_state.get("email", ""))
             all_items = items if isinstance(items, list) else []
+            in_stock = sum(1 for b in all_items if isinstance(b, dict) and b.get("items_available", 0) > 0)
             st.session_state.items = all_items
             st.session_state.auth_phase = "done"
-            st.toast(f"Fetched {len(all_items)} items from TGTG (coords: {coords[0]:.4f},{coords[1]:.4f}, radius: {radius_km}km)")
+
+            if not all_items:
+                st.warning("TGTG returned 0 items. This may indicate an expired DataDome cookie or auth tokens. Try re-authenticating.")
+            else:
+                st.toast(f"Found {len(all_items)} stores ({in_stock} with bags available)")
+
             st.rerun()
         except Exception as e:
-            st.error(f"Failed to fetch bags: {e}")
+            err_msg = str(e)
+            st.error(f"Failed to fetch bags: {err_msg}")
+            if "403" in err_msg or "captcha" in err_msg.lower():
+                st.warning("This looks like bot detection. Your DataDome cookie may be expired — try re-authenticating.")
 
 # ── Display Results ────────────────────────────────────────────────────────────
 
@@ -436,7 +445,7 @@ if isinstance(st.session_state.items, list) and st.session_state.items:
                 st.dataframe(rows, use_container_width=True, hide_index=True)
 
 elif isinstance(st.session_state.items, list) and not st.session_state.items:
-    st.warning("No bags available right now. Try again later!")
+    st.warning("TGTG returned 0 items. This may mean no stores are nearby, or the DataDome cookie/tokens need refreshing.")
 
 elif st.session_state.auth_phase == "idle":
     st.info("Enter your TGTG email and location in the sidebar, then click **Fetch Bags**.")

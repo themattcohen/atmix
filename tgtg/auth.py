@@ -96,7 +96,7 @@ class TgtgClient:
         self.access_token = access_token
         self.refresh_token = refresh_token
         self.datadome_cookie = datadome_cookie
-        self._last_token_time = time.time() if access_token else None
+        self._last_token_time = None  # only set after successful login/refresh
         self.apk_version = self._get_apk_version()
         self.user_agent = random.choice(USER_AGENTS).format(self.apk_version)
         self.correlation_id = str(uuid.uuid4())
@@ -179,6 +179,7 @@ class TgtgClient:
             data = response.json()
             self.access_token = data["access_token"]
             self.refresh_token = data["refresh_token"]
+            self._last_token_time = time.time()
             # Update datadome from Set-Cookie
             set_cookie = response.headers.get("Set-Cookie", "")
             dd_match = re.search(r"datadome=([^;]+)", set_cookie)
@@ -226,6 +227,7 @@ class TgtgClient:
                 data = response.json()
                 self.access_token = data["access_token"]
                 self.refresh_token = data["refresh_token"]
+                self._last_token_time = time.time()
                 set_cookie = response.headers.get("Set-Cookie", "")
                 dd_match = re.search(r"datadome=([^;]+)", set_cookie)
                 if dd_match:
@@ -276,12 +278,13 @@ def get_client(email: str) -> TgtgClient:
     access_token = os.getenv("TGTG_ACCESS_TOKEN", "")
     refresh_token = os.getenv("TGTG_REFRESH_TOKEN", "")
 
-    # Never reuse cached datadome cookie — always fetch fresh
+    cookie = os.getenv("TGTG_COOKIE", "")
+
     client = TgtgClient(
         email=email,
         access_token=access_token,
         refresh_token=refresh_token,
-        datadome_cookie="",
+        datadome_cookie=cookie,
     )
     return client
 
