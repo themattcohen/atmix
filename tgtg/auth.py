@@ -257,7 +257,7 @@ class TgtgClient:
             "we_care_only": False,
         })
         if response.status_code == 200:
-            return response.json()["items"]
+            return response.json().get("items") or []
         raise RuntimeError(f"get_items failed: {response.status_code} — {response.text[:200]}")
 
     def get_credentials(self) -> dict:

@@ -304,7 +304,7 @@ if st.session_state.items is not None:
         max_distance_miles=max_dist_miles,
         min_overlap_min=min_overlap,
     )
-    total = sum(1 for b in items if b.get("items_available", 0) > 0)
+    total = sum(1 for b in items if isinstance(b, dict) and b.get("items_available", 0) > 0)
 
     st.caption(f"Found **{total}** available bags \u2192 **{len(runs)}** runs, **{len(singles)}** singles")
 
