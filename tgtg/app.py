@@ -428,5 +428,8 @@ if isinstance(st.session_state.items, list) and st.session_state.items:
                     })
                 st.dataframe(rows, use_container_width=True, hide_index=True)
 
+elif isinstance(st.session_state.items, list) and not st.session_state.items:
+    st.warning("No bags available right now. Try again later!")
+
 elif st.session_state.auth_phase == "idle":
     st.info("Enter your TGTG email and location in the sidebar, then click **Fetch Bags**.")
