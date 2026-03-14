@@ -11,8 +11,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        autoLoginToken: { label: "Auto Login Token", type: "text" },
       },
       async authorize(credentials) {
+        // Auto-login via HMAC token (post email verification)
+        if (credentials?.autoLoginToken) {
+          const { verifyAutoLoginToken } = await import(
+            "@/lib/auto-login-token"
+          );
+          const userId = verifyAutoLoginToken(
+            credentials.autoLoginToken as string
+          );
+          if (!userId) return null;
+          const user = await prisma.user.findUnique({
+            where: { id: userId },
+          });
+          if (!user || !user.emailVerified) return null;
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.firstName
+              ? `${user.firstName} ${user.lastName || ""}`.trim()
+              : user.email,
+            tokenVersion: user.tokenVersion,
+            mfaEnabled: user.mfaEnabled,
+            emailVerified: user.emailVerified,
+          };
+        }
+
         if (!credentials?.email || !credentials?.password) return null;
 
         // Reject oversized passwords before bcrypt to prevent DoS
@@ -80,7 +106,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (!token.id) {
-        return {} as any;
+        return { user: null, expires: session.expires } as any;
       }
       if (session.user) {
         session.user.id = token.id as string;

@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { createEmailVerificationCookie } from "@/lib/email-verification-cookie";
+import { createAutoLoginToken } from "@/lib/auto-login-token";
 import { sendWelcomeEmail, sendEmailWithRetry } from "@/lib/email";
 
 const verifySchema = z.object({
@@ -80,7 +81,9 @@ export async function POST(req: NextRequest) {
       verificationToken.user.tokenVersion
     );
 
-    const response = NextResponse.json({ success: true });
+    const autoLoginToken = createAutoLoginToken(verificationToken.userId);
+
+    const response = NextResponse.json({ success: true, autoLoginToken });
     response.cookies.set(cookie.name, cookie.value, cookie.options as any);
     return response;
   } catch (error) {

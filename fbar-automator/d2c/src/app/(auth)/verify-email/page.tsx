@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 function VerifyEmailContent() {
@@ -33,16 +34,26 @@ function VerifyEmailContent() {
       .then(async (res) => {
         if (res.ok) {
           setStatus("success");
-          // Check if user is authenticated to decide redirect target
-          const sessionRes = await fetch("/api/auth/session").catch(() => null);
-          const sessionData = sessionRes ? await sessionRes.json().catch(() => null) : null;
-          if (sessionData?.user) {
-            setTimeout(() => router.push("/threshold"), 2000);
-          } else {
-            // Set sessionStorage flag so login page shows verified banner (not forgeable via URL)
-            sessionStorage.setItem("emailVerified", "true");
-            setTimeout(() => router.push("/login"), 2000);
+          // Auto-login using HMAC token from verification response
+          let autoLoginToken: string | undefined;
+          try {
+            const data = await res.json();
+            autoLoginToken = data.autoLoginToken;
+          } catch {}
+
+          if (autoLoginToken) {
+            const loginResult = await signIn("credentials", {
+              autoLoginToken,
+              redirect: false,
+            });
+            if (loginResult?.ok) {
+              setTimeout(() => router.push("/threshold"), 2000);
+              return;
+            }
           }
+          // Fallback: redirect to login with verified banner
+          sessionStorage.setItem("emailVerified", "true");
+          setTimeout(() => router.push("/login"), 2000);
         } else {
           let data: any = {};
           try { data = await res.json(); } catch {}
