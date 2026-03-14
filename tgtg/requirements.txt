@@ -1,0 +1,7 @@
+requests
+python-dotenv
+geopy
+streamlit>=1.35.0
+folium
+streamlit-folium
+tzdata
