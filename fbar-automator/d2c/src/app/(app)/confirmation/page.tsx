@@ -67,6 +67,9 @@ function ConfirmationContent() {
     }
   }, [status, filing]);
 
+  // Anchored filing ID from Stripe session verification (set in init)
+  const anchoredFilingIdRef = useRef<string | null>(null);
+
   // Load filing data from the filing API
   const loadFiling = useCallback(async (): Promise<string | null> => {
     try {
@@ -78,10 +81,18 @@ function ConfirmationContent() {
       }
       const data = await res.json();
       if (data.data?.length > 0) {
-        // Find the most relevant filing (prefer post-payment statuses)
-        const postPayment = data.data.find((f: any) =>
-          ["PAID", "SUBMITTING", "SUBMITTED", "ACCEPTED", "REJECTED"].includes(f.status)
-        );
+        const postPaymentStatuses = ["PAID", "SUBMITTING", "SUBMITTED", "ACCEPTED", "REJECTED"];
+
+        // Anchor 1: filing ID from Stripe session verification (most reliable)
+        // Anchor 2: activeFilingYearId from sessionStorage (set by sign page)
+        const activeId = anchoredFilingIdRef.current
+          || (typeof window !== "undefined" ? sessionStorage.getItem("activeFilingYearId") : null);
+
+        const postPayment = activeId
+          ? data.data.find((f: any) => f.id === activeId && postPaymentStatuses.includes(f.status))
+            || data.data.find((f: any) => postPaymentStatuses.includes(f.status))
+          : data.data.find((f: any) => postPaymentStatuses.includes(f.status));
+
         const signed = data.data.find((f: any) => f.status === "SIGNED");
         const target = postPayment || signed;
 
@@ -98,16 +109,19 @@ function ConfirmationContent() {
     }
   }, []);
 
-  // Verify Stripe session payment status
-  const verifyStripeSession = useCallback(async (): Promise<string | null> => {
-    if (!sessionId) return null;
+  // Verify Stripe session payment status — returns { status, filingId }
+  const verifyStripeSession = useCallback(async (): Promise<{ status: string | null; filingId: string | null }> => {
+    if (!sessionId) return { status: null, filingId: null };
     try {
       const res = await fetch(`/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}`);
-      if (!res.ok) return null;
+      if (!res.ok) return { status: null, filingId: null };
       const data = await res.json();
-      return data.data?.status || null;
+      return {
+        status: data.data?.status || null,
+        filingId: data.data?.filingId || null,
+      };
     } catch {
-      return null;
+      return { status: null, filingId: null };
     }
   }, [sessionId]);
 
@@ -119,11 +133,15 @@ function ConfirmationContent() {
       // If we have a session_id from Stripe redirect, verify payment first
       if (sessionId) {
         setStatus("verifying_payment");
-        const paymentStatus = await verifyStripeSession();
+        const verifyResult = await verifyStripeSession();
 
         if (cancelled) return;
 
-        if (paymentStatus === "completed") {
+        if (verifyResult.status === "completed") {
+          // Anchor the filing ID from the Stripe session for correct year selection
+          if (verifyResult.filingId) {
+            anchoredFilingIdRef.current = verifyResult.filingId;
+          }
           // Payment confirmed, load filing data
           const filingStatus = await loadFiling();
           if (cancelled) return;
@@ -159,10 +177,13 @@ function ConfirmationContent() {
     const interval = setInterval(async () => {
       pollCount.current++;
 
-      const paymentStatus = await verifyStripeSession();
+      const verifyResult = await verifyStripeSession();
 
-      if (paymentStatus === "completed") {
+      if (verifyResult.status === "completed") {
         clearInterval(interval);
+        if (verifyResult.filingId) {
+          anchoredFilingIdRef.current = verifyResult.filingId;
+        }
         const filingStatus = await loadFiling();
         updateStatusFromFiling(filingStatus);
         return;

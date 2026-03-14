@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { AccountForm } from "@/components/forms/AccountForm";
 import { AccountEditForm } from "@/components/forms/AccountEditForm";
-import { StatementUpload } from "@/components/forms/StatementUpload";
+import { MultiStatementUpload, type UploadedFileInfo } from "@/components/forms/MultiStatementUpload";
 import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountReview";
 import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
 import type { MappedAccount } from "@/lib/extraction-mapper";
@@ -45,6 +45,8 @@ export default function AccountsPage() {
   const [extractedAccounts, setExtractedAccounts] = useState<MappedAccount[] | null>(null);
   const [savingExtracted, setSavingExtracted] = useState(false);
   const [uploadWarnings, setUploadWarnings] = useState<string[]>([]);
+  const [coverageWarning, setCoverageWarning] = useState<string | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
 
   const loadData = useCallback(async () => {
     try {
@@ -172,7 +174,7 @@ export default function AccountsPage() {
     }
   };
 
-  const handleExtracted = (mapped: MappedAccount[], warnings: string[]) => {
+  const handleAllExtracted = (mapped: MappedAccount[], warnings: string[]) => {
     setExtractedAccounts(mapped);
     setUploadWarnings(warnings);
   };
@@ -193,6 +195,8 @@ export default function AccountsPage() {
         }
       }
       setExtractedAccounts(null);
+      setCoverageWarning(null);
+      setUploadedFiles([]);
       await loadData();
     } catch {
       setError("Failed to save extracted accounts. Please try again.");
@@ -356,11 +360,52 @@ export default function AccountsPage() {
             {/* Statement upload — premium only */}
             {tier === "PREMIUM" && filingYearId && !extractedAccounts && !showForm && (
               <div className="mb-6">
-                <StatementUpload
+                <MultiStatementUpload
                   filingYearId={filingYearId}
-                  onExtracted={handleExtracted}
+                  calendarYear={calendarYear}
+                  onAllExtracted={handleAllExtracted}
+                  onCoverageWarning={setCoverageWarning}
                   onError={(err) => setError(err)}
+                  onFilesChanged={setUploadedFiles}
                 />
+              </div>
+            )}
+
+            {/* Uploaded files list — persists during review */}
+            {uploadedFiles.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Uploaded Statements</h3>
+                <div className="space-y-1">
+                  {uploadedFiles.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm">
+                      <span className={
+                        f.status === "done" ? "text-green-600" :
+                        f.status === "error" ? "text-red-600" :
+                        f.status === "uploading" ? "text-navy-900" :
+                        "text-gray-400"
+                      }>
+                        {f.status === "done" ? "✓" :
+                         f.status === "error" ? "✗" :
+                         f.status === "uploading" ? "⟳" :
+                         "○"}
+                      </span>
+                      <span className="text-gray-700 truncate">{f.name}</span>
+                      <span className="text-gray-400 text-xs">
+                        {f.size < 1024 ? `${f.size} B` :
+                         f.size < 1024 * 1024 ? `${(f.size / 1024).toFixed(0)} KB` :
+                         `${(f.size / 1024 / 1024).toFixed(1)} MB`}
+                      </span>
+                      {f.errorMessage && <span className="text-red-600 text-xs">{f.errorMessage}</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Coverage warning — persists during review */}
+            {coverageWarning && (
+              <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4" role="alert">
+                <p className="text-sm text-amber-800">{coverageWarning}</p>
               </div>
             )}
 
@@ -381,7 +426,7 @@ export default function AccountsPage() {
                   accounts={extractedAccounts}
                   calendarYear={calendarYear}
                   onSaveAll={handleSaveExtracted}
-                  onDismiss={() => setExtractedAccounts(null)}
+                  onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setUploadedFiles([]); }}
                 />
                 {savingExtracted && (
                   <div className="mt-2 text-center text-sm text-gray-500">Saving accounts...</div>
