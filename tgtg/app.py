@@ -108,16 +108,17 @@ def _geocode_input(address_input: str) -> tuple[float, float] | None:
 with st.sidebar:
     st.header("Settings")
 
-    email = st.text_input("TGTG Email", value="", placeholder="you@example.com")
+    email = st.text_input("TGTG Email", key="tgtg_email", placeholder="you@example.com")
     address = st.text_input(
         "Address or Coordinates",
-        value="",
-        placeholder="123 Main St, Denver CO  or  39.59,-105.01",
+        key="tgtg_address",
+        placeholder="5235 W Plymouth Dr, Littleton CO",
+        help="Street address, city, or lat,lng (e.g. 39.59,-105.01)",
     )
-    radius_miles = st.slider("Search radius (miles)", 5, 50, 30)
-    max_dist_miles = st.slider("Max distance between stops (miles)", 1, 15, 5)
-    min_overlap = st.slider("Min pickup window overlap (min)", 5, 60, 15)
-    tz_name = st.selectbox("Timezone", US_TIMEZONES, index=US_TIMEZONES.index("America/Denver"))
+    radius_miles = st.slider("Search radius (miles)", 5, 50, 30, key="tgtg_radius")
+    max_dist_miles = st.slider("Max distance between stops (miles)", 1, 15, 5, key="tgtg_maxdist")
+    min_overlap = st.slider("Min pickup window overlap (min)", 5, 60, 15, key="tgtg_overlap")
+    tz_name = st.selectbox("Timezone", US_TIMEZONES, index=US_TIMEZONES.index("America/Denver"), key="tgtg_tz")
 
     fetch_btn = st.button("\U0001f50d Fetch Bags", type="primary", use_container_width=True)
 
@@ -149,9 +150,12 @@ if fetch_btn:
     if not email:
         st.error("Please enter your TGTG email.")
         st.stop()
-    coords = _geocode_input(address) if address else None
+    if not address:
+        st.error("Please enter an address or coordinates.")
+        st.stop()
+    coords = _geocode_input(address)
     if not coords:
-        st.error("Could not resolve address. Try 'lat,lng' format (e.g. 39.59,-105.01).")
+        st.error(f"Could not resolve '{address}'. Try a street address or lat,lng (e.g. 39.59,-105.01).")
         st.stop()
 
     st.session_state.coords = coords
