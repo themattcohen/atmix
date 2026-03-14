@@ -123,6 +123,16 @@ with st.sidebar:
 
 tz = ZoneInfo(tz_name)
 
+# ── Secrets → env vars (Streamlit Cloud) ───────────────────────────────────────
+
+import os
+try:
+    for key in ("TGTG_EMAIL", "TGTG_ACCESS_TOKEN", "TGTG_REFRESH_TOKEN", "TGTG_COOKIE"):
+        if key in st.secrets and not os.getenv(key):
+            os.environ[key] = st.secrets[key]
+except Exception:
+    pass  # no secrets configured
+
 # ── Session State ──────────────────────────────────────────────────────────────
 
 for key, default in [("auth_phase", "idle"), ("client", None), ("items", None)]:
