@@ -174,10 +174,10 @@ tz = ZoneInfo(tz_name)
 # ── Auth State ─────────────────────────────────────────────────────────────────
 
 if "auth_phase" not in st.session_state:
-    st.session_state.auth_phase = "idle"  # idle | polling | ready
+    st.session_state.auth_phase = "idle"  # idle | polling | ready | done
 if "client" not in st.session_state:
     st.session_state.client = None
-if "items" not in st.session_state:
+if "items" not in st.session_state or not isinstance(st.session_state.items, (list, type(None))):
     st.session_state.items = None
 
 # ── Auth Flow ──────────────────────────────────────────────────────────────────
