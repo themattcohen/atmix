@@ -87,6 +87,9 @@ def cluster_bags(bags: list[Bag], *,
     """
     max_distance_km = max_distance_miles * KM_PER_MILE
 
+    if not isinstance(bags, list):
+        return [], []
+
     # Filter to in-stock dicts, sort by pickup start
     available = [b for b in bags if isinstance(b, dict) and b.get("items_available", 0) > 0]
     available.sort(key=lambda b: _pickup_window(b)[0])
