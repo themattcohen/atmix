@@ -259,12 +259,14 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
                 latitude=coords[0],
                 longitude=coords[1],
                 radius=radius_km,
-                with_stock_only=True,
+                with_stock_only=False,
             )
             from auth import save_credentials
             save_credentials(client, st.session_state.get("email", ""))
-            st.session_state.items = items if isinstance(items, list) else []
+            all_items = items if isinstance(items, list) else []
+            st.session_state.items = all_items
             st.session_state.auth_phase = "done"
+            st.toast(f"Fetched {len(all_items)} items from TGTG (coords: {coords[0]:.4f},{coords[1]:.4f}, radius: {radius_km}km)")
             st.rerun()
         except Exception as e:
             st.error(f"Failed to fetch bags: {e}")
