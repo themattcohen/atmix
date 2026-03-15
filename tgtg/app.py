@@ -9,7 +9,7 @@ import streamlit as st
 
 st.set_page_config(page_title="TGTG Pickup Optimizer", page_icon="\U0001f961", layout="wide")
 st.title("\U0001f961 TGTG Pickup Optimizer")
-st.caption("v2 — 2026-03-14")
+st.caption("v3 — 2026-03-15")
 
 # Lazy imports — only load heavy deps when needed
 # This avoids import crashes blocking the initial render
@@ -468,3 +468,5 @@ elif isinstance(st.session_state.items, list) and not st.session_state.items:
 
 elif st.session_state.auth_phase == "idle":
     st.info("Enter your TGTG email and location in the sidebar, then click **Fetch Bags**.")
+else:
+    st.warning(f"Debug: auth_phase={st.session_state.auth_phase}, items type={type(st.session_state.items).__name__}, items len={len(st.session_state.items) if isinstance(st.session_state.items, list) else 'N/A'}")
