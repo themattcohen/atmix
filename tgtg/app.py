@@ -227,31 +227,44 @@ if st.session_state.auth_phase == "polling":
             if not pin or len(pin) != 6:
                 st.warning("Enter the 6-digit PIN from the TGTG email.")
             else:
+                import time as _time
                 client = st.session_state.client
                 polling_id = st.session_state.polling_id
-                response = client._post("auth/v5/authByRequestPollingId", {
-                    "device_type": "ANDROID",
-                    "email": st.session_state.email,
-                    "request_polling_id": polling_id,
-                    "request_polling_verification_code": pin,
-                })
-                if response.status_code == 200:
-                    data = response.json()
-                    client.access_token = data["access_token"]
-                    client.refresh_token = data["refresh_token"]
-                    set_cookie = response.headers.get("Set-Cookie", "")
-                    dd_match = re.search(r"datadome=([^;]+)", set_cookie)
-                    if dd_match:
-                        client.datadome_cookie = dd_match.group(1)
-                    st.session_state.client = client
-                    st.session_state.auth_phase = "ready"
-                    from auth import save_credentials
-                    save_credentials(client, st.session_state.email)
+                # Submit PIN, then poll — TGTG processes the PIN asynchronously
+                authenticated = False
+                for attempt in range(10):
+                    payload = {
+                        "device_type": "ANDROID",
+                        "email": st.session_state.email,
+                        "request_polling_id": polling_id,
+                    }
+                    if attempt == 0:
+                        payload["request_polling_verification_code"] = pin
+                    response = client._post("auth/v5/authByRequestPollingId", payload)
+                    if response.status_code == 200:
+                        data = response.json()
+                        client.access_token = data["access_token"]
+                        client.refresh_token = data["refresh_token"]
+                        set_cookie = response.headers.get("Set-Cookie", "")
+                        dd_match = re.search(r"datadome=([^;]+)", set_cookie)
+                        if dd_match:
+                            client.datadome_cookie = dd_match.group(1)
+                        st.session_state.client = client
+                        st.session_state.auth_phase = "ready"
+                        from auth import save_credentials
+                        save_credentials(client, st.session_state.email)
+                        authenticated = True
+                        break
+                    elif response.status_code == 202:
+                        _time.sleep(3)
+                        continue
+                    else:
+                        st.error(f"Auth failed: {response.status_code}")
+                        break
+                if authenticated:
                     st.rerun()
                 elif response.status_code == 202:
-                    st.warning("PIN not accepted. Check the latest email and try again.")
-                else:
-                    st.error(f"Auth failed: {response.status_code}")
+                    st.warning("PIN submitted but server is still processing. Click Submit PIN again to retry.")
 
 # ── Fetch Items ────────────────────────────────────────────────────────────────
 
