@@ -139,13 +139,13 @@ except Exception:
 
 # ── Session State ──────────────────────────────────────────────────────────────
 
-for key, default in [("auth_phase", "idle"), ("client", None), ("items", None)]:
+for key, default in [("auth_phase", "idle"), ("client", None), ("tgtg_items", None)]:
     if key not in st.session_state:
         st.session_state[key] = default
 
 # Force-reset corrupt items
-if not isinstance(st.session_state.items, (list, type(None))):
-    st.session_state.items = None
+if not isinstance(st.session_state.tgtg_items, (list, type(None))):
+    st.session_state.tgtg_items = None
 
 # ── Auth Flow ──────────────────────────────────────────────────────────────────
 
@@ -165,7 +165,7 @@ if fetch_btn:
 
     st.session_state.coords = coords
     st.session_state.email = email
-    st.session_state.items = None  # clear previous results
+    st.session_state.tgtg_items = None  # clear previous results
 
     # Reuse existing authenticated client if available
     if st.session_state.client and st.session_state.auth_phase == "done":
@@ -284,7 +284,7 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
             save_credentials(client, st.session_state.get("email", ""))
             all_items = items if isinstance(items, list) else []
             in_stock = sum(1 for b in all_items if isinstance(b, dict) and b.get("items_available", 0) > 0)
-            st.session_state.items = all_items
+            st.session_state.tgtg_items = all_items
             st.session_state.auth_phase = "done"
 
             if not all_items:
@@ -301,8 +301,8 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
 
 # ── Display Results ────────────────────────────────────────────────────────────
 
-if isinstance(st.session_state.items, list) and st.session_state.items:
-    items = st.session_state.items
+if isinstance(st.session_state.tgtg_items, list) and st.session_state.tgtg_items:
+    items = st.session_state.tgtg_items
     coords = st.session_state.get("coords", (39.59, -105.01))
 
     from clustering import cluster_bags, _bag_area, _bag_coords, _pickup_window, distance_miles
@@ -463,10 +463,8 @@ if isinstance(st.session_state.items, list) and st.session_state.items:
                     })
                 st.dataframe(rows, use_container_width=True, hide_index=True)
 
-elif isinstance(st.session_state.items, list) and not st.session_state.items:
+elif isinstance(st.session_state.tgtg_items, list) and not st.session_state.tgtg_items:
     st.warning("TGTG returned 0 items. This may mean no stores are nearby, or the DataDome cookie/tokens need refreshing.")
 
 elif st.session_state.auth_phase == "idle":
     st.info("Enter your TGTG email and location in the sidebar, then click **Fetch Bags**.")
-else:
-    st.warning(f"Debug: auth_phase={st.session_state.auth_phase}, items type={type(st.session_state.items).__name__}, items len={len(st.session_state.items) if isinstance(st.session_state.items, list) else 'N/A'}")
