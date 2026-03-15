@@ -184,12 +184,11 @@ if fetch_btn:
                 st.session_state.auth_phase = "ready"
             except Exception as e:
                 _status.warning(f"Token refresh failed: {e}")
-                # Refresh failed — show email login UI instead of blocking
                 st.session_state.auth_phase = "need_email_login"
                 st.session_state.client = client
-            else:
-                st.session_state.auth_phase = "need_email_login"
-                st.session_state.client = client
+        else:
+            st.session_state.auth_phase = "need_email_login"
+            st.session_state.client = client
 
     if st.session_state.auth_phase == "need_email_login":
         try:
