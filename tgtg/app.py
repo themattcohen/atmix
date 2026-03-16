@@ -94,11 +94,19 @@ def _geocode_input(address_input: str) -> tuple[float, float] | None:
                 return lat, lng
         except ValueError:
             pass
-    # Geocode via Nominatim
+    # Geocode via Nominatim, fallback to Photon (more tolerant of cloud IPs)
     try:
         from geopy.geocoders import Nominatim
         geo = Nominatim(user_agent="tgtg-pickup-optimizer/1.0", timeout=10)
         loc = geo.geocode(address_input, exactly_one=True, country_codes="us")
+        if loc:
+            return loc.latitude, loc.longitude
+    except Exception:
+        pass
+    try:
+        from geopy.geocoders import Photon
+        geo = Photon(user_agent="tgtg-pickup-optimizer/1.0", timeout=10)
+        loc = geo.geocode(address_input, exactly_one=True)
         if loc:
             return loc.latitude, loc.longitude
     except Exception as e:
