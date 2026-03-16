@@ -118,7 +118,7 @@ with st.sidebar:
         placeholder="Denver, CO",
         help="Street address, city, or lat,lng (e.g. 39.59,-105.01)",
     )
-    radius_miles = st.slider("Search radius (miles)", 5, 50, 30, key="tgtg_radius")
+    radius_miles = st.slider("Search radius (miles)", 1, 50, 30, key="tgtg_radius")
     max_dist_miles = st.slider("Max distance between stops (miles)", 1, 15, 5, key="tgtg_maxdist")
     min_overlap = st.slider("Min pickup window overlap (min)", 5, 60, 15, key="tgtg_overlap")
     tz_name = st.selectbox("Timezone", US_TIMEZONES, index=US_TIMEZONES.index("America/Denver"), key="tgtg_tz")
