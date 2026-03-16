@@ -76,6 +76,15 @@ def _bag_type(bag: Bag) -> str:
     return CATEGORY_MAP.get(cat, cat.replace("_", " ").title() if cat else "Surprise")
 
 
+def _rating(bag: Bag) -> str:
+    r = bag.get("item", {}).get("average_overall_rating", {})
+    score = r.get("average_overall_rating")
+    if score is None:
+        return "—"
+    count = r.get("rating_count", 0)
+    return f"{score:.1f} ({count})"
+
+
 def _short_address(bag: Bag) -> str:
     addr = bag["store"]["store_location"].get("address", {})
     line = addr.get("address_line", "")
@@ -291,9 +300,6 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
             from auth import save_credentials
             save_credentials(client, st.session_state.get("email", ""))
             all_items = items if isinstance(items, list) else []
-            # DEBUG: discover bag/store key structure for rating field
-            if all_items:
-                st.json({"bag_keys": list(all_items[0].keys()), "store_keys": list(all_items[0].get("store", {}).keys())})
             in_stock = sum(1 for b in all_items if isinstance(b, dict) and b.get("items_available", 0) > 0)
             st.session_state.tgtg_items = all_items
             st.session_state.auth_phase = "done"
@@ -449,6 +455,7 @@ if isinstance(st.session_state.tgtg_items, list) and st.session_state.tgtg_items
                             "Address": _short_address(bag),
                             "Type": _bag_type(bag),
                             "Price": _price(bag),
+                            "Rating": _rating(bag),
                             "Window": f"{_fmt_time(s, tz)}\u2013{_fmt_time(e, tz)}",
                             "Avail": bag.get("items_available", 0),
                         })
@@ -468,6 +475,7 @@ if isinstance(st.session_state.tgtg_items, list) and st.session_state.tgtg_items
                         "Address": _short_address(bag),
                         "Type": _bag_type(bag),
                         "Price": _price(bag),
+                        "Rating": _rating(bag),
                         "Window": f"{_fmt_time(s, tz)}\u2013{_fmt_time(e, tz)}",
                         "Area": _bag_area(bag),
                         "Avail": bag.get("items_available", 0),
