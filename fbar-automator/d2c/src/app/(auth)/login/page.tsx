@@ -9,10 +9,10 @@ import * as Sentry from "@sentry/nextjs";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const rawCallback = searchParams.get("callbackUrl") || "/threshold";
+  const rawCallback = searchParams.get("callbackUrl") || "/dashboard";
   const callbackUrl = (rawCallback.startsWith("/") && !rawCallback.startsWith("//") && !rawCallback.includes("\\"))
     ? rawCallback
-    : "/threshold";
+    : "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

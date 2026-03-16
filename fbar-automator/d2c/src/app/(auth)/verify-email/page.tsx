@@ -47,7 +47,7 @@ function VerifyEmailContent() {
               redirect: false,
             });
             if (loginResult?.ok) {
-              setTimeout(() => router.push("/threshold"), 2000);
+              setTimeout(() => router.push("/dashboard"), 2000);
               return;
             }
           }

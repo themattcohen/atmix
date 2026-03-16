@@ -58,9 +58,11 @@ export async function POST(request: NextRequest) {
       return handleReset(body);
     case "set-status":
       return handleSetStatus(body);
+    case "get-verification-token":
+      return handleGetVerificationToken(body);
     default:
       return NextResponse.json(
-        { error: "Invalid action. Use: setup, cleanup, reset, set-status" },
+        { error: "Invalid action. Use: setup, cleanup, reset, set-status, get-verification-token" },
         { status: 400 }
       );
   }
@@ -73,6 +75,7 @@ async function handleSetup(body: Record<string, unknown>) {
   const email = body.email as string;
   const password = (body.password as string) || "E2eTestPass123!";
   const calendarYear = (body.calendarYear as number) || undefined;
+  const emailVerified = body.emailVerified !== false; // default true for backward compat
 
   if (!email || !EMAIL_PATTERN.test(email)) {
     return NextResponse.json(
@@ -93,7 +96,9 @@ async function handleSetup(body: Record<string, unknown>) {
     data: {
       email,
       passwordHash: hashedPassword,
-      emailVerified: true,
+      emailVerified,
+      firstName: (body.firstName as string) || null,
+      lastName: (body.lastName as string) || null,
     },
   });
 
@@ -199,8 +204,16 @@ async function handleReset(body: Record<string, unknown>) {
 
 // ---------------------------------------------------------------------------
 // set-status: Set FilingYear status directly
+// Blocked in production to prevent advancing past SIGNED without payment.
 // ---------------------------------------------------------------------------
 async function handleSetStatus(body: Record<string, unknown>) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "set-status is disabled in production" },
+      { status: 403 }
+    );
+  }
+
   const email = body.email as string;
   const status = body.status as string;
   const calendarYear = body.calendarYear as number | undefined;
@@ -255,6 +268,52 @@ async function handleSetStatus(body: Record<string, unknown>) {
   return NextResponse.json({
     success: true,
     data: { id: updated.id, status: updated.status },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// get-verification-token: Create a verification token for a user (for E2E
+// tests that need to exercise the email verification flow without email).
+// ---------------------------------------------------------------------------
+async function handleGetVerificationToken(body: Record<string, unknown>) {
+  const email = body.email as string;
+
+  if (!email || !EMAIL_PATTERN.test(email)) {
+    return NextResponse.json(
+      { error: "Email must match e2e-test-*@test.fbardirect.com" },
+      { status: 400 }
+    );
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  // Delete existing unused tokens for this user
+  await prisma.emailVerificationToken.deleteMany({
+    where: { userId: user.id, used: false },
+  });
+
+  // Generate new token — return the raw token so the test can use it
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(rawToken)
+    .digest("hex");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await prisma.emailVerificationToken.create({
+    data: {
+      userId: user.id,
+      token: hashedToken,
+      expiresAt,
+    },
+  });
+
+  return NextResponse.json({
+    success: true,
+    data: { token: rawToken, expiresAt: expiresAt.toISOString() },
   });
 }
 
