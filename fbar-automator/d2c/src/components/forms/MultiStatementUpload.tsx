@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import type { MappedAccount } from "@/lib/extraction-mapper";
+import { consolidateExtractedAccounts } from "@/lib/account-consolidation";
+import { deduplicateWarnings } from "@/lib/warning-filter";
 import { computeMonthsCovered, monthName } from "@/lib/statement-coverage";
 
 export interface UploadedFileInfo {
@@ -205,9 +207,14 @@ export function MultiStatementUpload({
       }
     }
 
-    // Call onAllExtracted if we have any accounts
+    // Consolidate accounts (e.g. 24 monthly extractions → 2 unique accounts)
+    // then call onAllExtracted
     if (allAccountsRef.current.length > 0) {
-      onAllExtracted([...allAccountsRef.current], [...allWarningsRef.current]);
+      const consolidated = consolidateExtractedAccounts([...allAccountsRef.current]);
+      const consolidatedWarnings = consolidated.flatMap((a) =>
+        a.warnings.map((w) => `Account ${a.sourceIndex + 1}: ${w}`)
+      );
+      onAllExtracted(consolidated, deduplicateWarnings(consolidatedWarnings));
     }
   }, [filingYearId, calendarYear, onAllExtracted, onCoverageWarning]);
 

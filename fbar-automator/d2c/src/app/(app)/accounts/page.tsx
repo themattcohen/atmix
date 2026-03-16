@@ -9,6 +9,7 @@ import { MultiStatementUpload, type UploadedFileInfo } from "@/components/forms/
 import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountReview";
 import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
 import type { MappedAccount } from "@/lib/extraction-mapper";
+import { consolidateExtractedAccounts } from "@/lib/account-consolidation";
 import { deduplicateWarnings } from "@/lib/warning-filter";
 import { ImportBanner } from "@/components/ImportBanner";
 import { PRICING } from "@/lib/pricing";
@@ -49,6 +50,7 @@ export default function AccountsPage() {
   const [coverageWarning, setCoverageWarning] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
   const [recoveredFromDB, setRecoveredFromDB] = useState(false);
+  const [recoveredStatementCount, setRecoveredStatementCount] = useState(0);
 
   const loadData = useCallback(async () => {
     try {
@@ -129,15 +131,16 @@ export default function AccountsPage() {
             );
 
             if (completedWithAccounts.length > 0) {
-              // Merge all extracted accounts
+              // Merge all extracted accounts then consolidate
               const merged: MappedAccount[] = [];
               for (const s of completedWithAccounts) {
                 merged.push(...(s.extractedAccounts as MappedAccount[]));
               }
+              const consolidated = consolidateExtractedAccounts(merged);
 
-              // Build warnings
+              // Build warnings from consolidated accounts
               const warnings: string[] = [];
-              for (const mapped of merged) {
+              for (const mapped of consolidated) {
                 if (mapped.warnings?.length > 0) {
                   warnings.push(
                     ...mapped.warnings.map(
@@ -152,9 +155,10 @@ export default function AccountsPage() {
                 }
               }
 
-              setExtractedAccounts(merged);
+              setExtractedAccounts(consolidated);
               setUploadWarnings(deduplicateWarnings(warnings));
               setRecoveredFromDB(true);
+              setRecoveredStatementCount(completedWithAccounts.length);
 
               // Reconstruct uploaded files list
               const reconstructed: UploadedFileInfo[] = completedWithAccounts.map((s) => {
@@ -505,7 +509,7 @@ export default function AccountsPage() {
             {recoveredFromDB && extractedAccounts && (
               <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4" role="status">
                 <p className="text-sm text-blue-800">
-                  We found {uploadedFiles.length} previously extracted statement{uploadedFiles.length !== 1 ? "s" : ""}. Review and save to continue.
+                  We analyzed {recoveredStatementCount} statement{recoveredStatementCount !== 1 ? "s" : ""} and found {extractedAccounts.length} unique account{extractedAccounts.length !== 1 ? "s" : ""}. Review and save to continue.
                 </p>
               </div>
             )}
