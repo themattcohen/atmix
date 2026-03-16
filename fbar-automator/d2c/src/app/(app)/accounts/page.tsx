@@ -9,6 +9,7 @@ import { MultiStatementUpload, type UploadedFileInfo } from "@/components/forms/
 import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountReview";
 import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
 import type { MappedAccount } from "@/lib/extraction-mapper";
+import { deduplicateWarnings } from "@/lib/warning-filter";
 import { ImportBanner } from "@/components/ImportBanner";
 import { PRICING } from "@/lib/pricing";
 import { pushDataLayer } from "@/lib/gtm";
@@ -47,6 +48,7 @@ export default function AccountsPage() {
   const [uploadWarnings, setUploadWarnings] = useState<string[]>([]);
   const [coverageWarning, setCoverageWarning] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
+  const [recoveredFromDB, setRecoveredFromDB] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -97,6 +99,84 @@ export default function AccountsPage() {
         if (data.data.length > 0) setTierSelected(true);
       }
       if (data.priorYears) setPriorYears(data.priorYears);
+
+      // Recovery: if no saved accounts but completed statements exist, recover extractions
+      const savedAccounts: AccountDisplay[] = data.data || [];
+      const activeFilingId = filingData.data?.find(
+        (f: { status: string; id: string; tier: string }) =>
+          ["IN_PROGRESS", "REVIEWED"].includes(f.status)
+      );
+      if (
+        savedAccounts.length === 0 &&
+        activeFilingId?.tier === "PREMIUM" &&
+        activeFilingId?.id
+      ) {
+        try {
+          const stmtRes = await fetch(
+            `/api/statements?filingYearId=${activeFilingId.id}`
+          );
+          if (stmtRes.ok) {
+            const stmtData = await stmtRes.json();
+            const statements: Array<{
+              id: string;
+              fileName: string;
+              fileSizeBytes: number;
+              extractedAccounts: MappedAccount[];
+            }> = stmtData.data || [];
+
+            const completedWithAccounts = statements.filter(
+              (s) => Array.isArray(s.extractedAccounts) && s.extractedAccounts.length > 0
+            );
+
+            if (completedWithAccounts.length > 0) {
+              // Merge all extracted accounts
+              const merged: MappedAccount[] = [];
+              for (const s of completedWithAccounts) {
+                merged.push(...(s.extractedAccounts as MappedAccount[]));
+              }
+
+              // Build warnings
+              const warnings: string[] = [];
+              for (const mapped of merged) {
+                if (mapped.warnings?.length > 0) {
+                  warnings.push(
+                    ...mapped.warnings.map(
+                      (w: string) => `Account ${mapped.sourceIndex + 1}: ${w}`
+                    )
+                  );
+                }
+                if (mapped.confidence?.overall === "low") {
+                  warnings.push(
+                    `Account ${mapped.sourceIndex + 1}: Low overall confidence — please review carefully.`
+                  );
+                }
+              }
+
+              setExtractedAccounts(merged);
+              setUploadWarnings(deduplicateWarnings(warnings));
+              setRecoveredFromDB(true);
+
+              // Reconstruct uploaded files list
+              const reconstructed: UploadedFileInfo[] = completedWithAccounts.map((s) => {
+                let worstConfidence: "high" | "medium" | "low" = "high";
+                for (const a of s.extractedAccounts) {
+                  if (a.confidence?.overall === "low") { worstConfidence = "low"; break; }
+                  if (a.confidence?.overall === "medium") worstConfidence = "medium";
+                }
+                return {
+                  name: s.fileName,
+                  size: s.fileSizeBytes,
+                  status: "done" as const,
+                  confidence: worstConfidence,
+                };
+              });
+              setUploadedFiles(reconstructed);
+            }
+          }
+        } catch {
+          // Recovery is best-effort — don't block the page
+        }
+      }
     } catch {
       setError("Unable to connect to the server. Please check your connection and try again.");
     } finally {
@@ -197,6 +277,7 @@ export default function AccountsPage() {
       setExtractedAccounts(null);
       setCoverageWarning(null);
       setUploadedFiles([]);
+      setRecoveredFromDB(false);
       await loadData();
     } catch {
       setError("Failed to save extracted accounts. Please try again.");
@@ -420,6 +501,15 @@ export default function AccountsPage() {
               </div>
             )}
 
+            {/* Recovery banner */}
+            {recoveredFromDB && extractedAccounts && (
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4" role="status">
+                <p className="text-sm text-blue-800">
+                  We found {uploadedFiles.length} previously extracted statement{uploadedFiles.length !== 1 ? "s" : ""}. Review and save to continue.
+                </p>
+              </div>
+            )}
+
             {/* Extracted account review */}
             {extractedAccounts && (
               <div className="mb-6">
@@ -428,7 +518,7 @@ export default function AccountsPage() {
                   calendarYear={calendarYear}
                   warnings={uploadWarnings}
                   onSaveAll={handleSaveExtracted}
-                  onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setUploadedFiles([]); }}
+                  onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setUploadedFiles([]); setRecoveredFromDB(false); }}
                 />
                 {savingExtracted && (
                   <div className="mt-2 text-center text-sm text-gray-500">Saving accounts...</div>
