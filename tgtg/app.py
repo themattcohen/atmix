@@ -9,7 +9,7 @@ import streamlit as st
 
 st.set_page_config(page_title="TGTG Pickup Optimizer", page_icon="\U0001f961", layout="wide")
 st.title("\U0001f961 TGTG Pickup Optimizer")
-st.caption("v3 — 2026-03-15")
+st.caption("v4 — 2026-03-16")
 
 # Lazy imports — only load heavy deps when needed
 # This avoids import crashes blocking the initial render
@@ -291,6 +291,9 @@ if st.session_state.auth_phase == "ready" and st.session_state.get("coords"):
             from auth import save_credentials
             save_credentials(client, st.session_state.get("email", ""))
             all_items = items if isinstance(items, list) else []
+            # DEBUG: discover bag/store key structure for rating field
+            if all_items:
+                st.json({"bag_keys": list(all_items[0].keys()), "store_keys": list(all_items[0].get("store", {}).keys())})
             in_stock = sum(1 for b in all_items if isinstance(b, dict) and b.get("items_available", 0) > 0)
             st.session_state.tgtg_items = all_items
             st.session_state.auth_phase = "done"
