@@ -223,7 +223,7 @@ export async function sendVerificationEmail(
     from: fromEmail,
     to: email,
     replyTo: "support@fbardirect.com",
-    subject: "Verify your email — FBAR Direct",
+    subject: "FBAR Direct — Confirm your account",
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: #112e51; padding: 24px; text-align: center;">
