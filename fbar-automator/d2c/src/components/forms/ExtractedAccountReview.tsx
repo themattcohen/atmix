@@ -7,6 +7,7 @@ import type { MappedAccount } from "@/lib/extraction-mapper";
 interface ExtractedAccountReviewProps {
   accounts: MappedAccount[];
   calendarYear: number;
+  warnings?: string[];
   onSaveAll: (accounts: AccountToSave[]) => void;
   onDismiss: () => void;
 }
@@ -43,6 +44,7 @@ function confidenceBg(level: "high" | "medium" | "low"): string {
 export function ExtractedAccountReview({
   accounts,
   calendarYear,
+  warnings = [],
   onSaveAll,
   onDismiss,
 }: ExtractedAccountReviewProps) {
@@ -100,14 +102,42 @@ export function ExtractedAccountReview({
         </span>
       </div>
 
-      {accounts.some((a) => a.warnings.length > 0) && (
-        <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mb-4 text-sm text-amber-800">
-          <p className="font-medium mb-1">Extraction Warnings</p>
-          <ul className="list-disc list-inside space-y-1">
-            {accounts.flatMap((a, i) =>
-              a.warnings.map((w, j) => <li key={`${i}-${j}`}>{w}</li>)
-            )}
+      {/* Tier 1: Success banner when no warnings */}
+      {warnings.length === 0 && (
+        <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4 flex items-center gap-2 text-sm text-green-800" role="status">
+          <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Extraction complete. Please verify the details below.
+        </div>
+      )}
+
+      {/* Tier 3: Collapsible info section for 4+ warnings */}
+      {warnings.length >= 4 && (
+        <details className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 text-sm text-blue-800">
+          <summary className="cursor-pointer font-medium flex items-center gap-2">
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {warnings.length} notes about extraction
+          </summary>
+          <ul className="mt-2 list-disc list-inside space-y-1">
+            {warnings.map((w, i) => <li key={i}>{w}</li>)}
           </ul>
+        </details>
+      )}
+
+      {/* Tier 2: Inline display for 1-3 warnings (shown above cards) */}
+      {warnings.length >= 1 && warnings.length < 4 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 text-sm text-blue-800">
+          <div className="flex items-start gap-2">
+            <svg className="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <ul className="space-y-1">
+              {warnings.map((w, i) => <li key={i}>{w}</li>)}
+            </ul>
+          </div>
         </div>
       )}
 

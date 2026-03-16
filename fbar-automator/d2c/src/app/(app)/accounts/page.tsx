@@ -389,6 +389,17 @@ export default function AccountsPage() {
                          f.status === "uploading" ? "⟳" :
                          "○"}
                       </span>
+                      {f.status === "done" && f.confidence && (
+                        <span
+                          className={`inline-block w-2 h-2 rounded-full ${
+                            f.confidence === "high" ? "bg-green-500" :
+                            f.confidence === "medium" ? "bg-amber-500" :
+                            "bg-red-500"
+                          }`}
+                          title={`${f.confidence} confidence`}
+                          aria-label={`${f.confidence} extraction confidence`}
+                        />
+                      )}
                       <span className="text-gray-700 truncate">{f.name}</span>
                       <span className="text-gray-400 text-xs">
                         {f.size < 1024 ? `${f.size} B` :
@@ -409,22 +420,13 @@ export default function AccountsPage() {
               </div>
             )}
 
-            {/* Upload warnings */}
-            {uploadWarnings.length > 0 && extractedAccounts && (
-              <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-6" role="alert">
-                <p className="font-medium text-amber-800 mb-1">Extraction Warnings</p>
-                <ul className="list-disc list-inside text-sm text-amber-700 space-y-1">
-                  {uploadWarnings.map((w, i) => <li key={i}>{w}</li>)}
-                </ul>
-              </div>
-            )}
-
             {/* Extracted account review */}
             {extractedAccounts && (
               <div className="mb-6">
                 <ExtractedAccountReview
                   accounts={extractedAccounts}
                   calendarYear={calendarYear}
+                  warnings={uploadWarnings}
                   onSaveAll={handleSaveExtracted}
                   onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setUploadedFiles([]); }}
                 />

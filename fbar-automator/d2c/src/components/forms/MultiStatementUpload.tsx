@@ -9,6 +9,7 @@ export interface UploadedFileInfo {
   size: number;
   status: "pending" | "uploading" | "done" | "error";
   errorMessage?: string;
+  confidence?: "high" | "medium" | "low";
 }
 
 interface MultiStatementUploadProps {
@@ -144,13 +145,23 @@ export function MultiStatementUpload({
           allPeriodsRef.current.push(...data.statementPeriods);
         }
 
+        // Compute file-level confidence from extracted accounts
+        let fileConfidence: "high" | "medium" | "low" = "high";
+        if (data.extractedAccounts?.length > 0) {
+          const levels = data.extractedAccounts.map((a: any) => a.confidence?.overall);
+          if (levels.includes("low")) fileConfidence = "low";
+          else if (levels.includes("medium")) fileConfidence = "medium";
+        } else {
+          fileConfidence = "low";
+        }
+
         setFiles((prev) => {
           const idx = prev.findIndex(
             (f) => f.name === file.name && f.status === "uploading"
           );
           if (idx !== -1) {
             const next = [...prev];
-            next[idx] = { ...next[idx], status: "done" };
+            next[idx] = { ...next[idx], status: "done", confidence: fileConfidence };
             return next;
           }
           return prev;

@@ -10,6 +10,7 @@ import { mapExtractedAccounts } from "@/lib/extraction-mapper";
 import type { MappedAccount } from "@/lib/extraction-mapper";
 import { sanitizeFileName } from "@/lib/sanitize";
 import { apiHandler } from "@/lib/api-handler";
+import { deduplicateWarnings } from "@/lib/warning-filter";
 
 export const maxDuration = 60;
 
@@ -125,6 +126,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
       return NextResponse.json({
         statementId: statement.id,
         extractedAccounts: [],
+        statementPeriods: [],
         warnings: [extractionResult.error || "Extraction failed. You can still add accounts manually."],
       });
     }
@@ -134,6 +136,10 @@ export const POST = apiHandler(async (req: NextRequest) => {
       extractionResult.result.accounts,
       filingYear.calendarYear
     );
+
+    const statementPeriods = extractionResult.result.accounts
+      .map((a: any) => a.statement_period)
+      .filter((p: any) => p?.start_date && p?.end_date);
 
     // Reconcile max values across prior uploads
     const priorStatements = await prisma.statement.findMany({
@@ -193,10 +199,13 @@ export const POST = apiHandler(async (req: NextRequest) => {
       }
     }
 
+    const filteredWarnings = deduplicateWarnings(warnings);
+
     return NextResponse.json({
       statementId: statement.id,
       extractedAccounts: mappedAccounts,
-      warnings,
+      statementPeriods,
+      warnings: filteredWarnings,
     });
   } catch (error) {
     Sentry.captureException(error);
