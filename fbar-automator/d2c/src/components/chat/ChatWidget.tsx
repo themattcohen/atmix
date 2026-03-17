@@ -11,13 +11,16 @@ import {
   type KeyboardEvent,
 } from "react";
 import { ChatMessage } from "./ChatMessage";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"chat" | "escalation">("chat");
   const [input, setInput] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   const { messages, sendMessage, status } = useChat({
     messages: [
@@ -66,9 +69,17 @@ export function ChatWidget() {
 
   const handleSend = useCallback(() => {
     if (!input.trim() || isLoading) return;
-    sendMessage({ text: input });
+    sendMessage(
+      { text: input },
+      {
+        body: { turnstileToken: turnstileToken ?? "" },
+      }
+    );
     setInput("");
-  }, [input, isLoading, sendMessage]);
+    // Reset Turnstile after each send so the next message gets a fresh token
+    turnstileRef.current?.reset();
+    setTurnstileToken(null);
+  }, [input, isLoading, sendMessage, turnstileToken]);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -205,27 +216,42 @@ export function ChatWidget() {
                   e.preventDefault();
                   handleSend();
                 }}
-                className="flex items-end gap-2 border-t border-border-gray px-3 py-2"
+                className="flex flex-col gap-1 border-t border-border-gray px-3 py-2"
               >
-                <textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={onKeyDown}
-                  placeholder="Type your question..."
-                  rows={1}
-                  className="max-h-24 flex-1 resize-none rounded-lg border border-border-gray bg-gray-50 px-3 py-2 font-body text-sm text-text-primary placeholder:text-text-secondary focus:border-gov-blue focus:outline-none focus:ring-1 focus:ring-gov-blue"
-                  aria-label="Chat message input"
-                  disabled={isLoading}
-                />
-                <button
-                  type="submit"
-                  disabled={!canSend}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gov-blue text-white transition-colors hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
-                  aria-label="Send message"
-                >
-                  <Send className="h-4 w-4" />
-                </button>
+                {/* Turnstile widget — compact, only shown when site key is configured */}
+                {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                  <div className="flex justify-center">
+                    <Turnstile
+                      ref={turnstileRef}
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                      options={{ size: "compact" }}
+                      onSuccess={(token) => setTurnstileToken(token)}
+                      onError={() => setTurnstileToken(null)}
+                      onExpire={() => setTurnstileToken(null)}
+                    />
+                  </div>
+                )}
+                <div className="flex items-end gap-2">
+                  <textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={onKeyDown}
+                    placeholder="Type your question..."
+                    rows={1}
+                    className="max-h-24 flex-1 resize-none rounded-lg border border-border-gray bg-gray-50 px-3 py-2 font-body text-sm text-text-primary placeholder:text-text-secondary focus:border-gov-blue focus:outline-none focus:ring-1 focus:ring-gov-blue"
+                    aria-label="Chat message input"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!canSend}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gov-blue text-white transition-colors hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Send message"
+                  >
+                    <Send className="h-4 w-4" />
+                  </button>
+                </div>
               </form>
             </>
           ) : (

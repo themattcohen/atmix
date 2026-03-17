@@ -11,6 +11,7 @@ import { Suspense } from "react";
 type ConfirmationStatus =
   | "loading"
   | "verifying_payment"
+  | "slow_webhook"
   | "paid"
   | "submitting"
   | "submitted"
@@ -196,12 +197,8 @@ function ConfirmationContent() {
         if (filingStatus && ["PAID", "SUBMITTING", "SUBMITTED", "ACCEPTED"].includes(filingStatus)) {
           updateStatusFromFiling(filingStatus);
         } else {
-          // Payment likely received, webhook just hasn't fired yet
-          setError(
-            "Payment verification is taking longer than expected. " +
-            "Your payment was likely received. Please check your dashboard in a few minutes."
-          );
-          setStatus("error");
+          // Payment likely received, webhook just hasn't fired yet — show slow-path status
+          setStatus("slow_webhook" as ConfirmationStatus);
         }
       }
     }, 2000);
@@ -367,6 +364,37 @@ function ConfirmationContent() {
           </div>
         )}
 
+        {status === "slow_webhook" && (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-navy-900 mb-2">Payment Received — Setting Up Your Filing</h1>
+            <p className="text-gray-600 mb-4">
+              Your payment was received successfully. We&apos;re finalizing your filing setup — this can take up to a minute.
+            </p>
+            <p className="text-sm text-gray-500 mb-8">
+              You can safely navigate away. Your filing will appear on your dashboard once it&apos;s ready.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => {
+                  setStatus("verifying_payment");
+                  pollCount.current = 0;
+                }}
+                className="py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-bold"
+              >
+                Check Again
+              </button>
+              <Link href="/dashboard" className="py-3 px-6 border border-navy-900 text-navy-900 rounded-md hover:bg-gray-50 font-bold">
+                Go to Dashboard
+              </Link>
+            </div>
+          </div>
+        )}
+
         {status === "paid" && (
           <div className="text-center py-16">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -465,16 +493,33 @@ function ConfirmationContent() {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-navy-900 mb-2">Submission Needs Attention</h1>
+            <p className="text-gray-600 mb-4">FinCEN rejected your FBAR submission. Our team will work with you to resolve this.</p>
             {filing.rejectionReason && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-6 text-left max-w-md mx-auto">
-                <p className="text-sm font-medium text-red-900">Rejection Reason:</p>
+                <p className="text-sm font-medium text-red-900">Rejection Reason from FinCEN:</p>
                 <p className="text-sm text-red-800 mt-1">{filing.rejectionReason}</p>
               </div>
             )}
-            <p className="text-gray-600 mb-6">Our team will review your filing and contact you with next steps.</p>
-            <Link href="/dashboard" className="py-3 px-6 border border-navy-900 text-navy-900 rounded-md hover:bg-gray-50 font-bold">
-              Go to Dashboard
-            </Link>
+            {!filing.rejectionReason && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-6 text-left max-w-md mx-auto">
+                <p className="text-sm text-red-800">No specific reason was provided by FinCEN. Please contact our support team for assistance.</p>
+              </div>
+            )}
+            <p className="text-gray-600 mb-6">Please contact our support team and we&apos;ll help you resubmit at no additional cost.</p>
+            <div className="flex gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="py-3 px-6 bg-red-600 text-white rounded-md hover:bg-red-700 font-bold"
+              >
+                Contact Support
+              </Link>
+              <Link
+                href="/dashboard"
+                className="py-3 px-6 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-bold"
+              >
+                View My Filings
+              </Link>
+            </div>
           </div>
         )}
       </div>

@@ -242,6 +242,14 @@ export default auth(async (req) => {
     }
   }
 
+  // Contact rate limit: 5 submissions/min per IP (explicit — prevents bypass by early return below)
+  if (normalizedPath === "/api/contact") {
+    if (!rateLimit(`contact:${ip}`, 5, 60_000)) {
+      log("warn", "rate_limit_hit", { method, path: normalizedPath, ip, requestId });
+      return finalize(NextResponse.json({ error: "Too many requests" }, { status: 429 }));
+    }
+  }
+
   // General API rate limit: 60 req/min per IP (exempt: /api/health, /api/stripe/webhook)
   if (
     normalizedPath.startsWith("/api/") &&
@@ -269,7 +277,6 @@ export default auth(async (req) => {
     "/api/auth/signout",     // NextAuth signout
     "/api/stripe/webhook",   // Stripe (has own signature verification)
     "/api/health",           // Health check
-    "/api/chat",             // Public AI chat (useChat hook doesn't send CSRF header)
     "/api/contact",          // Public contact form (Turnstile-protected)
     "/api/internal/",        // Internal endpoints (own auth via secret header)
   ];

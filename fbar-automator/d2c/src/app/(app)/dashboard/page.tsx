@@ -90,8 +90,8 @@ export default function DashboardPage() {
         className: "bg-green-600 text-white hover:bg-green-700",
       },
       REJECTED: {
-        label: "Action Required",
-        path: "/confirmation",
+        label: "Contact Support",
+        path: "/contact",
         className: "bg-red-600 text-white hover:bg-red-700",
       },
     };

@@ -29,7 +29,7 @@ export default function PricingPage() {
             "description": PRICING.basic.features.join(". "),
             "url": "https://fbardirect.com/pricing",
             "availability": "https://schema.org/InStock",
-            "priceValidUntil": "2026-10-15",
+            "priceValidUntil": "2027-04-15",
           },
           {
             "@type": "Offer",
@@ -39,7 +39,7 @@ export default function PricingPage() {
             "description": PRICING.premium.features.join(". "),
             "url": "https://fbardirect.com/pricing",
             "availability": "https://schema.org/InStock",
-            "priceValidUntil": "2026-10-15",
+            "priceValidUntil": "2027-04-15",
           },
         ],
       }} />

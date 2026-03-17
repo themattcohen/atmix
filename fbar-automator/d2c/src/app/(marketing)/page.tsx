@@ -32,23 +32,6 @@ export default function LandingPage() {
           "credentialCategory": "FinCEN BSA E-Filing Registration",
           "recognizedBy": { "@type": "GovernmentOrganization", "name": "Financial Crimes Enforcement Network (FinCEN)" },
         },
-        "founder": {
-          "@type": "Person",
-          "name": "Matt Cohen",
-          "jobTitle": "Founder & CPA",
-          "hasCredential": {
-            "@type": "EducationalOccupationalCredential",
-            "credentialCategory": "Certified Public Accountant (CPA)",
-          },
-          "sameAs": "https://www.linkedin.com/in/matt-cohen-cpa/",
-          "knowsAbout": [
-            "FBAR Filing",
-            "FinCEN Form 114",
-            "BSA E-Filing",
-            "Foreign Bank Account Reporting",
-            "Tax Compliance",
-          ],
-        },
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "1201 N. Market Street, Suite 111",

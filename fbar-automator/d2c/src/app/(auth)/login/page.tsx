@@ -27,6 +27,22 @@ function LoginForm() {
     }
   }, []);
 
+  // Restore persisted lockout message on mount (survives page refresh)
+  const onEmailChange = (newEmail: string) => {
+    setEmail(newEmail);
+    // When the user changes the email field, clear any stale lockout message for the old email
+    if (error) setError("");
+  };
+
+  // Re-surface a persisted lockout message when the email field is blurred
+  const onEmailBlur = () => {
+    if (!email) return;
+    const lockoutKey = `loginLocked:${email}`;
+    if (sessionStorage.getItem(lockoutKey) === "true") {
+      setError("Account is temporarily locked. Please try again in 15 minutes.");
+    }
+  };
+
   // Background redirect: if already authenticated, redirect without blocking the form render
   useEffect(() => {
     fetch("/api/auth/session")
@@ -63,16 +79,28 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        const key = `loginFails:${email}`;
-        const stored = parseInt(sessionStorage.getItem(key) || "0", 10);
-        const count = stored + 1;
-        sessionStorage.setItem(key, count.toString());
-        if (count >= 5) {
-          setError("Account may be temporarily locked. Please try again in 15 minutes.");
+        const failKey = `loginFails:${email}`;
+        const lockKey = `loginLocked:${email}`;
+        // Check if we already know this account is locked (persisted across refreshes)
+        if (sessionStorage.getItem(lockKey) === "true") {
+          setError("Account is temporarily locked. Please try again in 15 minutes.");
         } else {
-          setError("Invalid email or password");
+          const stored = parseInt(sessionStorage.getItem(failKey) || "0", 10);
+          const count = stored + 1;
+          sessionStorage.setItem(failKey, count.toString());
+          if (count >= 5) {
+            // Persist the lockout state so it survives a page refresh
+            sessionStorage.setItem(lockKey, "true");
+            sessionStorage.removeItem(failKey);
+            setError("Account is temporarily locked. Please try again in 15 minutes.");
+          } else {
+            setError("Invalid email or password");
+          }
         }
       } else {
+        // Clear any persisted lockout state on successful login
+        sessionStorage.removeItem(`loginFails:${email}`);
+        sessionStorage.removeItem(`loginLocked:${email}`);
         // Check if user has MFA enabled — redirect to verification page
         try {
           const sessionRes = await fetch("/api/auth/session");
@@ -130,7 +158,8 @@ function LoginForm() {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => onEmailChange(e.target.value)}
+              onBlur={onEmailBlur}
               required
               autoComplete="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gov-blue focus:border-transparent"

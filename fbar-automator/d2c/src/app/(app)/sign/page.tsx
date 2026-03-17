@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { pushDataLayer } from "@/lib/gtm";
 
@@ -135,6 +136,28 @@ export default function SignPage() {
         <div role="alert" className="bg-red-50 text-red-700 p-4 rounded-md mb-6">
           <p className="font-medium">Error</p>
           <p>{error}</p>
+        </div>
+      )}
+
+      {!filing && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6" role="status">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <div>
+              <p className="font-medium text-amber-900 mb-1">No Filing Ready to Sign</p>
+              <p className="text-sm text-amber-800">
+                Your filing is still being reviewed by our team. You&apos;ll be able to sign once the review is complete — this typically takes 1 business day.
+              </p>
+              <Link
+                href="/dashboard"
+                className="inline-block mt-3 text-sm font-medium text-amber-900 underline hover:text-amber-700"
+              >
+                Return to Dashboard
+              </Link>
+            </div>
+          </div>
         </div>
       )}
 

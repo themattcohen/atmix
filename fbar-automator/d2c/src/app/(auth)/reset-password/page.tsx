@@ -23,6 +23,16 @@ function ResetPasswordForm() {
       return;
     }
 
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain at least one uppercase letter");
+      return;
+    }
+
+    if (!/[0-9]/.test(password)) {
+      setError("Password must contain at least one number");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -159,7 +169,7 @@ function ResetPasswordForm() {
             maxLength={128}
           />
           <p className="text-xs text-gray-500 mt-1">
-            Must be at least 8 characters
+            8+ characters, 1 uppercase, 1 number
           </p>
         </div>
 

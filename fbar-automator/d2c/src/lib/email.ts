@@ -255,7 +255,7 @@ export async function sendAdminAckNotification(data: {
   bsaId?: string;
   rejectionReason?: string;
 }): Promise<void> {
-  const adminEmail = process.env.ADMIN_EMAIL || "matt@atmix.org";
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@fbardirect.com";
   await getResend().emails.send({
     from: fromEmail,
     to: adminEmail,

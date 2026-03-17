@@ -11,8 +11,8 @@ function VerifyEmailContent() {
   const token = searchParams.get("token");
   const emailParam = searchParams.get("email");
 
-  const [status, setStatus] = useState<"verifying" | "success" | "error" | "idle">(
-    token ? "verifying" : "idle"
+  const [status, setStatus] = useState<"verifying" | "success" | "error" | "idle" | "invalid">(
+    token ? "verifying" : (emailParam ? "idle" : "invalid")
   );
   const [error, setError] = useState("");
   const [resending, setResending] = useState(false);
@@ -94,6 +94,35 @@ function VerifyEmailContent() {
       setResending(false);
     }
   };
+
+  if (status === "invalid") {
+    return (
+      <>
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gov-blue mb-2">Invalid Verification Link</h2>
+          <p className="text-gray-600 mb-6">
+            This link is missing required information. Please try signing up again.
+          </p>
+          <Link
+            href="/signup"
+            className="inline-block py-2 px-6 bg-gov-blue text-white rounded-md hover:bg-gov-blue-dark focus:outline-none focus:ring-2 focus:ring-gov-blue focus:ring-offset-2 font-medium"
+          >
+            Back to Sign Up
+          </Link>
+        </div>
+        <p className="mt-6 text-center text-sm text-gray-600">
+          <Link href="/login" className="text-gov-blue font-medium hover:underline">
+            Back to Sign In
+          </Link>
+        </p>
+      </>
+    );
+  }
 
   return (
     <>
