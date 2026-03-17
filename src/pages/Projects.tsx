@@ -20,6 +20,15 @@ const projects: Project[] = [
     hostUrl: 'https://share.streamlit.io/',
   },
   {
+    title: 'tgtg pickup optimizer',
+    description:
+      'Route planner for Too Good To Go surprise bags. Authenticates with the TGTG API, fetches available bags by location, clusters nearby stores with overlapping pickup windows into efficient multi-stop runs, and maps everything with Folium. Includes store ratings, pricing, and drive-time estimates.',
+    url: 'https://tgtg-pickup-optimizer.streamlit.app/',
+    lastUpdated: 'March 2026',
+    host: 'Streamlit Community Cloud',
+    hostUrl: 'https://share.streamlit.io/',
+  },
+  {
     title: 'denver restaurant week 2026',
     description:
       'Searchable explorer for all 339 Denver Restaurant Week restaurants. Built because the official site had no real filtering — this adds instant search, multi-faceted filters (cuisine, neighborhood, price, dietary), sorting, and detail pages with full menus. Scraped and structured from the original site.',
