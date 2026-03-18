@@ -134,7 +134,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
     // Map extracted accounts to D2C format
     const mappedAccounts = mapExtractedAccounts(
       extractionResult.result.accounts,
-      filingYear.calendarYear
+      filingYear.calendarYear,
+      statement.id
     );
 
     const statementPeriods = extractionResult.result.accounts

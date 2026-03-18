@@ -90,6 +90,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
       jointOwnerInfo,
       calendarYear,
       institutionAddress,
+      sourceStatementId,
     } = parsed.data;
 
     // Compute maxValueUsd before create
@@ -116,6 +117,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
         jointOwnerInfo: jointOwnerInfo || null,
         calendarYear,
         institutionAddress: institutionAddress ? (institutionAddress as unknown as Prisma.InputJsonValue) : undefined,
+        sourceStatementId: sourceStatementId || null,
       },
     });
 

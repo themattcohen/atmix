@@ -12,6 +12,7 @@ import type { MappedAccount } from "@/lib/extraction-mapper";
 import { consolidateExtractedAccounts } from "@/lib/account-consolidation";
 import { deduplicateWarnings } from "@/lib/warning-filter";
 import { ImportBanner } from "@/components/ImportBanner";
+import { AccountProvenance } from "@/components/forms/AccountProvenance";
 import { PRICING } from "@/lib/pricing";
 import { pushDataLayer } from "@/lib/gtm";
 import type { AccountDisplay, PriorYearInfo } from "@/types";
@@ -51,6 +52,7 @@ export default function AccountsPage() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
   const [recoveredFromDB, setRecoveredFromDB] = useState(false);
   const [recoveredStatementCount, setRecoveredStatementCount] = useState(0);
+  const [expandedAccountId, setExpandedAccountId] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -384,30 +386,45 @@ export default function AccountsPage() {
                       onCancel={() => setEditingId(null)}
                     />
                   ) : (
-                    <div key={account.id} className="bg-white rounded-lg shadow-sm border p-4 flex justify-between items-center">
-                      <div>
-                        <p className="font-medium text-navy-900">{account.institutionName}</p>
-                        <p className="text-sm text-gray-500">
-                          {account.countryCode} &middot; ****{account.accountNumberLast4} &middot;{" "}
-                          {account.currencyCode} {account.maxValueLocal.toLocaleString()}
-                        </p>
+                    <div key={account.id} className="bg-white rounded-lg shadow-sm border">
+                      <div className="p-4 flex justify-between items-center">
+                        <div>
+                          <p className="font-medium text-navy-900">{account.institutionName}</p>
+                          <p className="text-sm text-gray-500">
+                            {account.countryCode} &middot; ****{account.accountNumberLast4} &middot;{" "}
+                            {account.currencyCode} {account.maxValueLocal.toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {account.sourceStatementId && (
+                            <button
+                              onClick={() => setExpandedAccountId(prev => prev === account.id ? null : account.id)}
+                              className="text-xs text-gray-400 hover:text-navy-900"
+                            >
+                              {expandedAccountId === account.id ? "Hide details \u25B2" : "AI extracted \u25BC"}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setEditingId(account.id)}
+                            className="text-sm text-navy-900 hover:text-navy-700"
+                            aria-label={`Edit ${account.institutionName} account`}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(account.id)}
+                            className="text-sm text-red-600 hover:text-red-800"
+                            aria-label={`Delete ${account.institutionName} account`}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setEditingId(account.id)}
-                          className="text-sm text-navy-900 hover:text-navy-700"
-                          aria-label={`Edit ${account.institutionName} account`}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(account.id)}
-                          className="text-sm text-red-600 hover:text-red-800"
-                          aria-label={`Delete ${account.institutionName} account`}
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      {expandedAccountId === account.id && (
+                        <div className="border-t px-4 pb-4">
+                          <AccountProvenance accountId={account.id} />
+                        </div>
+                      )}
                     </div>
                   )
                 ))}

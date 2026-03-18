@@ -84,6 +84,7 @@ export interface CreateAccountRequest {
     city?: string;
     country?: string;
   };
+  sourceStatementId?: string;
 }
 
 export interface AccountDisplay {
@@ -100,6 +101,36 @@ export interface AccountDisplay {
   isJointAccount: boolean;
   jointOwnerInfo: string | null;
   calendarYear: number;
+  sourceStatementId: string | null;
+}
+
+export interface ProvenanceBalance {
+  date: string | null;
+  amount: number;
+  label: string;
+  isMaximum: boolean;
+}
+
+export interface ProvenanceSource {
+  fileName: string;
+  periodStart: string | null;
+  periodEnd: string | null;
+  viewUrl: string;
+}
+
+export interface AccountProvenance {
+  hasProvenance: boolean;
+  confidence: {
+    bank_name: "high" | "medium" | "low";
+    account_number: "high" | "medium" | "low";
+    currency: "high" | "medium" | "low";
+    max_balance: "high" | "medium" | "low";
+    overall: "high" | "medium" | "low";
+  } | null;
+  balances: ProvenanceBalance[];
+  maxExplanation: string | null;
+  source: ProvenanceSource | null;
+  warnings: string[];
 }
 
 export interface PriorYearInfo {

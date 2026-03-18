@@ -6,6 +6,7 @@ export interface MappedAccount {
   confidence: ExtractedAccount["confidence"];
   warnings: string[];
   sourceIndex: number;
+  statementId?: string;
 }
 
 function mapAccountType(type: "bank" | "securities" | "other"): "BANK" | "SECURITIES" | "OTHER" {
@@ -29,7 +30,8 @@ function mapOwnershipType(type?: string | null): "FINANCIAL_INTEREST" | "SIGNATU
 
 export function mapExtractedAccounts(
   accounts: ExtractedAccount[],
-  calendarYear: number
+  calendarYear: number,
+  statementId?: string
 ): MappedAccount[] {
   return accounts.map((extracted, index) => {
     const warnings = [...(extracted.warnings ?? [])];
@@ -66,6 +68,7 @@ export function mapExtractedAccounts(
       confidence: extracted.confidence,
       warnings,
       sourceIndex: index,
+      statementId,
     };
   });
 }

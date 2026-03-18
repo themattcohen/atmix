@@ -129,6 +129,7 @@ export function consolidateExtractedAccounts(
       confidence: bestConfidence,
       warnings: uniqueWarnings,
       sourceIndex,
+      statementId: best.statementId,
     });
 
     sourceIndex++;

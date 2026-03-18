@@ -23,6 +23,7 @@ export interface AccountToSave {
   maxValueLocal: number;
   isJointAccount: boolean;
   calendarYear: number;
+  sourceStatementId?: string;
 }
 
 function confidenceColor(level: "high" | "medium" | "low"): string {
@@ -59,6 +60,7 @@ export function ExtractedAccountReview({
       maxValueLocal: a.account.maxValueLocal,
       isJointAccount: a.account.isJointAccount,
       calendarYear,
+      sourceStatementId: a.statementId,
     }))
   );
   const [excluded, setExcluded] = useState<Set<number>>(new Set());

@@ -68,10 +68,12 @@ model ForeignAccount {
   exchangeRate      Decimal?      @db.Decimal(18, 8)
   exchangeRateSource ExchangeRateSource?
   calendarYear      Int
+  sourceStatementId String?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceStatement   Statement?    @relation(fields: [sourceStatementId], references: [id], onDelete: SetNull)
 
   @@index([userId, calendarYear])
 }
@@ -235,6 +237,7 @@ model Statement {
 
   user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   filingYear        FilingYear? @relation(fields: [filingYearId], references: [id], onDelete: Cascade)
+  importedAccounts  ForeignAccount[]
 
   @@index([userId])
   @@index([filingYearId])

@@ -72,6 +72,7 @@ export const foreignAccountSchema = z.object({
     city: z.string().optional(),
     country: z.string().optional(),
   }).optional(),
+  sourceStatementId: z.string().optional().nullable(),
 });
 
 export const thresholdSchema = z.object({
