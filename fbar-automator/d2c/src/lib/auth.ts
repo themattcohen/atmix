@@ -33,6 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name: user.firstName
               ? `${user.firstName} ${user.lastName || ""}`.trim()
               : user.email,
+            role: user.role,
             tokenVersion: user.tokenVersion,
             mfaEnabled: user.mfaEnabled,
             emailVerified: user.emailVerified,
@@ -82,6 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
+          role: user.role,
           tokenVersion: user.tokenVersion,
           mfaEnabled: user.mfaEnabled,
           emailVerified: user.emailVerified,
@@ -97,6 +99,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = (user as any).role ?? "USER";
         token.tokenVersion = (user as any).tokenVersion;
         token.mfaEnabled = (user as any).mfaEnabled ?? false;
         token.emailVerified = (user as any).emailVerified ?? false;
@@ -114,6 +117,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.name = token.name as string;
         (session.user as any).mfaEnabled = token.mfaEnabled ?? false;
         (session.user as any).emailVerified = token.emailVerified ?? false;
+        (session.user as any).role = token.role ?? "USER";
       }
       (session as any).tokenVersion = token.tokenVersion;
       if (session.user?.id) {

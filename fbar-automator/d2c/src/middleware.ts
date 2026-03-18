@@ -92,6 +92,7 @@ const authRequiredPrefixes = [
   "/confirmation",
   "/settings",
   "/mfa-verify",
+  "/admin",
 ];
 
 // ---------------------------------------------------------------------------
@@ -209,6 +210,7 @@ export default auth(async (req) => {
 
   function finalize(response: NextResponse): NextResponse {
     response.headers.set("x-request-id", requestId);
+    response.headers.set("x-pathname", normalizedPath);
     log("info", "response", {
       method,
       path: normalizedPath,
@@ -331,6 +333,13 @@ export default auth(async (req) => {
       log("error", "mfa_gate_error", { path: normalizedPath, requestId, err });
       return finalize(NextResponse.json({ error: "Internal error" }, { status: 500 }));
     }
+    // Admin API gate — must be AFTER email/MFA gates (admins still need verified email + MFA)
+    if (normalizedPath.startsWith("/api/admin/")) {
+      const role = (req.auth?.user as any)?.role;
+      if (role !== "ADMIN") {
+        return finalize(NextResponse.json({ error: "Forbidden" }, { status: 403 }));
+      }
+    }
     return finalize(NextResponse.next());
   }
 
@@ -374,6 +383,14 @@ export default auth(async (req) => {
   // Guard: non-MFA users should not access /mfa-verify
   if (normalizedPath === "/mfa-verify" && !req.auth?.user?.mfaEnabled) {
     return finalize(withCspHeaders(NextResponse.redirect(new URL("/threshold", req.url)), nonce));
+  }
+
+  // Admin page gate
+  if (normalizedPath.startsWith("/admin")) {
+    const role = (req.auth?.user as any)?.role;
+    if (role !== "ADMIN") {
+      return finalize(withCspHeaders(NextResponse.redirect(new URL("/dashboard", req.url)), nonce));
+    }
   }
 
   return finalize(withCspHeaders(NextResponse.next(), nonce));

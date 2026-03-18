@@ -67,20 +67,20 @@ export default async function RootLayout({
   const { headers } = await import("next/headers");
   const headersList = await headers();
   const nonce = headersList.get("x-nonce") ?? undefined;
+  const pathname = headersList.get("x-pathname") ?? "";
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        {!isAdmin && <link rel="preconnect" href="https://www.googletagmanager.com" />}
       </head>
       <body className={`${inter.variable} ${merriweather.variable} ${sourceSans.variable} ${inter.className}`}>
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} gadsId={process.env.NEXT_PUBLIC_GADS_ID || ''} nonce={nonce} />
-        <Suspense fallback={null}>
-          <UTMCapture />
-        </Suspense>
+        {!isAdmin && <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ''} gadsId={process.env.NEXT_PUBLIC_GADS_ID || ''} nonce={nonce} />}
+        {!isAdmin && <Suspense fallback={null}><UTMCapture /></Suspense>}
         {children}
-        <CookieConsent />
-        <ChatWidget />
+        {!isAdmin && <CookieConsent />}
+        {!isAdmin && <ChatWidget />}
       </body>
     </html>
   );

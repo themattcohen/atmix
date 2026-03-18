@@ -107,6 +107,29 @@ async function main() {
   }
   console.log(`  Exchange rates: ${rateCount} records seeded`);
 
+  // -------------------------------------------------------------------------
+  // 4. Admin user (idempotent — creates or promotes)
+  // -------------------------------------------------------------------------
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@fbardirect.com";
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (adminPassword) {
+    const adminHash = await bcrypt.hash(adminPassword, 12);
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: { role: "ADMIN" },
+      create: {
+        email: adminEmail,
+        passwordHash: adminHash,
+        role: "ADMIN",
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+      },
+    });
+    console.log(`  Admin user ${adminEmail} ready`);
+  } else {
+    console.log("  Skipping admin seed (no ADMIN_PASSWORD env var)");
+  }
+
   console.log("Seeding complete.");
 }
 

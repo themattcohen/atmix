@@ -34,6 +34,8 @@ model User {
   emailVerified       Boolean   @default(false)
   emailVerifiedAt     DateTime?
 
+  role                UserRole  @default(USER)
+
   utmSource    String?  @db.VarChar(200)
   utmMedium    String?  @db.VarChar(200)
   utmCampaign  String?  @db.VarChar(200)
@@ -195,6 +197,11 @@ enum ExchangeRateSource {
 enum PricingTier {
   BASIC
   PREMIUM
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model PasswordResetToken {
