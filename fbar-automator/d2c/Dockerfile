@@ -47,7 +47,7 @@ ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 ENV NEXTAUTH_SECRET="build-time-dummy"
 ENV NEXTAUTH_URL="http://localhost:3001"
 
-ENV NODE_OPTIONS="--max-old-space-size=1536"
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 RUN npm run build
 ENV NODE_OPTIONS=""
 
