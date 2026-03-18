@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { checkAcknowledgement } from "@/lib/sdtm";
-import { sendConfirmationEmail, sendRejectionEmail } from "@/lib/email";
+import { sendConfirmationEmail, sendRejectionEmail, sendAdminAckNotification } from "@/lib/email";
 
 export async function GET(req: NextRequest) {
   try {
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
 
     if (ack.status === "accepted" && ack.bsaId) {
       const updateResult = await prisma.filingYear.updateMany({
-        where: { id: filingYearId, userId: session.user.id },
+        where: { id: filingYearId, userId: session.user.id, status: "SUBMITTED" },
         data: {
           status: "ACCEPTED",
           bsaId: ack.bsaId,
@@ -59,7 +59,20 @@ export async function GET(req: NextRequest) {
       });
 
       if (updateResult.count === 0) {
-        return NextResponse.json({ error: "Filing year not found or access denied" }, { status: 404 });
+        // Already processed by cron — return current status instead of 404
+        const current = await prisma.filingYear.findFirst({
+          where: { id: filingYearId, userId: session.user.id },
+        });
+        console.log(`[Status] Filing ${filingYearId} already processed (status: ${current?.status}), skipping emails`);
+        return NextResponse.json({
+          data: {
+            status: current?.status?.toLowerCase() ?? ack.status,
+            bsaId: current?.bsaId ?? ack.bsaId,
+            rejectionReason: current?.rejectionReason,
+            submittedAt: current?.submittedAt?.toISOString(),
+            acknowledgedAt: current?.acknowledgedAt?.toISOString(),
+          },
+        });
       }
 
       // Send confirmation email on acceptance
@@ -70,14 +83,29 @@ export async function GET(req: NextRequest) {
             calendarYear: filingYear.calendarYear,
             bsaId: ack.bsaId,
           });
+          console.log(`[Status] Confirmation email queued for ${user.email}, filing ${filingYearId}`);
         } catch (emailError) {
           Sentry.captureException(emailError, { extra: { context: "sdtm_confirmation_email", filingYearId } });
-          console.error("Failed to send confirmation email:", emailError instanceof Error ? emailError.message : "Unknown error");
+          console.error("[Status] Confirmation email failed:", emailError instanceof Error ? emailError.message : "Unknown error");
         }
       }
+
+      // Send admin notification on acceptance
+      sendAdminAckNotification({
+        filingId: filingYearId,
+        userEmail: user?.email ?? "",
+        calendarYear: filingYear.calendarYear,
+        status: "accepted",
+        bsaId: ack.bsaId,
+      }).then(() => {
+        console.log(`[Status] Admin accepted notification queued for filing ${filingYearId}`);
+      }).catch((err) => {
+        Sentry.captureException(err, { extra: { filingId: filingYearId, context: "status_admin_accepted_notification" } });
+        console.error("[Status] Admin accepted notification failed:", err);
+      });
     } else if (ack.status === "rejected") {
       const updateResult = await prisma.filingYear.updateMany({
-        where: { id: filingYearId, userId: session.user.id },
+        where: { id: filingYearId, userId: session.user.id, status: "SUBMITTED" },
         data: {
           status: "REJECTED",
           rejectionReason: ack.rejectionReason,
@@ -86,7 +114,20 @@ export async function GET(req: NextRequest) {
       });
 
       if (updateResult.count === 0) {
-        return NextResponse.json({ error: "Filing year not found or access denied" }, { status: 404 });
+        // Already processed by cron — return current status instead of 404
+        const current = await prisma.filingYear.findFirst({
+          where: { id: filingYearId, userId: session.user.id },
+        });
+        console.log(`[Status] Filing ${filingYearId} already processed (status: ${current?.status}), skipping emails`);
+        return NextResponse.json({
+          data: {
+            status: current?.status?.toLowerCase() ?? ack.status,
+            bsaId: current?.bsaId,
+            rejectionReason: current?.rejectionReason ?? ack.rejectionReason,
+            submittedAt: current?.submittedAt?.toISOString(),
+            acknowledgedAt: current?.acknowledgedAt?.toISOString(),
+          },
+        });
       }
 
       // Send rejection email on rejection
@@ -97,11 +138,26 @@ export async function GET(req: NextRequest) {
             calendarYear: filingYear.calendarYear,
             reason: ack.rejectionReason || "Unknown reason",
           });
+          console.log(`[Status] Rejection email queued for ${user.email}, filing ${filingYearId}`);
         } catch (emailError) {
           Sentry.captureException(emailError, { extra: { context: "sdtm_rejection_email", filingYearId } });
-          console.error("Failed to send rejection email:", emailError instanceof Error ? emailError.message : "Unknown error");
+          console.error("[Status] Rejection email failed:", emailError instanceof Error ? emailError.message : "Unknown error");
         }
       }
+
+      // Send admin notification on rejection
+      sendAdminAckNotification({
+        filingId: filingYearId,
+        userEmail: user?.email ?? "",
+        calendarYear: filingYear.calendarYear,
+        status: "rejected",
+        rejectionReason: ack.rejectionReason ?? undefined,
+      }).then(() => {
+        console.log(`[Status] Admin rejected notification queued for filing ${filingYearId}`);
+      }).catch((err) => {
+        Sentry.captureException(err, { extra: { filingId: filingYearId, context: "status_admin_rejected_notification" } });
+        console.error("[Status] Admin rejected notification failed:", err);
+      });
     }
 
     return NextResponse.json({

@@ -25,15 +25,22 @@ export async function GET(req: NextRequest) {
       const ack = await checkAcknowledgement(submissionId);
 
       if (ack.status === "accepted" && ack.bsaId) {
-        await prisma.filingYear.update({
-          where: { id: filing.id },
+        const updateResult = await prisma.filingYear.updateMany({
+          where: { id: filing.id, status: "SUBMITTED" },
           data: { status: "ACCEPTED", bsaId: ack.bsaId, acknowledgedAt: new Date() },
         });
+        if (updateResult.count === 0) {
+          console.log(`[Cron] Filing ${filing.id} already processed, skipping emails`);
+          results.push({ id: filing.id, outcome: "already_processed" });
+          continue;
+        }
         if (filing.user.email) {
           sendConfirmationEmail(filing.user.email, {
             firstName: filing.user.firstName ?? "",
             calendarYear: filing.calendarYear,
             bsaId: ack.bsaId,
+          }).then(() => {
+            console.log(`[Cron] Confirmation email queued for ${filing.user.email}, filing ${filing.id}`);
           }).catch((err) => {
             Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_confirmation_email" } });
             console.error("[Cron] Confirmation email failed for filing:", err);
@@ -45,25 +52,34 @@ export async function GET(req: NextRequest) {
           calendarYear: filing.calendarYear,
           status: "accepted",
           bsaId: ack.bsaId,
+        }).then(() => {
+          console.log(`[Cron] Admin accepted notification queued for filing ${filing.id}`);
         }).catch((err) => {
           Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_admin_accepted_notification" } });
           console.error("[Cron] Admin accepted notification failed:", err);
         });
         results.push({ id: filing.id, outcome: "accepted" });
       } else if (ack.status === "rejected") {
-        await prisma.filingYear.update({
-          where: { id: filing.id },
+        const updateResult = await prisma.filingYear.updateMany({
+          where: { id: filing.id, status: "SUBMITTED" },
           data: {
             status: "REJECTED",
             rejectionReason: ack.rejectionReason ?? null,
             acknowledgedAt: new Date(),
           },
         });
+        if (updateResult.count === 0) {
+          console.log(`[Cron] Filing ${filing.id} already processed, skipping emails`);
+          results.push({ id: filing.id, outcome: "already_processed" });
+          continue;
+        }
         if (filing.user.email) {
           sendRejectionEmail(filing.user.email, {
             firstName: filing.user.firstName ?? "",
             calendarYear: filing.calendarYear,
             reason: ack.rejectionReason ?? "Unknown reason",
+          }).then(() => {
+            console.log(`[Cron] Rejection email queued for ${filing.user.email}, filing ${filing.id}`);
           }).catch((err) => {
             Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_rejection_email" } });
             console.error("[Cron] Rejection email failed for filing:", err);
@@ -75,6 +91,8 @@ export async function GET(req: NextRequest) {
           calendarYear: filing.calendarYear,
           status: "rejected",
           rejectionReason: ack.rejectionReason ?? undefined,
+        }).then(() => {
+          console.log(`[Cron] Admin rejected notification queued for filing ${filing.id}`);
         }).catch((err) => {
           Sentry.captureException(err, { extra: { filingId: filing.id, context: "cron_admin_rejected_notification" } });
           console.error("[Cron] Admin rejected notification failed:", err);
