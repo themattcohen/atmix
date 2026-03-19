@@ -1,7 +1,6 @@
 """AI navigation skills — page classification, element finding, obstacle handling."""
 from __future__ import annotations
 from ai_skills.base import runner, AISkillResult
-from config import AI_MODEL_FAST
 
 
 def skill_classify_page(screenshot: bytes, possible_states: list[str] | None = None) -> AISkillResult:
@@ -34,6 +33,10 @@ You MUST respond with ONLY a JSON object, no other text. The JSON must have thes
 
 Allowed states: {states_list}
 
+PRIORITY RULE: If a login form (username/password input fields) is visible
+anywhere on the page, classify as "login" — even if skeleton placeholders,
+spinners, or partial loading indicators are also present.
+
 Key indicators:
 - "login": Has username/password input fields
 - "dashboard": Shows account balances, welcome message, account overview
@@ -58,16 +61,16 @@ Respond with JSON only."""
         required_keys=["action", "confidence", "page_state"],
         skill_name="skill_classify_page",
         skill_description="classify page state",
-        model=AI_MODEL_FAST,
     )
 
 
-def skill_find_element(screenshot: bytes, element_description: str) -> AISkillResult:
+def skill_find_element(screenshot: bytes, element_description: str, context: str = "") -> AISkillResult:
     """Find a specific UI element in the screenshot and return its coordinates.
 
     Args:
         screenshot: PNG bytes of the page
         element_description: What to find, e.g., "username input field", "submit button"
+        context: Optional extra context from account notes (e.g., company ID info)
 
     Returns AISkillResult with target = {"x": int, "y": int}
     """
@@ -79,10 +82,12 @@ You MUST respond with ONLY a JSON object, no other text:
 - "target": {"x": pixel_x, "y": pixel_y} — CENTER of the element
 - "reasoning": brief description of what you found and where"""
 
+    context_block = f"\n\nAdditional context from account notes:\n{context}" if context else ""
+
     user_prompt = f"""Find this element in the screenshot: {element_description}
 
 Return the CENTER coordinates of the element as {{"x": pixel_x, "y": pixel_y}}.
-The screenshot is 960x540 pixels. Give coordinates relative to the top-left corner.
+The screenshot is 960x540 pixels. Give coordinates relative to the top-left corner.{context_block}
 
 Respond with JSON only."""
 

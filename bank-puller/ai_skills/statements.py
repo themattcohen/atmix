@@ -22,13 +22,19 @@ You MUST respond with ONLY a JSON object:
     user_prompt = """Find the link to bank statements or documents on this page.
 
 Common labels: "Statements", "Documents", "Statements & Documents", "Account Documents",
-"eStatements", "View Statements", "Document Center", "Paperless", "Tax Documents & Statements"
+"eStatements", "View Statements", "Document Center", "Paperless", "Tax Documents & Statements",
+"Activity & Statements", "View/Download Statements", "Account Activity",
+"Account Services", "Manage Account", "Documents & Statements"
 
 It may be in:
 - Top navigation menu
 - Sidebar menu
 - Account dashboard quick links
 - Under an "Accounts" or "Services" dropdown
+- Hamburger/menu icons (☰ or three lines/dots)
+- Dashboard cards or tiles
+- Dropdown menus (hover or click to reveal)
+- "More" or "..." buttons that expand to show statements
 
 Find it and return click coordinates.
 
@@ -65,7 +71,8 @@ You MUST respond with ONLY a JSON object:
 - "target": {"x": pixel_x, "y": pixel_y} center of the statement link/download button
 - "reasoning": how you identified the correct statement
 - "text": the visible label of the statement (e.g., "February 2026 Statement")
-- "available_months": list of months you can see available (e.g., ["2026-02", "2026-01", "2025-12"])"""
+- "available_months": list of months you can see available (e.g., ["2026-02", "2026-01", "2025-12"])
+- "statement_closing_day": integer day of month when cycle closes, or null if not visible (e.g., 28 for "Feb 1-28")"""
 
     acct_hint = f"\nAccount ending in: {account_last4}" if account_last4 else ""
 
@@ -74,6 +81,7 @@ You MUST respond with ONLY a JSON object:
 Look for:
 - Monthly statements listed by date (e.g., "February 2026", "02/2026", "Feb 26")
 - PDF download links or view buttons next to the target month
+- Statement period end dates (e.g., "01/01/2026 - 01/31/2026") — extract the closing day
 - If there's an account selector dropdown, note which account is selected
 
 The month format is YYYY-MM. Match "2026-02" to February 2026.

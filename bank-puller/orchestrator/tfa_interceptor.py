@@ -13,7 +13,7 @@ from utils.browser_setup import wait_and_screenshot, screenshots_identical
 from utils.logger import log
 
 if TYPE_CHECKING:
-    from playwright.async_api import Page
+    from patchright.async_api import Page
 
 
 async def get_totp_code(secret: str) -> str:

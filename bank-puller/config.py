@@ -47,6 +47,7 @@ MAX_CONCURRENT_BANK_WINDOWS = 2
 SCREENSHOT_RESOLUTION = {"width": 1920, "height": 1080}
 AI_SCREENSHOT_RESOLUTION = {"width": 960, "height": 540}  # Downscaled for AI calls (~75% token savings)
 MAX_SCREENSHOTS_IN_MEMORY = 5
+BROWSER_CHANNEL = os.getenv("BROWSER_CHANNEL", "chrome")  # "chrome" = system Chrome, "" = bundled Chromium
 BROWSER_LOCALE = "en-US"
 BROWSER_TIMEZONE = "America/Denver"
 

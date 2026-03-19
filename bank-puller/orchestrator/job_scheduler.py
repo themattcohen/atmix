@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 from collections import defaultdict
 from datetime import date, datetime
 from typing import TYPE_CHECKING
@@ -21,7 +22,7 @@ from utils.resources import get_max_windows, log_resource_summary
 
 if TYPE_CHECKING:
     from orchestrator.action_logger import ActionLogger
-    from playwright.async_api import BrowserContext
+    from patchright.async_api import BrowserContext
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +81,10 @@ def build_schedule(jobs: list[AccountJob]) -> RunSchedule:
 
     # Check if any job needs SMS 2FA via Dialpad
     needs_dialpad = any(
-        j.has_2fa and j.tfa_method == "sms" and j.tfa_detail.lower() == "dialpad"
+        j.has_2fa and j.tfa_method == "sms" and (
+            j.tfa_detail.lower() == "dialpad"
+            or len(re.sub(r"\D", "", j.tfa_detail)) >= 10
+        )
         for j in jobs
     )
 

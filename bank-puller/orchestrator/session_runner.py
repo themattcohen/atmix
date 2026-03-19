@@ -47,7 +47,7 @@ from utils.pdf_validator import is_valid_pdf, extract_pdf_text, detect_multi_acc
 from utils.logger import log
 
 if TYPE_CHECKING:
-    from playwright.async_api import BrowserContext, Page
+    from patchright.async_api import BrowserContext, Page
 
 
 def _get_target_month() -> str:
@@ -73,10 +73,17 @@ class WatchController:
         if not self.enabled:
             return "continue"
 
+        import sys
+        if hasattr(sys.stdout, 'reconfigure'):
+            try:
+                sys.stdout.reconfigure(errors='replace')
+            except Exception:
+                pass
+
         mode_label = f"{mode.upper()} mode" + (" (no playbook)" if mode == "learn" else "")
-        print(f"\n[W{wid}] {bank} — {mode_label}")
-        print(f"  ✓ {skill}: \"{description}\" conf={confidence:.2f} ${cost:.4f}")
-        print(f"  → {next_action}")
+        print(f"\n[W{wid}] {bank} -- {mode_label}")
+        print(f"  [OK] {skill}: \"{description}\" conf={confidence:.2f} ${cost:.4f}")
+        print(f"  -> {next_action}")
         print(f"  [Enter] continue | [s] skip this account | [q] abort run")
 
         # Read stdin in a thread to not block the event loop
@@ -120,6 +127,18 @@ async def run_window(
     by_login: dict[tuple[str, str], list[AccountJob]] = defaultdict(list)
     for job in schedule.jobs:
         by_login[(job.bank_name, job.username)].append(job)
+
+    # Warn if the same bank appears with multiple usernames (data issue in clients.xlsx)
+    banks_seen: dict[str, list[str]] = defaultdict(list)
+    for (bank, user) in by_login:
+        banks_seen[bank].append(user)
+    for bank, users in banks_seen.items():
+        if len(users) > 1:
+            log.warning(
+                f"[W{schedule.window_id}] Bank '{bank}' has {len(users)} distinct usernames — "
+                f"this causes {len(users)} sequential login attempts. "
+                f"If these share one login, consolidate in clients.xlsx. Usernames: {users}"
+            )
 
     for (bank, _user), login_jobs in by_login.items():
         if shutdown.should_stop:
@@ -196,26 +215,35 @@ async def _login_and_download(
     if not ok:
         return False
 
-    # --- Phase 2: Login (playbook-aware) ---
-    ok = await _phase_login(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
-                            playbook, mode, recorder, watch, start_time=_session_start)
-    if not ok:
+    # --- Phase 1.5: Readiness gate ---
+    readiness = await _phase_ensure_login_ready(
+        page, lead, jobs, target_month, wid, mgr, excel_write_lock,
+        start_time=_session_start,
+    )
+    if readiness == "failed":
         return False
 
-    await human_delay(2.0, 4.0)  # Wait for login response
+    if readiness == "ready":
+        # --- Phase 2: Login (playbook-aware) ---
+        ok = await _phase_login(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
+                                playbook, mode, recorder, watch, start_time=_session_start)
+        if not ok:
+            return False
 
-    # --- Phase 3: Post-login loop (always AI-driven) ---
-    ok = await _phase_post_login(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
-                                 tfa_semaphore, dialpad_page, recorder, watch, start_time=_session_start)
-    if not ok:
-        return False
+        await human_delay(2.0, 4.0)  # Wait for login response
 
-    # Update last_successful_login
-    async with excel_write_lock:
-        mgr.update_account_field(
-            lead.client_name, lead.bank_name, lead.account_last4,
-            "last_successful_login", date.today(),
-        )
+        # --- Phase 3: Post-login loop (always AI-driven) ---
+        ok = await _phase_post_login(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
+                                     tfa_semaphore, dialpad_page, recorder, watch, start_time=_session_start)
+        if not ok:
+            return False
+
+        # Update last_successful_login
+        async with excel_write_lock:
+            mgr.update_account_field(
+                lead.client_name, lead.bank_name, lead.account_last4,
+                "last_successful_login", date.today(),
+            )
 
     # --- Phase 4: Navigate to statements (playbook-aware) ---
     ok = await _phase_statements_nav(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
@@ -311,6 +339,79 @@ async def _phase_navigate(
 
 
 # ---------------------------------------------------------------------------
+# Phase 1.5: Ensure page is login-ready
+# ---------------------------------------------------------------------------
+async def _phase_ensure_login_ready(
+    page, lead, jobs,
+    target_month: str, wid: int,
+    mgr, excel_write_lock,
+    start_time: float | None = None,
+) -> str:
+    """Wait for page to reach login-ready state. Handles loading, obstacles, popups.
+
+    Returns: "ready", "already_logged_in", or "failed"
+    """
+    max_attempts = 8
+    # Progressive waits: patient early (SPA hydration), faster later
+    wait_secs = [3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 10.0, 10.0]
+
+    for attempt in range(max_attempts):
+        # Always use await_render — blank/spinner pages need progressive backoff
+        screenshot = await wait_and_screenshot(
+            page, f"w{wid}_ready_{attempt}", await_render=True
+        )
+        state = skill_classify_page(screenshot)
+        page_state = state.page_state
+        log.info(f"[W{wid}] Readiness {attempt+1}/{max_attempts}: "
+                 f"{page_state} (conf={state.confidence:.2f})")
+
+        if page_state == "login":
+            return "ready"
+
+        if page_state in ("dashboard", "statements"):
+            log.info(f"[W{wid}] Already logged in via session cookie")
+            return "already_logged_in"
+
+        if page_state == "obstacle":
+            log.info(f"[W{wid}] Obstacle detected, attempting dismissal")
+            result = skill_handle_obstacle(screenshot)
+            if result.action == "click" and result.target:
+                await verified_click(page, result, screenshot)
+            elif result.action == "press_escape":
+                await page.keyboard.press("Escape")
+            await human_delay(1.0, 2.0)
+            continue
+
+        if page_state == "loading":
+            # Try a page reload on attempt 4 — SPA may be stuck
+            if attempt == 4:
+                log.info(f"[W{wid}] Still loading after 4 attempts, reloading page...")
+                try:
+                    await page.reload(timeout=15000, wait_until="domcontentloaded")
+                except Exception:
+                    pass
+            wait = wait_secs[min(attempt, len(wait_secs) - 1)]
+            await human_delay(wait, wait + 2.0)
+            continue
+
+        if page_state in ("locked", "error"):
+            error_text = state.text or page_state
+            log.error(f"[W{wid}] {lead.bank_name}: {error_text}")
+            for j in jobs:
+                await _log_result(mgr, excel_write_lock, j, target_month,
+                                  "failed", "", error_text, start_time=start_time)
+            return "failed"
+
+        # Unknown / low confidence — wait and retry with fresh screenshot
+        log.info(f"[W{wid}] Page state '{page_state}' not login-ready, waiting...")
+        wait = wait_secs[min(attempt, len(wait_secs) - 1)]
+        await human_delay(wait, wait + 2.0)
+
+    log.warning(f"[W{wid}] Readiness gate exhausted {max_attempts} attempts, trying login anyway")
+    return "ready"
+
+
+# ---------------------------------------------------------------------------
 # Phase 2: Login (playbook-aware)
 # ---------------------------------------------------------------------------
 async def _phase_login(
@@ -323,6 +424,26 @@ async def _phase_login(
     start_time: float | None = None,
 ) -> bool:
     """Enter username + password, with playbook replay or learn."""
+
+    # --- NOTES-BASED PRE-LOGIN FIELDS (company ID, account ID, etc.) ---
+    if lead.notes:
+        import re
+        extra_fields = re.findall(r'(\w[\w\s]*?)\s*[=:]\s*(.+?)(?:\n|$)', lead.notes, re.IGNORECASE)
+        for field_name, field_value in extra_fields:
+            field_name_lower = field_name.strip().lower()
+            field_value = field_value.strip()
+            if field_name_lower in ("company id", "company_id", "account id", "org id", "client id"):
+                log.info(f"[W{wid}] Notes: filling '{field_name.strip()}' = '{field_value}'")
+                screenshot = await wait_and_screenshot(page, f"w{wid}_extra_field_{field_name_lower}")
+                result = skill_find_element(
+                    screenshot,
+                    f"{field_name.strip()} input field",
+                    context=f"This bank requires a '{field_name.strip()}' field. The value to enter is: {field_value}",
+                )
+                if result.action in ("click", "type") and result.target:
+                    await human_click(page, result.target["x"], result.target["y"])
+                    await human_type(page, field_value)
+                    await human_delay(0.5, 1.0)
 
     # --- USERNAME ---
     username_ok = False
@@ -342,10 +463,21 @@ async def _phase_login(
                     save_playbook(playbook)
 
     if not username_ok:
-        # AI fallback
-        screenshot = await wait_and_screenshot(page, f"w{wid}_login")
-        result = skill_find_element(screenshot, "username or user ID input field")
-        if result.action in ("click", "type") and result.target:
+        # AI fallback with fresh-screenshot retry (await_render catches stuck SPAs)
+        result = None
+        for find_attempt in range(3):
+            screenshot = await wait_and_screenshot(
+                page, f"w{wid}_login_{find_attempt}", await_render=True
+            )
+            result = skill_find_element(screenshot, "username or user ID input field")
+            if result.action in ("click", "type") and result.target:
+                break
+            if find_attempt < 2:
+                log.info(f"[W{wid}] Username field not found (attempt {find_attempt+1}), "
+                         f"retrying with fresh screenshot...")
+                await human_delay(3.0, 5.0)
+
+        if result and result.action in ("click", "type") and result.target:
             await human_click(page, result.target["x"], result.target["y"])
             await human_type(page, lead.username)
 
@@ -370,7 +502,7 @@ async def _phase_login(
                     await _log_result(mgr, excel_write_lock, j, target_month, "skipped", "", "Operator skipped", start_time=start_time)
                 return False
         else:
-            log.warning(f"[W{wid}] Could not find username field")
+            log.warning(f"[W{wid}] Could not find username field after 3 attempts")
             for j in jobs:
                 await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Username field not found", start_time=start_time)
             return False
@@ -535,6 +667,7 @@ async def _phase_post_login(
     """Classify page state and handle obstacles, 2FA, security questions."""
     max_iterations = 10
     reached_terminal = False
+    consecutive_stuck = 0
     for _ in range(max_iterations):
         screenshot = await wait_and_screenshot(page, f"w{wid}_post_login")
         state = skill_classify_page(screenshot)
@@ -556,7 +689,17 @@ async def _phase_post_login(
                     await _log_result(mgr, excel_write_lock, j, target_month, "skipped", "", "Operator skipped", start_time=start_time)
                 return False
 
-        if page_state == "dashboard":
+        if page_state in ("dashboard", "statements", "2fa_prompt", "2fa_method_selection",
+                          "security_question"):
+            consecutive_stuck = 0
+
+        if page_state == "login":
+            log.warning(f"[W{wid}] {lead.bank_name}: still on login page after submit — credentials may be wrong")
+            for j in jobs:
+                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Still on login page post-submit", start_time=start_time)
+            return False
+
+        elif page_state == "dashboard":
             reached_terminal = True
             break
 
@@ -599,12 +742,21 @@ async def _phase_post_login(
             await human_delay()
 
         elif page_state == "obstacle":
-            result = skill_handle_obstacle(screenshot)
-            if result.action == "click" and result.target:
-                await verified_click(page, result, screenshot)
-            elif result.action == "press_escape":
+            consecutive_stuck += 1
+            if consecutive_stuck >= 4:
+                log.info(f"[W{wid}] Stuck on obstacle for {consecutive_stuck} iterations, trying Escape + reload")
                 await page.keyboard.press("Escape")
-            await human_delay()
+                await human_delay(1.0, 2.0)
+                await page.reload()
+                await human_delay(3.0, 5.0)
+                consecutive_stuck = 0
+            else:
+                result = skill_handle_obstacle(screenshot)
+                if result.action == "click" and result.target:
+                    await verified_click(page, result, screenshot)
+                elif result.action == "press_escape":
+                    await page.keyboard.press("Escape")
+                await human_delay()
 
         elif page_state in ("locked", "error"):
             error_text = state.text or page_state
@@ -634,8 +786,17 @@ async def _phase_post_login(
             await human_delay(2.0, 4.0)
 
         else:
-            log.warning(f"[W{wid}] Unknown page state: {page_state}")
-            await human_delay()
+            consecutive_stuck += 1
+            log.warning(f"[W{wid}] Unknown page state: {page_state} (stuck count: {consecutive_stuck})")
+            if consecutive_stuck >= 4:
+                log.info(f"[W{wid}] Stuck for {consecutive_stuck} iterations, trying Escape + reload")
+                await page.keyboard.press("Escape")
+                await human_delay(1.0, 2.0)
+                await page.reload()
+                await human_delay(3.0, 5.0)
+                consecutive_stuck = 0
+            else:
+                await human_delay()
 
     if not reached_terminal:
         log.warning(f"[W{wid}] Failed to reach dashboard after {max_iterations} iterations")
@@ -739,6 +900,18 @@ async def _phase_download(
         async with excel_write_lock:
             mgr.add_to_retry_queue(job, "Could not select statement")
         return
+
+    # Auto-learn statement_available_date from closing day
+    if sel_result.raw_response and job.statement_available_date <= 1:
+        closing_day = sel_result.raw_response.get("statement_closing_day")
+        if closing_day and isinstance(closing_day, int) and 1 <= closing_day <= 31:
+            avail_day = min(closing_day + 1, 28)
+            log.info(f"[W{wid}] Auto-learned statement_available_date={avail_day} for #{job.account_last4}")
+            async with excel_write_lock:
+                mgr.update_account_field(
+                    job.client_name, job.bank_name, job.account_last4,
+                    "statement_available_date", avail_day,
+                )
 
     # Track new pages/tabs
     new_pages = await monitor_new_pages(context)
@@ -898,9 +1071,13 @@ async def _wait_and_enter_2fa_code(
     code: str | None = None
 
     if job.tfa_method == "totp":
-        code = await get_totp_code(job.tfa_detail)
-        log.info(f"[W{wid}] TOTP code generated")
-        log_action(type="2fa_receive", description="TOTP generated")
+        try:
+            code = await get_totp_code(job.tfa_detail)
+            log.info(f"[W{wid}] TOTP code generated")
+            log_action(type="2fa_receive", description="TOTP generated")
+        except Exception as e:
+            log.error(f"[W{wid}] TOTP generation failed for {job.bank_name}: {e} — check 2fa_detail in Excel")
+            return False
 
     elif job.tfa_method == "sms":
         sms_result = await poll_dialpad_sms(dialpad_page, sender_hint=job.tfa_sender)

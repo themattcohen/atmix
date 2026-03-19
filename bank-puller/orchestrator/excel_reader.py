@@ -21,6 +21,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.worksheet.worksheet import Worksheet
 
 from config import CLIENTS_XLSX, MAX_RETRY_COUNT, RETRY_BACKOFF
+from utils.logger import log
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -282,6 +283,41 @@ class ExcelManager:
         return str(value).strip()
 
     @staticmethod
+    def _normalize_last4(value: object) -> str:
+        """Normalize account_last4: strip .0 from floats, remove # and non-alphanumeric."""
+        if value is None:
+            return ""
+        s = str(value).strip()
+        if s.endswith(".0") and s[:-2].isdigit():
+            s = s[:-2]
+        s = s.lstrip("#").strip()
+        return re.sub(r"[^a-zA-Z0-9]", "", s)
+
+    @staticmethod
+    def _normalize_tfa_config(has_2fa, tfa_method, tfa_detail, client_name, bank_name):
+        """Validate and self-heal 2FA config. Returns (method, detail)."""
+        if not has_2fa:
+            return tfa_method, tfa_detail
+        method = tfa_method.lower().strip()
+        detail = tfa_detail.strip()
+        tag = f"[2FA] {client_name}/{bank_name}:"
+        if not method:
+            log.warning(f"{tag} 2fa=y but method is blank")
+            return "", detail
+        if method == "sms":
+            digits_only = re.sub(r"\D", "", detail)
+            if len(digits_only) >= 10:
+                log.warning(f"{tag} phone number '{detail}' -> normalizing to 'dialpad'")
+                return method, "dialpad"
+            if detail.lower() != "dialpad" and detail:
+                log.warning(f"{tag} sms detail '{detail}' -- expected 'dialpad'")
+        if method == "totp":
+            clean = re.sub(r"[^A-Za-z2-7=]", "", detail)
+            if len(clean) < 16:
+                log.warning(f"{tag} totp detail '{detail}' doesn't look like base32")
+        return method, detail
+
+    @staticmethod
     def _cell_int(value: object, default: int = 0) -> int:
         if value is None:
             return default
@@ -315,27 +351,39 @@ class ExcelManager:
                 if kw and ans:
                     sq.append((kw, ans))
 
-            jobs.append(AccountJob(
+            last4 = self._normalize_last4(values.get("account_last4"))
+            raw_method = self._cell_str(values.get("2fa_method"))
+            raw_detail = self._cell_str(values.get("2fa_detail"))
+            has_2fa = self._parse_bool(values.get("2fa"))
+            bank_name = self._cell_str(values.get("bank_name"))
+            norm_method, norm_detail = self._normalize_tfa_config(
+                has_2fa, raw_method, raw_detail, client_name, bank_name,
+            )
+
+            job = AccountJob(
                 client_name=client_name,
                 file_safe_name=file_safe_name,
-                bank_name=self._cell_str(values.get("bank_name")),
+                bank_name=bank_name,
                 login_url=self._cell_str(values.get("login_url")),
                 url_verified_date=self._parse_date(values.get("url_verified_date")),
                 username=self._cell_str(values.get("username")),
                 password=self._cell_str(values.get("password")),
-                account_last4=self._cell_str(values.get("account_last4")),
+                account_last4=last4,
                 statement_available_date=self._cell_int(values.get("statement_available_date"), 1),
-                has_2fa=self._parse_bool(values.get("2fa")),
+                has_2fa=has_2fa,
                 tfa_target=self._cell_str(values.get("2fa_target")),
-                tfa_method=self._cell_str(values.get("2fa_method")),
-                tfa_detail=self._cell_str(values.get("2fa_detail")),
+                tfa_method=norm_method,
+                tfa_detail=norm_detail,
                 tfa_preference_order=self._parse_preference_order(values.get("2fa_preference_order")),
                 tfa_sender=self._cell_str(values.get("2fa_sender")),
                 security_questions=sq,
                 last_successful_login=self._parse_date(values.get("last_successful_login")),
                 status=self._cell_str(values.get("status")) or "active",
                 notes=self._cell_str(values.get("notes")),
-            ))
+            )
+            jobs.append(job)
+            if job.statement_available_date <= 1:
+                log.warning(f"[Data] {client_name}/{bank_name} #{last4}: statement_available_date not set -- will auto-learn on first download")
 
         return jobs
 
@@ -358,7 +406,7 @@ class ExcelManager:
             # Match on client, bank, last4
             r_client = self._cell_str(row[headers.get("client_name", 2) - 1] if len(row) >= 2 else None)
             r_bank = self._cell_str(row[headers.get("bank_name", 3) - 1] if len(row) >= 3 else None)
-            r_last4 = self._cell_str(row[headers.get("account_last4", 4) - 1] if len(row) >= 4 else None)
+            r_last4 = self._normalize_last4(row[headers.get("account_last4", 4) - 1] if len(row) >= 4 else None)
             r_month = self._cell_str(row[headers.get("target_month", 5) - 1] if len(row) >= 5 else None)
             if (r_client == job.client_name and r_bank == job.bank_name
                     and r_last4 == job.account_last4 and r_month == target_month):
@@ -430,7 +478,7 @@ class ExcelManager:
             values = {col_name: row[idx - 1].value for col_name, idx in headers.items()}
             if (self._cell_str(values.get("client_name")) == client
                     and self._cell_str(values.get("bank_name")) == bank
-                    and self._cell_str(values.get("account_last4")) == last4
+                    and self._normalize_last4(values.get("account_last4")) == last4
                     and self._cell_str(values.get("target_month")) == target_month
                     and self._cell_str(values.get("status")) == "success"):
                 return True
@@ -448,7 +496,7 @@ class ExcelManager:
         """
         allowed_fields = {
             "login_url", "last_successful_login", "status",
-            "2fa_sender", "url_verified_date",
+            "2fa_sender", "url_verified_date", "statement_available_date",
         }
         if field_name not in allowed_fields:
             raise ValueError(
@@ -472,7 +520,7 @@ class ExcelManager:
         for row in ws.iter_rows(min_row=2):
             r_client = self._cell_str(row[client_col - 1].value)
             r_bank = self._cell_str(row[bank_col - 1].value)
-            r_last4 = self._cell_str(row[last4_col - 1].value)
+            r_last4 = self._normalize_last4(row[last4_col - 1].value)
 
             if r_client == client and r_bank == bank and r_last4 == last4:
                 row[target_col - 1].value = value
