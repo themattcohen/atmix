@@ -1,0 +1,27 @@
+# Credentials
+clients.xlsx
+*.lock
+
+# Browser state
+browser-profiles/
+
+# Sensitive output
+downloads/
+output/
+debug-screenshots/
+logs/
+playbooks/
+
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
