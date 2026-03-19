@@ -63,7 +63,13 @@ Create `clients.xlsx` in `bank-puller/` with three sheets: **Accounts**, **Run L
 ```bash
 python run.py --setup-dialpad
 ```
-Manually log into Dialpad in the browser that opens, then close. Profile is saved to `browser-profiles/dialpad/`.
+
+Browser opens Dialpad — **check `operations@allsolutionsconsult.com` email for Dialpad's own verification code** and enter it. After login, the app auto-navigates to **Compound Accounting > New** messages tab. Press Enter to save the profile.
+
+- **Phone number**: (720) 508-1992 (Compound Accounting department)
+- **Auto-navigation**: On each run, the app navigates Dialpad to the correct inbox automatically (with AI fallback if selectors fail)
+- **Sender auto-learn**: After first successful SMS poll, the sender ID is saved to `2fa_sender` in Excel
+- **Re-authenticate**: Run `--setup-dialpad` when the health check warns the profile has expired
 
 ## CLI Reference
 

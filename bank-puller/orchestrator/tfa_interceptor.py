@@ -26,7 +26,7 @@ async def poll_dialpad_sms(
     sender_hint: str = "",
     timeout_s: float = 120,
     poll_interval: float = 5,
-) -> str | None:
+) -> tuple[str, str] | None:
     """Poll Dialpad messaging window for a new 2FA code.
 
     Args:
@@ -36,7 +36,7 @@ async def poll_dialpad_sms(
         poll_interval: Seconds between screenshots.
 
     Returns:
-        The extracted numeric code, or ``None`` on timeout.
+        Tuple of ``(code, sender_id)`` on success, or ``None`` on timeout.
     """
     start = asyncio.get_event_loop().time()
     prev_screenshot: bytes | None = None
@@ -57,8 +57,9 @@ async def poll_dialpad_sms(
             # Ensure we only return digits
             digits = re.sub(r"\D", "", result.text)
             if 6 <= len(digits) <= 8:
-                log.info(f"SMS 2FA code received ({len(digits)} digits)")
-                return digits
+                sender = result.raw_response.get("sender", "") if result.raw_response else ""
+                log.info(f"SMS 2FA code received ({len(digits)} digits) from sender '{sender}'")
+                return (digits, sender)
             log.warning(f"Extracted text '{result.text}' → digits '{digits}' — unexpected length, retrying")
 
         await asyncio.sleep(poll_interval)

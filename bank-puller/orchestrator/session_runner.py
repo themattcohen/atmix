@@ -13,7 +13,7 @@ from config import DOWNLOADS_DIR, TIMEOUTS
 from orchestrator.excel_reader import AccountJob, ExcelManager, RunResult
 from orchestrator.job_scheduler import WindowSchedule
 from orchestrator.shutdown import GracefulShutdown
-from orchestrator.tfa_interceptor import poll_dialpad_sms
+from orchestrator.tfa_interceptor import poll_dialpad_sms, get_totp_code, wait_for_push_approval
 from orchestrator.action_logger import (
     ActionLogger, log_action, set_context, clear_context,
 )
@@ -36,7 +36,6 @@ from utils.browser_setup import (
     human_type,
     wait_and_screenshot,
     monitor_new_pages,
-    screenshots_identical,
 )
 from utils.file_manager import (
     clear_download_dir,
@@ -225,10 +224,23 @@ async def _login_and_download(
         return False
 
     # --- Phase 5: Download per account ---
-    for job in jobs:
+    for idx, job in enumerate(jobs):
         if shutdown.should_stop:
             await _log_result(mgr, excel_write_lock, job, target_month, "skipped", "", "Interrupted", start_time=_session_start)
             continue
+
+        # Navigation guard: verify we're still on the statements page between accounts
+        if idx > 0:
+            guard_screenshot = await wait_and_screenshot(page, f"w{wid}_nav_guard")
+            guard_state = skill_classify_page(guard_screenshot)
+            if guard_state.page_state not in ("statements", "documents", "statements_page"):
+                log.warning(f"[W{wid}] Page drifted to '{guard_state.page_state}' — navigating back to statements")
+                nav_result = skill_find_statements_page(guard_screenshot)
+                if nav_result.target:
+                    await human_click(page, nav_result.target["x"], nav_result.target["y"])
+                    await human_delay(2.0, 4.0)
+                else:
+                    log.warning(f"[W{wid}] Could not find statements link — account #{job.account_last4} may fail")
 
         # Update context for this account
         log_action(type="session_start", note=f"downloading account #{job.account_last4}")
@@ -886,33 +898,33 @@ async def _wait_and_enter_2fa_code(
     code: str | None = None
 
     if job.tfa_method == "totp":
-        import pyotp
-        code = pyotp.TOTP(job.tfa_detail).now()
+        code = await get_totp_code(job.tfa_detail)
         log.info(f"[W{wid}] TOTP code generated")
         log_action(type="2fa_receive", description="TOTP generated")
 
     elif job.tfa_method == "sms":
-        code = await poll_dialpad_sms(dialpad_page, sender_hint=job.tfa_sender)
-        if code:
-            log_action(type="2fa_receive", description="SMS code received from Dialpad")
+        sms_result = await poll_dialpad_sms(dialpad_page, sender_hint=job.tfa_sender)
+        if sms_result:
+            code, sender = sms_result
+            log_action(type="2fa_receive", description=f"SMS code received from Dialpad (sender={sender})")
+            # Auto-learn sender ID for future runs
+            if sender and not job.tfa_sender:
+                log.info(f"[W{wid}] Auto-learned SMS sender ID: {sender}")
+                async with excel_write_lock:
+                    mgr.update_account_field(
+                        job.client_name, job.bank_name, job.account_last4,
+                        "2fa_sender", sender,
+                    )
 
     elif job.tfa_method == "email":
         code = await _poll_email_for_code(job, wid, watch_mode=watch_mode)
 
     elif job.tfa_method == "push":
         log.info(f"[W{wid}] Push 2FA — waiting for approval (3 min timeout)...")
-        screenshot_before = await wait_and_screenshot(page, f"w{wid}_push_wait")
-        timeout = TIMEOUTS["push_2fa_wait"] / 1000
-        start = asyncio.get_event_loop().time()
-        while asyncio.get_event_loop().time() - start < timeout:
-            await asyncio.sleep(5)
-            screenshot_now = await wait_and_screenshot(page, f"w{wid}_push_check")
-            if not screenshots_identical(screenshot_before, screenshot_now, threshold=0.9):
-                log.info(f"[W{wid}] Push 2FA approved")
-                log_action(type="2fa_receive", description="Push 2FA approved")
-                return True
-        log.warning(f"[W{wid}] Push 2FA timeout")
-        return False
+        approved = await wait_for_push_approval(page, timeout_s=TIMEOUTS["push_2fa_wait"] / 1000)
+        if approved:
+            log_action(type="2fa_receive", description="Push 2FA approved")
+        return approved
 
     if not code:
         log.warning(f"[W{wid}] No 2FA code received")

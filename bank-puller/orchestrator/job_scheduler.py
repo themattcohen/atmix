@@ -7,14 +7,15 @@ from datetime import date, datetime
 from typing import TYPE_CHECKING
 
 from config import (
+    DIALPAD_DEPT_NAME,
     DOWNLOADS_DIR,
     MAX_CONCURRENT_BANK_WINDOWS,
     TIMEOUTS,
 )
 from orchestrator.excel_reader import AccountJob, ExcelManager, RunResult
 from orchestrator.shutdown import GracefulShutdown
-from ai_skills.navigation import skill_classify_page
-from utils.browser_setup import launch_hardened_browser, wait_and_screenshot
+from ai_skills.navigation import skill_classify_page, skill_find_element
+from utils.browser_setup import human_click, launch_hardened_browser, wait_and_screenshot
 from utils.logger import log
 from utils.resources import get_max_windows, log_resource_summary
 
@@ -91,6 +92,51 @@ def build_schedule(jobs: list[AccountJob]) -> RunSchedule:
     return RunSchedule(windows=windows, needs_dialpad=needs_dialpad)
 
 
+async def _navigate_dialpad_to_messages(page) -> None:
+    """Navigate Dialpad to the Compound Accounting > New messages tab.
+
+    Uses text selectors first, falls back to AI vision if selectors fail.
+    Non-fatal: logs warnings but doesn't abort the run.
+    """
+    # Step 1: Click the department name in the sidebar
+    try:
+        dept = page.get_by_text(DIALPAD_DEPT_NAME).first
+        await dept.click(timeout=5000)
+        log.info(f"Dialpad: clicked '{DIALPAD_DEPT_NAME}'")
+        await asyncio.sleep(1)
+    except Exception:
+        log.warning(f"Dialpad: selector for '{DIALPAD_DEPT_NAME}' failed, trying AI fallback")
+        try:
+            screenshot = await wait_and_screenshot(page, "dialpad_nav_dept")
+            result = skill_find_element(screenshot, f"sidebar item or menu item labeled '{DIALPAD_DEPT_NAME}'")
+            if result.target:
+                await human_click(page, result.target["x"], result.target["y"])
+                await asyncio.sleep(1)
+            else:
+                log.warning("Dialpad: AI could not find department — manual navigation may be needed")
+                return
+        except Exception as e:
+            log.warning(f"Dialpad: AI fallback for department failed: {e}")
+            return
+
+    # Step 2: Click the "New" tab
+    try:
+        new_tab = page.get_by_role("tab", name="New")
+        await new_tab.click(timeout=5000)
+        log.info("Dialpad: clicked 'New' tab")
+    except Exception:
+        log.warning("Dialpad: selector for 'New' tab failed, trying AI fallback")
+        try:
+            screenshot = await wait_and_screenshot(page, "dialpad_nav_new")
+            result = skill_find_element(screenshot, "tab labeled 'New' for new/unread messages")
+            if result.target:
+                await human_click(page, result.target["x"], result.target["y"])
+            else:
+                log.warning("Dialpad: AI could not find 'New' tab — manual navigation may be needed")
+        except Exception as e:
+            log.warning(f"Dialpad: AI fallback for 'New' tab failed: {e}")
+
+
 # ---------------------------------------------------------------------------
 # Run execution
 # ---------------------------------------------------------------------------
@@ -126,6 +172,8 @@ async def run_schedule(
                 "Dialpad browser shows login page — SMS 2FA codes will NOT be available. "
                 "Run with --setup-dialpad first to authenticate."
             )
+        else:
+            await _navigate_dialpad_to_messages(dialpad_page)
     else:
         dialpad_page = None
 
