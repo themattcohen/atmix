@@ -96,49 +96,74 @@ def build_schedule(jobs: list[AccountJob]) -> RunSchedule:
     return RunSchedule(windows=windows, needs_dialpad=needs_dialpad)
 
 
-async def _navigate_dialpad_to_messages(page) -> None:
-    """Navigate Dialpad to the Compound Accounting > New messages tab.
+async def _navigate_dialpad_to_messages(page) -> bool:
+    """Navigate Dialpad into Compound Accounting department > New tab.
 
-    Uses text selectors first, falls back to AI vision if selectors fail.
-    Non-fatal: logs warnings but doesn't abort the run.
+    Returns True if department view reached, False otherwise.
     """
-    # Step 1: Click the department name in the sidebar
-    try:
-        dept = page.get_by_text(DIALPAD_DEPT_NAME).first
-        await dept.click(timeout=5000)
-        log.info(f"Dialpad: clicked '{DIALPAD_DEPT_NAME}'")
-        await asyncio.sleep(1)
-    except Exception:
-        log.warning(f"Dialpad: selector for '{DIALPAD_DEPT_NAME}' failed, trying AI fallback")
+    # Step 1: Enter department view (with retry)
+    for attempt in range(2):
         try:
-            screenshot = await wait_and_screenshot(page, "dialpad_nav_dept")
-            result = skill_find_element(screenshot, f"sidebar item or menu item labeled '{DIALPAD_DEPT_NAME}'")
-            if result.target:
-                await human_click(page, result.target["x"], result.target["y"])
-                await asyncio.sleep(1)
-            else:
-                log.warning("Dialpad: AI could not find department — manual navigation may be needed")
-                return
-        except Exception as e:
-            log.warning(f"Dialpad: AI fallback for department failed: {e}")
-            return
+            dept = page.get_by_text(DIALPAD_DEPT_NAME).first
+            await dept.click(timeout=5000)
+            log.info(f"Dialpad: clicked '{DIALPAD_DEPT_NAME}' (attempt {attempt + 1})")
+            await asyncio.sleep(2)
+        except Exception:
+            log.warning(
+                f"Dialpad: text selector for '{DIALPAD_DEPT_NAME}' failed, "
+                "trying AI fallback"
+            )
+            try:
+                screenshot = await wait_and_screenshot(page, "dialpad_nav_dept")
+                result = skill_find_element(
+                    screenshot,
+                    f"sidebar item labeled '{DIALPAD_DEPT_NAME}' under Departments",
+                )
+                if result.target:
+                    await human_click(page, result.target["x"], result.target["y"])
+                    await asyncio.sleep(2)
+                else:
+                    log.warning("Dialpad: AI could not locate department")
+                    continue
+            except Exception as e:
+                log.warning(f"Dialpad: AI fallback failed: {e}")
+                continue
 
-    # Step 2: Click the "New" tab
+        # Verify we entered department view (Operators tab only exists there)
+        try:
+            operators = page.get_by_role("tab", name="Operators")
+            if await operators.is_visible(timeout=3000):
+                log.info("Dialpad: department view confirmed (Operators tab visible)")
+                break
+        except Exception:
+            log.warning(
+                f"Dialpad: not in department view after click "
+                f"(attempt {attempt + 1}/2) — retrying"
+            )
+    else:
+        log.error("Dialpad: failed to enter department view after 2 attempts")
+        return False
+
+    # Step 2: Click "New" tab (exists in department view)
     try:
         new_tab = page.get_by_role("tab", name="New")
         await new_tab.click(timeout=5000)
         log.info("Dialpad: clicked 'New' tab")
     except Exception:
-        log.warning("Dialpad: selector for 'New' tab failed, trying AI fallback")
+        log.warning("Dialpad: 'New' tab selector failed, trying AI fallback")
         try:
             screenshot = await wait_and_screenshot(page, "dialpad_nav_new")
-            result = skill_find_element(screenshot, "tab labeled 'New' for new/unread messages")
+            result = skill_find_element(
+                screenshot, "tab labeled 'New' for new/unread department messages"
+            )
             if result.target:
                 await human_click(page, result.target["x"], result.target["y"])
             else:
-                log.warning("Dialpad: AI could not find 'New' tab — manual navigation may be needed")
+                log.warning("Dialpad: AI could not find 'New' tab")
         except Exception as e:
             log.warning(f"Dialpad: AI fallback for 'New' tab failed: {e}")
+
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -168,16 +193,55 @@ async def run_schedule(
         dialpad_page = dialpad_context.pages[0] if dialpad_context.pages else await dialpad_context.new_page()
         log.info("Dialpad window ready — ensure it's logged in to messages view.")
 
-        # Health check: verify Dialpad is authenticated
-        screenshot = await wait_and_screenshot(dialpad_page, "dialpad_health_check")
-        health = skill_classify_page(screenshot)
-        if health.page_state in ("login", "login_page", "auth"):
+        # Navigate to Dialpad app (persistent profile has auth cookies)
+        await dialpad_page.goto("https://dialpad.com/app", wait_until="domcontentloaded")
+
+        # Health check: verify Dialpad is authenticated (await_render retries on blank SPA)
+        screenshot = await wait_and_screenshot(dialpad_page, "dialpad_health_check", await_render=True)
+
+        # Check for blank/white page first
+        from utils.browser_setup import _is_blank_page
+        if _is_blank_page(screenshot):
             log.warning(
-                "Dialpad browser shows login page — SMS 2FA codes will NOT be available. "
-                "Run with --setup-dialpad first to authenticate."
+                "Dialpad browser is blank — profile may need re-authentication. "
+                "SMS 2FA unavailable this run. Use --setup-dialpad to fix."
             )
+            dialpad_page = None
         else:
-            await _navigate_dialpad_to_messages(dialpad_page)
+            health = skill_classify_page(screenshot)
+            if health.page_state in ("login", "login_page", "auth"):
+                log.warning(
+                    "Dialpad browser shows login page — SMS 2FA codes will NOT be available. "
+                    "Run with --setup-dialpad first to authenticate."
+                )
+                dialpad_page = None
+            else:
+                # Fix 1: Handle OOPS error dialog that blocks UI interaction
+                try:
+                    restart_link = dialpad_page.get_by_text("Restart App")
+                    if await restart_link.is_visible(timeout=2000):
+                        log.warning("Dialpad: OOPS error dialog — clicking 'Restart App'")
+                        await restart_link.click(timeout=3000)
+                        await dialpad_page.wait_for_load_state("domcontentloaded")
+                        await asyncio.sleep(3)
+                        screenshot = await wait_and_screenshot(
+                            dialpad_page, "dialpad_after_restart", await_render=True
+                        )
+                        if _is_blank_page(screenshot):
+                            log.warning("Dialpad: still blank after restart — SMS unavailable")
+                            dialpad_page = None
+                except Exception:
+                    pass  # No dialog present
+
+                # Fix 3: Gate dialpad_page on navigation result
+                if dialpad_page:
+                    nav_ok = await _navigate_dialpad_to_messages(dialpad_page)
+                    if not nav_ok:
+                        log.warning(
+                            "Dialpad: navigation to department failed — "
+                            "SMS 2FA unavailable this run"
+                        )
+                        dialpad_page = None
     else:
         dialpad_page = None
 

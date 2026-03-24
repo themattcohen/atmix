@@ -26,6 +26,7 @@ async def poll_dialpad_sms(
     sender_hint: str = "",
     timeout_s: float = 120,
     poll_interval: float = 5,
+    skip_codes: set[str] | None = None,
 ) -> tuple[str, str] | None:
     """Poll Dialpad messaging window for a new 2FA code.
 
@@ -34,29 +35,76 @@ async def poll_dialpad_sms(
         sender_hint: Known sender short-code (e.g. ``"72166"``).
         timeout_s: How long to poll before giving up.
         poll_interval: Seconds between screenshots.
+        skip_codes: Set of previously-used codes to ignore (prevents re-reading stale messages).
 
     Returns:
         Tuple of ``(code, sender_id)`` on success, or ``None`` on timeout.
     """
     start = asyncio.get_event_loop().time()
     prev_screenshot: bytes | None = None
+    codes_to_skip = skip_codes or set()
 
+    # Take a baseline screenshot BEFORE polling starts.
+    # We require the page to CHANGE from this baseline before reading a code,
+    # which prevents reading old codes from previous runs.
+    baseline_screenshot = await wait_and_screenshot(dialpad_page, "dialpad_baseline")
+
+    first_check = True
+    baseline_changed = False
+    force_read_done = False
     while asyncio.get_event_loop().time() - start < timeout_s:
         screenshot = await wait_and_screenshot(dialpad_page, "dialpad_poll")
 
+        # On first check, abort immediately if page is blank
+        if first_check:
+            first_check = False
+            from utils.browser_setup import _is_blank_page
+            if _is_blank_page(screenshot):
+                log.warning("Dialpad page is blank — aborting SMS poll")
+                return None
+
+        # Check if the page has changed from the baseline (new SMS arrived)
+        if not baseline_changed:
+            elapsed = asyncio.get_event_loop().time() - start
+            if screenshots_identical(baseline_screenshot, screenshot, threshold=0.99):
+                # After 30s with no change, force one AI read in case the SMS
+                # arrived before the baseline was captured
+                if elapsed < 30:
+                    log.debug("Dialpad unchanged from baseline, waiting...")
+                    await asyncio.sleep(poll_interval)
+                    continue
+                elif not force_read_done:
+                    log.info(
+                        "Dialpad: 30s without change — forcing AI read "
+                        "(SMS may have arrived before baseline)"
+                    )
+                    force_read_done = True
+                    # Fall through to AI read below
+                else:
+                    await asyncio.sleep(poll_interval)
+                    continue
+            else:
+                baseline_changed = True
+                log.info("Dialpad page changed from baseline — new SMS likely arrived")
+
         # Skip AI call if the page hasn't changed since last poll
-        if prev_screenshot is not None and screenshots_identical(prev_screenshot, screenshot):
+        if prev_screenshot is not None and screenshots_identical(prev_screenshot, screenshot, threshold=0.99):
             log.debug("Dialpad unchanged, skipping AI call")
             await asyncio.sleep(poll_interval)
             continue
         prev_screenshot = screenshot
 
-        result = skill_read_2fa_code(screenshot, sender_hint)
+        result = skill_read_2fa_code(screenshot, sender_hint, skip_codes=codes_to_skip)
 
         if result.action == "found" and result.text:
             # Ensure we only return digits
             digits = re.sub(r"\D", "", result.text)
             if 6 <= len(digits) <= 8:
+                # Skip previously-used codes
+                if digits in codes_to_skip:
+                    log.debug(f"Skipping stale code {digits} (already used)")
+                    await asyncio.sleep(poll_interval)
+                    continue
                 sender = result.raw_response.get("sender", "") if result.raw_response else ""
                 log.info(f"SMS 2FA code received ({len(digits)} digits) from sender '{sender}'")
                 return (digits, sender)

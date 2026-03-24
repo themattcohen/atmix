@@ -36,6 +36,7 @@ from utils.browser_setup import (
     human_type,
     wait_and_screenshot,
     monitor_new_pages,
+    screenshots_identical,
 )
 from utils.file_manager import (
     clear_download_dir,
@@ -51,7 +52,10 @@ if TYPE_CHECKING:
 
 
 def _get_target_month() -> str:
-    """Return previous calendar month as 'yyyy-mm'."""
+    """Return previous calendar month as 'yyyy-mm', or config override."""
+    from config import TARGET_MONTH_OVERRIDE
+    if TARGET_MONTH_OVERRIDE:
+        return TARGET_MONTH_OVERRIDE
     today = date.today()
     if today.month == 1:
         return f"{today.year - 1}-12"
@@ -171,12 +175,13 @@ async def run_window(
                 ),
                 timeout=session_timeout,
             )
+            log.info(f"[W{schedule.window_id}] {bank} session completed — success={success}")
         except asyncio.TimeoutError:
             log.warning(f"[W{schedule.window_id}] Session timeout for {bank}")
             for j in login_jobs:
                 await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Session timeout")
         except Exception as e:
-            log.error(f"[W{schedule.window_id}] Unexpected error for {bank}: {e}")
+            log.error(f"[W{schedule.window_id}] Unexpected error for {bank}: {e}", exc_info=True)
             for j in login_jobs:
                 await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", f"Error: {e}")
 
@@ -210,6 +215,30 @@ async def _login_and_download(
     log.info(f"[W{wid}] Mode: {mode}" + (f" (playbook v{playbook.version}, {playbook.success_count} successes)" if playbook and mode == "replay" else ""))
     log_action(type="session_start", mode=mode, note=f"bank={lead.bank_name}")
 
+    # --- Phase 0.5: Clear stale cookies for this bank's domain ---
+    try:
+        context = page.context
+        cookies = await context.cookies()
+        bank_lower = lead.bank_name.lower()
+        # Map bank name substrings to domains for cookie clearing
+        domain_map = {"citi": ".citi.com", "chase": ".chase.com", "american express": ".americanexpress.com"}
+        clear_domain = next((d for k, d in domain_map.items() if k in bank_lower), None)
+        if clear_domain:
+            filtered = [c for c in cookies if clear_domain in (c.get("domain", ""))]
+            if filtered:
+                await context.clear_cookies()
+                log.info(f"[W{wid}] Cleared {len(filtered)} cookies for {clear_domain}")
+                # Clear localStorage/sessionStorage to prevent SPA session leakage between logins
+                try:
+                    await page.evaluate("() => { try { localStorage.clear(); sessionStorage.clear(); } catch(e) {} }")
+                except Exception as e:
+                    log.debug(f"[W{wid}] localStorage clear skipped: {e}")
+                # Navigate away from bank origin to fully reset session state
+                await page.goto("about:blank")
+                await human_delay(0.5, 1.0)
+    except Exception as exc:
+        log.debug(f"[W{wid}] Cookie clear skipped: {exc}")
+
     # --- Phase 1: URL + Navigate ---
     ok = await _phase_navigate(page, lead, jobs, target_month, wid, mgr, excel_write_lock, recorder, start_time=_session_start)
     if not ok:
@@ -234,7 +263,8 @@ async def _login_and_download(
 
         # --- Phase 3: Post-login loop (always AI-driven) ---
         ok = await _phase_post_login(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
-                                     tfa_semaphore, dialpad_page, recorder, watch, start_time=_session_start)
+                                     tfa_semaphore, dialpad_page, recorder, watch,
+                                     playbook=playbook, mode=mode, start_time=_session_start)
         if not ok:
             return False
 
@@ -248,6 +278,11 @@ async def _login_and_download(
     # --- Phase 4: Navigate to statements (playbook-aware) ---
     ok = await _phase_statements_nav(page, lead, jobs, target_month, wid, mgr, excel_write_lock,
                                      playbook, mode, recorder, watch, start_time=_session_start)
+    if not ok:
+        return False
+
+    # --- Phase 4.5: Prepare statements page (dismiss modals, switch card, go to PDF archive) ---
+    ok = await _phase_prepare_statements(page, lead, jobs, target_month, wid, mgr, excel_write_lock, start_time=_session_start)
     if not ok:
         return False
 
@@ -330,10 +365,12 @@ async def _phase_navigate(
     log_action(type="navigate", description=login_url)
     ok = await _resilient_navigation(page, login_url)
     if not ok:
+        log.error(f"[W{wid}] Navigation to {lead.bank_name} FAILED — URL: {login_url}")
         for j in jobs:
             await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Navigation failed", start_time=start_time)
         return False
 
+    log.info(f"[W{wid}] Navigation succeeded, entering readiness gate...")
     await human_delay()
     return True
 
@@ -455,6 +492,7 @@ async def _phase_login(
             username_ok = await try_step(page, step)
             if username_ok:
                 log_action(type="playbook_hit", description="username field", note=step.selector)
+                await page.keyboard.press("Control+a")
                 await human_type(page, lead.username)
             else:
                 log_action(type="playbook_miss", description="username field")
@@ -479,7 +517,44 @@ async def _phase_login(
 
         if result and result.action in ("click", "type") and result.target:
             await human_click(page, result.target["x"], result.target["y"])
+            await page.keyboard.press("Control+a")
             await human_type(page, lead.username)
+
+            # Verify text actually landed; fall back to iframe-aware fill if empty
+            try:
+                active_val = await page.evaluate(
+                    "() => document.activeElement?.value ?? ''"
+                )
+                if not active_val.strip():
+                    log.warning(f"[W{wid}] Username field empty after typing — "
+                                "trying iframe-aware selector fill")
+                    filled = False
+                    # Search all frames (main + iframes) for username inputs
+                    targets = [page] + list(page.frames)
+                    selectors = [
+                        "#userId-input-field-input",  # Chase
+                        "#userId", "#username",
+                        "input[name='userId']", "input[name='username']",
+                        "input[type='text']",
+                    ]
+                    for frame in targets:
+                        if filled:
+                            break
+                        for sel in selectors:
+                            try:
+                                loc = frame.locator(sel).first
+                                if await loc.count() > 0:
+                                    await loc.fill(lead.username)
+                                    log.info(f"[W{wid}] Username filled via selector: {sel} "
+                                             f"(frame: {frame.url[:60]})")
+                                    filled = True
+                                    break
+                            except Exception:
+                                continue
+                    if not filled:
+                        log.warning(f"[W{wid}] Could not fill username via any selector")
+            except Exception as e:
+                log.debug(f"[W{wid}] Username verify skipped: {e}")
 
             # Record for playbook
             if recorder:
@@ -527,7 +602,7 @@ async def _phase_login(
 
     if not next_ok:
         screenshot2 = await wait_and_screenshot(page, f"w{wid}_after_username")
-        next_btn = skill_find_element(screenshot2, "Next button or Continue button (NOT the password field)")
+        next_btn = skill_find_element(screenshot2, "Next button or Continue button (NOT the password field, NOT a Sign In or Log In or Submit button)")
         if next_btn.action == "click" and next_btn.confidence > 0.7 and next_btn.target:
             await verified_click(page, next_btn, screenshot2)
 
@@ -551,6 +626,7 @@ async def _phase_login(
             password_ok = await try_step(page, step)
             if password_ok:
                 log_action(type="playbook_hit", description="password field", note=step.selector)
+                await page.keyboard.press("Control+a")
                 await human_type(page, lead.password)
             else:
                 log_action(type="playbook_miss", description="password field")
@@ -563,7 +639,39 @@ async def _phase_login(
         pw_result = skill_find_element(screenshot, "password input field")
         if pw_result.action in ("click", "type") and pw_result.target:
             await human_click(page, pw_result.target["x"], pw_result.target["y"])
+            await page.keyboard.press("Control+a")
             await human_type(page, lead.password)
+
+            # Verify password landed; iframe-aware fallback
+            try:
+                active_val = await page.evaluate(
+                    "() => document.activeElement?.value ?? ''"
+                )
+                if not active_val.strip():
+                    log.warning(f"[W{wid}] Password field empty after typing — "
+                                "trying iframe-aware selector fill")
+                    targets = [page] + list(page.frames)
+                    pw_selectors = [
+                        "#password-input-field-input",  # Chase
+                        "#password", "input[name='password']",
+                        "input[type='password']",
+                    ]
+                    for frame in targets:
+                        filled = False
+                        for sel in pw_selectors:
+                            try:
+                                loc = frame.locator(sel).first
+                                if await loc.count() > 0:
+                                    await loc.fill(lead.password)
+                                    log.info(f"[W{wid}] Password filled via selector: {sel}")
+                                    filled = True
+                                    break
+                            except Exception:
+                                continue
+                        if filled:
+                            break
+            except Exception as e:
+                log.debug(f"[W{wid}] Password verify skipped: {e}")
 
             if recorder:
                 selector = await discover_selector(page, pw_result.target["x"], pw_result.target["y"])
@@ -592,6 +700,10 @@ async def _phase_login(
                     for j in jobs:
                         await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Virtual keyboard password entry failed", start_time=start_time)
                     return False
+            elif page_state.page_state in ("dashboard", "statements"):
+                # Browser auto-filled password and auto-submitted (Chrome password manager)
+                log.info(f"[W{wid}] Password field not found but page is already {page_state.page_state} — login succeeded via auto-fill")
+                return True
             else:
                 log.warning(f"[W{wid}] Could not find password field")
                 for j in jobs:
@@ -616,30 +728,54 @@ async def _phase_login(
                     save_playbook(playbook)
 
     if not submit_ok:
-        screenshot3 = await wait_and_screenshot(page, f"w{wid}_before_submit")
-        submit = skill_find_element(screenshot3, "Sign In button or Log In button or Submit button")
-        if submit.action == "click" and submit.target:
-            await verified_click(page, submit, screenshot3)
+        # Try iframe-aware submit button click first (Chase iframe issue)
+        iframe_submit_ok = False
+        submit = type('obj', (object,), {'target': None, 'confidence': 0.5})()
+        for frame in page.frames:
+            for label in ["Sign In", "Sign in", "Log In", "Log in", "Submit"]:
+                btn = frame.get_by_role("button", name=label)
+                if await btn.count():
+                    await btn.first.click(timeout=5000)
+                    log.info(f"[W{wid}] Clicked '{label}' button via iframe selector")
+                    iframe_submit_ok = True
+                    if recorder:
+                        recorder.add_login_step(
+                            name="click_submit", action="click",
+                            description=f"{label} button (iframe)",
+                            selector="",
+                            coords={"x": 0, "y": 0},
+                        )
+                    break
+            if iframe_submit_ok:
+                break
 
-            if recorder:
-                selector = await discover_selector(page, submit.target["x"], submit.target["y"])
-                recorder.add_login_step(
-                    name="click_submit", action="click",
-                    description="Sign In button",
-                    selector=selector or "",
-                    coords={"x": submit.target["x"], "y": submit.target["y"]},
-                )
-        else:
-            await page.keyboard.press("Enter")
-            if recorder:
-                recorder.add_login_step(
-                    name="click_submit", action="click",
-                    description="Submit via Enter key",
-                )
+        if not iframe_submit_ok:
+            # Fallback to AI vision coordinates
+            screenshot3 = await wait_and_screenshot(page, f"w{wid}_before_submit")
+            submit = skill_find_element(screenshot3, "Sign In button or Log In button or Submit button")
+            if submit.action == "click" and submit.target:
+                await verified_click(page, submit, screenshot3)
 
+                if recorder:
+                    selector = await discover_selector(page, submit.target["x"], submit.target["y"])
+                    recorder.add_login_step(
+                        name="click_submit", action="click",
+                        description="Sign In button",
+                        selector=selector or "",
+                        coords={"x": submit.target["x"], "y": submit.target["y"]},
+                    )
+            else:
+                await page.keyboard.press("Enter")
+                if recorder:
+                    recorder.add_login_step(
+                        name="click_submit", action="click",
+                        description="Submit via Enter key",
+                    )
+
+        submit_conf = 0.99 if iframe_submit_ok else (submit.confidence if submit.target else 0.5)
         decision = await watch.pause(wid, lead.bank_name, mode,
                                      "skill_find_element", "submit button",
-                                     submit.confidence if submit.target else 0.5, 0.01,
+                                     submit_conf, 0.01,
                                      "About to wait for login response")
         if decision == "quit":
             raise asyncio.CancelledError("Operator quit")
@@ -662,12 +798,19 @@ async def _phase_post_login(
     dialpad_page: Page | None,
     recorder: PlaybookRecorder | None,
     watch: WatchController | None = None,
+    playbook: "Playbook | None" = None,
+    mode: str = "learn",
     start_time: float | None = None,
 ) -> bool:
     """Classify page state and handle obstacles, 2FA, security questions."""
     max_iterations = 10
     reached_terminal = False
     consecutive_stuck = 0
+    consecutive_high_conf_unknown = 0
+    sign_on_method_clicked = False
+    sign_on_method_attempts = 0
+    tfa_entry_attempts = 0
+    MAX_TFA_ENTRY_ATTEMPTS = 2
     for _ in range(max_iterations):
         screenshot = await wait_and_screenshot(page, f"w{wid}_post_login")
         state = skill_classify_page(screenshot)
@@ -690,14 +833,25 @@ async def _phase_post_login(
                 return False
 
         if page_state in ("dashboard", "statements", "2fa_prompt", "2fa_method_selection",
-                          "security_question"):
+                          "security_question", "sign_on_method"):
             consecutive_stuck = 0
 
         if page_state == "login":
-            log.warning(f"[W{wid}] {lead.bank_name}: still on login page after submit — credentials may be wrong")
-            for j in jobs:
-                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Still on login page post-submit", start_time=start_time)
-            return False
+            if sign_on_method_clicked:
+                log.info(f"[W{wid}] {lead.bank_name}: sign_on_method led to login form — re-entering credentials (forcing AI learn mode)")
+                sign_on_method_clicked = False  # Only retry once
+                ok = await _phase_login(
+                    page, lead, jobs, target_month, wid, mgr, excel_write_lock,
+                    None, "learn", None, watch, start_time=start_time,
+                )
+                if not ok:
+                    return False
+                await human_delay()
+            else:
+                log.warning(f"[W{wid}] {lead.bank_name}: still on login page after submit — credentials may be wrong")
+                for j in jobs:
+                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Still on login page post-submit", start_time=start_time)
+                return False
 
         elif page_state == "dashboard":
             reached_terminal = True
@@ -708,7 +862,14 @@ async def _phase_post_login(
             break
 
         elif page_state == "2fa_prompt":
-            log_action(type="2fa_trigger", description="2FA code entry required")
+            tfa_entry_attempts += 1
+            if tfa_entry_attempts > MAX_TFA_ENTRY_ATTEMPTS:
+                log.error(f"[W{wid}] 2FA entry attempted {MAX_TFA_ENTRY_ATTEMPTS} times — aborting to prevent loop")
+                for j in jobs:
+                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", f"2FA loop (tried {MAX_TFA_ENTRY_ATTEMPTS}x)", start_time=start_time)
+                    mgr.add_to_retry_queue(j, "2FA code entry looped")
+                return False
+            log_action(type="2fa_trigger", description=f"2FA code entry required (attempt {tfa_entry_attempts}/{MAX_TFA_ENTRY_ATTEMPTS})")
             ok = await _handle_2fa_entry(
                 page, lead, wid, tfa_semaphore, dialpad_page, mgr, excel_write_lock,
                 watch_mode=watch.enabled if watch else False,
@@ -718,10 +879,18 @@ async def _phase_post_login(
                     await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "2FA failed", start_time=start_time)
                     mgr.add_to_retry_queue(j, "2FA code entry failed")
                 return False
-            await human_delay()
+            # Wait longer after 2FA to let Chase redirect before re-checking state
+            await human_delay(4.0, 8.0)
 
         elif page_state == "2fa_method_selection":
-            log_action(type="2fa_trigger", description="2FA method selection")
+            tfa_entry_attempts += 1
+            if tfa_entry_attempts > MAX_TFA_ENTRY_ATTEMPTS:
+                log.error(f"[W{wid}] 2FA selection attempted {MAX_TFA_ENTRY_ATTEMPTS} times — aborting to prevent loop")
+                for j in jobs:
+                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", f"2FA selection loop (tried {MAX_TFA_ENTRY_ATTEMPTS}x)", start_time=start_time)
+                    mgr.add_to_retry_queue(j, "2FA selection looped")
+                return False
+            log_action(type="2fa_trigger", description=f"2FA method selection (attempt {tfa_entry_attempts}/{MAX_TFA_ENTRY_ATTEMPTS})")
             ok = await _handle_2fa_selection(
                 page, lead, wid, tfa_semaphore, dialpad_page, mgr, excel_write_lock,
                 watch_mode=watch.enabled if watch else False,
@@ -741,6 +910,37 @@ async def _phase_post_login(
                 return False
             await human_delay()
 
+        elif page_state == "sign_on_method":
+            sign_on_method_attempts += 1
+            if sign_on_method_attempts > 2:
+                log.warning(f"[W{wid}] Sign-on method loop detected ({sign_on_method_attempts} attempts) — login may be silently rejected")
+                for j in jobs:
+                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Sign-on method loop — possible anti-automation block", start_time=start_time)
+                    mgr.add_to_retry_queue(j, "Sign-on method loop (anti-bot?)")
+                return False
+
+            # Step 1: Dismiss "How to Scan" overlay modal if present (Citi shows this over QR page)
+            log.info(f"[W{wid}] Sign-on method page — dismissing any overlay modal first")
+            overlay_x = skill_find_element(screenshot, "X or close button on a 'How to Scan' or instructional overlay/modal (NOT the main page close)")
+            if overlay_x.action == "click" and overlay_x.target:
+                log.info(f"[W{wid}] Found overlay X button, clicking to dismiss")
+                await verified_click(page, overlay_x, screenshot)
+                await human_delay(1.0, 2.0)
+                screenshot = await wait_and_screenshot(page, f"w{wid}_after_overlay_dismiss")
+
+            # Step 2: Click "Sign On With Password" link/button
+            log.info(f"[W{wid}] Sign-on method selection — clicking 'Sign On With Password'")
+            pw_btn = skill_find_element(screenshot, "button or link to sign on with password (not QR code, not biometric)")
+            if pw_btn.action == "click" and pw_btn.target:
+                await verified_click(page, pw_btn, screenshot)
+                await human_delay(2.0, 4.0)
+                sign_on_method_clicked = True  # Flag for login re-entry
+            else:
+                log.warning(f"[W{wid}] Could not find password sign-on button")
+                for j in jobs:
+                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Cannot find password sign-on option", start_time=start_time)
+                return False
+
         elif page_state == "obstacle":
             consecutive_stuck += 1
             if consecutive_stuck >= 4:
@@ -757,6 +957,12 @@ async def _phase_post_login(
                 elif result.action == "press_escape":
                     await page.keyboard.press("Escape")
                 await human_delay()
+
+        elif page_state == "enrollment":
+            log.warning(f"[W{wid}] {lead.bank_name}: enrollment/registration page — cannot proceed")
+            for j in jobs:
+                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Enrollment page — manual setup required", start_time=start_time)
+            return False
 
         elif page_state in ("locked", "error"):
             error_text = state.text or page_state
@@ -786,8 +992,59 @@ async def _phase_post_login(
             await human_delay(2.0, 4.0)
 
         else:
+            # Check for Chase "remember this device" interstitial — after 2FA success,
+            # Chase may ask if the user wants to remember the device.  The AI classifier
+            # sees this as unknown/obstacle.  Handle by clicking "Not now" or "Next".
+            if tfa_entry_attempts > 0:
+                remember_keywords = {"remember", "trust this device", "recognize", "don't ask again", "not now"}
+                page_text = ""
+                for frame in page.frames:
+                    try:
+                        page_text += (await frame.text_content("body") or "").lower()
+                    except Exception:
+                        pass
+                if any(kw in page_text for kw in remember_keywords):
+                    log.info(f"[W{wid}] Detected 'remember device' interstitial — dismissing")
+                    log_action(type="obstacle_dismiss", description="remember device interstitial")
+                    dismissed = False
+                    for frame in page.frames:
+                        for label in ["Not now", "Next", "Continue", "Skip", "No"]:
+                            btn = frame.get_by_role("button", name=label)
+                            if await btn.count():
+                                await btn.first.click(timeout=5000)
+                                log.info(f"[W{wid}] Clicked '{label}' on remember-device page")
+                                dismissed = True
+                                break
+                            link = frame.get_by_role("link", name=label)
+                            if await link.count():
+                                await link.first.click(timeout=5000)
+                                log.info(f"[W{wid}] Clicked '{label}' link on remember-device page")
+                                dismissed = True
+                                break
+                        if dismissed:
+                            break
+                    if not dismissed:
+                        # Fallback: AI vision to find the dismiss button
+                        dismiss_btn = skill_find_element(screenshot, "button or link to skip remembering this device, such as 'Not now', 'Skip', 'Next', or 'No thanks'")
+                        if dismiss_btn.action == "click" and dismiss_btn.target:
+                            await verified_click(page, dismiss_btn, screenshot)
+                    await human_delay(2.0, 4.0)
+                    continue  # Re-classify page after dismissal
+
             consecutive_stuck += 1
-            log.warning(f"[W{wid}] Unknown page state: {page_state} (stuck count: {consecutive_stuck})")
+            if page_state == "unknown" and state.confidence >= 0.90:
+                consecutive_high_conf_unknown += 1
+            else:
+                consecutive_high_conf_unknown = 0
+
+            log.warning(f"[W{wid}] Unknown page state: {page_state} (stuck: {consecutive_stuck}, hi-conf: {consecutive_high_conf_unknown})")
+
+            if consecutive_high_conf_unknown >= 3:
+                log.error(f"[W{wid}] {lead.bank_name}: 3x high-confidence 'unknown' — aborting")
+                for j in jobs:
+                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Unrecognized page (unknown x3 at >0.90)", start_time=start_time)
+                return False
+
             if consecutive_stuck >= 4:
                 log.info(f"[W{wid}] Stuck for {consecutive_stuck} iterations, trying Escape + reload")
                 await page.keyboard.press("Escape")
@@ -864,10 +1121,170 @@ async def _phase_statements_nav(
         await human_delay(2.0, 4.0)
         return True
     else:
-        log.warning(f"[W{wid}] Could not find statements page link")
+        # Try hamburger/menu button fallback before giving up
+        log.info(f"[W{wid}] Statements not found directly, trying menu button fallback")
+        menu_result = skill_find_element(screenshot, "hamburger menu button, three-line menu icon, or 'Menu' button")
+        if menu_result.action == "click" and menu_result.target:
+            await verified_click(page, menu_result, screenshot)
+            await human_delay(1.5, 3.0)
+            screenshot2 = await wait_and_screenshot(page, f"w{wid}_menu_expanded")
+            nav_result2 = skill_find_statements_page(screenshot2)
+            if nav_result2.action == "click" and nav_result2.target:
+                await verified_click(page, nav_result2, screenshot2)
+                if recorder:
+                    selector = await discover_selector(page, nav_result2.target["x"], nav_result2.target["y"])
+                    recorder.set_statements_step(
+                        description="Statements (via menu)",
+                        selector=selector or "",
+                        coords={"x": nav_result2.target["x"], "y": nav_result2.target["y"]},
+                    )
+                await human_delay(2.0, 4.0)
+                return True
+
+        log.warning(f"[W{wid}] Could not find statements page link (including menu fallback)")
         for j in jobs:
             await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Statements page not found", start_time=start_time)
         return False
+
+
+# ---------------------------------------------------------------------------
+# Phase 4.5: Prepare statements page (modals, card selection, PDF archive)
+# ---------------------------------------------------------------------------
+async def _phase_prepare_statements(
+    page: Page, lead: AccountJob, jobs: list[AccountJob],
+    target_month: str, wid: int,
+    mgr: ExcelManager, excel_write_lock: asyncio.Lock,
+    start_time: float | None = None,
+) -> bool:
+    """Dismiss modals, switch to the correct card/account, and navigate to PDF archive.
+
+    This handles banks like AmEx where the statements page first shows a
+    transaction view and requires clicking "Go to PDF Statements" to reach
+    the actual PDF download page.
+    """
+    # Step 1: Dismiss any modal/obstacle overlay
+    screenshot = await wait_and_screenshot(page, f"w{wid}_statements_prep")
+    obstacle = skill_handle_obstacle(screenshot)
+    if obstacle.action == "click" and obstacle.target:
+        log.info(f"[W{wid}] Dismissing modal on statements page")
+        await verified_click(page, obstacle, screenshot)
+        await human_delay(1.0, 2.0)
+        screenshot = await wait_and_screenshot(page, f"w{wid}_statements_prep2")
+
+    # Step 2: Switch to correct card/account BEFORE navigating to PDF archive
+    account_last4 = jobs[0].account_last4 if jobs else ""
+
+    if account_last4:
+        card_picker = skill_find_element(
+            screenshot,
+            "dropdown or selector to switch between accounts or cards (the card picker at the top of the page). "
+            "If the current card already shows " + account_last4 + ", return action 'none'."
+        )
+        if card_picker.action == "click" and card_picker.target:
+            log.info(f"[W{wid}] Opening card picker to find #{account_last4}")
+            await verified_click(page, card_picker, screenshot)
+            await human_delay(1.5, 3.0)
+
+            # Search for target card with mouse-wheel scrolling
+            found = False
+            dropdown_x = card_picker.target["x"]
+            dropdown_y = card_picker.target["y"] + 200
+            for scroll_attempt in range(12):
+                dropdown_screenshot = await wait_and_screenshot(page, f"w{wid}_card_dropdown")
+
+                n_digits = len(account_last4)
+                target_card = skill_find_element(
+                    dropdown_screenshot,
+                    f"In the open dropdown/menu, find and click the card or account whose last digits are exactly {account_last4} "
+                    f"(all {n_digits} digits must match). Look for text like '...{account_last4}' or '****{account_last4}' or "
+                    f"'....{account_last4}'. If no card ending in exactly {account_last4} is visible, return action 'none'."
+                )
+
+                if target_card.action == "click" and target_card.target and target_card.confidence >= 0.70:
+                    log.info(f"[W{wid}] Found card #{account_last4} (conf={target_card.confidence:.2f})")
+                    await human_click(page, target_card.target["x"], target_card.target["y"])
+                    await human_delay(2.0, 4.0)
+                    # Check if card switched via JS (no AI call needed)
+                    await human_delay(1.0, 2.0)
+                    wrong_card = await page.evaluate(f"""(last4) => {{
+                        const modal = document.querySelector('[class*="modal"], [class*="overlay"], [class*="dialog"]');
+                        if (!modal) return false;
+                        const text = modal.textContent || '';
+                        return !text.includes(last4);
+                    }}""", account_last4)
+                    if wrong_card:
+                        # Card didn't switch — close modal, click card in sidebar, reopen statements
+                        log.info(f"[W{wid}] Card didn't switch in dropdown — closing modal, clicking sidebar card #{account_last4}")
+                        await page.keyboard.press("Escape")
+                        await human_delay(1.0, 2.0)
+                        # Click the target card in the left sidebar using JS
+                        js_sidebar = await page.evaluate(f"""(last4) => {{
+                            const els = document.querySelectorAll('a, div[class*="card"], div[class*="account"]');
+                            for (const el of els) {{
+                                const text = (el.textContent || '').replace(/\\s/g, '');
+                                if (!text.includes(last4)) continue;
+                                const rect = el.getBoundingClientRect();
+                                if (rect.x < 500 && text.length < 200) {{
+                                    el.click();
+                                    return {{clicked: true, text: el.textContent.trim().substring(0, 80)}};
+                                }}
+                            }}
+                            return {{clicked: false}};
+                        }}""", account_last4)
+                        if js_sidebar.get("clicked"):
+                            log.info(f"[W{wid}] Clicked sidebar card: {js_sidebar.get('text', '')[:60]}")
+                            await human_delay(3.0, 5.0)
+                            # Reopen "View Statements" via JS (no AI call needed)
+                            await page.evaluate("""() => {
+                                for (const el of document.querySelectorAll('a, button, span')) {
+                                    if ((el.textContent || '').trim() === 'View Statements') {
+                                        el.click();
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            }""")
+                            await human_delay(2.0, 4.0)
+                    found = True
+                    break
+
+                if target_card.action == "none":
+                    log.info(f"[W{wid}] Card #{account_last4} not in visible dropdown, scrolling (attempt {scroll_attempt + 1})")
+                else:
+                    log.info(f"[W{wid}] Card search inconclusive, scrolling (attempt {scroll_attempt + 1})")
+
+                # Mouse wheel scroll inside the dropdown area
+                await page.mouse.move(dropdown_x, dropdown_y)
+                await page.mouse.wheel(0, 300)
+                await human_delay(1.0, 1.5)
+
+            if not found:
+                log.warning(f"[W{wid}] Could not find card #{account_last4} in dropdown after 12 scrolls")
+                await page.keyboard.press("Escape")
+                await human_delay(0.5, 1.0)
+
+            # Re-screenshot after card switch
+            screenshot = await wait_and_screenshot(page, f"w{wid}_after_card_switch")
+
+    # Step 3: Navigate to PDF statements / PDF archive
+    pdf_link = skill_find_element(
+        screenshot,
+        "button or link to go to PDF statements, PDF archive, or downloadable statement documents "
+        "(NOT a download button for a single statement)"
+    )
+    if pdf_link.action == "click" and pdf_link.target and pdf_link.confidence >= 0.70:
+        log.info(f"[W{wid}] Found PDF statements link (conf={pdf_link.confidence:.2f}) — clicking")
+        await verified_click(page, pdf_link, screenshot)
+        await human_delay(2.0, 4.0)
+
+        # Dismiss any modal after navigating
+        screenshot = await wait_and_screenshot(page, f"w{wid}_pdf_archive")
+        obstacle2 = skill_handle_obstacle(screenshot)
+        if obstacle2.action == "click" and obstacle2.target:
+            await verified_click(page, obstacle2, screenshot)
+            await human_delay(1.0, 2.0)
+
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -888,11 +1305,34 @@ async def _phase_download(
     sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
 
     if sel_result.action == "not_available":
-        log.info(f"[W{wid}] Statement not yet available for {target_month}")
-        await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Statement not yet available", start_time=start_time)
-        async with excel_write_lock:
-            mgr.add_to_retry_queue(job, "Statement not yet available")
-        return
+        # Before giving up, try to expand the full statement archive.
+        # Step 1: Use JS to find and click the "View All Statements" link/button
+        # (Citi's button may be a React/JS element that doesn't respond to simple clicks)
+        js_click_result = await page.evaluate("""() => {
+            for (const el of document.querySelectorAll('a, button, [role="button"], [role="tab"]')) {
+                const text = (el.textContent || '').trim();
+                if (text.includes('View All Statements') || text.includes('All Statements')) {
+                    el.click();
+                    return {found: true, tag: el.tagName};
+                }
+            }
+            return {found: false};
+        }""")
+        if js_click_result.get("found"):
+            log.info(f"[W{wid}] JS-clicked 'View All Statements' (tag={js_click_result.get('tag')})")
+            await human_delay(3.0, 5.0)
+            screenshot = await wait_and_screenshot(page, f"w{wid}_all_statements")
+            sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
+        else:
+            log.info(f"[W{wid}] No 'View All Statements' element found in DOM")
+
+        # If still not available after expanding archive, fail
+        if sel_result.action == "not_available":
+            log.info(f"[W{wid}] Statement not yet available for {target_month}")
+            await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Statement not yet available", start_time=start_time)
+            async with excel_write_lock:
+                mgr.add_to_retry_queue(job, "Statement not yet available")
+            return
 
     if sel_result.action != "click" or not sel_result.target:
         log.warning(f"[W{wid}] Could not select statement")
@@ -916,14 +1356,23 @@ async def _phase_download(
     # Track new pages/tabs
     new_pages = await monitor_new_pages(context)
 
-    # Click to download
+    # Click to download (use expect_download to catch direct downloads; fallback for modals)
     log_action(type="download", description=f"clicking statement for {target_month}")
-    await verified_click(page, sel_result, screenshot)
-    await human_delay(2.0, 5.0)
+    try:
+        async with page.expect_download(timeout=10000) as download_info:
+            await human_click(page, sel_result.target["x"], sel_result.target["y"])
+        download = await download_info.value
+        dest = Path(schedule.download_dir) / f"statement_{job.account_last4}.pdf"
+        await download.save_as(str(dest))
+        pdf_path = dest
+        log.info(f"[W{wid}] Direct download captured: {dest.name}")
+    except Exception:
+        # No direct download — probably a modal or new tab opened
+        await human_delay(2.0, 5.0)
+        pdf_path = None
 
     # Check for new tab with PDF
-    pdf_path = None
-    if new_pages:
+    if not pdf_path and new_pages:
         for new_page in new_pages:
             await asyncio.sleep(2)
             try:
@@ -949,11 +1398,25 @@ async def _phase_download(
 
     if not pdf_path:
         screenshot = await wait_and_screenshot(page, f"w{wid}_download_btn")
-        dl_btn = skill_find_element(screenshot, "Download PDF button or Save button")
+        dl_btn = skill_find_element(
+            screenshot,
+            "the blue 'Download' button to confirm and start the file download "
+            "(NOT a radio button or file type selector). Look for a prominent Download or Save button."
+        )
         if dl_btn.action == "click" and dl_btn.target:
-            await verified_click(page, dl_btn, screenshot)
-            await human_delay(2.0, 4.0)
-            pdf_path = find_downloaded_pdf(schedule.download_dir, timeout_seconds=30)
+            # Use expect_download to catch AJAX/JS downloads
+            try:
+                async with page.expect_download(timeout=30000) as download_info:
+                    await human_click(page, dl_btn.target["x"], dl_btn.target["y"])
+                download = await download_info.value
+                dest = Path(schedule.download_dir) / f"statement_{job.account_last4}.pdf"
+                await download.save_as(str(dest))
+                pdf_path = dest
+                log.info(f"[W{wid}] Download captured via expect_download: {dest.name}")
+            except Exception as e:
+                log.warning(f"[W{wid}] expect_download failed ({e}), falling back to directory poll")
+                await human_delay(2.0, 4.0)
+                pdf_path = find_downloaded_pdf(schedule.download_dir, timeout_seconds=30)
 
     if not pdf_path:
         log.warning(f"[W{wid}] Download failed — no PDF found")
@@ -1033,6 +1496,13 @@ async def _handle_2fa_selection(
     """Select 2FA method and then handle code entry."""
     async with tfa_semaphore:
         screenshot = await wait_and_screenshot(page, f"w{wid}_2fa_select")
+
+        # Chase-specific: "I already have a code" link (for TOTP) or dropdown selection
+        chase_handled = await _try_chase_2fa_selection(page, job, wid)
+        if chase_handled:
+            return await _wait_and_enter_2fa_code(page, job, wid, dialpad_page, mgr, excel_write_lock, watch_mode=watch_mode)
+
+        # Generic AI-driven 2FA selection for other banks
         result = skill_select_2fa_option(screenshot, job.tfa_preference_order)
         if result.action == "click" and result.target:
             await verified_click(page, result, screenshot)
@@ -1041,6 +1511,145 @@ async def _handle_2fa_selection(
         else:
             log.warning(f"[W{wid}] Could not select 2FA option")
             return False
+
+
+async def _try_chase_2fa_selection(page: Page, job: AccountJob, wid: int) -> bool:
+    """Handle Chase's dropdown-based 2FA selection page.
+
+    Chase shows (inside an iframe at secure.chase.com):
+    - "Choose one" dropdown (select element) with SMS/call options
+    - "I already have a code." link (for TOTP/authenticator app)
+    - "Next" button to proceed
+
+    Returns True if handled, False to fall through to generic AI handler.
+    """
+    # Chase 2FA content is inside an iframe — search all frames
+    target_frame = None
+    already_have_code = None
+    try:
+        for frame in page.frames:
+            locator = frame.get_by_text("I already have a code")
+            if await locator.count():
+                target_frame = frame
+                already_have_code = locator
+                break
+        if not target_frame:
+            # Also try the main page in case it's not iframed
+            locator = page.get_by_text("I already have a code")
+            if await locator.count():
+                target_frame = page
+                already_have_code = locator
+        if not target_frame:
+            return False  # Not a Chase 2FA page
+    except Exception as e:
+        log.debug(f"[W{wid}] Chase 2FA detection error: {e}")
+        return False
+
+    log.info(f"[W{wid}] Detected Chase 2FA selection page (frame: {getattr(target_frame, 'url', 'main')[:60]})")
+
+    # TOTP path: click "I already have a code" → enter TOTP directly
+    if job.tfa_method == "totp":
+        log.info(f"[W{wid}] Chase TOTP: clicking 'I already have a code'")
+        await already_have_code.first.click(timeout=5000)
+        await human_delay(1.5, 3.0)
+        return True
+
+    # SMS/call path: open custom dropdown, select text option, click Next
+    try:
+        # Try native <select> first
+        native_select = target_frame.locator("select").first
+        if await native_select.count():
+            options = await native_select.locator("option").all_text_contents()
+            log.info(f"[W{wid}] Chase 2FA native <select> options: {options}")
+            for i, opt in enumerate(options):
+                if "text" in opt.lower() or "sms" in opt.lower():
+                    await native_select.select_option(index=i)
+                    log.info(f"[W{wid}] Chase 2FA: selected native option '{opt}'")
+                    await human_delay(0.5, 1.5)
+                    break
+        else:
+            # Custom dropdown: click "Choose one" to open, then select from revealed options
+            choose_one = target_frame.get_by_text("Choose one")
+            if await choose_one.count():
+                log.info(f"[W{wid}] Chase 2FA: clicking custom dropdown 'Choose one'")
+                await choose_one.first.click(timeout=5000)
+                await human_delay(1.5, 2.5)
+
+                # Debug: screenshot after opening dropdown
+                await wait_and_screenshot(page, f"w{wid}_chase_dropdown_open")
+
+                # Debug: log all visible option-like elements in the frame
+                # Chase dropdown options are typically <li> or <div> role="option" items
+                all_options = target_frame.locator("[role='option'], li[class*='option'], [class*='dropdown'] li, [class*='select'] li")
+                opt_count = await all_options.count()
+                if opt_count > 0:
+                    for i in range(opt_count):
+                        opt_text = await all_options.nth(i).text_content()
+                        log.info(f"[W{wid}] Chase 2FA dropdown option [{i}]: '{opt_text}'")
+
+                    # The dropdown has label rows ("TEXT ME", "CALL ME") and
+                    # phone number rows ("xxx-xxx-1992"). We need to click the
+                    # phone number row that appears UNDER the "TEXT ME" section.
+                    import re
+                    selected = False
+                    in_text_section = False
+                    for i in range(opt_count):
+                        opt_text = (await all_options.nth(i).text_content() or "").strip()
+                        if "text me" in opt_text.lower():
+                            in_text_section = True
+                            continue  # Skip the label itself
+                        if "call me" in opt_text.lower() or "call us" in opt_text.lower():
+                            in_text_section = False
+                            continue
+                        # Click the first phone number under TEXT ME
+                        if in_text_section and re.search(r'\d{3,4}', opt_text):
+                            await all_options.nth(i).click(timeout=5000)
+                            log.info(f"[W{wid}] Chase 2FA: clicked SMS phone option [{i}]: '{opt_text}'")
+                            selected = True
+                            break
+                    if not selected:
+                        # Fallback: click first phone number regardless of section
+                        for i in range(opt_count):
+                            opt_text = (await all_options.nth(i).text_content() or "").strip()
+                            if re.search(r'xxx.*\d{4}|\d{3}.*\d{4}', opt_text):
+                                await all_options.nth(i).click(timeout=5000)
+                                log.info(f"[W{wid}] Chase 2FA: clicked fallback phone option [{i}]: '{opt_text}'")
+                                selected = True
+                                break
+                    if not selected:
+                        log.warning(f"[W{wid}] Chase 2FA: no suitable option found among {opt_count} options")
+                        return False
+                else:
+                    # Fallback: try generic text matching in the frame after dropdown opened
+                    log.info(f"[W{wid}] Chase 2FA: no role=option elements, trying text scan")
+                    # Dump frame text for debugging
+                    frame_text = await target_frame.locator("body").text_content()
+                    log.info(f"[W{wid}] Chase 2FA frame text (first 500 chars): {(frame_text or '')[:500]}")
+                    return False
+
+                await human_delay(0.5, 1.5)
+                # Screenshot after selection
+                await wait_and_screenshot(page, f"w{wid}_chase_after_select")
+            else:
+                log.warning(f"[W{wid}] Chase 2FA: no dropdown found (native or custom)")
+                return False
+
+        # Click Next button
+        next_btn = target_frame.get_by_role("button", name="Next")
+        if await next_btn.count():
+            await next_btn.first.click(timeout=5000)
+            log.info(f"[W{wid}] Chase 2FA: clicked Next")
+            await human_delay(2.0, 4.0)
+            # Screenshot after Next
+            await wait_and_screenshot(page, f"w{wid}_chase_after_next")
+            return True
+        else:
+            log.warning(f"[W{wid}] Chase 2FA: no Next button found")
+
+    except Exception as e:
+        log.warning(f"[W{wid}] Chase 2FA dropdown handling failed: {e}")
+
+    return False
 
 
 async def _handle_2fa_entry(
@@ -1058,6 +1667,10 @@ async def _handle_2fa_entry(
         return await _wait_and_enter_2fa_code(page, job, wid, dialpad_page, mgr, excel_write_lock, watch_mode=watch_mode)
 
 
+# Track all 2FA codes used so we don't re-read stale Dialpad messages
+_used_2fa_codes: set[str] = set()
+
+
 async def _wait_and_enter_2fa_code(
     page: Page,
     job: AccountJob,
@@ -1068,6 +1681,7 @@ async def _wait_and_enter_2fa_code(
     watch_mode: bool = False,
 ) -> bool:
     """Wait for 2FA code to arrive, then enter it."""
+    global _used_2fa_codes
     code: str | None = None
 
     if job.tfa_method == "totp":
@@ -1080,7 +1694,13 @@ async def _wait_and_enter_2fa_code(
             return False
 
     elif job.tfa_method == "sms":
-        sms_result = await poll_dialpad_sms(dialpad_page, sender_hint=job.tfa_sender)
+        if not dialpad_page:
+            log.warning(f"[W{wid}] SMS 2FA required but Dialpad is not available")
+            return False
+        sms_result = await poll_dialpad_sms(
+            dialpad_page, sender_hint=job.tfa_sender,
+            skip_codes=_used_2fa_codes,
+        )
         if sms_result:
             code, sender = sms_result
             log_action(type="2fa_receive", description=f"SMS code received from Dialpad (sender={sender})")
@@ -1107,26 +1727,102 @@ async def _wait_and_enter_2fa_code(
         log.warning(f"[W{wid}] No 2FA code received")
         return False
 
-    # Find the code input field and enter it
-    screenshot = await wait_and_screenshot(page, f"w{wid}_2fa_entry")
-    code_field = skill_find_element(screenshot, "verification code input field or OTP input field")
-    if code_field.target:
-        await human_click(page, code_field.target["x"], code_field.target["y"])
-        await human_type(page, code)
-        await human_delay(0.3, 0.7)
+    # Wait briefly for the code entry form to render (Chase may load a new iframe)
+    await asyncio.sleep(2)
 
+    # Find the code input field and enter it — try iframe-aware selectors first,
+    # fall back to AI vision coordinates.
+    code_entered = False
+    for frame in page.frames:
+        # Look for an input that's likely the OTP field (not password)
+        otp_field = frame.locator('input[type="text"], input[type="tel"], input[type="number"], input:not([type="password"]):not([type="hidden"])')
+        for i in range(await otp_field.count()):
+            field = otp_field.nth(i)
+            if await field.is_visible():
+                val = await field.input_value()
+                # Heuristic: it's the code field if it's empty or contains digits
+                placeholder = await field.get_attribute("placeholder") or ""
+                name = await field.get_attribute("name") or ""
+                aria = await field.get_attribute("aria-label") or ""
+                combined = f"{placeholder} {name} {aria} {val}".lower()
+                if "code" in combined or "otp" in combined or "one-time" in combined or "verification" in combined or (val == "" and "password" not in combined):
+                    await field.fill("")  # Clear first
+                    await field.fill(code)
+                    log.info(f"[W{wid}] Filled 2FA code via iframe selector (name={name})")
+                    code_entered = True
+                    break
+        if code_entered:
+            break
+
+    if not code_entered:
+        # Fallback: AI vision
+        screenshot = await wait_and_screenshot(page, f"w{wid}_2fa_entry")
+        code_field = skill_find_element(screenshot, "verification code input field or OTP input field")
+        if code_field.target:
+            await human_click(page, code_field.target["x"], code_field.target["y"])
+            await page.keyboard.press("Control+a")
+            await human_type(page, code)
+            code_entered = True
+
+    if not code_entered:
+        log.warning(f"[W{wid}] Could not find 2FA code input field")
+        return False
+
+    await human_delay(0.3, 0.7)
+
+    # Chase requires password re-entry alongside the 2FA code.
+    for frame in page.frames:
+        pw_field = frame.locator('input[type="password"]')
+        if await pw_field.count():
+            await pw_field.first.fill(job.password)
+            log.info(f"[W{wid}] Filled password on 2FA page (Chase-style)")
+            break
+
+    await human_delay(0.3, 0.7)
+
+    # Click Next/Verify — try iframe-aware button first, then AI vision
+    submitted = False
+    for frame in page.frames:
+        for label in ["Next", "Verify", "Submit", "Continue"]:
+            btn = frame.get_by_role("button", name=label)
+            if await btn.count():
+                await btn.first.click(timeout=5000)
+                log.info(f"[W{wid}] Clicked '{label}' button via iframe selector")
+                submitted = True
+                break
+        if submitted:
+            break
+
+    if not submitted:
         screenshot2 = await wait_and_screenshot(page, f"w{wid}_2fa_submit")
-        submit = skill_find_element(screenshot2, "Verify button or Submit button or Continue button")
+        submit = skill_find_element(screenshot2, "Verify button or Submit button or Next button or Continue button")
         if submit.target:
             await verified_click(page, submit, screenshot2)
         else:
             await page.keyboard.press("Enter")
-        await human_delay(2.0, 4.0)
 
-        return True
+    # Remember the code we just used so Dialpad polling skips it next time
+    if code:
+        _used_2fa_codes.add(code)
+
+    # Wait for page transition after 2FA submit — Chase's SPA doesn't always
+    # change the URL, so we also detect visual page changes via screenshots.
+    screenshot_before = await wait_and_screenshot(page, f"w{wid}_2fa_post_submit")
+    url_before = page.url
+    for _ in range(6):  # up to ~12 seconds
+        await asyncio.sleep(2)
+        if page.url != url_before:
+            log.info(f"[W{wid}] URL changed after 2FA submit: {page.url[:60]}")
+            break
+        screenshot_now = await wait_and_screenshot(page, f"w{wid}_2fa_post_check")
+        if not screenshots_identical(screenshot_before, screenshot_now, threshold=0.85):
+            log.info(f"[W{wid}] Page content changed after 2FA submit (URL unchanged)")
+            break
     else:
-        log.warning(f"[W{wid}] Could not find 2FA code input field")
-        return False
+        log.debug(f"[W{wid}] Page did not change after 2FA submit (may still be processing)")
+
+    await human_delay(2.0, 4.0)
+    return True
 
 
 async def _poll_email_for_code(job: AccountJob, wid: int, timeout_s: float = 120, watch_mode: bool = False) -> str | None:
@@ -1215,18 +1911,22 @@ async def _resilient_navigation(page: Page, url: str, max_retries: int = 3) -> b
     """Navigate with retries and error handling."""
     for attempt in range(max_retries):
         try:
+            log.debug(f"Navigation attempt {attempt + 1}/{max_retries} → {url}")
             response = await page.goto(
                 url,
                 timeout=TIMEOUTS["page_navigation"],
                 wait_until="domcontentloaded",
             )
             if response and response.status < 400:
+                log.debug(f"Navigation OK — status {response.status}")
                 return True
             if response and response.status >= 500:
                 log.warning(f"Server error {response.status}, retrying...")
                 await asyncio.sleep(5 * (attempt + 1))
                 continue
-            return False  # 4xx = real error
+            status = response.status if response else "None"
+            log.warning(f"Navigation failed — response status: {status}")
+            return False  # 4xx or None response = real error
         except Exception as e:
             log.warning(f"Navigation error (attempt {attempt + 1}): {e}")
             await asyncio.sleep(5)
