@@ -155,7 +155,7 @@ export default function GreenwoodVillagePage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Schedule a free 15-minute consultation to discuss your tax
+              Schedule a free 30-minute consultation to discuss your tax
               situation. Whether you have equity compensation to sort out, a
               multi-state filing requirement, or simply want a preparer who
               understands the complexity that comes with a DTC-level career,

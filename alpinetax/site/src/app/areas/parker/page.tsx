@@ -153,7 +153,7 @@ export default function ParkerPage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Schedule a free 15-minute consultation to discuss your tax
+              Schedule a free 30-minute consultation to discuss your tax
               situation. Whether your family&apos;s finances got more
               complicated this year, you&apos;re starting a business out of
               your Parker home, or you just want a preparer who gives you more

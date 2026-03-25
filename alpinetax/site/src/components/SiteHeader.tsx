@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { siteConfig } from '@/lib/site-config';
 import { MobileMenu } from '@/components/MobileMenu';
 
@@ -11,16 +10,13 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
-      <div className="container-content flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+      <div className="container-content flex items-center justify-between h-20 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Image
-            src="/images/logo.jpeg"
+          <img
+            src="/images/logo-v2.svg"
             alt={siteConfig.name}
-            width={200}
-            height={86}
-            className="h-10 w-auto"
-            priority
+            className="h-14 w-auto"
           />
         </Link>
 

@@ -130,7 +130,7 @@ export default function LittletonPage() {
             convenience.
           </p>
           <p className="text-text-secondary">
-            Either way, start with a free 15-minute consultation. Tell us about
+            Either way, start with a free 30-minute consultation. Tell us about
             your situation, and we&apos;ll tell you exactly what to expect — the
             service, the timeline, and the price, upfront.
           </p>

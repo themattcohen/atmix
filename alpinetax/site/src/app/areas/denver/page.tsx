@@ -138,7 +138,7 @@ export default function DenverPage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Schedule a free 15-minute consultation to discuss your tax
+              Schedule a free 30-minute consultation to discuss your tax
               situation. Whether you&apos;re a first-time filer fresh off a move
               to Denver or a longtime Coloradan with a complex portfolio,
               we&apos;ll find the right approach for you.

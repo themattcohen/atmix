@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { JsonLd } from '@/components/JsonLd';
 import { CallToAction } from '@/components/CallToAction';
 import { ServiceCard } from '@/components/ServiceCard';
@@ -40,7 +41,17 @@ export default function HomePage() {
       />
 
       {/* Hero */}
-      <section className="bg-alpine-blue px-4 py-20 sm:px-6 md:py-28 lg:px-8">
+      <section className="relative overflow-hidden bg-alpine-blue">
+        <Image
+          src="/images/hero-mountains.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(27,73,101,0.85)] via-[rgba(27,73,101,0.70)] to-[rgba(27,73,101,0.88)]" />
+        <div className="relative px-4 py-20 sm:px-6 md:py-28 lg:px-8">
         <div className="container-content text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl text-white mb-4">
             Tax Preparation — Personal Attention, Real Results
@@ -75,6 +86,7 @@ export default function HomePage() {
               {siteConfig.phone}
             </a>
           </p>
+        </div>
         </div>
       </section>
 

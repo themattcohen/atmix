@@ -12,7 +12,7 @@ export const siteConfig = {
   experience: 'Nearly a decade',
 
   address: {
-    street: '2000 S Colorado Blvd, Suite 1113',
+    street: '2000 S Colorado Blvd BLDG 1-2000 #1113',
     city: 'Denver',
     state: 'CO',
     stateFullName: 'Colorado',
@@ -82,8 +82,8 @@ export const siteConfig = {
   taxdomeUrl: 'https://alpinetax.taxdome.com/login',
 
   analytics: {
-    ga4Id: process.env.NEXT_PUBLIC_GA4_ID || '',
-    fbPixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID || '',
+    gtmId: process.env.NEXT_PUBLIC_GTM_ID || '',
+    // GA4 (G-L2N53TJPJE) + FB Pixel (282429905966327) now managed in GTM, not in code
   },
 } as const;
 

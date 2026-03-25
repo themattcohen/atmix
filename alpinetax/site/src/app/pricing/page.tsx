@@ -66,7 +66,7 @@ const pricingFaqs = [
   {
     question: 'Do you offer a free consultation?',
     answer:
-      'Yes. We offer a free 15-minute consultation to understand your tax situation, answer initial questions, and provide a cost estimate before you commit.',
+      'Yes. We offer a free 30-minute consultation to understand your tax situation, answer initial questions, and provide a cost estimate before you commit.',
   },
 ];
 
@@ -230,7 +230,7 @@ export default function PricingPage() {
 
       <CallToAction
         heading="Ready to Get a Quote?"
-        description="Schedule a free 15-minute consultation. We'll review your situation and give you a clear, honest price."
+        description="Schedule a free 30-minute consultation. We'll review your situation and give you a clear, honest price."
       />
     </>
   );

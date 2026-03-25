@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { DM_Sans, Inter } from 'next/font/google';
-import Script from 'next/script';
 import { siteConfig } from '@/lib/site-config';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -43,12 +42,20 @@ export const metadata: Metadata = {
     description: siteConfig.description,
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
     apple: '/apple-touch-icon.png',
   },
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: '0fE-88qyIt0ZHzCGGZEDYSbgi4eaH2_Ink9BW6Y2zlI',
   },
 };
 
@@ -57,25 +64,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { ga4Id, fbPixelId } = siteConfig.analytics;
+  const { gtmId } = siteConfig.analytics;
 
   return (
     <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
       <body className="flex flex-col min-h-screen">
-        {ga4Id && <GoogleTagManager ga4Id={ga4Id} />}
+        {gtmId && <GoogleTagManager gtmId={gtmId} />}
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
         <CookieConsent />
-        {fbPixelId && (
-          <Script
-            id="fb-pixel"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${fbPixelId}');fbq('track','PageView');`,
-            }}
-          />
-        )}
       </body>
     </html>
   );

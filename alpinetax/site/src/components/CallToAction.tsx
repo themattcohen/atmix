@@ -10,7 +10,7 @@ interface CallToActionProps {
 
 export function CallToAction({
   heading = 'Ready to Get Started?',
-  description = 'Schedule a free 15-minute consultation to discuss your tax situation and how we can help.',
+  description = 'Schedule a free 30-minute consultation to discuss your tax situation and how we can help.',
   buttonText = 'Schedule a Consultation',
   buttonHref = '/schedule',
   variant = 'default',

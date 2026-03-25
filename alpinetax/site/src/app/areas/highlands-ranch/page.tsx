@@ -131,7 +131,7 @@ export default function HighlandsRanchPage() {
             and personal.
           </p>
           <p className="text-text-secondary">
-            Schedule a free 15-minute consultation to discuss your family&apos;s
+            Schedule a free 30-minute consultation to discuss your family&apos;s
             tax situation. We&apos;ll outline the right service, give you a
             clear price, and get started whenever you&apos;re ready.
           </p>

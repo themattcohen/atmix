@@ -158,7 +158,7 @@ export default function ThorntonPage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Schedule a free 15-minute consultation to discuss your tax
+              Schedule a free 30-minute consultation to discuss your tax
               situation. Whether you&apos;re a Thornton small business owner
               navigating multi-jurisdictional obligations, a north metro
               resident with royalty income to sort out, or a W-2 employee
