@@ -720,20 +720,20 @@ Persistent test filing left on FinCEN sandbox SFTP to validate the full acknowle
 
 | Field | Value |
 |-------|-------|
-| **Test User Email** | `e2e-test-sdtm-ack@test.fbardirect.com` |
+| **Test User Email** | `1mattcohen+testuser@gmail.com` (changed from `e2e-test-sdtm-ack@test.fbardirect.com`) |
 | **Test User Password** | `TestPass123!` |
 | **User ID** | `cmmdwytf9000spf0150x1a75e` |
 | **Filing ID** | `cmmdwytfd000upf0176ealww5` |
 | **Batch ID** | `b4fe7394-3832-4784-82f6-c5b83bf83493` |
-| **Remote File** | `submissions/FBAR_DIRECT_b4fe7394-3832-4784-82f6-c5b83bf83493_2026-03-05T20-28-38-885Z.xml` |
+| **Remote File** | `FBARXST.20260310174824.sdtmmar02264.xml` (resubmitted 2026-03-10 to root with correct naming) |
 | **Submitted At** | 2026-03-05 20:28:40 UTC |
 | **SFTP Target** | Sandbox (`bsaefiling-direct-transfer-sandbox.fincen.gov:2222`) |
 | **Current Status** | SUBMITTED (awaiting ack) |
 
 ### Expected Timeline
 
-1. **~5 hours**: FinCEN sandbox drops `MESSAGES.XML` in `acks/` confirming receipt
-2. **2-3 business days**: Full acknowledgement with BSA ID (ACCEPTED or REJECTED)
+1. **Up to 48 hours**: FinCEN drops ack files in `Inbox` (per FinCEN Help Desk voicemail, ticket #00491214)
+2. **Track status**: BSA E-Filing site → Track Org Status shows processing state before acks arrive
 
 ### Status Check Commands
 
@@ -754,7 +754,7 @@ WHERE id = 'cmmdwytfd000upf0176ealww5';
 1. `status` transitions from `SUBMITTED` to `ACCEPTED` (or `REJECTED`)
 2. `bsaId` is populated (on acceptance)
 3. `acknowledgedAt` is set
-4. Confirmation email sent to `e2e-test-sdtm-ack@test.fbardirect.com`
+4. Confirmation email sent to `1mattcohen+testuser@gmail.com`
 5. Admin notification email sent to `matt@atmix.org`
 6. Dashboard shows BSA ID in green box when logged in as test user
 
@@ -765,7 +765,7 @@ After ack is confirmed and verified, clean up via:
 curl -s -X POST -H "Authorization: Bearer {E2E_TEST_SECRET}" \
   "https://fbardirect.com/api/internal/e2e-setup" \
   -H "Content-Type: application/json" \
-  -d '{"action":"cleanup","email":"e2e-test-sdtm-ack@test.fbardirect.com"}'
+  -d '{"action":"cleanup","email":"1mattcohen+testuser@gmail.com"}'
 ```
 
 ---
@@ -796,7 +796,7 @@ The ack notification pipeline has four layers of coverage:
 
 #### 4. Background Cron (Safety Net)
 - **Config**: `docker-compose.prod.yml` (runs every 5 minutes)
-- `poll-submitted`: checks FinCEN `acks/` dir for all SUBMITTED filings
+- `poll-submitted`: checks FinCEN `Inbox` dir for all SUBMITTED filings
 - Updates DB status, sends user email, sends admin notification email
 
 ### Known Gap

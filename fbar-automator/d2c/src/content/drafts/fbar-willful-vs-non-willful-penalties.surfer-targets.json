@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-willful-vs-non-willful-penalties",
+  "keyword": "fbar willful vs non willful penalty",
+  "surferDraftId": "15595946",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 69,
+    "avg": 54,
+    "top": 73
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2000,
+      "max": 2300
+    },
+    "headings": {
+      "min": 16,
+      "max": 48
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "fbar penalties",
+        "targetMin": 13,
+        "targetMax": 27
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 7,
+        "targetMax": 13
+      },
+      {
+        "term": "willful fbar penalties",
+        "targetMin": 7,
+        "targetMax": 15
+      },
+      {
+        "term": "non willful fbar penalties",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "tax professionals",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "federal court",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "criminal fbar penalties",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "tax preparer",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "non willful",
+        "targetMin": 12,
+        "targetMax": 19
+      },
+      {
+        "term": "willful and non",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "willful blindness",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "tax returns",
+        "targetMin": 4,
+        "targetMax": 10
+      },
+      {
+        "term": "reckless disregard",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "willful penalties",
+        "targetMin": 3,
+        "targetMax": 5
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar willful vs non willful penalty",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "civil willful fbar penalties",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "fbar violations",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign account reporting rules",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "report foreign accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "criminal penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil willful penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs aggressively pursuing taxpayers",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax evasion",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar reporting requirements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful penalties",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "non willful violations",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "unaware foreign pension",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil non willful penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayer fails",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign pension plan",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "non willful penalty limitations",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar willfulness unlike",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign account reporting requirements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "supreme court",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "failed to file",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "bank secrecy act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "gift reporting penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful conduct",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "multiple foreign account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international reporting forms",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "rational irs examiners",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "willful violations",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "different international reporting forms",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar enforcement",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign pension",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "tax fraud",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "voluntary disclosure",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "fbar willfulness",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign persons",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayer relied",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "lawful permanent resident",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar filing requirement",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "year lawful permanent resident",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "willful blindness miranda",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reasonable cause",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "irs counsel surmised",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayer violated",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "pre payment flora rule",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax forms",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account penalty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filed fbar",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "penalize taxpayers",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "considered willful",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "irs examination",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "taxpayer acted",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "many foreign accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar requirements",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "timely file",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "annual fbar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "assess penalties",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "statutory maximum",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayers carefully frame",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "willful blindness similar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "even irs counsel",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs personnel",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ]
+  }
+}

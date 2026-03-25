@@ -309,11 +309,11 @@ LTV:CAC ratio:                    5:1
 
 ## Quick Wins --- First 30 Days
 
-**Week 1**:
+**Week 1** — DONE (March 1, 2026):
 
-1. Set up Google Ads account with Campaign 2 (transactional) + Campaign 1 (brand)
-2. Install conversion tracking via GTM (infrastructure already exists in codebase --- configure `NEXT_PUBLIC_GTM_ID`)
-3. Configure Google Analytics 4 with funnel events (signup, plan selection, payment, filing submission)
+1. ~~Set up Google Ads account with Campaign 2 (transactional) + Campaign 1 (brand)~~ — DONE: Campaign "FBAR Filing Search" with 4 ad groups, 55 keywords, all RSAs at Excellent
+2. ~~Install conversion tracking via GTM~~ — DONE: Google Tag `GT-P3JRZMRX` + Google Ads `AW-17983090187` wired with Purchase + Sign-up conversion labels, Cookie Consent Mode v2, CSP fixed
+3. ~~Configure Google Analytics 4 with funnel events~~ — DONE: GA4 `G-W2KXELPKZE` with `fbar_step_view/complete` (steps 2-6), `begin_checkout`, `purchase`, `fbar_signup_complete`, enhanced conversions (SHA-256 email)
 
 **Week 2**:
 

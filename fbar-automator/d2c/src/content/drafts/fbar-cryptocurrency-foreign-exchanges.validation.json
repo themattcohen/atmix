@@ -1,0 +1,42 @@
+{
+  "slug": "fbar-cryptocurrency-foreign-exchanges",
+  "validatedAt": "2026-03-03T02:15:41.087Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (2021 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (4)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (9.2 per 500 words)",
+    "dollar_density": "PASS (5.2 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "hero_image": "PASS",
+    "published_date": "PASS (2026-03-05)"
+  },
+  "warnings": [],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/uscode/text/31/5314",
+    "https://www.irs.gov/pub/irs-drop/n-14-21.pdf",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://www.law.cornell.edu/uscode/text/26/6038D",
+    "https://fiscaldata.treasury.gov/datasets/treasury-reporting-rates-exchange/treasury-reporting-rates-of-exchange",
+    "https://www.law.cornell.edu/uscode/text/26/6045",
+    "https://www.irs.gov/individuals/international-taxpayers/streamlined-filing-compliance-procedures",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 USC 5314",
+    "Notice 2020-2",
+    "31 CFR 1010.350",
+    "Notice 2014-21",
+    "31 USC 5321",
+    "31 CFR 1010.306",
+    "26 USC 6038",
+    "26 USC 6045"
+  ]
+}

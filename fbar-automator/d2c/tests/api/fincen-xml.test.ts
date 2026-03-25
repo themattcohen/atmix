@@ -527,3 +527,139 @@ describe("P4-2: generateFincenXml — null maxValueUsd throws", () => {
     );
   });
 });
+
+// ─── Golden-File Test ─────────────────────────────────────────────────────────
+// Compares generateFincenXml() output against a FinCEN-confirmed reference file
+// (ticket #491265). This ensures element ordering, SeqNum assignment, empty
+// element handling, and conditional omissions remain structurally identical.
+
+import { readFileSync } from "fs";
+import { resolve } from "path";
+
+describe("P4-2: generateFincenXml — golden-file structural match", () => {
+  const GOLDEN_EMAIL = `golden-file-test-${Date.now()}@test.com`;
+  let goldenUserId: string;
+  let goldenFilingId: string;
+
+  beforeAll(async () => {
+    // Override env vars to match the FinCEN-confirmed transmitter info
+    process.env.FINCEN_TRANSMITTER_NAME = "All Solutions Consulting";
+    process.env.FINCEN_TRANSMITTER_TIN = "883761328";
+    process.env.FINCEN_TRANSMITTER_TCC = "TBSATEST";
+    process.env.FINCEN_TRANSMITTER_ADDRESS = "123 Main St, Denver, CO 80202";
+    process.env.FINCEN_TRANSMITTER_CONTACT_NAME = "Matthew Cohen";
+    process.env.FINCEN_TRANSMITTER_CONTACT_PHONE = "3035555555";
+
+    const passwordHash = await bcrypt.hash("GoldenTest1!", 10);
+    const user = await prisma.user.create({
+      data: {
+        email: GOLDEN_EMAIL,
+        passwordHash,
+        firstName: "SDTM",
+        lastName: "AckTest",
+        tin: encrypt("900123456"),
+        tinType: "SSN",
+        dateOfBirth: new Date("1985-06-15"),
+        usAddress: {
+          street: "123 Test Street",
+          city: "Denver",
+          state: "CO",
+          zip: "80202",
+        },
+      },
+    });
+    goldenUserId = user.id;
+
+    const filing = await prisma.filingYear.create({
+      data: {
+        userId: goldenUserId,
+        calendarYear: 2024,
+        status: "PAID",
+        filingType: "ORIGINAL",
+      },
+    });
+    goldenFilingId = filing.id;
+
+    await prisma.foreignAccount.create({
+      data: {
+        userId: goldenUserId,
+        calendarYear: 2024,
+        institutionName: "Test Bank AG",
+        accountNumber: encrypt("CH9876543210"),
+        accountType: "BANK",
+        ownershipType: "FINANCIAL_INTEREST",
+        countryCode: "CH",
+        currencyCode: "CHF",
+        maxValueLocal: 19800,
+        maxValueUsd: 19800,
+        exchangeRate: 1.0,
+        exchangeRateSource: "TREASURY",
+        isJointAccount: false,
+        jointOwnerInfo: null,
+        institutionAddress: {
+          street: "Bahnhofstrasse 1",
+          city: "Zurich",
+          country: "CH",
+          zip: "8001",
+        },
+      },
+    });
+  });
+
+  afterAll(async () => {
+    // Restore original env vars
+    process.env.FINCEN_TRANSMITTER_NAME = "FBAR Direct LLC";
+    process.env.FINCEN_TRANSMITTER_TIN = "123456789";
+    process.env.FINCEN_TRANSMITTER_ADDRESS = "123 Main St, Denver, CO 80202";
+    process.env.FINCEN_TRANSMITTER_CONTACT_NAME = "Test Admin";
+    process.env.FINCEN_TRANSMITTER_CONTACT_PHONE = "3035551234";
+
+    await prisma.user.delete({ where: { id: goldenUserId } });
+  });
+
+  it("generated XML is structurally identical to FinCEN-confirmed reference", async () => {
+    const { XMLParser } = await import("fast-xml-parser");
+
+    // Read the golden reference file
+    const goldenPath = resolve(
+      __dirname,
+      "../../../claudedocs/fincen-ticket-491265/FBARXST.20260311000451.sdtmmar02264.xml"
+    );
+    const goldenXml = readFileSync(goldenPath, "utf-8");
+
+    // Generate XML from our code
+    const generatedXml = await generateFincenXml(goldenFilingId);
+
+    // Parse both with identical settings
+    const parserOpts = {
+      ignoreAttributes: false,
+      attributeNamePrefix: "@_",
+      parseAttributeValue: false,
+      trimValues: true,
+      // Preserve empty tags as empty string (matches FinCEN format)
+      allowBooleanAttributes: false,
+    };
+    const parser = new XMLParser(parserOpts);
+
+    const goldenObj = parser.parse(goldenXml);
+    const generatedObj = parser.parse(generatedXml);
+
+    // Normalize: replace the date-dependent signature field with a constant
+    const PLACEHOLDER_DATE = "NORMALIZED";
+    function normalizeDate(obj: any): void {
+      if (!obj || typeof obj !== "object") return;
+      for (const key of Object.keys(obj)) {
+        if (key === "fc2:ApprovalOfficialSignatureDateText") {
+          obj[key] = PLACEHOLDER_DATE;
+        } else {
+          normalizeDate(obj[key]);
+        }
+      }
+    }
+
+    normalizeDate(goldenObj);
+    normalizeDate(generatedObj);
+
+    expect(generatedObj).toEqual(goldenObj);
+  });
+});

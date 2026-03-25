@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-israel-bank-accounts-pensions",
+  "keyword": "fbar israel bank accounts",
+  "surferDraftId": "15595949",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 72,
+    "avg": 53,
+    "top": 62
+  },
+  "targets": {
+    "wordCount": {
+      "min": 3100,
+      "max": 3600
+    },
+    "headings": {
+      "min": 11,
+      "max": 16
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 9,
+        "targetMax": 29
+      },
+      {
+        "term": "foreign bank account report",
+        "targetMin": 3,
+        "targetMax": 11
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 8,
+        "targetMax": 16
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 8,
+        "targetMax": 21
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 12,
+        "targetMax": 45
+      },
+      {
+        "term": "brokerage accounts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 3,
+        "targetMax": 13
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 3,
+        "targetMax": 13
+      },
+      {
+        "term": "tax return",
+        "targetMin": 11,
+        "targetMax": 18
+      },
+      {
+        "term": "savings accounts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "foreign account",
+        "targetMin": 6,
+        "targetMax": 19
+      },
+      {
+        "term": "foreign bank account",
+        "targetMin": 4,
+        "targetMax": 16
+      },
+      {
+        "term": "report of foreign bank",
+        "targetMin": 3,
+        "targetMax": 13
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "income tax returns",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "tax year",
+        "targetMin": 5,
+        "targetMax": 14
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 12,
+        "targetMax": 29
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "retirement plan",
+        "targetMin": 3,
+        "targetMax": 12
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 14,
+        "targetMax": 47
+      },
+      {
+        "term": "retirement accounts",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "income tax",
+        "targetMin": 8,
+        "targetMax": 23
+      },
+      {
+        "term": "life insurance policies",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "due date",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "reporting threshold",
+        "targetMin": 3,
+        "targetMax": 10
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar israel bank accounts",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign financial assets",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "foreign corporations",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "bank secrecy act",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "specified foreign financial assets",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "income tax liability",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "pay tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign tax credit",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "internal revenue service",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "investment accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign financial institutions",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign earned income exclusion",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "offshore voluntary disclosure program",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "delinquent fbar submission procedures",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "bsa e filing system",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "tax liability",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "tax rules",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "taxable income",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "report accounts",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign assets",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar annual due date",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "account balances",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "limited liability companies",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "individual retirement account",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "capital gains",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "worldwide income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign trusts",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "automatic extension",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "green card holders",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "reporting obligation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "federal tax return",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "fbar filing requirements",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "account value",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "irs form",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filing status",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "citizens living abroad",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "substantial presence test",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "israeli bank",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign currency",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "married filing separately",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "penalties assessed",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "fbar form",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "e filing system",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "tax purposes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "money laundering",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "beneficial ownership information",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar annual",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "criminal penalties",
+        "targetMin": 2,
+        "targetMax": 7
+      }
+    ]
+  }
+}

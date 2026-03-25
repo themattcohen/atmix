@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-foreign-pension-retirement-accounts",
+  "keyword": "fbar foreign pension accounts",
+  "surferDraftId": "15595926",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 71,
+    "avg": 52,
+    "top": 64
+  },
+  "targets": {
+    "wordCount": {
+      "min": 1600,
+      "max": 1900
+    },
+    "headings": {
+      "min": 10,
+      "max": 24
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "financial accounts",
+        "targetMin": 6,
+        "targetMax": 24
+      },
+      {
+        "term": "foreign pension plans",
+        "targetMin": 6,
+        "targetMax": 27
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 4,
+        "targetMax": 15
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign pension",
+        "targetMin": 17,
+        "targetMax": 58
+      },
+      {
+        "term": "foreign retirement accounts",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "foreign retirement plans",
+        "targetMin": 4,
+        "targetMax": 20
+      },
+      {
+        "term": "retirement plan",
+        "targetMin": 6,
+        "targetMax": 26
+      },
+      {
+        "term": "retirement accounts",
+        "targetMin": 7,
+        "targetMax": 18
+      },
+      {
+        "term": "pension plan",
+        "targetMin": 7,
+        "targetMax": 27
+      },
+      {
+        "term": "foreign trust",
+        "targetMin": 6,
+        "targetMax": 15
+      },
+      {
+        "term": "reporting requirements",
+        "targetMin": 4,
+        "targetMax": 6
+      },
+      {
+        "term": "tax return",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 4,
+        "targetMax": 15
+      },
+      {
+        "term": "form 3520",
+        "targetMin": 6,
+        "targetMax": 17
+      },
+      {
+        "term": "plan",
+        "targetMin": 19,
+        "targetMax": 41
+      },
+      {
+        "term": "file",
+        "targetMin": 21,
+        "targetMax": 55
+      },
+      {
+        "term": "employer",
+        "targetMin": 6,
+        "targetMax": 11
+      },
+      {
+        "term": "reporting",
+        "targetMin": 27,
+        "targetMax": 51
+      },
+      {
+        "term": "assets",
+        "targetMin": 4,
+        "targetMax": 12
+      },
+      {
+        "term": "taxes",
+        "targetMin": 26,
+        "targetMax": 57
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "contributions",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "pension",
+        "targetMin": 27,
+        "targetMax": 90
+      },
+      {
+        "term": "account",
+        "targetMin": 21,
+        "targetMax": 52
+      },
+      {
+        "term": "employee",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "beneficiaries",
+        "targetMin": 4,
+        "targetMax": 6
+      },
+      {
+        "term": "irs",
+        "targetMin": 6,
+        "targetMax": 14
+      },
+      {
+        "term": "form",
+        "targetMin": 16,
+        "targetMax": 50
+      },
+      {
+        "term": "government",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "penalties",
+        "targetMin": 6,
+        "targetMax": 15
+      },
+      {
+        "term": "interests",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "person",
+        "targetMin": 7,
+        "targetMax": 20
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar foreign pension accounts",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "report foreign pension income",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "defined benefit plan",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign pension income",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "defined contribution plan",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "passive foreign investment company",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign government",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign pension accounts",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "mexican individual retirement accounts",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign employer",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial account located",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax deferred",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "gross income",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "retirement benefits",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "internal revenue code",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax treaty",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "united states person",
+        "targetMin": 2,
+        "targetMax": 10
+      },
+      {
+        "term": "tax deductible",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax professionals",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "worldwide income",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "proper reporting",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "retirement age",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "irs fbar reference guide",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "reasonable estimate",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "social security",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax purposes",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "living abroad",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "maximum value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs issued",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "complicating matters",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "taxation",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "information reporting requirements",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "report foreign",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "other things",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "transactions",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "subject",
+        "targetMin": 2,
+        "targetMax": 4
+      }
+    ]
+  }
+}

@@ -1,0 +1,429 @@
+{
+  "slug": "fbar-exchange-rates-treasury-department",
+  "keyword": "fbar exchange rate treasury",
+  "surferDraftId": "15595938",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 74,
+    "avg": 50,
+    "top": 65
+  },
+  "targets": {
+    "wordCount": {
+      "current": 5344,
+      "min": 1300,
+      "max": 1400
+    },
+    "headings": {
+      "current": 33,
+      "min": 12,
+      "max": 39
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign currency",
+        "targetMin": 8,
+        "targetMax": 26
+      },
+      {
+        "term": "maximum account value",
+        "targetMin": 6,
+        "targetMax": 26
+      },
+      {
+        "term": "exchange rates",
+        "targetMin": 16,
+        "targetMax": 32
+      },
+      {
+        "term": "maximum account",
+        "targetMin": 6,
+        "targetMax": 26
+      },
+      {
+        "term": "fbar exchange",
+        "targetMin": 3,
+        "targetMax": 11
+      },
+      {
+        "term": "maximum value",
+        "targetMin": 7,
+        "targetMax": 26
+      },
+      {
+        "term": "fbar exchange rates",
+        "targetMin": 3,
+        "targetMax": 11
+      },
+      {
+        "term": "treasury rate",
+        "targetMin": 4,
+        "targetMax": 15
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 5,
+        "targetMax": 23
+      },
+      {
+        "term": "currency",
+        "targetMin": 23,
+        "targetMax": 46
+      },
+      {
+        "term": "dollar",
+        "targetMin": 21,
+        "targetMax": 36
+      },
+      {
+        "term": "u.s dollar",
+        "targetMin": 8,
+        "targetMax": 22
+      },
+      {
+        "term": "exchange",
+        "targetMin": 17,
+        "targetMax": 32
+      },
+      {
+        "term": "account",
+        "targetMin": 29,
+        "targetMax": 96
+      },
+      {
+        "term": "report",
+        "targetMin": 10,
+        "targetMax": 18
+      },
+      {
+        "term": "treasury",
+        "targetMin": 11,
+        "targetMax": 33
+      },
+      {
+        "term": "determine",
+        "targetMin": 5,
+        "targetMax": 16
+      },
+      {
+        "term": "maximum",
+        "targetMin": 15,
+        "targetMax": 51
+      },
+      {
+        "term": "convert",
+        "targetMin": 10,
+        "targetMax": 18
+      },
+      {
+        "term": "value",
+        "targetMin": 21,
+        "targetMax": 74
+      },
+      {
+        "term": "aggregate",
+        "targetMin": 3,
+        "targetMax": 10
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar exchange rate treasury",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "reporting rates of exchange",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "convert foreign currency balances",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treasury reporting rates",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign currency balances",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign currency units",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "convert foreign currency",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "multiple exchange rates",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "treasury exchange rates",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "aggregate maximum",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "multiple accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign currency amount",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "valuing currency",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "periodic account statements",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "wrong exchange rate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "united states dollars",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "non united states currency",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "statements fairly reflect",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "more than one account",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "account denominated",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "maximum balance",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "verifiable exchange rate",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "united arab emirates dirham",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "currency exchange",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "multiple currencies",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "dollar amounts rounded",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "valued separately",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "treasury exchange",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "federal law",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "country currency",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "east caribbean dollar",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "reasonable approximation",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "single account",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "monetary amounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "tax return",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "nonmonetary assets",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "highest balance",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "greatest value",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "euro zone",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "reporting year",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "united arab emirates",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "official source",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "congo congolese franc",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "south africa",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "gabon cfa",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "principe new dobras",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "next whole dollar",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "year end rate",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "effective date",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "saudi arabia",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "cayman islands",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "note",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "united kingdom",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "hong kong",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "date",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "circumstances",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ]
+  }
+}

@@ -1,0 +1,434 @@
+{
+  "slug": "fbar-green-card-holders",
+  "keyword": "fbar green card holders",
+  "surferDraftId": "15597318",
+  "extractedAt": "2026-03-02T18:15:00Z",
+  "contentScore": {
+    "current": 77,
+    "avg": 0,
+    "top": 0
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2100,
+      "max": 2400
+    },
+    "headings": {
+      "min": 20,
+      "max": 40
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 5,
+        "targetMax": 18
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "report foreign bank",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "tax returns",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "green card holder",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "green card",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "tax resident",
+        "targetMin": 3,
+        "targetMax": 13
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "filing",
+        "targetMin": 17,
+        "targetMax": 35
+      },
+      {
+        "term": "card holders",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "report",
+        "targetMin": 8,
+        "targetMax": 14
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "taxpayers",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "taxes",
+        "targetMin": 14,
+        "targetMax": 35
+      },
+      {
+        "term": "irs",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "account",
+        "targetMin": 10,
+        "targetMax": 22
+      },
+      {
+        "term": "income",
+        "targetMin": 5,
+        "targetMax": 14
+      },
+      {
+        "term": "fbar",
+        "targetMin": 12,
+        "targetMax": 31
+      },
+      {
+        "term": "person",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "form",
+        "targetMin": 8,
+        "targetMax": 23
+      },
+      {
+        "term": "citizens",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "referred",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "residents",
+        "targetMin": 5,
+        "targetMax": 17
+      },
+      {
+        "term": "file the fbar",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "report foreign",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "must file",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "site",
+        "targetMin": 2,
+        "targetMax": 9
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "internal revenue service",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign asset",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "report of foreign bank",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "criminal prosecution",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "worldwide income",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "lawful permanent resident",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign nationals",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "tax purposes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "us persons",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "fincen form 114",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "due date",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "new immigrants",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "total value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fincen form",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "file fbars",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "assets",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "subject",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "resources",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "government",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "aggregate",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "country",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "rules",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "date",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "generally",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "law",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "money",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "instructions",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "services",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "compliance",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "procedures",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "determining",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "immigrants",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "reside",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "behalf",
+        "targetMin": 1,
+        "targetMax": 5
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "fbar green card holders",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "assist taxpayers",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "criminal penalties",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "other authority",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "qualify",
+        "targetMin": 1,
+        "targetMax": 1
+      }
+    ]
+  }
+}

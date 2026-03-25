@@ -1,0 +1,38 @@
+{
+  "slug": "fbar-australia-superannuation-bank-accounts",
+  "validatedAt": "2026-03-02T18:02:42.725Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (2762 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (3)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (7.2 per 500 words)",
+    "dollar_density": "PASS (3.1 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "published_date": "PASS (2026-03-19)"
+  },
+  "warnings": [
+    "hero_image: File not found: public/blog/fbar-australia-superannuation-bank-accounts.webp — add before final promotion"
+  ],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/uscode/text/31/5314",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://fiscal.treasury.gov/reports-statements/treasury-reporting-rates-exchange/current.html",
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/uscode/text/26/6038D",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 USC 5314",
+    "31 CFR 1010.306",
+    "31 CFR 1010.350",
+    "26 USC 6038",
+    "31 USC 5321"
+  ]
+}

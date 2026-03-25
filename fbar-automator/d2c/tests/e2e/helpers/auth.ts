@@ -39,7 +39,7 @@ export async function loginAsTestUser(
 /**
  * Sign up a brand-new user with a unique email address.
  * Returns the email used so the caller can log in again later.
- * After signup the app redirects to /threshold.
+ * After signup the app tries auto-login then redirects to /verify-email.
  */
 export async function signupTestUser(page: Page): Promise<string> {
   const email = `test-${Date.now()}-${Math.random().toString(36).slice(2, 6)}@example.com`;
@@ -50,8 +50,33 @@ export async function signupTestUser(page: Page): Promise<string> {
   await page.fill('input[name="password"], #password', "TestPassword123!");
   await page.fill('input[name="confirmPassword"], #confirmPassword', "TestPassword123!");
   await page.click('button[type="submit"]');
-  await page.waitForURL("**/threshold", { timeout: 15000 });
+  await page.waitForURL(/(verify-email|threshold)/, { timeout: 30000 });
   return email;
+}
+
+/**
+ * Get a verification token for a user via the e2e-setup endpoint.
+ * Requires E2E_TEST_SECRET to be configured on the server.
+ */
+export async function getVerificationToken(
+  request: import("@playwright/test").APIRequestContext,
+  email: string,
+  baseUrl = "http://127.0.0.1:3001"
+): Promise<string> {
+  const secret = process.env.E2E_TEST_SECRET;
+  if (!secret) throw new Error("E2E_TEST_SECRET env var not set");
+
+  const resp = await request.post(`${baseUrl}/api/internal/e2e-setup`, {
+    headers: { "x-e2e-secret": secret },
+    data: { action: "get-verification-token", email },
+  });
+
+  if (!resp.ok()) {
+    throw new Error(`getVerificationToken failed: ${resp.status()} ${await resp.text()}`);
+  }
+
+  const body = await resp.json();
+  return body.data.token;
 }
 
 /**

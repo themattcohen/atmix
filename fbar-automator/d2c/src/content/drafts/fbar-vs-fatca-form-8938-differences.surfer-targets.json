@@ -1,0 +1,434 @@
+{
+  "slug": "fbar-vs-fatca-form-8938-differences",
+  "keyword": "fbar vs fatca form 8938",
+  "surferDraftId": "15597331",
+  "extractedAt": "2026-03-02T19:10:00Z",
+  "contentScore": {
+    "current": 68,
+    "avg": 0,
+    "top": 0
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2000,
+      "max": 2300
+    },
+    "headings": {
+      "min": 20,
+      "max": 40
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial assets",
+        "targetMin": 6,
+        "targetMax": 9
+      },
+      {
+        "term": "specified foreign financial assets",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "form 8938",
+        "targetMin": 24,
+        "targetMax": 34
+      },
+      {
+        "term": "foreign assets",
+        "targetMin": 6,
+        "targetMax": 16
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 5,
+        "targetMax": 9
+      },
+      {
+        "term": "foreign financial institutions",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "fbar and form 8938",
+        "targetMin": 5,
+        "targetMax": 12
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 4,
+        "targetMax": 6
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 8,
+        "targetMax": 20
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 5,
+        "targetMax": 11
+      },
+      {
+        "term": "domestic entities",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "foreign stocks",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign entities",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "criminal penalties",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "fincen form 114",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "financial assets",
+        "targetMin": 6,
+        "targetMax": 9
+      },
+      {
+        "term": "tax return",
+        "targetMin": 6,
+        "targetMax": 10
+      },
+      {
+        "term": "tax year",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "reporting threshold",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "foreign asset reporting",
+        "targetMin": 2,
+        "targetMax": 8
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign mutual funds",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar fincen form 114",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "income tax return",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "federal tax return",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "filing status",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "married filing",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "specified domestic entities",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "statement of specified foreign",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "key differences",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar vs",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "married filing separately",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "cash value",
+        "targetMin": 2,
+        "targetMax": 2
+      },
+      {
+        "term": "willful violations",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "just bank accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign currency",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign hedge funds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign private equity funds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign partnership interests",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "report foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "domestic mutual fund investing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar and fatca",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "not just bank accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "separately reported foreign stock",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "investment accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign retirement accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial accounts maintained",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial institution physically located",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "yes foreign hedge funds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial institution maintaining",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign branch",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign brokerage account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil penalty assessment prior",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign account tax compliance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account tax compliance act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income tax return pursuant",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exceptions foreign stock",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "yes domestic mutual fund",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayer's annual tax return",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "apply civil monetary penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil monetary penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign government",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "combined account balance greater",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "combined account balance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fair market value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "periodic account statements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "federal income tax return",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign currency held directly",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "asset values determined",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "fbar vs fatca form 8938",
+        "targetMin": 1,
+        "targetMax": 1
+      }
+    ]
+  }
+}

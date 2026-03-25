@@ -1,0 +1,35 @@
+{
+  "slug": "fbar-reasonable-cause-defense",
+  "validatedAt": "2026-03-02T18:56:04.897Z",
+  "passed": false,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (3433 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (5)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (4.7 per 500 words)",
+    "dollar_density": "FAIL (2.8 per 500 words (minimum 3))",
+    "penalty_citations": "FAIL (Penalty claims without statute citation at line 13, line 95)",
+    "deadline_citations": "PASS",
+    "published_date": "PASS (2026-04-03)"
+  },
+  "warnings": [
+    "hero_image: File not found: public/blog/fbar-reasonable-cause-defense.webp — add before final promotion"
+  ],
+  "failedChecks": [
+    "dollar_density: 2.8 per 500 words (minimum 3)",
+    "penalty_citations: Penalty claims without statute citation at line 13, line 95"
+  ],
+  "citationUrls": [
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.irs.gov/irm/part4/irm_04-026-016#idm139868826015536",
+    "https://www.irs.gov/individuals/international-taxpayers/delinquent-fbar-submission-procedures",
+    "https://www.irs.gov/irm/part4/irm_04-026-016",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 USC 5321"
+  ]
+}

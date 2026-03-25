@@ -1,0 +1,220 @@
+{
+  "slug": "fbar-singapore-cpf-bank-accounts",
+  "keyword": "fbar singapore cpf",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-03T07:50:40.593Z",
+  "wordCount": 2570,
+  "overall": 7.6,
+  "pass": false,
+  "dimensions": {
+    "readability": {
+      "score": 6,
+      "weight": 0.1,
+      "details": {
+        "flesch": 35.2,
+        "ari": 17.9,
+        "avgSentenceLength": 17.1,
+        "longSentPct": 12.7,
+        "longParaPct": 0
+      },
+      "issues": [
+        "Flesch Reading Ease is 35.2 (below ideal 50-70). Simplify sentence structure and use shorter words.",
+        "19 sentences exceed 25 words (12.7% of total). Shorten these for better readability.",
+        "ARI grade level is 17.9 (target 8-14). Content may be too dense for general readers."
+      ]
+    },
+    "writingQuality": {
+      "score": 3,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 13.4,
+        "passiveCount": 14,
+        "weaselCount": 5,
+        "adverbCount": 13,
+        "adverbDensity": 0.51,
+        "clicheCount": 0,
+        "transitionCount": 3,
+        "transitionRate": 0.35
+      },
+      "issues": [
+        "69 writing issues detected (13.4 per 500 words). Review write-good suggestions to tighten prose.",
+        "14 passive voice instances found (>5). Some passive voice is expected in tax/legal content, but reduce where possible.",
+        "5 weasel words detected (>3). Some hedging is appropriate for tax content, but tighten where possible.",
+        "Transition word rate is 0.35 per 300 words (3 total). Add transitional phrases like \"however\", \"therefore\", \"additionally\" to improve logical flow."
+      ]
+    },
+    "structure": {
+      "score": 8,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 14,
+        "h3Count": 0,
+        "hasFAQ": true,
+        "internalLinkCount": 13,
+        "authLinkCount": 17,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2570,
+        "hasDisclaimer": true,
+        "ctaCount": 3,
+        "hierarchyValid": true
+      },
+      "issues": [
+        "Only 0 H3 headings found (need >= 2). Add H3 sub-sections under H2 headings for deeper structure.",
+        "Word count is 2570 (target 490-1436). Consider trimming for focus."
+      ]
+    },
+    "keywordCoverage": {
+      "score": 7.5,
+      "weight": 0.1,
+      "details": {
+        "density": 2.06,
+        "kwInH1": true,
+        "kwInH2": false,
+        "kwInFirstPara": true,
+        "kwInMeta": true,
+        "kwInSlug": true,
+        "semanticCoverage": "2/2",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 0,
+        "relatedKeywordsTotal": 0
+      },
+      "issues": [
+        "Add keyword \"fbar singapore cpf\" to at least one H2 heading."
+      ]
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 142,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 10,
+      "weight": 0.15,
+      "details": {
+        "answerParaQuality": {
+          "good": 7,
+          "total": 14,
+          "ratio": 0.5
+        },
+        "questionHeadingCount": 6,
+        "citationDensity": {
+          "total": 27,
+          "per500Words": 5.25
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 0,
+        "paaMatched": [],
+        "paaUnmatched": [],
+        "definitionCount": 11,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Is the CPF Reportable on the FBAR?\" — current: does not reference heading topic",
+        "Add a concise answer paragraph (30-100 words) after H2 \"Is the SRS Reportable on the FBAR?\" — current: does not reference heading topic",
+        "Add a concise answer paragraph (30-100 words) after H2 \"How the US-Singapore Tax Treaty Affects FBAR Reporting\" — current: does not reference heading topic"
+      ]
+    },
+    "nlpCoverage": {
+      "score": 7.36,
+      "weight": 0.22,
+      "details": {
+        "highPriority": {
+          "met": 15,
+          "total": 20,
+          "avgScore": 0.59,
+          "score": 2.95
+        },
+        "mediumPriority": {
+          "met": 72,
+          "total": 81,
+          "pctMet": 89,
+          "score": 3
+        },
+        "lowPriority": {
+          "present": 130,
+          "total": 369,
+          "pctPresent": 35,
+          "score": 1.41
+        },
+        "surferContentScore": null,
+        "termsBelowMin": [
+          {
+            "term": "central provident fund cpf",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "provident fund cpf",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "singapore the",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "fund cpf",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "as fbar",
+            "actual": 0,
+            "targetMin": 1
+          }
+        ]
+      },
+      "issues": [
+        "5/20 high-priority NLP terms below target:",
+        "  \"central provident fund cpf\": 0/1 uses",
+        "  \"provident fund cpf\": 0/1 uses",
+        "  \"singapore the\": 0/1 uses",
+        "  \"fund cpf\": 0/1 uses",
+        "  \"as fbar\": 0/1 uses",
+        "9/81 medium-priority terms below target (11% miss rate)",
+        "239/369 low-priority terms missing entirely (65% absent)"
+      ]
+    }
+  },
+  "topIssues": [
+    "[NLP] 5/20 high-priority NLP terms below target:",
+    "[NLP]   \"central provident fund cpf\": 0/1 uses",
+    "[NLP]   \"provident fund cpf\": 0/1 uses",
+    "[NLP]   \"singapore the\": 0/1 uses",
+    "[NLP]   \"fund cpf\": 0/1 uses",
+    "[NLP]   \"as fbar\": 0/1 uses",
+    "[NLP] 9/81 medium-priority terms below target (11% miss rate)",
+    "[NLP] 239/369 low-priority terms missing entirely (65% absent)",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Is the CPF Reportable on the FBAR?\" — current: does not reference heading topic",
+    "[AEO] Add a concise answer paragraph (30-100 words) after H2 \"Is the SRS Reportable on the FBAR?\" — current: does not reference heading topic"
+  ],
+  "meta": {
+    "title": "FBAR Singapore CPF: Reporting Bank Accounts & Retirement Funds",
+    "description": "FBAR Singapore CPF reporting rules for US persons. Learn which Singapore bank accounts, CPF, and SRS funds you must report on FinCEN Form 114.",
+    "publishedDate": "2026-03-26"
+  }
+}

@@ -17,6 +17,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not available in production" }, { status: 403 });
   }
 
+  const secret = process.env.E2E_TEST_SECRET;
+  if (!secret) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  if (req.headers.get("x-e2e-secret") !== secret) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const body = await req.json();
   const { userId, email, rateLimitOnly } = body;
 

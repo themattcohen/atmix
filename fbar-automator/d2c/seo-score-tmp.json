@@ -1,0 +1,271 @@
+{
+  "slug": "fbar-multi-currency-account-valuation",
+  "keyword": "fbar multi currency account value",
+  "scorer": "diy-v2",
+  "scoredAt": "2026-03-03T07:55:16.499Z",
+  "wordCount": 2723,
+  "overall": 8.3,
+  "pass": false,
+  "dimensions": {
+    "readability": {
+      "score": 8.5,
+      "weight": 0.1,
+      "details": {
+        "flesch": 47.8,
+        "ari": 14.9,
+        "avgSentenceLength": 16,
+        "longSentPct": 9.4,
+        "longParaPct": 0
+      },
+      "issues": [
+        "Flesch Reading Ease is 47.8 (below ideal 50-70). Simplify sentence structure and use shorter words.",
+        "ARI grade level is 14.9 (target 8-14). Content may be too dense for general readers."
+      ]
+    },
+    "writingQuality": {
+      "score": 7,
+      "weight": 0.08,
+      "details": {
+        "issuesPer500": 11.6,
+        "passiveCount": 2,
+        "weaselCount": 4,
+        "adverbCount": 9,
+        "adverbDensity": 0.33,
+        "clicheCount": 0,
+        "transitionCount": 8,
+        "transitionRate": 0.88
+      },
+      "issues": [
+        "63 writing issues detected (11.6 per 500 words). Review write-good suggestions to tighten prose.",
+        "4 weasel words detected (>3). Some hedging is appropriate for tax content, but tighten where possible.",
+        "Transition word rate is 0.88 per 300 words (8 total). Add transitional phrases like \"however\", \"therefore\", \"additionally\" to improve logical flow."
+      ]
+    },
+    "structure": {
+      "score": 8.5,
+      "weight": 0.12,
+      "details": {
+        "h1Count": 1,
+        "h2Count": 15,
+        "h3Count": 4,
+        "hasFAQ": true,
+        "internalLinkCount": 12,
+        "authLinkCount": 13,
+        "hasTable": true,
+        "hasList": true,
+        "wordCount": 2723,
+        "hasDisclaimer": true,
+        "ctaCount": 2,
+        "hierarchyValid": true
+      },
+      "issues": [
+        "Word count is 2723 (target 640-1765). Consider trimming for focus."
+      ]
+    },
+    "keywordCoverage": {
+      "score": 7.5,
+      "weight": 0.1,
+      "details": {
+        "density": 2.06,
+        "kwInH1": true,
+        "kwInH2": true,
+        "kwInFirstPara": true,
+        "kwInMeta": false,
+        "kwInSlug": true,
+        "semanticCoverage": "5/5",
+        "tfidfScore": 1,
+        "relatedKeywordsFound": 0,
+        "relatedKeywordsTotal": 0
+      },
+      "issues": [
+        "Add keyword \"fbar multi currency account value\" to the meta description."
+      ]
+    },
+    "schemaMarkup": {
+      "score": 10,
+      "weight": 0.08,
+      "details": {
+        "hasFaqSchema": true,
+        "hasArticleSchema": true,
+        "hasBreadcrumb": true,
+        "metaDescLength": 158,
+        "hasHeroImage": true,
+        "hasTocSignal": true,
+        "hasHowToSignal": true,
+        "hasListSignal": true
+      },
+      "issues": []
+    },
+    "aeoSignals": {
+      "score": 8.67,
+      "weight": 0.15,
+      "details": {
+        "answerParaQuality": {
+          "good": 7,
+          "total": 15,
+          "ratio": 0.47
+        },
+        "questionHeadingCount": 5,
+        "citationDensity": {
+          "total": 19,
+          "per500Words": 3.49
+        },
+        "entityCoverage": {
+          "count": 6,
+          "found": [
+            "FBAR",
+            "FinCEN",
+            "BSA",
+            "foreign financial account",
+            "Report of Foreign Bank and Financial Accounts",
+            "$10,000 threshold"
+          ],
+          "missing": []
+        },
+        "paaMatchCount": 0,
+        "paaMatched": [],
+        "paaUnmatched": [],
+        "definitionCount": 12,
+        "hasStepList": true
+      },
+      "issues": [
+        "Add a concise answer paragraph (30-100 words) after H2 \"Why Multi-Currency Accounts Are Different\" — current: does not reference heading topic",
+        "Add a concise answer paragraph (30-100 words) after H2 \"How to Determine the FBAR Multi Currency Account Value\" — current: 27 words (target 30-100)",
+        "Add a concise answer paragraph (30-100 words) after H2 \"Worked Example: USD and Local Currency in a Foreign Account\" — current: 27 words (target 30-100)"
+      ]
+    },
+    "nlpCoverage": {
+      "score": 8.12,
+      "weight": 0.22,
+      "details": {
+        "highPriority": {
+          "met": 75,
+          "total": 89,
+          "avgScore": 0.71,
+          "score": 3.57
+        },
+        "mediumPriority": {
+          "met": 78,
+          "total": 91,
+          "pctMet": 86,
+          "score": 3
+        },
+        "lowPriority": {
+          "present": 203,
+          "total": 525,
+          "pctPresent": 39,
+          "score": 1.55
+        },
+        "surferContentScore": null,
+        "termsBelowMin": [
+          {
+            "term": "accounts brokerage accounts",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "accounts brokerage",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "accounts and",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "bank accounts brokerage accounts",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "accounts brokerage accounts mutual",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "bank accounts brokerage",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "fbar on",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "fbar you",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "fbar the",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "brokerage accounts mutual funds",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "accounts mutual funds",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "brokerage accounts mutual",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "accounts mutual",
+            "actual": 0,
+            "targetMin": 1
+          },
+          {
+            "term": "accounts in",
+            "actual": 0,
+            "targetMin": 1
+          }
+        ]
+      },
+      "issues": [
+        "14/89 high-priority NLP terms below target:",
+        "  \"accounts brokerage accounts\": 0/1 uses",
+        "  \"accounts brokerage\": 0/1 uses",
+        "  \"accounts and\": 0/1 uses",
+        "  \"bank accounts brokerage accounts\": 0/1 uses",
+        "  \"accounts brokerage accounts mutual\": 0/1 uses",
+        "  \"bank accounts brokerage\": 0/1 uses",
+        "  \"fbar on\": 0/1 uses",
+        "  \"fbar you\": 0/1 uses",
+        "  \"fbar the\": 0/1 uses",
+        "  \"brokerage accounts mutual funds\": 0/1 uses",
+        "  \"accounts mutual funds\": 0/1 uses",
+        "  \"brokerage accounts mutual\": 0/1 uses",
+        "  \"accounts mutual\": 0/1 uses",
+        "  \"accounts in\": 0/1 uses",
+        "13/91 medium-priority terms below target (14% miss rate)",
+        "322/525 low-priority terms missing entirely (61% absent)"
+      ]
+    }
+  },
+  "topIssues": [
+    "[NLP] 14/89 high-priority NLP terms below target:",
+    "[NLP]   \"accounts brokerage accounts\": 0/1 uses",
+    "[NLP]   \"accounts brokerage\": 0/1 uses",
+    "[NLP]   \"accounts and\": 0/1 uses",
+    "[NLP]   \"bank accounts brokerage accounts\": 0/1 uses",
+    "[NLP]   \"accounts brokerage accounts mutual\": 0/1 uses",
+    "[NLP]   \"bank accounts brokerage\": 0/1 uses",
+    "[NLP]   \"fbar on\": 0/1 uses",
+    "[NLP]   \"fbar you\": 0/1 uses",
+    "[NLP]   \"fbar the\": 0/1 uses"
+  ],
+  "meta": {
+    "title": "FBAR Multi Currency Account Value: How to Report Accounts With Multiple Currencies",
+    "description": "Learn how to determine maximum account value for FBAR when an account holds multiple currencies. Covers Treasury rates, conversion steps, and worked examples.",
+    "publishedDate": "2026-04-21"
+  }
+}

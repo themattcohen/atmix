@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-india-nre-nro-accounts",
+  "keyword": "fbar india nre nro accounts",
+  "surferDraftId": "15595942",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 74,
+    "avg": 57,
+    "top": 71
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2200,
+      "max": 2500
+    },
+    "headings": {
+      "min": 24,
+      "max": 51
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 7,
+        "targetMax": 20
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 5,
+        "targetMax": 9
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 11,
+        "targetMax": 32
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 5,
+        "targetMax": 12
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "fixed deposits",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "joint accounts",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "substantial presence test",
+        "targetMin": 3,
+        "targetMax": 11
+      },
+      {
+        "term": "bsa e filing system",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "file fbar",
+        "targetMin": 10,
+        "targetMax": 17
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "e filing system",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "tax return",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "maximum value",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "fincen form 114",
+        "targetMin": 5,
+        "targetMax": 14
+      },
+      {
+        "term": "account balance",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "indian accounts",
+        "targetMin": 4,
+        "targetMax": 14
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 4,
+        "targetMax": 6
+      },
+      {
+        "term": "indian citizen",
+        "targetMin": 4,
+        "targetMax": 20
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 7,
+        "targetMax": 20
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar india nre nro accounts",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "financial accounts report",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "indian bank accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "delinquent fbar submission procedures",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank secrecy act",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "specified foreign financial assets",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "investment accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank statements",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "interest income",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "demat and trading accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "trading accounts",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "nro accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "employee provident fund",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "life insurance policies",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "nre accounts",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "tax free",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "paid taxes",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "tax evasion",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "savings accounts",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "criminal prosecution",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "us government",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "tax liability",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "cash value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "jointly owned accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "retirement accounts",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "nre nro",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign currency",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "money laundering",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "cash surrender value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "green card holder",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "us person",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "account number",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "brokerage accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "criminal penalties",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "account ownership",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "tax treaty",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "taxable income",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "closed accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "signing authority",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "public provident fund",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "automatic extension",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "demat account",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "timely filing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "common fbar mistakes nris",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "irs fbar",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "prevent tax evasion",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "treasury's exchange rate",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "irs compliance",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "financial consequences",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "us treasury",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "fbar calculation",
+        "targetMin": 1,
+        "targetMax": null
+      }
+    ]
+  }
+}

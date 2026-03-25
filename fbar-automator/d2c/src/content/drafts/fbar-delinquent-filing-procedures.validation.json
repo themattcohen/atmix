@@ -1,0 +1,37 @@
+{
+  "slug": "fbar-delinquent-filing-procedures",
+  "validatedAt": "2026-03-02T18:55:57.080Z",
+  "passed": false,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (3054 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (4)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (3.6 per 500 words)",
+    "dollar_density": "PASS (3.8 per 500 words)",
+    "penalty_citations": "FAIL (Penalty claims without statute citation at line 13, line 118)",
+    "deadline_citations": "PASS",
+    "published_date": "PASS (2026-03-30)"
+  },
+  "warnings": [
+    "hero_image: File not found: public/blog/fbar-delinquent-filing-procedures.webp — add before final promotion"
+  ],
+  "failedChecks": [
+    "penalty_citations: Penalty claims without statute citation at line 13, line 118"
+  ],
+  "citationUrls": [
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://fiscal.treasury.gov/reports-statements/treasury-reporting-rates-exchange/current.html",
+    "https://www.irs.gov/individuals/international-taxpayers/streamlined-filing-compliance-procedures",
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 USC 5321",
+    "31 CFR 1010.350",
+    "31 CFR 1010.306"
+  ]
+}

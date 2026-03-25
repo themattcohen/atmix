@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-streamlined-filing-compliance-procedures",
+  "keyword": "streamlined filing compliance procedures fbar",
+  "surferDraftId": "15595922",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 74,
+    "avg": 60,
+    "top": 68
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2500,
+      "max": 2900
+    },
+    "headings": {
+      "min": 23,
+      "max": 53
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "streamlined filing compliance procedures",
+        "targetMin": 7,
+        "targetMax": 20
+      },
+      {
+        "term": "streamlined foreign offshore procedures",
+        "targetMin": 6,
+        "targetMax": 16
+      },
+      {
+        "term": "foreign financial assets",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "streamlined domestic offshore procedures",
+        "targetMin": 6,
+        "targetMax": 18
+      },
+      {
+        "term": "streamlined filing compliance",
+        "targetMin": 8,
+        "targetMax": 20
+      },
+      {
+        "term": "filing compliance procedures",
+        "targetMin": 7,
+        "targetMax": 20
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 7,
+        "targetMax": 18
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "streamlined filing",
+        "targetMin": 20,
+        "targetMax": 33
+      },
+      {
+        "term": "foreign corporation",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "streamlined procedures",
+        "targetMin": 12,
+        "targetMax": 27
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 4,
+        "targetMax": 10
+      },
+      {
+        "term": "tax returns",
+        "targetMin": 16,
+        "targetMax": 24
+      },
+      {
+        "term": "streamlined filing procedures",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "filing compliance",
+        "targetMin": 8,
+        "targetMax": 20
+      },
+      {
+        "term": "non willful conduct",
+        "targetMin": 5,
+        "targetMax": 8
+      },
+      {
+        "term": "compliance procedures",
+        "targetMin": 8,
+        "targetMax": 20
+      },
+      {
+        "term": "filed taxes",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "streamlined foreign offshore",
+        "targetMin": 7,
+        "targetMax": 16
+      },
+      {
+        "term": "filing requirements",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "streamlined domestic offshore",
+        "targetMin": 6,
+        "targetMax": 18
+      },
+      {
+        "term": "tax years",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 4,
+        "targetMax": 10
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 6,
+        "targetMax": 14
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 4,
+        "targetMax": 10
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "streamlined filing compliance procedures fbar",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "streamlined filing process",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs streamlined filing procedures",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign earned income exclusion",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "tax professional",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "tax liability",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign tax credit",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "tax obligations",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "pay tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "report foreign financial assets",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "amended federal tax returns",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "fbar penalties",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign assets",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "lawful permanent resident",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "irs examination",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "expat taxes",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "report income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore voluntary disclosure program",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "paid local taxes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non residency requirement",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "delinquent fbar submission procedures",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "amended tax returns",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "amended returns",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "streamlined submission",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "internal revenue service",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax compliance",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "irs program",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayers residing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful taxpayers",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "criminal investigation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "key benefits",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "voluntary disclosure program",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs criminal investigation",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "voluntary disclosure practice",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "irs amnesty program",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "file tax returns",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "civil examination",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "unpaid taxes",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "filing obligations",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "missing forms",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "substantial presence test",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax preparer",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "irs defines",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "submission procedures",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign entities",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "filing deadline",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "citizens living abroad",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filing status",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "previously filed",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "reporting obligations",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign partnership",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "good faith misunderstanding",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "local taxes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign trusts",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ]
+  }
+}

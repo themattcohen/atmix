@@ -14,33 +14,50 @@ The following 3 data sources are **blocked** and cannot proceed without user act
 
 ## Open Item 1: LinkedIn Data Export
 
-**Source:** LinkedIn Posts
-**Status:** BLOCKED
+**Source:** LinkedIn Posts + Articles
+**Status:** PARTIALLY RESOLVED
 **Priority:** Medium
-**Estimated Content:** 100+ posts (~15,000 words)
+**Estimated Content:** 11 articles (~12,000 words) RECEIVED + 100+ posts (~15,000 words) STILL MISSING
 
-### Action Required
+### What Was Received (2026-03-03)
+
+Basic LinkedIn export (`Basic_LinkedInDataExport_02-24-2026.zip`) contained:
+- **11 LinkedIn Articles** (HTML) — M&A thought leadership content → `data/raw/linkedin/articles/`
+- **Profile data** (bio, headline, summary) → `data/raw/linkedin/profile/Profile.csv`
+- **15 career positions** → `data/raw/linkedin/profile/Positions.csv`
+- **23 skills** → `data/raw/linkedin/profile/Skills.csv`
+- **Education history** → `data/raw/linkedin/profile/Education.csv`
+- **Honors/Awards** (SuperLawyers, BestLawyers, CALI) → `data/raw/linkedin/profile/Honors.csv`
+- **4 recommendations** → `data/raw/linkedin/profile/Recommendations_Received.csv`
+- Original zip archived at `data/raw/linkedin/exports/`
+
+**NOT included** (privacy — intentionally excluded):
+- `messages.csv` (5.5MB private messages)
+- `Connections.csv` (contact list)
+- Ad targeting, invitations, etc.
+
+### Still Blocked: Posts/Shares CSV
+
+The "Basic" export does **not** include LinkedIn posts (short-form feed content). To get posts:
 
 1. Log into LinkedIn at `linkedin.com`
 2. Go to **Settings & Privacy** → **Data Privacy** → **Get a copy of your data**
 3. Click **Request archive**
-4. Select **"Posts"** (and optionally "Articles")
-5. Submit request
-6. Wait for email notification (typically 24-72 hours)
-7. Download the ZIP file
-8. Extract and locate the CSV file containing posts
+4. **Specifically select "Posts"** (the Basic export doesn't include these)
+5. Submit request and wait for email (24-72 hours)
+6. Download the new ZIP and provide file path
 
-### Once Complete
+### Next Steps (no user action needed)
 
-Notify me with the file path, then run:
-```bash
-python /Users/matt/Documents/someday/docs/sara_content_extractor.py --linkedin /path/to/linkedin_posts.csv
-```
+1. Extract articles HTML → normalized documents (need article extractor or extend linkedin_extractor.py)
+2. Build profile context document from Profile.csv + Positions.csv + Skills.csv
+3. Run normalization → chunking → embedding pipeline for articles
+4. When Posts CSV arrives, run existing `linkedin_extractor.py`
 
 ### Notes
 - LinkedIn limits data exports to once every 24 hours
-- Export contains post text, dates, and engagement metrics
-- No API access required
+- Articles are high-value long-form M&A content (~1,000-1,200 words each)
+- Posts extractor (`scripts/extract/linkedin_extractor.py`) is ready for Posts CSV when available
 
 ---
 
@@ -110,7 +127,8 @@ python /Users/matt/Documents/someday/docs/sara_content_extractor.py --deal-acade
 
 | Item | Source | Status | User Action | Date Resolved |
 |------|--------|--------|-------------|---------------|
-| 1 | LinkedIn | BLOCKED | Export data | Pending |
+| 1a | LinkedIn Articles | RECEIVED | Extract received | 2026-03-03 |
+| 1b | LinkedIn Posts | BLOCKED | Re-export selecting "Posts" | Pending |
 | 2 | Book PDF | BLOCKED | Provide file | Pending |
 | 3 | Deal Academy | BLOCKED | Provide credentials | Pending |
 
@@ -198,7 +216,8 @@ Our database token is permanently incapable of schema changes - this is by Baser
 
 | Item | Source | Status | User Action | Date Resolved |
 |------|--------|--------|-------------|---------------|
-| 1 | LinkedIn | BLOCKED | Export data | Pending |
+| 1a | LinkedIn Articles | RECEIVED | Extract received | 2026-03-03 |
+| 1b | LinkedIn Posts | BLOCKED | Re-export selecting "Posts" | Pending |
 | 2 | Book PDF | BLOCKED | Provide file | Pending |
 | 3 | Deal Academy | BLOCKED | Provide credentials | Pending |
 | 4 | Baserow Schema | BLOCKED | Add fields in UI | Pending |

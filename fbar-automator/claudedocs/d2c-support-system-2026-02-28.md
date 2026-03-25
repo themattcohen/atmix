@@ -14,7 +14,7 @@ User ──► Contact Form (/contact page)
          │  Server-side token verification
          └──► /api/contact (POST)
               └──► Resend email → support@fbardirect.com
-                   (Namecheap email forwarding → personal inbox)
+                   (Zoho Mail free plan — full mailbox)
 ```
 
 ## What Was Built
@@ -116,16 +116,18 @@ Professional phone number for CA Civil Code 1789.3 compliance and trust signals.
 
 > Cost: $2.15/mo for the number + $0.0085/min inbound (voicemail recording only — pennies). No outbound calls needed.
 
-### 5. ForwardEmail.net Enhanced ($3/mo, reply-as support@)
+### 5. Zoho Mail (FREE, reply-as support@) — LIVE 2026-03-03
 
-Replaces Namecheap forwarding with reply-capable email. Recipients never see your personal Gmail.
+Replaces Namecheap forwarding with a full mailbox. Recipients never see your personal email.
 
-1. Sign up at [forwardemail.net](https://forwardemail.net), add `fbardirect.com`
-2. Add DNS records (MX + TXT) per their dashboard instructions
-3. In Gmail: **Settings → Accounts → "Send mail as"** → add `support@fbardirect.com` with ForwardEmail SMTP credentials
-4. Test: send email to `support@fbardirect.com`, confirm it arrives, reply from Gmail as that address
+- **Plan**: Zoho Mail free plan
+- **Primary mailbox**: `support@fbardirect.com`
+- **Aliases**: admin@, noreply@, info@, billing@, postmaster@, abuse@, security@, hello@, dmca@
+- **MX records**: Point to zoho.com
+- **SPF**: Includes zoho.com + amazonses.com
+- **Replaces**: Namecheap email forwarding (decommissioned)
 
-> Note: Resend continues handling transactional email (`noreply@fbardirect.com`). ForwardEmail handles human support correspondence (`support@fbardirect.com`). No conflict — different purposes.
+> Note: Resend continues handling transactional email (`noreply@fbardirect.com`). Zoho Mail handles human support correspondence (`support@fbardirect.com`). No conflict — different purposes.
 
 ### 6. Deploy
 
@@ -146,11 +148,10 @@ Since `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is baked at build time:
 |-----------|-------------|
 | Claude Haiku 4.5 (AI chat) | ~$0.10–$1.50 (pay-per-token, ~$0.25/1M input, $1.25/1M output) |
 | Cloudflare Turnstile | Free |
-| Namecheap email forwarding | Free (included with domain) |
+| Zoho Mail (support mailbox) | Free (Zoho Mail free plan) |
 | Resend (contact form emails) | Free tier (100 emails/day) |
 | Twilio toll-free + voicemail | ~$2–3 (number + pennies for recordings) |
-| ForwardEmail.net Enhanced | $3 (reply-as support@fbardirect.com via Gmail) |
-| **Total** | **~$5–8/mo** |
+| **Total** | **~$2–5/mo** |
 
 Assuming ~50–200 chat conversations/month at launch volume.
 
@@ -209,10 +210,10 @@ These can be added later as volume justifies the complexity.
 ## Status
 
 - **Code**: Complete and deployed (build passes: tsc, lint, next build)
-- **Manual setup**: Pending (Turnstile keys + email forwarding + Twilio phone + ForwardEmail reply-as)
-- **Functional without setup**: Chat widget works immediately (uses ANTHROPIC_API_KEY already in env). Contact form will fail without Turnstile keys. Email forwarding needed for contact form destination.
-- **Phone**: Twilio toll-free number + voicemail TwiML Bin (pending purchase + setup)
-- **Reply-as email**: ForwardEmail.net Enhanced + Gmail "Send mail as" (pending signup + DNS)
+- **All manual setup COMPLETE** as of 2026-03-03
+- **Turnstile**: LIVE (site key baked at build, secret key in server .env)
+- **Phone**: LIVE — `(888) 863-5518` toll-free voicemail via Twilio Serverless
+- **Email**: LIVE — Zoho Mail free plan, `support@fbardirect.com` with 9 aliases, MX → zoho.com
 
 ---
 

@@ -1,0 +1,128 @@
+two emails
+
+Subject: Ticket Resolution
+Ticket No. 00488355
+03/02/2026, 09:10 AM
+
+Please respond to this email without changing the Reply-To address so your response can be directly routed back to your ticket.
+Dear Matthew Cohen,
+
+Thank you for contacting FinCEN. You are receiving this e-mail in reference to your BSA E-filing ticket number 00488355.
+Notification of completed SDTM account creation
+We are pleased to inform you that your new SDTM account has been successfully created! Please see below for next steps:
+
+Establish network connectivity. Provide the below destination IP addresses and ports to your network team. This is required to allow your network to access the BSA E-Filing servers via Secure File Transfer Protocol (SFTP). IMPORTANT: SFTP is the only supported protocol for new SDTM accounts. 
+Environment 
+
+Destination IP Address 
+
+Destination Port 
+
+Production 
+
+164.95.10.142  
+(bsaefiling-direct-transfer.fincen.gov) 
+
+2222 
+
+User Test (Sandbox)
+
+164.95.10.143  
+(bsaefiling-direct-transfer-sandbox.fincen.gov) 
+
+2222
+
+Obtain your SDTM account credentials. To obtain your new SDTM account credentials (i.e. client Id and secret), the supervisory user associated with your filing organization must do the following: 
+Send New Secure Message. Login to the BSA E-Filing System (bsaefiling.fincen.gov), download the secure message form (Secure Mailbox > Download Secure Message Form), following the guidance below to prepare the message, and submit (Secure Mailbox > Submit Secure Message): 
+Enter “New SDTM Account” and the incident# (from the subject line of this email) as the subject of the secure message (e.g. “New SDTM Account Ticket# 1234567”) 
+Enter the following organization information (via Account Management > Manage Organization Information) in the body of the message: 
+Organization Enrollment Code 
+Organization Name 
+Verify Secure Message Delivery. After you submit the secure message, navigate to your secure message outbox (via Secure Mailbox > View Outbox) to ensure it was delivered successfully.  
+Obtain Secure Message Reply. Shortly after receipt, FinCEN will reply to your secure message with your new SDTM account credentials (you will receive an email notification that a new reply message has been delivered to your secure message inbox, at which time you may login to the BSA E-Filing System and access the reply message from your inbox (via Secure Mailbox > View Inbox).
+
+
+Use SDTM account credentials to transmit/receive data with FinCEN. Use your SDTM account to transmit a BSA batch XML file and receive corresponding responses (i.e. message file and acknowledgement file):
+Submit a batch XML file – 
+Login/SFTP into your home directory connecting to either URL above (e.g. sftp uid@bsaefiling-direct-transfer.fincen.gov:2222). Your home directory contains two folders: submissions and acks
+cd submissions 
+put filename (e.g. put CTRXST.20240609153015.sdtmuserid.xml)
+Logoff
+Obtain FinCEN response file(s) – for all successful submission attempts, FinCEN provides a “messages” file in xml format with the status of your submission generally within 5 hours of submission (e.g. accepted, accepted with warnings, rejected, etc.). If the file was accepted (with or without warnings), FinCEN also provides an “acknowledgement” file in xml format containing your BSA IDs for each report in your submission generally 2-3 business days after submission acceptance.
+Login/SFTP into your home directory connecting to either URL above (e.g. sftp uid@bsaefiling-direct-transfer.fincen.gov:2222). Again, your home directory contains two folders: submissions and acks
+cd acks 
+get filename (e.g., 
+get CTRXST.20240609153015.sdtmuserid.xml.MESSAGES.XML, or
+get CTRXST.20240609153015.sdtmuserid.xml.ACK)
+Logoff
+ 
+
+Need additional information about the batch/ack XML formatting?
+
+
+
+For additional information related to batch/ack XML formatting: 
+
+https://bsaefiling.fincen.gov/Filing-Information.html
+
+
+
+NOTE: You may also obtain the messages file schema here:
+
+https://bsaefiling.fincen.gov/docs/EFL_BatchMessagesSchema.xsd
+
+Subject: Ticket Resolution
+Ticket No. 00488354
+03/02/2026, 07:59 AM
+
+Please respond to this email without changing the Reply-To address so your response can be directly routed back to your ticket.
+Dear Matthew Cohen,
+
+Thank you for contacting FinCEN. You are receiving this e-mail in reference to your BSA E-filing ticket number 00488354.
+Notification of completed SDTM account creation
+We are pleased to inform you that your new SDTM account has been successfully created! Please see below for next steps:
+
+Establish network connectivity. Provide the below destination IP addresses and ports to your network team. This is required to allow your network to access the BSA E-Filing servers via Secure File Transfer Protocol (SFTP). IMPORTANT: SFTP is the only supported protocol for new SDTM accounts. 
+Environment 
+
+Destination IP Address 
+
+Destination Port 
+
+Production 
+
+164.95.10.142  
+(bsaefiling-direct-transfer.fincen.gov) 
+
+2222 
+
+User Test (Sandbox)
+
+164.95.10.143  
+(bsaefiling-direct-transfer-sandbox.fincen.gov) 
+
+2222
+
+Obtain your SDTM account credentials. To obtain your new SDTM account credentials (i.e. client Id and secret), the supervisory user associated with your filing organization must do the following: 
+Send New Secure Message. Login to the BSA E-Filing System (bsaefiling.fincen.gov), download the secure message form (Secure Mailbox > Download Secure Message Form), following the guidance below to prepare the message, and submit (Secure Mailbox > Submit Secure Message): 
+Enter “New SDTM Account” and the incident# (from the subject line of this email) as the subject of the secure message (e.g. “New SDTM Account Ticket# 1234567”) 
+Enter the following organization information (via Account Management > Manage Organization Information) in the body of the message: 
+Organization Enrollment Code 
+Organization Name 
+Verify Secure Message Delivery. After you submit the secure message, navigate to your secure message outbox (via Secure Mailbox > View Outbox) to ensure it was delivered successfully.  
+Obtain Secure Message Reply. Shortly after receipt, FinCEN will reply to your secure message with your new SDTM account credentials (you will receive an email notification that a new reply message has been delivered to your secure message inbox, at which time you may login to the BSA E-Filing System and access the reply message from your inbox (via Secure Mailbox > View Inbox).
+
+
+Use SDTM account credentials to transmit/receive data with FinCEN. Use your SDTM account to transmit a BSA batch XML file and receive corresponding responses (i.e. message file and acknowledgement file):
+Submit a batch XML file – 
+Login/SFTP into your home directory connecting to either URL above (e.g. sftp uid@bsaefiling-direct-transfer.fincen.gov:2222). Your home directory contains two folders: submissions and acks
+cd submissions 
+put filename (e.g. put CTRXST.20240609153015.sdtmuserid.xml)
+Logoff
+Obtain FinCEN response file(s) – for all successful submission attempts, FinCEN provides a “messages” file in xml format with the status of your submission generally within 5 hours of submission (e.g. accepted, accepted with warnings, rejected, etc.). If the file was accepted (with or without warnings), FinCEN also provides an “acknowledgement” file in xml format containing your BSA IDs for each report in your submission generally 2-3 business days after submission acceptance.
+Login/SFTP into your home directory connecting to either URL above (e.g. sftp uid@bsaefiling-direct-transfer.fincen.gov:2222). Again, your home directory contains two folders: submissions and acks
+cd acks 
+get filename (e.g., 
+get CTRXST.20240609153015.sdtmuserid.xml.MESSAGES.XML, or
+get CTRXST.20240609153015.sdtmuserid.xml.ACK)
+Logoff

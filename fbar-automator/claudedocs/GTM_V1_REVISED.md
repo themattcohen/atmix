@@ -183,7 +183,7 @@ The overlap analysis from the session:
 | **n8n** | Orchestration, scheduling, API glue | Claude Code handles multi-step workflows natively, but CANNOT schedule or run on cron |
 | **Relevance AI** | Web-aware research agents with knowledge base | Claude API tool_use does web search + file reading natively |
 | **Claude API** | Writing the actual content | This IS the writer |
-| **Gemini/Nano Banana** | Image generation | Nothing — Claude cannot generate images |
+| **Gemini API** | Image generation | Nothing — Claude cannot generate images |
 
 **n8n is NOT redundant** — it adds scheduling and visual workflow editing. A Node.js script does the same thing n8n does, but n8n provides:
 - Web UI to modify workflows without code
@@ -203,7 +203,7 @@ n8n (self-hosted on existing VPS, $0/mo)
   +--> Claude API (Sonnet) — writing: outline, section drafting, anti-slop review
   |       |
   |       v
-  +--> Nano Banana API (Gemini) — hero image generation (~$0.07-0.13/image)
+  +--> Gemini API — hero image generation (~$0.07-0.13/image)
   |       |
   |       v
   +--> GitHub API — commit MDX + images to repo
@@ -217,31 +217,30 @@ n8n (self-hosted on existing VPS, $0/mo)
 | Component | Cost |
 |-----------|------|
 | Claude API (Sonnet for writing, Haiku for research) | ~$0.02-0.05 |
-| Nano Banana API (Gemini image generation) | ~$0.07-0.13 |
+| Gemini API (image generation) | ~$0.07-0.13 |
 | n8n (self-hosted Docker on existing VPS) | $0.00 |
 | GitHub API | $0.00 |
 | **Total per article** | **~$0.10-0.18** |
 
 At 3-4 articles/week, monthly cost: approximately $1.50-3.00. Negligible.
 
-### Nano Banana (Gemini Image Generation) Details
+### Gemini API (Image Generation) Details
 
-Researched during the session:
-- **Free tier:** 2-3 images/day via AI Studio (sufficient for manual article production)
+We use a dedicated Gemini API key (fbar-direct project, project number 4450758728).
 - **API:** ~$0.13/image at standard resolution, ~$0.07 with Batch API
-- **Pro subscription ($20/mo):** ~100 images/day = $0.007/image if fully utilized
+- **Free tier:** Limited free usage via Google AI Studio
 
-For a blog producing 3-4 articles/week (15-20 images/month), the free tier or API covers this easily.
+For a blog producing 3-4 articles/week (15-20 images/month), API costs are negligible.
 
 **Sources:**
-- [Nano Banana API Pricing](https://ai.google.dev/gemini-api/docs/nanobanana)
-- [Nano Banana Pro Pricing Guide](https://www.aifreeapi.com/en/posts/nano-banana-pro-api-pricing)
+- [Gemini API Pricing](https://ai.google.dev/gemini-api/docs/pricing)
+- [Google AI Studio](https://aistudio.google.com/)
 
 ### Deployment Architecture
 
 The user has n8n running on a **separate VPS** from the app (which runs on Hetzner in Docker). This is actually better — n8n does not compete for resources with the app. The pipeline:
 
-1. **n8n (existing VPS)** picks topic from queue, calls Claude API, calls Nano Banana API, commits MDX + image to GitHub repo via API
+1. **n8n (existing VPS)** picks topic from queue, calls Claude API, calls Gemini API, commits MDX + image to GitHub repo via API
 2. **GitHub webhook** (or Hetzner-side cron polling) triggers `git pull && docker compose build && docker compose up -d` on Hetzner
 3. Article is live
 
@@ -442,7 +441,7 @@ At **$59** product price, $5 CPC, and 5% conversion rate:
 
 - n8n self-hosted on Docker (existing VPS) — running and accessible
 - Claude API key with access to Sonnet and Haiku models
-- Gemini API key (Nano Banana) for image generation
+- Gemini API key (fbar-direct project) for image generation
 - GitHub personal access token with repo write access
 - Hetzner server with rebuild mechanism (webhook or cron polling)
 
@@ -645,7 +644,7 @@ You are an editorial quality reviewer for a CPA's professional blog about FBAR f
 Return the complete revised draft.
 ```
 
-#### Node 7: Image Generation (Nano Banana / Gemini API)
+#### Node 7: Image Generation (Gemini API)
 - **Type:** HTTP Request
 - **Method:** POST to Gemini API endpoint
 - **Prompt template:**
@@ -819,7 +818,7 @@ Never use these phrases:
 
 ### Step 3: Image Generation Prompts
 
-**Style guide for Nano Banana:**
+**Style guide for Gemini API:**
 ```
 Professional financial compliance blog header. Navy blue (#1a4480) dominant color.
 Clean, modern, minimal aesthetic. No text overlays. No stock photo style.
@@ -928,8 +927,8 @@ All decisions made during the interactive planning session:
 | Conversion tracking | Client + server Measurement Protocol (Option C) | Client-side for real-time, server-side via Stripe webhook for reliability |
 | Blog infrastructure | Filesystem MDX (Option A) | Git-tracked, no CMS overhead, scales to 200+ articles |
 | CMS | Not now. TinaCMS available if needed at 100+ articles | n8n writes articles, nobody edits MDX manually. CMS adds maintenance burden |
-| Content pipeline | n8n + Claude API + Nano Banana. Relevance AI dropped | Relevance is redundant with Claude tool_use. n8n adds scheduling (the one thing Claude Code cannot do) |
-| Image generation | Nano Banana (Gemini) | ~$0.07-0.13/image. Free tier covers manual production. API for automated pipeline |
+| Content pipeline | n8n + Claude API + Gemini API. Relevance AI dropped | Relevance is redundant with Claude tool_use. n8n adds scheduling (the one thing Claude Code cannot do) |
+| Image generation | Gemini API (fbar-direct project) | ~$0.07-0.13/image. Dedicated API key. API for automated pipeline |
 | Country pages | Top 10, substantive (Option A) | 10 substantive pages > 50 thin ones. YMYL quality bar. Countries: CA, UK, DE, MX, AU, JP, FR, CH, IL, IN |
 | Comparison pages | Category comparisons, not named competitors (Option A) | "vs BSA E-Filing," "vs CPA," "Best FBAR Services 2026." Named competitor pages are Phase 4+ |
 | Landing pages | Per-ad-group variants via generateStaticParams (Option C) | 4 variants: file-fbar-online, fbar-software, fbar-expat, fincen-114. Minimal layout (no full nav) |
@@ -949,8 +948,8 @@ All sources cited during the fact-check and planning sessions:
 - [fbar.us Trustpilot](https://www.trustpilot.com/review/fbar.us)
 - [H&R Block FBAR Filing](https://www.hrblock.com/expat-tax-preparation/expat-tax-preparation-and-services/fbar-filing/)
 - [Expatfile FBAR](https://expatfile.tax/fbar/)
-- [Nano Banana API Pricing](https://ai.google.dev/gemini-api/docs/nanobanana)
-- [Nano Banana Pro Pricing Guide](https://www.aifreeapi.com/en/posts/nano-banana-pro-api-pricing)
+- [Gemini API Pricing](https://ai.google.dev/gemini-api/docs/pricing)
+- [Google AI Studio](https://aistudio.google.com/)
 - [SparkToro 2024 Zero-Click Study](https://sparktoro.com/blog/2024-zero-click-search-study-for-every-1000-us-google-searches-only-374-clicks-go-to-the-open-web-in-the-eu-its-360/)
 - [Similarweb AI Overviews Zero-Click Growth](https://www.seroundtable.com/similarweb-google-zero-click-search-growth-39706.html)
 - [Gartner 25% Search Volume Prediction](https://www.gartner.com/en/newsroom/press-releases/2024-02-19-gartner-predicts-search-engine-volume-will-drop-25-percent-by-2026-due-to-ai-chatbots-and-other-virtual-agents)

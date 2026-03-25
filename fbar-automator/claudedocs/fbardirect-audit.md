@@ -90,19 +90,15 @@ fbardirect.com is a technically exceptional website (A-grade performance, A-grad
 | Ads | Google Ads (AW-17983090187) conversion tracking |
 | Schema.org | Organization/FinancialService, WebApplication, FAQPage |
 
-### Console Errors (4 CSP violations)
+### Console Errors (4 CSP violations) — RESOLVED (March 1, 2026)
 
-All 4 errors are CSP violations blocking Google Ads conversion tracking:
-1. `connect-src` blocks `https://www.google.com/ccm/collect`
-2. Fetch API blocked for same endpoint
-3. `img-src` blocks `https://www.google.com/ccm/collect?...&img=1`
-4. `img-src` blocks `https://www.google.com/pagead/1p-user-list/...`
+~~All 4 errors were CSP violations blocking Google Ads conversion tracking:~~
+1. ~~`connect-src` blocks `https://www.google.com/ccm/collect`~~
+2. ~~Fetch API blocked for same endpoint~~
+3. ~~`img-src` blocks `https://www.google.com/ccm/collect?...&img=1`~~
+4. ~~`img-src` blocks `https://www.google.com/pagead/1p-user-list/...`~~
 
-**Root Cause:** CSP allows `googleads.g.doubleclick.net` and `www.googleadservices.com` but NOT `www.google.com`, which Google Ads also uses for conversion data and remarketing pixels.
-
-**Impact:** Google Ads conversion tracking is partially broken — conversion data and remarketing pixels silently fail.
-
-**Fix:** Add `https://www.google.com` to both `connect-src` and `img-src` in the CSP middleware.
+**Fix applied:** Added `https://www.google.com` to both `connect-src` and `img-src` in the CSP middleware (commit `4dbe9a5`). Google Ads conversion tracking (`AW-17983090187`) env vars wired and deployed (commit `74e6e96`). All network requests now succeed: ccm/collect, remarketing pixel, viewthrough conversion — verified live on March 1, 2026.
 
 ### Accessibility Assessment
 

@@ -1,0 +1,39 @@
+{
+  "slug": "fbar-filing-deadline-2026",
+  "validatedAt": "2026-03-03T01:35:50.975Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (2127 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (3)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (12 per 500 words)",
+    "dollar_density": "PASS (5.4 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "hero_image": "PASS",
+    "published_date": "PASS (2026-03-04)"
+  },
+  "warnings": [],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://bsaefiling.fincen.gov/",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.irs.gov/irm/part4/irm_04-026-016",
+    "https://www.law.cornell.edu/uscode/text/31/5322",
+    "https://fiscaldata.treasury.gov/",
+    "https://www.irs.gov/individuals/international-taxpayers/delinquent-fbar-submission-procedures",
+    "https://www.irs.gov/individuals/international-taxpayers/streamlined-filing-compliance-procedures",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 CFR 1010.306",
+    "31 USC 5321",
+    "31 CFR 1010.350",
+    "31 USC 5322"
+  ]
+}

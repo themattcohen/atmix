@@ -28,6 +28,24 @@ The local Mac SSH key is authorized on the server. No password needed.
 
 ---
 
+## ⚠️ BEFORE ANY DEPLOY: Add Temporary Swap
+
+**MANDATORY first step.** The server's 2 GB swap is not enough for Docker builds (Next.js webpack needs ~2 GB heap). Without extra swap the OOM killer will SIGKILL the build, make SSH unresponsive for 10-15+ minutes, and waste your time.
+
+```bash
+# Add 2 GB temporary swap (idempotent — safe to run if already exists)
+ssh root@178.156.250.116 "if ! swapon --show | grep -q /tmp/extraswap; then fallocate -l 2G /tmp/extraswap && chmod 600 /tmp/extraswap && mkswap /tmp/extraswap && swapon /tmp/extraswap && echo 'Extra swap added'; else echo 'Extra swap already active'; fi"
+```
+
+After deploy succeeds, clean it up:
+```bash
+ssh root@178.156.250.116 "swapoff /tmp/extraswap 2>/dev/null; rm -f /tmp/extraswap; echo 'Temp swap removed'"
+```
+
+Verify swap is active before building: `swapon --show` should show both `/swapfile` (2G) and `/tmp/extraswap` (2G) = **4 GB total**.
+
+---
+
 ## Common Operations
 
 ### Deploy D2C
@@ -38,11 +56,11 @@ D2C is built locally on Hetzner via `scripts/deploy-d2c.sh`. No GHCR dependency.
 # 1. From local — commit and push
 git add <files> && git commit -m "message" && git push
 
-# 2. On server — pull, build, and deploy D2C
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && ./scripts/deploy-d2c.sh"
+# 2. On server — add temp swap, pull, build, deploy, clean up
+ssh root@178.156.250.116 "if ! swapon --show | grep -q /tmp/extraswap; then fallocate -l 2G /tmp/extraswap && chmod 600 /tmp/extraswap && mkswap /tmp/extraswap && swapon /tmp/extraswap; fi && cd /opt/fbar/fbar-automator && git pull origin main && ./scripts/deploy-d2c.sh && swapoff /tmp/extraswap && rm -f /tmp/extraswap"
 
 # With cache busted (after node_modules or Dockerfile changes):
-ssh root@178.156.250.116 "cd /opt/fbar/fbar-automator && git pull origin main && ./scripts/deploy-d2c.sh --no-cache"
+ssh root@178.156.250.116 "if ! swapon --show | grep -q /tmp/extraswap; then fallocate -l 2G /tmp/extraswap && chmod 600 /tmp/extraswap && mkswap /tmp/extraswap && swapon /tmp/extraswap; fi && cd /opt/fbar/fbar-automator && git pull origin main && ./scripts/deploy-d2c.sh --no-cache && swapoff /tmp/extraswap && rm -f /tmp/extraswap"
 ```
 
 **What the script does:**
@@ -319,16 +337,20 @@ Common causes: missing env var, database migration needed, port conflict.
 
 ### OOM during Docker build
 
-**D2C builds:** Use `./scripts/deploy-d2c.sh` which automatically stops D2C + B2B worker (~750MB freed) before building. The Dockerfile has `--max-old-space-size=1024` hardcoded. **Do not increase this.**
+**Root cause:** Next.js webpack compilation needs ~2 GB heap. The server has 1.9 GB RAM + 2 GB swap = not enough. The OOM killer will SIGKILL the build and make SSH unresponsive for 10-15+ minutes.
+
+**Prevention (MANDATORY):** Add temporary swap before every build. See "Before Any Deploy" section above.
+
+**D2C builds:** Use `./scripts/deploy-d2c.sh` which stops D2C + B2B worker (~750MB freed) before building. The Dockerfile has `--max-old-space-size=2048`.
 
 **B2B builds:** Never run alongside a D2C build. Use `--build b2b-app` to target one service.
 
-If OOM still occurs:
+If OOM still occurs even with extra swap:
 1. Check memory: `free -h && docker stats --no-stream`
-2. If postgres is above 768M: `docker compose -f docker-compose.prod.yml restart postgres`
-3. Last resort: stop B2B app too before building, restart after
-4. Prune: `docker image prune -f` (safe) or `docker system prune -f` (removes stopped containers too)
-5. Verify swap: `swapon --show` (should show `/swapfile 2G`)
+2. Verify swap: `swapon --show` (should show `/swapfile 2G` + `/tmp/extraswap 2G` = 4G total)
+3. Stop B2B app too: `docker compose -f docker-compose.prod.yml stop b2b-app b2b-cron`
+4. Prune: `docker system prune -f && docker builder prune --all -f`
+5. If postgres is above 768M: `docker compose -f docker-compose.prod.yml restart postgres`
 
 If OOM kills sshd, wait 15-30 seconds and reconnect.
 

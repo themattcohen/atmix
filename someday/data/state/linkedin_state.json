@@ -1,15 +1,20 @@
 {
   "source": "linkedin",
   "version": "1.0.0",
-  "last_updated": null,
+  "last_updated": "2026-03-03T00:00:00Z",
   "processed_ids": [],
   "failed_ids": [],
   "pending_ids": [],
   "metadata": {
-    "export_path": null,
-    "profile_url": null,
+    "export_path": "data/raw/linkedin/exports/Basic_LinkedInDataExport_02-24-2026.zip",
+    "export_type": "Basic",
+    "export_date": "2026-02-24",
+    "profile_url": "https://www.linkedin.com/in/sara-sharp-9a2a98b",
     "extraction_method": "manual_export",
     "blocked": true,
-    "blocked_reason": "Requires manual data export from user"
+    "blocked_reason": "Basic export received — articles + profile extracted. Posts CSV still missing (need re-export selecting 'Posts').",
+    "articles_received": 11,
+    "articles_extracted": false,
+    "posts_received": false
   }
 }

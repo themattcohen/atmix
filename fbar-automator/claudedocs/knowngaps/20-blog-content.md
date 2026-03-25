@@ -151,7 +151,7 @@ None required for manual articles. The blog route is already public (middleware 
 
 For the n8n pipeline, the following environment variables are needed on the n8n host (not on the D2C app server):
 - `ANTHROPIC_API_KEY` — for Claude API calls in n8n
-- `GEMINI_API_KEY` — for Nano Banana image generation
+- `GEMINI_API_KEY` — for Gemini API image generation (fbar-direct project)
 - `GITHUB_PAT` — for committing MDX files to the repo
 
 ## Testing

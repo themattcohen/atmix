@@ -1,0 +1,429 @@
+{
+  "slug": "fbar-penalties-what-happens-if-you-dont-file",
+  "keyword": "fbar penalties",
+  "surferDraftId": "15597321",
+  "extractedAt": "2026-03-02T18:20:00Z",
+  "contentScore": {
+    "current": 75,
+    "avg": 0,
+    "top": 0
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2000,
+      "max": 2300
+    },
+    "headings": {
+      "min": 15,
+      "max": 35
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "fbar penalties",
+        "targetMin": 14,
+        "targetMax": 33
+      },
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 5,
+        "targetMax": 17
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 6,
+        "targetMax": 10
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 7,
+        "targetMax": 26
+      },
+      {
+        "term": "criminal penalties",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "willful failure",
+        "targetMin": 3,
+        "targetMax": 10
+      },
+      {
+        "term": "willful violations",
+        "targetMin": 4,
+        "targetMax": 10
+      },
+      {
+        "term": "bank account",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 7,
+        "targetMax": 13
+      },
+      {
+        "term": "avoid penalties",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "failure to file",
+        "targetMin": 5,
+        "targetMax": 17
+      },
+      {
+        "term": "non willful",
+        "targetMin": 8,
+        "targetMax": 17
+      },
+      {
+        "term": "tax returns",
+        "targetMin": 5,
+        "targetMax": 9
+      },
+      {
+        "term": "due date",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "reasonable cause",
+        "targetMin": 3,
+        "targetMax": 12
+      },
+      {
+        "term": "willful failure to file",
+        "targetMin": 3,
+        "targetMax": 10
+      },
+      {
+        "term": "delinquent fbars",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "file fbars",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "penalties",
+        "targetMin": 42,
+        "targetMax": 72
+      },
+      {
+        "term": "fbar",
+        "targetMin": 53,
+        "targetMax": 71
+      },
+      {
+        "term": "accounts",
+        "targetMin": 34,
+        "targetMax": 57
+      },
+      {
+        "term": "file",
+        "targetMin": 43,
+        "targetMax": 60
+      },
+      {
+        "term": "irs",
+        "targetMin": 16,
+        "targetMax": 31
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "bank secrecy act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "report foreign bank accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign bank account report",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "non willful violations",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "tax evasion",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil penalty",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar form",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "tax liability",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax obligations",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "significant penalties",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "criminal prosecution",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "bank statements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax preparer",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "eliminate penalties",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "maximum value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax evasion cases",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "harsh penalties",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "maximum penalty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "district court",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filing requirement",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "adjusted annually",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "non willful penalties",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "assess penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "unreported accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "legal duty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "automatic extension",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treasury department",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "annual report",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "swiss accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "honest mistakes",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "box indicating",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar issues",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "penalties depends",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "potential penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "schedule b",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "filing late",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "fbar cases",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "file late fbars",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "back taxes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "detailed information",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "late fbars",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "multiple years",
+        "targetMin": 1,
+        "targetMax": 4
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "court concluded",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "government filed",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "grave risk",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "court stated",
+        "targetMin": 1,
+        "targetMax": 1
+      }
+    ]
+  }
+}

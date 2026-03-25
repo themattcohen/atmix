@@ -67,6 +67,12 @@ Generate targets before writing. Do NOT proceed with writing until `output/<slug
 
 **No writing without a research brief.** The brief ensures factual accuracy, identifies competitor gaps, and provides unique angles that improve both SEO and reader value.
 
+### Date & Temporal Accuracy
+- All dates, deadlines, and time-sensitive claims MUST be verified for the current year.
+- Never reference past-year deadlines (e.g., "2024 estimated tax due dates") as if they are current.
+- If a deadline or date cannot be confirmed as current, note it explicitly (e.g., "as of [year]").
+- Tax filing deadlines, regulatory changes, and fee schedules change yearly — always verify.
+
 ---
 
 ## 2. Frontmatter Schema
@@ -127,6 +133,11 @@ heroImage: "/blog/[slug].webp"
 - Include a "Frequently Asked Questions" section
 - Include at least 1 comparison table (use markdown `| | |` tables)
 - Include at least 1 bulleted or numbered list
+- **AI Overview snippet**: Immediately after the intro, include a 1-2 sentence direct definition or answer that targets AI overview extraction and featured snippets.
+- **Keyword prominence**: The main keyword MUST appear in the first sentence of the article and in at least 2 H2 headings.
+- **Blog images**: Include exactly 2 image placeholder comments to break the page visually:
+  - `<!-- blog-image-1: [descriptive alt text] -->` after the intro section
+  - `<!-- blog-image-2: [descriptive alt text] -->` before the FAQ section
 
 ---
 
@@ -253,7 +264,7 @@ The `validate-article.mjs` script checks these. **Universal checks** always run.
 - **Flesch Reading Ease**: 50-70. Write clear sentences.
 - **Avg sentence length**: 12-22 words. Mix short declarative with moderate explanatory.
 - **Long sentences**: < 10% over 25 words. Split at conjunctions.
-- **Long paragraphs**: < 5% over 150 words. Use short paragraphs.
+- **Long paragraphs**: < 5% over 100 words. Use short paragraphs.
 
 ### Writing Quality
 - Minimal passive voice (< 5 instances)
@@ -292,7 +303,7 @@ The `validate-article.mjs` script checks these. **Universal checks** always run.
 
 Use authority domains from the project config (`config.research.authorityDomains`).
 
-Every article needs >= 3 authority links. Use markdown link format:
+**Link budget**: 5-7 total links per article — approximately 5 internal crosslinks and 1-2 external authority links. Do not over-link. Use authority domains from the project config for external links. Use markdown link format:
 
 ```markdown
 [Link text](https://authority-domain.example/path)
@@ -320,6 +331,20 @@ If crosslinks are configured, link to at least 3 related articles using the link
 
 If no crosslinks are configured, omit internal links or link to relevant articles as appropriate.
 
+### Natural Link Placement Rules
+- Weave each link into an existing sentence as natural anchor text.
+- Each link must be in a different section of the article — spread them out.
+- NEVER list links together or use "see also" / "read more" / "related articles" patterns.
+- NEVER write "see this article and this article" or similar listing constructions.
+- NEVER cluster 2+ links in the same sentence or consecutive sentences.
+
+**Good example:**
+> If you hold accounts in Canada, [RRSP and TFSA reporting rules](/blog/fbar-canada-rrsp-tfsa-reporting) differ from standard bank accounts.
+
+**Bad examples (NEVER do these):**
+> For more information, see our guide on [topic](/url) and our article about [topic](/url).
+> Related reading: [Article 1](/url), [Article 2](/url), [Article 3](/url).
+
 ---
 
 ## 13. Writing Style Rules
@@ -332,7 +357,8 @@ If no crosslinks are configured, omit internal links or link to relevant article
 ### Sentence Construction
 - Target 15-20 words per sentence average.
 - Split any sentence over 25 words at conjunctions (and, but, or, which).
-- Max 4 sentences per paragraph. Use bullet lists for 3+ items.
+- Max 3 sentences per paragraph. Prefer 2-3 sentence paragraphs. Use single-sentence paragraphs for emphasis.
+- Use bullet lists for 3+ items.
 - Start with the answer, not the setup. Lead with value.
 
 ### Active Voice
@@ -347,19 +373,16 @@ If no crosslinks are configured, omit internal links or link to relevant article
 - Include realistic scenarios with names and numbers
 
 ### FAQ Section Pattern
-```markdown
-## Frequently Asked Questions
+- Include at least 4 FAQ questions sourced from Google People Also Ask and/or SEMrush high-intent queries
+- Write each FAQ answer as a short paragraph (~3 sentences), NOT as bullet lists
+- Repeat the key phrase from the question naturally in the answer
+- Start with Yes/No when the question is a yes/no question
+- Each answer should be self-contained for AI featured answer extraction
 
-**Do I need to [specific thing]?**
+Example:
+**[Question repeating key phrase]?**
 
-[30-80 word answer paragraph. Start with Yes/No. Cite source. Link to related article.]
-
-**What happens if [specific scenario]?**
-
-[30-80 word answer paragraph. Concrete answer with specific details and citations.]
-```
-
-Aim for 4-6 FAQ questions per article. Each answer should be a self-contained paragraph that AI engines can extract as a featured answer.
+[Yes/No if applicable.] [2-3 sentence paragraph answer. Repeat key phrase naturally. Cite source where appropriate.]
 
 ---
 
@@ -379,6 +402,8 @@ heroImage: "/blog/[slug].webp"
 # [Title matching frontmatter title]
 
 [2-3 intro paragraphs. Keyword in first sentence. Context, scope, why reader should care.]
+
+<!-- blog-image-1: [descriptive alt text] -->
 
 ## [Question H2 -- e.g., "What Are the Filing Requirements?"]?
 
@@ -424,6 +449,8 @@ heroImage: "/blog/[slug].webp"
 
 [CTA link from config, if configured]
 
+<!-- blog-image-2: [descriptive alt text] -->
+
 ## Frequently Asked Questions
 
 **[Question about topic]?**
@@ -441,6 +468,12 @@ heroImage: "/blog/[slug].webp"
 **[Question about topic]?**
 
 [30-80 word answer.]
+
+## Conclusion
+
+[2-3 sentence conclusion summarizing the key takeaway. Be specific.]
+
+[CTA paragraph: Use CTA template from config.content.ctaTemplates. ~3 sentences. Start with "At [Brand from config]..." if configured.]
 
 ## [CTA Section — if configured]
 

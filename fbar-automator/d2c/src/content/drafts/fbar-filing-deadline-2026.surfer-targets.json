@@ -1,0 +1,419 @@
+{
+  "slug": "fbar-filing-deadline-2026",
+  "keyword": "fbar filing deadline 2026",
+  "surferDraftId": "15597317",
+  "extractedAt": "2026-03-02T18:10:00Z",
+  "contentScore": {
+    "current": 62,
+    "avg": 58,
+    "top": 65
+  },
+  "targets": {
+    "wordCount": {
+      "min": 1800,
+      "max": 2100
+    },
+    "headings": {
+      "min": 20,
+      "max": 42
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 9,
+        "targetMax": 17
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 5,
+        "targetMax": 9
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 9,
+        "targetMax": 20
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 12,
+        "targetMax": 26
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 9,
+        "targetMax": 17
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 7,
+        "targetMax": 17
+      },
+      {
+        "term": "fbar deadline",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 8,
+        "targetMax": 15
+      },
+      {
+        "term": "bsa e filing system",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "e filing system",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "report of foreign bank",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "automatic extension",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "financial institutions",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "willful violations",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "file fbar",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "fincen form 114",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar filings",
+        "targetMin": 5,
+        "targetMax": 11
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "bsa e filing",
+        "targetMin": 3,
+        "targetMax": 6
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "report foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign bank account report",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "certain foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "brokerage accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "report foreign accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "jointly owned accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "federal income tax return",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "separate foreign accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "report foreign bank",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "federal tax return",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "multiple foreign accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "consolidated fbar",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "fbar filing deadlines",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "cash value",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "maximum account value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial institution located",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar compliance",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "offshore accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filing deadline",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign assets",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign currency",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "automatic extension to october",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "must file an fbar",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "individual retirement account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "joint accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "taxable income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar filing obligation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "limited liability companies",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "direct transactions",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar filing requirements",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "tax return deadline",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "green card holders",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "combined value",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filing process",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treasury department",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "expat taxes",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar electronically",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account numbers",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "filed separately",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filing requirements",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "tax year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax evasion",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar penalties",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "direct ownership",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "money laundering",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "fbar filing deadline 2026",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "account statements",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "foreign income",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "bsa e filing account",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "missed fbar filings",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "owe taxes",
+        "targetMin": 1,
+        "targetMax": 1
+      },
+      {
+        "term": "multiple accounts",
+        "targetMin": 1,
+        "targetMax": 1
+      }
+    ]
+  }
+}

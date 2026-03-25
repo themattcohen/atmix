@@ -1,0 +1,978 @@
+uid=10_0 RootWebArea "who is a us person fbar · Content Editor · Surfer" url="https://app.surferseo.com/workspace/1305270-fbar/drafts/15595583"
+  uid=16_0 region "Notifications (F8)"
+    uid=16_1 list
+  uid=16_2 complementary
+    uid=16_3 link "Home" url="https://app.surferseo.com/workspace/1305270-fbar/dashboard"
+      uid=16_4 StaticText "Home"
+    uid=16_5 button "Toggle notifications inbox"
+    uid=16_6 link "Site" url="https://app.surferseo.com/workspace/1305270-fbar/sites/connect"
+      uid=16_7 StaticText "Site"
+    uid=16_8 link "AI Tracker" url="https://app.surferseo.com/workspace/1305270-fbar/ai_tracker"
+      uid=16_9 StaticText "AI Tracker"
+    uid=16_10 link "Write" url="https://app.surferseo.com/workspace/1305270-fbar/drafts"
+      uid=16_11 StaticText "Write"
+    uid=16_12 link "Tools" url="https://app.surferseo.com/workspace/1305270-fbar/audits"
+      uid=16_13 StaticText "Tools"
+    uid=16_14 button
+    uid=16_15 button
+    uid=16_16 link url="https://app.surferseo.com/workspace/1305270-fbar/settings"
+    uid=16_17 button "Open Your Organization account menu" expandable haspopup="menu"
+  uid=19_0 button "Go back"
+  uid=19_1 StaticText "Content Editor"
+  uid=19_2 StaticText "/"
+  uid=19_3 StaticText "who is a us person fbar"
+  uid=19_4 button expandable haspopup="menu"
+  uid=19_5 button "New sidebar explained" expandable haspopup="dialog"
+  uid=19_6 button "FBAR Direct" expandable haspopup="menu"
+  uid=19_7 button "SERP based"
+  uid=19_8 button
+  uid=19_9 button
+  uid=19_10 button
+  uid=19_11 button
+  uid=19_12 button expandable haspopup="menu"
+  uid=19_13 button "Share" expandable haspopup="dialog"
+  uid=19_14 button expandable haspopup="menu"
+  uid=19_15 button "Show more tools" expandable haspopup="menu"
+  uid=19_16 StaticText "Ask Surfy"
+  uid=19_17 textbox focusable focused multiline value="Who Is a US Person FBAR Rules Apply To? Citizens, Residents, and Entities
+
+FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You are responsible for reviewing all information for accuracy before submission to FinCEN. This article is for informational purposes only and does not constitute tax, legal, or financial advice.
+
+Who Is a US Person FBAR Rules Apply To? Citizens, Residents, and Entities
+
+Who is a US person FBAR rules apply to? That question determines whether you must file the Report of Foreign Bank and Financial Accounts (FBAR), officially FinCEN Form 114. Under 31 CFR 1010.350(b), the Bank Secrecy Act (BSA) defines "United States person" to include US citizens, US residents, and entities formed under US law.
+
+The FBAR threshold is $10,000 aggregate across all foreign financial accounts at any point during the calendar year. If you meet that threshold and qualify as a US person under , you must file an FBAR with FinCEN per IRS guidance
+
+Misclassifying your status can lead to penalties up to $16,117 per violation for non-willful failures under 31 USC 5321(a)(5)(B), and up to $100,000 or 50% of the account balance for willful violations under 31 USC 5321(a)(5)(C).
+
+This article covers every category of US person under the BSA, explains the substantial presence test, and addresses special cases such as dual citizens, DACA recipients, and US territory residents.
+
+Who Is a US Person FBAR Requires Under 31 CFR 1010.350(b)?
+
+A US person for FBAR purposes includes any US citizen, US resident, or domestic entity. Under 31 CFR 1010.350(b), the regulation identifies four categories: citizens of the United States, residents of the United States, domestic partnerships, and domestic corporations or other entities formed under US state law. If you fall into any of these categories and your foreign accounts exceed $10,000, you must file FBAR Form 114.
+
+Category
+
+	
+
+Test
+
+	
+
+Key Authority
+
+
+
+
+US citizen
+
+	
+
+Holds US citizenship (any US passport holder)
+
+	
+
+31 CFR 1010.350(b)(1)
+
+
+
+
+Green card holder
+
+	
+
+I-551 status (lawful permanent resident)
+
+	
+
+31 CFR 1010.350(b)(2)
+
+
+
+
+Resident alien
+
+	
+
+Substantial presence test under IRC 7701(b)
+
+	
+
+IRC 7701(b); 31 CFR 1010.350(b)(2)
+
+
+
+
+Domestic entity
+
+	
+
+Formed or organized in any US state or territory
+
+	
+
+31 CFR 1010.350(b)(3)-(4)
+
+
+
+
+Non-resident alien
+
+	
+
+Does not qualify (unless substantial presence met)
+
+	
+
+31 CFR 1010.350(b)
+
+
+
+
+Foreign entity
+
+	
+
+Does not qualify
+
+	
+
+31 CFR 1010.350(b)
+
+
+
+US Citizens
+
+Every US citizen must file the FBAR if their foreign accounts exceed $10,000. This rule applies regardless of where you live. A citizen who has never set foot in the United States still qualifies as a US person. A dual citizen of the US and another country is also a US person. Living abroad or claiming a foreign domicile has no effect on your FBAR obligation. The BSA definition ties to citizenship, not to physical presence or tax residence.
+
+Common situations where citizens may not realize they must file:
+
+Born abroad to one or two US citizen parents
+
+Dual nationals who grew up and live in another country
+
+Citizens who moved abroad decades ago
+
+Retirees living in Mexico, Panama, or Portugal on a US passport
+
+If any of these applies to you and your foreign accounts exceed $10,000, you must file. For a step-by-step walkthrough, see our .
+
+Green Card Holders (Lawful Permanent Residents)
+
+Green card holders — also called lawful permanent residents — are US persons under 31 CFR 1010.350(b). Your obligation starts the calendar year you receive the I-551 card. Even if you got your green card in December, the entire year's accounts are reportable.
+
+Conditional residents (holders of a two-year green card) are also US persons. The BSA does not separate conditional from unconditional permanent residents. You remain a US person until you formally surrender your status through Form I-407. Letting your green card expire or living abroad does not end the obligation. For a detailed look at these rules, see our article on FBAR for green card holders
+
+Are Resident Aliens Required to File the FBAR?
+
+Yes. A resident alien who meets the substantial presence test under IRC 7701(b) is a US person for FBAR purposes. FinCEN incorporates the IRC 7701(b) definition by reference through 31 CFR 1010.350(b)(2). This rule applies to FBAR IRS reporting even when you have no green card. Resident alien status depends on the days you spend in the United States, not on your visa type.
+
+How the Substantial Presence Test Works
+
+You meet the substantial presence test if you satisfy both of these conditions:
+
+You are present in the United States for at least 31 days during the current calendar year
+
+Your total weighted presence over three years equals 183 days or more
+
+The weighted calculation:
+
+Current year: Count all days at 100%
+
+Prior year: Count days at 1/3
+
+Two years ago: Count days at 1/6
+
+For example: 150 days in 2025 (150) + 90 days in 2024 (30) + 60 days in 2023 (10) = 190 weighted days. This person meets substantial presence in 2025. They are a US person for FBAR in 2025.
+
+A second example: 120 days in 2025 (120) + 90 days in 2024 (30) + 180 days in 2023 (30) = 180 weighted days. This falls short of 183, so this person does not meet substantial presence in 2025.
+
+Closer Connection Exception and Form 8840
+
+You may avoid US resident alien status for income tax by filing Form 8840 (Closer Connection Exception Statement). This is an IRS income tax election. However, it does not remove your FBAR obligation.
+
+The FBAR is a BSA requirement under FinCEN, not an income tax requirement. The closer connection exception changes your income tax status. It does not change your status under 31 CFR 1010.350(b) for FBAR purposes. If you meet substantial presence, you are a US person for FBAR regardless of Form 8840.
+
+Tax Treaty Tie-Breaker Positions and FBAR
+
+Some income tax treaties let dual residents claim residency in the treaty country. This is a treaty tie-breaker election. The election reduces your US income tax obligations. It does not remove your FBAR requirement.
+
+The FBAR rests on the BSA under 31 USC 5314, not on income tax law. Tax treaty provisions govern income taxes. They do not override BSA reporting rules. If you meet substantial presence under IRC 7701(b), you are a US person for FBAR even if a treaty tie-breaker positions you as a non-US resident for income tax purposes.
+
+FBAR Direct can help you confirm your filing status and handle the whole process. Upload your documents and we review before we submit to FinCEN.
+
+Who Is Considered a US Person for Tax Purposes Versus FBAR?
+
+For income tax, a US person typically includes citizens and resident aliens under IRC 7701(a)(30). For FBAR, the definition under 31 CFR 1010.350(b) is similar but operates independently. A treaty tie-breaker election can affect income tax residency but not FBAR status. Form 8840 can affect income tax status but not FBAR status. The FBAR instructions and IRS guidance both confirm that the FBAR obligation follows the BSA definition, not the income tax definition. Additionally, FBAR Form PDF (FinCEN Form 114) requires a separate filing with FinCEN — not with the IRS.
+
+Key differences between the two definitions:
+
+Income tax: Treaties and elections can override US resident status
+
+FBAR: BSA rules apply regardless of income tax elections or treaties
+
+Filing destination: FBAR goes to FinCEN; income tax returns go to the IRS
+
+Form used: FBAR uses FinCEN Form 114 (FBAR form), not any IRS income tax form
+
+This distinction matters for anyone with a treaty tie-breaker position, a closer connection exception election, or dual citizenship. Your income tax position and your FBAR position may differ. See our FBAR vs. FATCA comparison for more on the difference between BSA and income tax obligations.
+
+Are US Entities Required to File the FBAR?
+
+Yes. Under 31 CFR 1010.350(b), domestic corporations, partnerships, limited liability companies (LLCs), and trusts formed under US law are US persons. The entity must file if it holds a financial interest in or signature authority over foreign accounts exceeding $10,000. Formation under US law is the only test. Business activity can be entirely overseas.
+
+Corporations and LLCs
+
+A corporation formed in Delaware, an LLC organized in Wyoming, or an S corporation formed in California — all are US persons. This applies even if the corporation conducts all its business in other countries. The FBAR instructions confirm that formation under any US state law makes an entity a US person. A foreign subsidiary of a US corporation is not a US person because the subsidiary is a separate entity formed under foreign law. However, the US parent may have FBAR duties if it has signature authority over the subsidiary's foreign accounts.
+
+Partnerships and Trusts
+
+A general partnership or limited partnership organized in any US state is a US person. The entity itself must file the FBAR for any foreign account it holds. Individual partners may have separate FBAR obligations if they personally hold or have authority over foreign accounts.
+
+A trust formed under US law with a US trustee or grantor is also a US person under 31 CFR 1010.350(b). The trust's FBAR duty depends on financial interest and control. For details on entity reporting, see our article on FBAR for business accounts and signatory authority
+
+What About DACA Recipients and Residents of US Territories?
+
+DACA recipients and undocumented residents who meet the substantial presence test are US persons for FBAR. The BSA definition under 31 CFR 1010.350(b) does not require lawful immigration status. It requires residence under IRC 7701(b), which turns on days present in the United States. A DACA recipient who has lived in the United States for years will almost certainly meet the substantial presence test and must file.
+
+Residents of US territories — Puerto Rico, Guam, the US Virgin Islands, American Samoa, and the Northern Mariana Islands — are US citizens under 8 USC 1401 and therefore US persons for FBAR. These residents have special income tax rules, but those rules do not change their FBAR obligations. The FBAR is a BSA requirement, separate from income tax. Territory residents with foreign accounts over $10,000 must file.
+
+Decision Tree: Do You Need to File the FBAR?
+
+Use this decision tree to determine whether you are a US person for FBAR purposes. Work through the questions in order and stop when you reach a conclusion. Each step maps to the definition in 31 CFR 1010.350(b) and the IRS FBAR guidelines.
+
+Are you a US citizen? If yes — you are a US person. File if your foreign accounts exceed $10,000 at any point during the year.
+
+Do you hold a US green card (I-551)? If yes — you are a US person. File if accounts exceed $10,000.
+
+Are you present in the United States for at least 31 days this year? If no — you likely do not meet substantial presence. You are probably not a US person based on presence.
+
+Does your weighted day count equal 183 or more? (Current year at 100% + prior year at 1/3 + two years ago at 1/6.) If yes — you are a US person under IRC 7701(b). File if accounts exceed $10,000.
+
+Does a tax treaty tie-breaker apply? Even if yes — your FBAR obligation remains. File if accounts exceed $10,000.
+
+Is your entity formed under US law? If yes — the entity is a US person. File if it holds foreign accounts over $10,000.
+
+None of the above? You are likely not a US person for FBAR. If uncertain, consult a tax professional.
+
+If you fall into any of categories 1 through 6 and your foreign accounts exceeded $10,000 at any point during the year, the FBAR deadline is April 15, with an automatic extension to October 15, per 31 CFR 1010.306 and IRS guidance. See our FBAR filing deadline guide for details.
+
+What Penalties Apply If a US Person Does Not File?
+
+Penalties are set by 31 USC 5321 and apply per account, per year. A US person who fails to file faces three levels of enforcement based on whether the failure was willful.
+
+Non-willful violation: Up to $16,117 per account per year under 31 USC 5321(a)(5)(B) (2025 inflation-adjusted amount)
+
+Willful violation: The greater of $100,000 or 50% of the account balance per year under 31 USC 5321(a)(5)(C)
+
+Criminal penalties: Up to $250,000 in fines and 5 years imprisonment under 31 USC 5322
+
+Three unreported accounts for two years equals six violations. At the non-willful rate, that is up to $96,702 in penalties (6 × $16,117 under 31 USC 5321). For a full breakdown, see our FBAR penalties guide
+
+Let FBAR Direct prepare your filing — we are a FinCEN-registered BSA E-Filing institution (TCC: PBSA8180) and file directly with FinCEN on your behalf.
+
+These are the most frequently asked questions about who is a US person for FBAR purposes. The answers below cover the main categories — citizens, resident aliens, green card holders, and entities. For advice on your specific situation, consult a qualified tax professional.
+
+Who is a US person for FBAR filing purposes?
+
+A US person under 31 CFR 1010.350(b) includes US citizens, lawful permanent residents, and resident aliens who meet the substantial presence test under IRC 7701(b). It also includes domestic entities — corporations, partnerships, LLCs, and trusts formed under US law. Any US person with foreign financial accounts exceeding $10,000 must file FinCEN Form 114 with FinCEN.
+
+Does a US citizen living abroad still need to file the FBAR?
+
+Yes. US citizenship, not physical location, determines FBAR status. Under 31 CFR 1010.350(b), every US citizen is a US person regardless of where they live. Dual citizens, long-term expats, and citizens who have never lived in the United States must all file if their foreign accounts exceed $10,000 at any point under 31 USC 5314.
+
+What is the substantial presence test for FBAR?
+
+The substantial presence test under IRC 7701(b) counts your US presence over three years. You must be present at least 31 days in the current year. Your total weighted days — current year at 100%, prior year at 1/3, and two years ago at 1/6 — must reach 183 days. If you meet both conditions, you are a US resident alien and therefore a US person for FBAR purposes.
+
+Does a tax treaty tie-breaker election remove my FBAR obligation?
+
+No. A treaty tie-breaker election reduces your US income tax obligations but does not remove your FBAR duty. The FBAR is a Bank Secrecy Act requirement under 31 USC 5314, separate from income tax law. If you meet the substantial presence test, your FBAR obligation exists regardless of any treaty election. See our FBAR vs. FATCA comparison for more on how BSA and tax rules differ.
+
+Are corporations and LLCs required to file the FBAR?
+
+Yes. Under 31 CFR 1010.350(b), any domestic corporation, partnership, or LLC formed under the laws of any US state is a US person. If the entity holds a financial interest in or has signature authority over foreign financial accounts exceeding $10,000, it must file FBAR Form 114. Formation under US law is the only test — business activity can be entirely overseas.
+
+Do I still have to file the FBAR if Form 8840 reduces my income tax residency?
+
+Yes. Form 8840 (Closer Connection Exception) is an IRS income tax election. It affects your income tax residency status, not your FBAR status. The FBAR is governed by 31 CFR 1010.350, not the Internal Revenue Code. If you meet the substantial presence test, you are a US person for FBAR even if Form 8840 treats you as a non-resident for income tax.
+
+Who is considered a US person for tax purposes?
+
+For income tax, IRC 7701(a)(30) defines US persons as citizens and resident aliens. For FBAR, the definition under 31 CFR 1010.350(b) is similar but operates independently. A treaty tie-breaker can change your income tax residency but not your FBAR status. The FBAR instructions require a separate filing with FinCEN regardless of your income tax position with the IRS.
+
+Let FBAR Direct Handle Your Filing
+
+FBAR Direct can handle your FBAR filing from start to finish. Once you confirm your status as a US person, you still need to gather account details, convert balances to USD using Treasury exchange rates
+, and submit FinCEN Form 114 by April 15. An automatic extension to October 15 applies per 31 CFR 1010.306 and IRS guidance. Getting the classification wrong or missing accounts can trigger penalties starting at $16,117 per account per year under 31 USC 5321(a)(5)(B).
+
+Let FBAR Direct prepare your filing — you review and approve every detail before we submit to FinCEN. Upload your account statements and we handle the conversion, reporting, and submission. See how it works.
+
+Tax regulations change frequently. Always verify current requirements at IRS.gov or FinCEN.gov. For advice specific to your situation, consult a qualified tax professional. This article is current as of March 24, 2026.
+
+March 2, 2026"
+    uid=19_18 heading "h1 Who Is a US Person FBAR Rules Apply To? Citizens, Residents, and Entities" level="1"
+    uid=19_19 paragraph
+      uid=19_20 StaticText "FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You are responsible for reviewing all information for accuracy before submission to FinCEN. This article is for informational purposes only and does not constitute tax, legal, or financial advice."
+    uid=19_21 heading "h2 Who Is a US Person FBAR Rules Apply To? Citizens, Residents, and Entities" level="2"
+    uid=19_22 paragraph
+      uid=19_23 StaticText "Who is a US person FBAR rules apply to? That question determines whether you must file the Report of Foreign Bank and Financial Accounts (FBAR), officially FinCEN Form 114. Under "
+      uid=19_24 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_25 StaticText "31 CFR 1010.350(b)"
+      uid=19_26 StaticText ", the Bank Secrecy Act (BSA) defines "United States person" to include US citizens, US residents, and entities formed under US law."
+    uid=19_27 paragraph
+      uid=19_28 StaticText "The FBAR threshold is $10,000 aggregate across all foreign financial accounts at any point during the calendar year. If you meet that threshold and qualify as a US person under , you must file an FBAR with FinCEN per "
+      uid=19_29 link "IRS guidance" url="https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar"
+        uid=19_30 StaticText "IRS guidance"
+    uid=19_31 paragraph
+      uid=19_32 StaticText "Misclassifying your status can lead to penalties up to $16,117 per violation for non-willful failures under "
+      uid=19_33 link "31 USC 5321(a)(5)(B)" url="https://www.law.cornell.edu/uscode/text/31/5321"
+        uid=19_34 StaticText "31 USC 5321(a)(5)(B)"
+      uid=19_35 StaticText ", and up to $100,000 or 50% of the account balance for willful violations under "
+      uid=19_36 link "31 USC 5321(a)(5)(C)" url="https://www.law.cornell.edu/uscode/text/31/5321"
+        uid=19_37 StaticText "31 USC 5321(a)(5)(C)"
+      uid=19_38 StaticText "."
+    uid=19_39 paragraph
+      uid=19_40 StaticText "This article covers every category of US person under the BSA, explains the substantial presence test, and addresses special cases such as dual citizens, DACA recipients, and US territory residents."
+    uid=19_41 heading "h2 Who Is a US Person FBAR Requires Under 31 CFR 1010.350(b)?" level="2"
+    uid=19_42 paragraph
+      uid=19_43 StaticText "A US person for FBAR purposes includes any US citizen, US resident, or domestic entity. Under "
+      uid=19_44 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_45 StaticText "31 CFR 1010.350(b)"
+      uid=19_46 StaticText ", the regulation identifies four categories: citizens of the United States, residents of the United States, domestic partnerships, and domestic corporations or other entities formed under US state law. If you fall into any of these categories and your foreign accounts exceed $10,000, you must file FBAR Form 114."
+    uid=19_47 generic
+      uid=19_48 table
+        uid=19_49 row
+          uid=19_50 columnheader "Category"
+            uid=19_51 paragraph
+              uid=19_52 StaticText "Category"
+          uid=19_53 columnheader "Test"
+            uid=19_54 paragraph
+              uid=19_55 StaticText "Test"
+          uid=19_56 columnheader "Key Authority"
+            uid=19_57 paragraph
+              uid=19_58 StaticText "Key Authority"
+        uid=19_59 row
+          uid=19_60 cell "US citizen"
+            uid=19_61 paragraph
+              uid=19_62 StaticText "US citizen"
+          uid=19_63 cell "Holds US citizenship (any US passport holder)"
+            uid=19_64 paragraph
+              uid=19_65 StaticText "Holds US citizenship (any US passport holder)"
+          uid=19_66 cell "31 CFR 1010.350(b)(1)"
+            uid=19_67 paragraph
+              uid=19_68 StaticText "31 CFR 1010.350(b)(1)"
+        uid=19_69 row
+          uid=19_70 cell "Green card holder"
+            uid=19_71 paragraph
+              uid=19_72 StaticText "Green card holder"
+          uid=19_73 cell "I-551 status (lawful permanent resident)"
+            uid=19_74 paragraph
+              uid=19_75 StaticText "I-551 status (lawful permanent resident)"
+          uid=19_76 cell "31 CFR 1010.350(b)(2)"
+            uid=19_77 paragraph
+              uid=19_78 StaticText "31 CFR 1010.350(b)(2)"
+        uid=19_79 row
+          uid=19_80 cell "Resident alien"
+            uid=19_81 paragraph
+              uid=19_82 StaticText "Resident alien"
+          uid=19_83 cell "Substantial presence test under IRC 7701(b)"
+            uid=19_84 paragraph
+              uid=19_85 StaticText "Substantial presence test under IRC 7701(b)"
+          uid=19_86 cell "IRC 7701(b); 31 CFR 1010.350(b)(2)"
+            uid=19_87 paragraph
+              uid=19_88 StaticText "IRC 7701(b); 31 CFR 1010.350(b)(2)"
+        uid=19_89 row
+          uid=19_90 cell "Domestic entity"
+            uid=19_91 paragraph
+              uid=19_92 StaticText "Domestic entity"
+          uid=19_93 cell "Formed or organized in any US state or territory"
+            uid=19_94 paragraph
+              uid=19_95 StaticText "Formed or organized in any US state or territory"
+          uid=19_96 cell "31 CFR 1010.350(b)(3)-(4)"
+            uid=19_97 paragraph
+              uid=19_98 StaticText "31 CFR 1010.350(b)(3)-(4)"
+        uid=19_99 row
+          uid=19_100 cell "Non-resident alien"
+            uid=19_101 paragraph
+              uid=19_102 StaticText "Non-resident alien"
+          uid=19_103 cell "Does not qualify (unless substantial presence met)"
+            uid=19_104 paragraph
+              uid=19_105 StaticText "Does not qualify (unless substantial presence met)"
+          uid=19_106 cell "31 CFR 1010.350(b)"
+            uid=19_107 paragraph
+              uid=19_108 StaticText "31 CFR 1010.350(b)"
+        uid=19_109 row
+          uid=19_110 cell "Foreign entity"
+            uid=19_111 paragraph
+              uid=19_112 StaticText "Foreign entity"
+          uid=19_113 cell "Does not qualify"
+            uid=19_114 paragraph
+              uid=19_115 StaticText "Does not qualify"
+          uid=19_116 cell "31 CFR 1010.350(b)"
+            uid=19_117 paragraph
+              uid=19_118 StaticText "31 CFR 1010.350(b)"
+      uid=19_119 generic
+        uid=19_120 image
+    uid=19_121 heading "h3 US Citizens" level="3"
+    uid=19_122 paragraph
+      uid=19_123 StaticText "Every US citizen must file the FBAR if their foreign accounts exceed $10,000. This rule applies regardless of where you live. A citizen who has never set foot in the United States still qualifies as a US person. A dual citizen of the US and another country is also a US person. Living abroad or claiming a foreign domicile has no effect on your FBAR obligation. The BSA definition ties to citizenship, not to physical presence or tax residence."
+    uid=19_124 paragraph
+      uid=19_125 StaticText "Common situations where citizens may not realize they must file:"
+    uid=19_126 list
+      uid=19_127 listitem level="1"
+        uid=19_128 paragraph
+          uid=19_129 StaticText "Born abroad to one or two US citizen parents"
+      uid=19_130 listitem level="1"
+        uid=19_131 paragraph
+          uid=19_132 StaticText "Dual nationals who grew up and live in another country"
+      uid=19_133 listitem level="1"
+        uid=19_134 paragraph
+          uid=19_135 StaticText "Citizens who moved abroad decades ago"
+      uid=19_136 listitem level="1"
+        uid=19_137 paragraph
+          uid=19_138 StaticText "Retirees living in Mexico, Panama, or Portugal on a US passport"
+    uid=19_139 paragraph
+      uid=19_140 StaticText "If any of these applies to you and your foreign accounts exceed $10,000, you must file. For a step-by-step walkthrough, see our ."
+    uid=19_141 heading "h3 Green Card Holders (Lawful Permanent Residents)" level="3"
+    uid=19_142 paragraph
+      uid=19_143 StaticText "Green card holders — also called lawful permanent residents — are US persons under "
+      uid=19_144 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_145 StaticText "31 CFR 1010.350(b)"
+      uid=19_146 StaticText ". Your obligation starts the calendar year you receive the I-551 card. Even if you got your green card in December, the entire year's accounts are reportable."
+    uid=19_147 paragraph
+      uid=19_148 StaticText "Conditional residents (holders of a two-year green card) are also US persons. The BSA does not separate conditional from unconditional permanent residents. You remain a US person until you formally surrender your status through Form I-407. Letting your green card expire or living abroad does not end the obligation. For a detailed look at these rules, see our article on "
+      uid=19_149 link "FBAR for green card holders" url="https://fbardirect.com/blog/fbar-green-card-holders"
+        uid=19_150 StaticText "FBAR for green card holders"
+    uid=19_151 heading "h2 Are Resident Aliens Required to File the FBAR?" level="2"
+    uid=19_152 paragraph
+      uid=19_153 StaticText "Yes. A resident alien who meets the substantial presence test under "
+      uid=19_154 link "IRC 7701(b)" url="https://www.law.cornell.edu/uscode/text/26/7701"
+        uid=19_155 StaticText "IRC 7701(b)"
+      uid=19_156 StaticText " is a US person for FBAR purposes. FinCEN incorporates the IRC 7701(b) definition by reference through "
+      uid=19_157 link "31 CFR 1010.350(b)(2)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_158 StaticText "31 CFR 1010.350(b)(2)"
+      uid=19_159 StaticText ". This rule applies to FBAR IRS reporting even when you have no green card. Resident alien status depends on the days you spend in the United States, not on your visa type."
+    uid=19_160 heading "h3 How the Substantial Presence Test Works" level="3"
+    uid=19_161 paragraph
+      uid=19_162 StaticText "You meet the substantial presence test if you satisfy both of these conditions:"
+    uid=19_163 list
+      uid=19_164 listitem level="1"
+        uid=19_165 paragraph
+          uid=19_166 StaticText "You are present in the United States for at least "
+          uid=19_167 strong
+            uid=19_168 StaticText "31 days"
+          uid=19_169 StaticText " during the current calendar year"
+      uid=19_170 listitem level="1"
+        uid=19_171 paragraph
+          uid=19_172 StaticText "Your total weighted presence over three years equals "
+          uid=19_173 strong
+            uid=19_174 StaticText "183 days or more"
+    uid=19_175 paragraph
+      uid=19_176 StaticText "The weighted calculation:"
+    uid=19_177 list
+      uid=19_178 listitem level="1"
+        uid=19_179 paragraph
+          uid=19_180 strong
+            uid=19_181 StaticText "Current year"
+          uid=19_182 StaticText ": Count all days at "
+          uid=19_183 strong
+            uid=19_184 StaticText "100%"
+      uid=19_185 listitem level="1"
+        uid=19_186 paragraph
+          uid=19_187 strong
+            uid=19_188 StaticText "Prior year"
+          uid=19_189 StaticText ": Count days at "
+          uid=19_190 strong
+            uid=19_191 StaticText "1/3"
+      uid=19_192 listitem level="1"
+        uid=19_193 paragraph
+          uid=19_194 strong
+            uid=19_195 StaticText "Two years ago"
+          uid=19_196 StaticText ": Count days at "
+          uid=19_197 strong
+            uid=19_198 StaticText "1/6"
+    uid=19_199 paragraph
+      uid=19_200 StaticText "For example: 150 days in 2025 (150) + 90 days in 2024 (30) + 60 days in 2023 (10) = 190 weighted days. This person meets substantial presence in 2025. They are a US person for FBAR in 2025."
+    uid=19_201 paragraph
+      uid=19_202 StaticText "A second example: 120 days in 2025 (120) + 90 days in 2024 (30) + 180 days in 2023 (30) = 180 weighted days. This falls short of 183, so this person does not meet substantial presence in 2025."
+    uid=19_203 heading "h3 Closer Connection Exception and Form 8840" level="3"
+    uid=19_204 paragraph
+      uid=19_205 StaticText "You may avoid US resident alien status for income tax by filing "
+      uid=19_206 link "Form 8840" url="https://www.irs.gov/forms-pubs/about-form-8840"
+        uid=19_207 StaticText "Form 8840"
+      uid=19_208 StaticText " (Closer Connection Exception Statement). This is an IRS income tax election. However, it does not remove your FBAR obligation."
+    uid=19_209 paragraph
+      uid=19_210 StaticText "The FBAR is a BSA requirement under FinCEN, not an income tax requirement. The closer connection exception changes your income tax status. It does not change your status under "
+      uid=19_211 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_212 StaticText "31 CFR 1010.350(b)"
+      uid=19_213 StaticText " for FBAR purposes. If you meet substantial presence, you are a US person for FBAR regardless of Form 8840."
+    uid=19_214 heading "h3 Tax Treaty Tie-Breaker Positions and FBAR" level="3"
+    uid=19_215 paragraph
+      uid=19_216 StaticText "Some income tax treaties let dual residents claim residency in the treaty country. This is a treaty tie-breaker election. The election reduces your US income tax obligations. It does not remove your FBAR requirement."
+    uid=19_217 paragraph
+      uid=19_218 StaticText "The FBAR rests on the BSA under "
+      uid=19_219 link "31 USC 5314" url="https://www.law.cornell.edu/uscode/text/31/5314"
+        uid=19_220 StaticText "31 USC 5314"
+      uid=19_221 StaticText ", not on income tax law. Tax treaty provisions govern income taxes. They do not override BSA reporting rules. If you meet substantial presence under IRC 7701(b), you are a US person for FBAR even if a treaty tie-breaker positions you as a non-US resident for income tax purposes."
+    uid=19_222 paragraph
+      uid=19_223 link "FBAR Direct can help you confirm your filing status and handle the whole process" url="https://fbardirect.com/how-it-works"
+        uid=19_224 StaticText "FBAR Direct can help you confirm your filing status and handle the whole process"
+      uid=19_225 StaticText ". Upload your documents and we review before we submit to FinCEN."
+    uid=19_226 heading "h2 Who Is Considered a US Person for Tax Purposes Versus FBAR?" level="2"
+    uid=19_227 paragraph
+      uid=19_228 StaticText "For income tax, a US person typically includes citizens and resident aliens under IRC 7701(a)(30). For FBAR, the definition under "
+      uid=19_229 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_230 StaticText "31 CFR 1010.350(b)"
+      uid=19_231 StaticText " is similar but operates independently. A treaty tie-breaker election can affect income tax residency but not FBAR status. Form 8840 can affect income tax status but not FBAR status. The FBAR instructions and IRS guidance both confirm that the FBAR obligation follows the BSA definition, not the income tax definition. Additionally, FBAR Form PDF (FinCEN Form 114) requires a separate filing with FinCEN — not with the IRS."
+    uid=19_232 paragraph
+      uid=19_233 StaticText "Key differences between the two definitions:"
+    uid=19_234 list
+      uid=19_235 listitem level="1"
+        uid=19_236 paragraph
+          uid=19_237 strong
+            uid=19_238 StaticText "Income tax"
+          uid=19_239 StaticText ": Treaties and elections can override US resident status"
+      uid=19_240 listitem level="1"
+        uid=19_241 paragraph
+          uid=19_242 strong
+            uid=19_243 StaticText "FBAR"
+          uid=19_244 StaticText ": BSA rules apply regardless of income tax elections or treaties"
+      uid=19_245 listitem level="1"
+        uid=19_246 paragraph
+          uid=19_247 strong
+            uid=19_248 StaticText "Filing destination"
+          uid=19_249 StaticText ": FBAR goes to FinCEN; income tax returns go to the IRS"
+      uid=19_250 listitem level="1"
+        uid=19_251 paragraph
+          uid=19_252 strong
+            uid=19_253 StaticText "Form used"
+          uid=19_254 StaticText ": FBAR uses FinCEN Form 114 (FBAR form), not any IRS income tax form"
+    uid=19_255 paragraph
+      uid=19_256 StaticText "This distinction matters for anyone with a treaty tie-breaker position, a closer connection exception election, or dual citizenship. Your income tax position and your FBAR position may differ. See our "
+      uid=19_257 link "FBAR vs. FATCA comparison" url="https://fbardirect.com/blog/fbar-vs-fatca-form-8938-differences"
+        uid=19_258 StaticText "FBAR vs. FATCA comparison"
+      uid=19_259 StaticText " for more on the difference between BSA and income tax obligations."
+    uid=19_260 heading "h2 Are US Entities Required to File the FBAR?" level="2"
+    uid=19_261 paragraph
+      uid=19_262 StaticText "Yes. Under "
+      uid=19_263 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_264 StaticText "31 CFR 1010.350(b)"
+      uid=19_265 StaticText ", domestic corporations, partnerships, limited liability companies (LLCs), and trusts formed under US law are US persons. The entity must file if it holds a financial interest in or signature authority over foreign accounts exceeding $10,000. Formation under US law is the only test. Business activity can be entirely overseas."
+    uid=19_266 heading "h3 Corporations and LLCs" level="3"
+    uid=19_267 paragraph
+      uid=19_268 StaticText "A corporation formed in Delaware, an LLC organized in Wyoming, or an S corporation formed in California — all are US persons. This applies even if the corporation conducts all its business in other countries. The FBAR instructions confirm that formation under any US state law makes an entity a US person. A foreign subsidiary of a US corporation is not a US person because the subsidiary is a separate entity formed under foreign law. However, the US parent may have FBAR duties if it has signature authority over the subsidiary's foreign accounts."
+    uid=19_269 heading "h3 Partnerships and Trusts" level="3"
+    uid=19_270 paragraph
+      uid=19_271 StaticText "A general partnership or limited partnership organized in any US state is a US person. The entity itself must file the FBAR for any foreign account it holds. Individual partners may have separate FBAR obligations if they personally hold or have authority over foreign accounts."
+    uid=19_272 paragraph
+      uid=19_273 StaticText "A trust formed under US law with a US trustee or grantor is also a US person under "
+      uid=19_274 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_275 StaticText "31 CFR 1010.350(b)"
+      uid=19_276 StaticText ". The trust's FBAR duty depends on financial interest and control. For details on entity reporting, see our article on "
+      uid=19_277 link "FBAR for business accounts and signatory authority" url="https://fbardirect.com/blog/fbar-business-accounts-signatory-authority"
+        uid=19_278 StaticText "FBAR for business accounts and signatory authority"
+    uid=19_279 heading "h2 What About DACA Recipients and Residents of US Territories?" level="2"
+    uid=19_280 paragraph
+      uid=19_281 StaticText "DACA recipients and undocumented residents who meet the substantial presence test are US persons for FBAR. The BSA definition under "
+      uid=19_282 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_283 StaticText "31 CFR 1010.350(b)"
+      uid=19_284 StaticText " does not require lawful immigration status. It requires residence under IRC 7701(b), which turns on days present in the United States. A DACA recipient who has lived in the United States for years will almost certainly meet the substantial presence test and must file."
+    uid=19_285 paragraph
+      uid=19_286 StaticText "Residents of US territories — Puerto Rico, Guam, the US Virgin Islands, American Samoa, and the Northern Mariana Islands — are US citizens under "
+      uid=19_287 link "8 USC 1401" url="https://www.law.cornell.edu/uscode/text/8/1401"
+        uid=19_288 StaticText "8 USC 1401"
+      uid=19_289 StaticText " and therefore US persons for FBAR. These residents have special income tax rules, but those rules do not change their FBAR obligations. The FBAR is a BSA requirement, separate from income tax. Territory residents with foreign accounts over $10,000 must file."
+    uid=19_290 heading "h2 Decision Tree: Do You Need to File the FBAR?" level="2"
+    uid=19_291 paragraph
+      uid=19_292 StaticText "Use this decision tree to determine whether you are a US person for FBAR purposes. Work through the questions in order and stop when you reach a conclusion. Each step maps to the definition in "
+      uid=19_293 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_294 StaticText "31 CFR 1010.350(b)"
+      uid=19_295 StaticText " and the IRS FBAR guidelines."
+    uid=19_296 list
+      uid=19_297 listitem level="1"
+        uid=19_298 paragraph
+          uid=19_299 strong
+            uid=19_300 StaticText "Are you a US citizen?"
+          uid=19_301 StaticText " If yes — you are a US person. File if your foreign accounts exceed $10,000 at any point during the year."
+      uid=19_302 listitem level="1"
+        uid=19_303 paragraph
+          uid=19_304 strong
+            uid=19_305 StaticText "Do you hold a US green card (I-551)?"
+          uid=19_306 StaticText " If yes — you are a US person. File if accounts exceed $10,000."
+      uid=19_307 listitem level="1"
+        uid=19_308 paragraph
+          uid=19_309 strong
+            uid=19_310 StaticText "Are you present in the United States for at least 31 days this year?"
+          uid=19_311 StaticText " If no — you likely do not meet substantial presence. You are probably not a US person based on presence."
+      uid=19_312 listitem level="1"
+        uid=19_313 paragraph
+          uid=19_314 strong
+            uid=19_315 StaticText "Does your weighted day count equal 183 or more?"
+          uid=19_316 StaticText " (Current year at 100% + prior year at 1/3 + two years ago at 1/6.) If yes — you are a US person under IRC 7701(b). File if accounts exceed $10,000."
+      uid=19_317 listitem level="1"
+        uid=19_318 paragraph
+          uid=19_319 strong
+            uid=19_320 StaticText "Does a tax treaty tie-breaker apply?"
+          uid=19_321 StaticText " Even if yes — your FBAR obligation remains. File if accounts exceed $10,000."
+      uid=19_322 listitem level="1"
+        uid=19_323 paragraph
+          uid=19_324 strong
+            uid=19_325 StaticText "Is your entity formed under US law?"
+          uid=19_326 StaticText " If yes — the entity is a US person. File if it holds foreign accounts over $10,000."
+      uid=19_327 listitem level="1"
+        uid=19_328 paragraph
+          uid=19_329 strong
+            uid=19_330 StaticText "None of the above?"
+          uid=19_331 StaticText " You are likely not a US person for FBAR. If uncertain, consult a tax professional."
+    uid=19_332 paragraph
+      uid=19_333 StaticText "If you fall into any of categories 1 through 6 and your foreign accounts exceeded $10,000 at any point during the year, the FBAR deadline is April 15, with an automatic extension to October 15, per "
+      uid=19_334 link "31 CFR 1010.306" url="https://www.law.cornell.edu/cfr/text/31/1010.306"
+        uid=19_335 StaticText "31 CFR 1010.306"
+      uid=19_336 StaticText " and "
+      uid=19_337 link "IRS guidance" url="https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar"
+        uid=19_338 StaticText "IRS guidance"
+      uid=19_339 StaticText ". See our "
+      uid=19_340 link "FBAR filing deadline guide" url="https://fbardirect.com/blog/fbar-filing-deadline-2026"
+        uid=19_341 StaticText "FBAR filing deadline guide"
+      uid=19_342 StaticText " for details."
+    uid=19_343 heading "h2 What Penalties Apply If a US Person Does Not File?" level="2"
+    uid=19_344 paragraph
+      uid=19_345 StaticText "Penalties are set by "
+      uid=19_346 link "31 USC 5321" url="https://www.law.cornell.edu/uscode/text/31/5321"
+        uid=19_347 StaticText "31 USC 5321"
+      uid=19_348 StaticText " and apply per account, per year. A US person who fails to file faces three levels of enforcement based on whether the failure was willful."
+    uid=19_349 list
+      uid=19_350 listitem level="1"
+        uid=19_351 paragraph
+          uid=19_352 strong
+            uid=19_353 StaticText "Non-willful violation"
+          uid=19_354 StaticText ": Up to $16,117 per account per year under "
+          uid=19_355 link "31 USC 5321(a)(5)(B)" url="https://www.law.cornell.edu/uscode/text/31/5321"
+            uid=19_356 StaticText "31 USC 5321(a)(5)(B)"
+          uid=19_357 StaticText " (2025 inflation-adjusted amount)"
+      uid=19_358 listitem level="1"
+        uid=19_359 paragraph
+          uid=19_360 strong
+            uid=19_361 StaticText "Willful violation"
+          uid=19_362 StaticText ": The greater of $100,000 or 50% of the account balance per year under "
+          uid=19_363 link "31 USC 5321(a)(5)(C)" url="https://www.law.cornell.edu/uscode/text/31/5321"
+            uid=19_364 StaticText "31 USC 5321(a)(5)(C)"
+      uid=19_365 listitem level="1"
+        uid=19_366 paragraph
+          uid=19_367 strong
+            uid=19_368 StaticText "Criminal penalties"
+          uid=19_369 StaticText ": Up to $250,000 in fines and 5 years imprisonment under "
+          uid=19_370 link "31 USC 5322" url="https://www.law.cornell.edu/uscode/text/31/5322"
+            uid=19_371 StaticText "31 USC 5322"
+    uid=19_372 paragraph
+      uid=19_373 StaticText "Three unreported accounts for two years equals six violations. At the non-willful rate, that is up to $96,702 in penalties (6 × $16,117 under 31 USC 5321). For a full breakdown, see our "
+      uid=19_374 link "FBAR penalties guide" url="https://fbardirect.com/blog/fbar-penalties-what-happens-if-you-dont-file"
+        uid=19_375 StaticText "FBAR penalties guide"
+    uid=19_376 paragraph
+      uid=19_377 link "Let FBAR Direct prepare your filing" url="https://fbardirect.com/pricing"
+        uid=19_378 StaticText "Let FBAR Direct prepare your filing"
+      uid=19_379 StaticText " — we are a FinCEN-registered BSA E-Filing institution (TCC: PBSA8180) and file directly with FinCEN on your behalf."
+    uid=19_380 paragraph
+      uid=19_381 StaticText "These are the most frequently asked questions about who is a US person for FBAR purposes. The answers below cover the main categories — citizens, resident aliens, green card holders, and entities. For advice on your specific situation, consult a qualified tax professional."
+    uid=19_382 paragraph
+      uid=19_383 strong
+        uid=19_384 StaticText "Who is a US person for FBAR filing purposes?"
+    uid=19_385 paragraph
+      uid=19_386 StaticText "A US person under "
+      uid=19_387 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_388 StaticText "31 CFR 1010.350(b)"
+      uid=19_389 StaticText " includes US citizens, lawful permanent residents, and resident aliens who meet the substantial presence test under "
+      uid=19_390 link "IRC 7701(b)" url="https://www.law.cornell.edu/uscode/text/26/7701"
+        uid=19_391 StaticText "IRC 7701(b)"
+      uid=19_392 StaticText ". It also includes domestic entities — corporations, partnerships, LLCs, and trusts formed under US law. Any US person with foreign financial accounts exceeding $10,000 must file FinCEN Form 114 with FinCEN."
+    uid=19_393 paragraph
+      uid=19_394 strong
+        uid=19_395 StaticText "Does a US citizen living abroad still need to file the FBAR?"
+    uid=19_396 paragraph
+      uid=19_397 StaticText "Yes. US citizenship, not physical location, determines FBAR status. Under "
+      uid=19_398 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_399 StaticText "31 CFR 1010.350(b)"
+      uid=19_400 StaticText ", every US citizen is a US person regardless of where they live. Dual citizens, long-term expats, and citizens who have never lived in the United States must all file if their foreign accounts exceed $10,000 at any point under "
+      uid=19_401 link "31 USC 5314" url="https://www.law.cornell.edu/uscode/text/31/5314"
+        uid=19_402 StaticText "31 USC 5314"
+      uid=19_403 StaticText "."
+    uid=19_404 paragraph
+      uid=19_405 strong
+        uid=19_406 StaticText "What is the substantial presence test for FBAR?"
+    uid=19_407 paragraph
+      uid=19_408 StaticText "The substantial presence test under "
+      uid=19_409 link "IRC 7701(b)" url="https://www.law.cornell.edu/uscode/text/26/7701"
+        uid=19_410 StaticText "IRC 7701(b)"
+      uid=19_411 StaticText " counts your US presence over three years. You must be present at least 31 days in the current year. Your total weighted days — current year at 100%, prior year at 1/3, and two years ago at 1/6 — must reach 183 days. If you meet both conditions, you are a US resident alien and therefore a US person for FBAR purposes."
+    uid=19_412 paragraph
+      uid=19_413 strong
+        uid=19_414 StaticText "Does a tax treaty tie-breaker election remove my FBAR obligation?"
+    uid=19_415 paragraph
+      uid=19_416 StaticText "No. A treaty tie-breaker election reduces your US income tax obligations but does not remove your FBAR duty. The FBAR is a Bank Secrecy Act requirement under "
+      uid=19_417 link "31 USC 5314" url="https://www.law.cornell.edu/uscode/text/31/5314"
+        uid=19_418 StaticText "31 USC 5314"
+      uid=19_419 StaticText ", separate from income tax law. If you meet the substantial presence test, your FBAR obligation exists regardless of any treaty election. See our "
+      uid=19_420 link "FBAR vs. FATCA comparison" url="https://fbardirect.com/blog/fbar-vs-fatca-form-8938-differences"
+        uid=19_421 StaticText "FBAR vs. FATCA comparison"
+      uid=19_422 StaticText " for more on how BSA and tax rules differ."
+    uid=19_423 paragraph
+      uid=19_424 strong
+        uid=19_425 StaticText "Are corporations and LLCs required to file the FBAR?"
+    uid=19_426 paragraph
+      uid=19_427 StaticText "Yes. Under "
+      uid=19_428 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_429 StaticText "31 CFR 1010.350(b)"
+      uid=19_430 StaticText ", any domestic corporation, partnership, or LLC formed under the laws of any US state is a US person. If the entity holds a financial interest in or has signature authority over foreign financial accounts exceeding $10,000, it must file FBAR Form 114. Formation under US law is the only test — business activity can be entirely overseas."
+    uid=19_431 paragraph
+      uid=19_432 strong
+        uid=19_433 StaticText "Do I still have to file the FBAR if Form 8840 reduces my income tax residency?"
+    uid=19_434 paragraph
+      uid=19_435 StaticText "Yes. Form 8840 (Closer Connection Exception) is an IRS income tax election. It affects your income tax residency status, not your FBAR status. The FBAR is governed by "
+      uid=19_436 link "31 CFR 1010.350" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_437 StaticText "31 CFR 1010.350"
+      uid=19_438 StaticText ", not the Internal Revenue Code. If you meet the substantial presence test, you are a US person for FBAR even if Form 8840 treats you as a non-resident for income tax."
+    uid=19_439 paragraph
+      uid=19_440 strong
+        uid=19_441 StaticText "Who is considered a US person for tax purposes?"
+    uid=19_442 paragraph
+      uid=19_443 StaticText "For income tax, IRC 7701(a)(30) defines US persons as citizens and resident aliens. For FBAR, the definition under "
+      uid=19_444 link "31 CFR 1010.350(b)" url="https://www.law.cornell.edu/cfr/text/31/1010.350"
+        uid=19_445 StaticText "31 CFR 1010.350(b)"
+      uid=19_446 StaticText " is similar but operates independently. A treaty tie-breaker can change your income tax residency but not your FBAR status. The FBAR instructions require a separate filing with FinCEN regardless of your income tax position with the IRS."
+    uid=19_447 heading "h2 Let FBAR Direct Handle Your Filing" level="2"
+    uid=19_448 paragraph
+      uid=19_449 StaticText "FBAR Direct can handle your FBAR filing from start to finish. Once you confirm your status as a US person, you still need to gather account details, convert balances to USD using "
+      uid=19_450 link "Treasury exchange rates" url="https://fiscal.treasury.gov/reports-statements/treasury-reporting-rates-exchange/current.html"
+        uid=19_451 StaticText "Treasury exchange rates"
+      uid=19_452 StaticText ", and submit FinCEN Form 114 by April 15. An automatic extension to October 15 applies per "
+      uid=19_453 link "31 CFR 1010.306" url="https://www.law.cornell.edu/cfr/text/31/1010.306"
+        uid=19_454 StaticText "31 CFR 1010.306"
+      uid=19_455 StaticText " and "
+      uid=19_456 link "IRS guidance" url="https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar"
+        uid=19_457 StaticText "IRS guidance"
+      uid=19_458 StaticText ". Getting the classification wrong or missing accounts can trigger penalties starting at $16,117 per account per year under "
+      uid=19_459 link "31 USC 5321(a)(5)(B)" url="https://www.law.cornell.edu/uscode/text/31/5321"
+        uid=19_460 StaticText "31 USC 5321(a)(5)(B)"
+      uid=19_461 StaticText "."
+    uid=19_462 paragraph
+      uid=19_463 link "Let FBAR Direct prepare your filing" url="https://fbardirect.com/pricing"
+        uid=19_464 StaticText "Let FBAR Direct prepare your filing"
+      uid=19_465 StaticText " — you review and approve every detail before we submit to FinCEN. Upload your account statements and we handle the conversion, reporting, and submission. "
+      uid=19_466 link "See how it works" url="https://fbardirect.com/how-it-works"
+        uid=19_467 StaticText "See how it works"
+      uid=19_468 StaticText "."
+    uid=19_469 paragraph
+      uid=19_470 StaticText "Tax regulations change frequently. Always verify current requirements at "
+      uid=19_471 link "IRS.gov" url="https://www.irs.gov/"
+        uid=19_472 StaticText "IRS.gov"
+      uid=19_473 StaticText " or "
+      uid=19_474 link "FinCEN.gov" url="https://www.fincen.gov/"
+        uid=19_475 StaticText "FinCEN.gov"
+      uid=19_476 StaticText ". For advice specific to your situation, consult a qualified tax professional. This article is current as of March 24, 2026."
+    uid=19_477 paragraph
+      uid=19_478 StaticText "March 2, 2026"
+  uid=19_479 StaticText "Content Score"
+  uid=19_480 button
+  uid=19_481 StaticText "52"
+  uid=19_482 StaticText "/"
+  uid=19_483 StaticText "100"
+  uid=19_484 StaticText "Avg"
+  uid=19_485 StaticText "55"
+  uid=19_486 StaticText "Top"
+  uid=19_487 StaticText "68"
+  uid=19_488 StaticText "Words"
+  uid=19_489 StaticText "2675"
+  uid=19_490 StaticText "3.4K - 3.9K"
+  uid=19_491 StaticText "Headings"
+  uid=19_492 StaticText "16"
+  uid=19_493 StaticText "24 - 47"
+  uid=19_494 StaticText "Paragraphs"
+  uid=19_495 StaticText "54"
+  uid=19_496 StaticText "90+"
+  uid=19_497 button "#1 Research & Create Outline"
+  uid=19_498 button "#2 Write & Optimize"
+  uid=19_499 button "SEO 23/81"
+  uid=19_500 button "AI Search 22/42"
+  uid=19_502 button "Auto Optimize NEW"
+  uid=19_503 button "#3 Internal Links"
+  uid=19_504 button "#4 Pre-Publish Review"
+  uid=19_505 button "#5 Publish or Export"
+  uid=19_506 heading "Who Is a US Person FBAR Rules Apply To? Citizens, Residents, and Entities" level="1"
+  uid=19_507 StaticText "FBAR Direct prepares and files your FBAR (FinCEN Form 114) on your behalf. You are responsible for reviewing all information for accuracy before submission to FinCEN. This article is for informational purposes only and does not constitute tax, legal, or financial advice."
+  uid=19_508 heading "Who Is a US Person FBAR Rules Apply To? Citizens, Residents, and Entities" level="2"
+  uid=19_509 StaticText "Who is a US person FBAR rules apply to? That question determines whether you must file the Report of Foreign Bank and Financial Accounts (FBAR), officially FinCEN Form 114. Under "
+  uid=19_510 StaticText ", the Bank Secrecy Act (BSA) defines "United States person" to include US citizens, US residents, and entities formed under US law."
+  uid=19_511 StaticText "The FBAR threshold is $10,000 aggregate across all foreign financial accounts at any point during the calendar year. If you meet that threshold and qualify as a US person under , you must file an FBAR with FinCEN per"
+  uid=19_512 StaticText "Misclassifying your status can lead to penalties up to $16,117 per violation for non-willful failures under "
+  uid=19_513 StaticText ", and up to $100,000 or 50% of the account balance for willful violations under "
+  uid=19_514 StaticText "."
+  uid=19_515 StaticText "This article covers every category of US person under the BSA, explains the substantial presence test, and addresses special cases such as dual citizens, DACA recipients, and US territory residents."
+  uid=19_516 heading "Who Is a US Person FBAR Requires Under 31 CFR 1010.350(b)?" level="2"
+  uid=19_517 StaticText "A US person for FBAR purposes includes any US citizen, US resident, or domestic entity. Under "
+  uid=19_518 StaticText ", the regulation identifies four categories: citizens of the United States, residents of the United States, domestic partnerships, and domestic corporations or other entities formed under US state law. If you fall into any of these categories and your foreign accounts exceed $10,000, you must file FBAR Form 114."
+  uid=19_519 StaticText "Category"
+  uid=19_520 StaticText "Test"
+  uid=19_521 StaticText "Key Authority"
+  uid=19_522 StaticText "US citizen"
+  uid=19_523 StaticText "Holds US citizenship (any US passport holder)"
+  uid=19_524 StaticText "31 CFR 1010.350(b)(1)"
+  uid=19_525 StaticText "Green card holder"
+  uid=19_526 StaticText "I-551 status (lawful permanent resident)"
+  uid=19_527 StaticText "31 CFR 1010.350(b)(2)"
+  uid=19_528 StaticText "Resident alien"
+  uid=19_529 StaticText "Substantial presence test under IRC 7701(b)"
+  uid=19_530 StaticText "IRC 7701(b); 31 CFR 1010.350(b)(2)"
+  uid=19_531 StaticText "Domestic entity"
+  uid=19_532 StaticText "Formed or organized in any US state or territory"
+  uid=19_533 StaticText "31 CFR 1010.350(b)(3)-(4)"
+  uid=19_534 StaticText "Non-resident alien"
+  uid=19_535 StaticText "Does not qualify (unless substantial presence met)"
+  uid=19_536 StaticText "31 CFR 1010.350(b)"
+  uid=19_537 StaticText "Foreign entity"
+  uid=19_538 StaticText "Does not qualify"
+  uid=19_539 StaticText "31 CFR 1010.350(b)"
+  uid=19_540 heading "US Citizens" level="3"
+  uid=19_541 StaticText "Every US citizen must file the FBAR if their foreign accounts exceed $10,000. This rule applies regardless of where you live. A citizen who has never set foot in the United States still qualifies as a US person. A dual citizen of the US and another country is also a US person. Living abroad or claiming a foreign domicile has no effect on your FBAR obligation. The BSA definition ties to citizenship, not to physical presence or tax residence."
+  uid=19_542 StaticText "Common situations where citizens may not realize they must file:"
+  uid=19_543 StaticText "Born abroad to one or two US citizen parents"
+  uid=19_544 StaticText "Dual nationals who grew up and live in another country"
+  uid=19_545 StaticText "Citizens who moved abroad decades ago"
+  uid=19_546 StaticText "Retirees living in Mexico, Panama, or Portugal on a US passport"
+  uid=19_547 StaticText "If any of these applies to you and your foreign accounts exceed $10,000, you must file. For a step-by-step walkthrough, see our ."
+  uid=19_548 heading "Green Card Holders (Lawful Permanent Residents)" level="3"
+  uid=19_549 StaticText "Green card holders — also called lawful permanent residents — are US persons under "
+  uid=19_550 StaticText ". Your obligation starts the calendar year you receive the I-551 card. Even if you got your green card in December, the entire year's accounts are reportable."
+  uid=19_551 StaticText "Conditional residents (holders of a two-year green card) are also US persons. The BSA does not separate conditional from unconditional permanent residents. You remain a US person until you formally surrender your status through Form I-407. Letting your green card expire or living abroad does not end the obligation. For a detailed look at these rules, see our article on"
+  uid=19_552 heading "Are Resident Aliens Required to File the FBAR?" level="2"
+  uid=19_553 StaticText "Yes. A resident alien who meets the substantial presence test under "
+  uid=19_554 StaticText "is a US person for FBAR purposes. FinCEN incorporates the IRC 7701(b) definition by reference through "
+  uid=19_555 StaticText ". This rule applies to FBAR IRS reporting even when you have no green card. Resident alien status depends on the days you spend in the United States, not on your visa type."
+  uid=19_556 heading "How the Substantial Presence Test Works" level="3"
+  uid=19_557 StaticText "You meet the substantial presence test if you satisfy both of these conditions:"
+  uid=19_558 StaticText "You are present in the United States for at least "
+  uid=19_559 StaticText "31 days"
+  uid=19_560 StaticText " during the current calendar year"
+  uid=19_561 StaticText "Your total weighted presence over three years equals "
+  uid=19_562 StaticText "183 days or more"
+  uid=19_563 StaticText "The weighted calculation:"
+  uid=19_564 StaticText "Current year"
+  uid=19_565 StaticText ": Count all days at "
+  uid=19_566 StaticText "100%"
+  uid=19_567 StaticText "Prior year"
+  uid=19_568 StaticText ": Count days at "
+  uid=19_569 StaticText "1/3"
+  uid=19_570 StaticText "Two years ago"
+  uid=19_571 StaticText ": Count days at "
+  uid=19_572 StaticText "1/6"
+  uid=19_573 StaticText "For example: 150 days in 2025 (150) + 90 days in 2024 (30) + 60 days in 2023 (10) = 190 weighted days. This person meets substantial presence in 2025. They are a US person for FBAR in 2025."
+  uid=19_574 StaticText "A second example: 120 days in 2025 (120) + 90 days in 2024 (30) + 180 days in 2023 (30) = 180 weighted days. This falls short of 183, so this person does not meet substantial presence in 2025."
+  uid=19_575 heading "Closer Connection Exception and Form 8840" level="3"
+  uid=19_576 StaticText "You may avoid US resident alien status for income tax by filing "
+  uid=19_577 StaticText "(Closer Connection Exception Statement). This is an IRS income tax election. However, it does not remove your FBAR obligation."
+  uid=19_578 StaticText "The FBAR is a BSA requirement under FinCEN, not an income tax requirement. The closer connection exception changes your income tax status. It does not change your status under "
+  uid=19_579 StaticText "for FBAR purposes. If you meet substantial presence, you are a US person for FBAR regardless of Form 8840."
+  uid=19_580 heading "Tax Treaty Tie-Breaker Positions and FBAR" level="3"
+  uid=19_581 StaticText "Some income tax treaties let dual residents claim residency in the treaty country. This is a treaty tie-breaker election. The election reduces your US income tax obligations. It does not remove your FBAR requirement."
+  uid=19_582 StaticText "The FBAR rests on the BSA under "
+  uid=19_583 StaticText ", not on income tax law. Tax treaty provisions govern income taxes. They do not override BSA reporting rules. If you meet substantial presence under IRC 7701(b), you are a US person for FBAR even if a treaty tie-breaker positions you as a non-US resident for income tax purposes."
+  uid=19_584 StaticText ". Upload your documents and we review before we submit to FinCEN."
+  uid=19_585 heading "Who Is Considered a US Person for Tax Purposes Versus FBAR?" level="2"
+  uid=19_586 StaticText "For income tax, a US person typically includes citizens and resident aliens under IRC 7701(a)(30). For FBAR, the definition under "
+  uid=19_587 StaticText "is similar but operates independently. A treaty tie-breaker election can affect income tax residency but not FBAR status. Form 8840 can affect income tax status but not FBAR status. The FBAR instructions and IRS guidance both confirm that the FBAR obligation follows the BSA definition, not the income tax definition. Additionally, FBAR Form PDF (FinCEN Form 114) requires a separate filing with FinCEN — not with the IRS."
+  uid=19_588 StaticText "Key differences between the two definitions:"
+  uid=19_589 StaticText "Income tax"
+  uid=19_590 StaticText ": Treaties and elections can override US resident status"
+  uid=19_591 StaticText "FBAR"
+  uid=19_592 StaticText ": BSA rules apply regardless of income tax elections or treaties"
+  uid=19_593 StaticText "Filing destination"
+  uid=19_594 StaticText ": FBAR goes to FinCEN; income tax returns go to the IRS"
+  uid=19_595 StaticText "Form used"
+  uid=19_596 StaticText ": FBAR uses FinCEN Form 114 (FBAR form), not any IRS income tax form"
+  uid=19_597 StaticText "This distinction matters for anyone with a treaty tie-breaker position, a closer connection exception election, or dual citizenship. Your income tax position and your FBAR position may differ. See our "
+  uid=19_598 StaticText "for more on the difference between BSA and income tax obligations."
+  uid=19_599 heading "Are US Entities Required to File the FBAR?" level="2"
+  uid=19_600 StaticText "Yes. Under "
+  uid=19_601 StaticText ", domestic corporations, partnerships, limited liability companies (LLCs), and trusts formed under US law are US persons. The entity must file if it holds a financial interest in or signature authority over foreign accounts exceeding $10,000. Formation under US law is the only test. Business activity can be entirely overseas."
+  uid=19_602 heading "Corporations and LLCs" level="3"
+  uid=19_603 StaticText "A corporation formed in Delaware, an LLC organized in Wyoming, or an S corporation formed in California — all are US persons. This applies even if the corporation conducts all its business in other countries. The FBAR instructions confirm that formation under any US state law makes an entity a US person. A foreign subsidiary of a US corporation is not a US person because the subsidiary is a separate entity formed under foreign law. However, the US parent may have FBAR duties if it has signature authority over the subsidiary's foreign accounts."
+  uid=19_604 heading "Partnerships and Trusts" level="3"
+  uid=19_605 StaticText "A general partnership or limited partnership organized in any US state is a US person. The entity itself must file the FBAR for any foreign account it holds. Individual partners may have separate FBAR obligations if they personally hold or have authority over foreign accounts."
+  uid=19_606 StaticText "A trust formed under US law with a US trustee or grantor is also a US person under "
+  uid=19_607 StaticText ". The trust's FBAR duty depends on financial interest and control. For details on entity reporting, see our article on"
+  uid=19_608 heading "What About DACA Recipients and Residents of US Territories?" level="2"
+  uid=19_609 StaticText "DACA recipients and undocumented residents who meet the substantial presence test are US persons for FBAR. The BSA definition under "
+  uid=19_610 StaticText "does not require lawful immigration status. It requires residence under IRC 7701(b), which turns on days present in the United States. A DACA recipient who has lived in the United States for years will almost certainly meet the substantial presence test and must file."
+  uid=19_611 StaticText "Residents of US territories — Puerto Rico, Guam, the US Virgin Islands, American Samoa, and the Northern Mariana Islands — are US citizens under "
+  uid=19_612 StaticText "and therefore US persons for FBAR. These residents have special income tax rules, but those rules do not change their FBAR obligations. The FBAR is a BSA requirement, separate from income tax. Territory residents with foreign accounts over $10,000 must file."
+  uid=19_613 heading "Decision Tree: Do You Need to File the FBAR?" level="2"
+  uid=19_614 StaticText "Use this decision tree to determine whether you are a US person for FBAR purposes. Work through the questions in order and stop when you reach a conclusion. Each step maps to the definition in "
+  uid=19_615 StaticText "and the IRS FBAR guidelines."
+  uid=19_616 StaticText "Are you a US citizen?"
+  uid=19_617 StaticText " If yes — you are a US person. File if your foreign accounts exceed $10,000 at any point during the year."
+  uid=19_618 StaticText "Do you hold a US green card (I-551)?"
+  uid=19_619 StaticText " If yes — you are a US person. File if accounts exceed $10,000."
+  uid=19_620 StaticText "Are you present in the United States for at least 31 days this year?"
+  uid=19_621 StaticText " If no — you likely do not meet substantial presence. You are probably not a US person based on presence."
+  uid=19_622 StaticText "Does your weighted day count equal 183 or more?"
+  uid=19_623 StaticText " (Current year at 100% + prior year at 1/3 + two years ago at 1/6.) If yes — you are a US person under IRC 7701(b). File if accounts exceed $10,000."
+  uid=19_624 StaticText "Does a tax treaty tie-breaker apply?"
+  uid=19_625 StaticText " Even if yes — your FBAR obligation remains. File if accounts exceed $10,000."
+  uid=19_626 StaticText "Is your entity formed under US law?"
+  uid=19_627 StaticText " If yes — the entity is a US person. File if it holds foreign accounts over $10,000."
+  uid=19_628 StaticText "None of the above?"
+  uid=19_629 StaticText " You are likely not a US person for FBAR. If uncertain, consult a tax professional."
+  uid=19_630 StaticText "If you fall into any of categories 1 through 6 and your foreign accounts exceeded $10,000 at any point during the year, the FBAR deadline is April 15, with an automatic extension to October 15, per "
+  uid=19_631 StaticText "and "
+  uid=19_632 StaticText ". See our "
+  uid=19_633 StaticText "for details."
+  uid=19_634 heading "What Penalties Apply If a US Person Does Not File?" level="2"
+  uid=19_635 StaticText "Penalties are set by "
+  uid=19_636 StaticText "and apply per account, per year. A US person who fails to file faces three levels of enforcement based on whether the failure was willful."
+  uid=19_637 StaticText "Non-willful violation"
+  uid=19_638 StaticText ": Up to $16,117 per account per year under "
+  uid=19_639 StaticText "(2025 inflation-adjusted amount)"
+  uid=19_640 StaticText "Willful violation"
+  uid=19_641 StaticText ": The greater of $100,000 or 50% of the account balance per year under"
+  uid=19_642 StaticText "Criminal penalties"
+  uid=19_643 StaticText ": Up to $250,000 in fines and 5 years imprisonment under"
+  uid=19_644 StaticText "Three unreported accounts for two years equals six violations. At the non-willful rate, that is up to $96,702 in penalties (6 × $16,117 under 31 USC 5321). For a full breakdown, see our"
+  uid=19_645 StaticText "— we are a FinCEN-registered BSA E-Filing institution (TCC: PBSA8180) and file directly with FinCEN on your behalf."
+  uid=19_646 StaticText "These are the most frequently asked questions about who is a US person for FBAR purposes. The answers below cover the main categories — citizens, resident aliens, green card holders, and entities. For advice on your specific situation, consult a qualified tax professional."
+  uid=19_647 StaticText "Who is a US person for FBAR filing purposes?"
+  uid=19_648 StaticText "A US person under "
+  uid=19_649 StaticText "includes US citizens, lawful permanent residents, and resident aliens who meet the substantial presence test under "
+  uid=19_650 StaticText ". It also includes domestic entities — corporations, partnerships, LLCs, and trusts formed under US law. Any US person with foreign financial accounts exceeding $10,000 must file FinCEN Form 114 with FinCEN."
+  uid=19_651 StaticText "Does a US citizen living abroad still need to file the FBAR?"
+  uid=19_652 StaticText "Yes. US citizenship, not physical location, determines FBAR status. Under "
+  uid=19_653 StaticText ", every US citizen is a US person regardless of where they live. Dual citizens, long-term expats, and citizens who have never lived in the United States must all file if their foreign accounts exceed $10,000 at any point under "
+  uid=19_654 StaticText "."
+  uid=19_655 StaticText "What is the substantial presence test for FBAR?"
+  uid=19_656 StaticText "The substantial presence test under "
+  uid=19_657 StaticText "counts your US presence over three years. You must be present at least 31 days in the current year. Your total weighted days — current year at 100%, prior year at 1/3, and two years ago at 1/6 — must reach 183 days. If you meet both conditions, you are a US resident alien and therefore a US person for FBAR purposes."
+  uid=19_658 StaticText "Does a tax treaty tie-breaker election remove my FBAR obligation?"
+  uid=19_659 StaticText "No. A treaty tie-breaker election reduces your US income tax obligations but does not remove your FBAR duty. The FBAR is a Bank Secrecy Act requirement under "
+  uid=19_660 StaticText ", separate from income tax law. If you meet the substantial presence test, your FBAR obligation exists regardless of any treaty election. See our "
+  uid=19_661 StaticText "for more on how BSA and tax rules differ."
+  uid=19_662 StaticText "Are corporations and LLCs required to file the FBAR?"
+  uid=19_663 StaticText "Yes. Under "
+  uid=19_664 StaticText ", any domestic corporation, partnership, or LLC formed under the laws of any US state is a US person. If the entity holds a financial interest in or has signature authority over foreign financial accounts exceeding $10,000, it must file FBAR Form 114. Formation under US law is the only test — business activity can be entirely overseas."
+  uid=19_665 StaticText "Do I still have to file the FBAR if Form 8840 reduces my income tax residency?"
+  uid=19_666 StaticText "Yes. Form 8840 (Closer Connection Exception) is an IRS income tax election. It affects your income tax residency status, not your FBAR status. The FBAR is governed by "
+  uid=19_667 StaticText ", not the Internal Revenue Code. If you meet the substantial presence test, you are a US person for FBAR even if Form 8840 treats you as a non-resident for income tax."
+  uid=19_668 StaticText "Who is considered a US person for tax purposes?"
+  uid=19_669 StaticText "For income tax, IRC 7701(a)(30) defines US persons as citizens and resident aliens. For FBAR, the definition under "
+  uid=19_670 StaticText "is similar but operates independently. A treaty tie-breaker can change your income tax residency but not your FBAR status. The FBAR instructions require a separate filing with FinCEN regardless of your income tax position with the IRS."
+  uid=19_671 heading "Let FBAR Direct Handle Your Filing" level="2"
+  uid=19_672 StaticText "FBAR Direct can handle your FBAR filing from start to finish. Once you confirm your status as a US person, you still need to gather account details, convert balances to USD using "
+  uid=19_673 StaticText ", and submit FinCEN Form 114 by April 15. An automatic extension to October 15 applies per "
+  uid=19_674 StaticText "and "
+  uid=19_675 StaticText ". Getting the classification wrong or missing accounts can trigger penalties starting at $16,117 per account per year under "
+  uid=19_676 StaticText "."
+  uid=19_677 StaticText "— you review and approve every detail before we submit to FinCEN. Upload your account statements and we handle the conversion, reporting, and submission. "
+  uid=19_678 StaticText "."
+  uid=19_679 StaticText "Tax regulations change frequently. Always verify current requirements at "
+  uid=19_680 StaticText "or "
+  uid=19_681 StaticText ". For advice specific to your situation, consult a qualified tax professional. This article is current as of March 24, 2026."
+  uid=19_682 StaticText "March 2, 2026"

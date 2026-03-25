@@ -27,12 +27,18 @@
 		max_size 50MB
 	}
 
-	# Rate limits — auth endpoints: 5 requests per minute
-	@b2b_auth path /api/auth/*
+	# Rate limits — auth write endpoints: 15 requests per minute
+	# Excludes session/csrf/providers (read-only, called on every page load by NextAuth)
+	@b2b_auth {
+		path /api/auth/*
+		not path /api/auth/session
+		not path /api/auth/providers
+		not path /api/auth/csrf
+	}
 	rate_limit @b2b_auth {
 		zone b2b_auth {
 			key    {remote_host}
-			events 5
+			events 15
 			window 1m
 		}
 	}
@@ -102,15 +108,19 @@ www.{$D2C_DOMAIN} {
 	@d2c_stripe path /api/stripe/webhook
 	# (no rate_limit applied — falls through to reverse_proxy)
 
-	# Rate limits — auth endpoints: 5 requests per minute
+	# Rate limits — auth write endpoints: 15 requests per minute
+	# Excludes session/csrf/providers (read-only, called on every page load by NextAuth)
 	@d2c_auth {
 		path /api/auth/*
 		not path /api/stripe/webhook
+		not path /api/auth/session
+		not path /api/auth/providers
+		not path /api/auth/csrf
 	}
 	rate_limit @d2c_auth {
 		zone d2c_auth {
 			key    {remote_host}
-			events 5
+			events 15
 			window 1m
 		}
 	}

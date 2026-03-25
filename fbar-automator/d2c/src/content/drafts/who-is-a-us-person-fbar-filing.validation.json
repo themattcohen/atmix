@@ -1,0 +1,48 @@
+{
+  "slug": "who-is-a-us-person-fbar-filing",
+  "validatedAt": "2026-03-02T23:55:39.869Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (4840 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (5)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (8.8 per 500 words)",
+    "dollar_density": "PASS (3.5 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "hero_image": "PASS",
+    "published_date": "PASS (2026-03-03)"
+  },
+  "warnings": [
+    "word_count_high: 4840 words (recommend <= 3500)"
+  ],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.law.cornell.edu/uscode/text/26/7701",
+    "https://www.irs.gov/forms-pubs/about-form-8840",
+    "https://www.law.cornell.edu/uscode/text/31/5314",
+    "https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar",
+    "https://www.fincen.gov/sites/default/files/shared/FBAR_Line_Item_Filing_Instructions.pdf",
+    "https://www.irs.gov/pub/irs-drop/n-11-01.pdf",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://fiscal.treasury.gov/reports-statements/treasury-reporting-rates-exchange/current.html",
+    "https://www.irs.gov/businesses/small-businesses-self-employed/delinquent-fbar-submission-procedures",
+    "https://www.law.cornell.edu/uscode/text/8/1401",
+    "https://www.law.cornell.edu/uscode/text/31/5322",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 CFR 1010.350",
+    "31 USC 5321",
+    "31 USC 5314",
+    "Notice 2011-1",
+    "31 CFR 1010.306",
+    "8 USC 1401",
+    "31 USC 5322"
+  ]
+}

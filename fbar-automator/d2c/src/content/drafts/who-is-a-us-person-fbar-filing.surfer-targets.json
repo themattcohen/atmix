@@ -1,0 +1,434 @@
+{
+  "slug": "who-is-a-us-person-fbar-filing",
+  "keyword": "who is a us person fbar",
+  "surferDraftId": "15595918",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 75,
+    "avg": 56,
+    "top": 70
+  },
+  "targets": {
+    "wordCount": {
+      "current": 4817,
+      "min": 3300,
+      "max": 3800
+    },
+    "headings": {
+      "current": 33,
+      "min": 24,
+      "max": 47
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 25,
+        "targetMax": 63
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 17,
+        "targetMax": 42
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 36,
+        "targetMax": 84
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 7,
+        "targetMax": 16
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 13,
+        "targetMax": 21
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 8,
+        "targetMax": 21
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 8,
+        "targetMax": 21
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 5,
+        "targetMax": 21
+      },
+      {
+        "term": "report foreign bank",
+        "targetMin": 9,
+        "targetMax": 42
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 5,
+        "targetMax": 10
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 12,
+        "targetMax": 27
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 6,
+        "targetMax": 21
+      },
+      {
+        "term": "report of foreign bank",
+        "targetMin": 4,
+        "targetMax": 14
+      },
+      {
+        "term": "united states person",
+        "targetMin": 5,
+        "targetMax": 21
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 6,
+        "targetMax": 10
+      },
+      {
+        "term": "fbar filing requirement",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "maximum value",
+        "targetMin": 4,
+        "targetMax": 10
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 13,
+        "targetMax": 25
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 10,
+        "targetMax": 21
+      },
+      {
+        "term": "fbar purposes",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "bsa e filing account",
+        "targetMin": 4,
+        "targetMax": 21
+      },
+      {
+        "term": "u.s person",
+        "targetMin": 12,
+        "targetMax": 34
+      },
+      {
+        "term": "e filing account",
+        "targetMin": 4,
+        "targetMax": 21
+      },
+      {
+        "term": "bsa e filing system",
+        "targetMin": 5,
+        "targetMax": 21
+      },
+      {
+        "term": "financial accounts fbar",
+        "targetMin": 3,
+        "targetMax": 11
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 6,
+        "targetMax": 11
+      },
+      {
+        "term": "green card holder",
+        "targetMin": 4,
+        "targetMax": 17
+      },
+      {
+        "term": "fincen form 114",
+        "targetMin": 4,
+        "targetMax": 12
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "who is a us person fbar",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign financial institutions",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "jointly owned accounts",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "employer's foreign financial account",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "report foreign financial accounts",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "federal income tax purposes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign mutual funds",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign currency",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "certain foreign financial accounts",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "trust's foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign financial account held",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "cash value",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "individual retirement account",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "limited liability companies",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "substantial presence test",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "periodic account statements",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "international monetary fund",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international financial institution",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "federal income tax return",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "consolidated fbar",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "legal title",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "financial account located",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "united states code",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign entity",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "federal tax treatment",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "filing spouse reports",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign stocks",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign branch",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "retirement plan",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "bank secrecy act",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "income tax return",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "financial institution located",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "not the nationality",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "domestic entities",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "federal government",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "brokerage accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "offshore account",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "equity interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "report signature authority",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "ownership interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar reporting requirements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "adjusted annually",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "tax year",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "world bank",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reporting period",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar disclosing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "resident aliens",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "fbar rules",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "separate fbar",
+        "targetMin": 2,
+        "targetMax": 3
+      }
+    ]
+  }
+}

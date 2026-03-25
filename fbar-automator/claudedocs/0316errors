@@ -1,0 +1,212 @@
+Foreign Accounts
+Add all foreign financial accounts for the calendar year.
+
+Uploaded Statements
+✓
+Savings Statement-0685 2025-01-09.pdf
+77 KB
+✓
+Savings Statement-0685 2025-02-07.pdf
+77 KB
+✓
+Savings Statement-0685 2025-03-07.pdf
+77 KB
+✓
+Savings Statement-0685 2025-04-09.pdf
+77 KB
+✓
+Savings Statement-0685 2025-05-09.pdf
+77 KB
+✓
+Savings Statement-0685 2025-06-09.pdf
+77 KB
+✓
+Savings Statement-0685 2025-07-09.pdf
+83 KB
+✓
+Savings Statement-0685 2025-08-08.pdf
+85 KB
+✓
+Savings Statement-0685 2025-09-09.pdf
+83 KB
+✓
+Savings Statement-0685 2025-10-09.pdf
+77 KB
+✓
+Savings Statement-0685 2025-11-07.pdf
+92 KB
+✓
+Savings Statement-0685 2025-12-09.pdf
+80 KB
+✓
+Chequing Statement-8030 2025-01-09.pdf
+332 KB
+✓
+Chequing Statement-8030 2025-02-07.pdf
+290 KB
+✓
+Chequing Statement-8030 2025-03-07.pdf
+334 KB
+✓
+Chequing Statement-8030 2025-04-09.pdf
+407 KB
+✓
+Chequing Statement-8030 2025-05-09.pdf
+366 KB
+✓
+Chequing Statement-8030 2025-06-09.pdf
+421 KB
+✓
+Chequing Statement-8030 2025-07-09.pdf
+345 KB
+✓
+Chequing Statement-8030 2025-08-08.pdf
+325 KB
+✓
+Chequing Statement-8030 2025-09-09.pdf
+357 KB
+✓
+Chequing Statement-8030 2025-10-09.pdf
+408 KB
+✓
+Chequing Statement-8030 2025-11-07.pdf
+493 KB
+⟳
+Chequing Statement-8030 2025-12-09.pdf
+364 KB
+Extraction Warnings
+
+Account 1: No account activity during this statement period
+Account 1: Opening and closing balances are identical at $0.24
+Account 1: Currency is inferred as CAD based on Royal Bank of Canada being a Canadian bank and the account holder's Canadian address, though not explicitly stated on the statement
+Account 1: Ownership type cannot be determined from the statement - document does not indicate whether the filer has financial interest, signature authority, or both
+Account 1: No account activity during this statement period
+Account 1: Opening and closing balances are identical ($0.24)
+Account 1: Currency is inferred as CAD based on Royal Bank of Canada location in Canada, though not explicitly stated on the document
+Account 1: Ownership type (financial interest vs signature authority) is not explicitly stated on the document
+Account 1: No activity for this period - opening and closing balances are identical at $0.24
+Account 1: Ownership type could not be determined from the document - account holder name shown as LUKE FRYE
+Account 1: Currency not explicitly stated on document; inferred as CAD based on Royal Bank of Canada being a Canadian institution and amounts shown in dollars without other currency indication
+Account 1: No activity occurred during this statement period
+Account 1: Ownership type (financial interest vs signature authority) not indicated on statement
+Account 1: No account activity during this statement period
+Account 1: Opening and closing balances are identical at $0.24
+Account 1: Currency is inferred as CAD (Canadian Dollars) based on bank location and $ symbol, though not explicitly stated on the statement
+Account 1: Ownership type cannot be determined from the statement - document does not indicate whether the account holder has financial interest, signature authority, or both
+Account 1: No account activity during statement period
+Account 1: Opening and closing balances are identical ($0.24)
+Account 1: Currency is inferred as CAD (Canadian Dollars) based on Royal Bank of Canada location and no explicit currency symbol shown
+Account 1: Ownership type not explicitly stated on document - cannot determine if FINANCIAL_INTEREST, SIGNATURE_AUTHORITY, or BOTH
+Account 1: Ownership type could not be determined from the statement. Statement appears to be for account holder LUKE FRYE but does not specify if this is financial interest, signature authority, or both.
+Account 1: Ownership type could not be determined from the document. Document shows account holder name but does not specify if this is financial interest or signature authority.
+Account 1: Max value updated from 1,260.41 to 1,500.41 based on a previously uploaded statement.
+Account 1: Currency not explicitly stated on document but inferred as CAD based on Royal Bank of Canada location and dollar symbol
+Account 1: Ownership type not specified on statement - unable to determine if account holder has financial interest, signature authority, or both
+Account 1: Max value updated from 301.64 to 1,500.41 based on a previously uploaded statement.
+Account 1: No activity during this period - opening and closing balances are identical
+Account 1: Currency is inferred as CAD based on Royal Bank of Canada (Canadian bank) and Canadian address; not explicitly stated on document
+Account 1: Ownership type not indicated on statement - unable to determine if FINANCIAL_INTEREST or SIGNATURE_AUTHORITY
+Account 1: Max value updated from 1.66 to 1,500.41 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the statement. Document shows account holder name (LUKE FRYE) but does not explicitly indicate financial interest vs signature authority.
+Account 1: Ownership type not explicitly stated on document - unable to determine if account holder has financial interest, signature authority, or both
+Account 1: Max value updated from 0.72 to 2,001.66 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the document - this is a personal banking statement for LUKE FRYE, suggesting financial interest
+Account 1: Currency symbol ($) shown on statement assumed to be CAD based on Royal Bank of Canada location in Vancouver, BC, Canada
+Account 1: Ownership type not explicitly stated on document - defaulting to null (will be treated as FINANCIAL_INTEREST downstream)
+Account 1: Maximum balance determined by reviewing all daily balance figures in transaction detail and identifying the highest amount
+Account 1: Max value updated from 3,200.83 to 5,314.57 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the statement. Default to FINANCIAL_INTEREST in downstream processing.
+Account 1: Maximum balance identified as the highest daily balance shown on the statement ($5,306.36 on Feb 28, 2025) based on transaction activity following payroll deposit.
+Account 1: Max value updated from 5,306.36 to 5,314.57 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the document - defaulting to null (should be interpreted as FINANCIAL_INTEREST in downstream processing)
+Account 1: Maximum balance identified by reviewing daily balance snapshots throughout the statement period - the highest balance occurred on March 17, 2025 at $19,334.62 following the tax refund deposit
+Account 1: Ownership type not indicated on statement - defaulting to null (FINANCIAL_INTEREST assumed in downstream processing)
+Account 1: Maximum balance determined from daily balance snapshot on April 15, 2025 showing $4,091.28
+Account 1: Max value updated from 4,091.28 to 19,334.62 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the statement - document does not explicitly indicate whether account holder has financial interest or signature authority only
+Account 1: Maximum balance identified as $7,814.12 based on transaction analysis showing highest daily balance occurred on May 30, 2025 after payroll deposit of $7,576.32 was received
+Account 1: Max value updated from 7,814.12 to 19,334.62 based on a previously uploaded statement.
+Account 1: Currency inferred as CAD based on bank location (Royal Bank of Canada) and dollar sign notation; not explicitly stated on document
+Account 1: Ownership type not determinable from document; defaulting to null (will be treated as FINANCIAL_INTEREST in downstream processing)
+Account 1: Max value updated from 6,881.62 to 19,334.62 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the document - default to FINANCIAL_INTEREST in downstream processing
+Account 1: Maximum balance identified from daily transaction balances as the highest value shown during the statement period
+Account 1: Max value updated from 3,965.3 to 19,334.62 based on a previously uploaded statement.
+Account 1: Max value updated from 8,037.25 to 19,334.62 based on a previously uploaded statement.
+Account 1: Ownership type not explicitly stated on document - unable to determine if FINANCIAL_INTEREST or SIGNATURE_AUTHORITY
+Account 1: Maximum balance determined by reviewing all daily balance figures in transaction details. The highest balance shown was $7,042.28 on September 16, 2025
+Account 1: Max value updated from 7,042.28 to 19,334.62 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the statement - defaulting to null (will be treated as FINANCIAL_INTEREST downstream)
+Account 1: Maximum balance identified from daily transaction balances; the statement does not explicitly state a maximum value field
+Account 1: Max value updated from 8,552.03 to 19,334.62 based on a previously uploaded statement.
+Account 1: Ownership type could not be determined from the statement. Default to FINANCIAL_INTEREST for FBAR purposes unless otherwise indicated.
+Account 1: Max value updated from 10,340.84 to 19,334.62 based on a previously uploaded statement.
+Review Extracted Accounts (24)
+AI-extracted — please verify before saving
+Extraction Warnings
+
+No account activity during this statement period
+Opening and closing balances are identical at $0.24
+Currency is inferred as CAD based on Royal Bank of Canada being a Canadian bank and the account holder's Canadian address, though not explicitly stated on the statement
+Ownership type cannot be determined from the statement - document does not indicate whether the filer has financial interest, signature authority, or both
+No account activity during this statement period
+Opening and closing balances are identical ($0.24)
+Currency is inferred as CAD based on Royal Bank of Canada location in Canada, though not explicitly stated on the document
+Ownership type (financial interest vs signature authority) is not explicitly stated on the document
+No activity for this period - opening and closing balances are identical at $0.24
+Ownership type could not be determined from the document - account holder name shown as LUKE FRYE
+Currency not explicitly stated on document; inferred as CAD based on Royal Bank of Canada being a Canadian institution and amounts shown in dollars without other currency indication
+No activity occurred during this statement period
+Ownership type (financial interest vs signature authority) not indicated on statement
+No account activity during this statement period
+Opening and closing balances are identical at $0.24
+Currency is inferred as CAD (Canadian Dollars) based on bank location and $ symbol, though not explicitly stated on the statement
+Ownership type cannot be determined from the statement - document does not indicate whether the account holder has financial interest, signature authority, or both
+No account activity during statement period
+Opening and closing balances are identical ($0.24)
+Currency is inferred as CAD (Canadian Dollars) based on Royal Bank of Canada location and no explicit currency symbol shown
+Ownership type not explicitly stated on document - cannot determine if FINANCIAL_INTEREST, SIGNATURE_AUTHORITY, or BOTH
+Ownership type could not be determined from the statement. Statement appears to be for account holder LUKE FRYE but does not specify if this is financial interest, signature authority, or both.
+Ownership type could not be determined from the document. Document shows account holder name but does not specify if this is financial interest or signature authority.
+Max value updated from 1,260.41 to 1,500.41 based on a previously uploaded statement.
+Currency not explicitly stated on document but inferred as CAD based on Royal Bank of Canada location and dollar symbol
+Ownership type not specified on statement - unable to determine if account holder has financial interest, signature authority, or both
+Max value updated from 301.64 to 1,500.41 based on a previously uploaded statement.
+No activity during this period - opening and closing balances are identical
+Currency is inferred as CAD based on Royal Bank of Canada (Canadian bank) and Canadian address; not explicitly stated on document
+Ownership type not indicated on statement - unable to determine if FINANCIAL_INTEREST or SIGNATURE_AUTHORITY
+Max value updated from 1.66 to 1,500.41 based on a previously uploaded statement.
+Ownership type could not be determined from the statement. Document shows account holder name (LUKE FRYE) but does not explicitly indicate financial interest vs signature authority.
+Ownership type not explicitly stated on document - unable to determine if account holder has financial interest, signature authority, or both
+Max value updated from 0.72 to 2,001.66 based on a previously uploaded statement.
+Ownership type could not be determined from the document - this is a personal banking statement for LUKE FRYE, suggesting financial interest
+Currency symbol ($) shown on statement assumed to be CAD based on Royal Bank of Canada location in Vancouver, BC, Canada
+Ownership type not explicitly stated on document - defaulting to null (will be treated as FINANCIAL_INTEREST downstream)
+Maximum balance determined by reviewing all daily balance figures in transaction detail and identifying the highest amount
+Max value updated from 3,200.83 to 5,314.57 based on a previously uploaded statement.
+Ownership type could not be determined from the statement. Default to FINANCIAL_INTEREST in downstream processing.
+Maximum balance identified as the highest daily balance shown on the statement ($5,306.36 on Feb 28, 2025) based on transaction activity following payroll deposit.
+Max value updated from 5,306.36 to 5,314.57 based on a previously uploaded statement.
+Ownership type could not be determined from the document - defaulting to null (should be interpreted as FINANCIAL_INTEREST in downstream processing)
+Maximum balance identified by reviewing daily balance snapshots throughout the statement period - the highest balance occurred on March 17, 2025 at $19,334.62 following the tax refund deposit
+Ownership type not indicated on statement - defaulting to null (FINANCIAL_INTEREST assumed in downstream processing)
+Maximum balance determined from daily balance snapshot on April 15, 2025 showing $4,091.28
+Max value updated from 4,091.28 to 19,334.62 based on a previously uploaded statement.
+Ownership type could not be determined from the statement - document does not explicitly indicate whether account holder has financial interest or signature authority only
+Maximum balance identified as $7,814.12 based on transaction analysis showing highest daily balance occurred on May 30, 2025 after payroll deposit of $7,576.32 was received
+Max value updated from 7,814.12 to 19,334.62 based on a previously uploaded statement.
+Currency inferred as CAD based on bank location (Royal Bank of Canada) and dollar sign notation; not explicitly stated on document
+Ownership type not determinable from document; defaulting to null (will be treated as FINANCIAL_INTEREST in downstream processing)
+Max value updated from 6,881.62 to 19,334.62 based on a previously uploaded statement.
+Ownership type could not be determined from the document - default to FINANCIAL_INTEREST in downstream processing
+Maximum balance identified from daily transaction balances as the highest value shown during the statement period
+Max value updated from 3,965.3 to 19,334.62 based on a previously uploaded statement.
+Max value updated from 8,037.25 to 19,334.62 based on a previously uploaded statement.
+Ownership type not explicitly stated on document - unable to determine if FINANCIAL_INTEREST or SIGNATURE_AUTHORITY
+Maximum balance determined by reviewing all daily balance figures in transaction details. The highest balance shown was $7,042.28 on September 16, 2025
+Max value updated from 7,042.28 to 19,334.62 based on a previously uploaded statement.
+Ownership type could not be determined from the statement - defaulting to null (will be treated as FINANCIAL_INTEREST downstream)
+Maximum balance identified from daily transaction balances; the statement does not explicitly state a maximum value field
+Max value updated from 8,552.03 to 19,334.62 based on a previously uploaded statement.
+Ownership type could not be determined from the statement. Default to FINANCIAL_INTEREST for FBAR purposes unless otherwise indicated.
+Max value updated from 10,340.84 to 19,334.62 based on a previously uploaded statement.

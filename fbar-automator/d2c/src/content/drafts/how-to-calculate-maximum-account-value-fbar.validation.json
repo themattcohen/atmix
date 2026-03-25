@@ -1,0 +1,37 @@
+{
+  "slug": "how-to-calculate-maximum-account-value-fbar",
+  "validatedAt": "2026-03-03T01:56:36.696Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (2654 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (4)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (6.2 per 500 words)",
+    "dollar_density": "PASS (5.1 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "hero_image": "PASS",
+    "published_date": "PASS (2026-03-04)"
+  },
+  "warnings": [],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://www.law.cornell.edu/uscode/text/31/5314",
+    "https://fiscal.treasury.gov/reports-statements/treasury-reporting-rates-exchange/current.html",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.fincen.gov/resources/statutes-regulations/fincen-updates-civil-penalty-amounts",
+    "https://www.irs.gov/businesses/small-businesses-self-employed/report-of-foreign-bank-and-financial-accounts-fbar",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 CFR 1010.350",
+    "31 CFR 1010.306",
+    "31 USC 5314",
+    "31 USC 5321"
+  ]
+}

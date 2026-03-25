@@ -1,0 +1,38 @@
+{
+  "slug": "fbar-penalties-what-happens-if-you-dont-file",
+  "validatedAt": "2026-03-03T01:53:45.710Z",
+  "passed": true,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (2310 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (2)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (10 per 500 words)",
+    "dollar_density": "PASS (5.8 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "PASS",
+    "hero_image": "PASS",
+    "published_date": "PASS (2026-03-04)"
+  },
+  "warnings": [],
+  "failedChecks": [],
+  "citationUrls": [
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.law.cornell.edu/uscode/text/31/5322",
+    "https://www.law.cornell.edu/uscode/text/26/7201",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://www.irs.gov/businesses/corporations/foreign-account-tax-compliance-act-fatca",
+    "https://www.irs.gov/individuals/international-taxpayers/streamlined-filing-compliance-procedures",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "31 CFR 1010.350",
+    "31 USC 5321",
+    "31 USC 5322",
+    "26 USC 7201",
+    "31 CFR 1010.306"
+  ]
+}

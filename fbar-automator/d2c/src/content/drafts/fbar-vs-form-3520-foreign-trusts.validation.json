@@ -1,0 +1,50 @@
+{
+  "slug": "fbar-vs-form-3520-foreign-trusts",
+  "validatedAt": "2026-03-02T18:55:34.037Z",
+  "passed": false,
+  "checks": {
+    "disclaimer_top": "PASS",
+    "disclaimer_bottom": "PASS",
+    "frontmatter": "PASS",
+    "word_count": "PASS (3088 words)",
+    "h1_count": "PASS (1)",
+    "cta_count": "PASS (4)",
+    "banned_phrases": "PASS",
+    "citation_density": "PASS (13.4 per 500 words)",
+    "dollar_density": "PASS (4.2 per 500 words)",
+    "penalty_citations": "PASS",
+    "deadline_citations": "FAIL (Deadline claims without citation at line 125, line 174)",
+    "published_date": "PASS (2026-04-01)"
+  },
+  "warnings": [
+    "hero_image: File not found: public/blog/fbar-vs-form-3520-foreign-trusts.webp — add before final promotion"
+  ],
+  "failedChecks": [
+    "deadline_citations: Deadline claims without citation at line 125, line 174"
+  ],
+  "citationUrls": [
+    "https://www.law.cornell.edu/uscode/text/26/6048",
+    "https://www.law.cornell.edu/cfr/text/31/1010.350",
+    "https://www.law.cornell.edu/cfr/text/31/1010.306",
+    "https://www.law.cornell.edu/uscode/text/26/671",
+    "https://www.law.cornell.edu/uscode/text/31/5314",
+    "https://www.law.cornell.edu/uscode/text/31/5321",
+    "https://www.law.cornell.edu/uscode/text/26/6677",
+    "https://www.law.cornell.edu/uscode/text/31/5322",
+    "https://www.law.cornell.edu/uscode/text/26/679",
+    "https://www.law.cornell.edu/uscode/text/26/7701",
+    "https://www.law.cornell.edu/uscode/text/26/6038D",
+    "https://www.irs.gov",
+    "https://www.fincen.gov",
+    "IRC § 6048",
+    "31 CFR 1010.350",
+    "31 CFR 1010.306",
+    "31 USC 5314",
+    "31 USC 5321",
+    "IRC § 6677",
+    "31 USC 5322",
+    "IRC § 679",
+    "IRC § 7701",
+    "IRC § 6038"
+  ]
+}

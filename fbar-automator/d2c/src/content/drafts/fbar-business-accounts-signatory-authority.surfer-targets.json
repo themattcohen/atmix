@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-business-accounts-signatory-authority",
+  "keyword": "fbar business account signatory authority",
+  "surferDraftId": "15595953",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 83,
+    "avg": 57,
+    "top": 67
+  },
+  "targets": {
+    "wordCount": {
+      "min": 1200,
+      "max": 1400
+    },
+    "headings": {
+      "min": 12,
+      "max": 29
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 6,
+        "targetMax": 11
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 10,
+        "targetMax": 18
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 7,
+        "targetMax": 27
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 7,
+        "targetMax": 12
+      },
+      {
+        "term": "bank account",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 4,
+        "targetMax": 6
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 5,
+        "targetMax": 8
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "accounts",
+        "targetMin": 37,
+        "targetMax": 53
+      },
+      {
+        "term": "u.s person",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "us expats",
+        "targetMin": 3,
+        "targetMax": 14
+      },
+      {
+        "term": "file",
+        "targetMin": 24,
+        "targetMax": 41
+      },
+      {
+        "term": "fbar",
+        "targetMin": 30,
+        "targetMax": 47
+      },
+      {
+        "term": "report",
+        "targetMin": 15,
+        "targetMax": 25
+      },
+      {
+        "term": "interest",
+        "targetMin": 5,
+        "targetMax": 9
+      },
+      {
+        "term": "employees",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "entity",
+        "targetMin": 4,
+        "targetMax": 12
+      },
+      {
+        "term": "funds",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "authority",
+        "targetMin": 10,
+        "targetMax": 28
+      },
+      {
+        "term": "person",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "control",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "irs",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "form",
+        "targetMin": 4,
+        "targetMax": 11
+      },
+      {
+        "term": "business",
+        "targetMin": 10,
+        "targetMax": 35
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar business account signatory authority",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign financial assets",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign financial institutions",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "other foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign bank account",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "foreign mutual funds",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "report of foreign bank",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "bank secrecy act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "equity interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "employer's foreign financial account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "investment accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "financial accounts held",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "money laundering",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "brokerage accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts held",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar obligations",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "limited liability company",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "total value",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "fbar compliance",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "fbar rules",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "voting power",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "direct communication",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "cash value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "documented authority",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "signing authority",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "annual report",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "automatic extension",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "paper filings",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filed electronically",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "enforcement network",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar purposes",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "certain employees",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax year",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "filing requirements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "due date",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "potential penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "common misconception",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "file fbars",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "assets",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "interest in or signature",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "subject",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "corporation",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "date",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "failure",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "accounts exceeds 10,000",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "behalf",
+        "targetMin": 2,
+        "targetMax": 3
+      }
+    ]
+  }
+}

@@ -91,14 +91,19 @@ All landing pages include:
 - Dual CTA buttons
 - 100% money-back guarantee
 
-### Conversion Tracking
+### Conversion Tracking — FULLY WIRED (March 1, 2026)
 
 - **Google Tag**: `GT-P3JRZMRX` (gtag.js, NOT GTM container)
 - **GA4 Stream**: `G-W2KXELPKZE`
-- **Conversion actions**: Purchase + Sign-up (both Inactive — need events firing to activate)
+- **Google Ads ID**: `AW-17983090187`
+- **Purchase label**: `xqd1CIC1v4AcEIvcgP9C` (fires on confirmation page after Stripe payment)
+- **Sign-up label**: `g-7YCLLfyIAcEIvcgP9C` (fires on signup completion)
+- **Conversion actions**: Purchase + Sign-up (wired — will move from "Inactive" to "Recording" after first real conversion)
 - **Click-through conversion window**: 90 days (both actions — long consideration cycle for FBAR)
-- **Enhanced Conversions**: Enabled
-- **Cookie consent**: Implemented
+- **Enhanced Conversions**: Enabled (SHA-256 hashed email via SubtleCrypto)
+- **Cookie consent**: Google Consent Mode v2 — Accept/Decline banner, "Cookie Settings" in footer, "Manage Cookie Preferences" on privacy page
+- **Env vars**: `NEXT_PUBLIC_GADS_ID`, `NEXT_PUBLIC_GADS_PURCHASE_LABEL`, `NEXT_PUBLIC_GADS_SIGNUP_LABEL` set in GitHub Secrets (baked into Docker image at build time)
+- **Verified**: All network requests firing (gtag config, ccm/collect, remarketing pixel, viewthrough conversion) — no CSP violations
 
 ### Seasonal Features (Live)
 

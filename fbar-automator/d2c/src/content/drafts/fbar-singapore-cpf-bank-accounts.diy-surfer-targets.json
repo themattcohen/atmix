@@ -1,0 +1,2391 @@
+{
+  "slug": "fbar-singapore-cpf-bank-accounts",
+  "keyword": "fbar singapore cpf",
+  "extractedAt": "2026-03-03T07:22:53.522Z",
+  "source": "diy-extract",
+  "contentScore": {
+    "current": 0,
+    "avg": 0,
+    "top": 0
+  },
+  "targets": {
+    "wordCount": {
+      "min": 490,
+      "max": 1436
+    },
+    "headings": {
+      "min": 0,
+      "max": 0
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "tax",
+        "targetMin": 2,
+        "targetMax": 36
+      },
+      {
+        "term": "singapore",
+        "targetMin": 7,
+        "targetMax": 22
+      },
+      {
+        "term": "cpf",
+        "targetMin": 1,
+        "targetMax": 15
+      },
+      {
+        "term": "irs",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "foreign",
+        "targetMin": 7,
+        "targetMax": 23
+      },
+      {
+        "term": "income",
+        "targetMin": 2,
+        "targetMax": 16
+      },
+      {
+        "term": "fbar",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "in singapore",
+        "targetMin": 5,
+        "targetMax": 14
+      },
+      {
+        "term": "central provident fund cpf",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "provident fund cpf",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "singapore the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fund cpf",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar and",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "singapore tax",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "singapore cpf",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "of singapore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar and form",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the cpf",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "as fbar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "singaporean",
+        "targetMin": 1,
+        "targetMax": 3
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "year",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "accounts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "filing",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "forms",
+        "targetMin": 2,
+        "targetMax": 10
+      },
+      {
+        "term": "the irs",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "account",
+        "targetMin": 1,
+        "targetMax": 11
+      },
+      {
+        "term": "file",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "tax treaty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax return",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "the tax",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the foreign",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "pension",
+        "targetMin": 2,
+        "targetMax": 14
+      },
+      {
+        "term": "taxes",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "report",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "contributions",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "contributions to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "treaty",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "non",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "resident",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "states",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "country",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "purposes",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "required",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "years",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "considered",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "whether",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "within",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "financial",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "requirements",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "no tax treaty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "is no tax treaty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "us tax",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax law",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "tax deferred",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "no tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "there is no tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reporting",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "reporting requirements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "your foreign",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "in foreign",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "united states",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "the united states",
+        "targetMin": 1,
+        "targetMax": 9
+      },
+      {
+        "term": "united states and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the united states and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "funds",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "trust",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "amp",
+        "targetMin": 4,
+        "targetMax": 6
+      },
+      {
+        "term": "expats",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "expats in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "for expats",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to report",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "united",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "the united",
+        "targetMin": 1,
+        "targetMax": 9
+      },
+      {
+        "term": "the year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "employer",
+        "targetMin": 4,
+        "targetMax": 5
+      },
+      {
+        "term": "expat",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "taxpayer",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "states and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "distributions",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "living abroad",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "procedures",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "growth",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "person",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "information",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "to file",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "required to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "streamlined",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "assets",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "penalties",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "total",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "available",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "or even",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "even if",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "compliance",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "abroad",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "within the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "plan",
+        "targetMin": 1,
+        "targetMax": 4
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "taxable",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "retirement",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "amount",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "time",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "current",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "types",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "types of",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "investment",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fatca",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "generally",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "experienced",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "making",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "employment",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "makes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "money",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "eliminate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "contact",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the current",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "worldwide",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treatment",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specific",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "qualify",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "several",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "complicated",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "avoid",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "don",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "allows",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "depending",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "depending on",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the amount",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "amount of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "assist",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to assist",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "comes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "it comes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "comes to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "when it comes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "when it comes to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "questions",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "addition",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "in addition",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "voluntary",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "submitting",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "result",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "usually",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "under the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "she",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "few",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "if they",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "when it",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income tax",
+        "targetMin": 1,
+        "targetMax": 10
+      },
+      {
+        "term": "tax and reporting",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "international tax law",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international tax amnesty",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "exclusively in international tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax year",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "board certified tax law",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international tax",
+        "targetMin": 5,
+        "targetMax": 8
+      },
+      {
+        "term": "our international tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "in international tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "certified tax law specialist",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax treaty with",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax forms",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "certified tax law",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax law specialist",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "expat tax",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "board certified tax",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax purposes",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "for tax purposes",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "tax rates",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax amnesty",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "certified tax",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax liability",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "your tax",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "of tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "is tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "for tax",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "from tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax on",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore disclosure",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "of offshore disclosure",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "united states and singapore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "golding amp golding specializes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "international reporting",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "golding amp golding",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "amp golding specializes exclusively",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "and reporting",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "expats in singapore",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "states and singapore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore disclosure contact",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore disclosure contact our",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "cpf account",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "amp golding specializes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore",
+        "targetMin": 5,
+        "targetMax": 12
+      },
+      {
+        "term": "of offshore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "an offshore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reporting forms",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "specifically irs offshore disclosure",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs offshore disclosure contact",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs offshore disclosure",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to singapore",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "singapore and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "from singapore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "and singapore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "worldwide income",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "golding specializes exclusively",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "golding specializes exclusively in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "quiet disclosure",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "golding amp",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "amp golding",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "gross income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "disclosure program",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "expat taxes",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "fincen form",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayers",
+        "targetMin": 2,
+        "targetMax": 12
+      },
+      {
+        "term": "taxpayers who",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "income that",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income is",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the fbar and form",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "specializes exclusively in international",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "disclosure",
+        "targetMin": 5,
+        "targetMax": 8
+      },
+      {
+        "term": "voluntary disclosure program",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "on form",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "assist taxpayers",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to assist taxpayers",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "permanent resident",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non resident",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "the pension",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "that cpf",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specifically irs offshore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "amnesty programs",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "pay taxes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to pay taxes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "disclosure contact our firm",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "voluntary disclosure",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exclusively in international",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "golding specializes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs offshore",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "streamlined procedures",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "the streamlined procedures",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the funds",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "prior year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "current year",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "the current year",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "in the current year",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "disclosure contact",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "disclosure contact our",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "permanent",
+        "targetMin": 1,
+        "targetMax": 10
+      },
+      {
+        "term": "board certified",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "our international",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "in international",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "growth within",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "the growth within",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "growth within the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the growth within the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treaty with",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "willful",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "reduce or even eliminate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "residents",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "golding",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "specializes exclusively",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specializes exclusively in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "even though",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "year and",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "property",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "resident or",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "rates",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "filing forward",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar and fatca",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "may qualify",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "programs",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "firm today for assistance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "value",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "reduce or even",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "distributions from",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "prior",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "revenue",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "accounts and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxed",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "be taxed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "even eliminate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "or even eliminate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "depending on whether",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "business",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "reported",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "be reported",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "plans",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "law specialist",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "firm today",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "our firm today",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "firm today for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "our firm today for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the growth",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "person is",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specifically irs",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "housing",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "amnesty",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "are required",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "common",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "the streamlined",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "though",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "forms are",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "forms the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "contact our firm today",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "available to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "provides",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "certified",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "exclusively",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "exclusively in",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "the fbar",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "such as fbar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "such as fbar and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "net",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "issues",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "advice",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "board",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "help you",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "employee",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "investments",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "irs has",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "they may",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "are considered",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "on whether",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exclude",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "to exclude",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "requirements and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "requirements for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "not receive",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "important",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "late",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "firm",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "personal",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "related",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "our firm",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "services",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "liability",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "contact our firm",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "significant",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "work",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "these types",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "these types of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "qualifying",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "to pay",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "situation",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "taxable and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "qualify for",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "trusts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "gross",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specialist",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "countries",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specializes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "online",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "benefits",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "one of",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "worked",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "owner",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "instead",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treated",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "exceeds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treated as",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "reduce",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "reduce or",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "more complicated",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "and fatca",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "subject",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "subject to",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "regarding",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "large",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fincen",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "extension",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "trying",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "consult",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "trying to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "consult with",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "perspective",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specifically",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "working",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "working in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "today for assistance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "benefit",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "distributed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exceed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "experience",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "better",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "developed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "quiet",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "you need",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "receive",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "meet",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "apply",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "annual",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "american",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "an experienced",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "live",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "forward",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "represent",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "they will",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "citizen",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reduced",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "contents",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "presence",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "involves",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "institution",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "free",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "legal",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "begin",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "recent",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "program",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "caught",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "works",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "guide",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "general",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "service",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "gets",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "designed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "resource",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "level",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "especially",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offset",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to offset",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "government",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "impact",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "overseas",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "excellent",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "an excellent",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "today",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "today for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "since there is no",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "number",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "article",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "this article",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "contact our",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "be able",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "able to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "assistance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "for assistance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "would be",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "when they",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "they would",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the most",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "because they",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "is still",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "what you",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "own",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "doing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "much more",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "such as",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "they have",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "about their",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "more than",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "since there",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "and other",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "because he",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "they are",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "on their",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "take the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the same",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "or other",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "are only",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "how to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "since there is",
+        "targetMin": 1,
+        "targetMax": 6
+      }
+    ]
+  },
+  "corpus": {
+    "totalDocs": 8,
+    "competitors": 8,
+    "selfRef": 0,
+    "totalWords": 8998
+  },
+  "meta": {
+    "tfidfTop25": 106.19686708286282,
+    "tfidfTop60": 33.86294361119891,
+    "entityBoostedCount": 18,
+    "minDocFreqPct": 0.3
+  }
+}

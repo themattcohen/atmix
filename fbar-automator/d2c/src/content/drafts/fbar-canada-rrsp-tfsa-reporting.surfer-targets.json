@@ -1,0 +1,432 @@
+{
+  "slug": "fbar-canada-rrsp-tfsa-reporting",
+  "keyword": "fbar canada rrsp tfsa",
+  "surferDraftId": "15595920",
+  "extractedAt": "2026-03-02T00:00:00Z",
+  "contentScore": {
+    "current": 72,
+    "avg": 54,
+    "top": 68
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2100,
+      "max": 2400
+    },
+    "headings": {
+      "min": 18,
+      "max": 54
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "u.s tax",
+        "targetMin": 8,
+        "targetMax": 22
+      },
+      {
+        "term": "foreign tax credit",
+        "targetMin": 3,
+        "targetMax": 10
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 5,
+        "targetMax": 12
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 4,
+        "targetMax": 15
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 5,
+        "targetMax": 9
+      },
+      {
+        "term": "tax return",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 3,
+        "targetMax": 10
+      },
+      {
+        "term": "revenue procedure",
+        "targetMin": 3,
+        "targetMax": 10
+      },
+      {
+        "term": "tax purposes",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "foreign trusts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "u.s person",
+        "targetMin": 8,
+        "targetMax": 24
+      },
+      {
+        "term": "tax free",
+        "targetMin": 5,
+        "targetMax": 15
+      },
+      {
+        "term": "canadian tax",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "fincen form",
+        "targetMin": 5,
+        "targetMax": 15
+      },
+      {
+        "term": "reporting requirements",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "fincen form 114",
+        "targetMin": 5,
+        "targetMax": 15
+      },
+      {
+        "term": "income",
+        "targetMin": 12,
+        "targetMax": 23
+      },
+      {
+        "term": "tax",
+        "targetMin": 48,
+        "targetMax": 93
+      },
+      {
+        "term": "form 3520",
+        "targetMin": 7,
+        "targetMax": 19
+      },
+      {
+        "term": "taxable",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "report",
+        "targetMin": 28,
+        "targetMax": 64
+      },
+      {
+        "term": "form 8938",
+        "targetMin": 8,
+        "targetMax": 26
+      },
+      {
+        "term": "investment",
+        "targetMin": 10,
+        "targetMax": 17
+      },
+      {
+        "term": "accounts",
+        "targetMin": 25,
+        "targetMax": 55
+      },
+      {
+        "term": "irs",
+        "targetMin": 9,
+        "targetMax": 32
+      },
+      {
+        "term": "form",
+        "targetMin": 29,
+        "targetMax": 61
+      },
+      {
+        "term": "subject",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "canada",
+        "targetMin": 11,
+        "targetMax": 23
+      },
+      {
+        "term": "pay",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "taxpayer",
+        "targetMin": 8,
+        "targetMax": 20
+      },
+      {
+        "term": "funds",
+        "targetMin": 8,
+        "targetMax": 14
+      },
+      {
+        "term": "exempt",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "person",
+        "targetMin": 10,
+        "targetMax": 25
+      },
+      {
+        "term": "file",
+        "targetMin": 26,
+        "targetMax": 78
+      },
+      {
+        "term": "qualify",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "rrsp",
+        "targetMin": 28,
+        "targetMax": 83
+      },
+      {
+        "term": "retirement",
+        "targetMin": 9,
+        "targetMax": 23
+      },
+      {
+        "term": "plan",
+        "targetMin": 10,
+        "targetMax": 19
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "fbar canada rrsp tfsa",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "foreign financial accounts reportable",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign financial assets",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specified foreign financial assets",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "canadian tax law",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "canadian tax treatment",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "worldwide income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "canadian mutual funds",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "tax savings",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "pay tax",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "tax laws",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "mexican individual retirement accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "interest income",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax treatment",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "annual tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax exposure",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "investment accounts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "exchange traded funds",
+        "targetMin": 1,
+        "targetMax": null
+      },
+      {
+        "term": "reporting obligations",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "capital gains",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "double taxation",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filing obligations",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "canadian residents",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "combined balance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "green card holders",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "substantial presence",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "streamlined filing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "streamlined procedures",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "fully taxable",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "automatic extension",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "pfic reporting",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "certain thresholds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "due date",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "american living",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "tax free savings account",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "free savings account tfsa",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "registered retirement savings",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "taxation",
+        "targetMin": 2,
+        "targetMax": 4
+      }
+    ]
+  }
+}

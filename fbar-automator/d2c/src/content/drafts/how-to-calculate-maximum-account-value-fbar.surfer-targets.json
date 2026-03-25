@@ -1,0 +1,434 @@
+{
+  "slug": "how-to-calculate-maximum-account-value-fbar",
+  "keyword": "calculate maximum account value fbar",
+  "surferDraftId": "15597324",
+  "extractedAt": "2026-03-02T18:25:00Z",
+  "contentScore": {
+    "current": 62,
+    "avg": 0,
+    "top": 0
+  },
+  "targets": {
+    "wordCount": {
+      "min": 2000,
+      "max": 2500
+    },
+    "headings": {
+      "min": 20,
+      "max": 40
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 19,
+        "targetMax": 36
+      },
+      {
+        "term": "maximum account value",
+        "targetMin": 17,
+        "targetMax": 38
+      },
+      {
+        "term": "periodic account statements",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "financial crimes enforcement network",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 12,
+        "targetMax": 20
+      },
+      {
+        "term": "maximum account",
+        "targetMin": 19,
+        "targetMax": 39
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 30,
+        "targetMax": 49
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 6,
+        "targetMax": 10
+      },
+      {
+        "term": "maximum value",
+        "targetMin": 16,
+        "targetMax": 33
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 22,
+        "targetMax": 38
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 6,
+        "targetMax": 10
+      },
+      {
+        "term": "foreign currency",
+        "targetMin": 4,
+        "targetMax": 13
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 11,
+        "targetMax": 20
+      },
+      {
+        "term": "foreign account",
+        "targetMin": 11,
+        "targetMax": 22
+      },
+      {
+        "term": "united states dollars",
+        "targetMin": 4,
+        "targetMax": 9
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 4,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 5,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar maximum account",
+        "targetMin": 6,
+        "targetMax": 13
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 8,
+        "targetMax": 17
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 7,
+        "targetMax": 10
+      },
+      {
+        "term": "cash value",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar maximum account value",
+        "targetMin": 6,
+        "targetMax": 13
+      },
+      {
+        "term": "aggregate maximum",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "brokerage accounts",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 7,
+        "targetMax": 13
+      },
+      {
+        "term": "foreign financial institution",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "entire value",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "aggregate maximum value",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 7,
+        "targetMax": 13
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 13,
+        "targetMax": 33
+      },
+      {
+        "term": "savings accounts",
+        "targetMin": 3,
+        "targetMax": 9
+      },
+      {
+        "term": "legal title",
+        "targetMin": 5,
+        "targetMax": 17
+      },
+      {
+        "term": "single account",
+        "targetMin": 3,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar penalties",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 17,
+        "targetMax": 29
+      },
+      {
+        "term": "united states person",
+        "targetMin": 8,
+        "targetMax": 34
+      },
+      {
+        "term": "account statements",
+        "targetMin": 6,
+        "targetMax": 20
+      },
+      {
+        "term": "willful violations",
+        "targetMin": 5,
+        "targetMax": 13
+      },
+      {
+        "term": "account values",
+        "targetMin": 20,
+        "targetMax": 46
+      },
+      {
+        "term": "person acting",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "value of the account",
+        "targetMin": 8,
+        "targetMax": 21
+      },
+      {
+        "term": "foreign country",
+        "targetMin": 3,
+        "targetMax": 7
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "jointly owned accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "aggregate maximum account values",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "convert foreign currency",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "statements fairly reflect",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "maximum account balance",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "multiple exchange rates",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "account denominated",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "reasonable approximation",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "more than one account",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "verifiable exchange rate",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "report accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "nonmonetary assets",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "investment accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "highest account value",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "whole life insurance policy",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "life insurance policy",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "individual retirement account",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "accounts maintained",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "multiple accounts",
+        "targetMin": 2,
+        "targetMax": 7
+      },
+      {
+        "term": "greatest value",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "non united states currency",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "equity interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "valued separately",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "securities account",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "not the nationality",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "similar pooled funds",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "consolidated fbar",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "limited liability companies",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "ownership interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "regular net asset",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "employer’s foreign financial account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "trust’s foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign financial account held",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "report foreign accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international monetary fund",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filing spouse reports",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "united states resident",
+        "targetMin": 1,
+        "targetMax": 5
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "calculate maximum account value fbar",
+        "targetMin": 1,
+        "targetMax": 1
+      }
+    ]
+  }
+}

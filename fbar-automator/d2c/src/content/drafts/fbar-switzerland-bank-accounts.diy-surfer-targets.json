@@ -1,0 +1,2311 @@
+{
+  "slug": "fbar-switzerland-bank-accounts",
+  "keyword": "fbar switzerland bank accounts",
+  "extractedAt": "2026-03-03T07:23:43.809Z",
+  "source": "diy-extract",
+  "contentScore": {
+    "current": 0,
+    "avg": 0,
+    "top": 0
+  },
+  "targets": {
+    "wordCount": {
+      "min": 609,
+      "max": 1620
+    },
+    "headings": {
+      "min": 0,
+      "max": 0
+    }
+  },
+  "terms": {
+    "high_priority": [
+      {
+        "term": "foreign",
+        "targetMin": 5,
+        "targetMax": 25
+      },
+      {
+        "term": "account",
+        "targetMin": 9,
+        "targetMax": 21
+      },
+      {
+        "term": "accounts",
+        "targetMin": 5,
+        "targetMax": 17
+      },
+      {
+        "term": "fbar",
+        "targetMin": 2,
+        "targetMax": 14
+      },
+      {
+        "term": "bank accounts",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign financial",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "bank",
+        "targetMin": 5,
+        "targetMax": 21
+      },
+      {
+        "term": "the foreign",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax",
+        "targetMin": 3,
+        "targetMax": 13
+      },
+      {
+        "term": "irs",
+        "targetMin": 5,
+        "targetMax": 11
+      },
+      {
+        "term": "swiss bank",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign bank",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "financial accounts",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "an fbar",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "foreign financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank account",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "file an fbar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar filing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts and",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "accounts are",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the fbar",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "banks",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "switzerland",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "in switzerland",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "banking",
+        "targetMin": 3,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign bank and financial",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank and financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign bank and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign accounts",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "accounts fbar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank and financial",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "and financial accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar reporting",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "bank and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "these accounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar or",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ],
+    "medium_priority": [
+      {
+        "term": "compliance",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "year",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "the irs",
+        "targetMin": 3,
+        "targetMax": 10
+      },
+      {
+        "term": "form",
+        "targetMin": 3,
+        "targetMax": 11
+      },
+      {
+        "term": "united states",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "assets",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the account",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "fincen",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "fatca",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "penalties",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "non",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "the year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "international",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "resident",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "tax compliance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "your foreign",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "account at",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offshore",
+        "targetMin": 5,
+        "targetMax": 7
+      },
+      {
+        "term": "to file",
+        "targetMin": 4,
+        "targetMax": 8
+      },
+      {
+        "term": "report the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to report",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "requirements",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "the united states",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "required",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "whether",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "opening",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "money",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "law",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "person",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "foreign account tax compliance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign account tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account tax compliance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "report foreign",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the swiss",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tax return",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "criminal investigation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "an account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fincen form",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "must file",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "file the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reporting and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "calendar year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the calendar year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "signature authority",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "signature authority over",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "during the year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the calendar",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ],
+    "low_priority": [
+      {
+        "term": "interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "value",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "time",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "any time",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "service",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "institution",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "contact",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "held",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "value of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "interest in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxpayers",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "time during",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "any time during",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "time during the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "at any time during",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "any time during the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "questions",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "without",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "residents",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "subject",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "subject to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "following",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "individuals",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "experience",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "returns",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "citizen",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "least",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the aggregate",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "point",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "own",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "why",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "clients",
+        "targetMin": 1,
+        "targetMax": 10
+      },
+      {
+        "term": "information",
+        "targetMin": 2,
+        "targetMax": 9
+      },
+      {
+        "term": "call",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "additional",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "penalty",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "willful",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "currency",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "funds",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "specific",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "citizens",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "civil",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "abroad",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "services",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "institutions",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "agreement",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "years",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "professionals",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "complete",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "filed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "outside",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "business",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "countries",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "aggregate value of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "if the aggregate value",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the aggregate value of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "offers",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "americans",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "owned",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reportable",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "directly",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "cpa",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "hidden",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "held in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "avoid",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "statements",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "pay",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "important",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "provide",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "one of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "client",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "taxation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "individual",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "every",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "documents",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "full",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "note",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "number",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "department",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "receive",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "assistance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "available",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "recent",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "treasury",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exceeds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "amounts",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "current",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "high",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "below",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "or other",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "you must",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the most",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "she",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "through the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "foreign bank account",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "foreign bank accounts",
+        "targetMin": 2,
+        "targetMax": 5
+      },
+      {
+        "term": "swiss bank account",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "account tax compliance act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "of foreign bank",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "the foreign bank",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specified foreign financial assets",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "foreign financial assets",
+        "targetMin": 1,
+        "targetMax": 15
+      },
+      {
+        "term": "swiss banks",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "irs offshore voluntary disclosure",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "specified foreign financial",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "of specified foreign financial",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "offshore voluntary disclosure",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "your foreign financial",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "voluntary disclosure",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "tax compliance act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs offshore voluntary",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "the irs offshore voluntary",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "us tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "attorney",
+        "targetMin": 1,
+        "targetMax": 27
+      },
+      {
+        "term": "statement of specified foreign",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "file the fbar",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "to file an fbar",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "tax law",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "income tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "specified foreign",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "of specified foreign",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "offshore voluntary",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "taxpayer",
+        "targetMin": 1,
+        "targetMax": 20
+      },
+      {
+        "term": "account held",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "irs offshore",
+        "targetMin": 3,
+        "targetMax": 6
+      },
+      {
+        "term": "the irs offshore",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "numbered accounts",
+        "targetMin": 1,
+        "targetMax": 7
+      },
+      {
+        "term": "fbar penalties",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "of foreign",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "from foreign",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "for tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "on tax",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "wealth management",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "of account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "your account",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "account in",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "bsa filing system",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "civil fbar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "form statement of specified",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts exceeds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts exceeds at",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts exceeds at any",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "need to file",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "financial assets",
+        "targetMin": 1,
+        "targetMax": 15
+      },
+      {
+        "term": "disclosure",
+        "targetMin": 3,
+        "targetMax": 8
+      },
+      {
+        "term": "accounts for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts with",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accounts in",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "bsa filing",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "numbered",
+        "targetMin": 1,
+        "targetMax": 14
+      },
+      {
+        "term": "fbar for",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "fbar if",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "form statement",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "form statement of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reporting requirements",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "voluntary",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "wealth",
+        "targetMin": 2,
+        "targetMax": 8
+      },
+      {
+        "term": "filing system",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "extension",
+        "targetMin": 1,
+        "targetMax": 11
+      },
+      {
+        "term": "financial interest",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial interest in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial interest in or",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "financial institution",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "statement of specified",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "amp",
+        "targetMin": 2,
+        "targetMax": 6
+      },
+      {
+        "term": "filing the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "failure",
+        "targetMin": 1,
+        "targetMax": 10
+      },
+      {
+        "term": "failure to",
+        "targetMin": 1,
+        "targetMax": 9
+      },
+      {
+        "term": "form and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "and form",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the form",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "non willful",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "compliant",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "usd",
+        "targetMin": 1,
+        "targetMax": 8
+      },
+      {
+        "term": "balance",
+        "targetMin": 3,
+        "targetMax": 5
+      },
+      {
+        "term": "mutual funds",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "credit",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "private",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "through fincen",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "penalties and",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "penalties if",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "penalties to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "time during the year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "need to",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "you need",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "balances",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "prosecution",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "return if",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "access",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "apply",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "compliance act",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "forms",
+        "targetMin": 2,
+        "targetMax": 4
+      },
+      {
+        "term": "during the calendar year",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "time during the calendar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "professional",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "revenue",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "cases",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "bsa",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "for non",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "of the united states",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "minimum",
+        "targetMin": 1,
+        "targetMax": 6
+      },
+      {
+        "term": "work",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "process",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "work with",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "options",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "spouse",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "american",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "statement",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "specified",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "statement of",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "of specified",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "whether the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "website",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "rates",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "opening an",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "violations",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "persons",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "jointly",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "date",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "requires",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "rules",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "annual",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "internal",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "earned",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "late",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "taxes",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "strategy",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "online",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "management",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "global",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "experienced",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "with experienced",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "name",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "request",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "guide",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "audit",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "source",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "source of",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "qualify",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "qualify for",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "exceeds at any time",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "risk",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "right",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "the right",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "result",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "during the calendar",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "resident in",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "provides",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "fbars",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "follow",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filers",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "disclose",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "schedule",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "though",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "team",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "circumstances",
+        "targetMin": 1,
+        "targetMax": 4
+      },
+      {
+        "term": "secrecy",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "cost",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "yes",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "today",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "combined",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "opened",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "savings",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "outside the",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "facts",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "to open",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "affected",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "reported",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "owned by",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "situation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "determine",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "already",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "local",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "crimes",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "company",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "signed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "government",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "electronically",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "inflation",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the government",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "amnesty",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "investment",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "various",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "reasons",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "around",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "domestic",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "hold",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "multiple",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "review",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "type",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "finance",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "consult",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "laws",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "consult with",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "approach",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "located",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "system",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "filings",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "advice",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "consider",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "to avoid",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "accept",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "rather",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "rather than",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "content",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "completely",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "regular",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "overseas",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "in one",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "possible",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exception",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "matter",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "means",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "happens",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "following the",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "branch",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "regional",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "brokerage",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "mutual",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "enforcement",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "keeping",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "delinquent",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "effective",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "several",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "common",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "clear",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "strategic",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the department",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "department of",
+        "targetMin": 1,
+        "targetMax": 3
+      },
+      {
+        "term": "june",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "list",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "details",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "federal",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "correctly",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "tailored",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "opens",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "holder",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "established",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "for individuals",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "meet",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "immediately",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "practice",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "in practice",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exposed",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "particular",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "the treasury",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "exceeds at",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "soon",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "at least",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "part of",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "how to",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "make it",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "if they",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "you should",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "under the",
+        "targetMin": 2,
+        "targetMax": 3
+      },
+      {
+        "term": "about your",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "what if",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "what are",
+        "targetMin": 1,
+        "targetMax": 2
+      },
+      {
+        "term": "its",
+        "targetMin": 1,
+        "targetMax": 5
+      },
+      {
+        "term": "when you",
+        "targetMin": 1,
+        "targetMax": 2
+      }
+    ]
+  },
+  "corpus": {
+    "totalDocs": 9,
+    "competitors": 9,
+    "selfRef": 0,
+    "totalWords": 10343
+  },
+  "meta": {
+    "tfidfTop25": 88.82539483243599,
+    "tfidfTop60": 28.974883459461257,
+    "entityBoostedCount": 15,
+    "minDocFreqPct": 0.3
+  }
+}
