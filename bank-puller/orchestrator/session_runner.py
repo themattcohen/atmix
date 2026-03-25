@@ -22,6 +22,7 @@ from orchestrator.playbook import (
     load_playbook, save_playbook, is_fresh,
     try_step, discover_selector,
 )
+from orchestrator.bank_profiles import get_bank_profile
 from ai_skills.base import AISkillResult, get_cost_summary, runner
 from ai_skills.navigation import skill_classify_page, skill_find_element, skill_handle_obstacle
 from ai_skills.discovery import skill_discover_login_url
@@ -292,18 +293,17 @@ async def _login_and_download(
             await _log_result(mgr, excel_write_lock, job, target_month, "skipped", "", "Interrupted", start_time=_session_start)
             continue
 
-        # Navigation guard: verify we're still on the statements page between accounts
-        if idx > 0:
-            guard_screenshot = await wait_and_screenshot(page, f"w{wid}_nav_guard")
-            guard_state = skill_classify_page(guard_screenshot)
-            if guard_state.page_state not in ("statements", "documents", "statements_page"):
-                log.warning(f"[W{wid}] Page drifted to '{guard_state.page_state}' — navigating back to statements")
-                nav_result = skill_find_statements_page(guard_screenshot)
-                if nav_result.target:
-                    await human_click(page, nav_result.target["x"], nav_result.target["y"])
-                    await human_delay(2.0, 4.0)
-                else:
-                    log.warning(f"[W{wid}] Could not find statements link — account #{job.account_last4} may fail")
+        # Navigation guard: verify we're on the statements page (run for ALL accounts, not just idx>0)
+        guard_screenshot = await wait_and_screenshot(page, f"w{wid}_nav_guard")
+        guard_state = skill_classify_page(guard_screenshot)
+        if guard_state.page_state not in ("statements", "documents", "statements_page"):
+            log.warning(f"[W{wid}] Page drifted to '{guard_state.page_state}' — navigating back to statements")
+            nav_result = skill_find_statements_page(guard_screenshot)
+            if nav_result.target:
+                await human_click(page, nav_result.target["x"], nav_result.target["y"])
+                await human_delay(2.0, 4.0)
+            else:
+                log.warning(f"[W{wid}] Could not find statements link — account #{job.account_last4} may fail")
 
         # Update context for this account
         log_action(type="session_start", note=f"downloading account #{job.account_last4}")
@@ -354,8 +354,7 @@ async def _phase_navigate(
                 )
         else:
             log.error(f"[W{wid}] Could not discover login URL for {lead.bank_name}")
-            for j in jobs:
-                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Login URL not found", start_time=start_time)
+            await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Login URL not found", start_time=start_time)
             return False
 
     if recorder:
@@ -366,8 +365,7 @@ async def _phase_navigate(
     ok = await _resilient_navigation(page, login_url)
     if not ok:
         log.error(f"[W{wid}] Navigation to {lead.bank_name} FAILED — URL: {login_url}")
-        for j in jobs:
-            await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Navigation failed", start_time=start_time)
+        await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Navigation failed", start_time=start_time)
         return False
 
     log.info(f"[W{wid}] Navigation succeeded, entering readiness gate...")
@@ -528,31 +526,12 @@ async def _phase_login(
                 if not active_val.strip():
                     log.warning(f"[W{wid}] Username field empty after typing — "
                                 "trying iframe-aware selector fill")
-                    filled = False
-                    # Search all frames (main + iframes) for username inputs
-                    targets = [page] + list(page.frames)
-                    selectors = [
+                    await _fill_field_in_frames(page, lead.username, [
                         "#userId-input-field-input",  # Chase
                         "#userId", "#username",
                         "input[name='userId']", "input[name='username']",
                         "input[type='text']",
-                    ]
-                    for frame in targets:
-                        if filled:
-                            break
-                        for sel in selectors:
-                            try:
-                                loc = frame.locator(sel).first
-                                if await loc.count() > 0:
-                                    await loc.fill(lead.username)
-                                    log.info(f"[W{wid}] Username filled via selector: {sel} "
-                                             f"(frame: {frame.url[:60]})")
-                                    filled = True
-                                    break
-                            except Exception:
-                                continue
-                    if not filled:
-                        log.warning(f"[W{wid}] Could not fill username via any selector")
+                    ], "Username", wid)
             except Exception as e:
                 log.debug(f"[W{wid}] Username verify skipped: {e}")
 
@@ -578,8 +557,7 @@ async def _phase_login(
                 return False
         else:
             log.warning(f"[W{wid}] Could not find username field after 3 attempts")
-            for j in jobs:
-                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Username field not found", start_time=start_time)
+            await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Username field not found", start_time=start_time)
             return False
 
     await human_delay(0.5, 1.0)
@@ -650,26 +628,11 @@ async def _phase_login(
                 if not active_val.strip():
                     log.warning(f"[W{wid}] Password field empty after typing — "
                                 "trying iframe-aware selector fill")
-                    targets = [page] + list(page.frames)
-                    pw_selectors = [
+                    await _fill_field_in_frames(page, lead.password, [
                         "#password-input-field-input",  # Chase
                         "#password", "input[name='password']",
                         "input[type='password']",
-                    ]
-                    for frame in targets:
-                        filled = False
-                        for sel in pw_selectors:
-                            try:
-                                loc = frame.locator(sel).first
-                                if await loc.count() > 0:
-                                    await loc.fill(lead.password)
-                                    log.info(f"[W{wid}] Password filled via selector: {sel}")
-                                    filled = True
-                                    break
-                            except Exception:
-                                continue
-                        if filled:
-                            break
+                    ], "Password", wid)
             except Exception as e:
                 log.debug(f"[W{wid}] Password verify skipped: {e}")
 
@@ -697,8 +660,7 @@ async def _phase_login(
             if page_state.page_state == "virtual_keyboard":
                 ok = await _handle_virtual_keyboard(page, lead.password, wid)
                 if not ok:
-                    for j in jobs:
-                        await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Virtual keyboard password entry failed", start_time=start_time)
+                    await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Virtual keyboard password entry failed", start_time=start_time)
                     return False
             elif page_state.page_state in ("dashboard", "statements"):
                 # Browser auto-filled password and auto-submitted (Chrome password manager)
@@ -706,8 +668,7 @@ async def _phase_login(
                 return True
             else:
                 log.warning(f"[W{wid}] Could not find password field")
-                for j in jobs:
-                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Password field not found", start_time=start_time)
+                await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Password field not found", start_time=start_time)
                 return False
 
     await human_delay(0.3, 0.7)
@@ -729,25 +690,12 @@ async def _phase_login(
 
     if not submit_ok:
         # Try iframe-aware submit button click first (Chase iframe issue)
-        iframe_submit_ok = False
         submit = type('obj', (object,), {'target': None, 'confidence': 0.5})()
-        for frame in page.frames:
-            for label in ["Sign In", "Sign in", "Log In", "Log in", "Submit"]:
-                btn = frame.get_by_role("button", name=label)
-                if await btn.count():
-                    await btn.first.click(timeout=5000)
-                    log.info(f"[W{wid}] Clicked '{label}' button via iframe selector")
-                    iframe_submit_ok = True
-                    if recorder:
-                        recorder.add_login_step(
-                            name="click_submit", action="click",
-                            description=f"{label} button (iframe)",
-                            selector="",
-                            coords={"x": 0, "y": 0},
-                        )
-                    break
-            if iframe_submit_ok:
-                break
+        iframe_submit_ok = await _click_button_in_frames(
+            page, ["Sign In", "Sign in", "Log In", "Log in", "Submit"],
+            wid, log_label="login submit",
+            recorder=recorder, recorder_step_name="click_submit",
+        )
 
         if not iframe_submit_ok:
             # Fallback to AI vision coordinates
@@ -849,8 +797,7 @@ async def _phase_post_login(
                 await human_delay()
             else:
                 log.warning(f"[W{wid}] {lead.bank_name}: still on login page after submit — credentials may be wrong")
-                for j in jobs:
-                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Still on login page post-submit", start_time=start_time)
+                await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Still on login page post-submit", start_time=start_time)
                 return False
 
         elif page_state == "dashboard":
@@ -905,8 +852,7 @@ async def _phase_post_login(
         elif page_state == "security_question":
             ok = await _handle_security_question(page, lead, wid)
             if not ok:
-                for j in jobs:
-                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Security question failed", start_time=start_time)
+                await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Security question failed", start_time=start_time)
                 return False
             await human_delay()
 
@@ -960,8 +906,7 @@ async def _phase_post_login(
 
         elif page_state == "enrollment":
             log.warning(f"[W{wid}] {lead.bank_name}: enrollment/registration page — cannot proceed")
-            for j in jobs:
-                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Enrollment page — manual setup required", start_time=start_time)
+            await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Enrollment page — manual setup required", start_time=start_time)
             return False
 
         elif page_state in ("locked", "error"):
@@ -984,8 +929,7 @@ async def _phase_post_login(
                     lead.client_name, lead.bank_name, lead.account_last4,
                     "status", "password_expired",
                 )
-            for j in jobs:
-                await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Password change required", start_time=start_time)
+            await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Password change required", start_time=start_time)
             return False
 
         elif page_state == "loading":
@@ -1041,8 +985,7 @@ async def _phase_post_login(
 
             if consecutive_high_conf_unknown >= 3:
                 log.error(f"[W{wid}] {lead.bank_name}: 3x high-confidence 'unknown' — aborting")
-                for j in jobs:
-                    await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Unrecognized page (unknown x3 at >0.90)", start_time=start_time)
+                await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Unrecognized page (unknown x3 at >0.90)", start_time=start_time)
                 return False
 
             if consecutive_stuck >= 4:
@@ -1142,8 +1085,7 @@ async def _phase_statements_nav(
                 return True
 
         log.warning(f"[W{wid}] Could not find statements page link (including menu fallback)")
-        for j in jobs:
-            await _log_result(mgr, excel_write_lock, j, target_month, "failed", "", "Statements page not found", start_time=start_time)
+        await _log_failure_all_jobs(mgr, excel_write_lock, jobs, target_month, "failed", "Statements page not found", start_time=start_time)
         return False
 
 
@@ -1162,19 +1104,23 @@ async def _phase_prepare_statements(
     transaction view and requires clicking "Go to PDF Statements" to reach
     the actual PDF download page.
     """
-    # Step 1: Dismiss any modal/obstacle overlay
+    # Use bank profile to determine behavior
+    profile = get_bank_profile(jobs[0].bank_name if jobs else "")
+
+    # Step 1: Dismiss any modal/obstacle overlay (skip for Chase — X is the overlay close)
     screenshot = await wait_and_screenshot(page, f"w{wid}_statements_prep")
-    obstacle = skill_handle_obstacle(screenshot)
-    if obstacle.action == "click" and obstacle.target:
-        log.info(f"[W{wid}] Dismissing modal on statements page")
-        await verified_click(page, obstacle, screenshot)
-        await human_delay(1.0, 2.0)
-        screenshot = await wait_and_screenshot(page, f"w{wid}_statements_prep2")
+    if not profile["skip_obstacle_dismiss_on_statements"]:
+        obstacle = skill_handle_obstacle(screenshot)
+        if obstacle.action == "click" and obstacle.target:
+            log.info(f"[W{wid}] Dismissing modal on statements page")
+            await verified_click(page, obstacle, screenshot)
+            await human_delay(1.0, 2.0)
+            screenshot = await wait_and_screenshot(page, f"w{wid}_statements_prep2")
 
     # Step 2: Switch to correct card/account BEFORE navigating to PDF archive
     account_last4 = jobs[0].account_last4 if jobs else ""
 
-    if account_last4:
+    if account_last4 and not profile["skip_card_picker"]:
         card_picker = skill_find_element(
             screenshot,
             "dropdown or selector to switch between accounts or cards (the card picker at the top of the page). "
@@ -1267,109 +1213,390 @@ async def _phase_prepare_statements(
             screenshot = await wait_and_screenshot(page, f"w{wid}_after_card_switch")
 
     # Step 3: Navigate to PDF statements / PDF archive
-    pdf_link = skill_find_element(
-        screenshot,
-        "button or link to go to PDF statements, PDF archive, or downloadable statement documents "
-        "(NOT a download button for a single statement)"
-    )
-    if pdf_link.action == "click" and pdf_link.target and pdf_link.confidence >= 0.70:
-        log.info(f"[W{wid}] Found PDF statements link (conf={pdf_link.confidence:.2f}) — clicking")
-        await verified_click(page, pdf_link, screenshot)
-        await human_delay(2.0, 4.0)
+    # Chase Business uses "Accounts" tab with per-account sidebar — skip PDF archive
+    # navigation which switches to the "Documents" tab and may close the overlay.
+    if not profile["skip_pdf_archive_nav"]:
+        pdf_link = skill_find_element(
+            screenshot,
+            "button or link to go to PDF statements, PDF archive, or downloadable statement documents "
+            "(NOT a download button for a single statement)"
+        )
+        if pdf_link.action == "click" and pdf_link.target and pdf_link.confidence >= 0.70:
+            log.info(f"[W{wid}] Found PDF statements link (conf={pdf_link.confidence:.2f}) — clicking")
+            await verified_click(page, pdf_link, screenshot)
+            await human_delay(2.0, 4.0)
 
-        # Dismiss any modal after navigating
-        screenshot = await wait_and_screenshot(page, f"w{wid}_pdf_archive")
-        obstacle2 = skill_handle_obstacle(screenshot)
-        if obstacle2.action == "click" and obstacle2.target:
-            await verified_click(page, obstacle2, screenshot)
-            await human_delay(1.0, 2.0)
+            # Dismiss any modal after navigating
+            screenshot = await wait_and_screenshot(page, f"w{wid}_pdf_archive")
+            obstacle2 = skill_handle_obstacle(screenshot)
+            if obstacle2.action == "click" and obstacle2.target:
+                await verified_click(page, obstacle2, screenshot)
+                await human_delay(1.0, 2.0)
 
     return True
 
 
 # ---------------------------------------------------------------------------
-# Phase 5: Download statement for one account
+# Shared helpers (extracted patterns)
 # ---------------------------------------------------------------------------
-async def _phase_download(
-    page: Page, job: AccountJob, target_month: str, wid: int,
-    schedule: WindowSchedule, mgr: ExcelManager, excel_write_lock: asyncio.Lock,
-    context: BrowserContext,
-    all_jobs: list[AccountJob] | None = None,
-    start_time: float | None = None,
+async def _fill_field_in_frames(
+    page: "Page", value: str, selectors: list[str], label: str, wid: int,
+) -> bool:
+    """Try to fill a field across all frames using a list of CSS selectors."""
+    filled = False
+    targets = [page] + list(page.frames)
+    for frame in targets:
+        if filled:
+            break
+        for sel in selectors:
+            try:
+                loc = frame.locator(sel).first
+                if await loc.count() > 0:
+                    await loc.fill(value)
+                    log.info(f"[W{wid}] {label} filled via selector: {sel} "
+                             f"(frame: {getattr(frame, 'url', '')[:60]})")
+                    filled = True
+                    break
+            except Exception:
+                continue
+    if not filled:
+        log.warning(f"[W{wid}] Could not fill {label} via any selector")
+    return filled
+
+
+async def _click_button_in_frames(
+    page: "Page", labels: list[str], wid: int, log_label: str = "",
+    recorder: PlaybookRecorder | None = None, recorder_step_name: str = "",
+) -> bool:
+    """Try button labels across all frames. Optionally records to playbook."""
+    for frame in page.frames:
+        for label in labels:
+            btn = frame.get_by_role("button", name=label)
+            if await btn.count():
+                await btn.first.click(timeout=5000)
+                log.info(f"[W{wid}] Clicked '{label}' button via iframe selector"
+                         + (f" ({log_label})" if log_label else ""))
+                if recorder and recorder_step_name:
+                    recorder.add_login_step(
+                        name=recorder_step_name, action="click",
+                        description=f"{label} button (iframe)",
+                        selector="", coords={"x": 0, "y": 0},
+                    )
+                return True
+    return False
+
+
+async def _log_failure_all_jobs(
+    mgr: ExcelManager, excel_write_lock: asyncio.Lock,
+    jobs: list[AccountJob], target_month: str,
+    status: str, message: str, start_time: float | None = None,
 ) -> None:
-    """Download and validate a single account's statement."""
-    log.info(f"[W{wid}] Downloading statement for {job.client_name} #{job.account_last4}")
-    clear_download_dir(schedule.download_dir)
+    """Log the same failure status for every job in a list."""
+    for j in jobs:
+        await _log_result(mgr, excel_write_lock, j, target_month, status, "", message, start_time=start_time)
 
-    screenshot = await wait_and_screenshot(page, f"w{wid}_statements")
-    sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
 
-    if sel_result.action == "not_available":
-        # Before giving up, try to expand the full statement archive.
-        # Step 1: Use JS to find and click the "View All Statements" link/button
-        # (Citi's button may be a React/JS element that doesn't respond to simple clicks)
-        js_click_result = await page.evaluate("""() => {
-            for (const el of document.querySelectorAll('a, button, [role="button"], [role="tab"]')) {
-                const text = (el.textContent || '').trim();
-                if (text.includes('View All Statements') || text.includes('All Statements')) {
-                    el.click();
-                    return {found: true, tag: el.tagName};
+# ---------------------------------------------------------------------------
+# Phase 5 helpers (extracted from _phase_download)
+# ---------------------------------------------------------------------------
+async def _chase_accordion_download(
+    page: "Page", job: AccountJob, target_month: str, wid: int,
+) -> bool:
+    """Chase-specific: expand accordion section, click download icon.
+
+    Returns True if download was triggered via JS.
+    """
+    import calendar
+
+    t_parts = target_month.split("-")
+    t_year = t_parts[0]
+    t_month_num = int(t_parts[1])
+    t_abbr = calendar.month_abbr[t_month_num]  # "Jan", "Feb", etc.
+
+    # Step 1: Expand the account's accordion section
+    expand_result = await page.evaluate("""(last4) => {
+        // Find all clickable elements containing the last4
+        const candidates = document.querySelectorAll('button, a, span, td, summary, [role="button"]');
+        for (const el of candidates) {
+            const text = (el.textContent || '').trim();
+            if (!text.includes(last4) || text.length > 120) continue;
+            // Check if it looks like an account header (contains "..." or ellipsis)
+            if (!text.includes('...') && !text.includes('\\u2026')) continue;
+            // Check if already expanded
+            const isExpanded = el.getAttribute('aria-expanded') === 'true';
+            if (!isExpanded) {
+                el.click();
+                return {action: 'expanded', text: text.substring(0, 60)};
+            }
+            return {action: 'already_expanded', text: text.substring(0, 60)};
+        }
+        return {action: 'not_found'};
+    }""", job.account_last4)
+
+    if expand_result.get("action") == "expanded":
+        log.info(f"[W{wid}] Chase: expanded accordion for #{job.account_last4}: {expand_result.get('text', '')[:40]}")
+        await human_delay(2.5, 4.0)  # Chase dynamically loads rows after expand
+    elif expand_result.get("action") == "already_expanded":
+        log.info(f"[W{wid}] Chase: accordion already expanded for #{job.account_last4}")
+    else:
+        log.warning(f"[W{wid}] Chase: could not find accordion for #{job.account_last4}")
+
+    # Step 2: Find and click the download icon for the target month
+    download_result = await page.evaluate("""(args) => {
+        const {last4, targetAbbr, targetYear} = args;
+
+        // Strategy 1: Find rows in the account's section
+        const rows = document.querySelectorAll('tr');
+        let inTargetAccount = false;
+        for (const row of rows) {
+            const text = (row.textContent || '').trim();
+            // Detect account section headers containing last4
+            if (text.includes(last4) && (text.includes('...') || text.includes('\u2026'))) {
+                inTargetAccount = true;
+                continue;
+            }
+            // Detect next account section
+            if (inTargetAccount && !text.includes(last4) && text.length < 80) {
+                if (/\(\.\.\.\d{4}\)/.test(text) || /\(\u2026\d{4}\)/.test(text)) {
+                    break;
                 }
             }
-            return {found: false};
+            if (!inTargetAccount) continue;
+            // Check if this row contains the target month and year
+            if (text.includes(targetAbbr) && text.includes(targetYear)) {
+                // Find download icons (rightmost clickable elements)
+                const clickables = row.querySelectorAll('a, button, [role="button"], svg, [class*="icon"]');
+                let bestLink = null;
+                let bestX = 0;
+                for (const el of clickables) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.width > 3 && rect.height > 3 && rect.x > bestX) {
+                        bestLink = el;
+                        bestX = rect.x;
+                    }
+                }
+                if (bestLink) {
+                    bestLink.click();
+                    return {action: 'clicked', text: text.substring(0, 60)};
+                }
+                return {action: 'row_found_no_icon', text: text.substring(0, 60)};
+            }
+        }
+
+        // Strategy 2: If no rows found (accordion might not use <tr>), search all text
+        const allElements = document.querySelectorAll('*');
+        for (const el of allElements) {
+            if (el.children.length > 3) continue; // Skip containers
+            const text = (el.textContent || '').trim();
+            if (text.length > 5 && text.length < 30 && text.includes(targetAbbr) && text.includes(targetYear)) {
+                // Found a date element — look for sibling/parent download link
+                const parent = el.closest('tr, [class*="row"], [class*="item"]') || el.parentElement;
+                if (parent) {
+                    const links = parent.querySelectorAll('a, button, svg, [class*="download"], [class*="icon"]');
+                    let bestLink = null;
+                    let bestX = 0;
+                    for (const link of links) {
+                        const rect = link.getBoundingClientRect();
+                        if (rect.width > 3 && rect.height > 3 && rect.x > bestX) {
+                            bestLink = link;
+                            bestX = rect.x;
+                        }
+                    }
+                    if (bestLink) {
+                        bestLink.click();
+                        return {action: 'clicked_strategy2', text: text.substring(0, 60)};
+                    }
+                }
+            }
+        }
+
+        return {action: 'month_not_found', debug: document.querySelectorAll('tr').length + ' rows found'};
+    }""", {"last4": job.account_last4, "targetAbbr": t_abbr, "targetYear": t_year})
+
+    if download_result.get("action") in ("clicked", "clicked_fallback"):
+        log.info(f"[W{wid}] Chase JS: clicked download for {target_month} #{job.account_last4}: {download_result.get('text', '')[:40]}")
+
+        # Handle the download popup menu (Chase shows "Save as PDF" / "Save as accessible PDF")
+        await human_delay(1.0, 2.0)
+        save_pdf_result = await page.evaluate("""() => {
+            // Look for "Save as PDF" option in a popup/dropdown
+            const options = document.querySelectorAll('a, button, [role="menuitem"], [role="option"], li');
+            for (const opt of options) {
+                const text = (opt.textContent || '').trim();
+                if (text === 'Save as PDF' || text === 'Download PDF') {
+                    opt.click();
+                    return {clicked: true, text: text};
+                }
+            }
+            return {clicked: false};
         }""")
-        if js_click_result.get("found"):
-            log.info(f"[W{wid}] JS-clicked 'View All Statements' (tag={js_click_result.get('tag')})")
-            await human_delay(3.0, 5.0)
-            screenshot = await wait_and_screenshot(page, f"w{wid}_all_statements")
-            sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
-        else:
-            log.info(f"[W{wid}] No 'View All Statements' element found in DOM")
+        if save_pdf_result.get("clicked"):
+            log.info(f"[W{wid}] Chase JS: clicked '{save_pdf_result.get('text')}'")
+        # If no popup appeared, the click may have triggered a direct download
+        return True
+    elif download_result.get("action") == "row_found_no_icon":
+        log.warning(f"[W{wid}] Chase JS: found {target_month} row but no download icon: {download_result.get('text', '')[:40]}")
+    elif download_result.get("action") == "month_not_found":
+        log.warning(f"[W{wid}] Chase JS: month {target_month} not found in #{job.account_last4} section")
 
-        # If still not available after expanding archive, fail
-        if sel_result.action == "not_available":
-            log.info(f"[W{wid}] Statement not yet available for {target_month}")
-            await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Statement not yet available", start_time=start_time)
-            async with excel_write_lock:
-                mgr.add_to_retry_queue(job, "Statement not yet available")
-            return
+    return False
 
-    if sel_result.action != "click" or not sel_result.target:
-        log.warning(f"[W{wid}] Could not select statement")
-        await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Could not select statement", start_time=start_time)
+
+async def _challenge_not_available(
+    page: "Page", job: AccountJob, sel_result: AISkillResult,
+    screenshot: bytes, target_month: str, wid: int,
+    mgr: ExcelManager, excel_write_lock: asyncio.Lock,
+    start_time: float | None,
+) -> AISkillResult | None:
+    """4-step challenge when AI says not_available.
+
+    Returns updated sel_result, or None if genuinely unavailable (already logged).
+    """
+    # Step 0: Programmatic contradiction catch (zero AI calls)
+    available = []
+    if sel_result.raw_response:
+        available = sel_result.raw_response.get("available_months", [])
+    log.info(f"[W{wid}] AI says not_available for {target_month}. Visible months: {available}")
+
+    normalized_available = [m.strip() for m in available]
+    target_parts = target_month.split("-")
+    target_alt = f"{target_parts[0]}-{int(target_parts[1])}"
+    if target_month in normalized_available or target_alt in normalized_available:
+        log.warning(
+            f"[W{wid}] CONTRADICTION: AI said not_available but {target_month} "
+            f"is in available_months {available}. Retrying with challenge hint."
+        )
+        sel_result = skill_select_statement(
+            screenshot, target_month, job.account_last4,
+            challenge_hint=(
+                f"You previously identified {target_month} as available in your "
+                f"available_months list. Please find and click the download button "
+                f"for that month's statement."
+            ),
+        )
+
+    # Step 1: AI-driven archive expansion (1 AI call)
+    if sel_result.action == "not_available":
+        expand_result = skill_find_element(
+            screenshot,
+            "button or link labeled 'View All Statements', 'Show More', 'Load More', "
+            "'See All', or similar that expands the statement list to show additional months. "
+            "Do NOT click year/date filter dropdowns, navigation links, or account selectors. "
+            "If the full statement list is already visible, return action 'none'.",
+        )
+        if expand_result.action == "click" and expand_result.target and expand_result.confidence >= 0.75:
+            log.info(f"[W{wid}] Found archive expander: '{expand_result.text}' (conf={expand_result.confidence:.2f})")
+            url_before = page.url
+            await human_click(page, expand_result.target["x"], expand_result.target["y"])
+            await human_delay(2.0, 4.0)
+            if page.url != url_before:
+                log.warning(f"[W{wid}] Archive expand click navigated away! URL: {page.url}")
+            else:
+                screenshot = await wait_and_screenshot(page, f"w{wid}_expanded_statements")
+                sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
+
+    # Step 2: Container-aware scroll + re-ask (1 AI call)
+    if sel_result.action == "not_available":
+        log.info(f"[W{wid}] Scrolling statement container and re-checking")
+        url_before = page.url
+        scrolled = await page.evaluate("""() => {
+            const candidates = document.querySelectorAll(
+                '[class*="statement"], [class*="scroll"], [class*="content"], main, [role="main"]'
+            );
+            for (const c of candidates) {
+                if (c.scrollHeight > c.clientHeight + 50) {
+                    const before = c.scrollTop;
+                    c.scrollBy(0, 400);
+                    return {scrolled: c.scrollTop !== before, element: c.className || c.tagName};
+                }
+            }
+            const before = window.scrollY;
+            window.scrollBy(0, 400);
+            return {scrolled: window.scrollY !== before, element: 'window'};
+        }""")
+        if scrolled and scrolled.get("scrolled"):
+            await human_delay(1.5, 2.5)
+            if page.url == url_before:
+                screenshot = await wait_and_screenshot(page, f"w{wid}_scrolled_statements")
+                sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
+            else:
+                log.warning(f"[W{wid}] Scroll caused navigation! Aborting challenge loop.")
+
+    # Step 3: Final challenge with explicit date-matching hint (1 AI call)
+    if sel_result.action == "not_available":
+        log.info(f"[W{wid}] Final challenge: re-asking with explicit date-format hint")
+        import calendar
+        target_month_num = int(target_month.split("-")[1])
+        target_year = target_month.split("-")[0]
+        month_name = calendar.month_abbr[target_month_num]
+        month_full = calendar.month_name[target_month_num]
+
+        sel_result = skill_select_statement(
+            screenshot, target_month, job.account_last4,
+            challenge_hint=(
+                f"LOOK CAREFULLY: A row showing '{month_name}' or '{month_full}' "
+                f"with year {target_year} matches target {target_month}. "
+                f"For example, '{month_name} 30, {target_year}' IS the {target_month} statement. "
+                f"Click the download icon (arrow/PDF) on that row. "
+                f"If you truly cannot find any row with a {month_full} {target_year} date, "
+                f"return not_available."
+            ),
+        )
+
+    # Step 4: Final acceptance — all challenges exhausted
+    if sel_result.action == "not_available":
+        final_available = (sel_result.raw_response or {}).get("available_months", [])
+        log.warning(
+            f"[W{wid}] Statement genuinely not available for {target_month} "
+            f"after 4 challenge attempts. Final visible months: {final_available}"
+        )
+        await _log_result(mgr, excel_write_lock, job, target_month, "failed", "",
+                         f"Statement not available (challenged 4x, visible: {final_available})",
+                         start_time=start_time)
         async with excel_write_lock:
-            mgr.add_to_retry_queue(job, "Could not select statement")
-        return
+            mgr.add_to_retry_queue(job, f"Statement not available after challenges (visible: {final_available})")
+        return None
 
-    # Auto-learn statement_available_date from closing day
-    if sel_result.raw_response and job.statement_available_date <= 1:
-        closing_day = sel_result.raw_response.get("statement_closing_day")
-        if closing_day and isinstance(closing_day, int) and 1 <= closing_day <= 31:
-            avail_day = min(closing_day + 1, 28)
-            log.info(f"[W{wid}] Auto-learned statement_available_date={avail_day} for #{job.account_last4}")
-            async with excel_write_lock:
-                mgr.update_account_field(
-                    job.client_name, job.bank_name, job.account_last4,
-                    "statement_available_date", avail_day,
-                )
+    return sel_result
 
+
+async def _attempt_download(
+    page: "Page", job: AccountJob, sel_result: AISkillResult,
+    schedule: WindowSchedule, context: "BrowserContext",
+    wid: int, chase_js_downloaded: bool, target_month: str = "",
+) -> Path | None:
+    """5-tier download cascade. Returns PDF path or None."""
     # Track new pages/tabs
     new_pages = await monitor_new_pages(context)
 
     # Click to download (use expect_download to catch direct downloads; fallback for modals)
     log_action(type="download", description=f"clicking statement for {target_month}")
-    try:
-        async with page.expect_download(timeout=10000) as download_info:
-            await human_click(page, sel_result.target["x"], sel_result.target["y"])
-        download = await download_info.value
-        dest = Path(schedule.download_dir) / f"statement_{job.account_last4}.pdf"
-        await download.save_as(str(dest))
-        pdf_path = dest
-        log.info(f"[W{wid}] Direct download captured: {dest.name}")
-    except Exception:
-        # No direct download — probably a modal or new tab opened
-        await human_delay(2.0, 5.0)
+    if chase_js_downloaded:
+        # Chase JS already triggered the download — skip the click, just wait for the file
+        await human_delay(3.0, 5.0)
+        pdf_path = find_downloaded_pdf(schedule.download_dir)
+        if pdf_path:
+            log.info(f"[W{wid}] Chase JS download captured: {pdf_path.name}")
+        else:
+            log.warning(f"[W{wid}] Chase JS download: no PDF found yet, waiting...")
+            await human_delay(5.0, 8.0)
+            pdf_path = find_downloaded_pdf(schedule.download_dir)
+    else:
         pdf_path = None
+
+    if not chase_js_downloaded:
+        try:
+            async with page.expect_download(timeout=10000) as download_info:
+                await human_click(page, sel_result.target["x"], sel_result.target["y"])
+            download = await download_info.value
+            dest = Path(schedule.download_dir) / f"statement_{job.account_last4}.pdf"
+            await download.save_as(str(dest))
+            pdf_path = dest
+            log.info(f"[W{wid}] Direct download captured: {dest.name}")
+        except Exception:
+            # No direct download — probably a modal or new tab opened
+            await human_delay(2.0, 5.0)
+            pdf_path = None
 
     # Check for new tab with PDF
     if not pdf_path and new_pages:
@@ -1418,14 +1645,16 @@ async def _phase_download(
                 await human_delay(2.0, 4.0)
                 pdf_path = find_downloaded_pdf(schedule.download_dir, timeout_seconds=30)
 
-    if not pdf_path:
-        log.warning(f"[W{wid}] Download failed — no PDF found")
-        await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Download timeout", start_time=start_time)
-        async with excel_write_lock:
-            mgr.add_to_retry_queue(job, "Download timeout")
-        return
+    return pdf_path
 
-    # --- VALIDATE ---
+
+async def _validate_and_organize(
+    page: "Page", job: AccountJob, pdf_path: Path,
+    target_month: str, wid: int,
+    mgr: ExcelManager, excel_write_lock: asyncio.Lock,
+    all_jobs: list[AccountJob] | None, start_time: float | None,
+) -> None:
+    """Validate PDF, detect multi-account, organize to output dir. Logs result."""
     log_action(type="validate", description="checking PDF validity")
     if not is_valid_pdf(pdf_path):
         log.warning(f"[W{wid}] Invalid PDF: {pdf_path}")
@@ -1478,6 +1707,81 @@ async def _phase_download(
     )
     log_action(type="download", description="statement saved", success=True)
     log.info(f"[W{wid}] Success: {job.client_name} #{job.account_last4}")
+
+
+# ---------------------------------------------------------------------------
+# Phase 5: Download statement for one account
+# ---------------------------------------------------------------------------
+async def _phase_download(
+    page: Page, job: AccountJob, target_month: str, wid: int,
+    schedule: WindowSchedule, mgr: ExcelManager, excel_write_lock: asyncio.Lock,
+    context: BrowserContext,
+    all_jobs: list[AccountJob] | None = None,
+    start_time: float | None = None,
+) -> None:
+    """Download and validate a single account's statement."""
+    log.info(f"[W{wid}] Downloading statement for {job.client_name} #{job.account_last4}")
+    clear_download_dir(schedule.download_dir)
+
+    # Chase accordion path (0 AI calls, JS only)
+    profile = get_bank_profile(job.bank_name)
+    chase_js_downloaded = False
+    if profile["statements_nav_type"] == "accordion" and job.account_last4:
+        chase_js_downloaded = await _chase_accordion_download(page, job, target_month, wid)
+
+    # AI statement selection (non-Chase or Chase fallback)
+    if not chase_js_downloaded:
+        screenshot = await wait_and_screenshot(page, f"w{wid}_statements")
+        sel_result = skill_select_statement(screenshot, target_month, job.account_last4)
+    else:
+        sel_result = AISkillResult(action="click", confidence=1.0, target={"x": 0, "y": 0}, text=f"Chase JS download {target_month}")
+
+    # Challenge loop for not_available
+    if sel_result.action == "not_available":
+        sel_result = await _challenge_not_available(
+            page, job, sel_result, screenshot, target_month, wid,
+            mgr, excel_write_lock, start_time,
+        )
+        if sel_result is None:
+            return  # failure already logged inside helper
+
+    # Guard: must have a click target
+    if sel_result.action != "click" or not sel_result.target:
+        log.warning(f"[W{wid}] Could not select statement")
+        await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Could not select statement", start_time=start_time)
+        async with excel_write_lock:
+            mgr.add_to_retry_queue(job, "Could not select statement")
+        return
+
+    # Auto-learn closing day (stays inline — 10 lines, side-effect on mgr)
+    if sel_result.raw_response and job.statement_available_date <= 1:
+        closing_day = sel_result.raw_response.get("statement_closing_day")
+        if closing_day and isinstance(closing_day, int) and 1 <= closing_day <= 31:
+            avail_day = min(closing_day + 1, 28)
+            log.info(f"[W{wid}] Auto-learned statement_available_date={avail_day} for #{job.account_last4}")
+            async with excel_write_lock:
+                mgr.update_account_field(
+                    job.client_name, job.bank_name, job.account_last4,
+                    "statement_available_date", avail_day,
+                )
+
+    # Download cascade
+    pdf_path = await _attempt_download(
+        page, job, sel_result, schedule, context, wid, chase_js_downloaded,
+        target_month=target_month,
+    )
+    if not pdf_path:
+        log.warning(f"[W{wid}] Download failed -- no PDF found")
+        await _log_result(mgr, excel_write_lock, job, target_month, "failed", "", "Download timeout", start_time=start_time)
+        async with excel_write_lock:
+            mgr.add_to_retry_queue(job, "Download timeout")
+        return
+
+    # Validate + organize
+    await _validate_and_organize(
+        page, job, pdf_path, target_month, wid,
+        mgr, excel_write_lock, all_jobs, start_time,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1781,17 +2085,10 @@ async def _wait_and_enter_2fa_code(
     await human_delay(0.3, 0.7)
 
     # Click Next/Verify — try iframe-aware button first, then AI vision
-    submitted = False
-    for frame in page.frames:
-        for label in ["Next", "Verify", "Submit", "Continue"]:
-            btn = frame.get_by_role("button", name=label)
-            if await btn.count():
-                await btn.first.click(timeout=5000)
-                log.info(f"[W{wid}] Clicked '{label}' button via iframe selector")
-                submitted = True
-                break
-        if submitted:
-            break
+    submitted = await _click_button_in_frames(
+        page, ["Next", "Verify", "Submit", "Continue"],
+        wid, log_label="2FA submit",
+    )
 
     if not submitted:
         screenshot2 = await wait_and_screenshot(page, f"w{wid}_2fa_submit")

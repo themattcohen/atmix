@@ -1,8 +1,11 @@
 """AI skill — discover bank login URLs via web search + verification."""
 from __future__ import annotations
-from ai_skills.base import runner, AISkillResult, call_vision_skill, _update_cost
-from utils.logger import log
+
 import json
+import anthropic
+
+from ai_skills.base import runner, AISkillResult, call_text_skill, _update_cost
+from utils.logger import log
 
 
 def skill_discover_login_url(bank_name: str) -> AISkillResult:
@@ -15,11 +18,6 @@ def skill_discover_login_url(bank_name: str) -> AISkillResult:
     - action: "found" or "uncertain"
     - text: the URL
     """
-    from ai_skills.base import _get_client, AI_MODEL
-    import anthropic
-
-    client = _get_client()
-
     system_prompt = """You are a bank login URL specialist. Given a bank name, return the most likely consumer/business online banking login URL.
 
 You MUST respond with ONLY a JSON object:
@@ -34,35 +32,15 @@ You MUST respond with ONLY a JSON object:
 Important:
 - Return the DIRECT login page URL, not the bank's homepage
 - For major banks, use the well-known secure login subdomain
-- Examples: Chase → https://secure.chase.com, BofA → https://www.bankofamerica.com/smallbusiness/online-banking/sign-in/
+- Examples: Chase → https://secure.chase.com/web/auth/dashboard, BofA → https://www.bankofamerica.com/smallbusiness/online-banking/sign-in/
 - For credit unions or small banks, provide your best guess
 - Include https://
 
 Respond with JSON only."""
 
     try:
-        response = client.messages.create(
-            model=AI_MODEL,
-            max_tokens=512,
-            system=system_prompt,
-            messages=[{"role": "user", "content": user_prompt}],
-        )
-
-        _update_cost(response.usage)
-
-        text = ""
-        for block in response.content:
-            if hasattr(block, "text"):
-                text += block.text
-
-        json_str = text.strip()
-        if json_str.startswith("```"):
-            lines = json_str.split("\n")
-            json_str = "\n".join(lines[1:])
-            if json_str.endswith("```"):
-                json_str = json_str[:-3].strip()
-
-        parsed = json.loads(json_str)
+        parsed, usage, _model = call_text_skill(system_prompt, user_prompt)
+        _update_cost(usage)
 
         return AISkillResult(
             action=parsed.get("action", "uncertain"),

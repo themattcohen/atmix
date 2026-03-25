@@ -184,6 +184,49 @@ def call_vision_skill(
         if json_str.endswith("```"):
             json_str = json_str[:-3].strip()
 
+    if not json_str:
+        raise json.JSONDecodeError("Empty response from AI", "", 0)
+
+    parsed = json.loads(json_str)
+    return parsed, response.usage, model
+
+
+def call_text_skill(
+    system_prompt: str,
+    user_prompt: str,
+    model: str = AI_MODEL,
+) -> tuple[dict[str, Any], Any, str]:
+    """Text-only Claude API call (no screenshot). Same return contract as call_vision_skill.
+
+    Returns:
+        Tuple of (parsed JSON response dict, usage stats, model used)
+    """
+    client = _get_client()
+
+    response = client.messages.create(
+        model=model,
+        max_tokens=512,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_prompt}],
+    )
+
+    # Extract text content
+    text = ""
+    for block in response.content:
+        if hasattr(block, "text"):
+            text += block.text
+
+    # Parse JSON from response (may be wrapped in ```json blocks)
+    json_str = text.strip()
+    if json_str.startswith("```"):
+        lines = json_str.split("\n")
+        json_str = "\n".join(lines[1:])
+        if json_str.endswith("```"):
+            json_str = json_str[:-3].strip()
+
+    if not json_str:
+        raise json.JSONDecodeError("Empty response from AI", "", 0)
+
     parsed = json.loads(json_str)
     return parsed, response.usage, model
 
@@ -421,16 +464,21 @@ async def verified_click(page, ai_result: AISkillResult, screenshot_before: byte
         return False
 
     x, y = ai_result.target["x"], ai_result.target["y"]
+    url_before = page.url  # Capture URL before click
 
     # Initial click
     await human_click(page, x, y)
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)  # Was 1s — increased for SPAs
     screenshot_after = await wait_and_screenshot(page, "verify_click")
 
     if not screenshots_identical(screenshot_before, screenshot_after):
         return True  # Click worked
 
-    # Try offset clicks
+    # URL change = click worked even if screenshots look similar
+    if page.url != url_before:
+        return True
+
+    # Try offset clicks (also check URL)
     offsets = [(0, -10), (0, 10), (-10, 0), (10, 0)]
     for dx, dy in offsets:
         await human_click(page, x + dx, y + dy)
@@ -438,6 +486,8 @@ async def verified_click(page, ai_result: AISkillResult, screenshot_before: byte
         screenshot_retry = await wait_and_screenshot(page, "verify_click_offset")
         if not screenshots_identical(screenshot_before, screenshot_retry):
             return True  # Offset click worked
+        if page.url != url_before:
+            return True
 
     log.warning(f"verified_click: no page change after clicking ({x}, {y}) + offsets")
     return False

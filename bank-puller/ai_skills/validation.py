@@ -1,8 +1,11 @@
 """AI skill — validate downloaded statement content."""
 from __future__ import annotations
-from ai_skills.base import runner, AISkillResult, _get_client, AI_MODEL, _update_cost
-from utils.logger import log
+
 import json
+import anthropic
+
+from ai_skills.base import runner, AISkillResult, call_text_skill, _update_cost
+from utils.logger import log
 
 
 def skill_validate_statement(
@@ -26,10 +29,6 @@ def skill_validate_statement(
     - text: explanation of what was found
     - raw_response may contain: accounts_found (list of last4s found in PDF)
     """
-    import anthropic
-
-    client = _get_client()
-
     # Truncate PDF text to avoid huge API calls
     max_chars = 3000
     truncated = pdf_text[:max_chars] if len(pdf_text) > max_chars else pdf_text
@@ -59,35 +58,15 @@ PDF text (first {max_chars} chars):
 
 Check:
 1. Does the account number ending match "{expected_last4}"?
-2. Is the statement period for {expected_month}?
-3. Does the name/business on the statement roughly match "{expected_client}"?
+2. Is the statement for {expected_month}? IMPORTANT: For credit card statements, the CLOSING DATE determines the month — a statement closing on Jan 25, 2026 IS a January 2026 statement even if the billing activity covers December. Match on closing date, NOT activity period dates.
+3. Does the name/business on the statement roughly match "{expected_client}"? IMPORTANT: The account number match (check #1) is the DEFINITIVE identifier. If the account number matches, mark the statement as VALID even if the name doesn't match perfectly. Personal names on business accounts are common for credit cards (e.g., "Alex Bossi" for "Bossi Sportswear"). Note name mismatches in your reasoning but do NOT mark as invalid solely due to name mismatch when the account number is correct.
 4. Are there MULTIPLE accounts in this single PDF? (combined statement)
 
 Respond with JSON only."""
 
     try:
-        response = client.messages.create(
-            model=AI_MODEL,
-            max_tokens=512,
-            system=system_prompt,
-            messages=[{"role": "user", "content": user_prompt}],
-        )
-
-        _update_cost(response.usage)
-
-        text = ""
-        for block in response.content:
-            if hasattr(block, "text"):
-                text += block.text
-
-        json_str = text.strip()
-        if json_str.startswith("```"):
-            lines = json_str.split("\n")
-            json_str = "\n".join(lines[1:])
-            if json_str.endswith("```"):
-                json_str = json_str[:-3].strip()
-
-        parsed = json.loads(json_str)
+        parsed, usage, _model = call_text_skill(system_prompt, user_prompt)
+        _update_cost(usage)
 
         return AISkillResult(
             action=parsed.get("action", "uncertain"),

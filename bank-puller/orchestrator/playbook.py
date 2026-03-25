@@ -42,6 +42,10 @@ class Playbook:
     login_steps: list[PlaybookStep] = field(default_factory=list)
     post_login_sequence: list[str] = field(default_factory=list)
     statements_step: PlaybookStep | None = None
+    notes: str = ""
+    observed_2fa_method: str = ""
+    observed_statements_type: str = ""
+    bank_profile_overrides: dict = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -107,6 +111,10 @@ def load_playbook(bank_name: str) -> Playbook | None:
         login_steps=login_steps,
         post_login_sequence=data.get("post_login_sequence", []),
         statements_step=statements_step,
+        notes=data.get("notes", ""),
+        observed_2fa_method=data.get("observed_2fa_method", ""),
+        observed_statements_type=data.get("observed_statements_type", ""),
+        bank_profile_overrides=data.get("bank_profile_overrides", {}),
     )
 
 
@@ -127,6 +135,10 @@ def save_playbook(playbook: Playbook) -> None:
         "login_steps": [asdict(s) for s in playbook.login_steps],
         "post_login_sequence": playbook.post_login_sequence,
         "statements_step": asdict(playbook.statements_step) if playbook.statements_step else None,
+        "notes": playbook.notes,
+        "observed_2fa_method": playbook.observed_2fa_method,
+        "observed_statements_type": playbook.observed_statements_type,
+        "bank_profile_overrides": playbook.bank_profile_overrides,
     }
 
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
@@ -321,4 +333,8 @@ class PlaybookRecorder:
             login_steps=list(self._login_steps),
             post_login_sequence=list(self._post_login_states),
             statements_step=self._statements_step,
+            notes="",
+            observed_2fa_method="",
+            observed_statements_type="",
+            bank_profile_overrides={},
         )
