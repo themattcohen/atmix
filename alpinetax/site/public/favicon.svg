@@ -1,6 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="6" fill="#1B4965"/>
-  <path d="M6 24 L12 12 L15 16 L20 6 L25 14 L27 24" fill="white"/>
-  <path d="M12 12 L14 14.5 L10 14.5 Z" fill="#1B4965"/>
-  <path d="M20 6 L22.5 10 L17.5 10 Z" fill="#1B4965"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <rect width="180" height="180" rx="24" fill="#1B4965"/>
+  <g transform="translate(5, 5)">
+    <!-- Outer circle -->
+    <circle cx="85" cy="85" r="80" fill="none" stroke="white" stroke-width="3"/>
+    <!-- Mountains -->
+    <path d="M25 120 L60 50 L80 75 L105 30 L130 70 L145 120" fill="white"/>
+    <!-- Snow caps -->
+    <path d="M60 50 L68 62 L52 62 Z" fill="#1B4965"/>
+    <path d="M105 30 L115 46 L95 46 Z" fill="#1B4965"/>
+    <!-- Sun -->
+    <circle cx="78" cy="72" r="8" fill="#1B4965" stroke="white" stroke-width="1.5"/>
+    <!-- Trees -->
+    <path d="M30 120 L35 105 L32 108 L37 95 L34 98 L38 87 L42 98 L39 95 L44 108 L41 105 L46 120 Z" fill="white"/>
+    <path d="M48 120 L52 108 L50 110 L54 100 L52 102 L55 93 L58 102 L56 100 L60 110 L58 108 L62 120 Z" fill="white"/>
+    <path d="M118 120 L122 108 L120 110 L124 100 L122 102 L125 93 L128 102 L126 100 L130 110 L128 108 L132 120 Z" fill="white"/>
+    <path d="M134 120 L138 108 L136 110 L140 100 L138 102 L141 93 L144 102 L142 100 L146 110 L144 108 L148 120 Z" fill="white"/>
+    <!-- Water lines -->
+    <line x1="25" y1="130" x2="145" y2="130" stroke="white" stroke-width="3"/>
+    <line x1="30" y1="137" x2="140" y2="137" stroke="white" stroke-width="2.5"/>
+    <line x1="35" y1="143" x2="135" y2="143" stroke="white" stroke-width="2"/>
+    <line x1="40" y1="149" x2="130" y2="149" stroke="white" stroke-width="1.5"/>
+  </g>
 </svg>

@@ -157,7 +157,7 @@ export default function CastleRockPage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Schedule a free 15-minute consultation to discuss your tax
+              Schedule a free 30-minute consultation to discuss your tax
               situation. Whether you&apos;re launching a new business in Castle
               Rock&apos;s growing market, managing construction or real estate
               income, or simply want a preparer who understands the Douglas

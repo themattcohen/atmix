@@ -149,7 +149,7 @@ export default function EnglewoodPage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Schedule a free 15-minute consultation to discuss your tax
+              Schedule a free 30-minute consultation to discuss your tax
               situation. Whether you&apos;re a healthcare professional sorting
               out your benefits package, a South Broadway business owner, or an
               Englewood homeowner with rental income, we&apos;ll find the right

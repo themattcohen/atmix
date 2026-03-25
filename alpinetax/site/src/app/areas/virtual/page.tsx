@@ -179,7 +179,7 @@ export default function VirtualPage() {
               Get Started
             </h2>
             <p className="text-text-secondary">
-              Book a free 15-minute consultation. We&apos;ll discuss your tax
+              Book a free 30-minute consultation. We&apos;ll discuss your tax
               situation, recommend the right service, and set up your TaxDome
               portal so you can get started right away. No commitment, no
               pressure — just a straightforward conversation about how we can

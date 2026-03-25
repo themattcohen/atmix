@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 180" fill="none">
   <!-- Mountain emblem circle -->
   <g transform="translate(10, 5)">
     <!-- Outer circle -->
@@ -7,11 +7,11 @@
     <!-- Mountains -->
     <path d="M25 120 L60 50 L80 75 L105 30 L130 70 L145 120" fill="#1B1B1B"/>
     <!-- Snow caps -->
-    <path d="M60 50 L68 62 L52 62 Z" fill="#F5F1EB"/>
-    <path d="M105 30 L115 46 L95 46 Z" fill="#F5F1EB"/>
+    <path d="M60 50 L68 62 L52 62 Z" fill="white"/>
+    <path d="M105 30 L115 46 L95 46 Z" fill="white"/>
 
     <!-- Sun -->
-    <circle cx="78" cy="72" r="8" fill="#F5F1EB" stroke="#1B1B1B" stroke-width="1.5"/>
+    <circle cx="78" cy="72" r="8" fill="white" stroke="#1B1B1B" stroke-width="1.5"/>
 
     <!-- Trees -->
     <path d="M30 120 L35 105 L32 108 L37 95 L34 98 L38 87 L42 98 L39 95 L44 108 L41 105 L46 120 Z" fill="#1B1B1B"/>
