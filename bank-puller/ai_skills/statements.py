@@ -50,7 +50,7 @@ Respond with JSON only."""
     )
 
 
-def skill_select_statement(screenshot: bytes, target_month: str, account_last4: str = "") -> AISkillResult:
+def skill_select_statement(screenshot: bytes, target_month: str, account_last4: str = "", challenge_hint: str = "") -> AISkillResult:
     """Select the correct statement for the target month from a list.
 
     Args:
@@ -76,6 +76,8 @@ You MUST respond with ONLY a JSON object:
 
     acct_hint = f"\nAccount ending in: {account_last4}" if account_last4 else ""
 
+    hint_block = f"\n\nADDITIONAL CONTEXT: {challenge_hint}" if challenge_hint else ""
+
     user_prompt = f"""Find the statement for month: {target_month}{acct_hint}
 
 Look for:
@@ -83,12 +85,22 @@ Look for:
 - PDF download links or view buttons next to the target month
 - Statement period end dates (e.g., "01/01/2026 - 01/31/2026") — extract the closing day
 - If there's an account selector dropdown, note which account is selected
+- Date-based row labels: "Jan 30, 2026" means the January 2026 statement.
+  The day number is irrelevant — only match year and month.
+  Examples: "Jan 30, 2026" -> 2026-01, "Feb 27, 2026" -> 2026-02, "Dec 15, 2025" -> 2025-12
+- Dates may appear as: "Jan 30, 2026", "January 2026", "01/30/2026", "1/30/26"
+- Look for download icons (arrow-down, PDF icon) in the same row as the date
 
 The month format is YYYY-MM. Match "2026-02" to February 2026.
 
+Before returning "not_available":
+- Have you checked ALL visible rows in the statement table?
+- Could any date on screen match the target month in a different format?
+- Only return "not_available" if you are certain no row matches the target month
+
 If the target month's statement is NOT in the list (hasn't been generated yet), return action "not_available" and list what months ARE available.
 
-If you need to click a "Download" or "PDF" button next to the month, return those coordinates.
+If you need to click a "Download" or "PDF" button next to the month, return those coordinates.{hint_block}
 
 Respond with JSON only."""
 

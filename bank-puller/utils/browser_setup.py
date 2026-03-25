@@ -36,10 +36,12 @@ async def launch_hardened_browser(profile_name: str, download_dir: str | None = 
             "--disable-features=IsolateOrigins,site-per-process",
             "--no-first-run",
             "--no-default-browser-check",
+            "--enable-do-not-track",
         ],
         "locale": BROWSER_LOCALE,
         "timezone_id": BROWSER_TIMEZONE,
         "ignore_https_errors": False,
+        "extra_http_headers": {"DNT": "1"},
     }
 
     if using_system_chrome:
@@ -50,6 +52,15 @@ async def launch_hardened_browser(profile_name: str, download_dir: str | None = 
         launch_args["downloads_path"] = download_dir
 
     context = await pw.chromium.launch_persistent_context(**launch_args)
+
+    # Runtime DNT verification — Citi silently rejects login when DNT is off
+    page = context.pages[0] if context.pages else await context.new_page()
+    dnt_value = await page.evaluate("() => navigator.doNotTrack")
+    if dnt_value != "1":
+        log.warning(f"DNT not applied by launch args (got {dnt_value!r}), forcing via context headers")
+        await context.set_extra_http_headers({"DNT": "1"})
+    else:
+        log.info(f"DNT verified: {dnt_value!r}")
 
     return context
 

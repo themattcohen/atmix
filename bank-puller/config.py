@@ -18,6 +18,9 @@ DEBUG_SCREENSHOTS_DIR = BASE_DIR / "debug-screenshots"
 LOGS_DIR = BASE_DIR / "logs"
 PLAYBOOKS_DIR = BASE_DIR / "playbooks"
 
+# Override target month (set via --month flag). None = auto (previous month).
+TARGET_MONTH_OVERRIDE: str | None = None
+
 # ---------------------------------------------------------------------------
 # Playbook settings
 # ---------------------------------------------------------------------------

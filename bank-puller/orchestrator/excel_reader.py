@@ -295,27 +295,27 @@ class ExcelManager:
 
     @staticmethod
     def _normalize_tfa_config(has_2fa, tfa_method, tfa_detail, client_name, bank_name):
-        """Validate and self-heal 2FA config. Returns (method, detail)."""
+        """Validate and self-heal 2FA config. Returns (method, detail, changed)."""
         if not has_2fa:
-            return tfa_method, tfa_detail
+            return tfa_method, tfa_detail, False
         method = tfa_method.lower().strip()
         detail = tfa_detail.strip()
         tag = f"[2FA] {client_name}/{bank_name}:"
         if not method:
             log.warning(f"{tag} 2fa=y but method is blank")
-            return "", detail
+            return "", detail, False
         if method == "sms":
             digits_only = re.sub(r"\D", "", detail)
             if len(digits_only) >= 10:
                 log.warning(f"{tag} phone number '{detail}' -> normalizing to 'dialpad'")
-                return method, "dialpad"
+                return method, "dialpad", True
             if detail.lower() != "dialpad" and detail:
                 log.warning(f"{tag} sms detail '{detail}' -- expected 'dialpad'")
         if method == "totp":
             clean = re.sub(r"[^A-Za-z2-7=]", "", detail)
             if len(clean) < 16:
                 log.warning(f"{tag} totp detail '{detail}' doesn't look like base32")
-        return method, detail
+        return method, detail, False
 
     @staticmethod
     def _cell_int(value: object, default: int = 0) -> int:
@@ -356,7 +356,7 @@ class ExcelManager:
             raw_detail = self._cell_str(values.get("2fa_detail"))
             has_2fa = self._parse_bool(values.get("2fa"))
             bank_name = self._cell_str(values.get("bank_name"))
-            norm_method, norm_detail = self._normalize_tfa_config(
+            norm_method, norm_detail, tfa_changed = self._normalize_tfa_config(
                 has_2fa, raw_method, raw_detail, client_name, bank_name,
             )
 
@@ -382,6 +382,12 @@ class ExcelManager:
                 notes=self._cell_str(values.get("notes")),
             )
             jobs.append(job)
+            if tfa_changed:
+                if "2fa_detail" in headers:
+                    row[headers["2fa_detail"] - 1].value = norm_detail
+                    log.info(f"[2FA] {client_name}/{bank_name}: wrote normalized 2fa_detail back to Excel")
+                else:
+                    log.warning(f"[2FA] {client_name}/{bank_name}: 2fa_detail column missing, cannot persist normalization")
             if job.statement_available_date <= 1:
                 log.warning(f"[Data] {client_name}/{bank_name} #{last4}: statement_available_date not set -- will auto-learn on first download")
 
@@ -400,18 +406,15 @@ class ExcelManager:
         # Count existing retries for this account + month combo
         existing_count = 0
         target_month = datetime.now().strftime("%Y-%m")
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            if row is None:
-                continue
-            # Match on client, bank, last4
-            r_client = self._cell_str(row[headers.get("client_name", 2) - 1] if len(row) >= 2 else None)
-            r_bank = self._cell_str(row[headers.get("bank_name", 3) - 1] if len(row) >= 3 else None)
-            r_last4 = self._normalize_last4(row[headers.get("account_last4", 4) - 1] if len(row) >= 4 else None)
-            r_month = self._cell_str(row[headers.get("target_month", 5) - 1] if len(row) >= 5 else None)
+        for row in ws.iter_rows(min_row=2, values_only=False):
+            values = {col_name: row[idx - 1].value for col_name, idx in headers.items()}
+            r_client = self._cell_str(values.get("client_name"))
+            r_bank = self._cell_str(values.get("bank_name"))
+            r_last4 = self._normalize_last4(values.get("account_last4"))
+            r_month = self._cell_str(values.get("target_month"))
             if (r_client == job.client_name and r_bank == job.bank_name
                     and r_last4 == job.account_last4 and r_month == target_month):
-                r_count = self._cell_int(row[headers.get("retry_count", 7) - 1] if len(row) >= 7 else None)
-                existing_count = max(existing_count, r_count)
+                existing_count = max(existing_count, self._cell_int(values.get("retry_count")))
 
         retry_count = existing_count + 1
         status = "pending" if retry_count <= MAX_RETRY_COUNT else "abandoned"
@@ -490,13 +493,15 @@ class ExcelManager:
         """Update a single field in the Accounts sheet for a matching row.
 
         Supported fields: login_url, last_successful_login, status,
-        2fa_sender, url_verified_date.
+        2fa_sender, 2fa_method, 2fa_detail, url_verified_date,
+        statement_available_date.
 
         Returns True if a matching row was found and updated.
         """
         allowed_fields = {
             "login_url", "last_successful_login", "status",
             "2fa_sender", "url_verified_date", "statement_available_date",
+            "2fa_method", "2fa_detail",
         }
         if field_name not in allowed_fields:
             raise ValueError(

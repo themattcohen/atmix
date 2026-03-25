@@ -10,7 +10,10 @@ from utils.logger import setup_logger, log
 
 
 def get_target_month(today: date) -> date:
-    """Previous calendar month as date(year, month, 1)."""
+    """Previous calendar month as date(year, month, 1), or config override."""
+    if config.TARGET_MONTH_OVERRIDE:
+        parts = config.TARGET_MONTH_OVERRIDE.split("-")
+        return date(int(parts[0]), int(parts[1]), 1)
     if today.month == 1:
         return date(today.year - 1, 12, 1)
     return date(today.year, today.month - 1, 1)
@@ -30,6 +33,8 @@ def parse_args() -> argparse.Namespace:
                         help="Process only this bank (used with --account)")
     parser.add_argument("--retry-only", action="store_true",
                         help="Only process items in the Retry Queue")
+    parser.add_argument("--no-backoff", action="store_true",
+                        help="Ignore retry backoff — process all matching jobs even if recently failed")
     parser.add_argument("--keep-screenshots", action="store_true",
                         help="Don't delete debug screenshots after run")
     parser.add_argument("--watch", action="store_true",
@@ -38,6 +43,8 @@ def parse_args() -> argparse.Namespace:
                         help="Ignore existing playbooks, re-learn all bank flows")
     parser.add_argument("--setup-dialpad", action="store_true",
                         help="Open Dialpad browser for manual login, then save profile")
+    parser.add_argument("--month", type=str, default=None,
+                        help="Override target month (yyyy-mm), e.g. 2026-01")
     return parser.parse_args()
 
 
@@ -48,7 +55,8 @@ def should_attempt(job, today, mgr) -> bool:
 
     if mgr.has_success(job.client_name, job.bank_name, job.account_last4, target_str):
         return False
-    if today.day < job.statement_available_date:
+    # Skip if statement isn't available yet (only for auto target month, not --month override)
+    if not config.TARGET_MONTH_OVERRIDE and today.day < job.statement_available_date:
         return False
     if job.tfa_target == "client":
         return False
@@ -104,7 +112,11 @@ def _filter_jobs(jobs, args, mgr, today):
         )
     else:
         # Normal run: skip jobs with pending retry whose backoff hasn't elapsed
-        backoff_skips = _get_retry_backoff_skips(mgr, today)
+        if args.no_backoff:
+            log.info("Retry backoff disabled (--no-backoff)")
+            backoff_skips = set()
+        else:
+            backoff_skips = _get_retry_backoff_skips(mgr, today)
         if backoff_skips:
             before = len(jobs)
             jobs = [
@@ -151,8 +163,6 @@ def dry_run(args):
 
     with ExcelManager() as mgr:
         accounts = mgr.read_accounts()
-        total = len(accounts)
-
         already_done = []
         skipped_client_2fa = []
         skipped_not_available = []
@@ -160,7 +170,16 @@ def dry_run(args):
         to_process = []
         stale_creds = []
 
-        for job in accounts:
+        # Apply --account and --bank filters before categorizing
+        filtered = list(accounts)
+        if args.account:
+            needle = args.account.lower()
+            filtered = [j for j in filtered if needle in j.client_name.lower()]
+        if args.bank:
+            needle = args.bank.lower()
+            filtered = [j for j in filtered if needle in j.bank_name.lower()]
+
+        for job in filtered:
             if mgr.has_success(job.client_name, job.bank_name, job.account_last4, target_str):
                 already_done.append(job)
             elif job.tfa_target == "client":
@@ -196,8 +215,13 @@ def dry_run(args):
 
     print(f"\nDRY RUN — no actions will be taken")
     print("=" * 50)
+    total = len(filtered)
+    filter_note = ""
+    if args.account or args.bank:
+        filter_note = f" (filtered: account={args.account or '*'}, bank={args.bank or '*'})"
+
     print(f"Target month: {target_str}")
-    print(f"Accounts in spreadsheet: {total}")
+    print(f"Accounts matched: {total}{filter_note}")
     print(f"Already downloaded: {len(already_done)}")
     print(f"Skipped (2FA=client): {len(skipped_client_2fa)}")
     print(f"Skipped (before available date): {len(skipped_not_available)}")
@@ -233,7 +257,28 @@ async def setup_dialpad():
     page = ctx.pages[0] if ctx.pages else await ctx.new_page()
     await page.goto("https://dialpad.com/app")
 
-    input("\nPress Enter when you're logged in and ready. Profile will be saved.")
+    try:
+        input("\nPress Enter when you're logged in and ready. Profile will be saved.")
+    except EOFError:
+        # Running without stdin (background mode) — poll until login detected
+        print("No stdin available — waiting up to 5 minutes for Dialpad login...")
+        import time as _time
+        for i in range(60):  # 5 min = 60 x 5s
+            await asyncio.sleep(5)
+            url = page.url
+            if "dialpad.com/app" in url and "login" not in url.lower():
+                # Check for messages view elements
+                try:
+                    msgs = page.get_by_text("Messages")
+                    if await msgs.count():
+                        print(f"Dialpad login detected after {(i+1)*5}s")
+                        break
+                except Exception:
+                    pass
+            if i % 6 == 0:
+                print(f"  Waiting... ({(i+1)*5}s elapsed, url={url[:60]})")
+        else:
+            print("Timeout waiting for Dialpad login — saving profile anyway")
     print("Dialpad profile saved to browser-profiles/dialpad/")
     await ctx.close()
 
@@ -280,6 +325,9 @@ async def main_async(args):
 
 def main():
     args = parse_args()
+
+    if args.month:
+        config.TARGET_MONTH_OVERRIDE = args.month
 
     if args.debug:
         config.DEBUG_SCREENSHOTS = True

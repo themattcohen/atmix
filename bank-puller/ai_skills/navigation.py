@@ -9,13 +9,14 @@ def skill_classify_page(screenshot: bytes, possible_states: list[str] | None = N
     Returns AISkillResult with page_state set to one of:
     dashboard, login, 2fa_prompt, 2fa_method_selection, security_question,
     virtual_keyboard, obstacle, locked, password_change, error, loading,
-    statements, unknown
+    statements, sign_on_method, enrollment, unknown
     """
     if possible_states is None:
         possible_states = [
             "dashboard", "login", "2fa_prompt", "2fa_method_selection",
             "security_question", "virtual_keyboard", "obstacle", "locked",
-            "password_change", "error", "loading", "statements", "unknown"
+            "password_change", "error", "loading", "statements",
+            "sign_on_method", "enrollment", "unknown"
         ]
 
     states_list = ", ".join(possible_states)
@@ -50,6 +51,8 @@ Key indicators:
 - "error": Error message (login failed, session expired, etc.)
 - "loading": Page is still loading (spinner, skeleton, blank content)
 - "statements": Shows documents/statements page with downloadable items
+- "sign_on_method": Page offering a choice of SIGN-ON methods (QR code vs password, biometric vs password). NOT about receiving a 2FA code — about HOW to authenticate.
+- "enrollment": Enrollment, registration, or activation page asking to set up account access, enter SSN, account number, etc. NOT a login form.
 - "unknown": Cannot determine
 
 Respond with JSON only."""

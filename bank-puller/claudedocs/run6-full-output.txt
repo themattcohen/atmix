@@ -1,0 +1,247 @@
+10:21:39 [WARNING] [2FA] Goji/Chase Business: phone number '17205081992' -> normalizing to 'dialpad'
+10:21:39 [WARNING] [Data] Goji/Chase Business #6752: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] Goji/Chase Business: phone number '17205081992' -> normalizing to 'dialpad'
+10:21:39 [WARNING] [Data] Goji/Chase Business #0592: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] Goji/Chase Business: totp detail '' doesn't look like base32
+10:21:39 [WARNING] [Data] Goji/Chase Business #5566: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] Goji/Chase Business: totp detail '' doesn't look like base32
+10:21:39 [WARNING] [Data] Goji/Chase Business #8553: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] Goji/Eastwest Bank: 2fa=y but method is blank
+10:21:39 [WARNING] [Data] Goji/Eastwest Bank #8215: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] Goji/Eastwest Bank: 2fa=y but method is blank
+10:21:39 [WARNING] [Data] Goji/Eastwest Bank #8249: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [Data] Goji/American Express #22009: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] FOTM/Mercury: totp detail 'one time password' doesn't look like base32
+10:21:39 [WARNING] [Data] FOTM/Mercury #5611: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] FOTM/Mercury: totp detail 'one time password' doesn't look like base32
+10:21:39 [WARNING] [Data] FOTM/Mercury #5993: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] FOTM/UBS: sms detail 'Austin's phone' -- expected 'dialpad'
+10:21:39 [WARNING] [Data] FOTM/UBS #25482: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [2FA] FOTM/Chase Business: phone number '17205081992' -> normalizing to 'dialpad'
+10:21:39 [WARNING] [Data] FOTM/Chase Business #4631: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [Data] Bossi Sportswear/Bank of America #4408: statement_available_date not set -- will auto-learn on first download
+10:21:39 [WARNING] [Data] Bossi Sportswear/Citibank #5394: statement_available_date not set -- will auto-learn on first download
+10:21:39 [INFO] Processing 14 accounts
+10:21:39 [INFO] Resources -- RAM: 76% (24715MB/32316MB), CPU: 26%
+10:21:39 [INFO] Launching Dialpad browser window...
+10:21:39 [INFO] Browser: system Chrome (channel={BROWSER_CHANNEL}) via Patchright
+10:21:40 [INFO] Dialpad window ready — ensure it's logged in to messages view.
+10:21:50 [WARNING] Dialpad: selector for 'Compound Accounting' failed, trying AI fallback
+10:21:54 [WARNING] Low confidence 0.10 (attempt 1)
+10:21:57 [WARNING] Low confidence 0.10 (attempt 2)
+10:22:00 [WARNING] Low confidence 0.10 (attempt 3)
+10:22:00 [WARNING] Dialpad: AI could not find department — manual navigation may be needed
+10:22:00 [INFO] Window 1: 9 accounts (American Express, Mercury, Chase Business, Bank of America)
+10:22:00 [INFO] Browser: system Chrome (channel={BROWSER_CHANNEL}) via Patchright
+10:22:01 [INFO] Window 2: 5 accounts (UBS, Eastwest Bank, Citibank)
+10:22:01 [INFO] Browser: system Chrome (channel={BROWSER_CHANNEL}) via Patchright
+10:22:01 [WARNING] [W1] Bank 'Chase Business' has 3 distinct usernames — this causes 3 sequential login attempts. If these share one login, consolidate in clients.xlsx. Usernames: ['ascaustingoji1', 'ascaustingoji2', 'AustinYu25']
+10:22:01 [INFO] [W1] Starting Chase Business (2 accounts)
+10:22:01 [INFO] [W1] Mode: learn
+10:22:01 [INFO] [W1] Navigating to Chase Business...
+10:22:01 [INFO] [W1] Starting Chase Business (2 accounts)
+10:22:01 [INFO] [W1] Mode: learn
+10:22:01 [INFO] [W1] Navigating to Chase Business...
+10:22:01 [INFO] [W1] Starting Chase Business (1 accounts)
+10:22:01 [INFO] [W1] Mode: learn
+10:22:01 [INFO] [W1] Navigating to Chase Business...
+10:22:02 [INFO] [W1] Starting Mercury (2 accounts)
+10:22:02 [INFO] [W1] Mode: learn
+10:22:02 [INFO] [W1] Navigating to Mercury...
+10:22:02 [WARNING] [W2] Bank 'Citibank' has 2 distinct usernames — this causes 2 sequential login attempts. If these share one login, consolidate in clients.xlsx. Usernames: ['bossisprtswr', '1tarynshumway']
+10:22:02 [INFO] [W2] Starting Eastwest Bank (2 accounts)
+10:22:02 [INFO] [W2] Mode: learn
+10:22:02 [INFO] [W2] Navigating to Eastwest Bank...
+10:22:11 [INFO] [W2] Readiness 1/8: login (conf=0.99)
+10:22:16 [INFO] [W1] Readiness 1/8: login (conf=0.99)
+10:22:54 [WARNING] verified_click: no page change after clicking (818, 594) + offsets
+10:23:22 [WARNING] verified_click: no page change after clicking (952, 552) + offsets
+10:23:31 [INFO] [W2] Page state: login (confidence: 0.85)
+10:23:31 [WARNING] [W2] Eastwest Bank: still on login page after submit — credentials may be wrong
+10:23:31 [INFO] [W2] Starting Citibank (1 accounts)
+10:23:31 [INFO] [W2] Mode: replay (playbook v1, 1 successes)
+10:23:31 [INFO] [W2] Navigating to Citibank...
+10:23:49 [INFO] [W2] Readiness 1/8: login (conf=0.99)
+10:24:11 [WARNING] verified_click: no page change after clicking (818, 594) + offsets
+10:24:28 [INFO] [W1] Page state: 2fa_prompt (confidence: 0.97)
+10:24:28 [ERROR] [W1] TOTP generation failed for Mercury: Non-base32 digit found — check 2fa_detail in Excel
+10:24:28 [INFO] [W1] Starting American Express (1 accounts)
+10:24:28 [INFO] [W1] Mode: learn
+10:24:28 [INFO] [W1] Navigating to American Express...
+10:24:38 [INFO] [W2] Page state: 2fa_method_selection (confidence: 0.85)
+10:24:44 [INFO] [W1] Readiness 1/8: login (conf=0.99)
+10:24:55 [WARNING] JSON parse error (attempt 1): Expecting value: line 1 column 1 (char 0)
+10:25:02 [WARNING] JSON parse error (attempt 2): Expecting value: line 1 column 1 (char 0)
+10:25:10 [WARNING] JSON parse error (attempt 3): Expecting value: line 1 column 1 (char 0)
+10:25:10 [WARNING] [W2] Could not select 2FA option
+10:25:10 [INFO] [W2] Starting Citibank (1 accounts)
+10:25:10 [INFO] [W2] Mode: replay (playbook v1, 1 successes)
+10:25:10 [INFO] [W2] Navigating to Citibank...
+10:25:26 [INFO] [W2] Readiness 1/8: login (conf=0.99)
+10:25:55 [INFO] [W2] Page state: 2fa_method_selection (confidence: 0.85)
+10:26:03 [INFO] [W1] Page state: dashboard (confidence: 0.99)
+10:26:13 [WARNING] JSON parse error (attempt 1): Expecting value: line 1 column 1 (char 0)
+10:26:20 [WARNING] JSON parse error (attempt 2): Expecting value: line 1 column 1 (char 0)
+10:26:29 [WARNING] JSON parse error (attempt 3): Expecting value: line 1 column 1 (char 0)
+10:26:29 [WARNING] [W2] Could not select 2FA option
+10:26:29 [INFO] [W2] Starting UBS (1 accounts)
+10:26:29 [INFO] [W2] Mode: learn
+10:26:29 [INFO] [W2] Navigating to UBS...
+10:26:41 [WARNING] Low confidence 0.60 (attempt 1)
+10:26:45 [WARNING] Low confidence 0.60 (attempt 2)
+10:26:48 [WARNING] Low confidence 0.60 (attempt 3)
+10:26:48 [WARNING] [W1] Could not find statements page link
+10:26:48 [INFO] [W1] Starting Bank of America (1 accounts)
+10:26:48 [INFO] [W1] Mode: learn
+10:26:48 [INFO] [W1] Navigating to Bank of America...
+10:27:00 [INFO] [W1] Readiness 1/8: login (conf=0.95)
+10:27:28 [INFO] [W2] Readiness 1/8: login (conf=0.99)
+10:28:01 [INFO] [W1] Page state: obstacle (confidence: 0.85)
+10:28:16 [INFO] [W1] Page state: unknown (confidence: 0.85)
+10:28:16 [WARNING] [W1] Unknown page state: unknown (stuck count: 2)
+10:28:25 [INFO] [W1] Page state: unknown (confidence: 0.85)
+10:28:25 [WARNING] [W1] Unknown page state: unknown (stuck count: 3)
+10:28:36 [INFO] [W1] Page state: unknown (confidence: 0.85)
+10:28:36 [WARNING] [W1] Unknown page state: unknown (stuck count: 4)
+10:28:36 [INFO] [W1] Stuck for 4 iterations, trying Escape + reload
+10:28:51 [INFO] [W1] Page state: unknown (confidence: 0.95)
+10:28:51 [WARNING] [W1] Unknown page state: unknown (stuck count: 1)
+10:29:00 [INFO] [W1] Page state: unknown (confidence: 0.95)
+10:29:00 [WARNING] [W1] Unknown page state: unknown (stuck count: 2)
+10:29:01 [WARNING] verified_click: no page change after clicking (942, 646) + offsets
+10:29:09 [INFO] [W1] Page state: unknown (confidence: 0.95)
+10:29:09 [WARNING] [W1] Unknown page state: unknown (stuck count: 3)
+10:29:21 [INFO] [W1] Page state: unknown (confidence: 0.95)
+10:29:21 [WARNING] [W1] Unknown page state: unknown (stuck count: 4)
+10:29:21 [INFO] [W1] Stuck for 4 iterations, trying Escape + reload
+10:29:34 [INFO] [W1] Page state: unknown (confidence: 0.95)
+10:29:34 [WARNING] [W1] Unknown page state: unknown (stuck count: 1)
+10:29:42 [INFO] [W1] Page state: unknown (confidence: 0.95)
+10:29:42 [WARNING] [W1] Unknown page state: unknown (stuck count: 2)
+10:29:49 [INFO] [W2] Page state: 2fa_method_selection (confidence: 0.92)
+10:29:49 [WARNING] [W1] Failed to reach dashboard after 10 iterations
+10:30:08 [WARNING] verified_click: no page change after clicking (828, 270) + offsets
+10:32:16 [WARNING] Dialpad SMS poll timed out after 120s
+10:32:16 [WARNING] [W2] No 2FA code received
+10:32:16 [INFO] Run complete — 637s elapsed, 54 AI calls, $0.27 estimated cost
+
+============================================================
+  ACTION LOG SUMMARY — Run 20260319_102139_105348
+  Log file: C:\Users\1matt\OneDrive\Documents\atmix\bank-puller\logs\20260319_102139_105348.jsonl
+============================================================
+
+  AI Calls by Skill:
+  Skill                                Calls     Cost
+  ----------------------------------- ------ --------
+  skill_classify_page                     24 $ 0.1530
+  skill_find_element                      20 $ 0.0740
+  skill_find_statements_page               1 $ 0.0138
+  skill_select_2fa_option                  3 $ 0.0059
+  skill_handle_obstacle                    1 $ 0.0046
+  skill_read_2fa_code                      1 $ 0.0012
+  ----------------------------------- ------ --------
+  TOTAL                                   50 $ 0.2525
+
+  Time by Bank:
+  Bank                                  Duration
+  ----------------------------------- ----------
+  Bank of America                         88.7s
+  Citibank                                69.8s
+  American Express                        44.3s
+  UBS                                     31.8s
+  Eastwest Bank                           23.0s
+  Mercury                                 22.5s
+  Chase Business                           0.0s
+
+  Playbook Stats:
+    Hits: 8  Misses: 0  Hit rate: 100%
+    Estimated savings: ~$0.08
+
+  Action Types: {'session_start': 10, 'navigate': 10, 'screenshot': 103, 'ai_skill': 50, 'click': 43, 'state_detect': 16, 'playbook_hit': 8, '2fa_trigger': 4}
+  Total records: 244
+============================================================
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x000001BC20941580>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 116, in __del__
+    _warn(f"unclosed transport {self!r}", ResourceWarning, source=self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 80, in __repr__
+    info.append(f'fd={self._sock.fileno()}')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_utils.py", line 102, in fileno
+    raise ValueError("I/O operation on closed pipe")
+ValueError: I/O operation on closed pipe
+Exception ignored in: <function BaseSubprocessTransport.__del__ at 0x000001BC2090BD80>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 125, in __del__
+    _warn(f"unclosed transport {self!r}", ResourceWarning, source=self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 70, in __repr__
+    info.append(f'stdin={stdin.pipe}')
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 80, in __repr__
+    info.append(f'fd={self._sock.fileno()}')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_utils.py", line 102, in fileno
+    raise ValueError("I/O operation on closed pipe")
+ValueError: I/O operation on closed pipe
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x000001BC20941580>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 116, in __del__
+    _warn(f"unclosed transport {self!r}", ResourceWarning, source=self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 80, in __repr__
+    info.append(f'fd={self._sock.fileno()}')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_utils.py", line 102, in fileno
+    raise ValueError("I/O operation on closed pipe")
+ValueError: I/O operation on closed pipe
+Exception ignored in: <function BaseSubprocessTransport.__del__ at 0x000001BC2090BD80>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 126, in __del__
+    self.close()
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 104, in close
+    proto.pipe.close()
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 109, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 762, in call_soon
+    self._check_closed()
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 520, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x000001BC20941580>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 116, in __del__
+    _warn(f"unclosed transport {self!r}", ResourceWarning, source=self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 80, in __repr__
+    info.append(f'fd={self._sock.fileno()}')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_utils.py", line 102, in fileno
+    raise ValueError("I/O operation on closed pipe")
+ValueError: I/O operation on closed pipe
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x000001BC20941580>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 116, in __del__
+    _warn(f"unclosed transport {self!r}", ResourceWarning, source=self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 80, in __repr__
+    info.append(f'fd={self._sock.fileno()}')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_utils.py", line 102, in fileno
+    raise ValueError("I/O operation on closed pipe")
+ValueError: I/O operation on closed pipe
+Exception ignored in: <function BaseSubprocessTransport.__del__ at 0x000001BC2090BD80>
+Traceback (most recent call last):
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 125, in __del__
+    _warn(f"unclosed transport {self!r}", ResourceWarning, source=self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_subprocess.py", line 70, in __repr__
+    info.append(f'stdin={stdin.pipe}')
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 80, in __repr__
+    info.append(f'fd={self._sock.fileno()}')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1matt\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_utils.py", line 102, in fileno
+    raise ValueError("I/O operation on closed pipe")
+ValueError: I/O operation on closed pipe

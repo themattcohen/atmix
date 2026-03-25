@@ -96,9 +96,15 @@ async def poll_dialpad_sms(
 
         result = skill_read_2fa_code(screenshot, sender_hint, skip_codes=codes_to_skip)
 
+        # Log raw AI response for debugging OCR misreads
+        if result.raw_response:
+            log.debug(f"Dialpad AI raw response: {result.raw_response}")
+
         if result.action == "found" and result.text:
-            # Ensure we only return digits
+            # Log pre- and post-extraction for debugging
             digits = re.sub(r"\D", "", result.text)
+            safe_text = result.text.encode("ascii", errors="replace").decode("ascii")
+            log.info(f"Dialpad AI returned text='{safe_text}' -> digits='{digits}' ({len(digits)} digits)")
             if 6 <= len(digits) <= 8:
                 # Skip previously-used codes
                 if digits in codes_to_skip:
@@ -108,7 +114,8 @@ async def poll_dialpad_sms(
                 sender = result.raw_response.get("sender", "") if result.raw_response else ""
                 log.info(f"SMS 2FA code received ({len(digits)} digits) from sender '{sender}'")
                 return (digits, sender)
-            log.warning(f"Extracted text '{result.text}' → digits '{digits}' — unexpected length, retrying")
+            safe_text = result.text.encode("ascii", errors="replace").decode("ascii")
+            log.warning(f"Extracted text '{safe_text}' -> digits '{digits}' -- unexpected length, retrying")
 
         await asyncio.sleep(poll_interval)
 
