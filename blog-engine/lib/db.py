@@ -9,7 +9,7 @@ from pathlib import Path
 ENGINE_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB_PATH = ENGINE_ROOT / "data" / "pipeline.db"
 
-STEP_NAMES = ["keyword", "nlp", "research", "write", "score", "image", "done"]
+STEP_NAMES = ["nlp_input", "research", "write", "review"]
 
 
 def _connect(db_path: str | Path | None = None) -> sqlite3.Connection:
@@ -66,6 +66,12 @@ def init_db(db_path: str | Path | None = None) -> str:
         # Migration: add secondary_keywords to existing DBs
         try:
             conn.execute("ALTER TABLE runs ADD COLUMN secondary_keywords TEXT DEFAULT '[]'")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+        # Migration: add error column to steps
+        try:
+            conn.execute("ALTER TABLE steps ADD COLUMN error TEXT")
             conn.commit()
         except sqlite3.OperationalError:
             pass  # Column already exists
@@ -150,6 +156,17 @@ def get_steps(run_id: str) -> list[dict]:
             (run_id,),
         ).fetchall()
         return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def delete_run(run_id: str) -> None:
+    """Delete a run and its associated steps."""
+    conn = _connect()
+    try:
+        conn.execute("DELETE FROM steps WHERE run_id = ?", (run_id,))
+        conn.execute("DELETE FROM runs WHERE id = ?", (run_id,))
+        conn.commit()
     finally:
         conn.close()
 

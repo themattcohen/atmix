@@ -5,7 +5,8 @@ import streamlit as st
 from pathlib import Path
 
 from lib import db, pipeline, writer
-from lib.costs import format_cost
+from lib.auto_review import check_brief_completeness
+from lib.costs import format_cost, sum_costs
 from ui.components import (
     step_header,
     approve_controls,
@@ -72,11 +73,43 @@ def render(run_id: str, run: dict, config: dict):
                 st.error(f"Generation failed: {exc}")
                 return
 
-            gen_status.update(label=f"Done — {format_cost(call_info)}", state="complete")
+            # Truncation warning
+            if call_info.get("truncated"):
+                st.warning("Research brief was truncated — output hit the token limit even after continuation.")
+
+            gen_status.update(label=f"Generated — {format_cost(call_info)}", state="complete")
 
             # Append extra notes if provided
             if extra_notes.strip():
                 brief += f"\n\n---\n\n## Additional Notes\n\n{extra_notes.strip()}"
+
+            # Completeness check + auto-complete
+            completeness = check_brief_completeness(brief)
+            complete_call_info = None
+
+            if not completeness["complete"]:
+                missing = completeness["sections_missing"]
+                gen_status.update(
+                    label=f"Auto-completing {len(missing)} missing section(s)...",
+                    state="running",
+                )
+                feedback = (
+                    "The research brief is missing the following sections. "
+                    "Add them with substantive content:\n"
+                    + "\n".join(f"- {s}" for s in missing)
+                )
+                try:
+                    brief, complete_call_info = writer.rewrite_with_feedback(
+                        brief, feedback, nlp_targets=None, config=config, keyword=run["keyword"],
+                    )
+                    completeness = check_brief_completeness(brief)
+                except Exception as exc:
+                    st.warning(f"Auto-complete failed: {exc}")
+
+                if not completeness["complete"]:
+                    st.warning(f"Still missing sections after auto-complete: {', '.join(completeness['sections_missing'])}")
+
+                gen_status.update(label=f"Done — {format_cost(call_info)}", state="complete")
 
             # Save to file
             output_dir = pipeline.get_output_dir(run["slug"])
@@ -88,6 +121,9 @@ def render(run_id: str, run: dict, config: dict):
             step_data["brief"] = brief
             step_data["brief_file"] = str(brief_path)
             step_data["call_info"] = call_info
+            step_data["completeness"] = completeness
+            if complete_call_info:
+                step_data["complete_call_info"] = complete_call_info
             save_step_data(run_id, STEP_INDEX, step_data)
             db.update_step(run_id, STEP_INDEX, status="review", error=None)
         st.rerun()
@@ -104,9 +140,24 @@ def render(run_id: str, run: dict, config: dict):
         else:
             st.markdown("### Research Brief Preview")
 
+            # Completeness summary
+            completeness = step_data.get("completeness")
+            if completeness:
+                found_count = len(completeness.get("sections_found", []))
+                total_sections = found_count + len(completeness.get("sections_missing", []))
+                if completeness.get("complete"):
+                    st.success(f"Sections: {found_count}/{total_sections}")
+                else:
+                    st.warning(f"Sections: {found_count}/{total_sections} — missing: {', '.join(completeness['sections_missing'])}")
+
+            # Cost display (generation + auto-complete)
             call_info = step_data.get("call_info")
+            complete_call_info = step_data.get("complete_call_info")
             if call_info:
-                st.caption(f"API: {format_cost(call_info)}")
+                cost_parts = [format_cost(call_info)]
+                if complete_call_info:
+                    cost_parts.append(f"auto-complete: {format_cost(complete_call_info)}")
+                st.caption(f"API: {' · '.join(cost_parts)}")
 
             st.markdown(brief_text)
 

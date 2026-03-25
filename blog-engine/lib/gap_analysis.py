@@ -6,6 +6,7 @@ def build_surfer_feedback(
     entities_with_counts: list[dict] | None,
     heading_counts: list[dict] | None,
     surfer_targets: dict,
+    ai_optimization: list[dict] | None = None,
 ) -> str:
     """Build structured feedback text from Surfer screenshot data.
 
@@ -127,6 +128,16 @@ def build_surfer_feedback(
         if total > 0 and covered < total:
             lines.append("## Entity Coverage")
             lines.append(f"Current: {covered}/{total} entities covered. {total - covered} missing.")
+            lines.append("")
+
+    # 8. AI optimization facts
+    if ai_optimization:
+        uncovered = [item for item in ai_optimization if not item.get("covered")]
+        if uncovered:
+            lines.append("## Missing AI Optimization Facts")
+            for item in uncovered:
+                lines.append(f'- {item["fact"]}')
+            lines.append(f"\n{len(uncovered)} of {len(ai_optimization)} AI facts not covered. ADD these facts to the article.")
             lines.append("")
 
     if not lines:

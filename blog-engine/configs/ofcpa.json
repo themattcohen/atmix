@@ -1,0 +1,59 @@
+{
+  "name": "The OnlyFans Accountant",
+  "author": { "name": "Matt Cohen", "credentials": "CPA" },
+  "seo": { "surferScoreTarget": 90 },
+  "research": {
+    "authorityDomains": ["irs.gov", "law.cornell.edu", "congress.gov", "treasury.gov"],
+    "primarySources": [
+      "https://www.irs.gov/businesses/small-businesses-self-employed/self-employed-individuals-tax-center",
+      "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
+      "https://www.irs.gov/forms-pubs/about-schedule-c-form-1040"
+    ],
+    "competitorAnalysis": true
+  },
+  "content": {
+    "protectedWords": ["OnlyFans", "Schedule K-1", "Form 1065", "Form 1120-S", "IRS", "IRC", "1099-NEC", "1099-K", "Schedule C", "Schedule SE", "S Corp", "LLC"],
+    "disclaimerTop": "This article is for informational purposes only and does not constitute tax, legal, or financial advice. Consult a qualified tax professional for guidance specific to your situation.",
+    "disclaimerBottom": "Tax regulations change frequently. Always verify current requirements at [IRS.gov](https://www.irs.gov). For advice specific to your situation, consult a qualified tax professional.",
+    "bannedPhrases": [],
+    "toneGuidance": "Professional, clear, authoritative. Write like a CPA explaining to a client. Use 'you' and 'your'. The audience is OnlyFans creators who may not have tax experience.",
+    "ctaPatterns": ["/pricing", "/contact", "/schedule"],
+    "ctaTemplates": [
+      "At The OnlyFans Accountant, we specialize in helping OnlyFans creators {topic_specific}. We guide you through {services}. Contact us today to schedule a consultation and start optimizing your tax strategy."
+    ],
+    "internalLinkBase": "https://ofcpa.pro",
+    "crosslinks": [
+      { "path": "/paying-international-contractors-onlyfans-creators", "title": "Paying International Contractors for OnlyFans Creators" },
+      { "path": "/standard-deduction-and-charitable-contributions", "title": "Standard Deduction and Charitable Contributions" },
+      { "path": "/build-cash-flow-model-for-onlyfans-business", "title": "How to Build a Cash Flow Model for OnlyFans Businesses" },
+      { "path": "/how-are-llcs-taxed-for-onlyfans-creators", "title": "How Are LLCs Taxed? Guide for OnlyFans Creators" },
+      { "path": "/how-to-compute-mileage-onlyfans-taxes-the-right-way", "title": "How to Compute Mileage for OnlyFans Taxes" },
+      { "path": "/setting-a-reasonable-salary-for-s-corp-onlyfans", "title": "Reasonable Salary for S Corp: OnlyFans Creator Guide" },
+      { "path": "/qbi-calculation-tax-strategy-onlyfans-creators", "title": "QBI Calculation for OnlyFans Creators" },
+      { "path": "/can-an-llc-own-an-s-corp-irs-rules-onlyfans-creators", "title": "Can an LLC Own an S Corp? IRS Rules" },
+      { "path": "/define-business-entity-for-onlyfans-creators", "title": "Define Business Entity for OnlyFans Creators" },
+      { "path": "/what-llc-resolution-means-for-onlyfans-creators", "title": "LLC Resolution Basics for OnlyFans Creators" }
+    ]
+  },
+  "validation": {
+    "requireDisclaimers": true,
+    "requireCTAs": true,
+    "requireDollarAmounts": false,
+    "requireStatuteCitations": true,
+    "citationDensity": { "minPer500Words": 1 },
+    "dollarAmountDensity": { "minPer500Words": 0 },
+    "penaltyClaimPattern": "\\$[\\d,]+.*(?:penalty|penalt|fine|violation)",
+    "deadlineClaimPattern": "(?:due|deadline|must file|filing date).*\\d{4}"
+  },
+  "heroImage": {
+    "style": "Professional illustration, clean minimalist design",
+    "colorScheme": "navy blue, white, gold accents",
+    "imageryMap": {
+      "onlyfans|creator|content creator|self.employ": "self-employment, content creation, digital business, independent contractor",
+      "1099|freelance|gig": "freelance work, gig economy, 1099 forms",
+      "llc|s.corp|business entity": "business structure, corporate formation, LLC documents",
+      "deduction|write.off|expense": "tax deductions, business expenses, receipts",
+      "default": "tax documents, IRS forms, OnlyFans creator tax planning"
+    }
+  }
+}

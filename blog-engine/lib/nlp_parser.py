@@ -10,7 +10,7 @@ from lib.costs import calc_claude_cost
 
 logger = logging.getLogger("blog-engine.nlp_parser")
 
-MODEL = "claude-sonnet-4-20250514"
+MODEL = "claude-sonnet-4-6"
 
 def _get_client():
     return anthropic.Anthropic()
@@ -648,3 +648,75 @@ def extract_heading_counts(image_bytes: bytes, media_type: str = "image/png") ->
 
     headings = json.loads(text)
     return (headings, call_info)
+
+
+def extract_ai_optimization(image_bytes: bytes, media_type: str) -> tuple[list[dict], dict]:
+    """Extract AI optimization items from Surfer's AI panel screenshot.
+
+    Args:
+        image_bytes: Raw image bytes.
+        media_type: MIME type (e.g., "image/png").
+
+    Returns:
+        Tuple of (list of {"fact": str, "covered": bool}, call_info dict).
+    """
+    import base64
+    client = _get_client()
+    b64 = base64.b64encode(image_bytes).decode("utf-8")
+
+    t0 = time.time()
+    response = client.messages.create(
+        model=MODEL,
+        max_tokens=4096,
+        system="You are an expert at reading Surfer SEO screenshots. Extract the AI optimization facts panel.",
+        messages=[{
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": media_type,
+                        "data": b64,
+                    },
+                },
+                {
+                    "type": "text",
+                    "text": (
+                        "Extract all AI optimization facts from this Surfer SEO screenshot. "
+                        "For each item, indicate whether it is covered (green/checkmark) or "
+                        "not covered (red/missing). "
+                        'Return a JSON array: [{"fact": "...", "covered": true/false}]. '
+                        "Return ONLY the JSON array, no other text."
+                    ),
+                },
+            ],
+        }],
+    )
+    latency = time.time() - t0
+
+    usage = response.usage
+    logger.info(
+        "[nlp_parser] extract_ai_optimization — model=%s input=%d output=%d",
+        MODEL, usage.input_tokens, usage.output_tokens,
+    )
+
+    call_info = calc_claude_cost(MODEL, response.usage)
+    call_info["call_name"] = "extract_ai_optimization"
+    call_info["latency_s"] = round(latency, 2)
+
+    # Parse JSON array
+    text = response.content[0].text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    text = text.strip()
+
+    try:
+        items = json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        logger.warning("[nlp_parser] extract_ai_optimization — failed to parse response: %s", text[:200])
+        items = []
+
+    return (items, call_info)

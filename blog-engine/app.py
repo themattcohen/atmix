@@ -55,6 +55,8 @@ db.init_db()
 # ---------------------------------------------------------------------------
 if "active_run_id" not in st.session_state:
     st.session_state.active_run_id = None
+if "viewed_step" not in st.session_state:
+    st.session_state.viewed_step = None
 
 
 # ---------------------------------------------------------------------------
@@ -145,8 +147,14 @@ def _render_new_run_form():
             st.rerun()
 
 
-def _sidebar_step_list(steps_list, current_step):
-    """Render vertical pipeline step list in sidebar."""
+def _sidebar_step_list(steps_list, current_step, run_status="active"):
+    """Render vertical pipeline step list in sidebar.
+
+    For completed runs and past steps, steps are clickable buttons that
+    set ``st.session_state.viewed_step``.
+    """
+    viewed = st.session_state.viewed_step
+
     for s in pipeline.STEPS:
         idx = s["index"]
         icon = s["icon"]
@@ -159,20 +167,38 @@ def _sidebar_step_list(steps_list, current_step):
                 step_status = db_step.get("status", "pending")
                 break
 
-        if idx < current_step or step_status == "approved":
+        is_past = idx < current_step or step_status == "approved"
+        is_current = idx == current_step
+        is_clickable = run_status == "completed" or is_past
+
+        # Determine which step is "active" in the sidebar
+        if viewed is not None:
+            is_active = idx == viewed
+        else:
+            is_active = is_current
+
+        if is_clickable:
             marker = "✅"
-            style = ""
-        elif idx == current_step:
+            style = "font-weight: bold;" if is_active else ""
+            if st.button(
+                f"{marker} {icon} {label}",
+                key=f"nav_step_{idx}",
+                use_container_width=True,
+            ):
+                st.session_state.viewed_step = idx
+                st.rerun()
+        elif is_current:
             marker = "🔵"
-            style = "font-weight: bold;"
+            st.markdown(
+                f'<div style="padding: 2px 0; font-weight: bold;">{marker} {icon} {label}</div>',
+                unsafe_allow_html=True,
+            )
         else:
             marker = "○"
-            style = "color: #6c757d;"
-
-        st.markdown(
-            f'<div style="padding: 2px 0; {style}">{marker} {icon} {label}</div>',
-            unsafe_allow_html=True,
-        )
+            st.markdown(
+                f'<div style="padding: 2px 0; color: #6c757d;">{marker} {icon} {label}</div>',
+                unsafe_allow_html=True,
+            )
 
 
 def _build_cost_sidebar(steps_list):
@@ -269,6 +295,7 @@ with st.sidebar:
             with col_close:
                 if st.button("✕", key="close_run", help="Close this run"):
                     st.session_state.active_run_id = None
+                    st.session_state.viewed_step = None
                     st.rerun()
             with col_delete:
                 if st.button("🗑️", key="delete_run", help="Delete this run permanently"):
@@ -282,7 +309,7 @@ with st.sidebar:
             st.markdown("---")
             st.markdown("**Pipeline**")
             steps_for_sidebar = db.get_steps(run_id)
-            _sidebar_step_list(steps_for_sidebar, run_preview["current_step"])
+            _sidebar_step_list(steps_for_sidebar, run_preview["current_step"], run_preview.get("status", "active"))
 
             # Costs
             _build_cost_sidebar(steps_for_sidebar)
@@ -304,6 +331,7 @@ with st.sidebar:
                     with col_switch:
                         if st.button("↗", key=f"switch_{r['id']}", help="Switch to this run"):
                             st.session_state.active_run_id = r["id"]
+                            st.session_state.viewed_step = None
                             st.rerun()
                     with col_del:
                         if st.button("🗑️", key=f"del_switch_{r['id']}", help="Delete this run"):
@@ -325,6 +353,7 @@ with st.sidebar:
                 with col_resume:
                     if st.button("▶", key=f"resume_{r['id']}", help="Resume this run"):
                         st.session_state.active_run_id = r["id"]
+                        st.session_state.viewed_step = None
                         st.rerun()
                 with col_del:
                     if st.button("🗑️", key=f"del_run_{r['id']}", help="Delete this run"):
@@ -341,9 +370,14 @@ with st.sidebar:
     if completed:
         with st.expander(f"Completed ({len(completed)})", expanded=False):
             for r in completed:
-                col_label, col_del = st.columns([5, 1])
+                col_label, col_view, col_del = st.columns([4, 1, 1])
                 with col_label:
                     st.markdown(f"**{r['keyword']}** (`{r['slug']}`)")
+                with col_view:
+                    if st.button("👁", key=f"view_{r['id']}", help="View this run"):
+                        st.session_state.active_run_id = r["id"]
+                        st.session_state.viewed_step = len(pipeline.STEPS) - 1
+                        st.rerun()
                 with col_del:
                     if st.button("🗑️", key=f"del_done_{r['id']}", help="Delete this run"):
                         db.delete_run(r["id"])
@@ -384,30 +418,33 @@ current_step = run["current_step"]
 
 st.markdown("---")
 
-# Render current step
+# Determine which step to render
 if run["status"] == "completed":
-    st.markdown("## Pipeline Complete")
-    st.success(f"Article for **{run['keyword']}** is ready!")
+    render_step = st.session_state.viewed_step
+    if render_step is None:
+        render_step = len(pipeline.STEPS) - 1  # default to last step
+else:
+    # For active runs, viewed_step overrides current_step (for navigating past steps)
+    render_step = st.session_state.viewed_step if st.session_state.viewed_step is not None else current_step
 
-    output_dir = pipeline.get_output_dir(run["slug"])
-    st.markdown("### Output Files")
-    for f in sorted(output_dir.iterdir()):
-        if f.is_file() and not f.name.startswith("hero-option-"):
-            size_kb = f.stat().st_size / 1024
-            st.markdown(f"- `{f.name}` ({size_kb:.1f} KB)")
-
-    hero_path = output_dir / "hero.webp"
-    if hero_path.exists():
-        st.image(str(hero_path), caption="Hero Image", use_container_width=True)
-
-elif current_step == 0:
+# Render the step
+if render_step == 0:
     step_nlp_input.render(run_id, run)
-elif current_step == 1:
+elif render_step == 1:
     step_research.render(run_id, run, config)
-elif current_step == 2:
+elif render_step == 2:
     step_write.render(run_id, run, config)
-elif current_step == 3:
+elif render_step == 3:
     step_review.render(run_id, run, config)
+
+# Reopen button for completed runs
+if run["status"] == "completed":
+    st.markdown("---")
+    if st.button("Reopen for Editing", key=f"reopen_{run_id}"):
+        db.update_run(run_id, status="active", current_step=render_step)
+        db.update_step(run_id, render_step, status="review")
+        st.session_state.viewed_step = None
+        st.rerun()
 
 # Advance button (shown when current step is approved)
 if run["status"] != "completed" and current_step < len(pipeline.STEPS) - 1:
@@ -421,4 +458,5 @@ if run["status"] != "completed" and current_step < len(pipeline.STEPS) - 1:
             type="primary",
         ):
             pipeline.advance_step(run_id)
+            st.session_state.viewed_step = None
             st.rerun()
