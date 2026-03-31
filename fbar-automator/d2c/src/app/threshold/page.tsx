@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SessionProvider, useSession } from "next-auth/react";
+import { pushDataLayer } from "@/lib/gtm";
 
 function ThresholdContent() {
   const router = useRouter();
@@ -19,10 +20,15 @@ function ThresholdContent() {
   const canProceed = hadAccounts === true && exceededThreshold === true;
   const showNoFilingMessage = hadAccounts === false || exceededThreshold === false;
 
+  useEffect(() => {
+    pushDataLayer({ event: "fbar_step_view", step: 1, step_name: "threshold" });
+  }, []);
+
   const handleContinue = async () => {
     if (!canProceed) return;
     setLoading(true);
     setError("");
+    pushDataLayer({ event: "fbar_step_complete", step: 1, step_name: "threshold" });
 
     if (!isAuthenticated) {
       // Redirect to signup with threshold state preserved in URL params
