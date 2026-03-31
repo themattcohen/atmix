@@ -103,7 +103,7 @@ export const COUNTRIES: CountryData[] = [
     currency: 'Japanese Yen',
     currencyCode: 'JPY',
     commonBanks: ['MUFG Bank', 'Sumitomo Mitsui', 'Mizuho Bank', 'Japan Post Bank', 'Shinsei Bank'],
-    pensionImplications: 'Japanese Kosei Nenkin (Employees Pension Insurance) and iDeCo (individual defined contribution) accounts are reportable on FBAR. The US-Japan tax treaty (Article 17) provides limited relief for pension distributions.',
+    pensionImplications: 'Japanese iDeCo (individual defined contribution) and corporate DC pension accounts are reportable on FBAR because they are held at private financial institutions. Government pensions — Kosei Nenkin (Employees Pension Insurance) and Kokumin Nenkin (National Pension) — are a gray area since they are administered by a government agency, not a private institution. The IRS has not issued definitive guidance on their reportability. The US-Japan tax treaty (Article 17) provides limited relief for pension distributions but does not affect FBAR obligations.',
     expatPopulation: 'Approximately 60,000 US citizens live in Japan',
     keyConsiderations: [
       'Japanese postal savings (Yucho) accounts are reportable',
