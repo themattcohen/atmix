@@ -103,6 +103,12 @@ export interface AccountDisplay {
   jointOwnerInfo: string | null;
   calendarYear: number;
   sourceStatementId: string | null;
+  institutionAddress?: {
+    street?: string;
+    city?: string;
+    country?: string;
+    state?: string;
+  } | null;
 }
 
 export interface ProvenanceBalance {

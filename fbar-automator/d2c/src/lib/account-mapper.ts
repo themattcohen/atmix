@@ -18,5 +18,6 @@ export function mapAccountToDisplay(a: ForeignAccount): AccountDisplay {
     jointOwnerInfo: a.jointOwnerInfo,
     calendarYear: a.calendarYear,
     sourceStatementId: a.sourceStatementId ?? null,
+    institutionAddress: a.institutionAddress as AccountDisplay["institutionAddress"] ?? null,
   };
 }

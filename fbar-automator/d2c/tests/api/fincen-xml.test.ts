@@ -409,14 +409,14 @@ describe("P4-2: generateFincenXml — XML structure validation", () => {
 });
 
 describe("P4-2: generateFincenXml — filing type", () => {
-  it("P4-2: ORIGINAL filing type sets CorrectsAmendsPriorReportIndicator to empty", async () => {
+  it("P4-2: ORIGINAL filing type omits CorrectsAmendsPriorReportIndicator entirely", async () => {
     await createTestAccount();
 
     const xml = await generateFincenXml(testFilingId);
 
     if (xml.includes("<fc2:EFilingBatchXML")) {
-      // For ORIGINAL filings, CorrectsAmendsPriorReportIndicator is empty
-      expect(xml).toContain("<fc2:CorrectsAmendsPriorReportIndicator>");
+      // For ORIGINAL filings, the element should not appear at all (XSD expects Y/N or absence)
+      expect(xml).not.toContain("CorrectsAmendsPriorReportIndicator");
     }
   });
 
@@ -465,7 +465,6 @@ describe("P4-2: validateFincenXml — structural validation", () => {
     <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
     <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
     <fc2:ActivityAssociation SeqNum="2">
-      <fc2:CorrectsAmendsPriorReportIndicator></fc2:CorrectsAmendsPriorReportIndicator>
     </fc2:ActivityAssociation>
     <fc2:Party SeqNum="3">
       <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
@@ -525,6 +524,108 @@ describe("P4-2: generateFincenXml — null maxValueUsd throws", () => {
     await expect(generateFincenXml(testFilingId)).rejects.toThrow(
       "has null maxValueUsd"
     );
+  });
+});
+
+// ─── Adversarial Audit Fix Tests ──────────────────────────────────────────────
+
+describe("Audit fix: PartyCount includes all party types", () => {
+  it("PartyCount = type41Count + 3 (transmitter + contact + filer)", async () => {
+    await createTestAccount();
+    await createTestAccount({
+      institutionName: "Second Bank",
+      accountNumber: encrypt("SECOND-001"),
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    // 2 FI parties (type 41) + 3 (transmitter 35 + contact 37 + filer 15) = 5
+    expect(xml).toContain('PartyCount="5"');
+  });
+
+  it("single account: PartyCount = 4 (1 FI + 3 activity-level)", async () => {
+    await createTestAccount();
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).toContain('PartyCount="4"');
+  });
+});
+
+describe("Audit fix: account number sanitization", () => {
+  it("strips leading/trailing whitespace from account numbers", async () => {
+    await createTestAccount({
+      accountNumber: encrypt("  CH123456  "),
+      maxValueUsd: 10000,
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).toContain("<fc2:AccountNumberText>CH123456</fc2:AccountNumberText>");
+  });
+
+  it("truncates account numbers to 40 characters", async () => {
+    const longAcct = "A".repeat(50);
+    await createTestAccount({
+      accountNumber: encrypt(longAcct),
+      maxValueUsd: 10000,
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    const match = /<fc2:AccountNumberText>([^<]+)<\/fc2:AccountNumberText>/.exec(xml);
+    expect(match).toBeTruthy();
+    expect(match![1].length).toBeLessThanOrEqual(40);
+  });
+});
+
+describe("Audit fix: non-ASCII transliteration", () => {
+  it("transliterates accented characters in institution name", async () => {
+    await createTestAccount({
+      institutionName: "Crédit Münchenér Ñoño",
+      maxValueUsd: 10000,
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).toContain("Credit Munchener Nono");
+    expect(xml).not.toContain("é");
+    expect(xml).not.toContain("ü");
+    expect(xml).not.toContain("ñ");
+  });
+});
+
+describe("Audit fix: CorrectsAmendsPriorReportIndicator", () => {
+  it("AMENDED filing emits CorrectsAmendsPriorReportIndicator=Y", async () => {
+    const amendedFiling = await prisma.filingYear.create({
+      data: {
+        userId: testUserId,
+        calendarYear: 2022,
+        status: "PAID",
+        filingType: "AMENDED",
+      },
+    });
+
+    await createTestAccount({ calendarYear: 2022 });
+
+    const xml = await generateFincenXml(amendedFiling.id);
+
+    expect(xml).toContain(
+      "<fc2:CorrectsAmendsPriorReportIndicator>Y</fc2:CorrectsAmendsPriorReportIndicator>"
+    );
+
+    await prisma.foreignAccount.deleteMany({
+      where: { userId: testUserId, calendarYear: 2022 },
+    });
+    await prisma.filingYear.delete({ where: { id: amendedFiling.id } });
+  });
+
+  it("ORIGINAL filing does not emit CorrectsAmendsPriorReportIndicator", async () => {
+    await createTestAccount();
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).not.toContain("CorrectsAmendsPriorReportIndicator");
   });
 });
 
@@ -644,21 +745,31 @@ describe("P4-2: generateFincenXml — golden-file structural match", () => {
     const goldenObj = parser.parse(goldenXml);
     const generatedObj = parser.parse(generatedXml);
 
-    // Normalize: replace the date-dependent signature field with a constant
-    const PLACEHOLDER_DATE = "NORMALIZED";
-    function normalizeDate(obj: any): void {
+    // Normalize: replace date-dependent and audit-fixed fields with constants
+    const PLACEHOLDER = "NORMALIZED";
+    function normalizeFields(obj: any): void {
       if (!obj || typeof obj !== "object") return;
       for (const key of Object.keys(obj)) {
         if (key === "fc2:ApprovalOfficialSignatureDateText") {
-          obj[key] = PLACEHOLDER_DATE;
+          obj[key] = PLACEHOLDER;
+        } else if (key === "@_PartyCount") {
+          // PartyCount formula changed: was type41-only, now includes activity-level parties
+          obj[key] = PLACEHOLDER;
         } else {
-          normalizeDate(obj[key]);
+          normalizeFields(obj[key]);
         }
       }
     }
 
-    normalizeDate(goldenObj);
-    normalizeDate(generatedObj);
+    normalizeFields(goldenObj);
+    normalizeFields(generatedObj);
+
+    // The golden file has CorrectsAmendsPriorReportIndicator="" for ORIGINAL filings;
+    // we now omit it entirely. Normalize by removing it from the golden object.
+    const goldenAssoc = goldenObj?.["fc2:EFilingBatchXML"]?.["fc2:Activity"]?.["fc2:ActivityAssociation"];
+    if (goldenAssoc && "fc2:CorrectsAmendsPriorReportIndicator" in goldenAssoc) {
+      delete goldenAssoc["fc2:CorrectsAmendsPriorReportIndicator"];
+    }
 
     expect(generatedObj).toEqual(goldenObj);
   });

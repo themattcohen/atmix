@@ -47,22 +47,22 @@ export const CA_PROVINCES = [
 ] as const;
 
 export const MX_STATES = [
-  { code: "AGU", name: "Aguascalientes" }, { code: "BCN", name: "Baja California" },
-  { code: "BCS", name: "Baja California Sur" }, { code: "CAM", name: "Campeche" },
-  { code: "CHP", name: "Chiapas" }, { code: "CHH", name: "Chihuahua" },
-  { code: "COA", name: "Coahuila" }, { code: "COL", name: "Colima" },
-  { code: "DIF", name: "Ciudad de México" }, { code: "DUR", name: "Durango" },
-  { code: "GUA", name: "Guanajuato" }, { code: "GRO", name: "Guerrero" },
-  { code: "HID", name: "Hidalgo" }, { code: "JAL", name: "Jalisco" },
-  { code: "MEX", name: "Estado de México" }, { code: "MIC", name: "Michoacán" },
-  { code: "MOR", name: "Morelos" }, { code: "NAY", name: "Nayarit" },
-  { code: "NLE", name: "Nuevo León" }, { code: "OAX", name: "Oaxaca" },
-  { code: "PUE", name: "Puebla" }, { code: "QUE", name: "Querétaro" },
-  { code: "ROO", name: "Quintana Roo" }, { code: "SLP", name: "San Luis Potosí" },
-  { code: "SIN", name: "Sinaloa" }, { code: "SON", name: "Sonora" },
-  { code: "TAB", name: "Tabasco" }, { code: "TAM", name: "Tamaulipas" },
-  { code: "TLA", name: "Tlaxcala" }, { code: "VER", name: "Veracruz" },
-  { code: "YUC", name: "Yucatán" }, { code: "ZAC", name: "Zacatecas" },
+  { code: "AG", name: "Aguascalientes" }, { code: "BC", name: "Baja California" },
+  { code: "BS", name: "Baja California Sur" }, { code: "CM", name: "Campeche" },
+  { code: "CS", name: "Chiapas" }, { code: "CH", name: "Chihuahua" },
+  { code: "CO", name: "Coahuila" }, { code: "CL", name: "Colima" },
+  { code: "DF", name: "Ciudad de México" }, { code: "DG", name: "Durango" },
+  { code: "GT", name: "Guanajuato" }, { code: "GR", name: "Guerrero" },
+  { code: "HG", name: "Hidalgo" }, { code: "JA", name: "Jalisco" },
+  { code: "EM", name: "Estado de México" }, { code: "MI", name: "Michoacán" },
+  { code: "MO", name: "Morelos" }, { code: "NA", name: "Nayarit" },
+  { code: "NL", name: "Nuevo León" }, { code: "OA", name: "Oaxaca" },
+  { code: "PU", name: "Puebla" }, { code: "QT", name: "Querétaro" },
+  { code: "QR", name: "Quintana Roo" }, { code: "SL", name: "San Luis Potosí" },
+  { code: "SI", name: "Sinaloa" }, { code: "SO", name: "Sonora" },
+  { code: "TB", name: "Tabasco" }, { code: "TM", name: "Tamaulipas" },
+  { code: "TL", name: "Tlaxcala" }, { code: "VE", name: "Veracruz" },
+  { code: "YU", name: "Yucatán" }, { code: "ZA", name: "Zacatecas" },
 ] as const;
 
 export const usAddressSchema = z.object({

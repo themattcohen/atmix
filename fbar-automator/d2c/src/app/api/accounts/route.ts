@@ -99,7 +99,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
       maxValueUsd = maxValueLocal;
     } else if (currencyCode && currencyCode.toUpperCase() !== "USD" && maxValueLocal) {
       const rateResult = await getRate(currencyCode.toUpperCase(), calendarYear);
-      maxValueUsd = rateResult ? Number(maxValueLocal) * rateResult.rate : null;
+      maxValueUsd = rateResult ? Number(maxValueLocal) / rateResult.rate : null;
     }
 
     const account = await prisma.foreignAccount.create({

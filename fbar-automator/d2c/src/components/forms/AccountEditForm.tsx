@@ -26,7 +26,7 @@ export function AccountEditForm({ account, calendarYear, onSuccess, onCancel }: 
     maxValueLocal: account.maxValueLocal.toString(),
     isJointAccount: account.isJointAccount,
     jointOwnerInfo: account.jointOwnerInfo || "",
-    institutionState: "",
+    institutionState: account.institutionAddress?.state ?? "",
   });
 
   const updateField = (field: string, value: string | boolean) => {

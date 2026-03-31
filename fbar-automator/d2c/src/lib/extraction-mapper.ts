@@ -73,11 +73,12 @@ export function mapExtractedAccounts(
       calendarYear,
     };
 
-    if (extracted.bank_address.street || extracted.bank_address.city) {
+    if (extracted.bank_address.street || extracted.bank_address.city || extracted.bank_address.state_province) {
       account.institutionAddress = {
         street: extracted.bank_address.street || undefined,
         city: extracted.bank_address.city || undefined,
         country: extracted.bank_address.country || undefined,
+        state: extracted.bank_address.state_province || undefined,
       };
     }
 

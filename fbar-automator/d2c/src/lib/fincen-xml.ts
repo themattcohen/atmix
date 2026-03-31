@@ -63,6 +63,27 @@ const TIN_TYPE_CODE: Record<TINType, string> = {
 // ---------------------------------------------------------------------------
 
 /**
+ * Transliterates non-ASCII characters to their closest ASCII equivalents.
+ * FinCEN recommends ASCII-only content in XML submissions.
+ * Uses Unicode NFD decomposition to strip combining diacritical marks.
+ */
+function toAscii(str: string): string {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\x20-\x7E]/g, "")
+}
+
+/**
+ * Sanitizes an account number for FinCEN XML:
+ * - Strips leading/trailing whitespace
+ * - Truncates to 40 characters (XSD max for AccountNumberText)
+ */
+function sanitizeAccountNumber(raw: string): string {
+  return raw.trim().slice(0, 40)
+}
+
+/**
  * Reads transmitter configuration from FINCEN_TRANSMITTER_* environment variables.
  * Parses the address from the format "123 Main St, Denver, CO 80202".
  *
@@ -228,7 +249,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
   const assocSeq = seq.next()
   activity["fc2:ActivityAssociation"] = {
     "@_SeqNum": String(assocSeq),
-    "fc2:CorrectsAmendsPriorReportIndicator": isAmended ? "Y" : "",
+    ...(isAmended ? { "fc2:CorrectsAmendsPriorReportIndicator": "Y" } : {}),
   }
 
   // -----------------------------------------------------------------------
@@ -251,14 +272,14 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     "fc2:PartyName": {
       "@_SeqNum": String(txNameSeq),
       "fc2:PartyNameTypeCode": "L",
-      "fc2:RawPartyFullName": transmitter.name,
+      "fc2:RawPartyFullName": toAscii(transmitter.name),
     },
     "fc2:Address": {
       "@_SeqNum": String(txAddrSeq),
-      "fc2:RawCityText": transmitter.address.city,
+      "fc2:RawCityText": toAscii(transmitter.address.city),
       "fc2:RawCountryCodeText": transmitter.address.country,
       "fc2:RawStateCodeText": transmitter.address.state,
-      "fc2:RawStreetAddress1Text": transmitter.address.street,
+      "fc2:RawStreetAddress1Text": toAscii(transmitter.address.street),
       "fc2:RawZIPCode": transmitter.address.zip,
     },
     "fc2:PhoneNumber": {
@@ -289,7 +310,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     "fc2:PartyName": {
       "@_SeqNum": String(tcNameSeq),
       "fc2:PartyNameTypeCode": "L",
-      "fc2:RawPartyFullName": transmitter.contactName,
+      "fc2:RawPartyFullName": toAscii(transmitter.contactName),
     },
   })
 
@@ -324,17 +345,17 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
   filerParty["fc2:PartyName"] = {
     "@_SeqNum": String(filerNameSeq),
     "fc2:PartyNameTypeCode": "L",
-    "fc2:RawEntityIndividualLastName": user.lastName,
-    "fc2:RawIndividualFirstName": user.firstName ?? "",
+    "fc2:RawEntityIndividualLastName": toAscii(user.lastName ?? ""),
+    "fc2:RawIndividualFirstName": toAscii(user.firstName ?? ""),
   }
 
   const filerAddrSeq = seq.next()
   filerParty["fc2:Address"] = {
     "@_SeqNum": String(filerAddrSeq),
-    "fc2:RawCityText": filerAddr.city,
+    "fc2:RawCityText": toAscii(filerAddr.city),
     "fc2:RawCountryCodeText": "US",
     "fc2:RawStateCodeText": filerAddr.state,
-    "fc2:RawStreetAddress1Text": filerAddr.street,
+    "fc2:RawStreetAddress1Text": toAscii(filerAddr.street),
     "fc2:RawZIPCode": filerAddr.zip,
   }
 
@@ -378,7 +399,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     const accountElement: Record<string, unknown> = {
       "@_SeqNum": String(accountSeq),
       "fc2:AccountMaximumValueAmountText": String(maxValueUsd),
-      "fc2:AccountNumberText": decryptedAccountNumber,
+      "fc2:AccountNumberText": sanitizeAccountNumber(decryptedAccountNumber),
       "fc2:AccountTypeCode": ACCOUNT_TYPE_CODE[account.accountType],
       "fc2:EFilingAccountTypeCode": getEFilingAccountTypeCode(
         account.ownershipType,
@@ -399,13 +420,13 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     // (RawStateCodeText must come between RawCountryCodeText and RawStreetAddress1Text)
     const fiAddress: Record<string, unknown> = {
       "@_SeqNum": String(fiAddrSeq),
-      "fc2:RawCityText": fiAddr.city,
+      "fc2:RawCityText": toAscii(fiAddr.city),
       "fc2:RawCountryCodeText": fiAddr.country || account.countryCode,
     }
     if (fiAddr.state) {
       fiAddress["fc2:RawStateCodeText"] = fiAddr.state
     }
-    fiAddress["fc2:RawStreetAddress1Text"] = fiAddr.street
+    fiAddress["fc2:RawStreetAddress1Text"] = toAscii(fiAddr.street)
     fiAddress["fc2:RawZIPCode"] = fiAddr.zip
 
     accountElement["fc2:Party"] = {
@@ -414,7 +435,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       "fc2:PartyName": {
         "@_SeqNum": String(fiNameSeq),
         "fc2:PartyNameTypeCode": "L",
-        "fc2:RawPartyFullName": account.institutionName,
+        "fc2:RawPartyFullName": toAscii(account.institutionName),
       },
       "fc2:Address": fiAddress,
     }
@@ -461,7 +482,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     },
     "fc2:EFilingBatchXML": {
       "@_ActivityCount": "1",
-      "@_PartyCount": String(type41Count),
+      "@_PartyCount": String(type41Count + 3),
       "@_AccountCount": String(accountElements.length),
       "@_JointlyOwnedOwnerCount": "0",
       "@_NoFIOwnerCount": "0",

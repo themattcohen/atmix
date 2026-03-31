@@ -113,7 +113,7 @@ export async function PUT(
           const rateResult = await getRate(updated.currencyCode, updated.calendarYear);
           await prisma.foreignAccount.update({
             where: { id: updated.id },
-            data: { maxValueUsd: rateResult ? Number(updated.maxValueLocal) * rateResult.rate : null },
+            data: { maxValueUsd: rateResult ? Number(updated.maxValueLocal) / rateResult.rate : null },
           });
         }
       }
