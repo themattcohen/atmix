@@ -11,8 +11,6 @@ const SUPPRESS_PATTERNS = [
 ];
 
 const DEDUP_PATTERNS = [
-  /no (account )?activity/i,
-  /opening and closing balances are identical/i,
   /currency .* inferred/i,
 ];
 

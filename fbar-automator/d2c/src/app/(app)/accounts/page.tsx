@@ -49,6 +49,7 @@ export default function AccountsPage() {
   const [savingExtracted, setSavingExtracted] = useState(false);
   const [uploadWarnings, setUploadWarnings] = useState<string[]>([]);
   const [coverageWarning, setCoverageWarning] = useState<string | null>(null);
+  const [coverageData, setCoverageData] = useState<{ monthsCovered: number[]; monthsMissing: number[] } | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
   const [recoveredFromDB, setRecoveredFromDB] = useState(false);
   const [recoveredStatementCount, setRecoveredStatementCount] = useState(0);
@@ -467,6 +468,7 @@ export default function AccountsPage() {
                   calendarYear={calendarYear}
                   onAllExtracted={handleAllExtracted}
                   onCoverageWarning={setCoverageWarning}
+                  onCoverageData={setCoverageData}
                   onError={(err) => setError(err)}
                   onFilesChanged={setUploadedFiles}
                 />
@@ -515,8 +517,8 @@ export default function AccountsPage() {
               </div>
             )}
 
-            {/* Coverage warning — persists during review */}
-            {coverageWarning && (
+            {/* Coverage warning — only shown before extraction review (during upload) */}
+            {coverageWarning && !extractedAccounts && (
               <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mb-4" role="alert">
                 <p className="text-sm text-amber-800">{coverageWarning}</p>
               </div>
@@ -538,8 +540,9 @@ export default function AccountsPage() {
                   accounts={extractedAccounts}
                   calendarYear={calendarYear}
                   warnings={uploadWarnings}
+                  coverageData={coverageData}
                   onSaveAll={handleSaveExtracted}
-                  onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setUploadedFiles([]); setRecoveredFromDB(false); }}
+                  onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setCoverageData(null); setUploadedFiles([]); setRecoveredFromDB(false); }}
                 />
                 {savingExtracted && (
                   <div className="mt-2 text-center text-sm text-gray-500">Saving accounts...</div>

@@ -81,44 +81,21 @@ export function consolidateExtractedAccounts(
       }
     }
 
-    // Deduplicate warnings — collapse "no activity" variants into one summary
+    // Deduplicate warnings — keep period-specific text, only remove exact duplicates
     const uniqueWarnings: string[] = [];
-    const noActivityMonths: string[] = [];
 
     for (const entry of group) {
       for (const w of entry.warnings) {
         const lower = w.toLowerCase();
 
-        // Collapse "no activity" variants
-        if (
-          lower.includes("no account activity") ||
-          lower.includes("no activity during") ||
-          lower.includes("no transaction activity") ||
-          (lower.includes("opening and closing balances") &&
-            lower.includes("identical"))
-        ) {
-          // We don't have statement_period on MappedAccount, so just track that
-          // there were no-activity warnings without duplicating them
-          if (noActivityMonths.length === 0) {
-            noActivityMonths.push("detected");
-          }
-          continue;
-        }
-
         // Skip "max value updated" noise
         if (lower.includes("max value updated from")) continue;
 
-        // Keep unique warnings only
+        // Keep unique warnings only (exact match dedup)
         if (!uniqueWarnings.includes(w)) {
           uniqueWarnings.push(w);
         }
       }
-    }
-
-    if (noActivityMonths.length > 0) {
-      uniqueWarnings.push(
-        "Some statement periods showed no account activity (opening and closing balances were identical)."
-      );
     }
 
     results.push({

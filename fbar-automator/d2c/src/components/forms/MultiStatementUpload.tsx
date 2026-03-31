@@ -19,6 +19,7 @@ interface MultiStatementUploadProps {
   calendarYear: number;
   onAllExtracted: (accounts: MappedAccount[], warnings: string[]) => void;
   onCoverageWarning: (warning: string | null) => void;
+  onCoverageData?: (data: { monthsCovered: number[]; monthsMissing: number[] }) => void;
   onError: (error: string) => void;
   onFilesChanged: (files: UploadedFileInfo[]) => void;
 }
@@ -39,6 +40,7 @@ export function MultiStatementUpload({
   calendarYear,
   onAllExtracted,
   onCoverageWarning,
+  onCoverageData,
   onError,
   onFilesChanged,
 }: MultiStatementUploadProps) {
@@ -191,12 +193,13 @@ export function MultiStatementUpload({
     processingRef.current = false;
     setIsProcessing(false);
 
-    // Compute coverage warning
+    // Compute coverage warning and data
     if (allPeriodsRef.current.length > 0) {
-      const { monthsMissing } = computeMonthsCovered(
+      const { monthsCovered, monthsMissing } = computeMonthsCovered(
         allPeriodsRef.current,
         calendarYear
       );
+      onCoverageData?.({ monthsCovered, monthsMissing });
       if (monthsMissing.length > 0) {
         onCoverageWarning(
           `Your uploaded statements may not cover ${monthsMissing.map(monthName).join(", ")} ${calendarYear}. ` +
@@ -216,7 +219,7 @@ export function MultiStatementUpload({
       );
       onAllExtracted(consolidated, deduplicateWarnings(consolidatedWarnings));
     }
-  }, [filingYearId, calendarYear, onAllExtracted, onCoverageWarning]);
+  }, [filingYearId, calendarYear, onAllExtracted, onCoverageWarning, onCoverageData]);
 
   const addFiles = useCallback(
     (newFiles: FileList | File[]) => {
