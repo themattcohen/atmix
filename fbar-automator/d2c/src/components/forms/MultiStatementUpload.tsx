@@ -3,7 +3,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import type { MappedAccount } from "@/lib/extraction-mapper";
 import { consolidateExtractedAccounts } from "@/lib/account-consolidation";
-import { deduplicateWarnings } from "@/lib/warning-filter";
 import { computeMonthsCovered, monthName } from "@/lib/statement-coverage";
 
 export interface UploadedFileInfo {
@@ -17,7 +16,7 @@ export interface UploadedFileInfo {
 interface MultiStatementUploadProps {
   filingYearId: string;
   calendarYear: number;
-  onAllExtracted: (accounts: MappedAccount[], warnings: string[]) => void;
+  onAllExtracted: (accounts: MappedAccount[]) => void;
   onCoverageWarning: (warning: string | null) => void;
   onCoverageData?: (data: { monthsCovered: number[]; monthsMissing: number[] }) => void;
   onError: (error: string) => void;
@@ -53,7 +52,6 @@ export function MultiStatementUpload({
   const queueRef = useRef<File[]>([]);
   const processingRef = useRef(false);
   const allAccountsRef = useRef<MappedAccount[]>([]);
-  const allWarningsRef = useRef<string[]>([]);
   const allPeriodsRef = useRef<Array<{ start_date: string; end_date: string }>>([]);
 
   // beforeunload guard while uploading
@@ -142,9 +140,6 @@ export function MultiStatementUpload({
         if (data.extractedAccounts?.length > 0) {
           allAccountsRef.current.push(...data.extractedAccounts);
         }
-        if (data.warnings?.length > 0) {
-          allWarningsRef.current.push(...data.warnings);
-        }
         if (data.statementPeriods?.length > 0) {
           allPeriodsRef.current.push(...data.statementPeriods);
         }
@@ -214,10 +209,7 @@ export function MultiStatementUpload({
     // then call onAllExtracted
     if (allAccountsRef.current.length > 0) {
       const consolidated = consolidateExtractedAccounts([...allAccountsRef.current]);
-      const consolidatedWarnings = consolidated.flatMap((a) =>
-        a.warnings.map((w) => `Account ${a.sourceIndex + 1}: ${w}`)
-      );
-      onAllExtracted(consolidated, deduplicateWarnings(consolidatedWarnings));
+      onAllExtracted(consolidated);
     }
   }, [filingYearId, calendarYear, onAllExtracted, onCoverageWarning, onCoverageData]);
 

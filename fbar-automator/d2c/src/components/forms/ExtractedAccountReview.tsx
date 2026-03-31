@@ -9,7 +9,6 @@ const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 interface ExtractedAccountReviewProps {
   accounts: MappedAccount[];
   calendarYear: number;
-  warnings?: string[];
   coverageData?: { monthsCovered: number[]; monthsMissing: number[] } | null;
   onSaveAll: (accounts: AccountToSave[]) => void;
   onDismiss: () => void;
@@ -45,18 +44,9 @@ function confidenceBg(level: "high" | "medium" | "low"): string {
   }
 }
 
-/** Filter warnings for a specific account by its "Account N:" prefix */
-function getAccountWarnings(warnings: string[], accountIndex: number): string[] {
-  const prefix = `Account ${accountIndex + 1}: `;
-  return warnings
-    .filter((w) => w.startsWith(prefix))
-    .map((w) => w.slice(prefix.length));
-}
-
 export function ExtractedAccountReview({
   accounts,
   calendarYear,
-  warnings = [],
   coverageData,
   onSaveAll,
   onDismiss,
@@ -162,8 +152,8 @@ export function ExtractedAccountReview({
         </div>
       )}
 
-      {/* Success banner when no coverage data and no warnings */}
-      {!coverageData && warnings.length === 0 && (
+      {/* Success banner when no coverage data and no notes */}
+      {!coverageData && accounts.every((a) => !a.structuredNotes?.length) && (
         <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4 flex items-center gap-2 text-sm text-green-800" role="status">
           <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -174,7 +164,8 @@ export function ExtractedAccountReview({
 
       <div className="space-y-6">
         {accounts.map((mapped, index) => {
-          const accountNotes = getAccountWarnings(warnings, index);
+          const notes = mapped.structuredNotes ?? [];
+          const history = mapped.balanceHistory ?? [];
 
           return (
             <div
@@ -198,17 +189,17 @@ export function ExtractedAccountReview({
 
               {!excluded.has(index) && (
                 <>
-                  {/* Per-account extraction notes dropdown */}
-                  {accountNotes.length > 0 && (
+                  {/* Structured notes dropdown */}
+                  {notes.length > 0 && (
                     <details className="mb-3 group">
                       <summary className="cursor-pointer text-xs text-gray-500 hover:text-gray-700 select-none flex items-center gap-1.5">
                         <svg className="h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        {accountNotes.length} extraction note{accountNotes.length !== 1 ? "s" : ""}
+                        {notes.length} extraction note{notes.length !== 1 ? "s" : ""}
                       </summary>
                       <ul className="mt-1.5 ml-5 text-xs text-gray-600 space-y-1 list-disc list-inside">
-                        {accountNotes.map((note, i) => <li key={i}>{note}</li>)}
+                        {notes.map((note, i) => <li key={i}>{note.message}</li>)}
                       </ul>
                     </details>
                   )}
@@ -328,6 +319,45 @@ export function ExtractedAccountReview({
                       />
                     </div>
                   </div>
+
+                  {/* Balance History table */}
+                  {history.length > 0 && (
+                    <details className="mt-3">
+                      <summary className="cursor-pointer text-xs text-gray-500 hover:text-gray-700 select-none">
+                        Balance history ({history.length} statement{history.length !== 1 ? "s" : ""})
+                      </summary>
+                      <div className="mt-2 overflow-x-auto">
+                        <table className="w-full text-xs">
+                          <thead>
+                            <tr className="text-left text-gray-500 border-b">
+                              <th className="pb-1 pr-4 font-medium">Period</th>
+                              <th className="pb-1 pr-4 font-medium text-right">Max Balance</th>
+                              <th className="pb-1 font-medium">Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {history.map((entry, i) => (
+                              <tr
+                                key={i}
+                                className={`border-b border-gray-100 ${entry.isYearMax ? "font-semibold" : ""}`}
+                              >
+                                <td className="py-1 pr-4 text-gray-700">{entry.periodLabel}</td>
+                                <td className="py-1 pr-4 text-right text-gray-700">
+                                  {entry.maxAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  {entry.isYearMax && (
+                                    <span className="ml-1.5 inline-block bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded-full font-medium">
+                                      year max
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-1 text-gray-500">{entry.maxDate || "—"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </details>
+                  )}
                 </>
               )}
             </div>

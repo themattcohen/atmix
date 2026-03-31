@@ -1,12 +1,30 @@
 import type { ExtractedAccount } from "@/types/extraction";
 import type { CreateAccountRequest } from "@/types";
 
+export interface BalanceHistoryEntry {
+  periodLabel: string;
+  maxAmount: number;
+  maxDate: string | null;
+  isYearMax: boolean;
+}
+
+export interface StructuredNote {
+  type: "no_activity" | "currency_inferred" | "ownership_defaulted" | "low_confidence";
+  message: string;
+}
+
 export interface MappedAccount {
   account: CreateAccountRequest;
   confidence: ExtractedAccount["confidence"];
   warnings: string[];
   sourceIndex: number;
   statementId?: string;
+  statementPeriod?: { startDate: string; endDate: string };
+  maxBalanceDetail?: { amount: number; date: string | null; label: string };
+  /** Set after consolidation — structured replacement for raw LLM warnings */
+  structuredNotes?: StructuredNote[];
+  /** Set after consolidation — per-statement max balance timeline */
+  balanceHistory?: BalanceHistoryEntry[];
 }
 
 function mapAccountType(type: "bank" | "securities" | "other"): "BANK" | "SECURITIES" | "OTHER" {
@@ -69,6 +87,12 @@ export function mapExtractedAccounts(
       warnings,
       sourceIndex: index,
       statementId,
+      statementPeriod: extracted.statement_period
+        ? { startDate: extracted.statement_period.start_date, endDate: extracted.statement_period.end_date }
+        : undefined,
+      maxBalanceDetail: extracted.max_balance
+        ? { amount: extracted.max_balance.amount, date: extracted.max_balance.date, label: extracted.max_balance.label }
+        : undefined,
     };
   });
 }

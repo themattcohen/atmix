@@ -10,7 +10,6 @@ import { ExtractedAccountReview } from "@/components/forms/ExtractedAccountRevie
 import type { AccountToSave } from "@/components/forms/ExtractedAccountReview";
 import type { MappedAccount } from "@/lib/extraction-mapper";
 import { consolidateExtractedAccounts } from "@/lib/account-consolidation";
-import { deduplicateWarnings } from "@/lib/warning-filter";
 import { ImportBanner } from "@/components/ImportBanner";
 import { AccountProvenance } from "@/components/forms/AccountProvenance";
 import { PRICING } from "@/lib/pricing";
@@ -47,7 +46,6 @@ export default function AccountsPage() {
   const [tierSelected, setTierSelected] = useState(false);
   const [extractedAccounts, setExtractedAccounts] = useState<MappedAccount[] | null>(null);
   const [savingExtracted, setSavingExtracted] = useState(false);
-  const [uploadWarnings, setUploadWarnings] = useState<string[]>([]);
   const [coverageWarning, setCoverageWarning] = useState<string | null>(null);
   const [coverageData, setCoverageData] = useState<{ monthsCovered: number[]; monthsMissing: number[] } | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
@@ -141,25 +139,7 @@ export default function AccountsPage() {
               }
               const consolidated = consolidateExtractedAccounts(merged);
 
-              // Build warnings from consolidated accounts
-              const warnings: string[] = [];
-              for (const mapped of consolidated) {
-                if (mapped.warnings?.length > 0) {
-                  warnings.push(
-                    ...mapped.warnings.map(
-                      (w: string) => `Account ${mapped.sourceIndex + 1}: ${w}`
-                    )
-                  );
-                }
-                if (mapped.confidence?.overall === "low") {
-                  warnings.push(
-                    `Account ${mapped.sourceIndex + 1}: Low overall confidence — please review carefully.`
-                  );
-                }
-              }
-
               setExtractedAccounts(consolidated);
-              setUploadWarnings(deduplicateWarnings(warnings));
               setRecoveredFromDB(true);
               setRecoveredStatementCount(completedWithAccounts.length);
 
@@ -261,9 +241,8 @@ export default function AccountsPage() {
     }
   };
 
-  const handleAllExtracted = (mapped: MappedAccount[], warnings: string[]) => {
+  const handleAllExtracted = (mapped: MappedAccount[]) => {
     setExtractedAccounts(mapped);
-    setUploadWarnings(warnings);
   };
 
   const handleSaveExtracted = async (accountsToSave: AccountToSave[]) => {
@@ -539,7 +518,6 @@ export default function AccountsPage() {
                 <ExtractedAccountReview
                   accounts={extractedAccounts}
                   calendarYear={calendarYear}
-                  warnings={uploadWarnings}
                   coverageData={coverageData}
                   onSaveAll={handleSaveExtracted}
                   onDismiss={() => { setExtractedAccounts(null); setCoverageWarning(null); setCoverageData(null); setUploadedFiles([]); setRecoveredFromDB(false); }}

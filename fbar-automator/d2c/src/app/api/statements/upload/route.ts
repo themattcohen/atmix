@@ -10,7 +10,6 @@ import { mapExtractedAccounts } from "@/lib/extraction-mapper";
 import type { MappedAccount } from "@/lib/extraction-mapper";
 import { sanitizeFileName } from "@/lib/sanitize";
 import { apiHandler } from "@/lib/api-handler";
-import { deduplicateWarnings } from "@/lib/warning-filter";
 
 export const maxDuration = 60;
 
@@ -189,24 +188,10 @@ export const POST = apiHandler(async (req: NextRequest) => {
       },
     });
 
-    // Gather warnings
-    const warnings: string[] = [];
-    for (const mapped of mappedAccounts) {
-      if (mapped.warnings.length > 0) {
-        warnings.push(...mapped.warnings.map((w) => `Account ${mapped.sourceIndex + 1}: ${w}`));
-      }
-      if (mapped.confidence.overall === "low") {
-        warnings.push(`Account ${mapped.sourceIndex + 1}: Low overall confidence — please review carefully.`);
-      }
-    }
-
-    const filteredWarnings = deduplicateWarnings(warnings);
-
     return NextResponse.json({
       statementId: statement.id,
       extractedAccounts: mappedAccounts,
       statementPeriods,
-      warnings: filteredWarnings,
     });
   } catch (error) {
     Sentry.captureException(error);
