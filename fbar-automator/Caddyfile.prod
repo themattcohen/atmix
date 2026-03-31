@@ -156,6 +156,11 @@ www.{$D2C_DOMAIN} {
 	@d2c_api_nocache path /api/*
 	header @d2c_api_nocache Cache-Control "no-store, no-cache, must-revalidate"
 
+	# MinIO presigned URL proxy — makes S3 downloads reachable from browser
+	handle_path /s3/* {
+		reverse_proxy minio:9000
+	}
+
 	reverse_proxy d2c-app:3001
 
 	log {
