@@ -42,9 +42,11 @@ function ConfirmationContent() {
   const [filing, setFiling] = useState<FilingInfo | null>(null);
   const [resubmitting, setResubmitting] = useState(false);
 
-  // Fire purchase event once when status transitions to paid
+  // Fire purchase event once when status transitions to any post-payment state
+  // (webhook often advances status past "paid" before the browser loads)
   useEffect(() => {
-    if (status === 'paid' && !hasFiredPurchase.current) {
+    const postPaymentStatuses: ConfirmationStatus[] = ['paid', 'submitting', 'submitted', 'accepted'];
+    if (postPaymentStatuses.includes(status) && !hasFiredPurchase.current) {
       hasFiredPurchase.current = true;
       const value = filing?.tier?.toUpperCase() === 'PREMIUM' ? 79 : 59;
 
