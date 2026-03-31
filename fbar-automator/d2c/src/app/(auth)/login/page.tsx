@@ -57,6 +57,20 @@ function LoginForm() {
               return;
             }
             if (!userRes.ok) return;
+
+            // Check if email is verified — if JWT says no but DB says yes,
+            // sign out so a fresh login gets the correct JWT
+            if (!(data.user as any).emailVerified) {
+              const userData = await userRes.json();
+              if (userData.data?.emailVerified) {
+                // DB says verified but JWT is stale — sign out to force fresh JWT
+                await signOut({ redirect: false });
+                setShowVerifiedBanner(true);
+                return;
+              }
+              // Genuinely unverified — don't redirect (would loop)
+              return;
+            }
           } catch {
             return;
           }

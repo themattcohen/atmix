@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 
 function VerifyEmailContent() {
@@ -10,6 +10,7 @@ function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const emailParam = searchParams.get("email");
+  const fromParam = searchParams.get("from");
 
   const [status, setStatus] = useState<"verifying" | "success" | "error" | "idle" | "invalid">(
     token ? "verifying" : (emailParam ? "idle" : "invalid")
@@ -47,7 +48,8 @@ function VerifyEmailContent() {
               redirect: false,
             });
             if (loginResult?.ok) {
-              setTimeout(() => router.push("/dashboard"), 2000);
+              const postVerifyDest = fromParam === "threshold" ? "/threshold" : "/dashboard";
+              setTimeout(() => router.push(postVerifyDest), 2000);
               return;
             }
           }
@@ -86,6 +88,18 @@ function VerifyEmailContent() {
         setResendSuccess(true);
       } else {
         const data = await res.json();
+        if (res.status === 400 && data.error?.includes("already verified")) {
+          // Email is verified in DB but JWT is stale — sign out to force fresh login
+          setError("");
+          setResendSuccess(false);
+          setStatus("success");
+          sessionStorage.setItem("emailVerified", "true");
+          setTimeout(async () => {
+            await signOut({ redirect: false });
+            router.push("/login");
+          }, 1500);
+          return;
+        }
         setError(data.error || "Failed to resend verification email");
       }
     } catch {

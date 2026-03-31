@@ -100,7 +100,11 @@ function SignupForm() {
       signupSucceeded = true;
       setSignupSuccess(true);
 
-      const verifyUrl = `/verify-email?email=${encodeURIComponent(form.email)}`;
+      const from = searchParams.get("from");
+      const calendarYear = searchParams.get("calendarYear");
+      let verifyUrl = `/verify-email?email=${encodeURIComponent(form.email)}`;
+      if (from) verifyUrl += `&from=${encodeURIComponent(from)}`;
+      if (calendarYear) verifyUrl += `&calendarYear=${encodeURIComponent(calendarYear)}`;
 
       try {
         const result = await signIn("credentials", {

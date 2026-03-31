@@ -38,6 +38,7 @@ export async function GET() {
         usAddress: user.usAddress as { street: string; street2?: string; city: string; state: string; zip: string } | null,
         phone: user.phone,
         mfaEnabled: user.mfaEnabled,
+        emailVerified: user.emailVerified,
       },
     });
   } catch (error) {

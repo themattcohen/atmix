@@ -138,7 +138,10 @@ async function checkEmailVerificationGate(
   if (normalizedPath.startsWith("/api/")) {
     return NextResponse.json({ error: "Email verification required" }, { status: 403 });
   }
-  return NextResponse.redirect(new URL("/verify-email", req.url));
+  const verifyUrl = new URL("/verify-email", req.url);
+  const userEmail = (req.auth?.user as any)?.email;
+  if (userEmail) verifyUrl.searchParams.set("email", userEmail);
+  return NextResponse.redirect(verifyUrl);
 }
 
 // ---------------------------------------------------------------------------
