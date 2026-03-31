@@ -36,6 +36,35 @@ export const US_STATES = [
   { code: "VI", name: "U.S. Virgin Islands" },
 ] as const;
 
+export const CA_PROVINCES = [
+  { code: "AB", name: "Alberta" }, { code: "BC", name: "British Columbia" },
+  { code: "MB", name: "Manitoba" }, { code: "NB", name: "New Brunswick" },
+  { code: "NL", name: "Newfoundland and Labrador" }, { code: "NS", name: "Nova Scotia" },
+  { code: "NT", name: "Northwest Territories" }, { code: "NU", name: "Nunavut" },
+  { code: "ON", name: "Ontario" }, { code: "PE", name: "Prince Edward Island" },
+  { code: "QC", name: "Quebec" }, { code: "SK", name: "Saskatchewan" },
+  { code: "YT", name: "Yukon" },
+] as const;
+
+export const MX_STATES = [
+  { code: "AGU", name: "Aguascalientes" }, { code: "BCN", name: "Baja California" },
+  { code: "BCS", name: "Baja California Sur" }, { code: "CAM", name: "Campeche" },
+  { code: "CHP", name: "Chiapas" }, { code: "CHH", name: "Chihuahua" },
+  { code: "COA", name: "Coahuila" }, { code: "COL", name: "Colima" },
+  { code: "DIF", name: "Ciudad de México" }, { code: "DUR", name: "Durango" },
+  { code: "GUA", name: "Guanajuato" }, { code: "GRO", name: "Guerrero" },
+  { code: "HID", name: "Hidalgo" }, { code: "JAL", name: "Jalisco" },
+  { code: "MEX", name: "Estado de México" }, { code: "MIC", name: "Michoacán" },
+  { code: "MOR", name: "Morelos" }, { code: "NAY", name: "Nayarit" },
+  { code: "NLE", name: "Nuevo León" }, { code: "OAX", name: "Oaxaca" },
+  { code: "PUE", name: "Puebla" }, { code: "QUE", name: "Querétaro" },
+  { code: "ROO", name: "Quintana Roo" }, { code: "SLP", name: "San Luis Potosí" },
+  { code: "SIN", name: "Sinaloa" }, { code: "SON", name: "Sonora" },
+  { code: "TAB", name: "Tabasco" }, { code: "TAM", name: "Tamaulipas" },
+  { code: "TLA", name: "Tlaxcala" }, { code: "VER", name: "Veracruz" },
+  { code: "YUC", name: "Yucatán" }, { code: "ZAC", name: "Zacatecas" },
+] as const;
+
 export const usAddressSchema = z.object({
   street: z.string().min(1, "Street address is required"),
   street2: z.string().optional(),
@@ -56,7 +85,7 @@ export const personalInfoSchema = z.object({
   phone: z.string().regex(/^\+?[\d\s()-]{7,20}$/, "Please enter a valid phone number").optional().or(z.literal("")),
 });
 
-export const foreignAccountSchema = z.object({
+export const foreignAccountBaseSchema = z.object({
   institutionName: z.string().min(1, "Institution name is required").max(200),
   accountNumber: z.string().min(1, "Account number is required").max(50),
   accountType: z.enum(["BANK", "SECURITIES", "OTHER"]),
@@ -71,8 +100,41 @@ export const foreignAccountSchema = z.object({
     street: z.string().optional(),
     city: z.string().optional(),
     country: z.string().optional(),
+    state: z.string().optional(),
   }).optional(),
   sourceStatementId: z.string().optional().nullable(),
+});
+
+export const foreignAccountSchema = foreignAccountBaseSchema.superRefine((data, ctx) => {
+  if ((data.countryCode === "CA" || data.countryCode === "MX") && !data.institutionAddress?.state) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: data.countryCode === "CA"
+        ? "Province is required for Canadian accounts"
+        : "State is required for Mexican accounts",
+      path: ["institutionAddress", "state"],
+    });
+  }
+  if (data.countryCode === "CA" && data.institutionAddress?.state) {
+    const validCodes = CA_PROVINCES.map(p => p.code);
+    if (!validCodes.includes(data.institutionAddress.state as any)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select a valid Canadian province",
+        path: ["institutionAddress", "state"],
+      });
+    }
+  }
+  if (data.countryCode === "MX" && data.institutionAddress?.state) {
+    const validCodes = MX_STATES.map(s => s.code);
+    if (!validCodes.includes(data.institutionAddress.state as any)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select a valid Mexican state",
+        path: ["institutionAddress", "state"],
+      });
+    }
+  }
 });
 
 export const thresholdSchema = z.object({

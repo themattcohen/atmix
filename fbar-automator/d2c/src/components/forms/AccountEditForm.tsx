@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { COUNTRIES, CURRENCIES } from "@/lib/countries";
+import { ProvinceStateSelect } from "@/components/forms/ProvinceStateSelect";
 import type { AccountDisplay } from "@/types";
 
 interface AccountEditFormProps {
@@ -25,10 +26,18 @@ export function AccountEditForm({ account, calendarYear, onSuccess, onCancel }: 
     maxValueLocal: account.maxValueLocal.toString(),
     isJointAccount: account.isJointAccount,
     jointOwnerInfo: account.jointOwnerInfo || "",
+    institutionState: "",
   });
 
   const updateField = (field: string, value: string | boolean) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      // Clear province/state when country changes away from CA/MX
+      if (field === "countryCode" && value !== "CA" && value !== "MX") {
+        next.institutionState = "";
+      }
+      return next;
+    });
     setFieldErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
@@ -50,6 +59,11 @@ export function AccountEditForm({ account, calendarYear, onSuccess, onCancel }: 
         isJointAccount: form.isJointAccount,
         jointOwnerInfo: form.jointOwnerInfo || null,
       };
+
+      // Include institutionAddress for CA/MX accounts
+      if ((form.countryCode === "CA" || form.countryCode === "MX") && form.institutionState) {
+        payload.institutionAddress = { state: form.institutionState, country: form.countryCode };
+      }
 
       // Only include accountNumber if user changed it (doesn't start with ****)
       if (!form.accountNumber.startsWith("****")) {
@@ -235,6 +249,14 @@ export function AccountEditForm({ account, calendarYear, onSuccess, onCancel }: 
             )}
           </div>
         </div>
+
+        <ProvinceStateSelect
+          countryCode={form.countryCode}
+          value={form.institutionState}
+          onChange={(v) => updateField("institutionState", v)}
+          id={`${idPrefix}-institutionState`}
+          error={fieldErrors["institutionAddress.state"] || fieldErrors.institutionState}
+        />
 
         <div>
           <label htmlFor={`${idPrefix}-maxValueLocal`} className="block text-sm font-medium text-gray-700 mb-1">

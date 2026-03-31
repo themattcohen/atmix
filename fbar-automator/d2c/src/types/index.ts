@@ -83,6 +83,7 @@ export interface CreateAccountRequest {
     street?: string;
     city?: string;
     country?: string;
+    state?: string;
   };
   sourceStatementId?: string;
 }
@@ -170,6 +171,7 @@ export interface FilingDisplay {
   submittedAt: string | null;
   acknowledgedAt: string | null;
   rejectionReason: string | null;
+  rejectionHistory: Array<{ reason: string; submittedAt?: string; acknowledgedAt?: string }> | null;
   accountCount: number;
 }
 

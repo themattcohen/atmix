@@ -6,6 +6,7 @@ import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
 import { WizardLayout } from "@/components/wizard/WizardLayout";
 import { pushDataLayer, trackGadsConversion, setGtagUserData } from "@/lib/gtm";
+import { parseRejectionReason, getRejectionSummary } from "@/lib/rejection-parser";
 import { Suspense } from "react";
 
 type ConfirmationStatus =
@@ -39,6 +40,7 @@ function ConfirmationContent() {
   const [status, setStatus] = useState<ConfirmationStatus>("loading");
   const [error, setError] = useState<string>("");
   const [filing, setFiling] = useState<FilingInfo | null>(null);
+  const [resubmitting, setResubmitting] = useState(false);
 
   // Fire purchase event once when status transitions to paid
   useEffect(() => {
@@ -485,43 +487,89 @@ function ConfirmationContent() {
           </div>
         )}
 
-        {status === "rejected" && filing && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-bold text-navy-900 mb-2">Submission Needs Attention</h1>
-            <p className="text-gray-600 mb-4">FinCEN rejected your FBAR submission. Our team will work with you to resolve this.</p>
-            {filing.rejectionReason && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-6 text-left max-w-md mx-auto">
-                <p className="text-sm font-medium text-red-900">Rejection Reason from FinCEN:</p>
-                <p className="text-sm text-red-800 mt-1">{filing.rejectionReason}</p>
+        {status === "rejected" && filing && (() => {
+          const errors = parseRejectionReason(filing.rejectionReason);
+          const summary = getRejectionSummary(errors);
+
+          const handleResubmit = async () => {
+            setResubmitting(true);
+            try {
+              const res = await fetch("/api/filing/resubmit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+                body: JSON.stringify({ filingYearId: filing.id }),
+              });
+              if (res.ok) {
+                window.location.href = "/accounts";
+              } else {
+                const data = await res.json();
+                setError(data.error || "Failed to start resubmission");
+                setStatus("error");
+              }
+            } catch {
+              setError("Failed to start resubmission. Please try again.");
+              setStatus("error");
+            } finally {
+              setResubmitting(false);
+            }
+          };
+
+          return (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
               </div>
-            )}
-            {!filing.rejectionReason && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-6 text-left max-w-md mx-auto">
-                <p className="text-sm text-red-800">No specific reason was provided by FinCEN. Please contact our support team for assistance.</p>
+              <h1 className="text-2xl font-bold text-navy-900 mb-2">Submission Needs Attention</h1>
+              <p className="text-gray-600 mb-4">{summary}</p>
+
+              {errors.length > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-6 text-left max-w-md mx-auto">
+                  <p className="text-sm font-medium text-red-900 mb-2">Issues found:</p>
+                  <ul className="text-sm text-red-800 space-y-1 list-disc list-inside">
+                    {errors.map((err, i) => (
+                      <li key={i}>{err.humanMessage}</li>
+                    ))}
+                  </ul>
+                  {filing.rejectionReason && (
+                    <details className="mt-3">
+                      <summary className="text-xs text-red-600 cursor-pointer hover:text-red-800">
+                        View raw FinCEN response
+                      </summary>
+                      <p className="text-xs text-red-700 mt-1 whitespace-pre-wrap break-words">
+                        {filing.rejectionReason}
+                      </p>
+                    </details>
+                  )}
+                </div>
+              )}
+
+              {!filing.rejectionReason && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-6 text-left max-w-md mx-auto">
+                  <p className="text-sm text-red-800">No specific reason was provided by FinCEN. Please contact our support team for assistance.</p>
+                </div>
+              )}
+
+              <p className="text-gray-600 mb-6">You can fix the issues above and resubmit at no additional cost.</p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={handleResubmit}
+                  disabled={resubmitting}
+                  className="py-3 px-6 bg-navy-900 text-white rounded-md hover:bg-navy-800 font-bold disabled:opacity-50"
+                >
+                  {resubmitting ? "Preparing..." : "Fix & Resubmit"}
+                </button>
+                <Link
+                  href="/contact"
+                  className="py-3 px-6 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-bold"
+                >
+                  Contact Support
+                </Link>
               </div>
-            )}
-            <p className="text-gray-600 mb-6">Please contact our support team and we&apos;ll help you resubmit at no additional cost.</p>
-            <div className="flex gap-4 justify-center">
-              <Link
-                href="/contact"
-                className="py-3 px-6 bg-red-600 text-white rounded-md hover:bg-red-700 font-bold"
-              >
-                Contact Support
-              </Link>
-              <Link
-                href="/dashboard"
-                className="py-3 px-6 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-bold"
-              >
-                View My Filings
-              </Link>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </WizardLayout>
   );

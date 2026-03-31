@@ -106,11 +106,22 @@ export async function POST(req: NextRequest) {
     // Encrypt signature data at rest
     const encryptedSignature = encrypt(signatureData);
 
+    // Check for existing completed payment (resubmit flow — skip Stripe)
+    const completedPayment = await prisma.payment.findFirst({
+      where: {
+        filingYearId,
+        userId: session.user.id,
+        status: "COMPLETED",
+      },
+    });
+
+    const newStatus = completedPayment ? "PAID" : "SIGNED";
+
     // Update filing year with userId defense-in-depth
     const updated = await prisma.filingYear.updateMany({
       where: { id: filingYearId, userId: session.user.id },
       data: {
-        status: "SIGNED",
+        status: newStatus,
         signedAt: new Date(),
         signatureIp: ip,
         signatureData: { type: signatureType, value: encryptedSignature },

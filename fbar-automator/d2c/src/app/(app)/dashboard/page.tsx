@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { parseRejectionReason } from "@/lib/rejection-parser";
 import type { FilingDisplay } from "@/types";
 
 export default function DashboardPage() {
@@ -90,9 +91,9 @@ export default function DashboardPage() {
         className: "bg-green-600 text-white hover:bg-green-700",
       },
       REJECTED: {
-        label: "Contact Support",
-        path: "/contact",
-        className: "bg-red-600 text-white hover:bg-red-700",
+        label: "Fix & Resubmit",
+        path: "/confirmation",
+        className: "bg-navy-900 text-white hover:bg-navy-800",
       },
     };
 
@@ -193,12 +194,24 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {filing.rejectionReason && (
-                <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
-                  <p className="text-xs text-red-700 mb-1">Rejection Reason</p>
-                  <p className="text-sm text-red-900">{filing.rejectionReason}</p>
-                </div>
-              )}
+              {filing.rejectionReason && (() => {
+                const errors = parseRejectionReason(filing.rejectionReason);
+                const displayErrors = errors.slice(0, 3);
+                const remaining = errors.length - 3;
+                return (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+                    <p className="text-xs text-red-700 mb-1">Issues to fix</p>
+                    <ul className="text-sm text-red-900 list-disc list-inside space-y-0.5">
+                      {displayErrors.map((err, i) => (
+                        <li key={i}>{err.humanMessage}</li>
+                      ))}
+                    </ul>
+                    {remaining > 0 && (
+                      <p className="text-xs text-red-600 mt-1">+{remaining} more</p>
+                    )}
+                  </div>
+                );
+              })()}
 
               <div className="flex justify-between items-center">
                 <div className="text-sm text-gray-500">

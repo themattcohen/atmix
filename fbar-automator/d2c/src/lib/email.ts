@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { parseRejectionReason, getRejectionSummary } from "@/lib/rejection-parser";
 
 let _resend: Resend | null = null;
 
@@ -89,6 +90,10 @@ export async function sendRejectionEmail(
   to: string,
   data: { firstName: string; calendarYear: number; reason: string }
 ): Promise<void> {
+  const errors = parseRejectionReason(data.reason);
+  const summary = getRejectionSummary(errors);
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fbardirect.com";
+
   await getResend().emails.send({
     from: fromEmail,
     to,
@@ -104,11 +109,15 @@ export async function sendRejectionEmail(
           <p>Hi ${escapeHtml(data.firstName)},</p>
           <p>FinCEN was unable to process your ${data.calendarYear} FBAR submission.</p>
           <div style="background: #fce4ec; border: 1px solid #ef5350; padding: 16px; border-radius: 8px; margin: 24px 0;">
-            <p style="margin: 0; font-weight: bold; color: #b71c1c;">Reason:</p>
-            <p style="margin: 8px 0 0;">${escapeHtml(data.reason)}</p>
+            <p style="margin: 0; font-weight: bold; color: #b71c1c;">What needs to be fixed:</p>
+            <p style="margin: 8px 0 0;">${escapeHtml(summary)}</p>
           </div>
-          <p>Our team will review your filing and contact you with next steps. In most cases, we can resolve the issue and resubmit at no additional charge.</p>
-          <p>If you have questions, reply to this email.</p>
+          <p>You can fix the issue and resubmit directly from your account — no additional charge.</p>
+          <div style="text-align: center; margin: 24px 0;">
+            <a href="${escapeHtml(appUrl)}/confirmation" style="background: #112e51; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600;">Log In to Fix &amp; Resubmit</a>
+          </div>
+          <p style="color: #999; font-size: 12px; margin-top: 24px;">Raw FinCEN response: ${escapeHtml(data.reason)}</p>
+          <p style="color: #666; font-size: 14px;">If you need help, reply to this email.</p>
         </div>
         <div style="background: #f5f5f5; padding: 16px 24px; font-size: 12px; color: #666; text-align: center;">
           <p>FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S. government agency.</p>

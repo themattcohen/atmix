@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { COUNTRIES, CURRENCIES } from "@/lib/countries";
+import { CA_PROVINCES, MX_STATES } from "@/lib/validation";
 import type { MappedAccount } from "@/lib/extraction-mapper";
 
 const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -26,6 +27,7 @@ export interface AccountToSave {
   isJointAccount: boolean;
   calendarYear: number;
   sourceStatementId?: string;
+  institutionAddress?: { state?: string; country?: string };
 }
 
 function confidenceColor(level: "high" | "medium" | "low"): string {
@@ -63,12 +65,15 @@ export function ExtractedAccountReview({
       isJointAccount: a.account.isJointAccount,
       calendarYear,
       sourceStatementId: a.statementId,
+      institutionAddress: a.account.countryCode === "CA" || a.account.countryCode === "MX"
+        ? { state: "", country: a.account.countryCode }
+        : undefined,
     }))
   );
   const [excluded, setExcluded] = useState<Set<number>>(new Set());
   const [saving, setSaving] = useState(false);
 
-  const updateAccount = (index: number, field: string, value: string | number | boolean) => {
+  const updateAccount = (index: number, field: string, value: string | number | boolean | { state?: string; country?: string }) => {
     setEditedAccounts((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
@@ -278,6 +283,30 @@ export function ExtractedAccountReview({
                         ))}
                       </select>
                     </div>
+
+                    {(editedAccounts[index].countryCode === "CA" || editedAccounts[index].countryCode === "MX") && (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          {editedAccounts[index].countryCode === "CA" ? "Province" : "State"}
+                        </label>
+                        <select
+                          value={editedAccounts[index].institutionAddress?.state || ""}
+                          onChange={(e) => {
+                            updateAccount(index, "institutionAddress", {
+                              ...editedAccounts[index].institutionAddress,
+                              state: e.target.value,
+                              country: editedAccounts[index].countryCode,
+                            });
+                          }}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-navy-900"
+                        >
+                          <option value="">Select {editedAccounts[index].countryCode === "CA" ? "province" : "state"}</option>
+                          {(editedAccounts[index].countryCode === "CA" ? CA_PROVINCES : MX_STATES).map((opt) => (
+                            <option key={opt.code} value={opt.code}>{opt.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
                     <div className={confidenceBg(mapped.confidence.currency)}>
                       <label className="block text-xs font-medium text-gray-600 mb-1">

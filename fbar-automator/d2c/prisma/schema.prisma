@@ -104,6 +104,7 @@ model FilingYear {
   submittedAt         DateTime?
   acknowledgedAt      DateTime?
   rejectionReason     String?
+  rejectionHistory    Json?       // Array of { reason, submittedAt, acknowledgedAt, sdtmSubmissionId, bsaId }
 
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt

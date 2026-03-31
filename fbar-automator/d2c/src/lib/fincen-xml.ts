@@ -340,7 +340,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
 
   if (user.tin && user.tinType) {
     const filerIdSeq = seq.next()
-    const decryptedTin = safeDecrypt(user.tin)
+    const decryptedTin = safeDecrypt(user.tin).replace(/\D/g, "")
     filerParty["fc2:PartyIdentification"] = {
       "@_SeqNum": String(filerIdSeq),
       "fc2:PartyIdentificationNumberText": decryptedTin,
@@ -654,6 +654,42 @@ export function validateFincenXml(
       errors.push(
         "Account has both UnknownMaximumValueIndicator=Y and AccountMaximumValueAmountText"
       )
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // 13. Validate CA/MX accounts have RawStateCodeText
+  // -----------------------------------------------------------------------
+
+  const partyBlocks = xml.split("<fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>");
+  for (let i = 1; i < partyBlocks.length; i++) {
+    const block = partyBlocks[i].split("</fc2:Party>")[0] ?? "";
+    const countryMatch = /<fc2:RawCountryCodeText>([^<]+)<\/fc2:RawCountryCodeText>/.exec(block);
+    if (countryMatch) {
+      const country = countryMatch[1].trim();
+      if ((country === "CA" || country === "MX") && !block.includes("<fc2:RawStateCodeText>")) {
+        errors.push(
+          `Financial institution in ${country} is missing RawStateCodeText (province/state required for CA/MX)`
+        );
+      }
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // 14. Validate filer TIN is exactly 9 digits
+  // -----------------------------------------------------------------------
+
+  const filerPartyBlocks = xml.split("<fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>");
+  for (let i = 1; i < filerPartyBlocks.length; i++) {
+    const block = filerPartyBlocks[i].split("</fc2:Party>")[0] ?? "";
+    const tinMatch = /<fc2:PartyIdentificationNumberText>([^<]+)<\/fc2:PartyIdentificationNumberText>/.exec(block);
+    if (tinMatch) {
+      const tin = tinMatch[1].trim();
+      if (!/^\d{9}$/.test(tin)) {
+        errors.push(
+          `Filer TIN "${tin}" is not exactly 9 digits`
+        );
+      }
     }
   }
 

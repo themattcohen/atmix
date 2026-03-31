@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
-import { generateFincenXml } from "@/lib/fincen-xml";
+import { generateFincenXml, validateFincenXml } from "@/lib/fincen-xml";
+import { validateFilingData } from "@/lib/filing-validator";
 import { submitBatch } from "@/lib/sdtm";
 import { sendSubmissionEmail } from "@/lib/email";
 import { log } from "@/lib/logger";
@@ -7,7 +8,7 @@ import crypto from "crypto";
 
 export type SubmitFilingResult =
   | { success: true; batchId: string; submittedAt: string; alreadySubmitted?: boolean }
-  | { success: false; error: string; conflict?: boolean };
+  | { success: false; error: string; conflict?: boolean; validationErrors?: string[] };
 
 export async function submitFiling(
   filingYearId: string,
@@ -54,6 +55,28 @@ export async function submitFiling(
   }
 
   try {
+    // Pre-submission data validation
+    const filingData = await prisma.filingYear.findFirst({
+      where: { id: filingYearId, userId },
+      include: { user: true },
+    });
+    const filingAccounts = await prisma.foreignAccount.findMany({
+      where: { userId, calendarYear: filingData!.calendarYear },
+    });
+
+    const dataErrors = validateFilingData(filingData!.user, filingAccounts);
+    if (dataErrors.length > 0) {
+      await prisma.filingYear.updateMany({
+        where: { id: filingYearId, userId, status: "SUBMITTING" },
+        data: { status: "PAID" },
+      });
+      return {
+        success: false,
+        error: "Filing data validation failed: " + dataErrors.map(e => e.message).join("; "),
+        validationErrors: dataErrors.map(e => e.message),
+      };
+    }
+
     const xml = await generateFincenXml(filingYearId);
 
     if (!xml || xml.length < 100 || !xml.includes("<fc2:EFilingBatchXML")) {
@@ -61,7 +84,22 @@ export async function submitFiling(
         where: { id: filingYearId, userId, status: "SUBMITTING" },
         data: { status: "PAID" },
       });
-      return { success: false, error: "XML validation failed" };
+      return { success: false, error: "XML generation failed" };
+    }
+
+    // Structural XML validation
+    const xmlValidation = validateFincenXml(xml);
+    if (!xmlValidation.isValid) {
+      log("error", "fincen_xml_validation_failed", { filingYearId, errors: xmlValidation.errors });
+      await prisma.filingYear.updateMany({
+        where: { id: filingYearId, userId, status: "SUBMITTING" },
+        data: { status: "PAID" },
+      });
+      return {
+        success: false,
+        error: "XML validation failed: " + xmlValidation.errors.join("; "),
+        validationErrors: xmlValidation.errors,
+      };
     }
 
     const batchId = crypto.randomUUID();

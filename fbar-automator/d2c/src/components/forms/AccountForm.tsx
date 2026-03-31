@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { COUNTRIES, CURRENCIES } from "@/lib/countries";
+import { ProvinceStateSelect } from "@/components/forms/ProvinceStateSelect";
 
 interface AccountFormProps {
   calendarYear: number;
@@ -23,10 +24,18 @@ export function AccountForm({ calendarYear, onSaved, onCancel }: AccountFormProp
     maxValueLocal: "",
     isJointAccount: false,
     jointOwnerInfo: "",
+    institutionState: "",
   });
 
   const updateField = (field: string, value: string | boolean) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [field]: value };
+      // Clear province/state when country changes away from CA/MX
+      if (field === "countryCode" && value !== "CA" && value !== "MX") {
+        next.institutionState = "";
+      }
+      return next;
+    });
     setFieldErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
@@ -44,6 +53,9 @@ export function AccountForm({ calendarYear, onSaved, onCancel }: AccountFormProp
           ...form,
           maxValueLocal: parseFloat(form.maxValueLocal),
           calendarYear,
+          institutionAddress: (form.countryCode === "CA" || form.countryCode === "MX") && form.institutionState
+            ? { state: form.institutionState, country: form.countryCode }
+            : undefined,
         }),
       });
 
@@ -214,6 +226,14 @@ export function AccountForm({ calendarYear, onSaved, onCancel }: AccountFormProp
             )}
           </div>
         </div>
+
+        <ProvinceStateSelect
+          countryCode={form.countryCode}
+          value={form.institutionState}
+          onChange={(v) => updateField("institutionState", v)}
+          id="new-account-institutionState"
+          error={fieldErrors["institutionAddress.state"] || fieldErrors.institutionState}
+        />
 
         <div>
           <label htmlFor="new-account-maxValueLocal" className="block text-sm font-medium text-gray-700 mb-1">

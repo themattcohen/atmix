@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { foreignAccountSchema } from "@/lib/validation";
+import { foreignAccountSchema, foreignAccountBaseSchema } from "@/lib/validation";
 import { encrypt } from "@/lib/encryption";
 import { mapAccountToDisplay } from "@/lib/account-mapper";
 import { getRate } from "@/lib/treasury";
@@ -59,7 +59,7 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const parsed = foreignAccountSchema.partial().safeParse(body);
+    const parsed = foreignAccountBaseSchema.partial().safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
