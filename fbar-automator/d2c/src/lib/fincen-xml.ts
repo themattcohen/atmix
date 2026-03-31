@@ -427,9 +427,9 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       fiAddress["fc2:RawStateCodeText"] = fiAddr.state
     }
     fiAddress["fc2:RawStreetAddress1Text"] = toAscii(fiAddr.street)
-    fiAddress["fc2:RawZIPCode"] = fiAddr.zip
+    fiAddress["fc2:RawZIPCode"] = (fiAddr.zip || "").replace(/[-\s]/g, "")
 
-    accountElement["fc2:Party"] = {
+    const fiParty: Record<string, unknown> = {
       "@_SeqNum": String(fiPartySeq),
       "fc2:ActivityPartyTypeCode": "41",
       "fc2:PartyName": {
@@ -438,6 +438,52 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
         "fc2:RawPartyFullName": toAscii(account.institutionName),
       },
       "fc2:Address": fiAddress,
+    }
+
+    // Signature authority accounts (type 143) require a Party type 43
+    // ("No Financial Interest Account Owner") — the filer who has signature
+    // authority but no financial interest in the account.
+    const isSigAuth =
+      account.ownershipType === "SIGNATURE_AUTHORITY" ||
+      account.ownershipType === "BOTH"
+
+    if (isSigAuth) {
+      const noFiPartySeq = seq.next()
+      const noFiNameSeq = seq.next()
+      const noFiAddrSeq = seq.next()
+
+      const noFiParty: Record<string, unknown> = {
+        "@_SeqNum": String(noFiPartySeq),
+        "fc2:ActivityPartyTypeCode": "43",
+        "fc2:PartyName": {
+          "@_SeqNum": String(noFiNameSeq),
+          "fc2:PartyNameTypeCode": "L",
+          "fc2:RawEntityIndividualLastName": toAscii(user.lastName ?? ""),
+          "fc2:RawIndividualFirstName": toAscii(user.firstName ?? ""),
+        },
+        "fc2:Address": {
+          "@_SeqNum": String(noFiAddrSeq),
+          "fc2:RawCityText": toAscii(filerAddr.city),
+          "fc2:RawCountryCodeText": "US",
+          "fc2:RawStateCodeText": filerAddr.state,
+          "fc2:RawStreetAddress1Text": toAscii(filerAddr.street),
+          "fc2:RawZIPCode": filerAddr.zip,
+        },
+      }
+
+      if (user.tin && user.tinType) {
+        const noFiIdSeq = seq.next()
+        const decryptedTin = safeDecrypt(user.tin).replace(/\D/g, "")
+        noFiParty["fc2:PartyIdentification"] = {
+          "@_SeqNum": String(noFiIdSeq),
+          "fc2:PartyIdentificationNumberText": decryptedTin,
+          "fc2:PartyIdentificationTypeCode": TIN_TYPE_CODE[user.tinType],
+        }
+      }
+
+      accountElement["fc2:Party"] = [fiParty, noFiParty]
+    } else {
+      accountElement["fc2:Party"] = fiParty
     }
 
     accountElements.push(accountElement)
@@ -494,7 +540,11 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       "@_PartyCount": String(type41Count),
       "@_AccountCount": String(accountElements.length),
       "@_JointlyOwnedOwnerCount": "0",
-      "@_NoFIOwnerCount": "0",
+      "@_NoFIOwnerCount": String(
+        accounts.filter(
+          (a) => a.ownershipType === "SIGNATURE_AUTHORITY" || a.ownershipType === "BOTH"
+        ).length
+      ),
       "@_ConsolidatedOwnerCount": "0",
       "@_xsi:schemaLocation": "www.fincen.gov/base https://www.fincen.gov/base/EFL_FBARXBatchSchema.xsd",
       "@_xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
