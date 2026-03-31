@@ -43,7 +43,7 @@ export async function GET(
     const accounts = rawAccounts.map((a) => {
       const decrypted = safeDecrypt(a.accountNumber);
       const decryptionFailed = a.accountNumber !== null && a.accountNumber !== "" && decrypted === "";
-      const accountNumberLast4 = decrypted ? decrypted.slice(-4) : null;
+      const accountNumberLast4 = decrypted ? decrypted.replace(/[\s\-]/g, "").slice(-4) : null;
       return {
         id: a.id,
         institutionName: a.institutionName,

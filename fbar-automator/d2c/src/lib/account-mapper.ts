@@ -6,7 +6,7 @@ export function mapAccountToDisplay(a: ForeignAccount): AccountDisplay {
   return {
     id: a.id,
     institutionName: a.institutionName,
-    accountNumberLast4: safeDecrypt(a.accountNumber).slice(-4) || "****",
+    accountNumberLast4: safeDecrypt(a.accountNumber).replace(/[\s\-]/g, "").slice(-4) || "****",
     accountType: a.accountType,
     ownershipType: a.ownershipType,
     countryCode: a.countryCode,

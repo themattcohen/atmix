@@ -67,6 +67,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
 
+RUN apk add --no-cache libxml2-utils
+COPY --from=builder /app/schemas ./schemas
+
 RUN npm install -g prisma@6
 
 USER nextjs

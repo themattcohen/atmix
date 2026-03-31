@@ -4,6 +4,7 @@ import { validateFilingData } from "@/lib/filing-validator";
 import { submitBatch } from "@/lib/sdtm";
 import { sendSubmissionEmail } from "@/lib/email";
 import { log } from "@/lib/logger";
+import { validateXmlAgainstXsd } from "@/lib/xsd-validator";
 import crypto from "crypto";
 
 export type SubmitFilingResult =
@@ -99,6 +100,24 @@ export async function submitFiling(
         success: false,
         error: "XML validation failed: " + xmlValidation.errors.join("; "),
         validationErrors: xmlValidation.errors,
+      };
+    }
+
+    // XSD schema validation (catches schema-level issues before SFTP upload)
+    const xsdResult = validateXmlAgainstXsd(xml);
+    if (!xsdResult.isValid) {
+      log("error", "fincen_xsd_validation_failed", {
+        filingYearId,
+        errors: xsdResult.errors.map(e => e.message),
+      });
+      await prisma.filingYear.updateMany({
+        where: { id: filingYearId, userId, status: "SUBMITTING" },
+        data: { status: "PAID" },
+      });
+      return {
+        success: false,
+        error: "XSD validation failed: " + xsdResult.errors.map(e => e.message).join("; "),
+        validationErrors: xsdResult.errors.map(e => `Line ${e.line}: ${e.message}`),
       };
     }
 

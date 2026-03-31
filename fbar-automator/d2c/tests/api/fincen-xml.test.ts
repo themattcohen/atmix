@@ -4,6 +4,7 @@ import {
   generateFincenXml,
   validateFincenXml,
 } from "@/lib/fincen-xml";
+import { validateXmlAgainstXsd } from "@/lib/xsd-validator";
 import { prisma } from "@/lib/db";
 import { encrypt } from "@/lib/encryption";
 import bcrypt from "bcryptjs";
@@ -43,6 +44,15 @@ async function createTestAccount(
   const data = { ...defaults, ...overrides };
   const account = await prisma.foreignAccount.create({ data });
   return account.id;
+}
+
+/** Assert generated XML passes XSD validation (skipped if xmllint not available) */
+function expectXsdValid(xml: string) {
+  const result = validateXmlAgainstXsd(xml);
+  if (!result.isValid) {
+    const details = result.errors.map(e => `  Line ${e.line}: ${e.message}`).join("\n");
+    throw new Error(`XSD validation failed:\n${details}`);
+  }
 }
 
 /**
@@ -128,6 +138,7 @@ describe("P4-2: generateFincenXml — single account", () => {
 
     expect(xml).toContain("<fc2:EFilingBatchXML");
     expect(xml).toContain('<?xml version');
+    expectXsdValid(xml);
   });
 
   it("P4-2: generated XML contains Activity element with filing year data", async () => {
@@ -137,6 +148,7 @@ describe("P4-2: generateFincenXml — single account", () => {
 
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xmlContains(xml, "fc2:Activity")).toBe(true);
+      expectXsdValid(xml);
     }
   });
 
@@ -147,6 +159,7 @@ describe("P4-2: generateFincenXml — single account", () => {
 
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xmlContains(xml, "fc2:Party")).toBe(true);
+      expectXsdValid(xml);
     }
   });
 
@@ -161,6 +174,7 @@ describe("P4-2: generateFincenXml — single account", () => {
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml).toContain("Credit Suisse AG");
       expect(xml).toContain("CH");
+      expectXsdValid(xml);
     }
   });
 
@@ -175,6 +189,7 @@ describe("P4-2: generateFincenXml — single account", () => {
 
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml).toContain("56500");
+      expectXsdValid(xml);
     }
   });
 
@@ -188,6 +203,7 @@ describe("P4-2: generateFincenXml — single account", () => {
         "<fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>"
       );
       expect(xml).not.toContain("ThirdPartyPreparerIndicator");
+      expectXsdValid(xml);
     }
   });
 
@@ -212,6 +228,7 @@ describe("P4-2: generateFincenXml — single account", () => {
       expect(xml).not.toContain(
         "<fc2:ActivityPartyTypeCode>56</fc2:ActivityPartyTypeCode>"
       );
+      expectXsdValid(xml);
     }
   });
 });
@@ -235,6 +252,7 @@ describe("P4-2: generateFincenXml — batch filing (25+ accounts)", () => {
       expect(xml).toContain("Batch Bank 1");
       expect(xml).toContain("Batch Bank 15");
       expect(xml).toContain("Batch Bank 27");
+      expectXsdValid(xml);
     }
   });
 });
@@ -253,6 +271,7 @@ describe("P4-2: generateFincenXml — joint accounts", () => {
       expect(xml).toContain(
         "<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>"
       );
+      expectXsdValid(xml);
     }
   });
 
@@ -269,6 +288,7 @@ describe("P4-2: generateFincenXml — joint accounts", () => {
       expect(xml).toContain(
         "<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>"
       );
+      expectXsdValid(xml);
     }
   });
 });
@@ -315,6 +335,7 @@ describe("P4-2: generateFincenXml — multi-currency accounts", () => {
       expect(xml).toContain("56500");
       expect(xml).toContain("33000");
       expect(xml).toContain("35000");
+      expectXsdValid(xml);
     }
   });
 });
@@ -347,6 +368,7 @@ describe("P4-2: generateFincenXml — transmitter/preparer config", () => {
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml).toContain("FBAR Direct LLC");
       expect(xml).toContain("123456789");
+      expectXsdValid(xml);
     }
   });
 
@@ -358,6 +380,7 @@ describe("P4-2: generateFincenXml — transmitter/preparer config", () => {
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml).toContain("Test Admin");
       expect(xml).toContain("3035551234");
+      expectXsdValid(xml);
     }
   });
 });
@@ -370,6 +393,7 @@ describe("P4-2: generateFincenXml — XML structure validation", () => {
 
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml.trimStart()).toMatch(/^<\?xml\s+version/);
+      expectXsdValid(xml);
     }
   });
 
@@ -393,6 +417,7 @@ describe("P4-2: generateFincenXml — XML structure validation", () => {
         // If fast-xml-parser is not available, verify basic structure
         expect(xml).toContain("</fc2:EFilingBatchXML>");
       }
+      expectXsdValid(xml);
     }
   });
 
@@ -404,6 +429,7 @@ describe("P4-2: generateFincenXml — XML structure validation", () => {
     if (xml.includes("<fc2:EFilingBatchXML")) {
       expect(xml.length).toBeGreaterThanOrEqual(100);
       expect(xml).toContain("<fc2:EFilingBatchXML");
+      expectXsdValid(xml);
     }
   });
 });
@@ -416,6 +442,7 @@ describe("P4-2: generateFincenXml — filing type", () => {
 
     expect(xml).toContain("<fc2:CorrectsAmendsPriorReportIndicator>");
     expect(xml).not.toContain(">Y</fc2:CorrectsAmendsPriorReportIndicator>");
+    expectXsdValid(xml);
   });
 
   it("P4-2: AMENDED filing type sets CorrectsAmendsPriorReportIndicator to Y", async () => {
@@ -440,6 +467,7 @@ describe("P4-2: generateFincenXml — filing type", () => {
       expect(xml).toContain(
         "<fc2:CorrectsAmendsPriorReportIndicator>Y</fc2:CorrectsAmendsPriorReportIndicator>"
       );
+      expectXsdValid(xml);
     }
 
     // Cleanup the additional filing (user cascade won't catch year-specific cleanup)
@@ -538,6 +566,7 @@ describe("Audit fix: PartyCount counts type-41 parties only", () => {
     const xml = await generateFincenXml(testFilingId);
 
     expect(xml).toContain('PartyCount="2"');
+    expectXsdValid(xml);
   });
 
   it("single account: PartyCount = 1", async () => {
@@ -546,6 +575,7 @@ describe("Audit fix: PartyCount counts type-41 parties only", () => {
     const xml = await generateFincenXml(testFilingId);
 
     expect(xml).toContain('PartyCount="1"');
+    expectXsdValid(xml);
   });
 });
 
@@ -559,6 +589,7 @@ describe("Audit fix: account number sanitization", () => {
     const xml = await generateFincenXml(testFilingId);
 
     expect(xml).toContain("<fc2:AccountNumberText>CH123456</fc2:AccountNumberText>");
+    expectXsdValid(xml);
   });
 
   it("truncates account numbers to 40 characters", async () => {
@@ -573,6 +604,7 @@ describe("Audit fix: account number sanitization", () => {
     const match = /<fc2:AccountNumberText>([^<]+)<\/fc2:AccountNumberText>/.exec(xml);
     expect(match).toBeTruthy();
     expect(match![1].length).toBeLessThanOrEqual(40);
+    expectXsdValid(xml);
   });
 });
 
@@ -589,6 +621,7 @@ describe("Audit fix: non-ASCII transliteration", () => {
     expect(xml).not.toContain("é");
     expect(xml).not.toContain("ü");
     expect(xml).not.toContain("ñ");
+    expectXsdValid(xml);
   });
 });
 
@@ -610,6 +643,7 @@ describe("Audit fix: CorrectsAmendsPriorReportIndicator", () => {
     expect(xml).toContain(
       "<fc2:CorrectsAmendsPriorReportIndicator>Y</fc2:CorrectsAmendsPriorReportIndicator>"
     );
+    expectXsdValid(xml);
 
     await prisma.foreignAccount.deleteMany({
       where: { userId: testUserId, calendarYear: 2022 },
@@ -624,6 +658,7 @@ describe("Audit fix: CorrectsAmendsPriorReportIndicator", () => {
 
     expect(xml).toContain("<fc2:CorrectsAmendsPriorReportIndicator>");
     expect(xml).not.toContain(">Y</fc2:CorrectsAmendsPriorReportIndicator>");
+    expectXsdValid(xml);
   });
 });
 
@@ -760,5 +795,8 @@ describe("P4-2: generateFincenXml — golden-file structural match", () => {
     normalizeFields(generatedObj);
 
     expect(generatedObj).toEqual(goldenObj);
+
+    // Also validate the generated XML against XSD
+    expectXsdValid(generatedXml);
   });
 });
