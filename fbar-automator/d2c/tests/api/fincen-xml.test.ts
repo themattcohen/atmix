@@ -409,15 +409,13 @@ describe("P4-2: generateFincenXml — XML structure validation", () => {
 });
 
 describe("P4-2: generateFincenXml — filing type", () => {
-  it("P4-2: ORIGINAL filing type omits CorrectsAmendsPriorReportIndicator entirely", async () => {
+  it("P4-2: ORIGINAL filing type emits empty CorrectsAmendsPriorReportIndicator", async () => {
     await createTestAccount();
 
     const xml = await generateFincenXml(testFilingId);
 
-    if (xml.includes("<fc2:EFilingBatchXML")) {
-      // For ORIGINAL filings, the element should not appear at all (XSD expects Y/N or absence)
-      expect(xml).not.toContain("CorrectsAmendsPriorReportIndicator");
-    }
+    expect(xml).toContain("<fc2:CorrectsAmendsPriorReportIndicator>");
+    expect(xml).not.toContain(">Y</fc2:CorrectsAmendsPriorReportIndicator>");
   });
 
   it("P4-2: AMENDED filing type sets CorrectsAmendsPriorReportIndicator to Y", async () => {
@@ -529,8 +527,8 @@ describe("P4-2: generateFincenXml — null maxValueUsd throws", () => {
 
 // ─── Adversarial Audit Fix Tests ──────────────────────────────────────────────
 
-describe("Audit fix: PartyCount includes all party types", () => {
-  it("PartyCount = type41Count + 3 (transmitter + contact + filer)", async () => {
+describe("Audit fix: PartyCount counts type-41 parties only", () => {
+  it("PartyCount = type41Count (2 accounts → 2)", async () => {
     await createTestAccount();
     await createTestAccount({
       institutionName: "Second Bank",
@@ -539,16 +537,15 @@ describe("Audit fix: PartyCount includes all party types", () => {
 
     const xml = await generateFincenXml(testFilingId);
 
-    // 2 FI parties (type 41) + 3 (transmitter 35 + contact 37 + filer 15) = 5
-    expect(xml).toContain('PartyCount="5"');
+    expect(xml).toContain('PartyCount="2"');
   });
 
-  it("single account: PartyCount = 4 (1 FI + 3 activity-level)", async () => {
+  it("single account: PartyCount = 1", async () => {
     await createTestAccount();
 
     const xml = await generateFincenXml(testFilingId);
 
-    expect(xml).toContain('PartyCount="4"');
+    expect(xml).toContain('PartyCount="1"');
   });
 });
 
@@ -620,12 +617,13 @@ describe("Audit fix: CorrectsAmendsPriorReportIndicator", () => {
     await prisma.filingYear.delete({ where: { id: amendedFiling.id } });
   });
 
-  it("ORIGINAL filing does not emit CorrectsAmendsPriorReportIndicator", async () => {
+  it("ORIGINAL filing emits empty CorrectsAmendsPriorReportIndicator", async () => {
     await createTestAccount();
 
     const xml = await generateFincenXml(testFilingId);
 
-    expect(xml).not.toContain("CorrectsAmendsPriorReportIndicator");
+    expect(xml).toContain("<fc2:CorrectsAmendsPriorReportIndicator>");
+    expect(xml).not.toContain(">Y</fc2:CorrectsAmendsPriorReportIndicator>");
   });
 });
 
@@ -752,9 +750,6 @@ describe("P4-2: generateFincenXml — golden-file structural match", () => {
       for (const key of Object.keys(obj)) {
         if (key === "fc2:ApprovalOfficialSignatureDateText") {
           obj[key] = PLACEHOLDER;
-        } else if (key === "@_PartyCount") {
-          // PartyCount formula changed: was type41-only, now includes activity-level parties
-          obj[key] = PLACEHOLDER;
         } else {
           normalizeFields(obj[key]);
         }
@@ -763,13 +758,6 @@ describe("P4-2: generateFincenXml — golden-file structural match", () => {
 
     normalizeFields(goldenObj);
     normalizeFields(generatedObj);
-
-    // The golden file has CorrectsAmendsPriorReportIndicator="" for ORIGINAL filings;
-    // we now omit it entirely. Normalize by removing it from the golden object.
-    const goldenAssoc = goldenObj?.["fc2:EFilingBatchXML"]?.["fc2:Activity"]?.["fc2:ActivityAssociation"];
-    if (goldenAssoc && "fc2:CorrectsAmendsPriorReportIndicator" in goldenAssoc) {
-      delete goldenAssoc["fc2:CorrectsAmendsPriorReportIndicator"];
-    }
 
     expect(generatedObj).toEqual(goldenObj);
   });

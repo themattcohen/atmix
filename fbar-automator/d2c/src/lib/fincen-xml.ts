@@ -80,7 +80,7 @@ function toAscii(str: string): string {
  * - Truncates to 40 characters (XSD max for AccountNumberText)
  */
 function sanitizeAccountNumber(raw: string): string {
-  return raw.trim().slice(0, 40)
+  return raw.replace(/[\s\-]/g, "").slice(0, 40)
 }
 
 /**
@@ -249,7 +249,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
   const assocSeq = seq.next()
   activity["fc2:ActivityAssociation"] = {
     "@_SeqNum": String(assocSeq),
-    ...(isAmended ? { "fc2:CorrectsAmendsPriorReportIndicator": "Y" } : {}),
+    "fc2:CorrectsAmendsPriorReportIndicator": isAmended ? "Y" : "",
   }
 
   // -----------------------------------------------------------------------
@@ -469,6 +469,15 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     )
   }
   faa["fc2:ReportCalendarYearText"] = String(filingYear.calendarYear)
+
+  // SignatureAuthoritiesQuantityText: conditionally required when filer has sig auth accounts
+  if (hasSignatureAuthority) {
+    const sigAuthCount = accounts.filter(
+      (a) => a.ownershipType === "SIGNATURE_AUTHORITY" || a.ownershipType === "BOTH"
+    ).length
+    faa["fc2:SignatureAuthoritiesQuantityText"] = String(sigAuthCount)
+  }
+
   activity["fc2:ForeignAccountActivity"] = faa
 
   // -----------------------------------------------------------------------
@@ -482,7 +491,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     },
     "fc2:EFilingBatchXML": {
       "@_ActivityCount": "1",
-      "@_PartyCount": String(type41Count + 3),
+      "@_PartyCount": String(type41Count),
       "@_AccountCount": String(accountElements.length),
       "@_JointlyOwnedOwnerCount": "0",
       "@_NoFIOwnerCount": "0",
