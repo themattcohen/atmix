@@ -1,9 +1,10 @@
 export interface ParsedRejectionError {
   raw: string;
   humanMessage: string;
-  category: "tin" | "state" | "name" | "account" | "generic";
+  category: "tin" | "state" | "name" | "account" | "field_format" | "generic" | "_meta";
 }
 
+// Order matters — first match wins. Keep _meta last.
 const KNOWN_PATTERNS: Array<{ pattern: RegExp; category: ParsedRejectionError["category"]; humanMessage: string }> = [
   {
     pattern: /TIN|taxpayer\s*id|identification\s*number/i,
@@ -25,6 +26,16 @@ const KNOWN_PATTERNS: Array<{ pattern: RegExp; category: ParsedRejectionError["c
     category: "account",
     humanMessage: "There is an issue with one or more account numbers.",
   },
+  {
+    pattern: /not a valid code|invalid.*code|value.*not.*valid/i,
+    category: "field_format",
+    humanMessage: "One or more field values are not in the expected format. This is often caused by a missing province/state for Canadian or Mexican accounts.",
+  },
+  {
+    pattern: /submission has been rejected|contains significant errors|please fix and re-submit/i,
+    category: "_meta",
+    humanMessage: "",
+  },
 ];
 
 export function parseRejectionReason(raw: string | null | undefined): ParsedRejectionError[] {
@@ -33,7 +44,7 @@ export function parseRejectionReason(raw: string | null | undefined): ParsedReje
   // Split on semicolons (FinCEN delimiter)
   const parts = raw.split(";").map(s => s.trim()).filter(Boolean);
 
-  return parts.map(part => {
+  const matched = parts.map(part => {
     for (const { pattern, category, humanMessage } of KNOWN_PATTERNS) {
       if (pattern.test(part)) {
         return { raw: part, humanMessage, category };
@@ -41,21 +52,23 @@ export function parseRejectionReason(raw: string | null | undefined): ParsedReje
     }
     return { raw: part, humanMessage: part, category: "generic" as const };
   });
+
+  // Filter out meta-errors (FinCEN boilerplate)
+  const filtered = matched.filter(e => e.category !== "_meta");
+
+  // Deduplicate by humanMessage
+  const seen = new Set<string>();
+  return filtered.filter(e => {
+    if (seen.has(e.humanMessage)) return false;
+    seen.add(e.humanMessage);
+    return true;
+  });
 }
 
 export function getRejectionSummary(errors: ParsedRejectionError[]): string {
   if (errors.length === 0) return "Your filing was rejected by FinCEN.";
-
-  // Deduplicate by category
-  const seen = new Set<string>();
-  const unique: string[] = [];
-  for (const err of errors) {
-    if (!seen.has(err.category)) {
-      seen.add(err.category);
-      unique.push(err.humanMessage);
-    }
-  }
-
-  if (unique.length === 1) return unique[0];
-  return `Your filing has ${unique.length} issues that need to be fixed: ${unique.join(" ")}`;
+  if (errors.length === 1) return errors[0].humanMessage;
+  const categories = new Set(errors.map(e => e.category));
+  if (categories.size === 1) return errors[0].humanMessage;
+  return `Your filing has ${errors.length} issues that need to be fixed.`;
 }
