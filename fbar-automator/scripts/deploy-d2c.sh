@@ -9,7 +9,6 @@
 set -euo pipefail
 
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
-HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:3001/api/health}"
 HEALTH_TIMEOUT="${HEALTH_TIMEOUT:-120}"
 DEPLOY_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 NO_CACHE="${1:-}"
@@ -57,22 +56,27 @@ docker compose -f "$COMPOSE_FILE" up d2c-migrate
 echo "--- Starting d2c-app and d2c-cron..."
 docker compose -f "$COMPOSE_FILE" up -d d2c-app d2c-cron
 
-# ─── Step 8: Health check ────────────────────────────────────────────────────
+# ─── Step 8: Health check (via Docker health status + in-container curl) ─────
 echo "--- Waiting for health (timeout: ${HEALTH_TIMEOUT}s)..."
 ELAPSED=0
 while [ "$ELAPSED" -lt "$HEALTH_TIMEOUT" ]; do
-  if curl -sf "$HEALTH_URL" > /dev/null 2>&1; then
-    echo "Health check passed after ${ELAPSED}s."
-    echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") local-build $(git rev-parse --short HEAD 2>/dev/null || echo unknown)" \
-      >> .deploy-history
-    echo "=== Deploy complete ==="
-    exit 0
+  HEALTH=$(docker inspect --format='{{.State.Health.Status}}' fbar-automator-d2c-app-1 2>/dev/null || echo "unknown")
+  if [ "$HEALTH" = "healthy" ]; then
+    # Double-check with an actual request inside the container
+    if docker compose -f "$COMPOSE_FILE" exec -T d2c-app wget -qO- http://127.0.0.1:3001/api/health > /dev/null 2>&1; then
+      echo "Health check passed after ${ELAPSED}s (container: healthy, endpoint: 200)."
+      echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") local-build $(git rev-parse --short HEAD 2>/dev/null || echo unknown)" \
+        >> .deploy-history
+      echo "=== Deploy complete ==="
+      exit 0
+    fi
   fi
   sleep 3
   ELAPSED=$((ELAPSED + 3))
 done
 
 echo "ERROR: Health check failed after ${HEALTH_TIMEOUT}s."
+echo "--- Container health: $(docker inspect --format='{{.State.Health.Status}}' fbar-automator-d2c-app-1 2>/dev/null || echo unknown)"
 echo "--- d2c-app logs:"
 docker compose -f "$COMPOSE_FILE" logs --tail 30 d2c-app
 exit 1
