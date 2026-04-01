@@ -3,10 +3,9 @@ import Script from 'next/script';
 export function GoogleTagManager({ gtmId, gadsId, nonce }: { gtmId: string; gadsId?: string; nonce?: string }) {
   if (!gtmId) return null;
   const gadsConfig = gadsId ? `gtag('config','${gadsId}');` : '';
-  // Check localStorage for prior consent; ad_storage/ad_user_data default to "granted"
-  // since the site targets US users only (no GDPR opt-in required for ads).
-  // analytics_storage and ad_personalization still respect cookie consent.
-  const consentCheck = `var cs=typeof localStorage!=='undefined'&&localStorage.getItem('fbar_cookie_consent')==='granted'?'granted':'denied';gtag('consent','default',{analytics_storage:cs,ad_storage:'granted',ad_user_data:'granted',ad_personalization:cs});`;
+  // US-only site: all consent defaults to "granted" (no GDPR requirement).
+  // Cookie consent banner still shown for transparency but does not gate tracking.
+  const consentCheck = `gtag('consent','default',{analytics_storage:'granted',ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted'});`;
   return (
     <>
       <Script
