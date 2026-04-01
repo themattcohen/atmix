@@ -516,12 +516,15 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
   }
   faa["fc2:ReportCalendarYearText"] = String(filingYear.calendarYear)
 
-  // SignatureAuthoritiesQuantityText: conditionally required when filer has sig auth accounts
+  // SignatureAuthoritiesQuantityText: only required when filer has 25+ sig auth accounts
+  // (FinCEN C52 warning fires if emitted with count < 25)
   if (hasSignatureAuthority) {
     const sigAuthCount = accounts.filter(
       (a) => a.ownershipType === "SIGNATURE_AUTHORITY" || a.ownershipType === "BOTH"
     ).length
-    faa["fc2:SignatureAuthoritiesQuantityText"] = String(sigAuthCount)
+    if (sigAuthCount >= 25) {
+      faa["fc2:SignatureAuthoritiesQuantityText"] = String(sigAuthCount)
+    }
   }
 
   activity["fc2:ForeignAccountActivity"] = faa
