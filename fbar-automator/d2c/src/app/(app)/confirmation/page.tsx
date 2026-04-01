@@ -41,6 +41,7 @@ function ConfirmationContent() {
   const [error, setError] = useState<string>("");
   const [filing, setFiling] = useState<FilingInfo | null>(null);
   const [resubmitting, setResubmitting] = useState(false);
+  const [utm, setUtm] = useState<{ source: string | null; medium: string | null; campaign: string | null } | null>(null);
 
   // Fire purchase event once when status transitions to any post-payment state
   // (webhook often advances status past "paid" before the browser loads)
@@ -63,6 +64,9 @@ function ConfirmationContent() {
           currency: 'USD',
           value,
         },
+        ...(utm?.source && { traffic_source: utm.source }),
+        ...(utm?.medium && { traffic_medium: utm.medium }),
+        ...(utm?.campaign && { traffic_campaign: utm.campaign }),
       });
       trackGadsConversion(
         process.env.NEXT_PUBLIC_GADS_PURCHASE_LABEL || '',
@@ -70,7 +74,7 @@ function ConfirmationContent() {
         filing?.id || '',
       );
     }
-  }, [status, filing]);
+  }, [status, filing, utm]);
 
   // Anchored filing ID from Stripe session verification (set in init)
   const anchoredFilingIdRef = useRef<string | null>(null);
@@ -121,6 +125,8 @@ function ConfirmationContent() {
       const res = await fetch(`/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}`);
       if (!res.ok) return { status: null, filingId: null };
       const data = await res.json();
+      // Capture UTM data for conversion attribution
+      if (data.data?.utm) setUtm(data.data.utm);
       return {
         status: data.data?.status || null,
         filingId: data.data?.filingId || null,

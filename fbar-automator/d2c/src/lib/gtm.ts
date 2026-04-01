@@ -33,7 +33,6 @@ export function trackGadsConversion(
   transactionId?: string,
 ): void {
   if (typeof window === "undefined" || !window.gtag) return;
-  if (process.env.NODE_ENV !== "production") return;
   const gadsId = process.env.NEXT_PUBLIC_GADS_ID;
   if (!gadsId) return;
   window.gtag("event", "conversion", {
