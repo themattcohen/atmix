@@ -1,0 +1,9 @@
+browser-use>=0.7.0
+litellm
+nodriver
+pyotp
+openpyxl
+rapidfuzz
+pydantic>=2.0
+pydantic-settings>=2.0
+python-dotenv

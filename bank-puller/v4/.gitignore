@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+profiles/
+checkpoints/
+downloads/
+output/
+*.egg-info/
