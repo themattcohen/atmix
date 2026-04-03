@@ -131,7 +131,7 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
 
     tab_id = await create_new_tab()
     print(f"New tab: {tab_id}")
-    Path("_chase_tab.json").write_text(json.dumps({"tab_id": tab_id}))
+    Path("_chase_tab.json").write_text(json.dumps({"tab_id": tab_id, "username": username}))
 
     ws = await cdp_connect_tab(tab_id)
     cdp = CDPHelper(ws)
@@ -493,9 +493,12 @@ async def cmd_download():
         # 3. Re-expand all accounts
         # 4. Retry download for this account
 
-    # Step 4: Report — check Downloads folder for each account
+    # Step 4: Report — check Downloads folder for each account, save CSV
+    import csv
     import glob
     import os
+    from datetime import datetime
+
     download_dir = str(Path.home() / "Downloads")
     recent_pdfs = sorted(
         glob.glob(os.path.join(download_dir, "*.pdf")),
@@ -503,33 +506,63 @@ async def cmd_download():
         reverse=True,
     )
 
-    print("\n=== Download Report ===\n")
-    print(f"{'Account':<35} {'Status':<15} {'File'}")
-    print("-" * 90)
+    # Build report rows
+    report_rows = []
     for acct in accounts:
         name = acct["name"]
-        # Extract last4 from name like "CPC CHECKING (...9866)"
         last4_match = name.split("...")[-1].rstrip(")") if "..." in name else ""
 
-        # Check for matching PDF (filename contains the last4)
         matched_file = None
         for pdf in recent_pdfs:
             basename = os.path.basename(pdf)
             if last4_match and last4_match in basename:
-                # Only count files modified in last 10 minutes
                 if os.path.getmtime(pdf) > asyncio.get_event_loop().time() - 600:
                     matched_file = basename
                     break
 
         if matched_file:
-            print(f"  {name:<33} {'DOWNLOADED':<15} {matched_file}")
+            status = "DOWNLOADED"
+            reason = ""
         elif not acct.get("had_icon", True):
-            print(f"  {name:<33} {'NO STATEMENTS':<15} (no download icon found)")
+            status = "NO STATEMENTS"
+            reason = "no download icon found"
         else:
-            print(f"  {name:<33} {'MISSING':<15} (no PDF found in Downloads)")
+            status = "MISSING"
+            reason = "no PDF found in Downloads"
+
+        report_rows.append({
+            "account": name,
+            "last4": last4_match,
+            "status": status,
+            "file": matched_file or "",
+            "reason": reason,
+        })
+
+    # Print to stdout
+    print("\n=== Download Report ===\n")
+    print(f"{'Account':<35} {'Status':<15} {'File'}")
+    print("-" * 90)
+    for row in report_rows:
+        detail = row["file"] if row["file"] else f"({row['reason']})"
+        print(f"  {row['account']:<33} {row['status']:<15} {detail}")
+
+    # Save CSV: output/{username}_chase_download_report_{timestamp}.csv
+    tab_info = json.loads(Path("_chase_tab.json").read_text())
+    username = tab_info.get("username", "unknown")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+    csv_path = output_dir / f"{username}_chase_download_report_{timestamp}.csv"
+
+    with open(csv_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["account", "last4", "status", "file", "reason"])
+        writer.writeheader()
+        writer.writerows(report_rows)
+
+    print(f"\nReport saved: {csv_path}")
 
     await cdp.screenshot("debug_chase_all_downloaded.png")
-    print(f"\nScreenshot: profiles/debug_chase_all_downloaded.png")
+    print(f"Screenshot: profiles/debug_chase_all_downloaded.png")
     print("Run: python scripts/chase_login.py signout")
     await ws.close()
 
