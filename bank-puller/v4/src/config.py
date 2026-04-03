@@ -17,8 +17,12 @@ _DOTENV_PATH = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(_DOTENV_PATH, override=False)
 
 
-MODEL_HAIKU  = "anthropic/claude-haiku-4-5-20251001"
-MODEL_SONNET = "anthropic/claude-sonnet-4-6-20250527"
+MODEL_HAIKU  = "claude-haiku-4-5"    # Haiku for BrowserUse — only model that works
+MODEL_SONNET = "claude-haiku-4-5"    # Sonnet/Opus hit "grammar too large" on complex pages
+# NOTE: BrowserUse v0.12 has a "compiled grammar too large" issue with
+# Sonnet and Opus on pages with many DOM elements. Haiku bypasses this
+# because it uses a less strict output parsing mode. This is a known
+# BrowserUse/Anthropic API limitation.
 
 
 class Settings(BaseSettings):

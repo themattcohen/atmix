@@ -54,6 +54,7 @@ def build_chrome_args(
     headless: bool,
     proxy: Optional[str] = None,
     download_dir: Optional[Path] = None,
+    stealth: bool = True,
 ) -> list[str]:
     """Return the full argv list for launching Chrome with CDP enabled.
 
@@ -65,14 +66,17 @@ def build_chrome_args(
       --disable-infobars           removes the "Chrome is being controlled" bar
     """
     profile_dir.mkdir(parents=True, exist_ok=True)
+    # Chrome's singleton check uses the absolute path — resolve to avoid
+    # collisions with the user's default Chrome profile.
+    abs_profile = str(profile_dir.resolve())
 
     args: list[str] = [
         f"--remote-debugging-port={cdp_port}",
-        f"--user-data-dir={profile_dir}",
+        f"--user-data-dir={abs_profile}",
         "--no-first-run",
         "--no-default-browser-check",
-        "--disable-blink-features=AutomationControlled",
         "--disable-infobars",
+        "--disable-features=IsolateOrigins,site-per-process",
         "--disable-extensions-except=",
         "--disable-plugins-discovery",
         "--disable-default-apps",
@@ -88,6 +92,11 @@ def build_chrome_args(
         "--disable-crash-reporter",
         "--noerrdialogs",
     ]
+
+    # Stealth flag — hides automation signals from bank bot detection.
+    # Skip for non-bank sites (e.g., Dialpad) where it breaks WebSockets.
+    if stealth:
+        args.append("--disable-blink-features=AutomationControlled")
 
     if headless:
         args.append("--headless=new")
@@ -200,6 +209,7 @@ class BrowserProcess:
         proxy: Optional[str] = None,
         download_dir: Optional[Path] = None,
         startup_timeout: float = 15.0,
+        stealth: bool = True,
     ) -> None:
         self.cdp_port = cdp_port
         self.profile_dir = profile_dir
@@ -207,6 +217,7 @@ class BrowserProcess:
         self.proxy = proxy
         self.download_dir = download_dir
         self.startup_timeout = startup_timeout
+        self.stealth = stealth
         self._proc: Optional[subprocess.Popen] = None
 
     # ------------------------------------------------------------------
@@ -217,12 +228,24 @@ class BrowserProcess:
         """Launch Chrome/Chromium on self.cdp_port with self.profile_dir.
 
         Strategy:
-          1. Try to import nodriver and use its bundled Chromium path.
-          2. Fall back to finding Chrome/Chromium in standard install locations.
+          1. Clean stale Chrome lock files from the profile directory
+             (prevents Chrome from delegating to a dead instance).
+          2. Try to import nodriver and use its bundled Chromium path.
+          3. Fall back to finding Chrome/Chromium in standard install locations.
 
         Waits until the CDP endpoint is accepting connections before
         returning.  Raises RuntimeError if startup times out.
         """
+        # Remove stale lock files that prevent fresh Chrome launch
+        self.profile_dir.mkdir(parents=True, exist_ok=True)
+        for lock_name in ("SingletonLock", "SingletonSocket", "SingletonCookie"):
+            lock = self.profile_dir / lock_name
+            if lock.exists() or lock.is_symlink():
+                try:
+                    lock.unlink()
+                except OSError:
+                    pass
+
         executable = await self._resolve_executable()
 
         chrome_args = build_chrome_args(
@@ -231,6 +254,7 @@ class BrowserProcess:
             headless=self.headless,
             proxy=self.proxy,
             download_dir=self.download_dir,
+            stealth=self.stealth,
         )
 
         cmd = [executable] + chrome_args
