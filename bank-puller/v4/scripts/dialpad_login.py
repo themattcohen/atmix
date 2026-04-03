@@ -211,19 +211,21 @@ async def step_2fa(cdp: CDPHelper, code: str):
 
 
 async def step_navigate_app(cdp: CDPHelper):
-    """Navigate to /app, dismiss modal, click Compound Accounting > New."""
+    """Navigate to /app and wait for the SPA to fully render."""
     await cdp.send("Page.navigate", {"url": "https://dialpad.com/app"})
 
-    # Progressive backoff waiting for SPA
-    for wait in [3, 5, 8, 12]:
-        await asyncio.sleep(wait)
-        body_len = await cdp.evaluate("document.body?.innerText?.length || 0")
-        preboot = await cdp.evaluate(
-            'document.querySelector(".preboot-modal")?.innerText?.substring(0, 40) || null'
+    # Wait until the sidebar actually has "Compound Accounting" text
+    print("  Waiting for SPA to render...")
+    for attempt in range(15):
+        await asyncio.sleep(2)
+        has_ca = await cdp.evaluate(
+            'document.body?.innerText?.includes("Compound Accounting") || false'
         )
-        print(f"  After {wait}s: bodyLen={body_len}, preboot={'yes' if preboot else 'no'}")
-        if (body_len or 0) > 50:
+        if has_ca:
+            print(f"  SPA ready after {(attempt + 1) * 2}s")
             break
+    else:
+        print("  WARNING: SPA did not render after 30s")
 
     # Hide preboot modal
     await cdp.evaluate(
@@ -231,24 +233,76 @@ async def step_navigate_app(cdp: CDPHelper):
         '&& (document.querySelector(".preboot-modal").style.display = "none")'
     )
 
-    # Click Compound Accounting — the <a class="dp-general-row__primary"> link
-    print("Clicking Compound Accounting...")
-    await cdp.mouse_click('document.querySelector("a.dp-general-row__primary")')
+    # Dismiss Chrome popups (notifications, save password)
+    await cdp.evaluate(
+        'Array.from(document.querySelectorAll("button"))'
+        '.find(b => b.textContent.trim() === "Block")?.click()'
+    )
+    await cdp.evaluate(
+        'Array.from(document.querySelectorAll("button"))'
+        '.find(b => b.textContent.trim() === "Never")?.click()'
+    )
+
+    # MANDATORY: wait 5 full seconds for SPA to stabilize before ANY clicks
+    print("  Waiting 5s for SPA to stabilize...")
+    await asyncio.sleep(5)
+
+
+async def step_click_compound_accounting(cdp: CDPHelper):
+    """Click Compound Accounting in the sidebar via coordinates, then click New tab."""
+    import base64
+
+    # Find Compound Accounting by text match — querySelector returns the wrong one
+    # (there are 31 elements with class dp-general-row__primary; CA is index 5)
+    print("Clicking Compound Accounting in sidebar...")
+    r = await cdp.evaluate(
+        '(() => { const el = Array.from(document.querySelectorAll("a.dp-general-row__primary"))'
+        '.find(e => e.textContent.trim() === "Compound Accounting");'
+        ' if (!el) return "0,0";'
+        ' const r = el.getBoundingClientRect();'
+        ' return Math.round(r.x + r.width/2) + "," + Math.round(r.y + r.height/2); })()'
+    )
+    coords = (r or "0,0").split(",")
+    x, y = int(coords[0]), int(coords[1])
+    await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+    await asyncio.sleep(0.05)
+    await cdp.send(
+        "Input.dispatchMouseEvent",
+        {"type": "mousePressed", "x": x, "y": y, "button": "left", "clickCount": 1},
+    )
+    await asyncio.sleep(0.03)
+    await cdp.send(
+        "Input.dispatchMouseEvent",
+        {"type": "mouseReleased", "x": x, "y": y, "button": "left", "clickCount": 1},
+    )
+
+    # Wait 3s for the CA department view to load
     await asyncio.sleep(3)
 
-    # Click New tab — the [role=tab] element
+    # Verify: check for "(720) 508-1992" which appears in the CA header
+    has_phone = await cdp.evaluate(
+        'document.body?.innerText?.includes("508-1992") || false'
+    )
+    print(f"  CA view loaded: {'yes' if has_phone else 'NO — check browser'}")
+
+    # Click "New" tab (inside the CA department view)
     print("Clicking New tab...")
     await cdp.mouse_click(
-        'Array.from(document.querySelectorAll("[role=tab]"))'
+        'Array.from(document.querySelectorAll("[role=tab], .d-tab"))'
         '.find(e => e.textContent.trim() === "New")'
     )
     await asyncio.sleep(2)
 
-    # Verify
-    body = await cdp.evaluate("document.body?.innerText?.substring(0, 300)")
+    # Take screenshot for verification
+    shot = await cdp.send("Page.captureScreenshot", {"format": "png"})
+    if shot.get("data"):
+        Path(PROFILE_DIR.parent / "debug_final.png").write_bytes(
+            base64.b64decode(shot["data"])
+        )
+        print("  Screenshot saved: profiles/debug_final.png")
+
     url = await cdp.evaluate("window.location.href")
     print(f"URL: {url}")
-    print(f"Content: {(body or '')[:200]}")
 
 
 async def cmd_login():
@@ -277,17 +331,23 @@ async def cmd_login():
 
 
 async def cmd_2fa(code: str):
-    """Step 2: Enter 2FA code, navigate to /app, Compound Accounting, New tab."""
+    """Step 2: Enter 2FA code, navigate to /app, click Compound Accounting > New."""
     print(f"=== Dialpad 2FA + Navigate (Step 2) ===\n")
 
     ws = await cdp_connect()
     cdp = CDPHelper(ws)
 
-    print(f"Entering code {code}...")
+    # Part A: Enter 2FA code
+    print(f"Part A: Entering code {code}...")
     await step_2fa(cdp, code)
 
-    print("Navigating to Dialpad app...")
+    # Part B: Navigate to /app and wait for SPA
+    print("\nPart B: Navigating to /app...")
     await step_navigate_app(cdp)
+
+    # Part C: Click Compound Accounting > New tab
+    print("\nPart C: Clicking Compound Accounting > New...")
+    await step_click_compound_accounting(cdp)
 
     await ws.close()
     print("\n=== Dialpad Ready ===")
