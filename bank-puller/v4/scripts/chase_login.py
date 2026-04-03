@@ -82,10 +82,16 @@ class CDPHelper:
         return r.get("result", {}).get("value")
 
     async def mouse_click_element(self, find_expr):
-        """Find element via JS expression, get its center coords, mouse-click it.
+        """Find element via JS expression, scroll into view, get its center coords, mouse-click it.
 
         find_expr should be a JS expression that returns an Element or null.
         """
+        # Scroll element into view first so it's within the viewport
+        await self.evaluate(
+            f"(() => {{ const el = {find_expr}; if (el) el.scrollIntoView({{block: 'center'}}); }})()"
+        )
+        await asyncio.sleep(0.3)
+
         coords_expr = (
             f"(() => {{ const el = {find_expr}; if (!el) return '0,0'; "
             "const r = el.getBoundingClientRect(); "
@@ -173,15 +179,33 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
     )
     await asyncio.sleep(1)
 
-    # Select TEXT ME xxx-xxx-{phone_suffix}
+    # Capture ALL matching phone numbers under TEXT ME before selecting one.
+    # Some accounts have two numbers with the same last 4 digits.
+    # We select the first match. If no SMS arrives within 4 min, the retry
+    # logic (cmd_retry) selects the second match.
+    #
     # Listbox: #ul-list-container-simplerAuth-dropdownoptions-styledselect
-    # Options are <li> children. First match of the phone suffix is under TEXT ME.
-    print(f"Selecting TEXT ME xxx-xxx-{phone_suffix}...")
+    # Options are <li> children. TEXT ME header comes before CALL ME header.
+    # We only want matches BEFORE the CALL ME header.
+    matching_count = await cdp.evaluate(
+        'Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children)'
+        f'.filter(li => li.textContent.trim() === "xxx-xxx-{phone_suffix}").length'
+    )
+    print(f"  Found {matching_count} phone number(s) matching xxx-xxx-{phone_suffix}")
+
+    # Select the FIRST matching number (index 0)
+    print(f"Selecting TEXT ME xxx-xxx-{phone_suffix} (first match)...")
     await cdp.mouse_click_element(
         'Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children)'
         f'.find(li => li.textContent.trim() === "xxx-xxx-{phone_suffix}")'
     )
     await asyncio.sleep(1)
+
+    # Save match count for retry logic
+    tab_state = json.loads(Path("_chase_tab.json").read_text())
+    tab_state["phone_match_count"] = matching_count or 1
+    tab_state["phone_suffix"] = phone_suffix
+    Path("_chase_tab.json").write_text(json.dumps(tab_state))
 
     await cdp.screenshot("debug_chase_sms_selected.png")
     print(f"\nSMS option selected. Run: python scripts/chase_login.py next")
@@ -211,6 +235,56 @@ async def cmd_next():
     url = await cdp.evaluate("window.location.href")
     print(f"URL: {url}")
     print("\nSMS sent. Check Dialpad, then run: python scripts/chase_login.py 2fa CODE PASSWORD")
+    await ws.close()
+
+
+# ---------------------------------------------------------------------------
+# Step 2b: Retry SMS with second phone number
+# ---------------------------------------------------------------------------
+
+async def cmd_retry():
+    """If no SMS arrived within 4 min, click 'Let's try it again' and select
+    the SECOND matching phone number. Some Chase accounts have two numbers
+    with the same last 4 digits — the first may be inactive."""
+    print("=== Chase: Retry SMS (Step 2b) ===\n")
+
+    tab_info = json.loads(Path("_chase_tab.json").read_text())
+    phone_suffix = tab_info.get("phone_suffix", "1992")
+    match_count = tab_info.get("phone_match_count", 1)
+
+    if match_count < 2:
+        print(f"Only 1 phone number matches xxx-xxx-{phone_suffix}. No second number to try.")
+        print("Check Dialpad or try a different delivery method.")
+        return
+
+    ws = await cdp_connect_tab(tab_info["tab_id"])
+    cdp = CDPHelper(ws)
+
+    # Click "Let's try it again" link
+    print("Clicking 'Let's try it again'...")
+    await cdp.mouse_click_element(
+        'Array.from(document.querySelectorAll("a, button"))'
+        '.find(e => e.textContent.toLowerCase().includes("try it again") && e.offsetParent !== null)'
+    )
+    await asyncio.sleep(8)
+
+    # Open dropdown
+    print("Opening 2FA dropdown...")
+    await cdp.mouse_click_element(
+        'document.querySelector("#header-simplerAuth-dropdownoptions-styledselect")'
+    )
+    await asyncio.sleep(1)
+
+    # Select the SECOND matching number (skip the first match)
+    print(f"Selecting TEXT ME xxx-xxx-{phone_suffix} (SECOND match)...")
+    await cdp.mouse_click_element(
+        'Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children)'
+        f'.filter(li => li.textContent.trim() === "xxx-xxx-{phone_suffix}")[1]'
+    )
+    await asyncio.sleep(1)
+
+    await cdp.screenshot("debug_chase_sms_retry.png")
+    print(f"\nSecond number selected. Run: python scripts/chase_login.py next")
     await ws.close()
 
 
@@ -291,30 +365,136 @@ async def cmd_statements():
 # ---------------------------------------------------------------------------
 
 async def cmd_download():
-    """Click download icon on first statement row. PDF saves to Downloads.
+    """Download the latest statement for ALL accounts.
+
+    Multi-account logic:
+    1. Discover all account accordions on the statements page
+    2. Expand any that are closed
+    3. For each account with statements: click download icon → click "Save as PDF"
+    4. Skip accounts with "no statements available"
 
     NOTE: Download location is currently the browser's default Downloads folder.
     This is a placeholder — will be updated to save to a configurable output dir.
+
+    Download button structure (after all accordions are expanded):
+    - Download icon: <i> with id "icon-accountsTable-{N}-row0-cell3-downloadDocumentDropdown-icon"
+    - Clicking it opens a flyout with "Save as PDF" option
+    - Must click "Save as PDF" to trigger the actual download
     """
-    print("=== Chase: Download (Step 5) ===\n")
+    print("=== Chase: Download All Accounts (Step 5) ===\n")
 
     tab_info = json.loads(Path("_chase_tab.json").read_text())
     ws = await cdp_connect_tab(tab_info["tab_id"])
     cdp = CDPHelper(ws)
 
-    # Two icons per row in "Open or save" column:
-    #   - First: "opens document" (view PDF) — class: iconFont
-    #   - Second: "Saves document" (download) — class: iconFont download-icon
-    # Find the first <a> whose child <span> has class "download-icon"
-    print("Clicking download icon (first row)...")
-    await cdp.mouse_click_element(
-        'document.querySelector("a.iconwrap-link span.download-icon")?.parentElement'
+    # Step 1: Discover all accounts
+    accounts_json = await cdp.evaluate(
+        'JSON.stringify(Array.from(document.querySelectorAll("div.jpui.accordion.row")).map((div, i) => ({'
+        '  i, name: div.querySelector("span.display")?.textContent?.trim(),'
+        '  open: div.classList.contains("open")'
+        '})))'
     )
-    await asyncio.sleep(5)
+    accounts = json.loads(accounts_json or "[]")
+    print(f"Found {len(accounts)} account(s):")
+    for acct in accounts:
+        status = "open" if acct["open"] else "closed"
+        print(f"  [{acct['i']}] {acct['name']} ({status})")
 
-    await cdp.screenshot("debug_chase_download.png")
-    print("Download triggered. Check Downloads folder for PDF.")
-    print("Filename pattern: {YYYYMMDD}-statements-{last4}-.pdf")
+    # Step 2: Expand ALL closed accounts first (before trying to download)
+    for acct in accounts:
+        if not acct["open"]:
+            print(f"\nExpanding {acct['name']}...")
+            await cdp.mouse_click_element(
+                f'document.querySelectorAll("div.jpui.accordion.row")[{acct["i"]}]'
+                '.querySelector("button.button__header")'
+            )
+            await asyncio.sleep(2)
+
+    # Wait for all expansions to settle
+    print("\nAll accounts expanded. Waiting 3s for DOM to settle...")
+    await asyncio.sleep(3)
+
+    # Step 3: Download from each account
+    for acct in accounts:
+        idx = acct["i"]
+        name = acct["name"]
+        print(f"\n--- {name} ---")
+
+        # Check if download icon exists for this account's first row
+        # Pattern: icon-accountsTable-{N}-row0-cell3-downloadDocumentDropdown-icon
+        icon_id = f"icon-accountsTable-{idx}-row0-cell3-downloadDocumentDropdown-icon"
+        has_icon = await cdp.evaluate(f'!!document.getElementById("{icon_id}")')
+
+        if not has_icon:
+            print("  No statements available. Skipping.")
+            continue
+
+        # Count PDFs before download to detect new file
+        pdf_count_before = await cdp.evaluate(
+            '(() => { try { return 0; } catch(e) { return 0; } })()'  # placeholder
+        )
+
+        # Click the download icon (scrollIntoView + click — opens flyout menu)
+        print("  Clicking download icon...")
+        await cdp.mouse_click_element(f'document.getElementById("{icon_id}")')
+
+        # Wait for flyout to fully render
+        await asyncio.sleep(3)
+
+        # Click "Save as PDF" in the flyout menu
+        # ID pattern: item-0-{tableIdx}-downloadPDFOption
+        # But safer to find by text since ID pattern may vary
+        # Do NOT scrollIntoView on the flyout item — it's already visible
+        pdf_link_id = f"item-0-{idx}-downloadPDFOption"
+        pdf_coords = await cdp.evaluate(
+            f'(() => {{ const el = document.getElementById("{pdf_link_id}");'
+            ' if (!el || el.offsetParent === null) return "0,0";'
+            ' const r = el.getBoundingClientRect();'
+            ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); }})()'
+        )
+        coords = (pdf_coords or "0,0").split(",")
+        px, py = int(coords[0]), int(coords[1])
+
+        if px == 0:
+            # Fallback: try generic text match
+            pdf_coords = await cdp.evaluate(
+                '(() => { const el = Array.from(document.querySelectorAll("a")).find(e =>'
+                ' e.textContent.trim().startsWith("Save as PDF") && e.offsetParent !== null);'
+                ' if (!el) return "0,0"; const r = el.getBoundingClientRect();'
+                ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); })()'
+            )
+            coords = (pdf_coords or "0,0").split(",")
+            px, py = int(coords[0]), int(coords[1])
+
+        if px == 0:
+            print(f"  WARNING: Could not find 'Save as PDF' for {name}.")
+            continue
+
+        # Move mouse, wait, then click (human-like timing)
+        print(f"  Clicking Save as PDF at ({px}, {py})...")
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": px, "y": py})
+        await asyncio.sleep(1)
+        await cdp.send(
+            "Input.dispatchMouseEvent",
+            {"type": "mousePressed", "x": px, "y": py, "button": "left", "clickCount": 1},
+        )
+        await asyncio.sleep(0.1)
+        await cdp.send(
+            "Input.dispatchMouseEvent",
+            {"type": "mouseReleased", "x": px, "y": py, "button": "left", "clickCount": 1},
+        )
+        await asyncio.sleep(5)
+        print(f"  Downloaded {name}.")
+
+        # TODO: Verify PDF appeared in Downloads. If not:
+        # 1. Refresh page (Page.reload)
+        # 2. Re-click Statements & documents
+        # 3. Re-expand all accounts
+        # 4. Retry download for this account
+
+    print("\n=== All accounts processed ===")
+    await cdp.screenshot("debug_chase_all_downloaded.png")
+    print("Check Downloads folder for PDFs.")
     print("\nRun: python scripts/chase_login.py signout")
     await ws.close()
 
@@ -354,9 +534,10 @@ if __name__ == "__main__":
         print("Usage:")
         print("  python scripts/chase_login.py login USERNAME PASSWORD [PHONE_SUFFIX]")
         print("  python scripts/chase_login.py next")
+        print("  python scripts/chase_login.py retry          # if no SMS after 4 min, try 2nd number")
         print("  python scripts/chase_login.py 2fa CODE PASSWORD")
         print("  python scripts/chase_login.py statements")
-        print("  python scripts/chase_login.py download")
+        print("  python scripts/chase_login.py download        # downloads ALL accounts")
         print("  python scripts/chase_login.py signout")
         sys.exit(1)
 
@@ -371,6 +552,9 @@ if __name__ == "__main__":
 
     elif cmd == "next":
         asyncio.run(cmd_next())
+
+    elif cmd == "retry":
+        asyncio.run(cmd_retry())
 
     elif cmd == "2fa":
         if len(sys.argv) < 4:
