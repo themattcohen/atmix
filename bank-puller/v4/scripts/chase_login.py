@@ -179,19 +179,25 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
     )
     await asyncio.sleep(1)
 
-    # Capture ALL matching phone numbers under TEXT ME before selecting one.
-    # Some accounts have two numbers with the same last 4 digits.
-    # We select the first match. If no SMS arrives within 4 min, the retry
-    # logic (cmd_retry) selects the second match.
-    #
-    # Listbox: #ul-list-container-simplerAuth-dropdownoptions-styledselect
-    # Options are <li> children. TEXT ME header comes before CALL ME header.
-    # We only want matches BEFORE the CALL ME header.
-    matching_count = await cdp.evaluate(
-        'Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children)'
-        f'.filter(li => li.textContent.trim() === "xxx-xxx-{phone_suffix}").length'
+    # Count matching phone numbers under TEXT ME only (not CALL ME).
+    # The listbox has TEXT ME header, then phone options, then CALL ME header, then more options.
+    # There will almost always be one 1992 under TEXT ME and one under CALL ME — that's normal.
+    # Only flag for retry when there are TWO under TEXT ME (meaning two different text-capable numbers).
+    text_me_count = await cdp.evaluate(
+        '(() => {'
+        '  const items = Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children);'
+        '  let inTextMe = false;'
+        '  let count = 0;'
+        '  for (const li of items) {'
+        '    const t = li.textContent.trim();'
+        '    if (t === "TEXT ME") { inTextMe = true; continue; }'
+        '    if (t === "CALL ME") { inTextMe = false; continue; }'
+        f'    if (inTextMe && t === "xxx-xxx-{phone_suffix}") count++;'
+        '  }'
+        '  return count;'
+        '})()'
     )
-    print(f"  Found {matching_count} phone number(s) matching xxx-xxx-{phone_suffix}")
+    print(f"  Found {text_me_count} TEXT ME number(s) matching xxx-xxx-{phone_suffix}")
 
     # Select the FIRST matching number (index 0)
     print(f"Selecting TEXT ME xxx-xxx-{phone_suffix} (first match)...")
@@ -201,9 +207,9 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
     )
     await asyncio.sleep(1)
 
-    # Save match count for retry logic
+    # Save TEXT ME match count for retry logic
     tab_state = json.loads(Path("_chase_tab.json").read_text())
-    tab_state["phone_match_count"] = matching_count or 1
+    tab_state["text_me_count"] = text_me_count or 1
     tab_state["phone_suffix"] = phone_suffix
     Path("_chase_tab.json").write_text(json.dumps(tab_state))
 
@@ -250,10 +256,11 @@ async def cmd_retry():
 
     tab_info = json.loads(Path("_chase_tab.json").read_text())
     phone_suffix = tab_info.get("phone_suffix", "1992")
-    match_count = tab_info.get("phone_match_count", 1)
+    text_me_count = tab_info.get("text_me_count", 1)
 
-    if match_count < 2:
-        print(f"Only 1 phone number matches xxx-xxx-{phone_suffix}. No second number to try.")
+    if text_me_count < 2:
+        print(f"Only 1 TEXT ME number matches xxx-xxx-{phone_suffix}. No second TEXT number to try.")
+        print("(The other 1992 is under CALL ME — that's normal.)")
         print("Check Dialpad or try a different delivery method.")
         return
 
@@ -275,11 +282,25 @@ async def cmd_retry():
     )
     await asyncio.sleep(1)
 
-    # Select the SECOND matching number (skip the first match)
+    # Select the SECOND TEXT ME number (not CALL ME).
+    # Walk the listbox: count only matches between TEXT ME and CALL ME headers.
     print(f"Selecting TEXT ME xxx-xxx-{phone_suffix} (SECOND match)...")
     await cdp.mouse_click_element(
-        'Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children)'
-        f'.filter(li => li.textContent.trim() === "xxx-xxx-{phone_suffix}")[1]'
+        '(() => {'
+        '  const items = Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children);'
+        '  let inTextMe = false;'
+        '  let count = 0;'
+        '  for (const li of items) {'
+        '    const t = li.textContent.trim();'
+        '    if (t === "TEXT ME") { inTextMe = true; continue; }'
+        '    if (t === "CALL ME") { inTextMe = false; continue; }'
+        f'    if (inTextMe && t === "xxx-xxx-{phone_suffix}") {{'
+        '      count++;'
+        '      if (count === 2) return li;'
+        '    }'
+        '  }'
+        '  return null;'
+        '})()'
     )
     await asyncio.sleep(1)
 
