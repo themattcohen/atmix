@@ -441,30 +441,20 @@ async def cmd_download():
         # Wait for flyout to fully render
         await asyncio.sleep(3)
 
-        # Click "Save as PDF" in the flyout menu
-        # ID pattern: item-0-{tableIdx}-downloadPDFOption
-        # But safer to find by text since ID pattern may vary
-        # Do NOT scrollIntoView on the flyout item — it's already visible
-        pdf_link_id = f"item-0-{idx}-downloadPDFOption"
+        # Click "Save as PDF" in the flyout menu.
+        # IDs are NOT unique across accounts — every account uses item-0-0-downloadPDFOption.
+        # Instead, find the flyout with class "show" (the one currently open) and click
+        # the Save as PDF link inside it. Do NOT scrollIntoView — flyout is already visible.
         pdf_coords = await cdp.evaluate(
-            f'(() => {{ const el = document.getElementById("{pdf_link_id}");'
-            ' if (!el || el.offsetParent === null) return "0,0";'
-            ' const r = el.getBoundingClientRect();'
-            ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); }})()'
+            '(() => { const flyout = document.querySelector(".dropdown.show");'
+            ' if (!flyout) return "0,0";'
+            ' const link = flyout.querySelector("[id*=downloadPDFOption]");'
+            ' if (!link) return "0,0";'
+            ' const r = link.getBoundingClientRect();'
+            ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); })()'
         )
         coords = (pdf_coords or "0,0").split(",")
         px, py = int(coords[0]), int(coords[1])
-
-        if px == 0:
-            # Fallback: try generic text match
-            pdf_coords = await cdp.evaluate(
-                '(() => { const el = Array.from(document.querySelectorAll("a")).find(e =>'
-                ' e.textContent.trim().startsWith("Save as PDF") && e.offsetParent !== null);'
-                ' if (!el) return "0,0"; const r = el.getBoundingClientRect();'
-                ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); })()'
-            )
-            coords = (pdf_coords or "0,0").split(",")
-            px, py = int(coords[0]), int(coords[1])
 
         if px == 0:
             print(f"  WARNING: Could not find 'Save as PDF' for {name}.")
