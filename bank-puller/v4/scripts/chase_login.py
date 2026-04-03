@@ -420,60 +420,71 @@ async def cmd_download():
         name = acct["name"]
         print(f"\n--- {name} ---")
 
-        # Check if download icon exists for this account's first row
-        # Pattern: icon-accountsTable-{N}-row0-cell3-downloadDocumentDropdown-icon
-        icon_id = f"icon-accountsTable-{idx}-row0-cell3-downloadDocumentDropdown-icon"
-        has_icon = await cdp.evaluate(f'!!document.getElementById("{icon_id}")')
+        # Two download patterns exist on Chase:
+        #
+        # A) Checking/Savings: flyout dropdown
+        #    Icon: icon-accountsTable-{N}-row0-cell3-downloadDocumentDropdown-icon
+        #    Click icon → flyout with "Save as PDF" → click Save as PDF
+        #
+        # B) Credit cards: direct download link
+        #    Link: accountsTable-{N}-row0-cell3-requestThisDocumentAnchor-download
+        #    Click link → download starts immediately (no flyout)
+        #
+        # Try pattern A first, fall back to pattern B.
 
-        if not has_icon:
+        flyout_icon_id = f"icon-accountsTable-{idx}-row0-cell3-downloadDocumentDropdown-icon"
+        direct_link_id = f"accountsTable-{idx}-row0-cell3-requestThisDocumentAnchor-download"
+
+        has_flyout = await cdp.evaluate(f'!!document.getElementById("{flyout_icon_id}")')
+        has_direct = await cdp.evaluate(f'!!document.getElementById("{direct_link_id}")')
+
+        if not has_flyout and not has_direct:
             print("  No statements available. Skipping.")
+            acct["had_icon"] = False
             continue
 
-        # Count PDFs before download to detect new file
-        pdf_count_before = await cdp.evaluate(
-            '(() => { try { return 0; } catch(e) { return 0; } })()'  # placeholder
-        )
+        if has_flyout:
+            # Pattern A: Flyout dropdown (checking/savings)
+            print("  Clicking download icon (flyout)...")
+            await cdp.mouse_click_element(f'document.getElementById("{flyout_icon_id}")')
+            await asyncio.sleep(3)
 
-        # Click the download icon (scrollIntoView + click — opens flyout menu)
-        print("  Clicking download icon...")
-        await cdp.mouse_click_element(f'document.getElementById("{icon_id}")')
+            # Click "Save as PDF" inside the open flyout (.dropdown.show)
+            pdf_coords = await cdp.evaluate(
+                '(() => { const flyout = document.querySelector(".dropdown.show");'
+                ' if (!flyout) return "0,0";'
+                ' const link = flyout.querySelector("[id*=downloadPDFOption]");'
+                ' if (!link) return "0,0";'
+                ' const r = link.getBoundingClientRect();'
+                ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); })()'
+            )
+            coords = (pdf_coords or "0,0").split(",")
+            px, py = int(coords[0]), int(coords[1])
 
-        # Wait for flyout to fully render
-        await asyncio.sleep(3)
+            if px == 0:
+                print(f"  WARNING: Flyout did not open for {name}.")
+                continue
 
-        # Click "Save as PDF" in the flyout menu.
-        # IDs are NOT unique across accounts — every account uses item-0-0-downloadPDFOption.
-        # Instead, find the flyout with class "show" (the one currently open) and click
-        # the Save as PDF link inside it. Do NOT scrollIntoView — flyout is already visible.
-        pdf_coords = await cdp.evaluate(
-            '(() => { const flyout = document.querySelector(".dropdown.show");'
-            ' if (!flyout) return "0,0";'
-            ' const link = flyout.querySelector("[id*=downloadPDFOption]");'
-            ' if (!link) return "0,0";'
-            ' const r = link.getBoundingClientRect();'
-            ' return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2); })()'
-        )
-        coords = (pdf_coords or "0,0").split(",")
-        px, py = int(coords[0]), int(coords[1])
+            print(f"  Clicking Save as PDF at ({px}, {py})...")
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": px, "y": py})
+            await asyncio.sleep(1)
+            await cdp.send(
+                "Input.dispatchMouseEvent",
+                {"type": "mousePressed", "x": px, "y": py, "button": "left", "clickCount": 1},
+            )
+            await asyncio.sleep(0.1)
+            await cdp.send(
+                "Input.dispatchMouseEvent",
+                {"type": "mouseReleased", "x": px, "y": py, "button": "left", "clickCount": 1},
+            )
+            await asyncio.sleep(5)
 
-        if px == 0:
-            print(f"  WARNING: Could not find 'Save as PDF' for {name}.")
-            continue
+        else:
+            # Pattern B: Direct download link (credit cards)
+            print("  Clicking download link (direct)...")
+            await cdp.mouse_click_element(f'document.getElementById("{direct_link_id}")')
+            await asyncio.sleep(5)
 
-        # Move mouse, wait, then click (human-like timing)
-        print(f"  Clicking Save as PDF at ({px}, {py})...")
-        await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": px, "y": py})
-        await asyncio.sleep(1)
-        await cdp.send(
-            "Input.dispatchMouseEvent",
-            {"type": "mousePressed", "x": px, "y": py, "button": "left", "clickCount": 1},
-        )
-        await asyncio.sleep(0.1)
-        await cdp.send(
-            "Input.dispatchMouseEvent",
-            {"type": "mouseReleased", "x": px, "y": py, "button": "left", "clickCount": 1},
-        )
-        await asyncio.sleep(5)
         print(f"  Downloaded {name}.")
 
         # TODO: Verify PDF appeared in Downloads. If not:
@@ -482,10 +493,44 @@ async def cmd_download():
         # 3. Re-expand all accounts
         # 4. Retry download for this account
 
-    print("\n=== All accounts processed ===")
+    # Step 4: Report — check Downloads folder for each account
+    import glob
+    import os
+    download_dir = str(Path.home() / "Downloads")
+    recent_pdfs = sorted(
+        glob.glob(os.path.join(download_dir, "*.pdf")),
+        key=os.path.getmtime,
+        reverse=True,
+    )
+
+    print("\n=== Download Report ===\n")
+    print(f"{'Account':<35} {'Status':<15} {'File'}")
+    print("-" * 90)
+    for acct in accounts:
+        name = acct["name"]
+        # Extract last4 from name like "CPC CHECKING (...9866)"
+        last4_match = name.split("...")[-1].rstrip(")") if "..." in name else ""
+
+        # Check for matching PDF (filename contains the last4)
+        matched_file = None
+        for pdf in recent_pdfs:
+            basename = os.path.basename(pdf)
+            if last4_match and last4_match in basename:
+                # Only count files modified in last 10 minutes
+                if os.path.getmtime(pdf) > asyncio.get_event_loop().time() - 600:
+                    matched_file = basename
+                    break
+
+        if matched_file:
+            print(f"  {name:<33} {'DOWNLOADED':<15} {matched_file}")
+        elif not acct.get("had_icon", True):
+            print(f"  {name:<33} {'NO STATEMENTS':<15} (no download icon found)")
+        else:
+            print(f"  {name:<33} {'MISSING':<15} (no PDF found in Downloads)")
+
     await cdp.screenshot("debug_chase_all_downloaded.png")
-    print("Check Downloads folder for PDFs.")
-    print("\nRun: python scripts/chase_login.py signout")
+    print(f"\nScreenshot: profiles/debug_chase_all_downloaded.png")
+    print("Run: python scripts/chase_login.py signout")
     await ws.close()
 
 
