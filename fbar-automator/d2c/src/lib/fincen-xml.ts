@@ -72,6 +72,7 @@ function toAscii(str: string): string {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^\x20-\x7E]/g, "")
+    .trim()
 }
 
 /**
@@ -130,6 +131,16 @@ function formatDateFincen(date: Date | string | null | undefined): string {
   const mm = (d.getUTCMonth() + 1).toString().padStart(2, "0")
   const dd = d.getUTCDate().toString().padStart(2, "0")
   return `${yyyy}${mm}${dd}`
+}
+
+/**
+ * Formats a Date as YYYYMMDD in US Eastern Time (America/New_York).
+ * FinCEN HQ is in Vienna, VA — signature dates must match their local date.
+ */
+function formatDateEastern(date: Date): string {
+  return date
+    .toLocaleDateString("en-CA", { timeZone: "America/New_York" })
+    .replace(/-/g, "")
 }
 
 /**
@@ -228,7 +239,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
   // 2. Build Activity element
   // -----------------------------------------------------------------------
 
-  const today = formatDateFincen(new Date())
+  const signatureDate = formatDateEastern(filingYear.signedAt ?? new Date())
   const isAmended = filingYear.filingType === "AMENDED"
 
   const activitySeq = seq.next() // 1
@@ -236,7 +247,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
   // Activity-level fields (in schema order)
   const activity: Record<string, unknown> = {
     "@_SeqNum": String(activitySeq),
-    "fc2:ApprovalOfficialSignatureDateText": today,
+    "fc2:ApprovalOfficialSignatureDateText": signatureDate,
     // EFilingPriorDocumentNumber: omitted for non-amendments (type is xsd:long,
     // empty string is invalid). Only emit for amendments with a valid BSA ID.
     // D2C is self-filed → PreparerFilingSignatureIndicator = "Y" (no third-party preparer).
@@ -280,7 +291,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       "fc2:RawCountryCodeText": transmitter.address.country,
       "fc2:RawStateCodeText": transmitter.address.state,
       "fc2:RawStreetAddress1Text": toAscii(transmitter.address.street),
-      "fc2:RawZIPCode": transmitter.address.zip,
+      "fc2:RawZIPCode": (transmitter.address.zip || "").replace(/[-\s]/g, ""),
     },
     "fc2:PhoneNumber": {
       "@_SeqNum": String(txPhoneSeq),
@@ -356,7 +367,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
     "fc2:RawCountryCodeText": "US",
     "fc2:RawStateCodeText": filerAddr.state,
     "fc2:RawStreetAddress1Text": toAscii(filerAddr.street),
-    "fc2:RawZIPCode": filerAddr.zip,
+    "fc2:RawZIPCode": (filerAddr.zip || "").replace(/[-\s]/g, ""),
   }
 
   if (user.tin && user.tinType) {
@@ -467,7 +478,7 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
           "fc2:RawCountryCodeText": "US",
           "fc2:RawStateCodeText": filerAddr.state,
           "fc2:RawStreetAddress1Text": toAscii(filerAddr.street),
-          "fc2:RawZIPCode": filerAddr.zip,
+          "fc2:RawZIPCode": (filerAddr.zip || "").replace(/[-\s]/g, ""),
         },
       }
 
