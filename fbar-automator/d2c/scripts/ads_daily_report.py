@@ -101,7 +101,7 @@ def _ga4_client():
 
 
 def _property_id() -> str | None:
-    pid = os.environ.get("GA4_PROPERTY_ID", "").strip()
+    pid = os.environ.get("GA4_PROPERTY_ID", "526359158").strip()
     if not pid:
         print("[GA4] GA4_PROPERTY_ID env var not set — skipping GA4 queries.")
         return None
