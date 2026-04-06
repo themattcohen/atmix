@@ -404,23 +404,58 @@ async def cmd_2fa(code: str, password: str):
 # ---------------------------------------------------------------------------
 
 async def cmd_statements():
-    """Click Statements & documents tab (shadow DOM, found by data-testid)."""
+    """Click Statements & documents tab (shadow DOM, found by data-testid).
+
+    After 2FA, the dashboard SPA may still be loading when this runs.
+    The shadow DOM nav tabs take time to render. We poll for the element
+    before clicking, with a 30s timeout.
+    """
     print("=== Chase: Statements (Step 4) ===\n")
 
     tab_info = json.loads(Path("_chase_tab.json").read_text())
     ws = await cdp_connect_tab(tab_info["tab_id"])
     cdp = CDPHelper(ws)
 
-    # Chase uses shadow DOM web components (mds-navigation-bar-item).
-    # Found by data-testid attribute — stable automation identifier.
+    # Wait for the Statements tab to appear in DOM.
+    # After 2FA, shadow DOM components may not be rendered yet.
+    print("Waiting for Statements tab to render...")
+    tab_found = False
+    for attempt in range(15):
+        exists = await cdp.evaluate(
+            '!!document.querySelector(\'[data-testid="statementsAndDocuments-navigation-bar-item"]\')'
+        )
+        if exists:
+            print(f"  Tab found after {(attempt + 1) * 2}s")
+            tab_found = True
+            break
+        await asyncio.sleep(2)
+
+    if not tab_found:
+        print("  Statements tab not found after 30s. Skipping.")
+        await cdp.screenshot("debug_chase_no_statements_tab.png")
+        await ws.close()
+        return
+
+    # Click the tab
     print("Clicking Statements & documents...")
     await cdp.mouse_click_element(
         'document.querySelector(\'[data-testid="statementsAndDocuments-navigation-bar-item"]\')'
     )
     await asyncio.sleep(5)
 
-    await cdp.screenshot("debug_chase_statements.png")
     url = await cdp.evaluate("window.location.href")
+
+    # Verify navigation — if URL didn't change, retry once
+    if "documents" not in (url or ""):
+        print(f"  URL didn't change ({url}). Retrying click...")
+        await asyncio.sleep(3)
+        await cdp.mouse_click_element(
+            'document.querySelector(\'[data-testid="statementsAndDocuments-navigation-bar-item"]\')'
+        )
+        await asyncio.sleep(5)
+        url = await cdp.evaluate("window.location.href")
+
+    await cdp.screenshot("debug_chase_statements.png")
     print(f"URL: {url}")
     print("\nRun: python scripts/chase_login.py download")
     await ws.close()
