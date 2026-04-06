@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { parseRejectionReason, getRejectionSummary } from "@/lib/rejection-parser";
+import type { AbandonmentEmailCopy } from "@/lib/abandonment-emails";
 
 let _resend: Resend | null = null;
 
@@ -312,4 +313,43 @@ export async function sendEmailWithRetry(
   }
 
   throw lastError;
+}
+
+export async function sendAbandonmentEmail(
+  to: string,
+  copy: AbandonmentEmailCopy,
+  deepLink: string,
+  unsubscribeUrl: string
+): Promise<void> {
+  await sendEmailWithRetry(async () => {
+    await getResend().emails.send({
+      from: `Matt at FBAR Direct <${fromEmail}>`,
+      to,
+      replyTo: "support@fbardirect.com",
+      subject: copy.subject,
+      headers: {
+        "List-Unsubscribe": `<${unsubscribeUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
+      html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #112e51; padding: 24px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">FBAR Direct</h1>
+        </div>
+        <div style="padding: 32px 24px;">
+          <h2 style="color: #112e51;">${escapeHtml(copy.headline)}</h2>
+          ${copy.body}
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="${escapeHtml(deepLink)}" style="background: #205493; color: white; padding: 14px 36px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 600; font-size: 16px;">${escapeHtml(copy.cta)}</a>
+          </div>
+        </div>
+        <div style="background: #f5f5f5; padding: 16px 24px; font-size: 12px; color: #666; text-align: center;">
+          <p>You're receiving this because you have an in-progress FBAR filing on <a href="https://fbardirect.com" style="color: #666;">fbardirect.com</a>.</p>
+          <p><a href="${escapeHtml(unsubscribeUrl)}" style="color: #666;">Unsubscribe</a></p>
+          <p>FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S. government agency.</p>
+        </div>
+      </div>
+    `,
+    });
+  });
 }

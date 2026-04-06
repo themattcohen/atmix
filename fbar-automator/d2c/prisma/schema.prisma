@@ -42,6 +42,9 @@ model User {
   utmContent   String?  @db.VarChar(200)
   utmTerm      String?  @db.VarChar(200)
 
+  unsubscribedFromReminders Boolean @default(false)
+  unsubscribeToken          String? @unique @default(cuid())
+
   accounts      ForeignAccount[]
   filingYears   FilingYear[]
   payments      Payment[]
@@ -49,6 +52,7 @@ model User {
   statements    Statement[]
   mfaRecoveryCodes MfaRecoveryCode[]
   emailVerificationTokens EmailVerificationToken[]
+  abandonmentEmails AbandonmentEmail[]
 }
 
 model ForeignAccount {
@@ -267,4 +271,17 @@ model EmailVerificationToken {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
+}
+
+model AbandonmentEmail {
+  id           String   @id @default(cuid())
+  userId       String
+  filingYearId String?
+  sequence     Int
+  stage        String
+  sentAt       DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, filingYearId, sequence])
+  @@index([userId])
 }
