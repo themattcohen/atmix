@@ -186,14 +186,147 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
         await ws.close()
         return
 
-    # Branch 3: 2FA page
+    # Branch 3: CAAS alternate 2FA flow
+    # URL contains "caas/challenge" — different UI with "Get a text" / "Get a call" buttons
+    # and radio buttons for phone selection (all in shadow DOM)
+    if "caas" in (url or ""):
+        print("  CAAS 2FA flow detected.")
+
+        # Step 1: Click "Get a text" — find in shadow DOM
+        print("  Clicking 'Get a text'...")
+        get_text_coords = await cdp.evaluate(
+            '(() => {'
+            '  function walkShadow(root, depth) {'
+            '    if (depth > 5) return null;'
+            '    for (const el of root.querySelectorAll("*")) {'
+            '      if (el.shadowRoot) { const r = walkShadow(el.shadowRoot, depth+1); if (r) return r; }'
+            '      if (el.tagName === "LI" && el.textContent.includes("Get a text")) {'
+            '        const r = el.getBoundingClientRect();'
+            '        if (r.width > 0) return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2);'
+            '      }'
+            '    }'
+            '    return null;'
+            '  }'
+            '  return walkShadow(document, 0) || "0,0";'
+            '})()'
+        )
+        coords = (get_text_coords or "0,0").split(",")
+        gx, gy = int(coords[0]), int(coords[1])
+        if gx == 0:
+            print("  ERROR: Could not find 'Get a text' button.")
+            await cdp.screenshot(f"debug_chase_{username}_caas_no_get_text.png")
+            await ws.close()
+            return
+
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": gx, "y": gy})
+        await asyncio.sleep(0.05)
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mousePressed", "x": gx, "y": gy, "button": "left", "clickCount": 1})
+        await asyncio.sleep(0.03)
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mouseReleased", "x": gx, "y": gy, "button": "left", "clickCount": 1})
+        await asyncio.sleep(3)
+
+        # Step 2: Find phone numbers in shadow DOM radio buttons
+        phone_info = await cdp.evaluate(
+            '(() => {'
+            '  const phones = [];'
+            '  function walkShadow(root, depth) {'
+            '    if (depth > 5) return;'
+            '    for (const el of root.querySelectorAll("*")) {'
+            '      if (el.shadowRoot) walkShadow(el.shadowRoot, depth+1);'
+            '      const t = el.textContent?.trim();'
+            '      if (t && t.match(/^xxx-xxx-\\d{4}$/) && el.children.length === 0) phones.push(t);'
+            '    }'
+            '  }'
+            '  walkShadow(document, 0);'
+            '  return JSON.stringify(phones);'
+            '})()'
+        )
+        caas_phones = json.loads(phone_info or "[]")
+        print(f"  CAAS phone numbers available: {caas_phones}")
+
+        # Step 3: Check for preferred phone suffix
+        preferred = f"xxx-xxx-{phone_suffix}"
+        if preferred not in caas_phones:
+            available = ", ".join(caas_phones) if caas_phones else "none"
+            print(f"  SKIPPED: {preferred} not available. Available: {available}")
+            await cdp.screenshot(f"debug_chase_{username}_caas_no_1992.png")
+            await ws.close()
+            return
+
+        # Step 4: Click the matching radio button
+        print(f"  Selecting {preferred}...")
+        radio_coords = await cdp.evaluate(
+            '(() => {'
+            '  function walkShadow(root, depth) {'
+            '    if (depth > 5) return null;'
+            '    for (const el of root.querySelectorAll("*")) {'
+            '      if (el.shadowRoot) { const r = walkShadow(el.shadowRoot, depth+1); if (r) return r; }'
+            f'      if (el.textContent?.trim() === "{preferred}" && el.children.length === 0) {{'
+            '        const r = el.getBoundingClientRect();'
+            '        if (r.width > 0) return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2);'
+            '      }'
+            '    }'
+            '    return null;'
+            '  }'
+            '  return walkShadow(document, 0) || "0,0";'
+            '})()'
+        )
+        coords = (radio_coords or "0,0").split(",")
+        rx, ry = int(coords[0]), int(coords[1])
+        if rx > 0:
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": rx, "y": ry})
+            await asyncio.sleep(0.05)
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mousePressed", "x": rx, "y": ry, "button": "left", "clickCount": 1})
+            await asyncio.sleep(0.03)
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mouseReleased", "x": rx, "y": ry, "button": "left", "clickCount": 1})
+            await asyncio.sleep(1)
+
+        # Step 5: Click Next
+        print("  Clicking Next...")
+        next_coords = await cdp.evaluate(
+            '(() => {'
+            '  function walkShadow(root, depth) {'
+            '    if (depth > 5) return null;'
+            '    for (const el of root.querySelectorAll("*")) {'
+            '      if (el.shadowRoot) { const r = walkShadow(el.shadowRoot, depth+1); if (r) return r; }'
+            '      if ((el.tagName === "BUTTON" || el.tagName === "MDS-BUTTON") && el.textContent?.trim() === "Next") {'
+            '        const r = el.getBoundingClientRect();'
+            '        if (r.width > 0) return Math.round(r.x+r.width/2)+","+Math.round(r.y+r.height/2);'
+            '      }'
+            '    }'
+            '    return null;'
+            '  }'
+            '  return walkShadow(document, 0) || "0,0";'
+            '})()'
+        )
+        coords = (next_coords or "0,0").split(",")
+        nx, ny = int(coords[0]), int(coords[1])
+        if nx > 0:
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": nx, "y": ny})
+            await asyncio.sleep(0.05)
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mousePressed", "x": nx, "y": ny, "button": "left", "clickCount": 1})
+            await asyncio.sleep(0.03)
+            await cdp.send("Input.dispatchMouseEvent", {"type": "mouseReleased", "x": nx, "y": ny, "button": "left", "clickCount": 1})
+            await asyncio.sleep(8)
+
+        await cdp.screenshot("debug_chase_sms_selected.png")
+        print(f"\n  CAAS SMS sent. Run: python scripts/chase_login.py 2fa CODE PASSWORD")
+        # Save state — mark as CAAS flow for 2fa step
+        tab_state = json.loads(Path("_chase_tab.json").read_text())
+        tab_state["flow"] = "caas"
+        tab_state["phone_suffix"] = phone_suffix
+        Path("_chase_tab.json").write_text(json.dumps(tab_state))
+        await ws.close()
+        return
+
+    # Branch 4: Standard 2FA page (recognizeUser)
     if "recognizeUser" not in (url or ""):
         print("  WARNING: Unexpected page after login.")
         await cdp.screenshot(f"debug_chase_{username}_unexpected.png")
         await ws.close()
         return
 
-    # On 2FA page — open dropdown
+    # On standard 2FA page — open dropdown
     # Open 2FA dropdown: custom component #header-simplerAuth-dropdownoptions-styledselect
     print("Opening 2FA dropdown...")
     await cdp.mouse_click_element(
