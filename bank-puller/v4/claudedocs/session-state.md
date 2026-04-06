@@ -102,7 +102,16 @@ Currently credentials are passed as CLI arguments. Need to:
 - Account number (last4/5) extracted from PDF content or filename
 - Renaming happens at END of full run, not per-download
 
-### 3. Next Banks
+### 3. Statement Period Detection
+Currently the script downloads the topmost (most recent) statement for each account. Need to:
+- Orchestrator passes target period (e.g., "2026-03") to the download step
+- For each account, check if the target period's statement exists in the table
+- If the statement for the target period is not yet available (e.g., it's early in the month and the bank hasn't posted it), log: "Statement for {period} not yet available for {account}. Most recent: {date}"
+- Do NOT download a statement from a different period as a substitute
+- Include period availability status in the download report CSV (new column: `period_match`)
+- The orchestrator decides the target period — the script should not guess
+
+### 4. Next Banks
 Chase is done. Next banks to implement:
 - American Express (different login, card picker, AJAX download)
 - Citibank (two-step login)
