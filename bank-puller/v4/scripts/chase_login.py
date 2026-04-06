@@ -492,10 +492,20 @@ async def cmd_retry():
 # ---------------------------------------------------------------------------
 
 async def cmd_2fa(code: str, password: str):
-    """Enter 8-digit 2FA code and re-enter password."""
-    print("=== Chase 2FA (Step 3) ===\n")
-
+    """Enter 2FA code. Detects standard vs CAAS flow from _chase_tab.json."""
     tab_info = json.loads(Path("_chase_tab.json").read_text())
+    flow = tab_info.get("flow", "standard")
+
+    if flow == "caas":
+        await _cmd_2fa_caas(code, tab_info)
+    else:
+        await _cmd_2fa_standard(code, password, tab_info)
+
+
+async def _cmd_2fa_standard(code: str, password: str, tab_info: dict):
+    """Standard 2FA: code + password re-entry."""
+    print("=== Chase 2FA — Standard (Step 3) ===\n")
+
     ws = await cdp_connect_tab(tab_info["tab_id"])
     cdp = CDPHelper(ws)
 
@@ -527,6 +537,88 @@ async def cmd_2fa(code: str, password: str):
 
     if "dashboard" in (url or ""):
         print("\nDashboard reached. Run: python scripts/chase_login.py statements")
+    else:
+        print("\nCheck browser — may need additional steps.")
+    await ws.close()
+
+
+async def _cmd_2fa_caas(code: str, tab_info: dict):
+    """CAAS 2FA: code only (no password re-entry). All elements in shadow DOM."""
+    print("=== Chase 2FA — CAAS (Step 3) ===\n")
+
+    ws = await cdp_connect_tab(tab_info["tab_id"])
+    cdp = CDPHelper(ws)
+
+    # Helper to evaluate JS
+    async def evaluate(expr):
+        r = await cdp.send("Runtime.evaluate", {"expression": expr})
+        return r.get("result", {}).get("value")
+
+    # Shadow DOM walker JS template
+    WALK_SHADOW = (
+        '(() => {{ function w(r,d) {{ if(d>5) return null; '
+        'for(const e of r.querySelectorAll("*")) {{ '
+        'if(e.shadowRoot){{ const x=w(e.shadowRoot,d+1); if(x) return x; }} '
+        '{find_logic} '
+        '}} return null; }} return w(document,0) || "0,0"; }})()'
+    )
+
+    # Focus the code input: #otpInput-input inside shadow DOM
+    print(f"Entering code {code}...")
+    focused = await evaluate(
+        WALK_SHADOW.format(
+            find_logic='if(e.tagName==="INPUT" && e.id==="otpInput-input") { e.focus(); return "focused"; }'
+        )
+    )
+    if focused != "focused":
+        print(f"  ERROR: Could not focus code input ({focused})")
+        await cdp.screenshot("debug_chase_caas_2fa_fail.png")
+        await ws.close()
+        return
+
+    await asyncio.sleep(0.3)
+    await cdp.send("Input.insertText", {"text": code})
+    await asyncio.sleep(0.5)
+
+    # Click Next — find any element with text "Next" and width > 10
+    print("Clicking Next...")
+    next_coords = await evaluate(
+        WALK_SHADOW.format(
+            find_logic=(
+                'if(e.textContent?.trim()==="Next" && e.children.length===0) '
+                '{ const b=e.getBoundingClientRect(); '
+                'if(b.width>10) return Math.round(b.x+b.width/2)+","+Math.round(b.y+b.height/2); }'
+            )
+        )
+    )
+    coords = (next_coords or "0,0").split(",")
+    nx, ny = int(coords[0]), int(coords[1])
+    print(f"  Next at ({nx}, {ny})")
+
+    if nx > 0:
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": nx, "y": ny})
+        await asyncio.sleep(0.5)
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mousePressed", "x": nx, "y": ny, "button": "left", "clickCount": 1})
+        await asyncio.sleep(0.1)
+        await cdp.send("Input.dispatchMouseEvent", {"type": "mouseReleased", "x": nx, "y": ny, "button": "left", "clickCount": 1})
+    else:
+        print("  ERROR: Could not find Next button")
+        await cdp.screenshot("debug_chase_caas_2fa_no_next.png")
+        await ws.close()
+        return
+
+    await asyncio.sleep(10)
+
+    await cdp.screenshot("debug_chase_after_2fa.png")
+    url = await evaluate("window.location.href")
+    print(f"URL: {url}")
+
+    if "dashboard" in (url or ""):
+        print("\nDashboard reached. Run: python scripts/chase_login.py statements")
+    elif "callUs" in (url or ""):
+        print("\nCHASE REQUIRES PHONE VERIFICATION. Code was accepted but Chase")
+        print("  escalated to phone call. This account needs manual handling.")
+        await cdp.screenshot(f"debug_chase_{tab_info.get('username','unknown')}_needs_phone.png")
     else:
         print("\nCheck browser — may need additional steps.")
     await ws.close()
