@@ -1,213 +1,150 @@
 # Bank-Puller v4 — Session State & Pickup Guide
 
-**Last updated**: 2026-04-03
-**Status**: Layer 4 (Chase login) in progress — credentials entered, awaiting Sign in click
+**Last updated**: 2026-04-06
+**Status**: Chase workflow complete. Moving to next bank or open items.
 
 ---
 
-## Where We Are
+## Chase — COMPLETE
 
-### Completed Layers
-| Layer | Status | Key Outcome |
-|-------|--------|-------------|
-| 0 | DONE | All imports pass, .env loads, build_skills works |
-| 1 | DONE | Chrome launches via CDP, BrowserUse Agent + Haiku works on example.com |
-| 2 | DONE | Dialpad login script works end-to-end (see `scripts/dialpad_login.py`) |
-| 2.1 | DONE | Postmortem documented (see `POSTMORTEM-LAYER2.md`) |
-| 4 | IN PROGRESS | Chase: navigated to chase.com, credentials filled, paused before Sign in |
+### What Works
+- Full login → 2FA → dashboard → statements → multi-account download → signout → tab close
+- Standard 2FA flow (dropdown with TEXT ME / CALL ME)
+- CAAS alternate 2FA flow (shadow DOM buttons + radio/dropdown phone selection)
+- Trusted device detection (skip 2FA, go straight to statements)
+- Multi-account download: expand all accordions, download from each (flyout for checking/savings, direct link for credit cards)
+- Download report CSV saved to `output/{username}_chase_download_report_{timestamp}.csv`
+- Wrong credentials detection (screenshot + skip)
+- Missing phone number detection (screenshot + skip)
+- Phone verification escalation detection (screenshot + report)
+- Tab close after signout
 
-### Current Browser State
-- Chrome running on **CDP port 9300** (launched as subprocess, survives Python exit)
-- **Tab 1**: Dialpad — Compound Accounting > New tab (SMS ready)
-- **Tab 2**: Chase — chase.com with AustinYu25 / password filled, not yet submitted
-- Tab ID saved in `_chase_tab.json`
+### Scripts
+- `scripts/dialpad_login.py` — 2-step: `login` then `2fa CODE`
+- `scripts/chase_login.py` — 6-step: `login`, `next`, `2fa`, `statements`, `download`, `signout` (+ `retry` for dual TEXT ME numbers)
 
-### What's Next
-1. Click "Sign in" on Chase (Step 3 of walkthrough)
-2. Handle 2FA: select SMS, get code from Dialpad, enter code + re-enter password
-3. Navigate to Statements & Documents
-4. Download latest statement
+### Tested Accounts (34 total)
 
----
+**Successful downloads:**
+| Username | Accounts | PDFs |
+|---|---|---|
+| ascpaz11 | 5 | 5 |
+| austinyupfcpa1 | 1 | 1 |
+| ascaustinjsm2 | 4 | 2 (2 no statements) |
+| ascaustinmemorang1 | 5 | 4 (1 no statements) |
+| asckwh12 | 8 | 5 (3 no statements) |
+| ascalf12 | 2 | 2 |
+| ljmofcpa1 | 3 | 3 |
+| ofcpaaustinlg1 | 3 | 3 |
+| allsolutions25 | 8 | 7 (1 no statements) |
+| AustinYu25 | 1 | 1 |
+| ofcpaaustinpp1 | 6 | 6 |
+| ascaustinpaz1 | 5 | 5 |
+| ascaustinpers1 | 1 | 1 |
+| ascaustinrhmc1 | 1 | 1 |
+| ascaustinsta1 | 2 | 2 |
+| ascaustinsilvr1 | 2 | 2 |
+| ascaustinsk1 | 2 | 2 |
+| ofcpaaustinvader1 | 1 | 1 |
+| ofcpaaustinvescovi1 | 1 | 1 |
+| ofcpaaustinvelum1 | 6 | 6 |
+| ascmcllp1 | 2 | 2 |
 
-## Proven Workflows
+**Correctly skipped/failed:**
+| Username | Reason |
+|---|---|
+| austinyu2025 | 1992 not available (only 1993) |
+| rhmcasc1 | Wrong credentials |
+| 1f54b2n | Wrong credentials |
+| ascaustinpom1 | Wrong credentials |
+| ascaustinbarlas1 | Wrong credentials |
+| pomhealth01 | Wrong credentials |
+| drace487 | CAAS flow, no 1992 (only 5499+1296) |
+| mcohen1980 | CAAS flow, code accepted but Chase requires phone verification |
+| ascaustinvilage1 | No accounts to show (empty dashboard) |
 
-### Dialpad Login (`scripts/dialpad_login.py`)
-```bash
-python scripts/dialpad_login.py login       # Fill creds, submit, reach 2FA
-python scripts/dialpad_login.py 2fa CODE    # Enter code, nav to /app, click CA > New
-```
+### Known Chase 2FA Flows
+1. **Standard** — URL contains `recognizeUser`. Custom dropdown with TEXT ME / CALL ME headers and `<li>` phone options.
+2. **CAAS** — URL contains `caas/challenge`. Shadow DOM throughout. "Get a text" button → dropdown/radio phone selection → code entry (no password re-entry).
+3. **Trusted device** — URL contains `dashboard` immediately after login. No 2FA needed.
 
-Flow:
-1. Launch Chrome subprocess (port 9300, stealth=False)
-2. CDP: navigate to dialpad.com/accounts/login/
-3. CDP: focus email input, Input.insertText
-4. CDP: focus password input, Input.insertText
-5. CDP: mouse-click "Log in to Dialpad" button
-6. User provides 2FA code
-7. CDP: type digits one-by-one into 6 separate fields
-8. CDP: mouse-click Submit
-9. CDP: navigate to dialpad.com/app
-10. Wait for SPA (poll for "Compound Accounting" text, up to 30s)
-11. Hide preboot modal (CSS display:none)
-12. Dismiss Chrome popups (Block notifications, Never save password)
-13. Wait 5s for stabilization
-14. CDP: mouse-click Compound Accounting (find by text match in `a.dp-general-row__primary` elements)
-15. Wait 3s, verify "(720) 508-1992" visible
-16. CDP: mouse-click New tab
-17. Screenshot for verification
-
-### Chase Login (in progress — manual CDP steps)
-```
-1. Open new tab via Target.createTarget
-2. Navigate to chase.com (NOT /business — login form is on main page)
-3. Focus #userId-text-input-field, Input.insertText username
-4. Focus #password-text-input-field, Input.insertText password
-5. Screenshot to verify
-6. Mouse-click Sign in button (find by text "Sign in")
-7. [PENDING] Handle 2FA page
-8. [PENDING] Navigate to Statements
-9. [PENDING] Download PDF
-```
-
----
-
-## Critical CDP Patterns (proven)
-
-### Text Input
-```python
-await cdp('Runtime.evaluate', {'expression': 'document.querySelector("#field-id").focus()'})
-await asyncio.sleep(0.3)
-await cdp('Input.insertText', {'text': 'value'})
-```
-
-### Mouse Click (ALWAYS use this, never JS .click())
-```python
-# 1. Find element coords by text match
-r = await cdp('Runtime.evaluate', {'expression': '''
-    (() => {
-        const el = Array.from(document.querySelectorAll('button, a'))
-            .find(e => e.textContent.trim().startsWith('Sign in') && e.offsetParent !== null);
-        if (!el) return '0,0';
-        const r = el.getBoundingClientRect();
-        return Math.round(r.x + r.width/2) + ',' + Math.round(r.y + r.height/2);
-    })()
-'''})
-coords = r.get('result', {}).get('value', '0,0').split(',')
-x, y = int(coords[0]), int(coords[1])
-
-# 2. Mouse events
-await cdp('Input.dispatchMouseEvent', {'type': 'mouseMoved', 'x': x, 'y': y})
-await asyncio.sleep(0.05)
-await cdp('Input.dispatchMouseEvent', {'type': 'mousePressed', 'x': x, 'y': y, 'button': 'left', 'clickCount': 1})
-await asyncio.sleep(0.03)
-await cdp('Input.dispatchMouseEvent', {'type': 'mouseReleased', 'x': x, 'y': y, 'button': 'left', 'clickCount': 1})
-```
-
-### Screenshot for Verification
-```python
-import base64
-shot = await cdp('Page.captureScreenshot', {'format': 'png'})
-Path('profiles/debug_stepN.png').write_bytes(base64.b64decode(shot['data']))
-```
-
-### Digit-by-Digit Typing (for 2FA code fields)
-```python
-for digit in '123456':
-    await cdp('Input.dispatchKeyEvent', {'type': 'keyDown', 'key': digit, 'text': digit})
-    await cdp('Input.dispatchKeyEvent', {'type': 'keyUp', 'key': digit})
-    await asyncio.sleep(0.1)
-```
-
-### New Tab in Existing Chrome
-```python
-ver = json.loads(urllib.request.urlopen('http://127.0.0.1:9300/json/version').read())
-async with websockets.connect(ver['webSocketDebuggerUrl']) as ws:
-    result = await cdp('Target.createTarget', {'url': 'about:blank'})
-    tab_id = result['targetId']
-```
-
-### Reconnect to Existing Tab
-```python
-pages = json.loads(urllib.request.urlopen('http://127.0.0.1:9300/json').read())
-tab = next(p for p in pages if p['id'] == tab_id)
-async with websockets.connect(tab['webSocketDebuggerUrl']) as ws:
-    # ... use cdp() helper
-```
+### Key Selectors (verified)
+| Element | Selector |
+|---|---|
+| Username | `#userId-text-input-field` |
+| Password | `#password-text-input-field` |
+| Sign in button | `<button>` by text "Sign in" |
+| 2FA dropdown trigger | `#header-simplerAuth-dropdownoptions-styledselect` |
+| 2FA listbox | `#ul-list-container-simplerAuth-dropdownoptions-styledselect` |
+| OTP code (standard) | `#otpcode_input-input-field` |
+| Password re-entry (standard) | `#password_input-input-field` |
+| OTP code (CAAS) | `#otpInput-input` (shadow DOM) |
+| Statements tab | `[data-testid="statementsAndDocuments-navigation-bar-item"]` |
+| Download flyout icon | `icon-accountsTable-{N}-row0-cell3-downloadDocumentDropdown-icon` |
+| Save as PDF (in flyout) | `.dropdown.show [id*=downloadPDFOption]` |
+| Direct download (credit cards) | `accountsTable-{N}-row0-cell3-requestThisDocumentAnchor-download` |
 
 ---
 
-## Chrome Configuration
+## OPEN ITEMS
 
-### Dialpad (stealth=False)
-```
---remote-debugging-port=9300
---user-data-dir={absolute_path}/profiles/dialpad
---disable-features=IsolateOrigins,site-per-process
---no-first-run
---no-default-browser-check
---disable-infobars
-```
+### 1. Central Passwords Sheet
+Currently credentials are passed as CLI arguments. Need to:
+- Connect to `clients.xlsx` for username/password lookup
+- Map each account to its bank, client name, phone suffix, 2FA method
+- The orchestrator reads the sheet and drives the scripts
 
-### Banks (stealth=True) — NOT YET TESTED
-Same as above PLUS:
-```
---disable-blink-features=AutomationControlled
-```
-Note: We're currently running Dialpad+Chase in the SAME Chrome instance (stealth=False). Chase hasn't blocked us yet. If it does, we'll need separate instances.
+### 2. File Renaming
+`src/pdf_manager.py` exists but is not wired into the Chase workflow yet. Need to:
+- After all downloads complete, run `rename_batch()` to rename PDFs
+- Convention: `ClientName__BankName #xxxx yyyy-mm.pdf` → `output/{yyyy-mm}/`
+- Client name from `clients.xlsx` lookup by username + bank
+- Account number (last4/5) extracted from PDF content or filename
+- Renaming happens at END of full run, not per-download
 
----
-
-## Key Decisions
-
-| Decision | Choice | Why |
-|----------|--------|-----|
-| BrowserUse Agent | Haiku only (Sonnet/Opus grammar limit) | Hard API limitation |
-| Form filling | Direct CDP (not BrowserUse) | More reliable for known forms |
-| Clicking | CDP mouse events (not JS .click()) | reCAPTCHA blocks JS clicks |
-| Element finding | Text content match (not querySelector alone) | Multiple elements share classes |
-| Browser lifecycle | subprocess.Popen (not Patchright context) | Survives Python exit |
-| Interactive input | CLI subcommands (not input()) | Claude Code can't do stdin |
-| Chase URL | chase.com (not /business) | Login form on main page |
-| Verification | CDP screenshot after every click | Never trust script output alone |
+### 3. Next Banks
+Chase is done. Next banks to implement:
+- American Express (different login, card picker, AJAX download)
+- Citibank (two-step login)
+- Mercury (REST API, no browser)
+- Others from the PRD
 
 ---
 
-## Credentials (from .env + user)
+## Architecture Decisions (locked in)
 
-| Service | Username | Source |
-|---------|----------|--------|
-| Dialpad | operations@allsolutionsconsult.com | .env DIALPAD_EMAIL |
-| Chase | AustinYu25 | User provided |
-
-Passwords in .env (Dialpad) and user-provided (Chase). Never log passwords.
+| Decision | Choice |
+|---|---|
+| Browser automation | Direct CDP (not BrowserUse Agent) |
+| Clicking | CDP mouse events (not JS .click()) |
+| Element finding | Text match / data-testid / ID (not querySelector alone) |
+| Shadow DOM | Walk shadow roots recursively |
+| Browser lifecycle | Chrome subprocess (survives Python exit) |
+| Interactive input | CLI subcommands (no input()) |
+| Dialpad | Separate persistent session on same Chrome |
+| Statements nav | Poll for data-testid element (up to 30s) before clicking |
+| Download verification | Scan ~/Downloads for matching PDFs by last4 |
+| Failure handling | Screenshot + report + skip (never auto-fallback) |
 
 ---
 
 ## File Inventory
 
-### Scripts
-- `scripts/dialpad_login.py` — 2-step Dialpad login (proven, committed)
-
-### Documentation
-- `PLAN.md` — Architecture plan
-- `DESIGN.md` — Technical design (Pydantic models, interfaces)
-- `TESTING-PLAN.md` — 9-layer testing strategy
-- `POSTMORTEM-LAYER2.md` — Dialpad learnings
-- `claudedocs/session-state.md` — THIS FILE
-
-### Research
-- `research/01-browseruse-fundamentals.md`
-- `research/02-agent-patterns.md`
-- `research/03-claude-api-and-sdk.md`
-- `research/04-2fa-automation.md`
-- `research/05-bank-portals.md`
+### Scripts (working)
+- `scripts/dialpad_login.py` — Dialpad login (2-step CLI)
+- `scripts/chase_login.py` — Chase full workflow (6-step CLI)
 
 ### Source
+- `src/pdf_manager.py` — Shared PDF rename/validate module (not yet wired in)
 - `src/` — Full v4 codebase (models, config, orchestrator, skills, banks, browser launcher)
-- Key: `src/browser/launcher.py` has BrowserProcess with stealth flag and lock cleanup
 
-### State Files (gitignored)
-- `_chase_tab.json` — Current Chase tab ID
-- `_dialpad_cdp.json` — Dialpad Chrome PID/port
-- `profiles/` — Browser profiles (persistent cookies)
+### Documentation
+- `claudedocs/session-state.md` — THIS FILE
+- `claudedocs/chase-walkthrough.md` — Chase step-by-step with verified selectors
+- `claudedocs/cdp-patterns.md` — All proven CDP interaction patterns
+- `PLAN.md`, `DESIGN.md`, `TESTING-PLAN.md`, `POSTMORTEM-LAYER2.md`
+- `research/*.md` — 5 research documents
+
+### Output
+- `output/*.csv` — Download report CSVs per account
+- PDFs in `~/Downloads/` (not yet renamed/moved)
