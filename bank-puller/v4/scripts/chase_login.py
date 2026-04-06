@@ -40,7 +40,8 @@ async def cdp_connect_tab(tab_id: str):
         urllib.request.urlopen(f"http://127.0.0.1:{CDP_PORT}/json").read()
     )
     tab = next(p for p in pages if p["id"] == tab_id)
-    return await websockets.connect(tab["webSocketDebuggerUrl"])
+    # max_size=10MB to handle large screenshots (chase.com login page exceeds 1MB default)
+    return await websockets.connect(tab["webSocketDebuggerUrl"], max_size=10_000_000)
 
 
 async def create_new_tab():
@@ -166,9 +167,21 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
 
     url = await cdp.evaluate("window.location.href")
     print(f"  URL: {url}")
-    if "auth" not in (url or ""):
-        print("  WARNING: May not be on 2FA page.")
-        await cdp.screenshot("debug_chase_login_fail.png")
+
+    # Check for login failure (wrong credentials)
+    if "logon/logon" in (url or ""):
+        error_text = await cdp.evaluate(
+            'document.body?.innerText?.replace(/[^\\x20-\\x7E]/g, "")?.substring(0, 200)'
+        )
+        print(f"  LOGIN FAILED: {error_text}")
+        await cdp.screenshot(f"debug_chase_{username}_login_failed.png")
+        print(f"  Screenshot saved. Skipping this account.")
+        await ws.close()
+        return
+
+    if "auth" not in (url or "") and "recognizeUser" not in (url or ""):
+        print("  WARNING: Unexpected page after login.")
+        await cdp.screenshot(f"debug_chase_{username}_unexpected.png")
         await ws.close()
         return
 
@@ -179,38 +192,61 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
     )
     await asyncio.sleep(1)
 
-    # Count matching phone numbers under TEXT ME only (not CALL ME).
-    # The listbox has TEXT ME header, then phone options, then CALL ME header, then more options.
-    # There will almost always be one 1992 under TEXT ME and one under CALL ME — that's normal.
-    # Only flag for retry when there are TWO under TEXT ME (meaning two different text-capable numbers).
-    text_me_count = await cdp.evaluate(
+    # Collect all TEXT ME phone numbers (between TEXT ME and CALL ME headers).
+    # If the preferred suffix (e.g., 1992) is available, select it.
+    # If not, select the first available TEXT ME number.
+    text_me_info = await cdp.evaluate(
         '(() => {'
         '  const items = Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children);'
         '  let inTextMe = false;'
-        '  let count = 0;'
+        '  const numbers = [];'
         '  for (const li of items) {'
         '    const t = li.textContent.trim();'
         '    if (t === "TEXT ME") { inTextMe = true; continue; }'
         '    if (t === "CALL ME") { inTextMe = false; continue; }'
-        f'    if (inTextMe && t === "xxx-xxx-{phone_suffix}") count++;'
+        '    if (inTextMe && t.startsWith("xxx-xxx-")) numbers.push(t);'
         '  }'
-        '  return count;'
+        '  return JSON.stringify(numbers);'
         '})()'
     )
-    print(f"  Found {text_me_count} TEXT ME number(s) matching xxx-xxx-{phone_suffix}")
+    text_me_numbers = json.loads(text_me_info or "[]")
+    print(f"  TEXT ME numbers available: {text_me_numbers}")
 
-    # Select the FIRST matching number (index 0)
-    print(f"Selecting TEXT ME xxx-xxx-{phone_suffix} (first match)...")
+    # Check if preferred number is available — if not, STOP (don't auto-select another)
+    preferred = f"xxx-xxx-{phone_suffix}"
+    if preferred not in text_me_numbers:
+        available = ", ".join(text_me_numbers) if text_me_numbers else "none"
+        print(f"  SKIPPED: {preferred} not available. Available TEXT ME numbers: {available}")
+        await cdp.screenshot(f"debug_chase_{username}_no_1992.png")
+        print(f"  Screenshot saved. Signing out and moving to next account.")
+        # Close dropdown and sign out
+        await cdp.send("Input.dispatchKeyEvent", {"type": "keyDown", "key": "Escape"})
+        await asyncio.sleep(1)
+        await cdp.mouse_click_element(
+            'Array.from(document.querySelectorAll("a, button"))'
+            '.find(e => e.textContent.trim() === "Cancel" && e.offsetParent !== null)'
+        )
+        await asyncio.sleep(3)
+        await ws.close()
+        return
+    selected_number = preferred
+
+    # Count how many times the selected number appears under TEXT ME (for retry logic)
+    text_me_count = text_me_numbers.count(selected_number)
+
+    print(f"Selecting {selected_number} ({text_me_count} match(es) under TEXT ME)...")
     await cdp.mouse_click_element(
         'Array.from(document.querySelector("#ul-list-container-simplerAuth-dropdownoptions-styledselect").children)'
-        f'.find(li => li.textContent.trim() === "xxx-xxx-{phone_suffix}")'
+        f'.find(li => li.textContent.trim() === "{selected_number}")'
     )
     await asyncio.sleep(1)
 
-    # Save TEXT ME match count for retry logic
+    # Save state for retry logic
     tab_state = json.loads(Path("_chase_tab.json").read_text())
     tab_state["text_me_count"] = text_me_count or 1
     tab_state["phone_suffix"] = phone_suffix
+    tab_state["selected_number"] = selected_number
+    tab_state["text_me_numbers"] = text_me_numbers
     Path("_chase_tab.json").write_text(json.dumps(tab_state))
 
     await cdp.screenshot("debug_chase_sms_selected.png")
@@ -612,6 +648,19 @@ async def cmd_signout():
     print(f"URL: {url}")
     print("Signed out.")
     await ws.close()
+
+    # Close the tab to keep browser clean for next account
+    tab_id = tab_info["tab_id"]
+    ver = json.loads(
+        urllib.request.urlopen(f"http://127.0.0.1:{CDP_PORT}/json/version").read()
+    )
+    async with websockets.connect(ver["webSocketDebuggerUrl"]) as browser_ws:
+        await browser_ws.send(json.dumps({
+            "id": 1, "method": "Target.closeTarget",
+            "params": {"targetId": tab_id}
+        }))
+        await browser_ws.recv()
+    print("Tab closed.")
 
 
 # ---------------------------------------------------------------------------
