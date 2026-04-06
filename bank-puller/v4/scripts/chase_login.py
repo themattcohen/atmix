@@ -168,7 +168,7 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
     url = await cdp.evaluate("window.location.href")
     print(f"  URL: {url}")
 
-    # Check for login failure (wrong credentials)
+    # Branch 1: Wrong credentials
     if "logon/logon" in (url or ""):
         error_text = await cdp.evaluate(
             'document.body?.innerText?.replace(/[^\\x20-\\x7E]/g, "")?.substring(0, 200)'
@@ -179,12 +179,21 @@ async def cmd_login(username: str, password: str, phone_suffix: str = "1992"):
         await ws.close()
         return
 
-    if "auth" not in (url or "") and "recognizeUser" not in (url or ""):
+    # Branch 2: Trusted device — no 2FA needed, already on dashboard
+    if "dashboard" in (url or ""):
+        print("  No 2FA required (trusted device). Skip next + 2fa, go straight to statements.")
+        await cdp.screenshot(f"debug_chase_{username}_no_2fa.png")
+        await ws.close()
+        return
+
+    # Branch 3: 2FA page
+    if "recognizeUser" not in (url or ""):
         print("  WARNING: Unexpected page after login.")
         await cdp.screenshot(f"debug_chase_{username}_unexpected.png")
         await ws.close()
         return
 
+    # On 2FA page — open dropdown
     # Open 2FA dropdown: custom component #header-simplerAuth-dropdownoptions-styledselect
     print("Opening 2FA dropdown...")
     await cdp.mouse_click_element(
