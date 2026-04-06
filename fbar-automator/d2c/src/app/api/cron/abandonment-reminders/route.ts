@@ -99,8 +99,12 @@ export async function GET(req: NextRequest) {
             updatedAt: true,
           },
         },
+        // Also check if user has ANY terminal filing (to exclude completed customers)
         _count: {
-          select: { accounts: true },
+          select: {
+            accounts: true,
+            filingYears: { where: { status: { in: [...TERMINAL_STATUSES] } } },
+          },
         },
         abandonmentEmails: {
           orderBy: { sequence: "desc" },
@@ -112,6 +116,12 @@ export async function GET(req: NextRequest) {
 
     for (const user of users) {
       processed++;
+
+      // Skip users who already have a completed filing (PAID/SUBMITTED/ACCEPTED)
+      if (user._count.filingYears > 0) {
+        skipped++;
+        continue;
+      }
 
       const filing = user.filingYears[0] ?? null;
       const lastActivity = filing ? filing.updatedAt : user.createdAt;
