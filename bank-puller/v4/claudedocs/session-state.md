@@ -120,6 +120,21 @@ Chase is done. Next banks to implement:
 
 ---
 
+## Architecture Note (IMPORTANT)
+
+**PLAN.md and DESIGN.md describe a BrowserUse Agent architecture. That was abandoned.**
+
+The working code uses **standalone CDP scripts** (e.g., `scripts/chase_login.py`). BrowserUse was abandoned because:
+- Sonnet/Opus hit "compiled grammar too large" on real bank pages (hard API limit)
+- Haiku worked but was unreliable (5+ retries per step)
+- Direct CDP is deterministic, fast, and works with all page types
+
+**New banks should follow the CDP standalone script pattern**, NOT the BrowserUse orchestrator described in PLAN.md/DESIGN.md. See `claudedocs/new-bank-guide.md` for step-by-step instructions.
+
+The `src/` directory (models, config, orchestrator, skills, banks) was built for the BrowserUse architecture. It is not currently used by the working scripts. It may be refactored later to work with the CDP approach, but for now, the scripts in `scripts/` are the source of truth.
+
+---
+
 ## Architecture Decisions (locked in)
 
 | Decision | Choice |

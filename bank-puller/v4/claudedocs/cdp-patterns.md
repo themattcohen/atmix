@@ -167,3 +167,84 @@ for lock in ('SingletonLock', 'SingletonSocket', 'SingletonCookie'):
     if p.exists() or p.is_symlink():
         p.unlink()
 ```
+
+---
+
+## Shadow DOM Recursive Walker
+
+Many bank pages use web components with shadow roots. Standard DOM queries can't find elements inside shadow roots. Use this recursive walker:
+
+```python
+# Find element by text content inside shadow DOM, return center coords
+JS_SHADOW_WALK = '''
+(() => {
+    function w(r, d) {
+        if (d > 5) return null;
+        for (const e of r.querySelectorAll('*')) {
+            if (e.shadowRoot) { const x = w(e.shadowRoot, d+1); if (x) return x; }
+            if (e.textContent?.trim() === "TARGET_TEXT" && e.children.length === 0) {
+                const b = e.getBoundingClientRect();
+                if (b.width > 10) return Math.round(b.x+b.width/2)+","+Math.round(b.y+b.height/2);
+            }
+        }
+        return null;
+    }
+    return w(document, 0) || "0,0";
+})()
+'''
+
+# To find an INPUT by id inside shadow DOM:
+# Replace the if condition with: e.tagName === 'INPUT' && e.id === 'targetId'
+
+# To find ALL matching elements (e.g., phone numbers):
+# Collect into an array instead of returning first match
+```
+
+**Where it's needed**: Chase Statements tab, Chase CAAS 2FA buttons, any bank using web components.
+
+---
+
+## State File Convention
+
+Each bank script saves a JSON state file (e.g., `_chase_tab.json`) with:
+```json
+{
+    "tab_id": "ABC123...",
+    "username": "austinyu2025",
+    "flow": "standard",           // or "caas"
+    "phone_suffix": "1992",
+    "text_me_count": 1,
+    "text_me_numbers": ["xxx-xxx-1992"],
+    "selected_number": "xxx-xxx-1992"
+}
+```
+
+This lets separate CLI commands (login, next, 2fa, statements, download, signout) share state. Each command reads the state, reconnects to the tab by ID, and proceeds.
+
+---
+
+## Tab Close After Signout
+
+Close the tab after signing out to prevent tab accumulation:
+```python
+ver = json.loads(urllib.request.urlopen(f"http://127.0.0.1:{CDP_PORT}/json/version").read())
+async with websockets.connect(ver["webSocketDebuggerUrl"]) as browser_ws:
+    await browser_ws.send(json.dumps({
+        "id": 1, "method": "Target.closeTarget",
+        "params": {"targetId": tab_id}
+    }))
+    await browser_ws.recv()
+```
+
+---
+
+## Poll Before Click (SPA Render Wait)
+
+After page transitions (especially post-2FA), shadow DOM elements may not exist yet. Poll:
+```python
+for attempt in range(15):
+    exists = await cdp.evaluate('!!document.querySelector("[data-testid=target]")')
+    if exists:
+        break
+    await asyncio.sleep(2)
+```
