@@ -860,7 +860,8 @@ async def cmd_download():
             "account": name,
             "last4": last4_match,
             "status": status,
-            "file": matched_file or "",
+            "downloaded_filename": matched_file or "",
+            "renamed_filename": "",
             "reason": reason,
         })
 
@@ -869,7 +870,7 @@ async def cmd_download():
     print(f"{'Account':<35} {'Status':<15} {'File'}")
     print("-" * 90)
     for row in report_rows:
-        detail = row["file"] if row["file"] else f"({row['reason']})"
+        detail = row["downloaded_filename"] if row["downloaded_filename"] else f"({row['reason']})"
         print(f"  {row['account']:<33} {row['status']:<15} {detail}")
 
     # Save CSV: output/{username}_chase_download_report_{timestamp}.csv
@@ -881,7 +882,7 @@ async def cmd_download():
     csv_path = output_dir / f"{username}_chase_download_report_{timestamp}.csv"
 
     with open(csv_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["account", "last4", "status", "file", "reason"])
+        writer = csv.DictWriter(f, fieldnames=["account", "last4", "status", "downloaded_filename", "renamed_filename", "reason"])
         writer.writeheader()
         writer.writerows(report_rows)
 

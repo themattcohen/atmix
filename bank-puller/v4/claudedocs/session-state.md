@@ -1,7 +1,7 @@
 # Bank-Puller v4 — Session State & Pickup Guide
 
-**Last updated**: 2026-04-06
-**Status**: Chase workflow complete. Moving to next bank or open items.
+**Last updated**: 2026-04-07
+**Status**: Chase + Wells Fargo workflows complete. Moving to next bank or open items.
 
 ---
 
@@ -86,6 +86,61 @@
 
 ---
 
+## Wells Fargo — COMPLETE
+
+### What Works
+- Full login → dashboard → 3-dot menu → View Statements → multi-account download → signout → tab close
+- Trusted device detection (no 2FA observed yet)
+- Account discovery from dashboard tiles (`li[class*=AccountTile]`)
+- Account dropdown switching on statements page (`WFSearchableDropdown`, `li[role=option]`)
+- PDF download via in-browser fetch (WF opens PDFs in same window, not as downloads)
+- Download tracker CSV with per-account status updates
+- Wrong credentials detection (placeholder — not yet tested)
+
+### Scripts
+- `scripts/wellsfargo_login.py` — 5-step: `login`, `2fa` (placeholder), `statements`, `download`, `signout`
+
+### Tested Accounts (1 user, 6 accounts)
+
+**Successful downloads (austincanopi1):**
+| Account | Last4 | Statement Date | Size |
+|---|---|---|---|
+| BUSINESS CHECKING | 1157 | 2026-03-31 | 118K |
+| BUSINESS CHECKING | 7276 | 2026-03-31 | 102K |
+| EVERYDAY CHECKING | 4710 | 2026-03-06 | 117K |
+| SIGNIFY BUSINESS ESSENTIAL CARD | 6942 | 2025-11-10 | 343K |
+| BUSINESSLINE LINE OF CREDIT | 5578 | 2026-04-06 | 137K |
+| WELLS FARGO REFLECT VISA CARD | 3431 | 2025-10-08 | 1.0M |
+
+### Key Selectors (verified)
+| Element | Selector |
+|---|---|
+| Username | `#userid` (name=j_username) |
+| Password | `#password` (name=j_password) |
+| Sign On button | `#btnSignon` (input type=submit in form #frmSignon) |
+| Login URL | `https://www.wellsfargo.com` (form on homepage, NOT /signin/) |
+| Dashboard account tiles | `li[class*=AccountTile]` |
+| Account name | `span[class*=AccountTitle]` |
+| 3-dot menu button | `button` with text "Common tasks for ... ending with ...{last4}" |
+| View Statements button | `button` with text "View Statements" |
+| Account dropdown trigger | `div[role=combobox][aria-haspopup=listbox]` |
+| Account dropdown options | `li[role=option]` in `ul[role=listbox]` |
+| Statement links | `a[class*=WFLink]` with text "Statement MM/DD/YY (size, PDF)" |
+| Statements page URL | `/edocs/start#/edocs/home/documents/default` |
+| PDF URL pattern | `/edocs/documents/retrieve/{UUID}` |
+
+### Key WF Behaviors
+1. Login form is on the homepage, not a separate sign-in page
+2. Dashboard uses React components with CSS module classes (AccountTile, AccountHeader, etc.)
+3. 3-dot menu opens a flyout with "View Activity" and "View Statements"
+4. Statements page has a searchable dropdown to switch between accounts (no need to go back to dashboard)
+5. Statement links are SPA-handled (empty href) — clicking opens PDF in same window
+6. PDF download requires: click link → wait for PDF URL → fetch via JS → save bytes → navigate back
+7. Dropdown container has max-height 300px with 330px content — last option may need scrollIntoView
+8. 2FA flow has NOT been observed yet (all tests used trusted device)
+
+---
+
 ## OPEN ITEMS
 
 ### 1. Central Passwords Sheet
@@ -112,7 +167,7 @@ Currently the script downloads the topmost (most recent) statement for each acco
 - The orchestrator decides the target period — the script should not guess
 
 ### 4. Next Banks
-Chase is done. Next banks to implement:
+Chase and Wells Fargo are done. Next banks to implement:
 - American Express (different login, card picker, AJAX download)
 - Citibank (two-step login)
 - Mercury (REST API, no browser)
