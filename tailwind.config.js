@@ -24,6 +24,22 @@ export default {
           sunrise: '#e8a87c',
           sky: '#89b4c8',
         },
+        audit: {
+          medics: '#07b6b6',
+          iv: '#44B7BC',
+          navy: '#1E4969',
+          dark: '#081E2B',
+          'medics-dark': '#047c7c',
+          'iv-dark': '#2A8A8F',
+          cream: '#f8f7f4',
+          grade: {
+            a: '#22c55e',
+            b: '#3b82f6',
+            c: '#f59e0b',
+            d: '#ef4444',
+            f: '#991b1b',
+          },
+        },
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
