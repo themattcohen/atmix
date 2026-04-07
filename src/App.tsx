@@ -3,6 +3,7 @@ import Brutalist from './pages/Brutalist';
 import Walkies from './pages/Walkies';
 import WorkingTogether from './pages/WorkingTogether';
 import Projects from './pages/Projects';
+import IV from './pages/IV';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/walkies" element={<Walkies />} />
         <Route path="/working-together" element={<WorkingTogether />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/IV" element={<IV />} />
       </Routes>
     </BrowserRouter>
   );
