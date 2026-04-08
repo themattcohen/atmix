@@ -156,7 +156,7 @@ export default function PrivacyPage() {
                 <strong>Phone:</strong>{" "}
                 <a href="tel:+18888635518" className="text-blue-600 underline">(888) 863-5518</a><br />
                 <strong>Mail:</strong> FBAR Direct Privacy Team<br />
-                1201 N. Market Street, Suite 111, Wilmington, DE 19801
+                6732 W Coal Mine Ave, Ste 451, Littleton, CO 80123
               </p>
             </div>
           </section>

@@ -36,7 +36,7 @@ export default function MarketingLayout({
               <p className="text-xs text-gray-400">FinCEN-Registered BSA E-Filing Institution</p>
               <p className="text-xs text-gray-400">Transmitter Control Code: PBSA8180</p>
               <p className="text-xs text-gray-400">Built by a Licensed CPA</p>
-              <p className="text-xs text-gray-500 mt-3">1201 N. Market Street, Suite 111<br />Wilmington, DE 19801</p>
+              <p className="text-xs text-gray-500 mt-3">6732 W Coal Mine Ave, Ste 451<br />Littleton, CO 80123</p>
             </div>
             {/* Links Column */}
             <div>

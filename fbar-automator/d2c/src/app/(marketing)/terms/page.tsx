@@ -223,7 +223,7 @@ export default function TermsPage() {
               <p className="text-gray-700">
                 <strong>Email:</strong> support@fbardirect.com<br />
                 <strong>Mail:</strong> FBAR Direct Legal Department<br />
-                1201 N. Market Street, Suite 111, Wilmington, DE 19801
+                6732 W Coal Mine Ave, Ste 451, Littleton, CO 80123
               </p>
             </div>
           </section>

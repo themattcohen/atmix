@@ -34,10 +34,10 @@ export default function LandingPage() {
         },
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "1201 N. Market Street, Suite 111",
-          "addressLocality": "Wilmington",
-          "addressRegion": "DE",
-          "postalCode": "19801",
+          "streetAddress": "6732 W Coal Mine Ave, Ste 451",
+          "addressLocality": "Littleton",
+          "addressRegion": "CO",
+          "postalCode": "80123",
           "addressCountry": "US",
         },
       }} />
