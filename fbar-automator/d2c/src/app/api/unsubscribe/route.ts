@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
 
   log("info", "User unsubscribed from reminders", { userId: user.id });
 
-  return NextResponse.redirect(new URL("/unsubscribed", req.url));
+  return NextResponse.redirect("https://fbardirect.com/unsubscribed");
 }
 
 function notFoundHtml(): string {
