@@ -332,22 +332,11 @@ export async function sendAbandonmentEmail(
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
       html: `
-      <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        <div style="background-color: #112e51; padding: 24px; text-align: center;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-family: Arial, Helvetica, sans-serif;">FBAR Direct</h1>
-        </div>
-        <div style="padding: 32px 24px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333;">
-          <h2 style="color: #112e51; font-size: 20px; margin-top: 0; margin-bottom: 16px;">${escapeHtml(copy.headline)}</h2>
-          ${copy.body}
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${escapeHtml(deepLink)}" style="background-color: #205493; border: 1px solid #205493; color: #ffffff; display: inline-block; font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 600; line-height: 48px; padding: 0 36px; text-align: center; text-decoration: none; mso-padding-alt: 14px 36px;">${escapeHtml(copy.cta)}</a>
-          </div>
-        </div>
-        <div style="background-color: #f5f5f5; padding: 16px 24px; font-size: 12px; color: #666666; text-align: center; font-family: Arial, Helvetica, sans-serif;">
-          <p style="margin: 0 0 8px 0;">You're receiving this because you have an in-progress FBAR filing on <a href="https://fbardirect.com" style="color: #666666; text-decoration: underline;">fbardirect.com</a>.</p>
-          <p style="margin: 0 0 8px 0;"><a href="${escapeHtml(unsubscribeUrl)}" style="color: #666666; text-decoration: underline;">Unsubscribe</a></p>
-          <p style="margin: 0;">FBAR Direct is not affiliated with the IRS, FinCEN, or any U.S. government agency.</p>
-        </div>
+      <div style="font-family: Arial, Helvetica, sans-serif; max-width: 600px; margin: 0 auto; font-size: 15px; line-height: 1.6; color: #222222;">
+        <p style="font-weight: 600; font-size: 16px; margin-bottom: 16px;">${escapeHtml(copy.headline)}</p>
+        ${copy.body}
+        <p style="margin: 24px 0;"><a href="${escapeHtml(deepLink)}" style="color: #205493;">${escapeHtml(copy.cta)} &rarr;</a></p>
+        <p style="font-size: 12px; color: #999999; margin-top: 40px; border-top: 1px solid #eeeeee; padding-top: 12px;">You're receiving this because you have an in-progress FBAR filing on <a href="https://fbardirect.com" style="color: #999999;">fbardirect.com</a>.<br><a href="${escapeHtml(unsubscribeUrl)}" style="color: #999999;">Unsubscribe</a></p>
       </div>
     `,
     });
