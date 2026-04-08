@@ -77,6 +77,9 @@ export async function GET(req: NextRequest) {
         unsubscribedFromReminders: false,
         email: { notIn: EXCLUDED_EMAILS },
         role: "USER",
+        // Only email users who signed up after the cron was activated (2026-04-08)
+        // to avoid blasting old pipeline users with overdue sequences
+        createdAt: { gte: new Date("2026-04-08T00:00:00Z") },
       },
       select: {
         id: true,

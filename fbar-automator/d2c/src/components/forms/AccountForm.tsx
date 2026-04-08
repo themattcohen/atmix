@@ -133,6 +133,7 @@ export function AccountForm({ calendarYear, onSaved, onCancel }: AccountFormProp
             aria-required="true"
             aria-describedby={fieldErrors.accountNumber ? "new-account-accountNumber-error" : undefined}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-900"
+            placeholder="e.g., 001-234567-890"
           />
           {fieldErrors.accountNumber && (
             <p id="new-account-accountNumber-error" className="text-red-600 text-xs mt-1" role="alert">

@@ -299,7 +299,7 @@ services:
   d2c-cron:
     image: busybox:latest
     command: >
-      sh -c 'mkdir -p /var/spool/cron/crontabs && echo "*/5 * * * * wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/submit-paid >> /proc/1/fd/1 2>&1 && wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/poll-submitted >> /proc/1/fd/1 2>&1" | crontab - && crond -f -l 2'
+      sh -c 'mkdir -p /var/spool/cron/crontabs && printf "*/5 * * * * wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/submit-paid >> /proc/1/fd/1 2>&1 && wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/poll-submitted >> /proc/1/fd/1 2>&1\n*/15 * * * * wget -q -O- --header=\"Authorization: Bearer $$CRON_SECRET\" http://d2c-app:3001/api/cron/abandonment-reminders >> /proc/1/fd/1 2>&1\n" | crontab - && crond -f -l 2'
     environment:
       - CRON_SECRET=${CRON_SECRET}
     depends_on:

@@ -278,7 +278,20 @@ export default function AccountsPage() {
       <WizardLayout currentStep={3} onPrevious="/personal">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold text-navy-900 mb-2">Choose Your Filing Method</h1>
-          <p className="text-gray-600 mb-8">Select how you&apos;d like to add your foreign accounts.</p>
+          <p className="text-gray-600 mb-4">Select how you&apos;d like to add your foreign accounts.</p>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-sm font-semibold text-blue-900 mb-2">What you&apos;ll need:</p>
+            <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+              <li>Bank name and country for each foreign account</li>
+              <li>Account number</li>
+              <li>Currency (e.g., EUR, GBP, JPY)</li>
+              <li>Approximate maximum balance during the year</li>
+            </ul>
+            <p className="text-sm text-blue-700 mt-3">
+              Don&apos;t have this handy? No problem — your progress is saved automatically. You can come back anytime.
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Basic */}
@@ -319,7 +332,12 @@ export default function AccountsPage() {
     <WizardLayout currentStep={3} onPrevious="/personal">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold text-navy-900 mb-2">Foreign Accounts</h1>
-        <p className="text-gray-600 mb-8">Add all foreign financial accounts for the calendar year.</p>
+        <p className="text-gray-600 mb-4">Add all foreign financial accounts for the calendar year.</p>
+
+        <div className="bg-green-50 border border-green-200 rounded-md px-4 py-2.5 mb-6 flex items-center gap-2">
+          <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+          <p className="text-sm text-green-800">Your progress is saved automatically. You can close this page and come back anytime.</p>
+        </div>
 
         {error && (
           <div className="bg-red-50 text-red-700 p-4 rounded-md mb-6" role="alert">
