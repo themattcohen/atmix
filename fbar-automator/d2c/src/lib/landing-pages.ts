@@ -81,8 +81,8 @@ export const LANDING_VARIANTS: LandingVariant[] = [
   {
     slug: 'fbar-deadline',
     adGroup: 'Deadline',
-    headline: 'FBAR Due in 7 Days -- File in 10 Minutes',
-    subheadline: 'April 15 is one week away. Skip the government portal. We prepare, review, and submit your FBAR to FinCEN for you.',
+    headline: 'FBAR Due April 15 -- File in 10 Minutes',
+    subheadline: 'The deadline is days away. Skip the government portal. We prepare, review, and submit your FBAR to FinCEN for you.',
     ctaText: 'Start My FBAR Now',
     ctaUrl: '/threshold',
     priceHighlight: '$59 -- Less Than a CPA Consultation',
