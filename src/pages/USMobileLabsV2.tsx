@@ -32,28 +32,18 @@ function useScrollReveal(threshold = 0.15) {
 function Reveal({
   children,
   className = '',
-  animation = 'fade-in',
   delay = 0,
 }: {
   children: ReactNode;
   className?: string;
-  animation?: 'fade-in' | 'slide-in-left' | 'slide-in-right' | 'scale-in';
   delay?: number;
 }) {
   const { ref, isVisible } = useScrollReveal();
 
-  const base: Record<string, string> = {
-    'fade-in': 'translate-y-8 opacity-0',
-    'slide-in-left': '-translate-x-10 opacity-0',
-    'slide-in-right': 'translate-x-10 opacity-0',
-    'scale-in': 'scale-95 opacity-0',
-  };
-  const visible = 'translate-y-0 translate-x-0 scale-100 opacity-100';
-
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${isVisible ? visible : base[animation]} ${className}`}
+      className={`transition-all duration-700 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -62,127 +52,14 @@ function Reveal({
 }
 
 // ---------------------------------------------------------------------------
-// Section wrapper for consistent padding
-// ---------------------------------------------------------------------------
-function Section({
-  children,
-  className = '',
-  id,
-}: {
-  children: ReactNode;
-  className?: string;
-  id?: string;
-}) {
-  return (
-    <section id={id} className={`px-6 py-20 md:py-28 ${className}`}>
-      <div className="mx-auto max-w-6xl">{children}</div>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
-const SERVICES = [
-  {
-    title: 'Mobile Blood Draws',
-    description: 'Routine and specialty lab draws at your home, office, or facility. We work with all major laboratories.',
-    features: ['Routine CBC, CMP, Lipid Panels', 'Thyroid & Hormone Panels', 'Glucose Tolerance Tests', 'Pediatric Draws Available'],
-    headerColor: 'bg-audit-iv',
-  },
-  {
-    title: 'Specialty Testing',
-    description: 'Advanced diagnostics including timed specimens, chain of custody, and specialty collection protocols.',
-    features: ['Timed & Fasting Specimens', 'DOT & Non-DOT Drug Testing', 'Genetic Testing Kit Collection', 'Allergy & Autoimmune Panels'],
-    headerColor: 'bg-audit-navy',
-  },
-  {
-    title: 'Corporate Wellness',
-    description: 'On-site blood draws for annual physicals, biometric screenings, and wellness programs.',
-    features: ['On-Site Biometric Screenings', 'Annual Physical Labs', 'Custom Wellness Panels', 'Flexible Group Scheduling'],
-    headerColor: 'bg-labs-accent',
-  },
-];
-
-const STEPS = [
-  {
-    phase: 1,
-    title: 'Book Online',
-    description: 'Choose your date, time, and location. Same-day appointments often available.',
-  },
-  {
-    phase: 2,
-    title: 'We Come to You',
-    description: 'A licensed phlebotomist arrives at your door with everything needed.',
-  },
-  {
-    phase: 3,
-    title: 'Quick, Easy Draw',
-    description: 'Professional specimen collection in under 10 minutes. Comfortable and calm.',
-  },
-  {
-    phase: 4,
-    title: 'Results to Your Doctor',
-    description: 'Specimens couriered to your lab. Results typically within 24-48 hours.',
-  },
-];
-
-const DIFFERENTIATORS = [
-  { title: 'Licensed & Insured', description: 'Nationally certified, background-checked phlebotomists.' },
-  { title: 'Same-Day Available', description: 'Book as little as 2 hours ahead. Early AM and evening slots.' },
-  { title: 'All Major Labs', description: 'Quest, Labcorp, Sonic, and any physician-specified laboratory.' },
-  { title: 'HIPAA Compliant', description: 'Enterprise-grade security for your medical information.' },
-  { title: 'Transparent Pricing', description: 'No hidden fees. No insurance headaches. Clear pricing upfront.' },
-  { title: '546+ Five-Star Reviews', description: 'Rated 5.0 on Google across our family of services.' },
-];
-
-const PRICING_TIERS = [
-  {
-    name: 'Standard Draw',
-    price: 99,
-    tagline: 'Single patient, single lab order',
-    features: ['Mobile visit to your location', '1 lab order', 'Standard collection', 'Same-day lab delivery', 'Denver metro included'],
-    highlighted: false,
-  },
-  {
-    name: 'Comprehensive',
-    price: 149,
-    tagline: 'Multiple tests, priority scheduling',
-    features: ['Everything in Standard', 'Up to 3 lab orders', 'Fasting-friendly scheduling', 'Priority morning slots', 'Direct results coordination'],
-    highlighted: true,
-  },
-  {
-    name: 'Executive Panel',
-    price: 199,
-    tagline: 'Full workup with premium service',
-    features: ['Everything in Comprehensive', 'Unlimited lab orders', 'Specialty collection protocols', 'Extended appointment time', 'Dedicated coordinator'],
-    highlighted: false,
-  },
-];
-
-const CITIES = [
-  'Denver', 'Aurora', 'Lakewood', 'Arvada', 'Westminster', 'Thornton',
-  'Centennial', 'Highlands Ranch', 'Boulder', 'Broomfield', 'Littleton',
-  'Castle Rock', 'Parker', 'Greenwood Village', 'Englewood', 'Golden',
-  'Commerce City', 'Northglenn', 'Lone Tree', 'Cherry Hills Village',
-];
-
-const TESTIMONIALS = [
-  {
-    name: 'Sarah M.',
-    location: 'Denver',
-    quote: 'I have a terrible needle phobia and the phlebotomist was incredibly patient. Done in under five minutes at my kitchen table. I will never go back to a lab waiting room.',
-  },
-  {
-    name: 'James R.',
-    location: 'Aurora',
-    quote: 'Booked at 7am, they were at my door by 9. Results to my doctor the next day. The convenience is unreal for someone with my schedule.',
-  },
-  {
-    name: 'Dr. Lisa Chen',
-    location: 'Greenwood Village',
-    quote: 'We refer our elderly and mobility-limited patients to U.S. Mobile Labs. Professional, reliable, and they coordinate directly with our office.',
-  },
+const NAV_LINKS = [
+  { label: 'Services', href: '#services' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Areas', href: '#areas' },
 ];
 
 const FAQ_ITEMS = [
@@ -219,23 +96,23 @@ function PasswordGate({ children }: { children: ReactNode }) {
   if (unlocked) return <>{children}</>;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-audit-dark px-6">
+    <div className="flex min-h-screen items-center justify-center bg-iv-light px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-sm text-center">
-        <h1 className="mb-2 text-2xl font-bold text-white">U.S. Mobile Labs</h1>
-        <p className="mb-8 text-sm text-gray-400">Website preview. Enter the password to continue.</p>
+        <h1 className="mb-2 font-opensans text-2xl font-bold text-audit-navy">U.S. Mobile Labs</h1>
+        <p className="mb-8 font-opensans text-sm text-[#081E2B]/60">Website preview. Enter the password to continue.</p>
         <input
           type="password"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Password"
           autoFocus
-          className={`w-full rounded-lg border bg-white/5 px-4 py-3 text-center text-white placeholder-gray-500 outline-none transition-colors ${
-            error ? 'border-red-500 shake' : 'border-white/20 focus:border-audit-iv'
+          className={`w-full rounded-[10px] border bg-white px-4 py-3 text-center font-opensans text-[#081E2B] placeholder-gray-400 outline-none transition-colors ${
+            error ? 'border-red-500' : 'border-iv-border focus:border-audit-iv'
           }`}
         />
         <button
           type="submit"
-          className="mt-4 w-full rounded-lg bg-gradient-to-r from-audit-medics-dark to-audit-iv-dark px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="mt-4 w-full rounded-[10px] bg-audit-navy px-6 py-3 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           View Site
         </button>
@@ -259,32 +136,26 @@ function FAQRow({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-gray-100 last:border-0">
+    <div className="border-b border-gray-200 last:border-0">
       <button
         onClick={onToggle}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
-        className="flex w-full items-center justify-between py-3 text-left hover:bg-gray-50 transition-colors rounded px-1 -mx-1"
+        className="flex w-full items-center justify-between py-4 text-left"
         aria-expanded={isOpen}
       >
-        <span className="text-sm font-medium text-gray-700 pr-4">{question}</span>
-        <svg
-          className={`h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
+        <span className="font-opensans text-[17.6px] font-bold text-[#081E2B] pr-4">{question}</span>
+        <span
+          className={`flex h-6 w-6 shrink-0 items-center justify-center font-opensans text-xl font-light text-audit-navy transition-transform duration-300 ${isOpen ? 'rotate-45' : ''}`}
           aria-hidden="true"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+          +
+        </span>
       </button>
       <div
         className={`grid transition-all duration-300 ease-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
       >
         <div className="overflow-hidden">
-          <div className="rounded-lg bg-gray-50 px-3 py-3 mb-2">
-            <p className="text-sm leading-relaxed text-gray-600">{answer}</p>
-          </div>
+          <p className="pb-4 font-opensans text-[17.6px] leading-relaxed text-[#081E2B]/70">{answer}</p>
         </div>
       </div>
     </div>
@@ -292,34 +163,32 @@ function FAQRow({
 }
 
 // ---------------------------------------------------------------------------
-// Star SVG (filled)
+// Teal checkmark icon
 // ---------------------------------------------------------------------------
-function StarIcon() {
+function TealCheck() {
   return (
-    <svg className="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-    </svg>
+    <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-audit-iv" aria-hidden="true">
+      <svg className="h-3.5 w-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+      </svg>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Component
+// Main component
 // ---------------------------------------------------------------------------
 export default function USMobileLabsV2() {
   return (
     <PasswordGate>
-      <div className="min-h-screen bg-white font-sans text-gray-900 antialiased">
-        <BrandBar />
+      <div className="min-h-screen bg-white font-opensans text-[#081E2B] antialiased">
+        <Navigation />
         <HeroSection />
-        <IntroSection />
-        <ServicesSection />
+        <DarkSection />
         <HowItWorksSection />
-        <WhyUsSection />
-        <PricingSection />
-        <ServiceAreasSection />
-        <TestimonialsSection />
+        <ServiceCardsSection />
+        <PhlebotomyServicesSection />
         <FAQSection />
-        <CTASection />
         <FooterSection />
       </div>
     </PasswordGate>
@@ -327,479 +196,168 @@ export default function USMobileLabsV2() {
 }
 
 // ===========================================================================
-// Brand Bar
+// Navigation (sticky, white bg, matching usmobileiv.com)
 // ===========================================================================
-function BrandBar() {
+function Navigation() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-audit-dark/95 backdrop-blur-sm px-6 py-3">
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-bold text-white">U.S. Mobile Labs</span>
-        <span className="text-xs text-gray-500">|</span>
-        <span className="text-xs text-gray-400">A U.S. Mobile IV Company</span>
+    <nav
+      className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${scrolled ? 'shadow-sm' : ''} border-b border-gray-200`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+        {/* Logo */}
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-1 rounded-sm bg-audit-iv" aria-hidden="true" />
+            <span className="font-opensans text-lg font-bold tracking-wide text-[#081E2B]">
+              U.S. MOBILE LABS
+            </span>
+          </div>
+          <span className="ml-3 font-opensans text-[11px] italic text-gray-400">
+            - We come to you! -
+          </span>
+        </div>
+
+        {/* Desktop links */}
+        <div className="hidden items-center gap-8 md:flex">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="font-opensans text-[15px] text-[#081E2B] transition-colors hover:text-audit-navy"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+
+        {/* Book Today button */}
+        <a
+          href="#pricing"
+          className="hidden rounded-[10px] bg-audit-navy px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90 md:inline-block"
+        >
+          BOOK TODAY
+        </a>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="flex h-10 w-10 items-center justify-center md:hidden"
+          aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+        >
+          <div className="space-y-1.5">
+            <span className={`block h-0.5 w-6 bg-[#081E2B] transition-transform duration-300 ${mobileOpen ? 'translate-y-2 rotate-45' : ''}`} />
+            <span className={`block h-0.5 w-6 bg-[#081E2B] transition-opacity duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
+            <span className={`block h-0.5 w-6 bg-[#081E2B] transition-transform duration-300 ${mobileOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+          </div>
+        </button>
       </div>
-      <a
-        href="#pricing"
-        className="rounded-full bg-labs-accent px-4 py-1.5 text-xs font-semibold text-white transition hover:brightness-110"
-      >
-        Book a Draw
-      </a>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="border-t border-gray-200 bg-white px-6 py-4 md:hidden">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className="block py-2 font-opensans text-[15px] text-[#081E2B]"
+            >
+              {link.label}
+            </a>
+          ))}
+          <a
+            href="#pricing"
+            onClick={() => setMobileOpen(false)}
+            className="mt-3 block rounded-[10px] bg-audit-navy px-5 py-2.5 text-center font-montserrat text-sm font-semibold text-white"
+          >
+            BOOK TODAY
+          </a>
+        </div>
+      )}
     </nav>
   );
 }
 
 // ===========================================================================
-// Section 1 -- Hero
+// Hero Section (white bg, two columns, matching IV site hero)
 // ===========================================================================
 function HeroSection() {
-  const [showChevron, setShowChevron] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowChevron(true), 800);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-audit-dark px-6 text-center">
-      {/* Split gradient glows -- left teal, right amber */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute left-0 top-0 h-full w-1/2 bg-gradient-to-br from-audit-iv/15 via-transparent to-transparent" />
-        <div className="absolute right-0 top-0 h-full w-1/2 bg-gradient-to-bl from-labs-accent/15 via-transparent to-transparent" />
-      </div>
-
-      <div className="relative z-10 max-w-3xl">
-        <h1 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-          Mobile Blood Draws. Done Right.
-        </h1>
-        <div className="mb-6 flex flex-col items-center">
-          <p className="text-lg text-gray-300 sm:text-xl">U.S. Mobile Labs</p>
-          <div className="mt-2 h-0.5 w-12 bg-audit-iv" aria-hidden="true" />
-        </div>
-        <p className="text-base text-gray-400">
-          From the team behind U.S. Mobile IV. Licensed phlebotomists come to you -- anywhere in Denver metro.
-        </p>
-      </div>
-
-      {/* Bouncing chevron */}
-      <div
-        className={`absolute bottom-10 transition-opacity duration-700 ${
-          showChevron ? 'opacity-100' : 'opacity-0'
-        }`}
-        aria-hidden="true"
-      >
-        <svg
-          className="h-8 w-8 animate-bounce text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </div>
-    </section>
-  );
-}
-
-// ===========================================================================
-// Section 2 -- Intro (matches IV.tsx DiscoverySection)
-// ===========================================================================
-function IntroSection() {
-  return (
-    <Section className="bg-audit-cream">
-      <Reveal>
-        <h2 className="mb-6 text-3xl font-bold text-audit-dark sm:text-4xl">
-          Lab Draws, Reimagined
-        </h2>
-      </Reveal>
-      <Reveal delay={100}>
-        <p className="mb-12 max-w-3xl text-lg leading-relaxed text-gray-700">
-          Lab waiting rooms are broken -- long waits, cold chairs, inconvenient hours. We
-          bring the draw to you. Same licensed team, same quality standards, same company
-          you already trust for mobile IV therapy.
-        </p>
-      </Reveal>
-
-      {/* Entity diagram */}
-      <Reveal animation="scale-in" delay={200}>
-        <div className="grid gap-6 md:grid-cols-[1fr_auto_1fr]">
-          {/* IV box */}
-          <div className="rounded-xl border-2 border-audit-iv/30 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 border-b-2 border-audit-iv pb-2 text-lg font-bold text-audit-iv-dark">
-              U.S. Mobile IV
-            </h3>
-            <p className="mb-1 text-sm font-medium uppercase tracking-wide text-gray-500">What They Do</p>
-            <ul className="space-y-1.5 text-sm text-gray-700" role="list">
-              <li>IV hydration therapy</li>
-              <li>Vitamin infusions</li>
-              <li>NAD+ & weight loss</li>
-              <li>546 Google reviews (5.0)</li>
-            </ul>
-          </div>
-
-          {/* Shared center */}
-          <div className="flex flex-col items-center justify-center">
-            <div className="hidden w-px h-6 bg-gray-300 md:block" aria-hidden="true" />
-            <div className="rounded-lg border border-gray-200 bg-gray-50 px-5 py-4 text-center shadow-sm">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-gray-400">
-                Shared
-              </p>
-              <ul className="space-y-1 text-sm text-gray-600" role="list">
-                <li>USMM LLC</li>
-                <li>Licensed Staff</li>
-                <li>Brand Trust</li>
-                <li>Denver Metro Coverage</li>
-              </ul>
-            </div>
-            <div className="hidden w-px h-6 bg-gray-300 md:block" aria-hidden="true" />
-          </div>
-
-          {/* Labs box */}
-          <div className="rounded-xl border-2 border-labs-accent/30 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 border-b-2 border-labs-accent pb-2 text-lg font-bold text-labs-accent-dark">
-              U.S. Mobile Labs
-            </h3>
-            <p className="mb-1 text-sm font-medium uppercase tracking-wide text-gray-500">What We Do</p>
-            <ul className="space-y-1.5 text-sm text-gray-700" role="list">
-              <li>Mobile blood draws</li>
-              <li>Specialty testing</li>
-              <li>Corporate wellness</li>
-              <li>All major laboratories</li>
-            </ul>
-          </div>
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 3 -- Services
-// ===========================================================================
-function ServicesSection() {
-  return (
-    <Section className="bg-white">
-      <Reveal>
-        <h2 className="mb-10 text-3xl font-bold text-audit-dark sm:text-4xl">
-          What We Offer
-        </h2>
-      </Reveal>
-
-      <div className="grid gap-8 md:grid-cols-3">
-        {SERVICES.map((service, i) => (
-          <Reveal key={i} animation="scale-in" delay={i * 100}>
-            <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 shadow-md">
-              <div className={`${service.headerColor} px-6 py-4`}>
-                <h3 className="text-lg font-bold text-white">{service.title}</h3>
-              </div>
-              <div className="flex flex-1 flex-col px-6 py-5">
-                <p className="mb-4 text-sm leading-relaxed text-gray-600">{service.description}</p>
-                <ul className="mt-auto space-y-2" role="list">
-                  {service.features.map((feature, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm text-gray-700">
-                      <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-navy/40" aria-hidden="true" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+    <section className="bg-white px-6 py-16 md:py-20">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+        {/* Left column */}
+        <div>
+          <Reveal>
+            <h1 className="font-opensans text-[40px] font-bold leading-tight text-audit-navy">
+              Mobile Blood Draws and Lab Services When You Need Them In Colorado
+            </h1>
+          </Reveal>
+          <Reveal delay={100}>
+            <p className="mt-6 font-opensans text-[17.6px] leading-relaxed text-[#081E2B]">
+              From the team behind U.S. Mobile IV, our licensed phlebotomists come to your home, office, or facility. No waiting rooms. No trip fee. Results sent directly to your provider.
+            </p>
+          </Reveal>
+          <Reveal delay={200}>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a
+                href="#services"
+                className="rounded-[10px] bg-audit-iv px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                All Services
+              </a>
+              <a
+                href="#pricing"
+                className="rounded-[10px] bg-audit-navy px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Request Service
+              </a>
             </div>
           </Reveal>
-        ))}
-      </div>
-    </Section>
-  );
-}
+        </div>
 
-// ===========================================================================
-// Section 4 -- How It Works (matches IV.tsx RoadmapSection)
-// ===========================================================================
-function HowItWorksSection() {
-  return (
-    <Section className="bg-audit-cream">
-      <Reveal>
-        <h2 className="mb-12 text-3xl font-bold text-audit-dark sm:text-4xl">
-          How It Works
-        </h2>
-      </Reveal>
+        {/* Right column -- circular photo placeholders with teal rings + floating badges */}
+        <Reveal delay={200}>
+          <div className="relative flex items-center justify-center py-8">
+            {/* Large circle */}
+            <div className="flex h-52 w-52 items-center justify-center rounded-full border-4 border-audit-iv bg-iv-light">
+              <svg className="h-16 w-16 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+              </svg>
+            </div>
+            {/* Top-right small circle */}
+            <div className="absolute -top-2 right-8 flex h-24 w-24 items-center justify-center rounded-full border-4 border-audit-iv bg-iv-light md:right-4">
+              <svg className="h-8 w-8 text-audit-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </div>
+            {/* Bottom-right small circle */}
+            <div className="absolute -bottom-2 right-12 flex h-20 w-20 items-center justify-center rounded-full border-4 border-audit-iv bg-iv-light md:right-8">
+              <svg className="h-7 w-7 text-audit-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+              </svg>
+            </div>
 
-      {/* Desktop: horizontal timeline */}
-      <div className="hidden lg:block">
-        <div className="relative">
-          {/* Connector line */}
-          <div
-            className="absolute left-0 right-0 top-6 h-0.5 bg-gray-300"
-            aria-hidden="true"
-          />
-          <div className="grid grid-cols-4 gap-6">
-            {STEPS.map((step, i) => (
-              <Reveal key={i} delay={i * 120}>
-                <div className="relative">
-                  {/* Circle node */}
-                  <div
-                    className="relative z-10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-audit-navy text-sm font-bold text-white shadow-md"
-                    aria-hidden="true"
-                  >
-                    {step.phase}
-                  </div>
-                  <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-                    <h3 className="mb-1 text-base font-bold text-gray-900">{step.title}</h3>
-                    <p className="text-sm leading-relaxed text-gray-600">{step.description}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+            {/* Floating feature badges */}
+            <div className="absolute -left-4 top-4 rounded-[10px] border border-iv-border bg-white px-3 py-2 font-opensans text-xs font-semibold text-audit-navy shadow-sm md:left-0">
+              Licensed Phlebotomists
+            </div>
+            <div className="absolute -left-2 bottom-8 rounded-[10px] border border-iv-border bg-white px-3 py-2 font-opensans text-xs font-semibold text-audit-navy shadow-sm md:left-2">
+              Same-Day Service, No Trip Fee
+            </div>
+            <div className="absolute -right-2 top-1/2 -translate-y-1/2 rounded-[10px] border border-iv-border bg-white px-3 py-2 font-opensans text-xs font-semibold text-audit-navy shadow-sm md:right-0">
+              All Major Labs
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Mobile / tablet: vertical timeline */}
-      <div className="lg:hidden">
-        <div className="relative border-l-2 border-gray-300 pl-8">
-          {STEPS.map((step, i) => (
-            <Reveal key={i} delay={i * 100}>
-              <div className="relative mb-10 last:mb-0">
-                {/* Circle node */}
-                <div
-                  className="absolute -left-[2.55rem] top-0 flex h-10 w-10 items-center justify-center rounded-full bg-audit-navy text-sm font-bold text-white shadow-md"
-                  aria-hidden="true"
-                >
-                  {step.phase}
-                </div>
-                <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-                  <h3 className="mb-1 text-base font-bold text-gray-900">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-gray-600">{step.description}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 5 -- Why Us (matches IV.tsx OpportunitiesSection)
-// ===========================================================================
-function WhyUsSection() {
-  return (
-    <Section className="bg-white">
-      <Reveal>
-        <h2 className="mb-2 text-3xl font-bold text-audit-dark sm:text-4xl">
-          Why Denver Trusts Us
-        </h2>
-        <p className="mb-10 text-sm text-gray-500">
-          Six reasons patients and providers choose U.S. Mobile Labs.
-        </p>
-      </Reveal>
-
-      <div className="space-y-4">
-        {DIFFERENTIATORS.map((item, i) => (
-          <Reveal key={i} delay={i * 80}>
-            <div className="flex gap-5 rounded-xl border border-gray-200 bg-gray-50 p-5 transition-shadow hover:shadow-md">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-audit-medics-dark to-audit-iv-dark text-sm font-bold text-white">
-                {i + 1}
-              </div>
-              <div>
-                <h3 className="mb-1 text-base font-bold text-gray-900">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-gray-600">{item.description}</p>
-              </div>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 6 -- Pricing (dark section)
-// ===========================================================================
-function PricingSection() {
-  return (
-    <Section className="bg-audit-dark" id="pricing">
-      <Reveal>
-        <h2 className="mb-2 text-3xl font-bold text-white sm:text-4xl">
-          Transparent Pricing
-        </h2>
-        <p className="mb-10 text-sm text-gray-400">
-          Flat-rate mobile draw fee. Lab processing billed separately through your insurance.
-        </p>
-      </Reveal>
-
-      <div className="grid gap-6 md:grid-cols-3">
-        {PRICING_TIERS.map((tier, i) => (
-          <Reveal key={i} animation="scale-in" delay={i * 100}>
-            <div
-              className={`flex h-full flex-col rounded-xl border p-6 ${
-                tier.highlighted
-                  ? 'border-labs-accent/50 bg-white/10 ring-2 ring-labs-accent'
-                  : 'border-white/10 bg-white/5'
-              }`}
-            >
-              {tier.highlighted && (
-                <span className="mb-3 inline-block self-start rounded-full bg-labs-accent px-3 py-0.5 text-xs font-semibold text-white">
-                  Most Popular
-                </span>
-              )}
-              <h3 className="text-lg font-bold text-white">{tier.name}</h3>
-              <p className="mb-4 text-xs text-gray-400">{tier.tagline}</p>
-              <p className="mb-5 text-3xl font-bold text-white">
-                ${tier.price}
-              </p>
-              <ul className="mt-auto space-y-2" role="list">
-                {tier.features.map((feature, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm text-gray-300">
-                    <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv/60" aria-hidden="true" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-
-      {/* Corporate callout */}
-      <Reveal delay={400}>
-        <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5 text-center">
-          <p className="text-sm text-gray-300">
-            <span className="font-semibold text-white">Corporate & group pricing available.</span>{' '}
-            On-site draws for 10+ employees start at $79 per person.{' '}
-            <a href="#contact" className="text-labs-accent-light underline underline-offset-2 hover:text-labs-accent">
-              Contact us
-            </a>
-          </p>
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 7 -- Service Areas
-// ===========================================================================
-function ServiceAreasSection() {
-  return (
-    <Section className="bg-white">
-      <Reveal>
-        <h2 className="mb-2 text-3xl font-bold text-audit-dark sm:text-4xl">
-          Serving Greater Denver
-        </h2>
-        <p className="mb-10 text-sm text-gray-500">
-          From Boulder to Castle Rock, Lakewood to Aurora -- we cover the entire metro.
-        </p>
-      </Reveal>
-
-      <Reveal delay={100}>
-        <div className="flex flex-wrap gap-3 justify-center">
-          {CITIES.map((city) => (
-            <span
-              key={city}
-              className="rounded-full border border-audit-iv/20 bg-audit-cream px-4 py-2 text-sm font-medium text-audit-navy transition-colors hover:bg-audit-iv hover:text-white"
-            >
-              {city}
-            </span>
-          ))}
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 8 -- Testimonials
-// ===========================================================================
-function TestimonialsSection() {
-  return (
-    <Section className="bg-audit-cream">
-      <Reveal>
-        <h2 className="mb-10 text-3xl font-bold text-audit-dark sm:text-4xl">
-          What Patients Say
-        </h2>
-      </Reveal>
-
-      <div className="grid gap-6 md:grid-cols-3">
-        {TESTIMONIALS.map((t, i) => (
-          <Reveal key={i} animation="scale-in" delay={i * 100}>
-            <div className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              {/* Stars */}
-              <div className="mb-4 flex gap-0.5" aria-label="5 out of 5 stars">
-                <StarIcon />
-                <StarIcon />
-                <StarIcon />
-                <StarIcon />
-                <StarIcon />
-              </div>
-              <p className="mb-4 flex-1 text-sm leading-relaxed text-gray-600 italic">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div>
-                <p className="text-sm font-bold text-gray-900">{t.name}</p>
-                <p className="text-xs text-gray-500">{t.location}</p>
-              </div>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 9 -- FAQ (matches IV.tsx accordion)
-// ===========================================================================
-function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  return (
-    <Section className="bg-gray-50">
-      <Reveal>
-        <h2 className="mb-10 text-3xl font-bold text-audit-dark sm:text-4xl">
-          Common Questions
-        </h2>
-      </Reveal>
-
-      <Reveal delay={100}>
-        <div className="mx-auto max-w-3xl overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-2 shadow-sm">
-          {FAQ_ITEMS.map((item, i) => (
-            <FAQRow
-              key={i}
-              question={item.question}
-              answer={item.answer}
-              isOpen={openIndex === i}
-              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
-            />
-          ))}
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-// ===========================================================================
-// Section 10a -- CTA
-// ===========================================================================
-function CTASection() {
-  return (
-    <section className="bg-gradient-to-r from-audit-medics-dark to-audit-iv-dark px-6 py-20 text-center md:py-28">
-      <div className="mx-auto max-w-6xl">
-        <Reveal>
-          <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
-            Ready to Skip the Lab?
-          </h2>
-          <p className="mb-8 text-lg text-white/80">
-            Book a mobile blood draw in under 60 seconds.
-          </p>
-          <a
-            href="#pricing"
-            className="inline-block rounded-full bg-labs-accent px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110"
-          >
-            Book Your Draw
-          </a>
-          <p className="mt-6 text-sm text-white/60">
-            Or call us: (720) 730-4998
-          </p>
         </Reveal>
       </div>
     </section>
@@ -807,22 +365,444 @@ function CTASection() {
 }
 
 // ===========================================================================
-// Section 10b -- Footer
+// Dark Section (full-width dark bg, two columns, teal checkmarks)
+// ===========================================================================
+function DarkSection() {
+  return (
+    <section className="bg-audit-dark px-6 py-16">
+      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2">
+        {/* Left -- heading and body */}
+        <Reveal>
+          <div>
+            <h2 className="font-opensans text-[30.5px] font-bold leading-snug text-white">
+              Professional Mobile Lab Draws Designed for Your Convenience
+            </h2>
+            <p className="mt-6 font-opensans text-[17.6px] leading-relaxed text-white/70">
+              Whether you need routine bloodwork, fasting panels, or specialty collections, our team handles it all. We bring the lab to your door so you can focus on what matters -- your health.
+            </p>
+          </div>
+        </Reveal>
+
+        {/* Right -- teal checkmark bullets */}
+        <Reveal delay={150}>
+          <div className="space-y-5">
+            <div className="flex items-start gap-4">
+              <TealCheck />
+              <p className="font-opensans text-[17.6px] leading-relaxed text-white">
+                Skip the waiting room with blood draws at your door
+              </p>
+            </div>
+            <div className="flex items-start gap-4">
+              <TealCheck />
+              <p className="font-opensans text-[17.6px] leading-relaxed text-white">
+                Licensed phlebotomists collect specimens in under 10 minutes
+              </p>
+            </div>
+            <div className="flex items-start gap-4">
+              <TealCheck />
+              <p className="font-opensans text-[17.6px] leading-relaxed text-white">
+                All major labs accepted -- Quest, Labcorp, Sonic, and more
+              </p>
+            </div>
+            <div className="flex items-start gap-4">
+              <TealCheck />
+              <p className="font-opensans text-[17.6px] leading-relaxed text-white">
+                Same-day scheduling with early morning and evening availability
+              </p>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ===========================================================================
+// How It Works (light blue bg, 3 white cards)
+// ===========================================================================
+function HowItWorksSection() {
+  return (
+    <section id="how-it-works" className="bg-iv-light px-6 py-16">
+      <div className="mx-auto max-w-6xl">
+        <Reveal>
+          <h2 className="mb-12 text-center font-opensans text-[30.5px] font-bold text-audit-navy">
+            How Mobile Lab Draws Work
+          </h2>
+        </Reveal>
+
+        <div className="grid gap-8 md:grid-cols-3">
+          <Reveal delay={0}>
+            <div className="rounded-[10px] border border-iv-border bg-white p-6 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-audit-iv/10">
+                <svg className="h-7 w-7 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+              </div>
+              <h3 className="mb-2 font-opensans text-lg font-bold text-audit-navy">Book Your Appointment</h3>
+              <p className="font-opensans text-[15px] leading-relaxed text-[#081E2B]/70">
+                Schedule online or by phone. Choose your date, time, and location. Same-day appointments often available.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <div className="rounded-[10px] border border-iv-border bg-white p-6 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-audit-iv/10">
+                <svg className="h-7 w-7 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                </svg>
+              </div>
+              <h3 className="mb-2 font-opensans text-lg font-bold text-audit-navy">We Come to You</h3>
+              <p className="font-opensans text-[15px] leading-relaxed text-[#081E2B]/70">
+                A licensed phlebotomist arrives at your home, office, or facility with all supplies and equipment needed.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <div className="rounded-[10px] border border-iv-border bg-white p-6 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-audit-iv/10">
+                <svg className="h-7 w-7 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                </svg>
+              </div>
+              <h3 className="mb-2 font-opensans text-lg font-bold text-audit-navy">Fast Results</h3>
+              <p className="font-opensans text-[15px] leading-relaxed text-[#081E2B]/70">
+                Specimens are couriered to your lab the same day. Results typically delivered to your provider within 24-48 hours.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ===========================================================================
+// Service Cards (dark navy cards, matching IV drip card style)
+// ===========================================================================
+function ServiceCardsSection() {
+  return (
+    <section id="pricing" className="bg-white px-6 py-16">
+      <div className="mx-auto max-w-6xl">
+        <Reveal>
+          <h2 className="mb-12 text-center font-opensans text-[30.5px] font-bold text-audit-navy">
+            Our Mobile Lab Draw Services
+          </h2>
+        </Reveal>
+
+        <div className="grid gap-8 md:grid-cols-3">
+          {/* Card 1: Standard Draw */}
+          <Reveal delay={0}>
+            <div className="relative flex h-full flex-col overflow-hidden rounded-[10px] bg-audit-dark p-6 text-center text-white">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
+                <svg className="h-8 w-8 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                </svg>
+              </div>
+              <h3 className="mb-1 font-opensans text-xl font-bold text-white">Standard Draw</h3>
+              <p className="mb-2 font-opensans text-2xl font-bold text-audit-iv">$99</p>
+              <p className="mb-6 flex-1 font-opensans text-[15px] leading-relaxed text-white/70">
+                Routine labs, CBC, CMP, lipid panels. Single patient, single lab order with same-day delivery.
+              </p>
+              <a
+                href="#pricing"
+                className="mt-auto rounded-[10px] bg-audit-iv px-4 py-2 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                VIEW DETAILS
+              </a>
+              {/* Teal glow accent at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-audit-iv" aria-hidden="true" />
+            </div>
+          </Reveal>
+
+          {/* Card 2: Comprehensive Panel */}
+          <Reveal delay={100}>
+            <div className="relative flex h-full flex-col overflow-hidden rounded-[10px] bg-audit-dark p-6 text-center text-white">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
+                <svg className="h-8 w-8 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                </svg>
+              </div>
+              <h3 className="mb-1 font-opensans text-xl font-bold text-white">Comprehensive Panel</h3>
+              <p className="mb-2 font-opensans text-2xl font-bold text-audit-iv">$149</p>
+              <p className="mb-6 flex-1 font-opensans text-[15px] leading-relaxed text-white/70">
+                Multiple tests, priority scheduling. Up to 3 lab orders with fasting-friendly early morning slots.
+              </p>
+              <a
+                href="#pricing"
+                className="mt-auto rounded-[10px] bg-audit-iv px-4 py-2 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                VIEW DETAILS
+              </a>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-audit-iv" aria-hidden="true" />
+            </div>
+          </Reveal>
+
+          {/* Card 3: Executive Screening */}
+          <Reveal delay={200}>
+            <div className="relative flex h-full flex-col overflow-hidden rounded-[10px] bg-audit-dark p-6 text-center text-white">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
+                <svg className="h-8 w-8 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                </svg>
+              </div>
+              <h3 className="mb-1 font-opensans text-xl font-bold text-white">Executive Screening</h3>
+              <p className="mb-2 font-opensans text-2xl font-bold text-audit-iv">$199</p>
+              <p className="mb-6 flex-1 font-opensans text-[15px] leading-relaxed text-white/70">
+                Full workup, specialty protocols. Unlimited lab orders with extended appointment time and dedicated coordinator.
+              </p>
+              <a
+                href="#pricing"
+                className="mt-auto rounded-[10px] bg-audit-iv px-4 py-2 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                VIEW DETAILS
+              </a>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-audit-iv" aria-hidden="true" />
+            </div>
+          </Reveal>
+        </div>
+
+        {/* View All Services button */}
+        <Reveal delay={300}>
+          <div className="mt-10 text-center">
+            <a
+              href="#services"
+              className="inline-block rounded-[10px] bg-audit-iv px-6 py-3 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              VIEW ALL SERVICES
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ===========================================================================
+// Phlebotomy Services (text + image layout, matching "Our Wellness Services")
+// ===========================================================================
+function PhlebotomyServicesSection() {
+  return (
+    <section id="services" className="bg-white px-6 py-16">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+        {/* Left -- text content */}
+        <Reveal>
+          <div>
+            <h2 className="font-opensans text-[30.5px] font-bold text-audit-navy">
+              Our Phlebotomy Services
+            </h2>
+            <p className="mt-4 font-opensans text-[17.6px] leading-relaxed text-[#081E2B]">
+              U.S. Mobile Labs provides comprehensive mobile phlebotomy for individuals, families, physician practices, and businesses across the Denver metro area. Every draw is performed by a nationally certified, licensed phlebotomist.
+            </p>
+            <ul className="mt-6 space-y-3" role="list">
+              <li className="flex items-start gap-3">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv" aria-hidden="true" />
+                <span className="font-opensans text-[17.6px] text-[#081E2B]">Mobile Blood Draws (routine and specialty)</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv" aria-hidden="true" />
+                <span className="font-opensans text-[17.6px] text-[#081E2B]">DOT and Non-DOT Drug Testing</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv" aria-hidden="true" />
+                <span className="font-opensans text-[17.6px] text-[#081E2B]">Corporate Wellness and Biometric Screenings</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv" aria-hidden="true" />
+                <span className="font-opensans text-[17.6px] text-[#081E2B]">Genetic Testing Kit Collection</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv" aria-hidden="true" />
+                <span className="font-opensans text-[17.6px] text-[#081E2B]">Pediatric Blood Draws</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-audit-iv" aria-hidden="true" />
+                <span className="font-opensans text-[17.6px] text-[#081E2B]">Timed and Fasting Specimen Collection</span>
+              </li>
+            </ul>
+          </div>
+        </Reveal>
+
+        {/* Right -- teal-bordered circle placeholder */}
+        <Reveal delay={150}>
+          <div className="flex items-center justify-center">
+            <div className="flex h-64 w-64 items-center justify-center rounded-full border-4 border-audit-iv bg-iv-light">
+              <svg className="h-20 w-20 text-audit-iv" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+              </svg>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ===========================================================================
+// FAQ Section (two columns -- accordion left, CTA card right)
+// ===========================================================================
+function FAQSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section id="faq" className="bg-white px-6 py-16">
+      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[1.2fr_0.8fr]">
+        {/* Left -- FAQ accordion */}
+        <div>
+          <Reveal>
+            <h2 className="mb-8 font-opensans text-[30.5px] font-bold text-audit-navy">
+              Common Questions About Mobile Lab Draws
+            </h2>
+          </Reveal>
+          <Reveal delay={100}>
+            <div>
+              {FAQ_ITEMS.map((item, i) => (
+                <FAQRow
+                  key={i}
+                  question={item.question}
+                  answer={item.answer}
+                  isOpen={openIndex === i}
+                  onToggle={() => setOpenIndex(openIndex === i ? null : i)}
+                />
+              ))}
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Right -- CTA card */}
+        <Reveal delay={200}>
+          <div className="flex flex-col items-center justify-center rounded-[10px] bg-iv-light p-8 text-center">
+            <div className="mb-4 flex items-center gap-2">
+              <div className="h-5 w-1 rounded-sm bg-audit-iv" aria-hidden="true" />
+              <span className="font-opensans text-lg font-bold text-[#081E2B]">U.S. MOBILE LABS</span>
+            </div>
+            <p className="mb-6 font-opensans text-[17.6px] font-semibold text-audit-navy">
+              Not sure which service you need?
+            </p>
+            <p className="mb-6 font-opensans text-[15px] leading-relaxed text-[#081E2B]/70">
+              Our team can help you understand your lab order and find the right mobile draw package for your needs.
+            </p>
+            <a
+              href="#pricing"
+              className="rounded-[10px] bg-audit-navy px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              CONTACT US
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ===========================================================================
+// Footer (light blue bg, 4-column grid, dark bottom bar)
 // ===========================================================================
 function FooterSection() {
   return (
-    <footer className="bg-audit-navy px-6 py-16 text-center">
-      <p className="text-lg font-semibold text-white">U.S. Mobile Labs</p>
-      <p className="mt-2 text-sm text-gray-300">
-        A U.S. Mobile IV Company
-      </p>
-      <div className="mx-auto mt-6 max-w-sm space-y-1 text-xs text-gray-400">
-        <p>(720) 730-4998</p>
-        <p>info@usmobilelabs.com</p>
-        <p>Mon - Sat, 7am - 7pm</p>
+    <footer>
+      {/* Main footer */}
+      <div className="bg-iv-light px-6 py-12" id="areas">
+        <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-4">
+          {/* Col 1: Logo + tagline + HSA badge */}
+          <div>
+            <div className="mb-3 flex items-center gap-2">
+              <div className="h-5 w-1 rounded-sm bg-audit-iv" aria-hidden="true" />
+              <span className="font-opensans text-lg font-bold text-[#081E2B]">U.S. MOBILE LABS</span>
+            </div>
+            <p className="mb-4 font-opensans text-[15px] font-semibold leading-relaxed text-[#081E2B]">
+              Professional mobile phlebotomy services for the Denver metro area. Licensed, insured, and HIPAA compliant.
+            </p>
+            <span className="inline-flex items-center gap-2 rounded-[10px] bg-audit-dark px-4 py-2 font-montserrat text-sm font-bold text-white">
+              <svg className="h-4 w-4 text-audit-iv" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              HSA ACCEPTED
+            </span>
+          </div>
+
+          {/* Col 2: Services */}
+          <div>
+            <h4 className="mb-3 font-opensans text-[15px] font-bold text-[#081E2B]">Services</h4>
+            <ul className="space-y-2 font-opensans text-[15px] text-[#081E2B]/70" role="list">
+              <li><a href="#services" className="transition-colors hover:text-audit-navy">Mobile Blood Draws</a></li>
+              <li><a href="#services" className="transition-colors hover:text-audit-navy">Specialty Testing</a></li>
+              <li><a href="#services" className="transition-colors hover:text-audit-navy">Corporate Wellness</a></li>
+              <li><a href="#services" className="transition-colors hover:text-audit-navy">Drug Testing</a></li>
+            </ul>
+          </div>
+
+          {/* Col 3: Quick Links */}
+          <div>
+            <h4 className="mb-3 font-opensans text-[15px] font-bold text-[#081E2B]">Quick Links</h4>
+            <ul className="space-y-2 font-opensans text-[15px] text-[#081E2B]/70" role="list">
+              <li><a href="#" className="transition-colors hover:text-audit-navy">About Us</a></li>
+              <li><a href="#" className="transition-colors hover:text-audit-navy">Blog</a></li>
+              <li><a href="#pricing" className="transition-colors hover:text-audit-navy">Book Online</a></li>
+              <li><a href="#areas" className="transition-colors hover:text-audit-navy">Service Areas</a></li>
+              <li><a href="#faq" className="transition-colors hover:text-audit-navy">Contact</a></li>
+            </ul>
+          </div>
+
+          {/* Col 4: Contact */}
+          <div>
+            <h4 className="mb-3 font-opensans text-[15px] font-bold text-[#081E2B]">Contact</h4>
+            <ul className="space-y-2 font-opensans text-[15px] text-[#081E2B]/70" role="list">
+              <li className="flex items-center gap-2">
+                <svg className="h-4 w-4 shrink-0 text-audit-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+                (720) 508-1998
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="h-4 w-4 shrink-0 text-audit-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+                Colorado, USA
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="h-4 w-4 shrink-0 text-audit-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                7AM - 7PM Mon-Sat
+              </li>
+            </ul>
+            {/* Social placeholder icons */}
+            <div className="mt-4 flex gap-3">
+              <a href="#" className="flex h-8 w-8 items-center justify-center rounded-full bg-audit-navy/10 text-audit-navy transition-colors hover:bg-audit-navy hover:text-white" aria-label="Facebook">
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
+              </a>
+              <a href="#" className="flex h-8 w-8 items-center justify-center rounded-full bg-audit-navy/10 text-audit-navy transition-colors hover:bg-audit-navy hover:text-white" aria-label="Instagram">
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>
+              </a>
+              <a href="#" className="flex h-8 w-8 items-center justify-center rounded-full bg-audit-navy/10 text-audit-navy transition-colors hover:bg-audit-navy hover:text-white" aria-label="Google">
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      <p className="mt-8 text-sm text-gray-300">Website concept by Matt Cohen</p>
-      <p className="mt-2 text-xs text-gray-400">atmix.org</p>
+
+      {/* Dark bottom bar */}
+      <div className="bg-gradient-to-r from-audit-navy to-audit-dark px-6 py-4">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 md:flex-row md:justify-between">
+          <p className="font-opensans text-sm text-white/70">
+            Copyright 2026 USMM LLC
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 font-opensans text-sm text-white/70">
+            <a href="#" className="transition-colors hover:text-white">Privacy Policy</a>
+            <a href="#" className="transition-colors hover:text-white">Disclaimer</a>
+            <a href="#" className="transition-colors hover:text-white">Terms of Use</a>
+          </div>
+        </div>
+        <div className="mx-auto mt-3 max-w-6xl">
+          <p className="text-center font-opensans text-xs italic text-white/40">
+            The information provided on this website is for general informational purposes only and does not constitute medical advice. Mobile phlebotomy services require a valid physician order. U.S. Mobile Labs does not diagnose, treat, or interpret lab results. Always consult your healthcare provider regarding medical decisions.
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }
