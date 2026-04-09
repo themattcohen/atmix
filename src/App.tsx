@@ -3,10 +3,10 @@ import Brutalist from './pages/Brutalist';
 import Walkies from './pages/Walkies';
 import WorkingTogether from './pages/WorkingTogether';
 import Projects from './pages/Projects';
-import IV from './pages/IV';
-import USMobileLabs from './pages/USMobileLabs';
-import USMobileLabsV2 from './pages/USMobileLabsV2';
-import USMobileLabsV3 from './pages/USMobileLabsV3';
+import IV from '../usmiv/mockups/IV';
+import USMobileLabs from '../usmiv/mockups/USMobileLabs';
+import USMobileLabsV2 from '../usmiv/mockups/USMobileLabsV2';
+import USMobileLabsV3 from '../usmiv/mockups/USMobileLabsV3';
 
 function App() {
   return (
