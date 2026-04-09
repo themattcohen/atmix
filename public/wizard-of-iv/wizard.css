@@ -55,6 +55,7 @@
   --tw-color-navy-light:    #EAF0F5;
   --tw-color-dark-text:     #081E2B;
   --tw-color-muted:         #5A7384;
+  --tw-color-text-muted:    #5A7384;
   --tw-color-muted-light:   #8BA3B3;
   --tw-color-surface:       #FFFFFF;
   --tw-color-bg-page:       #F4F7F9;
@@ -396,29 +397,30 @@
 }
 
 /* Selected state — JS uses .tw-option--selected and aria-checked="true" */
+/* Bordered/tinted approach: dark text on light background = 8.3:1 (WCAG AA+) */
 .tw-option--selected,
 .tw-option[aria-checked="true"] {
-  border-color: var(--tw-color-teal-brand);
-  background-color: var(--tw-color-teal-brand);
-  box-shadow: 0 2px 10px rgba(68, 183, 188, 0.25);
+  border: 2.5px solid #2A8A8F;
+  background-color: rgba(42, 138, 143, 0.06);
+  box-shadow: 0 0 0 3px rgba(42, 138, 143, 0.12), 0 2px 10px rgba(42, 138, 143, 0.1);
   transform: translateY(0);
 }
 
-/* Label colors when selected */
+/* Label colors when selected — keep dark navy (8.3:1 on the light tint) */
 .tw-option--selected .tw-option-label,
 .tw-option[aria-checked="true"] .tw-option-label {
-  color: var(--tw-color-surface);
+  color: var(--tw-color-navy);
 }
 
 .tw-option--selected .tw-option-sublabel,
 .tw-option[aria-checked="true"] .tw-option-sublabel {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--tw-color-muted);
 }
 
 /* Icon background when selected */
 .tw-option--selected .tw-option-icon,
 .tw-option[aria-checked="true"] .tw-option-icon {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #2A8A8F;
   color: var(--tw-color-surface);
 }
 
@@ -484,6 +486,34 @@
   line-height: 1.4;
   display: block;
   transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+/* Checkmark indicator — JS injects this element into each option card */
+.tw-option-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--tw-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.15s ease;
+  margin-left: auto;
+}
+
+.tw-option-check svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+
+.tw-option--selected .tw-option-check,
+.tw-option[aria-checked="true"] .tw-option-check {
+  border-color: #2A8A8F;
+  background-color: #2A8A8F;
+  color: white;
 }
 
 
@@ -678,7 +708,7 @@
   font-family: var(--tw-font-body);
   font-size: var(--tw-font-size-xs);
   font-weight: 600;
-  color: var(--tw-color-teal-brand);
+  color: #A8E0E3;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin: 0 0 var(--tw-space-2) 0;
@@ -706,7 +736,7 @@
   font-family: var(--tw-font-heading);
   font-size: var(--tw-font-size-xl);
   font-weight: 700;
-  color: var(--tw-color-teal-brand);
+  color: #A8E0E3;
   line-height: 1;
 }
 
@@ -1345,20 +1375,687 @@
   }
 }
 
-/* Spinner */
-@keyframes tw-spin {
-  to { transform: rotate(360deg); }
+
+/* ─────────────────────────────────────────────
+   23. Multi-Result Header
+   JS classes: .tw-multi-header, .tw-multi-title,
+               .tw-multi-subtitle
+────────────────────────────────────────────── */
+
+.tw-multi-header {
+  padding: var(--tw-space-6) var(--tw-modal-padding-x) var(--tw-space-4);
+  padding-right: calc(var(--tw-modal-padding-x) + 44px);
 }
 
-/* Pulsing dot */
-@keyframes tw-pulse-dot {
-  0%, 80%, 100% {
-    opacity: 0.25;
-    transform: scale(0.85);
+.tw-multi-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: 700;
+  color: var(--tw-color-navy);
+  line-height: 1.2;
+  margin: 0 0 var(--tw-space-2) 0;
+  letter-spacing: -0.01em;
+}
+
+.tw-multi-subtitle {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+/* ─────────────────────────────────────────────
+   24. Recommendation Cards
+   JS classes: .tw-rec-cards, .tw-rec-card,
+               .tw-rec-rank, .tw-rec-rank--top,
+               .tw-rec-name, .tw-rec-price,
+               .tw-rec-addresses, .tw-rec-address-tag,
+               .tw-rec-why, .tw-rec-actions
+────────────────────────────────────────────── */
+
+.tw-rec-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-4);
+  padding: 0 var(--tw-modal-padding-x) var(--tw-space-5);
+}
+
+.tw-rec-card {
+  background-color: var(--tw-color-surface);
+  border: 1.5px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-lg);
+  padding: var(--tw-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+
+  transition:
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-rec-card:hover {
+  border-color: var(--tw-color-teal-mid);
+  box-shadow: var(--tw-shadow-hover);
+}
+
+/* Rank badge — small 24px circle */
+.tw-rec-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 700;
+  line-height: 1;
+
+  /* Default (#2, #3): light gray with navy text */
+  background-color: var(--tw-color-bg-page);
+  color: var(--tw-color-navy);
+  border: 1px solid var(--tw-color-border);
+}
+
+/* Top rank (#1) override */
+.tw-rec-rank--top {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  border-color: var(--tw-color-teal-wcag);
+}
+
+.tw-rec-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-3);
+}
+
+.tw-rec-card-header-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-1);
+}
+
+.tw-rec-name {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-md);
+  font-weight: 600;
+  color: var(--tw-color-navy);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.tw-rec-price {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-muted);
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* "Addresses:" row with symptom pills */
+.tw-rec-addresses {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tw-space-2);
+}
+
+.tw-rec-addresses-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 600;
+  color: var(--tw-color-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Symptom pills — same visual style as .tw-result-bestfor-tag */
+.tw-rec-address-tag {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--tw-font-body);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--tw-color-teal-wcag);
+  background-color: rgba(42, 138, 143, 0.08);
+  border: 1px solid rgba(42, 138, 143, 0.2);
+  border-radius: var(--tw-radius-full);
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+/* Explanation text */
+.tw-rec-why {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--tw-color-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Button row at bottom of card */
+.tw-rec-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-3);
+  padding-top: var(--tw-space-1);
+  flex-wrap: wrap;
+}
+
+/* "Add to Session" pill button — outline teal, fills on hover */
+.tw-btn-add-session {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-5);
+  min-height: 38px;
+
+  background-color: transparent;
+  color: var(--tw-color-teal-wcag);
+  border: 1.5px solid var(--tw-color-teal-wcag);
+  border-radius: var(--tw-radius-full);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 600;
+  line-height: 1;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-btn-add-session:hover {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  box-shadow: var(--tw-shadow-card);
+}
+
+.tw-btn-add-session:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* "Added" confirmed state */
+.tw-btn-added {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-5);
+  min-height: 38px;
+
+  background-color: rgba(39, 174, 96, 0.08);
+  color: #1E7E3E;
+  border: 1.5px solid rgba(39, 174, 96, 0.4);
+  border-radius: var(--tw-radius-full);
+  white-space: nowrap;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 600;
+  line-height: 1;
+
+  cursor: default;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* "Details" text-link button */
+.tw-btn-details {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  padding: var(--tw-space-2) 0;
+  min-height: 38px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 500;
+  color: var(--tw-color-navy);
+  line-height: 1;
+  white-space: nowrap;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-btn-details:hover {
+  text-decoration: underline;
+  color: var(--tw-color-navy-dark);
+}
+
+.tw-btn-details:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+
+/* ─────────────────────────────────────────────
+   25. Add-On Suggestions
+   JS classes: .tw-addon-section, .tw-addon-section-title,
+               .tw-addon-chips, .tw-addon-chip,
+               .tw-addon-chip--added, .tw-promo-notice
+────────────────────────────────────────────── */
+
+.tw-addon-section {
+  padding: var(--tw-space-4) var(--tw-modal-padding-x) var(--tw-space-5);
+  border-top: 1px solid var(--tw-color-border);
+}
+
+.tw-addon-section-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 700;
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--tw-space-3) 0;
+}
+
+.tw-addon-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-2);
+  margin-bottom: var(--tw-space-3);
+}
+
+/* Individual clickable dashed-border pill */
+.tw-addon-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-4);
+  min-height: 36px;
+
+  background-color: transparent;
+  color: var(--tw-color-teal-wcag);
+  border: 1.5px dashed var(--tw-color-teal-wcag);
+  border-radius: var(--tw-radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 500;
+  line-height: 1;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    border-style var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-addon-chip:hover {
+  background-color: var(--tw-color-teal-light);
+  border-style: solid;
+}
+
+.tw-addon-chip:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* Filled/added state */
+.tw-addon-chip--added {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  border-color: var(--tw-color-teal-wcag);
+  border-style: solid;
+}
+
+.tw-addon-chip--added:hover {
+  background-color: var(--tw-color-navy);
+  border-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+}
+
+/* Amber promotional notice */
+.tw-promo-notice {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 600;
+  color: #B87516;
+  line-height: 1.4;
+  margin: 0;
+  padding: var(--tw-space-1) 0;
+}
+
+
+/* ─────────────────────────────────────────────
+   26. Session Plan (micro-cart)
+   JS classes: .tw-session-plan, .tw-session-empty,
+               .tw-session-items, .tw-session-item,
+               .tw-session-item-name, .tw-session-item-price,
+               .tw-session-item-remove, .tw-session-total,
+               .tw-session-book
+────────────────────────────────────────────── */
+
+.tw-session-plan {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: var(--tw-space-4) var(--tw-modal-padding-x) var(--tw-space-5);
+  background-color: rgba(42, 138, 143, 0.04);
+  border-top: 1px solid var(--tw-color-teal-mid);
+}
+
+.tw-session-plan-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 700;
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--tw-space-3) 0;
+}
+
+.tw-session-empty {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-muted);
+  text-align: center;
+  padding: var(--tw-space-3) 0;
+  margin: 0;
+}
+
+.tw-session-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-2);
+  margin-bottom: var(--tw-space-3);
+  list-style: none;
+  padding: 0;
+  margin-top: 0;
+}
+
+.tw-session-item {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-3);
+}
+
+.tw-session-item-name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-dark-text);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tw-session-item-price {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 500;
+  color: var(--tw-color-dark-text);
+  line-height: 1.3;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tw-session-item-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--tw-space-1);
+  min-height: 28px;
+  min-width: 28px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 500;
+  color: var(--tw-color-muted-light);
+  line-height: 1;
+  flex-shrink: 0;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-session-item-remove:hover {
+  color: #C0392B;
+}
+
+.tw-session-item-remove:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+/* Total row */
+.tw-session-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--tw-space-3);
+  margin-bottom: var(--tw-space-4);
+  border-top: 1px solid var(--tw-color-border);
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: 700;
+  color: var(--tw-color-navy);
+  line-height: 1;
+}
+
+/* Full-width book CTA — same visual as .tw-btn-primary */
+.tw-session-book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-6);
+  min-height: 50px;
+
+  background-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-session-book:hover {
+  background-color: var(--tw-color-navy-dark);
+  border-color: var(--tw-color-navy-dark);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-session-book:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-session-book:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-session-book:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* ─────────────────────────────────────────────
+   27. Error Message
+   JS class: .tw-error-msg
+────────────────────────────────────────────── */
+
+.tw-error-msg {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 500;
+  color: #C0392B;
+  line-height: 1.4;
+  margin: var(--tw-space-2) 0 0;
+  padding: 0 var(--tw-modal-padding-x);
+
+  /* Hidden by default; JS toggles visibility */
+  display: none;
+}
+
+.tw-error-msg--visible {
+  display: block;
+}
+
+
+/* ─────────────────────────────────────────────
+   28. Interactive Add-On States (single-result)
+   Modifier classes for .tw-result-addon:
+   .tw-result-addon--interactive, .tw-result-addon--added
+   JS class: .tw-result-addon-status
+────────────────────────────────────────────── */
+
+.tw-result-addon--interactive {
+  cursor: pointer;
+}
+
+.tw-result-addon--interactive:hover {
+  border-color: var(--tw-color-teal-wcag);
+  background-color: var(--tw-color-teal-light);
+}
+
+.tw-result-addon--interactive:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* Added state — solid teal border with light teal bg */
+.tw-result-addon--added {
+  border-color: var(--tw-color-teal-wcag);
+  border-style: solid;
+  background-color: rgba(42, 138, 143, 0.06);
+}
+
+.tw-result-addon--added:hover {
+  background-color: rgba(42, 138, 143, 0.1);
+}
+
+/* Small helper text below the add-on label */
+.tw-result-addon-status {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 500;
+  color: var(--tw-color-muted);
+  line-height: 1.3;
+  margin: var(--tw-space-1) 0 0;
+  display: block;
+}
+
+.tw-result-addon--added .tw-result-addon-status {
+  color: var(--tw-color-teal-wcag);
+}
+
+
+/* ─────────────────────────────────────────────
+   29. Disabled Continue Button
+   Explicitly overrides specificity for disabled state
+────────────────────────────────────────────── */
+
+.tw-btn-continue[disabled],
+.tw-btn-continue:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+
+/* ─────────────────────────────────────────────
+   30. Responsive — New Components (<768px)
+────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* Multi-result header */
+  .tw-multi-title {
+    font-size: var(--tw-font-size-lg);
   }
-  40% {
-    opacity: 1;
-    transform: scale(1);
+
+  /* Recommendation cards */
+  .tw-rec-cards {
+    padding-left: var(--tw-modal-padding-x);
+    padding-right: var(--tw-modal-padding-x);
+  }
+
+  .tw-rec-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--tw-space-2);
+  }
+
+  .tw-btn-add-session,
+  .tw-btn-added {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Add-on section */
+  .tw-addon-section {
+    padding-left: var(--tw-modal-padding-x);
+    padding-right: var(--tw-modal-padding-x);
+  }
+
+  /* Session plan */
+  .tw-session-plan {
+    padding-left: var(--tw-modal-padding-x);
+    padding-right: var(--tw-modal-padding-x);
+    padding-bottom: var(--tw-space-6);
+  }
+
+  .tw-session-item-name {
+    font-size: var(--tw-font-size-xs);
   }
 }
 
@@ -1374,6 +2071,12 @@
   .tw-btn-continue,
   .tw-btn-primary,
   .tw-btn-secondary,
+  .tw-btn-add-session,
+  .tw-btn-added,
+  .tw-btn-details,
+  .tw-addon-chip,
+  .tw-rec-card,
+  .tw-session-book,
   .tw-progress-fill,
   .tw-result,
   .tw-step-exiting,
