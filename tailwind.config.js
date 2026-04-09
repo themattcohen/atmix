@@ -34,6 +34,11 @@ export default {
           dark: '#0A1F2E',
           charcoal: '#2D2D2D',
         },
+        labs: {
+          accent: '#C17B3A',
+          'accent-dark': '#A66830',
+          'accent-light': '#D4944F',
+        },
         audit: {
           medics: '#07b6b6',
           iv: '#44B7BC',
