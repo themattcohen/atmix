@@ -53,10 +53,13 @@
     config: null,
     isOpen: false,
     currentQuestionId: 'start',
+    currentView: 'question',  // 'question' | 'result' | 'multi-results'
     history: [],          // array of question IDs for back nav
     stepNumber: 0,        // total steps taken
     selectedOption: null, // for single-select
     selectedMulti: [],    // for multi-select (option indices)
+    multiResults: [],     // array of scored recommendation objects
+    sessionPlan: [],      // array of treatment IDs added to session
     source: 'button'
   };
 
@@ -123,10 +126,13 @@
 
     state.isOpen = true;
     state.currentQuestionId = 'start';
+    state.currentView = 'question';
     state.history = [];
     state.stepNumber = 0;
     state.selectedOption = null;
     state.selectedMulti = [];
+    state.multiResults = [];
+    state.sessionPlan = [];
     state.source = source || 'button';
 
     document.body.style.overflow = 'hidden';
@@ -340,6 +346,13 @@
     card.appendChild(iconWrap);
     card.appendChild(labelWrap);
 
+    // Checkmark indicator
+    var checkEl = document.createElement('span');
+    checkEl.className = 'tw-option-check';
+    checkEl.setAttribute('aria-hidden', 'true');
+    checkEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 10 8 14 16 6"/></svg>';
+    card.appendChild(checkEl);
+
     card.addEventListener('click', function () {
       handleOptionClick(idx, opt, type);
     });
@@ -375,8 +388,17 @@
       cont.className = 'tw-btn-continue';
       cont.textContent = 'Find My Treatment';
       cont.setAttribute('aria-label', 'Submit selections and see recommendation');
+      if (state.selectedMulti.length === 0) {
+        cont.setAttribute('disabled', 'disabled');
+      }
       cont.addEventListener('click', handleMultiContinue);
       nav.appendChild(cont);
+
+      var errMsg = document.createElement('span');
+      errMsg.className = 'tw-error-msg';
+      errMsg.setAttribute('aria-live', 'polite');
+      errMsg.setAttribute('role', 'alert');
+      nav.appendChild(errMsg);
     }
 
     return nav;
@@ -409,6 +431,16 @@
       card.classList.toggle('tw-option--selected', selected);
       card.setAttribute('aria-checked', selected ? 'true' : 'false');
     });
+
+    // Enable / disable continue button based on selection count
+    var contBtn = dom.contentArea.querySelector('.tw-btn-continue');
+    if (contBtn) {
+      if (state.selectedMulti.length > 0) {
+        contBtn.removeAttribute('disabled');
+      } else {
+        contBtn.setAttribute('disabled', 'disabled');
+      }
+    }
   }
 
   function handleSingleOption(idx, opt) {
@@ -433,33 +465,89 @@
     }
   }
 
-  function handleMultiContinue() {
-    if (state.selectedMulti.length === 0) { return; }
-
+  // ---------------------------------------------------------------------------
+  // Weighted symptom scoring — replaces tag-based logic
+  // ---------------------------------------------------------------------------
+  function scoreSymptoms() {
     var q = state.config.questions[state.currentQuestionId];
-    var tagMap = q.tagMapping || {};
-    var tagCounts = {};
+    var treatments = state.config.treatments;
+
+    // Accumulate scores and symptom tracking per treatment ID
+    var scores = {};          // treatmentId -> total score
+    var matching = {};        // treatmentId -> [symptom label, ...]
+    var addressed = {};       // treatmentId -> [addressedBy text, ...]
 
     state.selectedMulti.forEach(function (idx) {
       var opt = q.options[idx];
-      if (opt.tags) {
-        opt.tags.forEach(function (tag) {
-          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-        });
+      if (!opt.scores) { return; }
+
+      Object.keys(opt.scores).forEach(function (treatmentId) {
+        scores[treatmentId] = (scores[treatmentId] || 0) + opt.scores[treatmentId];
+
+        if (!matching[treatmentId]) { matching[treatmentId] = []; }
+        matching[treatmentId].push(opt.label);
+
+        if (!addressed[treatmentId]) { addressed[treatmentId] = []; }
+        if (opt.addressedBy && opt.addressedBy[treatmentId]) {
+          var text = opt.addressedBy[treatmentId];
+          if (addressed[treatmentId].indexOf(text) === -1) {
+            addressed[treatmentId].push(text);
+          }
+        }
+      });
+    });
+
+    // Build candidate list with category lookup
+    var candidates = Object.keys(scores).map(function (treatmentId) {
+      var t = treatments[treatmentId];
+      return {
+        treatmentId: treatmentId,
+        score: scores[treatmentId],
+        category: t ? t.category : 'iv',
+        matchingSymptoms: matching[treatmentId] || [],
+        addressedByTexts: addressed[treatmentId] || []
+      };
+    });
+
+    // Sort descending by score
+    candidates.sort(function (a, b) { return b.score - a.score; });
+
+    // Deduplicate: keep highest scorer per category
+    var seenCategories = {};
+    var deduped = [];
+    candidates.forEach(function (c) {
+      if (!seenCategories[c.category]) {
+        seenCategories[c.category] = true;
+        deduped.push(c);
       }
     });
 
-    // Find most frequent tag
-    var bestTag = null;
-    var bestCount = 0;
-    Object.keys(tagCounts).forEach(function (tag) {
-      if (tagCounts[tag] > bestCount) {
-        bestCount = tagCounts[tag];
-        bestTag = tag;
-      }
+    // Split by category bucket
+    var ivResults = deduped.filter(function (c) {
+      return c.category === 'iv' || c.category === 'nad';
+    });
+    var programResults = deduped.filter(function (c) {
+      return c.category === 'weightLoss';
+    });
+    var labResults = deduped.filter(function (c) {
+      return c.category === 'lab' || c.category === 'injection';
     });
 
-    var treatmentId = bestTag ? (tagMap[bestTag] || 'myers') : 'myers';
+    // Top 3 IV/NAD + all programs + all labs
+    var results = ivResults.slice(0, 3).concat(programResults).concat(labResults);
+
+    return results;
+  }
+
+  function handleMultiContinue() {
+    // Show error if nothing selected (button should be disabled, but guard anyway)
+    if (state.selectedMulti.length === 0) {
+      var errEl = dom.contentArea.querySelector('.tw-error-msg');
+      if (errEl) { errEl.textContent = 'Please select at least one symptom to continue.'; }
+      return;
+    }
+
+    var q = state.config.questions[state.currentQuestionId];
 
     // Collect selected labels for analytics
     var labels = state.selectedMulti.map(function (idx) {
@@ -474,12 +562,32 @@
     });
 
     state.stepNumber++;
-    showResult(treatmentId);
+    state.multiResults = scoreSymptoms();
+    state.currentView = 'multi-results';
+
+    // Progress to 100%
+    dom.progressFill.style.width = '100%';
+    dom.progressFill.setAttribute('aria-valuenow', 100);
+
+    showMultiResults();
   }
 
   function handleBack() {
+    // If on multi-results, go back to the symptoms question
+    if (state.currentView === 'multi-results') {
+      state.currentView = 'question';
+      state.multiResults = [];
+      state.sessionPlan = [];
+      state.stepNumber = Math.max(0, state.stepNumber - 1);
+      dom.progressFill.style.width = Math.min(Math.round(((state.stepNumber) / EXPECTED_MAX_STEPS) * 100), 90) + '%';
+      dom.progressFill.setAttribute('aria-valuenow', Math.min(Math.round(((state.stepNumber) / EXPECTED_MAX_STEPS) * 100), 90));
+      renderCurrentStep();
+      return;
+    }
+
     if (state.history.length === 0) { return; }
 
+    state.currentView = 'question';
     state.currentQuestionId = state.history.pop();
     state.stepNumber = Math.max(0, state.stepNumber - 1);
     state.selectedOption = null;
@@ -538,11 +646,14 @@
     var rec = resolveRecommendation(treatmentId);
     var t = rec.primary;
 
+    state.currentView = 'result';
+
     pushEvent({
       event: 'wizard_recommendation',
-      treatment_id: rec.primaryId,
-      treatment_name: t.name,
-      price: t.priceLabel || ('$' + t.price)
+      treatment_id: rec.isBundleResult ? treatmentId : rec.primaryId,
+      treatment_name: rec.isBundleResult ? rec.bundle.name : t.name,
+      price: t.priceLabel || ('$' + t.price),
+      is_bundle: rec.isBundleResult
     });
 
     // Progress to 100%
@@ -625,7 +736,7 @@
 
       var ingTitle = document.createElement('p');
       ingTitle.className = 'tw-result-section-title';
-      ingTitle.textContent = "What's inside";
+      ingTitle.textContent = (t.category === 'lab') ? "What's tested" : "What's inside";
       ingSection.appendChild(ingTitle);
 
       var ingList = document.createElement('ul');
@@ -678,25 +789,72 @@
 
     // --- Add-on / Bundle suggestion ---
     if (rec.addOn && !rec.isConsultation) {
-      var addOn = document.createElement('div');
-      addOn.className = 'tw-result-addon';
+      var isInteractive = rec.bundle && rec.bundle.addOnInteractive;
+      var addOnLabelText = rec.isBundleResult ? rec.bundle.addOnLabel : ('Pair with ' + rec.addOn.name + ' (+$' + rec.addOn.price + ')');
 
-      var addOnIcon = document.createElement('span');
-      addOnIcon.className = 'tw-result-addon-icon';
-      addOnIcon.setAttribute('aria-hidden', 'true');
-      addOnIcon.innerHTML = getIcon('sparkle');
+      if (isInteractive) {
+        var addOn = document.createElement('button');
+        addOn.type = 'button';
+        addOn.className = 'tw-result-addon tw-result-addon--interactive';
+        addOn.setAttribute('aria-pressed', 'false');
 
-      var addOnText = document.createElement('div');
-      addOnText.className = 'tw-result-addon-text';
+        var addOnIcon = document.createElement('span');
+        addOnIcon.className = 'tw-result-addon-icon';
+        addOnIcon.setAttribute('aria-hidden', 'true');
+        addOnIcon.innerHTML = getIcon('sparkle');
 
-      var addOnLabel = document.createElement('p');
-      addOnLabel.className = 'tw-result-addon-label';
-      addOnLabel.textContent = rec.isBundleResult ? rec.bundle.addOnLabel : ('Pair with ' + rec.addOn.name + ' (+$' + rec.addOn.price + ')');
+        var addOnText = document.createElement('div');
+        addOnText.className = 'tw-result-addon-text';
 
-      addOnText.appendChild(addOnLabel);
-      addOn.appendChild(addOnIcon);
-      addOn.appendChild(addOnText);
-      wrap.appendChild(addOn);
+        var addOnLabelEl = document.createElement('p');
+        addOnLabelEl.className = 'tw-result-addon-label';
+        addOnLabelEl.textContent = addOnLabelText;
+
+        var addOnStatus = document.createElement('span');
+        addOnStatus.className = 'tw-result-addon-status';
+        addOnStatus.setAttribute('aria-hidden', 'true');
+
+        addOnText.appendChild(addOnLabelEl);
+        addOnText.appendChild(addOnStatus);
+        addOn.appendChild(addOnIcon);
+        addOn.appendChild(addOnText);
+
+        addOn.addEventListener('click', function () {
+          var pressed = addOn.getAttribute('aria-pressed') === 'true';
+          var nowPressed = !pressed;
+          addOn.setAttribute('aria-pressed', nowPressed ? 'true' : 'false');
+          addOn.classList.toggle('tw-result-addon--added', nowPressed);
+          addOnStatus.textContent = nowPressed ? 'Added' : '';
+          pushEvent({
+            event: 'wizard_addon_toggled',
+            addon_id: rec.addOnId,
+            addon_name: rec.addOn.name,
+            added: nowPressed
+          });
+        });
+
+        wrap.appendChild(addOn);
+      } else {
+        var addOn = document.createElement('div');
+        addOn.className = 'tw-result-addon';
+
+        var addOnIcon = document.createElement('span');
+        addOnIcon.className = 'tw-result-addon-icon';
+        addOnIcon.setAttribute('aria-hidden', 'true');
+        addOnIcon.innerHTML = getIcon('sparkle');
+
+        var addOnText = document.createElement('div');
+        addOnText.className = 'tw-result-addon-text';
+
+        var addOnLabelEl = document.createElement('p');
+        addOnLabelEl.className = 'tw-result-addon-label';
+        addOnLabelEl.textContent = addOnLabelText;
+
+        addOnText.appendChild(addOnLabelEl);
+        addOn.appendChild(addOnIcon);
+        addOn.appendChild(addOnText);
+        wrap.appendChild(addOn);
+      }
     }
 
     // --- Note (e.g., "Requires initial bloodwork") ---
@@ -733,7 +891,7 @@
 
     // --- CTAs ---
     var ctas = document.createElement('div');
-    ctas.className = 'tw-result-ctas';
+    ctas.className = 'tw-result-ctas tw-result-ctas--horizontal';
 
     // Book button
     var bookBtn = document.createElement('a');
@@ -800,10 +958,13 @@
     restartBtn.addEventListener('click', function () {
       pushEvent({ event: 'wizard_restarted' });
       state.currentQuestionId = 'start';
+      state.currentView = 'question';
       state.history = [];
       state.stepNumber = 0;
       state.selectedOption = null;
       state.selectedMulti = [];
+      state.multiResults = [];
+      state.sessionPlan = [];
       dom.progressFill.style.width = '0%';
       dom.progressFill.setAttribute('aria-valuenow', 0);
       renderCurrentStep();
@@ -813,6 +974,493 @@
     wrap.appendChild(nav);
 
     return wrap;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Multi-result display — scored symptom recommendations
+  // ---------------------------------------------------------------------------
+  function showMultiResults() {
+    transitionStep(function () {
+      return renderMultiResults();
+    });
+  }
+
+  function renderMultiResults() {
+    var config = state.config;
+    var results = state.multiResults;
+    var selectedCount = state.selectedMulti.length;
+    // Resolve the question that produced these results to get option labels
+    var q = config.questions[state.currentQuestionId];
+
+    var wrap = document.createElement('div');
+    wrap.className = 'tw-result';
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'tw-multi-header';
+
+    var title = document.createElement('h2');
+    title.className = 'tw-multi-title tw-result-name';
+    title.textContent = 'Your matches';
+    header.appendChild(title);
+
+    var subtitle = document.createElement('p');
+    subtitle.className = 'tw-multi-subtitle tw-result-desc';
+    subtitle.textContent = 'Based on ' + selectedCount + ' symptom' + (selectedCount !== 1 ? 's' : '') + ' you selected';
+    header.appendChild(subtitle);
+
+    wrap.appendChild(header);
+
+    // Recommendation cards
+    var cardsSection = document.createElement('div');
+    cardsSection.className = 'tw-rec-cards';
+
+    results.forEach(function (rec, i) {
+      var card = renderRecommendationCard(rec, i + 1);
+      cardsSection.appendChild(card);
+    });
+
+    wrap.appendChild(cardsSection);
+
+    // Add-on suggestions (based on first / primary result)
+    if (results.length > 0) {
+      var addonSection = renderAddonSuggestions(results[0].treatmentId);
+      if (addonSection) {
+        wrap.appendChild(addonSection);
+      }
+    }
+
+    // Session plan (sticky)
+    var planSection = renderSessionPlan();
+    wrap.appendChild(planSection);
+
+    // Nav
+    var nav = document.createElement('div');
+    nav.className = 'tw-nav tw-nav--result';
+
+    var backBtn = document.createElement('button');
+    backBtn.type = 'button';
+    backBtn.className = 'tw-btn-back';
+    backBtn.textContent = 'Back';
+    backBtn.setAttribute('aria-label', 'Go back to symptoms question');
+    backBtn.addEventListener('click', handleBack);
+    nav.appendChild(backBtn);
+
+    var restartBtn = document.createElement('button');
+    restartBtn.type = 'button';
+    restartBtn.className = 'tw-btn-restart';
+    restartBtn.textContent = 'Start Over';
+    restartBtn.setAttribute('aria-label', 'Restart the wizard from the beginning');
+    restartBtn.addEventListener('click', function () {
+      pushEvent({ event: 'wizard_restarted' });
+      state.currentQuestionId = 'start';
+      state.currentView = 'question';
+      state.history = [];
+      state.stepNumber = 0;
+      state.selectedOption = null;
+      state.selectedMulti = [];
+      state.multiResults = [];
+      state.sessionPlan = [];
+      dom.progressFill.style.width = '0%';
+      dom.progressFill.setAttribute('aria-valuenow', 0);
+      renderCurrentStep();
+    });
+    nav.appendChild(restartBtn);
+
+    wrap.appendChild(nav);
+
+    return wrap;
+  }
+
+  function renderRecommendationCard(rec, rank) {
+    var config = state.config;
+    var t = config.treatments[rec.treatmentId];
+    if (!t) { return document.createElement('div'); }
+
+    var card = document.createElement('div');
+    card.className = 'tw-rec-card';
+    card.setAttribute('data-treatment-id', rec.treatmentId);
+
+    // Rank badge
+    var rankBadge = document.createElement('span');
+    rankBadge.className = 'tw-rec-rank';
+    rankBadge.setAttribute('aria-label', 'Match number ' + rank);
+    rankBadge.textContent = '#' + rank;
+    card.appendChild(rankBadge);
+
+    // Name
+    var name = document.createElement('p');
+    name.className = 'tw-rec-name';
+    name.textContent = t.name;
+    card.appendChild(name);
+
+    // Price
+    var price = document.createElement('p');
+    price.className = 'tw-rec-price';
+    price.textContent = t.priceLabel || ('$' + t.price);
+    card.appendChild(price);
+
+    // Addresses row
+    if (rec.matchingSymptoms && rec.matchingSymptoms.length) {
+      var addressesRow = document.createElement('div');
+      addressesRow.className = 'tw-rec-addresses';
+
+      var addressesLabel = document.createElement('span');
+      addressesLabel.className = 'tw-rec-addresses-label';
+      addressesLabel.textContent = 'Addresses:';
+      addressesRow.appendChild(addressesLabel);
+
+      var tagsWrap = document.createElement('div');
+      tagsWrap.className = 'tw-rec-address-tags';
+
+      rec.matchingSymptoms.forEach(function (symptom) {
+        var tag = document.createElement('span');
+        tag.className = 'tw-rec-address-tag';
+        tag.textContent = symptom;
+        tagsWrap.appendChild(tag);
+      });
+
+      addressesRow.appendChild(tagsWrap);
+      card.appendChild(addressesRow);
+    }
+
+    // Short explanation from addressedBy
+    if (rec.addressedByTexts && rec.addressedByTexts.length) {
+      var why = document.createElement('p');
+      why.className = 'tw-rec-why';
+      why.textContent = rec.addressedByTexts[0];
+      card.appendChild(why);
+    }
+
+    // Actions
+    var actions = document.createElement('div');
+    actions.className = 'tw-rec-actions';
+
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'tw-btn-add-session';
+    addBtn.setAttribute('data-treatment-id', rec.treatmentId);
+    addBtn.setAttribute('aria-label', 'Add ' + t.name + ' to session');
+
+    var isInSession = state.sessionPlan.indexOf(rec.treatmentId) !== -1;
+    if (isInSession) {
+      addBtn.classList.add('tw-btn-added');
+      addBtn.textContent = 'Added';
+    } else {
+      addBtn.textContent = '+ Add to Session';
+    }
+
+    addBtn.addEventListener('click', function () {
+      addToSession(rec.treatmentId);
+    });
+
+    actions.appendChild(addBtn);
+
+    if (t.pageUrl) {
+      var detailsBtn = document.createElement('a');
+      detailsBtn.className = 'tw-btn-details';
+      detailsBtn.href = t.pageUrl;
+      detailsBtn.textContent = 'Details';
+      detailsBtn.setAttribute('target', '_blank');
+      detailsBtn.setAttribute('rel', 'noopener noreferrer');
+      detailsBtn.addEventListener('click', function () {
+        pushEvent({
+          event: 'wizard_learn_more',
+          treatment_id: rec.treatmentId,
+          treatment_name: t.name
+        });
+      });
+      actions.appendChild(detailsBtn);
+    }
+
+    card.appendChild(actions);
+
+    return card;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Add-on suggestions section
+  // ---------------------------------------------------------------------------
+  function renderAddonSuggestions(primaryTreatmentId) {
+    var config = state.config;
+    var symptomsQ = config.questions && config.questions.symptoms;
+    if (!symptomsQ) { return null; }
+
+    var rules = symptomsQ.symptomRules;
+    if (!rules || !rules.addonSuggestions) { return null; }
+
+    var suggestions = rules.addonSuggestions[primaryTreatmentId];
+    if (!suggestions || !suggestions.length) { return null; }
+
+    var section = document.createElement('div');
+    section.className = 'tw-addon-chips';
+
+    var label = document.createElement('p');
+    label.className = 'tw-result-section-title';
+    label.textContent = 'Suggested add-ons';
+    section.appendChild(label);
+
+    // Promo notice
+    var promo = document.createElement('p');
+    promo.className = 'tw-promo-notice';
+    promo.textContent = 'Buy 3 injections, get 4th free';
+    section.appendChild(promo);
+
+    var chipsWrap = document.createElement('div');
+    chipsWrap.className = 'tw-addon-chips-list';
+
+    suggestions.forEach(function (addonId) {
+      var t = config.treatments[addonId];
+      if (!t) { return; }
+
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'tw-addon-chip';
+      chip.setAttribute('data-treatment-id', addonId);
+      chip.setAttribute('aria-label', 'Add ' + t.name + ' to session');
+
+      var chipName = document.createElement('span');
+      chipName.className = 'tw-addon-chip-name';
+      chipName.textContent = t.name;
+      chip.appendChild(chipName);
+
+      var chipPrice = document.createElement('span');
+      chipPrice.className = 'tw-addon-chip-price';
+      chipPrice.textContent = t.priceLabel || ('$' + t.price);
+      chip.appendChild(chipPrice);
+
+      var chipAdd = document.createElement('span');
+      chipAdd.className = 'tw-addon-chip-add';
+      chipAdd.setAttribute('aria-hidden', 'true');
+      chipAdd.textContent = '+';
+      chip.appendChild(chipAdd);
+
+      chip.addEventListener('click', function () {
+        addToSession(addonId);
+        // Update chip appearance
+        chip.classList.add('tw-addon-chip--added');
+        chipAdd.textContent = 'Added';
+      });
+
+      chipsWrap.appendChild(chip);
+    });
+
+    section.appendChild(chipsWrap);
+
+    return section;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Session plan — add, remove, render, book
+  // ---------------------------------------------------------------------------
+  function addToSession(treatmentId) {
+    var config = state.config;
+    var t = config.treatments[treatmentId];
+    if (!t) { return; }
+
+    var isInjection = t.category === 'injection';
+
+    if (!isInjection) {
+      // Only 1 IV/NAD/program primary — replace existing non-injection
+      var existingPrimaryIdx = -1;
+      state.sessionPlan.forEach(function (id, i) {
+        var existing = config.treatments[id];
+        if (existing && existing.category !== 'injection') {
+          existingPrimaryIdx = i;
+        }
+      });
+
+      if (existingPrimaryIdx !== -1) {
+        state.sessionPlan.splice(existingPrimaryIdx, 1);
+      }
+    } else {
+      // Max 3 injections
+      var injectionCount = 0;
+      state.sessionPlan.forEach(function (id) {
+        var existing = config.treatments[id];
+        if (existing && existing.category === 'injection') {
+          injectionCount++;
+        }
+      });
+      if (injectionCount >= 3) { return; }
+    }
+
+    // Don't add duplicate
+    if (state.sessionPlan.indexOf(treatmentId) === -1) {
+      state.sessionPlan.push(treatmentId);
+    }
+
+    pushEvent({
+      event: 'wizard_item_added',
+      treatment_id: treatmentId,
+      treatment_name: t.name,
+      session_size: state.sessionPlan.length
+    });
+
+    // Re-render just the session plan section
+    var existing = dom.contentArea.querySelector('.tw-session-plan');
+    if (existing) {
+      var fresh = renderSessionPlan();
+      existing.parentNode.replaceChild(fresh, existing);
+    }
+
+    // Update add buttons on rec cards
+    dom.contentArea.querySelectorAll('.tw-btn-add-session').forEach(function (btn) {
+      var btnId = btn.getAttribute('data-treatment-id');
+      var inPlan = state.sessionPlan.indexOf(btnId) !== -1;
+      btn.classList.toggle('tw-btn-added', inPlan);
+      btn.textContent = inPlan ? 'Added' : '+ Add to Session';
+    });
+  }
+
+  function removeFromSession(treatmentId) {
+    var idx = state.sessionPlan.indexOf(treatmentId);
+    if (idx !== -1) {
+      state.sessionPlan.splice(idx, 1);
+    }
+
+    // Re-render just the session plan section
+    var existing = dom.contentArea.querySelector('.tw-session-plan');
+    if (existing) {
+      var fresh = renderSessionPlan();
+      existing.parentNode.replaceChild(fresh, existing);
+    }
+
+    // Update add buttons on rec cards
+    dom.contentArea.querySelectorAll('.tw-btn-add-session').forEach(function (btn) {
+      var btnId = btn.getAttribute('data-treatment-id');
+      var inPlan = state.sessionPlan.indexOf(btnId) !== -1;
+      btn.classList.toggle('tw-btn-added', inPlan);
+      btn.textContent = inPlan ? 'Added' : '+ Add to Session';
+    });
+  }
+
+  function buildAcuityUrl() {
+    var config = state.config;
+    var meta = config.meta;
+    var base = meta.acuityBase || '';
+
+    // Find primary (first non-injection item)
+    var primaryId = null;
+    state.sessionPlan.forEach(function (id) {
+      if (primaryId) { return; }
+      var t = config.treatments[id];
+      if (t && t.category !== 'injection') {
+        primaryId = id;
+      }
+    });
+
+    if (!primaryId && state.sessionPlan.length > 0) {
+      primaryId = state.sessionPlan[0];
+    }
+
+    if (!primaryId) {
+      return base;
+    }
+
+    var primary = config.treatments[primaryId];
+    var url = base;
+
+    if (primary && primary.acuityTypeId) {
+      url += '?appointmentTypeID=' + encodeURIComponent(primary.acuityTypeId);
+    }
+
+    // Add-ons as notes param
+    var addons = state.sessionPlan.filter(function (id) { return id !== primaryId; });
+    if (addons.length) {
+      var addonNames = addons.map(function (id) {
+        var t = config.treatments[id];
+        return t ? t.name : id;
+      });
+      var notesParam = 'Session: ' + (primary ? primary.name : '') +
+        (addonNames.length ? ' + ' + addonNames.join(', ') : '');
+      var sep = url.indexOf('?') === -1 ? '?' : '&';
+      url += sep + 'notes=' + encodeURIComponent(notesParam);
+    }
+
+    return url;
+  }
+
+  function renderSessionPlan() {
+    var config = state.config;
+    var plan = state.sessionPlan;
+
+    var section = document.createElement('div');
+    section.className = 'tw-session-plan';
+
+    if (plan.length === 0) {
+      var empty = document.createElement('p');
+      empty.className = 'tw-session-empty';
+      empty.textContent = 'Add treatments above to build your session';
+      section.appendChild(empty);
+      return section;
+    }
+
+    var itemsList = document.createElement('ul');
+    itemsList.className = 'tw-session-items';
+
+    var total = 0;
+
+    plan.forEach(function (treatmentId) {
+      var t = config.treatments[treatmentId];
+      if (!t) { return; }
+
+      var price = t.price || 0;
+      total += price;
+
+      var li = document.createElement('li');
+      li.className = 'tw-session-item';
+
+      var nameEl = document.createElement('span');
+      nameEl.className = 'tw-session-item-name';
+      nameEl.textContent = t.name;
+      li.appendChild(nameEl);
+
+      var priceEl = document.createElement('span');
+      priceEl.className = 'tw-session-item-price';
+      priceEl.textContent = t.priceLabel || ('$' + price);
+      li.appendChild(priceEl);
+
+      var removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'tw-session-item-remove';
+      removeBtn.textContent = 'Remove';
+      removeBtn.setAttribute('aria-label', 'Remove ' + t.name + ' from session');
+      removeBtn.setAttribute('data-treatment-id', treatmentId);
+      removeBtn.addEventListener('click', function () {
+        removeFromSession(treatmentId);
+      });
+      li.appendChild(removeBtn);
+
+      itemsList.appendChild(li);
+    });
+
+    section.appendChild(itemsList);
+
+    var totalEl = document.createElement('p');
+    totalEl.className = 'tw-session-total';
+    totalEl.textContent = 'Total: $' + total;
+    section.appendChild(totalEl);
+
+    var bookBtn = document.createElement('a');
+    bookBtn.className = 'tw-btn-primary tw-session-book';
+    bookBtn.textContent = 'Book This Session';
+    bookBtn.setAttribute('target', '_blank');
+    bookBtn.setAttribute('rel', 'noopener noreferrer');
+    bookBtn.href = buildAcuityUrl();
+
+    bookBtn.addEventListener('click', function () {
+      pushEvent({
+        event: 'wizard_book_clicked',
+        session_plan: state.sessionPlan.join(','),
+        total: total
+      });
+      _doClose();
+    });
+
+    section.appendChild(bookBtn);
+
+    return section;
   }
 
   // ---------------------------------------------------------------------------
