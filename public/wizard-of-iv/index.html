@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treatment Wizard | US Mobile IV</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="wizard.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #0d1f2d;
+      color: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .test-page {
+      text-align: center;
+      max-width: 480px;
+    }
+
+    .test-page h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .test-page p {
+      font-size: 0.9375rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .launch-btn {
+      display: inline-block;
+      padding: 0.875rem 2.5rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: #1E4969;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .launch-btn:hover {
+      background: #2A8A8F;
+      transform: translateY(-1px);
+    }
+
+    .launch-btn:active {
+      transform: translateY(0);
+    }
+
+    .secondary-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.5);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+
+    .secondary-btn:hover {
+      color: rgba(255,255,255,0.8);
+      border-color: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-page">
+    <h1>US Mobile IV</h1>
+    <p>Interactive treatment recommendation wizard. Click below to try it out.</p>
+    <button class="launch-btn" data-treatment-wizard>Find My Treatment</button>
+    <br>
+    <button class="secondary-btn" onclick="TreatmentWizard.open('test')">Open via JS API</button>
+  </div>
+
+  <script src="wizard.js"></script>
+</body>
+</html>

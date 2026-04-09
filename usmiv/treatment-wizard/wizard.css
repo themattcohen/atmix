@@ -1,0 +1,1408 @@
+/*
+ * US Mobile IV — Treatment Recommendation Wizard
+ * wizard.css v2.0.0
+ *
+ * All selectors prefixed with .tw- to prevent collisions with Bricks Builder.
+ * Class names match wizard.js exactly.
+ *
+ * Color tokens follow WCAG 2.1 AA contrast requirements:
+ *   - Brand Teal (#44B7BC): decorative / large UI fills on dark bg only — NOT for text on white
+ *   - WCAG Teal (#2A8A8F): text on white backgrounds (contrast 4.7:1)
+ *   - Navy (#1E4969): primary interactive elements and headings
+ *   - Dark Text (#081E2B): body copy
+ *
+ * Table of Contents
+ * -----------------
+ *  1. CSS Custom Properties (Design Tokens)
+ *  2. Backdrop Overlay
+ *  3. Modal Shell
+ *  4. Close Button
+ *  5. Progress Bar
+ *  6. Content Area & Step Transitions
+ *  7. Question Typography
+ *  8. Option Cards
+ *  9. Option Card Icons & Labels
+ * 10. Step Navigation
+ * 11. Result Screen
+ * 12. Result — Why Match
+ * 13. Result — Ingredient List
+ * 14. Result — Add-On Card
+ * 15. Result — Trust Bar
+ * 16. Result — CTA Buttons
+ * 17. Trigger Button
+ * 18. Responsive — Mobile (<768px)
+ * 19. Responsive — Desktop (768px+)
+ * 20. Animations & Keyframes
+ * 21. Reduced Motion
+ * 22. Print Styles
+ */
+
+
+/* ─────────────────────────────────────────────
+   1. CSS Custom Properties (Design Tokens)
+   Scoped to .tw-overlay which is the root element
+   the JS creates.
+────────────────────────────────────────────── */
+
+.tw-overlay {
+  /* Brand colors */
+  --tw-color-teal-brand:    #44B7BC;
+  --tw-color-teal-wcag:     #2A8A8F;
+  --tw-color-teal-light:    #E8F6F7;
+  --tw-color-teal-mid:      #B8E4E6;
+  --tw-color-navy:          #1E4969;
+  --tw-color-navy-dark:     #163650;
+  --tw-color-navy-light:    #EAF0F5;
+  --tw-color-dark-text:     #081E2B;
+  --tw-color-muted:         #5A7384;
+  --tw-color-muted-light:   #8BA3B3;
+  --tw-color-surface:       #FFFFFF;
+  --tw-color-bg-page:       #F4F7F9;
+  --tw-color-border:        #D6E2E9;
+  --tw-color-border-focus:  #2A8A8F;
+
+  /* Typography */
+  --tw-font-body:           'Open Sans', system-ui, sans-serif;
+  --tw-font-heading:        'Montserrat', system-ui, sans-serif;
+  --tw-font-size-xs:        0.75rem;
+  --tw-font-size-sm:        0.875rem;
+  --tw-font-size-base:      1rem;
+  --tw-font-size-md:        1.0625rem;
+  --tw-font-size-lg:        1.25rem;
+  --tw-font-size-xl:        1.5rem;
+  --tw-font-size-2xl:       1.875rem;
+  --tw-font-size-3xl:       2.25rem;
+
+  /* Spacing */
+  --tw-space-1:  0.25rem;
+  --tw-space-2:  0.5rem;
+  --tw-space-3:  0.75rem;
+  --tw-space-4:  1rem;
+  --tw-space-5:  1.25rem;
+  --tw-space-6:  1.5rem;
+  --tw-space-8:  2rem;
+  --tw-space-10: 2.5rem;
+  --tw-space-12: 3rem;
+
+  /* Shape */
+  --tw-radius-sm:   4px;
+  --tw-radius-md:   8px;
+  --tw-radius-lg:   12px;
+  --tw-radius-xl:   16px;
+  --tw-radius-full: 9999px;
+
+  /* Shadow */
+  --tw-shadow-card:   0 1px 3px rgba(8, 30, 43, 0.08), 0 4px 12px rgba(8, 30, 43, 0.06);
+  --tw-shadow-modal:  0 8px 40px rgba(8, 30, 43, 0.18), 0 2px 8px rgba(8, 30, 43, 0.1);
+  --tw-shadow-hover:  0 4px 16px rgba(8, 30, 43, 0.14);
+  --tw-shadow-lifted: 0 6px 20px rgba(8, 30, 43, 0.16);
+
+  /* Transitions */
+  --tw-ease:          cubic-bezier(0.22, 0.61, 0.36, 1);
+  --tw-ease-bounce:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --tw-duration-fast: 150ms;
+  --tw-duration-mid:  200ms;
+  --tw-duration-slow: 300ms;
+
+  /* Modal dimensions */
+  --tw-modal-max-width: 600px;
+  --tw-modal-padding-x: var(--tw-space-8);
+  --tw-modal-padding-y: var(--tw-space-6);
+
+  /* Progress */
+  --tw-progress-height: 4px;
+
+  /* z-index layers */
+  --tw-z-overlay: 9000;
+  --tw-z-modal:   9001;
+  --tw-z-close:   9002;
+}
+
+
+/* ─────────────────────────────────────────────
+   2. Backdrop Overlay
+   JS class: .tw-overlay
+   Visible state: .tw-overlay--visible
+────────────────────────────────────────────── */
+
+.tw-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--tw-z-overlay);
+  background-color: rgba(8, 30, 43, 0.65);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Default: hidden */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity var(--tw-duration-slow) var(--tw-ease),
+    visibility var(--tw-duration-slow) var(--tw-ease);
+}
+
+.tw-overlay--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+/* ─────────────────────────────────────────────
+   3. Modal Shell
+   JS class: .tw-modal
+────────────────────────────────────────────── */
+
+.tw-modal {
+  position: relative;
+  z-index: var(--tw-z-modal);
+  width: calc(100% - 2 * var(--tw-space-6));
+  max-width: var(--tw-modal-max-width);
+  max-height: calc(100vh - var(--tw-space-12));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  background-color: var(--tw-color-surface);
+  border-radius: var(--tw-radius-xl);
+  box-shadow: var(--tw-shadow-modal);
+
+  /* Entrance: slide up from below */
+  transform: translateY(24px);
+  opacity: 0;
+  transition:
+    opacity var(--tw-duration-slow) var(--tw-ease),
+    transform var(--tw-duration-slow) var(--tw-ease);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--tw-color-teal-mid) transparent;
+}
+
+.tw-modal::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tw-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tw-modal::-webkit-scrollbar-thumb {
+  background-color: var(--tw-color-teal-mid);
+  border-radius: var(--tw-radius-full);
+}
+
+/* Open state — overlay visible triggers modal reveal */
+.tw-overlay--visible .tw-modal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tw-modal:focus {
+  outline: none;
+}
+
+.tw-modal:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+
+/* ─────────────────────────────────────────────
+   4. Close Button
+   JS class: .tw-close
+────────────────────────────────────────────── */
+
+.tw-close {
+  position: absolute;
+  top: var(--tw-space-4);
+  right: var(--tw-space-4);
+  z-index: var(--tw-z-close);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  color: var(--tw-color-muted);
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-close:hover {
+  background-color: var(--tw-color-bg-page);
+  border-color: var(--tw-color-border);
+  color: var(--tw-color-dark-text);
+}
+
+.tw-close:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.tw-close svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  pointer-events: none;
+}
+
+
+/* ─────────────────────────────────────────────
+   5. Progress Bar
+   JS classes: .tw-progress, .tw-progress-fill
+   Width set via inline style by JS.
+────────────────────────────────────────────── */
+
+.tw-progress {
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  background-color: var(--tw-color-surface);
+}
+
+.tw-progress-fill {
+  width: 0%;
+  height: var(--tw-progress-height);
+  background-color: var(--tw-color-teal-brand);
+  border-radius: var(--tw-radius-full);
+  transition: width 350ms var(--tw-ease);
+  will-change: width;
+}
+
+
+/* ─────────────────────────────────────────────
+   6. Content Area & Step Transitions
+   JS classes: .tw-content-area, .tw-step-exiting,
+               .tw-step-entering
+────────────────────────────────────────────── */
+
+.tw-content-area {
+  min-height: 280px;
+}
+
+/* Applied to outgoing content before removal */
+.tw-step-exiting {
+  animation: tw-step-exit var(--tw-duration-mid) var(--tw-ease) forwards;
+  pointer-events: none;
+}
+
+/* Applied to incoming content after insertion */
+.tw-step-entering {
+  animation: tw-step-enter var(--tw-duration-mid) var(--tw-ease) forwards;
+}
+
+
+/* ─────────────────────────────────────────────
+   7. Question Typography
+   JS classes: .tw-question, .tw-question-header,
+               .tw-title, .tw-subtitle
+────────────────────────────────────────────── */
+
+.tw-question {
+  display: flex;
+  flex-direction: column;
+}
+
+.tw-question-header {
+  padding: var(--tw-space-6) var(--tw-modal-padding-x) var(--tw-space-4);
+  padding-right: calc(var(--tw-modal-padding-x) + 44px); /* clear close button */
+}
+
+.tw-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: 700;
+  color: var(--tw-color-navy);
+  line-height: 1.2;
+  margin: 0 0 var(--tw-space-2) 0;
+  letter-spacing: -0.01em;
+}
+
+.tw-subtitle {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+/* ─────────────────────────────────────────────
+   8. Option Cards
+   JS classes: .tw-options, .tw-options--single,
+               .tw-options--multi, .tw-option,
+               .tw-option--selected
+────────────────────────────────────────────── */
+
+.tw-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+  padding: 0 var(--tw-modal-padding-x) var(--tw-space-4);
+  margin: 0;
+  list-style: none;
+}
+
+.tw-option {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-4);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-5);
+  margin: 0;
+
+  background-color: var(--tw-color-surface);
+  border: 1.5px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-lg);
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tw-option:hover {
+  border-color: var(--tw-color-teal-brand);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-option:active {
+  transform: translateY(0);
+  box-shadow: var(--tw-shadow-card);
+}
+
+.tw-option:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-color: var(--tw-color-teal-wcag);
+}
+
+/* Selected state — JS uses .tw-option--selected and aria-checked="true" */
+.tw-option--selected,
+.tw-option[aria-checked="true"] {
+  border-color: var(--tw-color-teal-brand);
+  background-color: var(--tw-color-teal-brand);
+  box-shadow: 0 2px 10px rgba(68, 183, 188, 0.25);
+  transform: translateY(0);
+}
+
+/* Label colors when selected */
+.tw-option--selected .tw-option-label,
+.tw-option[aria-checked="true"] .tw-option-label {
+  color: var(--tw-color-surface);
+}
+
+.tw-option--selected .tw-option-sublabel,
+.tw-option[aria-checked="true"] .tw-option-sublabel {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Icon background when selected */
+.tw-option--selected .tw-option-icon,
+.tw-option[aria-checked="true"] .tw-option-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--tw-color-surface);
+}
+
+
+/* ─────────────────────────────────────────────
+   9. Option Card Icons & Labels
+   JS classes: .tw-option-icon, .tw-option-labels,
+               .tw-option-label, .tw-option-sublabel
+────────────────────────────────────────────── */
+
+.tw-option-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--tw-radius-md);
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-teal-wcag);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-option-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+}
+
+/* Icon hover on unselected card */
+.tw-option:hover:not(.tw-option--selected) .tw-option-icon {
+  background-color: var(--tw-color-teal-mid);
+  color: var(--tw-color-navy);
+}
+
+.tw-option-labels {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-1);
+}
+
+.tw-option-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-md);
+  font-weight: 600;
+  color: var(--tw-color-dark-text);
+  line-height: 1.3;
+  display: block;
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-option-sublabel {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-muted);
+  line-height: 1.4;
+  display: block;
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+
+/* ─────────────────────────────────────────────
+   10. Step Navigation
+   JS classes: .tw-nav, .tw-nav--result,
+               .tw-nav-spacer, .tw-btn-back,
+               .tw-btn-continue, .tw-btn-restart
+────────────────────────────────────────────── */
+
+.tw-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-6);
+  border-top: 1px solid var(--tw-color-border);
+  background-color: var(--tw-color-surface);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.tw-nav--result {
+  justify-content: space-between;
+  border-top: 1px solid var(--tw-color-border);
+  background-color: var(--tw-color-surface);
+}
+
+.tw-nav-spacer {
+  display: inline-block;
+  visibility: hidden;
+  pointer-events: none;
+  width: 1px;
+}
+
+/* Back button — text style */
+.tw-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-3);
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 500;
+  color: var(--tw-color-muted);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-btn-back:hover {
+  color: var(--tw-color-dark-text);
+}
+
+.tw-btn-back:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+/* Continue / Submit button (multi-select only) */
+.tw-btn-continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+
+  padding: var(--tw-space-3) var(--tw-space-8);
+  min-height: 46px;
+
+  background-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-btn-continue:hover {
+  background-color: var(--tw-color-navy-dark);
+  border-color: var(--tw-color-navy-dark);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-btn-continue:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-btn-continue:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-btn-continue:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Restart button — text style, result screen only */
+.tw-btn-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-3);
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 500;
+  color: var(--tw-color-muted);
+  line-height: 1;
+  white-space: nowrap;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-btn-restart:hover {
+  color: var(--tw-color-dark-text);
+}
+
+.tw-btn-restart:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+
+/* ─────────────────────────────────────────────
+   11. Result Screen
+   JS class: .tw-result, .tw-result-header,
+             .tw-result-match-label, .tw-result-name,
+             .tw-result-price-row, .tw-result-price,
+             .tw-result-duration
+────────────────────────────────────────────── */
+
+.tw-result {
+  display: flex;
+  flex-direction: column;
+  animation: tw-outcome-reveal var(--tw-duration-slow) var(--tw-ease) forwards;
+}
+
+.tw-result-header {
+  padding: var(--tw-space-6) var(--tw-modal-padding-x) var(--tw-space-5);
+  padding-right: calc(var(--tw-modal-padding-x) + 44px);
+  background: linear-gradient(135deg, var(--tw-color-navy) 0%, #1a5f81 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative glow blob */
+.tw-result-header::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(68, 183, 188, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.tw-result-match-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 600;
+  color: var(--tw-color-teal-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 var(--tw-space-2) 0;
+  display: block;
+}
+
+.tw-result-name {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-2xl);
+  font-weight: 800;
+  color: var(--tw-color-surface);
+  line-height: 1.15;
+  margin: 0 0 var(--tw-space-3) 0;
+  letter-spacing: -0.02em;
+}
+
+.tw-result-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tw-space-3);
+  flex-wrap: wrap;
+}
+
+.tw-result-price {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: 700;
+  color: var(--tw-color-teal-brand);
+  line-height: 1;
+}
+
+.tw-result-duration {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1;
+}
+
+
+/* ─────────────────────────────────────────────
+   12. Result — Why Match
+   JS classes: .tw-result-match, .tw-result-match-title,
+               .tw-result-match-text
+────────────────────────────────────────────── */
+
+.tw-result-match {
+  margin: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  background-color: var(--tw-color-teal-light);
+  border: 1px solid var(--tw-color-teal-mid);
+  border-radius: var(--tw-radius-lg);
+  padding: var(--tw-space-5);
+}
+
+.tw-result-match-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 700;
+  color: var(--tw-color-teal-wcag);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--tw-space-3) 0;
+}
+
+.tw-result-match-text {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 400;
+  color: var(--tw-color-dark-text);
+  line-height: 1.65;
+  margin: 0;
+}
+
+
+/* ─────────────────────────────────────────────
+   13. Result — Ingredient List
+   JS classes: .tw-result-ingredients,
+               .tw-result-section-title,
+               .tw-result-ing-list, .tw-result-ing-item,
+               .tw-result-ing-name, .tw-result-ing-benefit
+────────────────────────────────────────────── */
+
+.tw-result-ingredients {
+  margin: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  border: 1px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-lg);
+  overflow: hidden;
+}
+
+.tw-result-section-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 700;
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--tw-space-4) var(--tw-space-5);
+  margin: 0;
+  background-color: var(--tw-color-bg-page);
+  border-bottom: 1px solid var(--tw-color-border);
+}
+
+.tw-result-ing-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tw-result-ing-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-4) var(--tw-space-5);
+  border-bottom: 1px solid var(--tw-color-border);
+}
+
+.tw-result-ing-item:last-child {
+  border-bottom: none;
+}
+
+.tw-result-ing-name {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 600;
+  color: var(--tw-color-dark-text);
+  line-height: 1.3;
+  display: block;
+  flex: 1;
+}
+
+.tw-result-ing-benefit {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 400;
+  color: var(--tw-color-muted);
+  line-height: 1.4;
+  display: block;
+  flex: 2;
+}
+
+
+/* ─────────────────────────────────────────────
+   14. Result — Add-On Card
+   JS classes: .tw-result-addon, .tw-result-addon-icon,
+               .tw-result-addon-text, .tw-result-addon-label
+────────────────────────────────────────────── */
+
+.tw-result-addon {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-4);
+  margin: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  padding: var(--tw-space-5);
+  border: 1.5px dashed var(--tw-color-teal-mid);
+  border-radius: var(--tw-radius-lg);
+  background-color: var(--tw-color-bg-page);
+
+  transition:
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    background-color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-result-addon:hover {
+  border-color: var(--tw-color-teal-wcag);
+  background-color: var(--tw-color-teal-light);
+}
+
+.tw-result-addon-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tw-radius-md);
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-teal-wcag);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tw-result-addon-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  pointer-events: none;
+}
+
+.tw-result-addon-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tw-result-addon-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: 600;
+  color: var(--tw-color-dark-text);
+  line-height: 1.35;
+  margin: 0;
+}
+
+
+/* ────────────────────────────────────────���────
+   14b. Result — Short Description
+   JS class: .tw-result-desc
+────────────────────────────────────────────── */
+
+.tw-result-desc {
+  margin: var(--tw-space-2) 0 0;
+  font-family: var(--tw-font-body);
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+}
+
+
+/* ─────────────────────────────────────────────
+   14c. Result — Best For Tags
+   JS classes: .tw-result-bestfor, .tw-result-bestfor-label,
+               .tw-result-bestfor-tags, .tw-result-bestfor-tag
+────────────────────────────────────────────── */
+
+.tw-result-bestfor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-3) var(--tw-modal-padding-x);
+}
+
+.tw-result-bestfor-label {
+  font-family: var(--tw-font-heading);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--tw-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tw-result-bestfor-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-2);
+}
+
+.tw-result-bestfor-tag {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--tw-font-body);
+  font-size: 0.8125rem;
+  color: var(--tw-color-teal-safe);
+  background-color: rgba(42, 138, 143, 0.08);
+  border: 1px solid rgba(42, 138, 143, 0.2);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+
+/* ─────────────────────────────────────────────
+   14d. Result — Note
+   JS class: .tw-result-note
+────────────────────────────────────────────── */
+
+.tw-result-note {
+  padding: var(--tw-space-3) var(--tw-modal-padding-x);
+  font-family: var(--tw-font-body);
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: var(--tw-color-text-muted);
+  line-height: 1.5;
+}
+
+
+/* ─────────────────────────────────────────────
+   15. Result — Trust Bar
+   JS classes: .tw-result-trust, .tw-result-stars,
+               .tw-star, .tw-result-reviews
+────────────────────────────────────────────── */
+
+.tw-result-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-3);
+  padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  margin-top: var(--tw-space-5);
+  border-top: 1px solid var(--tw-color-border);
+  background-color: var(--tw-color-bg-page);
+  flex-wrap: wrap;
+}
+
+.tw-result-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 1;
+}
+
+.tw-star {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: #F5A623;
+  flex-shrink: 0;
+}
+
+.tw-star svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.tw-result-reviews {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: 500;
+  color: var(--tw-color-muted);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+
+/* ─────────────────────────────────────────────
+   16. Result — CTA Buttons
+   JS classes: .tw-result-ctas, .tw-btn-primary,
+               .tw-btn-secondary
+────────────────────────────────────────────── */
+
+.tw-result-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-4);
+}
+
+/* Primary — "Book This Treatment" */
+.tw-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-6);
+  min-height: 50px;
+
+  background-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-btn-primary:hover {
+  background-color: var(--tw-color-navy-dark);
+  border-color: var(--tw-color-navy-dark);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-btn-primary:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-btn-primary svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Secondary — "Learn More" */
+.tw-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-6);
+  min-height: 50px;
+
+  background-color: transparent;
+  color: var(--tw-color-navy);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-btn-secondary:hover {
+  background-color: var(--tw-color-navy-light);
+  box-shadow: var(--tw-shadow-card);
+  transform: translateY(-1px);
+}
+
+.tw-btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-btn-secondary:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-btn-secondary svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+
+/* ─────────────────────────────────────────────
+   17. Trigger Button
+   JS class: .tw-trigger-btn
+────────────────────────────────────────────── */
+
+.tw-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-3) var(--tw-space-6);
+
+  background-color: var(--tw-color-navy);
+  color: #FFFFFF;
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  transition:
+    background-color 150ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 150ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 150ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tw-trigger-btn:hover {
+  background-color: #163650;
+  border-color: #163650;
+  box-shadow: 0 4px 16px rgba(8, 30, 43, 0.14);
+  transform: translateY(-1px);
+}
+
+.tw-trigger-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-trigger-btn:focus-visible {
+  outline: 3px solid #44B7BC;
+  outline-offset: 3px;
+}
+
+
+/* ─────────────────────────────────────────────
+   18. Responsive — Mobile (<768px)
+────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* Override tokens for tighter mobile layout */
+  .tw-overlay {
+    --tw-modal-padding-x: 1.25rem;
+    --tw-modal-padding-y: 1rem;
+    align-items: flex-end; /* sheet slides up from bottom */
+  }
+
+  .tw-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 95vh;
+    border-radius: var(--tw-radius-xl) var(--tw-radius-xl) 0 0;
+    transform: translateY(100%);
+    transition:
+      opacity var(--tw-duration-slow) var(--tw-ease),
+      transform var(--tw-duration-slow) var(--tw-ease);
+  }
+
+  .tw-overlay--visible .tw-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Larger, easier-to-tap option cards */
+  .tw-option {
+    padding: var(--tw-space-4);
+    gap: var(--tw-space-3);
+  }
+
+  .tw-option-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .tw-option-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .tw-title {
+    font-size: var(--tw-font-size-lg);
+  }
+
+  /* Nav full width row */
+  .tw-nav {
+    flex-direction: row;
+    padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  }
+
+  .tw-btn-continue {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: var(--tw-space-3) var(--tw-space-4);
+  }
+
+  .tw-result-name {
+    font-size: var(--tw-font-size-xl);
+  }
+
+  .tw-result-ctas {
+    gap: var(--tw-space-3);
+  }
+
+  .tw-result-trust {
+    gap: var(--tw-space-3);
+    padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  }
+}
+
+/* Very small phones */
+@media (max-width: 374px) {
+  .tw-option-label {
+    font-size: var(--tw-font-size-sm);
+  }
+
+  .tw-result-name {
+    font-size: var(--tw-font-size-lg);
+  }
+}
+
+
+/* ─────────────────────────────────────────────
+   19. Responsive — Desktop (768px+)
+────────────────────────────────────────────── */
+
+@media (min-width: 768px) {
+  .tw-modal {
+    max-height: min(calc(100vh - 3rem), 780px);
+  }
+
+  .tw-nav {
+    justify-content: space-between;
+  }
+
+  .tw-btn-continue {
+    min-width: 160px;
+  }
+
+  /* Side-by-side CTAs */
+  .tw-result-ctas--horizontal {
+    flex-direction: row;
+  }
+
+  .tw-result-ctas--horizontal .tw-btn-primary,
+  .tw-result-ctas--horizontal .tw-btn-secondary {
+    flex: 1;
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tw-overlay {
+    --tw-modal-padding-x: 2.5rem;
+    --tw-modal-padding-y: 1.75rem;
+  }
+}
+
+
+/* ─────────────────────────────────────────────
+   20. Animations & Keyframes
+────────────────────────────────────────────── */
+
+/* Step enter (new content sliding in) */
+@keyframes tw-step-enter {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Step exit (old content sliding out) */
+@keyframes tw-step-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* Fade in only */
+@keyframes tw-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Outcome reveal */
+@keyframes tw-outcome-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Spinner */
+@keyframes tw-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Pulsing dot */
+@keyframes tw-pulse-dot {
+  0%, 80%, 100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* ─────────────────────────────────────────────
+   21. Reduced Motion
+────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-modal,
+  .tw-overlay,
+  .tw-option,
+  .tw-btn-continue,
+  .tw-btn-primary,
+  .tw-btn-secondary,
+  .tw-progress-fill,
+  .tw-result,
+  .tw-step-exiting,
+  .tw-step-entering {
+    animation: none !important;
+    transition: opacity var(--tw-duration-fast) linear !important;
+    transform: none !important;
+  }
+
+  /* Keep modal centered on desktop when transform is disabled */
+  .tw-modal {
+    transform: none !important;
+  }
+
+  .tw-overlay--visible .tw-modal {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+
+/* ─────────────────────────────────────────────
+   22. Print Styles
+────────────────────────────────────────────── */
+
+@media print {
+  .tw-overlay,
+  .tw-modal {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
