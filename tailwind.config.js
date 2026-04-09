@@ -13,6 +13,8 @@ export default {
         fraunces: ['Fraunces', 'serif'],
         dm: ['DM Sans', 'sans-serif'],
         jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+        opensans: ['"Open Sans"', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
       colors: {
         walkies: {
@@ -38,6 +40,11 @@ export default {
           accent: '#C17B3A',
           'accent-dark': '#A66830',
           'accent-light': '#D4944F',
+        },
+        iv: {
+          light: '#EAF4FB',
+          border: '#BFDFF3',
+          blog: '#EDF0F7',
         },
         audit: {
           medics: '#07b6b6',
