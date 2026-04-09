@@ -5,6 +5,7 @@ import WorkingTogether from './pages/WorkingTogether';
 import Projects from './pages/Projects';
 import IV from './pages/IV';
 import USMobileLabs from './pages/USMobileLabs';
+import USMobileLabsV2 from './pages/USMobileLabsV2';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/IV" element={<IV />} />
         <Route path="/usml" element={<USMobileLabs />} />
+        <Route path="/usml-v2" element={<USMobileLabsV2 />} />
       </Routes>
     </BrowserRouter>
   );

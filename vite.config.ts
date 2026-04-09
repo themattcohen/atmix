@@ -30,7 +30,7 @@ function spaRoutes(routes: string[]) {
 export default defineConfig({
   plugins: [
     react(),
-    spaRoutes(['working-together', 'walkies', 'projects', 'IV', 'usml'])
+    spaRoutes(['working-together', 'walkies', 'projects', 'IV', 'usml', 'usml-v2'])
   ],
   base: '/',
   build: {
