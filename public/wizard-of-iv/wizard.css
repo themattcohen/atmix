@@ -50,6 +50,7 @@
   --tw-color-teal-wcag:     #2A8A8F;
   --tw-color-teal-light:    #E8F6F7;
   --tw-color-teal-mid:      #B8E4E6;
+  --tw-color-teal-safe:     #2A8A8F;
   --tw-color-navy:          #1E4969;
   --tw-color-navy-dark:     #163650;
   --tw-color-navy-light:    #EAF0F5;
@@ -1681,6 +1682,12 @@
   flex-wrap: wrap;
   gap: var(--tw-space-2);
   margin-bottom: var(--tw-space-3);
+}
+
+.tw-addon-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-2);
 }
 
 /* Individual clickable dashed-border pill */

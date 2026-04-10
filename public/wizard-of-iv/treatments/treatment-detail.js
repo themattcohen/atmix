@@ -266,8 +266,8 @@
   // What to Expect
   // ---------------------------------------------------------------------------
   function renderExpectSection(detailData) {
-    if (!detailData || !detailData.expect) return '';
-    var ex = detailData.expect;
+    var ex = detailData && (detailData.whatToExpect || detailData.expect);
+    if (!ex) return '';
 
     var items = [
       ex.onset      ? { icon: ICONS.bolt,     label: 'Onset',       value: ex.onset }      : null,
@@ -308,18 +308,32 @@
     var glp1 = (detailData && detailData.glp1) || {};
 
     // Eligibility
-    var eligibilityItems = glp1.eligibility || [
+    var defaultEligibility = [
       'BMI of 30 or higher',
       'BMI of 27 or higher with a weight-related health condition (type 2 diabetes, high blood pressure, high cholesterol)',
       'No personal or family history of medullary thyroid cancer or MEN2 syndrome',
       'Not currently pregnant or planning to become pregnant'
     ];
+    var eligibilityItems;
+    if (Array.isArray(glp1.eligibility)) {
+      eligibilityItems = glp1.eligibility;
+    } else if (glp1.eligibility && typeof glp1.eligibility === 'object') {
+      eligibilityItems = [];
+      if (glp1.eligibility.bmiRequirement) eligibilityItems.push(glp1.eligibility.bmiRequirement);
+      if (Array.isArray(glp1.eligibility.contraindications)) {
+        eligibilityItems = eligibilityItems.concat(glp1.eligibility.contraindications);
+      }
+      if (glp1.eligibility.requiresConsult) eligibilityItems.push(glp1.eligibility.requiresConsult);
+      if (!eligibilityItems.length) eligibilityItems = defaultEligibility;
+    } else {
+      eligibilityItems = defaultEligibility;
+    }
     var eligibilityList = eligibilityItems.map(function (e) {
       return '<li class="td-glp1__eligibility-item">' + ICONS.check + '<span>' + esc(e) + '</span></li>';
     }).join('');
 
     // Dosing schedule
-    var dosingRows = (glp1.dosing || []);
+    var dosingRows = (glp1.dosingSchedule || glp1.dosing || []);
     var dosingTable = '';
     if (dosingRows.length) {
       var tableRows = dosingRows.map(function (row) {
@@ -343,7 +357,8 @@
     };
 
     var commonList    = (sideEffects.common    || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
-    var lessCommonList= (sideEffects.lessCommon|| []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
+    var lessCommonData = sideEffects.lessCommon || (typeof sideEffects.managementTips === 'string' ? [sideEffects.managementTips] : sideEffects.managementTips) || [];
+    var lessCommonList= lessCommonData.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
     var seriousList   = (sideEffects.serious   || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
 
     var bloodworkNote = glp1.bloodworkNote || 'Initial bloodwork ($99) is required before starting. This typically includes a CBC, CMP, HbA1c, and lipid panel to establish your baseline and ensure safe prescribing.';
@@ -608,10 +623,18 @@
         return r.json();
       })
     ]).then(function (results) {
-      var detailJson   = results[0];
+      var rawDetail    = results[0];
       var wizardConfig = results[1];
 
-      var detailData = slug ? (detailJson[slug] || null) : null;
+      // Convert array-based JSON to slug-keyed map
+      var detailMap = {};
+      var detailArr = rawDetail.treatments || rawDetail;
+      if (Array.isArray(detailArr)) {
+        detailArr.forEach(function (t) { if (t.slug) detailMap[t.slug] = t; });
+      } else {
+        detailMap = detailArr;
+      }
+      var detailData = slug ? (detailMap[slug] || null) : null;
 
       var html;
       if (!slug || !(wizardConfig.treatments || {})[slug]) {

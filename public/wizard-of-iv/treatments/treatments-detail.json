@@ -33,7 +33,11 @@
         "howItFeels": "A small IV catheter is placed in your arm — a brief pinch. From there you relax, scroll your phone, or just sit quietly. Your nurse checks on you throughout."
       },
       "glp1": null,
-      "relatedSlugs": ["myers", "altitude", "hangover"]
+      "relatedSlugs": [
+        "myers",
+        "altitude",
+        "hangover"
+      ]
     },
     {
       "slug": "myers",
@@ -103,7 +107,11 @@
         "howItFeels": "You'll feel the saline going in — it's room temperature and occasionally you'll notice a slight magnesium warmth. Your nurse manages your rate for comfort."
       },
       "glp1": null,
-      "relatedSlugs": ["myersGold", "myersPlatinum", "immunity"]
+      "relatedSlugs": [
+        "myersGold",
+        "myersPlatinum",
+        "immunity"
+      ]
     },
     {
       "slug": "immunity",
@@ -167,7 +175,11 @@
         "howItFeels": "Standard IV drip. Your nurse monitors you throughout. Some people feel a mild flush from the high-dose Vitamin C — this is normal and passes quickly."
       },
       "glp1": null,
-      "relatedSlugs": ["triImmuneShot", "vitaminDShot", "myers"]
+      "relatedSlugs": [
+        "triImmuneShot",
+        "vitaminDShot",
+        "myers"
+      ]
     },
     {
       "slug": "pregnancy",
@@ -233,7 +245,11 @@
         "howItFeels": "Same as any IV — a small catheter, then you relax. All ingredients are dosed conservatively for prenatal safety. Your nurse is there throughout."
       },
       "glp1": null,
-      "relatedSlugs": ["myers", "hydration", "labGeneral"],
+      "relatedSlugs": [
+        "myers",
+        "hydration",
+        "labGeneral"
+      ],
       "clinicalNote": "Requires OB/provider clearance before your first session. Our nurse will confirm your provider has approved IV therapy during pregnancy."
     },
     {
@@ -304,7 +320,11 @@
         "howItFeels": "A standard IV drip with an added anti-nausea medication. The Zofran typically makes most people feel significantly better before the bag is even done."
       },
       "glp1": null,
-      "relatedSlugs": ["hydration", "hangover", "myers"]
+      "relatedSlugs": [
+        "hydration",
+        "hangover",
+        "myers"
+      ]
     },
     {
       "slug": "hangover",
@@ -370,7 +390,11 @@
         "howItFeels": "A small IV catheter, then you recline and let the drip work. The combination of anti-nausea and pain medications makes most people feel dramatically better before they're even halfway through."
       },
       "glp1": null,
-      "relatedSlugs": ["myers", "altitude", "hydration"]
+      "relatedSlugs": [
+        "myers",
+        "altitude",
+        "hydration"
+      ]
     },
     {
       "slug": "migraine",
@@ -442,7 +466,11 @@
         "howItFeels": "Magnesium infused quickly causes a warm flush throughout the body — we infuse it slowly to keep you comfortable. Your nurse adjusts the rate based on your feedback. Lights can be dimmed on request."
       },
       "glp1": null,
-      "relatedSlugs": ["myers", "hydration", "vitaminDShot"]
+      "relatedSlugs": [
+        "myers",
+        "hydration",
+        "vitaminDShot"
+      ]
     },
     {
       "slug": "longevity",
@@ -514,7 +542,11 @@
         "howItFeels": "NAD+ can cause a transient chest tightness, nausea, or flushed feeling when infused too quickly. Your nurse controls the rate and monitors you throughout — most people find it very manageable."
       },
       "glp1": null,
-      "relatedSlugs": ["nad250", "myersPlatinum", "glutathioneShot"]
+      "relatedSlugs": [
+        "nad250",
+        "myersPlatinum",
+        "glutathioneShot"
+      ]
     },
     {
       "slug": "myersGold",
@@ -586,7 +618,11 @@
         "howItFeels": "The higher magnesium dose may produce more warmth during infusion. Your nurse manages your infusion rate based on your feedback."
       },
       "glp1": null,
-      "relatedSlugs": ["myers", "myersPlatinum", "b12Shot"]
+      "relatedSlugs": [
+        "myers",
+        "myersPlatinum",
+        "b12Shot"
+      ]
     },
     {
       "slug": "performance",
@@ -658,7 +694,11 @@
         "howItFeels": "A standard IV drip. Some people notice a slight muscle relaxation effect from the magnesium during the infusion."
       },
       "glp1": null,
-      "relatedSlugs": ["nad250", "lipoShots", "b12Shot"]
+      "relatedSlugs": [
+        "nad250",
+        "lipoShots",
+        "b12Shot"
+      ]
     },
     {
       "slug": "myersPlatinum",
@@ -736,7 +776,11 @@
         "howItFeels": "This is a comfortable but potent infusion. Your nurse closely monitors your rate and comfort throughout. Expect warmth from the magnesium and a gradual energy build from the B vitamins and NAD+."
       },
       "glp1": null,
-      "relatedSlugs": ["myersGold", "longevity", "nad250"]
+      "relatedSlugs": [
+        "myersGold",
+        "longevity",
+        "nad250"
+      ]
     },
     {
       "slug": "revival",
@@ -808,7 +852,11 @@
         "howItFeels": "Your nurse reviews your symptoms and personalizes your medication selection before you start. This is the most customized IV we offer."
       },
       "glp1": null,
-      "relatedSlugs": ["myersPlatinum", "myers", "labGeneral"]
+      "relatedSlugs": [
+        "myersPlatinum",
+        "myers",
+        "labGeneral"
+      ]
     },
     {
       "slug": "nad100",
@@ -844,7 +892,11 @@
         "howItFeels": "Some people experience mild chest tightness, nausea, or a warm flushed feeling — these are normal and resolve quickly. Your nurse controls your infusion rate based on tolerance."
       },
       "glp1": null,
-      "relatedSlugs": ["nad250", "nad500", "longevity"]
+      "relatedSlugs": [
+        "nad250",
+        "nad500",
+        "longevity"
+      ]
     },
     {
       "slug": "nad250",
@@ -880,7 +932,11 @@
         "howItFeels": "NAD+ has a characteristic feeling — some describe it as an intensified aliveness or heightened sensory awareness. Side effects (mild nausea, chest tightness) are dose-related and manageable by adjusting infusion rate."
       },
       "glp1": null,
-      "relatedSlugs": ["nad500", "longevity", "myersPlatinum"]
+      "relatedSlugs": [
+        "nad500",
+        "longevity",
+        "myersPlatinum"
+      ]
     },
     {
       "slug": "nad500",
@@ -916,11 +972,15 @@
         "howItFeels": "This is a longer session and NAD+ side effects (nausea, chest pressure, warmth) are more likely at this dose. Your nurse stays with you and adjusts rate as needed. Most people find it deeply worth it."
       },
       "glp1": null,
-      "relatedSlugs": ["nad250", "longevity", "labComplete"]
+      "relatedSlugs": [
+        "nad250",
+        "longevity",
+        "labComplete"
+      ]
     },
     {
       "slug": "semaglutide",
-      "category": "weightloss",
+      "category": "weightLoss",
       "ingredients": [
         {
           "name": "Semaglutide",
@@ -949,27 +1009,64 @@
         "mechanism": "GLP-1 (glucagon-like peptide-1) receptor agonist. Mimics the body's natural post-meal satiety signal, suppressing appetite and slowing digestion.",
         "eligibility": {
           "bmiRequirement": "BMI 27+ with a weight-related condition (hypertension, diabetes, high cholesterol), or BMI 30+ without comorbidities",
-          "contraindications": ["Personal or family history of medullary thyroid carcinoma", "Multiple endocrine neoplasia syndrome type 2 (MEN2)", "Active pancreatitis", "Pregnancy or planning pregnancy", "Severe GI disorders"],
+          "contraindications": [
+            "Personal or family history of medullary thyroid carcinoma",
+            "Multiple endocrine neoplasia syndrome type 2 (MEN2)",
+            "Active pancreatitis",
+            "Pregnancy or planning pregnancy",
+            "Severe GI disorders"
+          ],
           "requiresConsult": true
         },
         "dosingSchedule": [
-          { "week": "1-4", "dose": "0.25mg weekly", "purpose": "Tolerance induction" },
-          { "week": "5-8", "dose": "0.5mg weekly", "purpose": "Initial therapeutic dose" },
-          { "week": "9-12", "dose": "1.0mg weekly", "purpose": "Standard therapeutic dose" },
-          { "week": "13+", "dose": "1.0-2.0mg weekly", "purpose": "Maintenance or escalation per response" }
+          {
+            "week": "1-4",
+            "dose": "0.25mg weekly",
+            "purpose": "Tolerance induction"
+          },
+          {
+            "week": "5-8",
+            "dose": "0.5mg weekly",
+            "purpose": "Initial therapeutic dose"
+          },
+          {
+            "week": "9-12",
+            "dose": "1.0mg weekly",
+            "purpose": "Standard therapeutic dose"
+          },
+          {
+            "week": "13+",
+            "dose": "1.0-2.0mg weekly",
+            "purpose": "Maintenance or escalation per response"
+          }
         ],
         "sideEffects": {
-          "common": ["Nausea (most common, especially early)", "Decreased appetite", "Vomiting", "Diarrhea or constipation", "Fatigue in first weeks"],
-          "serious": ["Pancreatitis — seek immediate care for severe abdominal pain", "Gallbladder issues", "Increased heart rate", "Rare: thyroid tumors (based on animal data)"],
+          "common": [
+            "Nausea (most common, especially early)",
+            "Decreased appetite",
+            "Vomiting",
+            "Diarrhea or constipation",
+            "Fatigue in first weeks"
+          ],
+          "serious": [
+            "Pancreatitis — seek immediate care for severe abdominal pain",
+            "Gallbladder issues",
+            "Increased heart rate",
+            "Rare: thyroid tumors (based on animal data)"
+          ],
           "managementTips": "Nausea is dramatically reduced by eating smaller meals, avoiding fatty or spicy foods, and staying hydrated. Most patients adapt within 3-4 weeks."
         },
         "monitoring": "Initial consult + monthly check-ins to assess weight loss, side effects, and dose adjustments."
       },
-      "relatedSlugs": ["tirzepatide", "lipoShots", "labGeneral"]
+      "relatedSlugs": [
+        "tirzepatide",
+        "lipoShots",
+        "labGeneral"
+      ]
     },
     {
       "slug": "tirzepatide",
-      "category": "weightloss",
+      "category": "weightLoss",
       "ingredients": [
         {
           "name": "Tirzepatide",
@@ -998,24 +1095,66 @@
         "mechanism": "Dual GLP-1 and GIP (glucose-dependent insulinotropic polypeptide) receptor agonist. Activates two complementary gut hormone pathways for enhanced appetite suppression and improved insulin sensitivity.",
         "eligibility": {
           "bmiRequirement": "BMI 27+ with a weight-related condition, or BMI 30+ without comorbidities",
-          "contraindications": ["Personal or family history of medullary thyroid carcinoma", "Multiple endocrine neoplasia syndrome type 2 (MEN2)", "Active pancreatitis", "Pregnancy or planning pregnancy", "Severe GI disorders"],
+          "contraindications": [
+            "Personal or family history of medullary thyroid carcinoma",
+            "Multiple endocrine neoplasia syndrome type 2 (MEN2)",
+            "Active pancreatitis",
+            "Pregnancy or planning pregnancy",
+            "Severe GI disorders"
+          ],
           "requiresConsult": true
         },
         "dosingSchedule": [
-          { "week": "1-4", "dose": "2.5mg weekly", "purpose": "Tolerance induction" },
-          { "week": "5-8", "dose": "5mg weekly", "purpose": "Initial therapeutic dose" },
-          { "week": "9-12", "dose": "7.5mg weekly", "purpose": "Standard therapeutic dose" },
-          { "week": "13-16", "dose": "10mg weekly", "purpose": "Escalation if needed" },
-          { "week": "17+", "dose": "12.5-15mg weekly", "purpose": "Maximum therapeutic dose per response" }
+          {
+            "week": "1-4",
+            "dose": "2.5mg weekly",
+            "purpose": "Tolerance induction"
+          },
+          {
+            "week": "5-8",
+            "dose": "5mg weekly",
+            "purpose": "Initial therapeutic dose"
+          },
+          {
+            "week": "9-12",
+            "dose": "7.5mg weekly",
+            "purpose": "Standard therapeutic dose"
+          },
+          {
+            "week": "13-16",
+            "dose": "10mg weekly",
+            "purpose": "Escalation if needed"
+          },
+          {
+            "week": "17+",
+            "dose": "12.5-15mg weekly",
+            "purpose": "Maximum therapeutic dose per response"
+          }
         ],
         "sideEffects": {
-          "common": ["Nausea (most common early on)", "Decreased appetite", "Diarrhea", "Vomiting", "Constipation", "Abdominal discomfort"],
-          "serious": ["Pancreatitis — seek immediate care for severe abdominal pain", "Gallbladder disease", "Increased resting heart rate", "Rare: thyroid tumors (based on animal data)"],
+          "common": [
+            "Nausea (most common early on)",
+            "Decreased appetite",
+            "Diarrhea",
+            "Vomiting",
+            "Constipation",
+            "Abdominal discomfort"
+          ],
+          "serious": [
+            "Pancreatitis — seek immediate care for severe abdominal pain",
+            "Gallbladder disease",
+            "Increased resting heart rate",
+            "Rare: thyroid tumors (based on animal data)"
+          ],
           "managementTips": "Side effects are dose-dependent and typically manageable with slower dose escalation. Eating slowly, avoiding overeating, and staying well hydrated significantly reduces GI symptoms."
         },
         "monitoring": "Initial consult + monthly check-ins for weight tracking, side effect management, and dose optimization."
       },
-      "relatedSlugs": ["semaglutide", "lipoShots", "labGeneral"]
+      "relatedSlugs": [
+        "semaglutide",
+        "lipoShots",
+        "labGeneral"
+      ]
     },
     {
       "slug": "b12Shot",
@@ -1045,7 +1184,11 @@
         "howItFeels": "A quick intramuscular injection — a brief pinch in the deltoid or glute. Done in minutes."
       },
       "glp1": null,
-      "relatedSlugs": ["glutathioneShot", "triImmuneShot", "myers"]
+      "relatedSlugs": [
+        "glutathioneShot",
+        "triImmuneShot",
+        "myers"
+      ]
     },
     {
       "slug": "biotinShot",
@@ -1075,7 +1218,11 @@
         "howItFeels": "A quick IM injection. No significant sensation beyond a brief pinch."
       },
       "glp1": null,
-      "relatedSlugs": ["glutathioneShot", "b12Shot", "longevity"]
+      "relatedSlugs": [
+        "glutathioneShot",
+        "b12Shot",
+        "longevity"
+      ]
     },
     {
       "slug": "glutathioneShot",
@@ -1105,7 +1252,11 @@
         "howItFeels": "A brief, quick injection. Occasionally patients notice a mild sulfur-like taste or smell briefly after — this is normal and passes in seconds."
       },
       "glp1": null,
-      "relatedSlugs": ["biotinShot", "b12Shot", "longevity"]
+      "relatedSlugs": [
+        "biotinShot",
+        "b12Shot",
+        "longevity"
+      ]
     },
     {
       "slug": "triImmuneShot",
@@ -1147,7 +1298,11 @@
         "howItFeels": "A quick IM injection. Volume is slightly larger than a B12 shot — a brief, manageable pinch."
       },
       "glp1": null,
-      "relatedSlugs": ["vitaminDShot", "immunity", "b12Shot"]
+      "relatedSlugs": [
+        "vitaminDShot",
+        "immunity",
+        "b12Shot"
+      ]
     },
     {
       "slug": "vitaminDShot",
@@ -1181,7 +1336,11 @@
         "howItFeels": "A quick IM injection — the oil-based solution may produce slightly more awareness at the injection site than water-based shots, but it's brief."
       },
       "glp1": null,
-      "relatedSlugs": ["triImmuneShot", "b12Shot", "immunity"]
+      "relatedSlugs": [
+        "triImmuneShot",
+        "b12Shot",
+        "immunity"
+      ]
     },
     {
       "slug": "lipoShots",
@@ -1217,7 +1376,11 @@
         "howItFeels": "A quick IM injection. No significant sensation beyond a brief pinch."
       },
       "glp1": null,
-      "relatedSlugs": ["semaglutide", "b12Shot", "performance"]
+      "relatedSlugs": [
+        "semaglutide",
+        "b12Shot",
+        "performance"
+      ]
     },
     {
       "slug": "labGeneral",
@@ -1260,7 +1423,11 @@
         "howItFeels": "A standard venipuncture (same as any blood draw). Your nurse explains each test and what to watch for."
       },
       "glp1": null,
-      "relatedSlugs": ["labInDepth", "labComplete", "myers"]
+      "relatedSlugs": [
+        "labInDepth",
+        "labComplete",
+        "myers"
+      ]
     },
     {
       "slug": "labInDepth",
@@ -1315,7 +1482,11 @@
         "howItFeels": "A single blood draw. Your nurse reviews results with you and can recommend next steps or specialist referral if values are flagged."
       },
       "glp1": null,
-      "relatedSlugs": ["labComplete", "labGeneral", "vitaminDShot"]
+      "relatedSlugs": [
+        "labComplete",
+        "labGeneral",
+        "vitaminDShot"
+      ]
     },
     {
       "slug": "labComplete",
@@ -1412,7 +1583,92 @@
         "howItFeels": "A single blood draw — multiple tubes are collected. Your nurse reviews the full panel with you when results come in and can help you understand what the numbers mean."
       },
       "glp1": null,
-      "relatedSlugs": ["labInDepth", "labGeneral", "semaglutide"]
+      "relatedSlugs": [
+        "labInDepth",
+        "labGeneral",
+        "semaglutide"
+      ]
+    },
+    {
+      "slug": "labVitamin",
+      "category": "lab",
+      "ingredients": null,
+      "labTests": [
+        {
+          "name": "Complete Blood Count (CBC)",
+          "measuresWhat": "Red and white blood cells, hemoglobin, platelets.",
+          "whyItMatters": "Baseline blood cell health and anemia screening.",
+          "flaggedBy": "Low hemoglobin or iron may explain fatigue."
+        },
+        {
+          "name": "Comprehensive Metabolic Panel (CMP)",
+          "measuresWhat": "Kidney function, liver enzymes, blood sugar, electrolytes.",
+          "whyItMatters": "Core organ function baseline.",
+          "flaggedBy": "Elevated creatinine, glucose, or liver enzymes warrant follow-up."
+        },
+        {
+          "name": "Vitamin B12",
+          "measuresWhat": "Serum B12 levels.",
+          "whyItMatters": "B12 deficiency is one of the most common and reversible causes of fatigue, brain fog, and nerve tingling. Vegans, vegetarians, and adults over 50 are at highest risk.",
+          "flaggedBy": "Levels below 300 pg/mL may benefit from B12 injections."
+        },
+        {
+          "name": "Folate",
+          "measuresWhat": "Serum folate (vitamin B9).",
+          "whyItMatters": "Essential for cell division and DNA synthesis. Low folate contributes to anemia and fatigue.",
+          "flaggedBy": "Low folate alongside low B12 suggests a dual deficiency."
+        },
+        {
+          "name": "Vitamin D (25-OH)",
+          "measuresWhat": "Serum 25-hydroxyvitamin D.",
+          "whyItMatters": "Most adults are deficient, especially in Colorado winters. Vitamin D regulates immune function, bone health, and mood.",
+          "flaggedBy": "Levels below 30 ng/mL indicate deficiency. Below 20 is severe."
+        },
+        {
+          "name": "Potassium",
+          "measuresWhat": "Serum potassium levels.",
+          "whyItMatters": "Critical for heart rhythm, muscle contractions, and nerve signaling.",
+          "flaggedBy": "Both high and low potassium are clinically significant."
+        },
+        {
+          "name": "Iron (Serum)",
+          "measuresWhat": "Circulating iron levels.",
+          "whyItMatters": "Iron is essential for oxygen transport. Deficiency is the most common nutritional deficiency worldwide and a leading cause of fatigue, especially in women.",
+          "flaggedBy": "Low iron with low hemoglobin confirms iron-deficiency anemia."
+        },
+        {
+          "name": "Magnesium",
+          "measuresWhat": "Serum magnesium levels.",
+          "whyItMatters": "Magnesium is involved in 300+ enzymatic reactions including energy production, sleep regulation, and muscle function. Most Americans are mildly deficient.",
+          "flaggedBy": "Low magnesium is associated with muscle cramps, poor sleep, and migraines."
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You feel off but can't pinpoint why",
+          "detail": "Fatigue, brain fog, and low energy often come down to one or two specific deficiencies. This panel checks the most common ones so you can target exactly what you need."
+        },
+        {
+          "headline": "You want to optimize your IV and injection choices",
+          "detail": "Instead of guessing which vitamins you need, get data first. Your results tell you exactly where to focus your treatments for maximum benefit."
+        },
+        {
+          "headline": "You suspect a specific deficiency",
+          "detail": "If you've been tired, losing hair, getting sick often, or having mood changes, one of these markers is likely the answer."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Results typically available within 2-5 business days.",
+        "duration": "15-minute blood draw at your location.",
+        "frequency": "Every 6-12 months for monitoring. More frequently if actively correcting a deficiency.",
+        "howItFeels": "A standard venipuncture by a licensed RN. Most patients feel only a brief pinch. Your nurse can review results with you and recommend targeted IV or injection treatments."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "labComplete",
+        "labInDepth",
+        "nad250"
+      ]
     }
   ]
 }

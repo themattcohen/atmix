@@ -109,7 +109,7 @@
   // ---------------------------------------------------------------------------
   // Progress bar
   // ---------------------------------------------------------------------------
-  var EXPECTED_MAX_STEPS = 3; // max question depth before result
+  var EXPECTED_MAX_STEPS = 4; // max question depth before result
 
   function updateProgress() {
     var pct = Math.min(Math.round((state.stepNumber / EXPECTED_MAX_STEPS) * 100), 90);
@@ -437,6 +437,9 @@
     if (contBtn) {
       if (state.selectedMulti.length > 0) {
         contBtn.removeAttribute('disabled');
+        // Hide error message if visible
+        var errEl = dom.contentArea.querySelector('.tw-error-msg');
+        if (errEl) { errEl.classList.remove('tw-error-msg--visible'); }
       } else {
         contBtn.setAttribute('disabled', 'disabled');
       }
@@ -543,7 +546,10 @@
     // Show error if nothing selected (button should be disabled, but guard anyway)
     if (state.selectedMulti.length === 0) {
       var errEl = dom.contentArea.querySelector('.tw-error-msg');
-      if (errEl) { errEl.textContent = 'Please select at least one symptom to continue.'; }
+      if (errEl) {
+        errEl.textContent = 'Please select at least one symptom to continue.';
+        errEl.classList.add('tw-error-msg--visible');
+      }
       return;
     }
 
@@ -1083,7 +1089,7 @@
 
     // Rank badge
     var rankBadge = document.createElement('span');
-    rankBadge.className = 'tw-rec-rank';
+    rankBadge.className = 'tw-rec-rank' + (rank === 1 ? ' tw-rec-rank--top' : '');
     rankBadge.setAttribute('aria-label', 'Match number ' + rank);
     rankBadge.textContent = '#' + rank;
     card.appendChild(rankBadge);
