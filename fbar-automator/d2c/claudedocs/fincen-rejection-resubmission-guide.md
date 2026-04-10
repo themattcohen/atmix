@@ -53,7 +53,8 @@ Correct the schema issues in `d2c/src/lib/fincen-xml.ts`. Common rejection cause
 | Missing Party type 43 | Signature authority accounts lacked No-FI Owner party | Emit type 43 alongside type 41 for sig auth accounts | b440a1f |
 | Wrong `NoFIOwnerCount` | Hardcoded to "0" | Dynamically count sig auth accounts | b440a1f |
 | ZIP codes with hyphens | "12345-6789" format rejected | Strip `[-\s]` from ZIP codes | b440a1f |
-| C52 warn: `SignatureAuthoritiesQuantityText` < 25 | Field emitted for any sig auth count | Only emit when sigAuthCount >= 25 | (pending) |
+| C52 warn: `SignatureAuthoritiesQuantityText` < 25 | Field emitted for any sig auth count | Only emit when sigAuthCount >= 25 | f0db946 |
+| Missing Party type 42 | Joint accounts (EFilingAccountTypeCode=142) lacked joint owner party; `JointlyOwnedOwnerCount` hardcoded to "0" | Emit type 42 with joint owner name+address; dynamic `JointlyOwnedOwnerCount`; add structured fields to ForeignAccount schema | 2026-04-10 |
 
 ### Step 4 — Resubmit as Initial Filing
 

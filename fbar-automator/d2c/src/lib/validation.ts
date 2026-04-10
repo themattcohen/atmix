@@ -95,6 +95,17 @@ export const foreignAccountBaseSchema = z.object({
   maxValueLocal: z.number().positive("Please enter the maximum account value (must be greater than 0)"),
   isJointAccount: z.boolean(),
   jointOwnerInfo: z.string().max(500).optional().nullable(),
+  jointOwnerFirstName: z.string().max(100).optional().nullable(),
+  jointOwnerLastName: z.string().max(100).optional().nullable(),
+  jointOwnerAddress: z.object({
+    street: z.string().max(200).optional(),
+    city: z.string().max(100).optional(),
+    state: z.string().max(50).optional(),
+    country: z.string().length(2).optional(),
+    zip: z.string().max(20).optional(),
+  }).optional().nullable(),
+  jointOwnerTin: z.string().max(20).optional().nullable(),
+  jointOwnerTinType: z.enum(["SSN", "ITIN"]).optional().nullable(),
   calendarYear: calendarYearSchema,
   institutionAddress: z.object({
     street: z.string().optional(),
@@ -133,6 +144,29 @@ export const foreignAccountSchema = foreignAccountBaseSchema.superRefine((data, 
         message: "Please select a valid Mexican state",
         path: ["institutionAddress", "state"],
       });
+    }
+  }
+  if (data.isJointAccount && data.ownershipType !== "SIGNATURE_AUTHORITY") {
+    if (!data.jointOwnerFirstName?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["jointOwnerFirstName"],
+        message: "Joint owner first name is required",
+      })
+    }
+    if (!data.jointOwnerLastName?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["jointOwnerLastName"],
+        message: "Joint owner last name is required",
+      })
+    }
+    if (!data.jointOwnerAddress?.country) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["jointOwnerAddress"],
+        message: "Joint owner country is required",
+      })
     }
   }
 });

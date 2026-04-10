@@ -497,6 +497,55 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       accountElement["fc2:Party"] = fiParty
     }
 
+    const isJoint =
+      account.isJointAccount && account.ownershipType !== "SIGNATURE_AUTHORITY"
+
+    if (isJoint && account.jointOwnerLastName) {
+      const jointPartySeq = seq.next()
+      const jointNameSeq = seq.next()
+      const jointAddrSeq = seq.next()
+
+      const joAddr = parseAddress(account.jointOwnerAddress)
+
+      const jointAddress: Record<string, unknown> = {
+        "@_SeqNum": String(jointAddrSeq),
+        "fc2:RawCityText": toAscii(joAddr.city),
+        "fc2:RawCountryCodeText": joAddr.country || account.countryCode,
+      }
+      if (joAddr.state) {
+        jointAddress["fc2:RawStateCodeText"] = joAddr.state
+      }
+      jointAddress["fc2:RawStreetAddress1Text"] = toAscii(joAddr.street)
+      jointAddress["fc2:RawZIPCode"] = (joAddr.zip || "").replace(/[-\s]/g, "")
+
+      const jointParty: Record<string, unknown> = {
+        "@_SeqNum": String(jointPartySeq),
+        "fc2:ActivityPartyTypeCode": "42",
+        "fc2:PartyName": {
+          "@_SeqNum": String(jointNameSeq),
+          "fc2:PartyNameTypeCode": "L",
+          "fc2:RawEntityIndividualLastName": toAscii(account.jointOwnerLastName),
+          "fc2:RawIndividualFirstName": toAscii(account.jointOwnerFirstName ?? ""),
+        },
+        "fc2:Address": jointAddress,
+      }
+
+      if (account.jointOwnerTin && account.jointOwnerTinType) {
+        const jointIdSeq = seq.next()
+        const decryptedJoTin = safeDecrypt(account.jointOwnerTin).replace(/\D/g, "")
+        jointParty["fc2:PartyIdentification"] = {
+          "@_SeqNum": String(jointIdSeq),
+          "fc2:PartyIdentificationNumberText": decryptedJoTin,
+          "fc2:PartyIdentificationTypeCode": TIN_TYPE_CODE[account.jointOwnerTinType],
+        }
+      }
+
+      const existing = accountElement["fc2:Party"]
+      accountElement["fc2:Party"] = Array.isArray(existing)
+        ? [...existing, jointParty]
+        : [existing, jointParty]
+    }
+
     accountElements.push(accountElement)
   }
 
@@ -553,7 +602,11 @@ export async function generateFincenXml(filingYearId: string): Promise<string> {
       "@_ActivityCount": "1",
       "@_PartyCount": String(type41Count),
       "@_AccountCount": String(accountElements.length),
-      "@_JointlyOwnedOwnerCount": "0",
+      "@_JointlyOwnedOwnerCount": String(
+        accounts.filter(
+          (a) => a.isJointAccount && a.ownershipType !== "SIGNATURE_AUTHORITY" && a.jointOwnerLastName
+        ).length
+      ),
       "@_NoFIOwnerCount": String(
         accounts.filter(
           (a) => a.ownershipType === "SIGNATURE_AUTHORITY" || a.ownershipType === "BOTH"
@@ -770,7 +823,22 @@ export function validateFincenXml(
   }
 
   // -----------------------------------------------------------------------
-  // 14. Validate filer TIN is exactly 9 digits
+  // 14. Validate joint accounts (EFilingAccountTypeCode=142) have Party type 42
+  // -----------------------------------------------------------------------
+
+  for (let i = 1; i < accountBlocks.length; i++) {
+    const block = accountBlocks[i].split("</fc2:Account>")[0] ?? ""
+    if (block.includes("<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>")) {
+      if (!block.includes("<fc2:ActivityPartyTypeCode>42</fc2:ActivityPartyTypeCode>")) {
+        errors.push(
+          "Account with EFilingAccountTypeCode=142 (joint) is missing a Party type 42 (joint owner)"
+        )
+      }
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // 15. Validate filer TIN is exactly 9 digits
   // -----------------------------------------------------------------------
 
   const filerPartyBlocks = xml.split("<fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>");

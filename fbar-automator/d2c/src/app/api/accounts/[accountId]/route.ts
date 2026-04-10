@@ -80,6 +80,11 @@ export async function PUT(
     if (d.maxValueLocal !== undefined) updateData.maxValueLocal = d.maxValueLocal;
     if (d.isJointAccount !== undefined) updateData.isJointAccount = d.isJointAccount;
     if (d.jointOwnerInfo !== undefined) updateData.jointOwnerInfo = d.jointOwnerInfo || null;
+    if (d.jointOwnerFirstName !== undefined) updateData.jointOwnerFirstName = d.jointOwnerFirstName || null;
+    if (d.jointOwnerLastName !== undefined) updateData.jointOwnerLastName = d.jointOwnerLastName || null;
+    if (d.jointOwnerAddress !== undefined) updateData.jointOwnerAddress = (d.jointOwnerAddress || Prisma.DbNull) as any;
+    if (d.jointOwnerTin !== undefined) updateData.jointOwnerTin = d.jointOwnerTin ? encrypt(d.jointOwnerTin) : null;
+    if (d.jointOwnerTinType !== undefined) updateData.jointOwnerTinType = d.jointOwnerTinType || null;
     if (d.institutionAddress !== undefined) updateData.institutionAddress = (d.institutionAddress || null) as any;
 
     const { count } = await prisma.foreignAccount.updateMany({

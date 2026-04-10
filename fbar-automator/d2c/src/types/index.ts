@@ -78,6 +78,11 @@ export interface CreateAccountRequest {
   maxValueLocal: number;
   isJointAccount: boolean;
   jointOwnerInfo?: string;
+  jointOwnerFirstName?: string | null;
+  jointOwnerLastName?: string | null;
+  jointOwnerAddress?: { street?: string; city?: string; state?: string; country?: string; zip?: string } | null;
+  jointOwnerTin?: string | null;
+  jointOwnerTinType?: "SSN" | "ITIN" | null;
   calendarYear: number;
   institutionAddress?: {
     street?: string;
@@ -101,6 +106,11 @@ export interface AccountDisplay {
   exchangeRate: number | null;
   isJointAccount: boolean;
   jointOwnerInfo: string | null;
+  jointOwnerFirstName?: string | null;
+  jointOwnerLastName?: string | null;
+  jointOwnerAddress?: { street?: string; city?: string; state?: string; country?: string; zip?: string } | null;
+  jointOwnerTin?: string | null;
+  jointOwnerTinType?: "SSN" | "ITIN" | null;
   calendarYear: number;
   sourceStatementId: string | null;
   institutionAddress?: {

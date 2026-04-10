@@ -258,24 +258,96 @@ describe("P4-2: generateFincenXml — batch filing (25+ accounts)", () => {
 });
 
 describe("P4-2: generateFincenXml — joint accounts", () => {
-  it("P4-2: joint account (isJointAccount=true) uses EFilingAccountTypeCode 142", async () => {
+  it("joint account emits EFilingAccountTypeCode 142 and Party type 42", async () => {
     await createTestAccount({
       isJointAccount: true,
-      jointOwnerInfo: "John Q. Public, SSN: ***-**-1234",
+      jointOwnerInfo: "John Q. Public",
+      jointOwnerFirstName: "John",
+      jointOwnerLastName: "Public",
+      jointOwnerAddress: { street: "123 Main St", city: "London", country: "GB", zip: "SW1A 1AA" },
     });
 
     const xml = await generateFincenXml(testFilingId);
 
-    if (xml.includes("<fc2:EFilingBatchXML")) {
-      // EFilingAccountTypeCode 142 = Jointly Owned Financial Account
-      expect(xml).toContain(
-        "<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>"
-      );
-      expectXsdValid(xml);
-    }
+    expect(xml).toContain(
+      "<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>"
+    );
+    expect(xml).toContain(
+      "<fc2:ActivityPartyTypeCode>42</fc2:ActivityPartyTypeCode>"
+    );
+    expect(xml).toContain(
+      "<fc2:RawEntityIndividualLastName>Public</fc2:RawEntityIndividualLastName>"
+    );
+    expect(xml).toContain(
+      "<fc2:RawIndividualFirstName>John</fc2:RawIndividualFirstName>"
+    );
+    expect(xml).toContain("<fc2:RawCityText>London</fc2:RawCityText>");
+    expect(xml).toContain("<fc2:RawCountryCodeText>GB</fc2:RawCountryCodeText>");
+    expectXsdValid(xml);
   });
 
-  it("P4-2: non-joint account uses EFilingAccountTypeCode 141", async () => {
+  it("joint account with TIN emits PartyIdentification", async () => {
+    await createTestAccount({
+      isJointAccount: true,
+      jointOwnerFirstName: "Jane",
+      jointOwnerLastName: "Doe",
+      jointOwnerAddress: { street: "456 Oak Ave", city: "Toronto", country: "CA", state: "ON", zip: "M5V" },
+      jointOwnerTin: encrypt("123456789"),
+      jointOwnerTinType: "SSN",
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).toContain(
+      "<fc2:ActivityPartyTypeCode>42</fc2:ActivityPartyTypeCode>"
+    );
+    expect(xml).toContain(
+      "<fc2:PartyIdentificationNumberText>123456789</fc2:PartyIdentificationNumberText>"
+    );
+  });
+
+  it("signature authority + joint flag emits 143, not 142", async () => {
+    await createTestAccount({
+      ownershipType: "SIGNATURE_AUTHORITY",
+      isJointAccount: true,
+      jointOwnerFirstName: "Test",
+      jointOwnerLastName: "Owner",
+      jointOwnerAddress: { city: "Berlin", country: "DE" },
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).toContain(
+      "<fc2:EFilingAccountTypeCode>143</fc2:EFilingAccountTypeCode>"
+    );
+    expect(xml).not.toContain(
+      "<fc2:ActivityPartyTypeCode>42</fc2:ActivityPartyTypeCode>"
+    );
+  });
+
+  it("JointlyOwnedOwnerCount matches joint account count", async () => {
+    await createTestAccount({
+      isJointAccount: true,
+      jointOwnerFirstName: "Alice",
+      jointOwnerLastName: "Smith",
+      jointOwnerAddress: { city: "Zurich", country: "CH" },
+      institutionName: "Bank A",
+    });
+    await createTestAccount({
+      isJointAccount: true,
+      jointOwnerFirstName: "Bob",
+      jointOwnerLastName: "Jones",
+      jointOwnerAddress: { city: "Berlin", country: "DE" },
+      institutionName: "Bank B",
+    });
+    await createTestAccount({ isJointAccount: false, institutionName: "Bank C" });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    expect(xml).toContain('JointlyOwnedOwnerCount="2"');
+  });
+
+  it("non-joint account uses EFilingAccountTypeCode 141", async () => {
     await createTestAccount({
       isJointAccount: false,
       jointOwnerInfo: null,
@@ -283,13 +355,31 @@ describe("P4-2: generateFincenXml — joint accounts", () => {
 
     const xml = await generateFincenXml(testFilingId);
 
-    if (xml.includes("<fc2:EFilingBatchXML")) {
-      // EFilingAccountTypeCode 141 = Separately Owned Financial Account
-      expect(xml).toContain(
-        "<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>"
-      );
-      expectXsdValid(xml);
-    }
+    expect(xml).toContain(
+      "<fc2:EFilingAccountTypeCode>141</fc2:EFilingAccountTypeCode>"
+    );
+    expect(xml).not.toContain(
+      "<fc2:ActivityPartyTypeCode>42</fc2:ActivityPartyTypeCode>"
+    );
+    expectXsdValid(xml);
+  });
+
+  it("joint account without structured data does not emit type 42", async () => {
+    await createTestAccount({
+      isJointAccount: true,
+      jointOwnerInfo: "Just a name, no structured fields",
+      jointOwnerLastName: null,
+    });
+
+    const xml = await generateFincenXml(testFilingId);
+
+    // Type 142 is set (isJointAccount=true) but no Party 42 without structured data
+    expect(xml).toContain(
+      "<fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>"
+    );
+    expect(xml).not.toContain(
+      "<fc2:ActivityPartyTypeCode>42</fc2:ActivityPartyTypeCode>"
+    );
   });
 });
 
@@ -522,6 +612,41 @@ describe("P4-2: validateFincenXml — structural validation", () => {
 
     expect(result.isValid).toBe(false);
     expect(result.errors.length).toBeGreaterThan(0);
+  });
+
+  it("validateFincenXml catches EFilingAccountTypeCode=142 without Party type 42", () => {
+    const xml142NoParty42 = `<?xml version="1.0" encoding="UTF-8"?>
+<fc2:EFilingBatchXML ActivityCount="1" PartyCount="1" AccountCount="1"
+  JointlyOwnedOwnerCount="0" NoFIOwnerCount="0" ConsolidatedOwnerCount="0"
+  xsi:schemaLocation="www.fincen.gov/base https://www.fincen.gov/base/EFL_FBARXBatchSchema.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:fc2="www.fincen.gov/base">
+  <fc2:FormTypeCode>FBARX</fc2:FormTypeCode>
+  <fc2:Activity SeqNum="1">
+    <fc2:ActivityPartyTypeCode>35</fc2:ActivityPartyTypeCode>
+    <fc2:PreparerFilingSignatureIndicator>Y</fc2:PreparerFilingSignatureIndicator>
+    <fc2:ActivityAssociation SeqNum="2">
+    </fc2:ActivityAssociation>
+    <fc2:Party SeqNum="3">
+      <fc2:ActivityPartyTypeCode>15</fc2:ActivityPartyTypeCode>
+    </fc2:Party>
+    <fc2:Account SeqNum="10">
+      <fc2:AccountMaximumValueAmountText>1000</fc2:AccountMaximumValueAmountText>
+      <fc2:EFilingAccountTypeCode>142</fc2:EFilingAccountTypeCode>
+      <fc2:Party SeqNum="11">
+        <fc2:ActivityPartyTypeCode>41</fc2:ActivityPartyTypeCode>
+      </fc2:Party>
+    </fc2:Account>
+    <fc2:ForeignAccountActivity SeqNum="20">
+      <fc2:ReportCalendarYearText>2024</fc2:ReportCalendarYearText>
+    </fc2:ForeignAccountActivity>
+  </fc2:Activity>
+</fc2:EFilingBatchXML>`;
+
+    const result = validateFincenXml(xml142NoParty42);
+
+    expect(result.isValid).toBe(false);
+    expect(result.errors.some((e) => e.includes("Party type 42"))).toBe(true);
   });
 
   it("P4-2: validateFincenXml returns isValid=false for XML missing fc2:EFilingBatchXML root", () => {

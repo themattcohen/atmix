@@ -65,7 +65,12 @@ model ForeignAccount {
   ownershipType     OwnershipType
   countryCode       String        // ISO 3166-1 alpha-2
   isJointAccount    Boolean       @default(false)
-  jointOwnerInfo    String?
+  jointOwnerInfo    String?       // Legacy freeform field — kept for backward compat
+  jointOwnerFirstName String?
+  jointOwnerLastName  String?
+  jointOwnerAddress   Json?       // { street?, city?, state?, country, zip? }
+  jointOwnerTin       String?     // Encrypted
+  jointOwnerTinType   TINType?
   maxValueLocal     Decimal       @db.Decimal(18, 2)
   maxValueUsd       Decimal?      @db.Decimal(18, 2)
   currencyCode      String        // ISO 4217
