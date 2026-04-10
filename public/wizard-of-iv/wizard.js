@@ -6,6 +6,9 @@
 (function (root) {
   'use strict';
 
+  // Capture script reference immediately (before DOMContentLoaded nulls it)
+  var _currentScript = document.currentScript;
+
   // ---------------------------------------------------------------------------
   // Icon map — inline SVG, medical/wellness aesthetic, 20x20 viewBox
   // ---------------------------------------------------------------------------
@@ -1499,12 +1502,8 @@
       if (cfg) { return cfg; }
     }
 
-    // Default: same directory as current script
-    var thisScript = document.currentScript ||
-      (function () {
-        var tags = document.querySelectorAll('script');
-        return tags[tags.length - 1];
-      }());
+    // Default: same directory as current script (captured at IIFE top)
+    var thisScript = _currentScript;
 
     if (thisScript && thisScript.src) {
       return thisScript.src.replace(/\/[^\/]+$/, '/wizard-config.json');
