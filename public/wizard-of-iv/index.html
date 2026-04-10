@@ -90,14 +90,60 @@
   </style>
 </head>
 <body>
-  <div class="test-page">
-    <h1>US Mobile IV</h1>
-    <p>Interactive treatment recommendation wizard. Click below to try it out.</p>
-    <button class="launch-btn" data-treatment-wizard>Find My Treatment</button>
-    <br>
-    <button class="secondary-btn" onclick="TreatmentWizard.open('test')">Open via JS API</button>
+  <div id="gate" style="display:none; text-align:center; max-width:360px;">
+    <h1 style="font-family:'Montserrat',sans-serif; font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:1rem;">Password Required</h1>
+    <input id="gate-input" type="password" placeholder="Enter password" autocomplete="off"
+      style="width:100%; padding:0.75rem 1rem; font-family:'Open Sans',sans-serif; font-size:1rem; border:1px solid rgba(255,255,255,0.2); border-radius:8px; background:rgba(255,255,255,0.08); color:#fff; outline:none; margin-bottom:0.75rem;">
+    <button id="gate-btn" class="launch-btn" style="width:100%;">Enter</button>
+    <p id="gate-error" style="color:#e07a5f; font-size:0.8125rem; margin-top:0.75rem; display:none;">Incorrect password.</p>
+  </div>
+
+  <div id="main-content" style="display:none;">
+    <div class="test-page">
+      <h1>US Mobile IV</h1>
+      <p>Interactive treatment recommendation wizard. Click below to try it out.</p>
+      <button class="launch-btn" data-treatment-wizard>Find My Treatment</button>
+      <br>
+      <button class="secondary-btn" onclick="TreatmentWizard.open('test')">Open via JS API</button>
+    </div>
   </div>
 
   <script src="wizard.js"></script>
+  <script>
+    (function () {
+      var KEY = 'usmiv-wizard-unlocked';
+      var PASS = 'david';
+      var gate = document.getElementById('gate');
+      var main = document.getElementById('main-content');
+      var input = document.getElementById('gate-input');
+      var btn = document.getElementById('gate-btn');
+      var err = document.getElementById('gate-error');
+
+      if (sessionStorage.getItem(KEY) === 'true') {
+        main.style.display = '';
+        return;
+      }
+
+      gate.style.display = '';
+
+      function tryUnlock() {
+        if (input.value.toLowerCase().trim() === PASS) {
+          sessionStorage.setItem(KEY, 'true');
+          gate.style.display = 'none';
+          main.style.display = '';
+        } else {
+          err.style.display = '';
+          input.value = '';
+          input.focus();
+        }
+      }
+
+      btn.addEventListener('click', tryUnlock);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') tryUnlock();
+      });
+      input.focus();
+    }());
+  </script>
 </body>
 </html>

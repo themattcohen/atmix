@@ -13,5 +13,12 @@
 <body>
   <div id="td-app"></div>
   <script src="treatment-detail.js"></script>
+  <script>
+    (function () {
+      if (sessionStorage.getItem('usmiv-wizard-unlocked') !== 'true') {
+        window.location.href = '/wizard-of-iv/';
+      }
+    }());
+  </script>
 </body>
 </html>
