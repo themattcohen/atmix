@@ -1679,8 +1679,10 @@
 
 .tw-addon-chips {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--tw-space-2);
+  flex-direction: column;
+  gap: var(--tw-space-3);
+  padding: var(--tw-space-4) var(--tw-modal-padding-x, 1.25rem);
+  border-top: 1px solid var(--tw-color-border);
   margin-bottom: var(--tw-space-3);
 }
 

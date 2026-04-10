@@ -323,7 +323,11 @@
       if (Array.isArray(glp1.eligibility.contraindications)) {
         eligibilityItems = eligibilityItems.concat(glp1.eligibility.contraindications);
       }
-      if (glp1.eligibility.requiresConsult) eligibilityItems.push(glp1.eligibility.requiresConsult);
+      if (glp1.eligibility.requiresConsult && typeof glp1.eligibility.requiresConsult === 'string') {
+        eligibilityItems.push(glp1.eligibility.requiresConsult);
+      } else if (glp1.eligibility.requiresConsult === true) {
+        eligibilityItems.push('Medical consultation required before starting');
+      }
       if (!eligibilityItems.length) eligibilityItems = defaultEligibility;
     } else {
       eligibilityItems = defaultEligibility;
@@ -337,7 +341,7 @@
     var dosingTable = '';
     if (dosingRows.length) {
       var tableRows = dosingRows.map(function (row) {
-        return '<tr><td>' + esc(row.period) + '</td><td>' + esc(row.dose) + '</td><td>' + esc(row.notes || '') + '</td></tr>';
+        return '<tr><td>' + esc(row.week || row.period || '') + '</td><td>' + esc(row.dose) + '</td><td>' + esc(row.purpose || row.notes || '') + '</td></tr>';
       }).join('');
       dosingTable = [
         '<div class="td-glp1__table-wrap">',
@@ -357,9 +361,9 @@
     };
 
     var commonList    = (sideEffects.common    || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
-    var lessCommonData = sideEffects.lessCommon || (typeof sideEffects.managementTips === 'string' ? [sideEffects.managementTips] : sideEffects.managementTips) || [];
-    var lessCommonList= lessCommonData.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
+    var lessCommonList= (sideEffects.lessCommon|| []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
     var seriousList   = (sideEffects.serious   || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
+    var managementTip = typeof sideEffects.managementTips === 'string' ? sideEffects.managementTips : '';
 
     var bloodworkNote = glp1.bloodworkNote || 'Initial bloodwork ($99) is required before starting. This typically includes a CBC, CMP, HbA1c, and lipid panel to establish your baseline and ensure safe prescribing.';
 
@@ -386,6 +390,9 @@
             : '',
           seriousList
             ? '<div class="td-glp1__se-group"><div class="td-glp1__se-serious-header">' + ICONS.warning + '<p class="td-glp1__se-label td-glp1__se-label--serious">Serious — Seek Immediate Care</p></div><ul class="td-glp1__se-list">' + seriousList + '</ul></div>'
+            : '',
+          managementTip
+            ? '<p class="td-glp1__management-tip">' + esc(managementTip) + '</p>'
             : '',
         '</div>',
 

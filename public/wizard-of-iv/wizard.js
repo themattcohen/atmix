@@ -634,7 +634,10 @@
       };
     }
 
-    // Fallback
+    // Fallback — log warning for debugging
+    if (root.console && root.console.warn) {
+      root.console.warn('[TreatmentWizard] Unknown treatment/bundle ID: "' + id + '", falling back to Myers\'');
+    }
     return {
       isBundleResult: false,
       primary: config.treatments['myers'],
