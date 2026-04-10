@@ -1051,7 +1051,7 @@
         {
           "label": "Anti-aging / longevity",
           "icon": "hourglass",
-          "recommend": "longevity"
+          "next": "antiAging"
         },
         {
           "label": "General tune-up",
@@ -1116,6 +1116,26 @@
           "sublabel": "Longevity focus, serious repair. 90-120 min, $400",
           "icon": "zap",
           "recommend": "nad500"
+        }
+      ]
+    },
+    "antiAging": {
+      "id": "antiAging",
+      "title": "What's your approach to anti-aging?",
+      "subtitle": "Both options support cellular health and longevity.",
+      "type": "single",
+      "options": [
+        {
+          "label": "Longevity IV -- full vitamin stack + NAD+",
+          "sublabel": "$250. Myers' formula with 50mg NAD+. Broad anti-aging support.",
+          "icon": "heart",
+          "recommend": "longevity"
+        },
+        {
+          "label": "NAD+ IV -- focused cellular repair",
+          "sublabel": "From $100. Pure NAD+ at your chosen dose (100-500mg). Targets cellular energy and DNA repair directly.",
+          "icon": "zap",
+          "next": "nadDose"
         }
       ]
     },
