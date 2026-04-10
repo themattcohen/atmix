@@ -18,15 +18,15 @@ export const GET = apiHandler(async (req: NextRequest) => {
     }
 
     const calendarYearParam = req.nextUrl.searchParams.get("calendarYear");
-
-    const where: Prisma.ForeignAccountWhereInput = { userId: session.user.id };
-    if (calendarYearParam) {
-      const parsed = calendarYearSchema.safeParse(parseInt(calendarYearParam, 10));
-      if (!parsed.success) {
-        return NextResponse.json({ error: "Invalid calendar year (must be 2010-2030)" }, { status: 400 });
-      }
-      where.calendarYear = parsed.data;
+    if (!calendarYearParam) {
+      return NextResponse.json({ error: "calendarYear is required" }, { status: 400 });
     }
+
+    const parsed = calendarYearSchema.safeParse(parseInt(calendarYearParam, 10));
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid calendar year (must be 2010-2030)" }, { status: 400 });
+    }
+    const where: Prisma.ForeignAccountWhereInput = { userId: session.user.id, calendarYear: parsed.data };
 
     const accounts = await prisma.foreignAccount.findMany({
       where,
@@ -34,13 +34,12 @@ export const GET = apiHandler(async (req: NextRequest) => {
     });
 
     let priorYears: PriorYearInfo[] = [];
-    if (calendarYearParam && accounts.length === 0) {
-      const parsedYear = parseInt(calendarYearParam, 10);
+    if (accounts.length === 0) {
       const grouped = await prisma.foreignAccount.groupBy({
         by: ['calendarYear'],
         where: {
           userId: session.user.id,
-          calendarYear: { lt: parsedYear },
+          calendarYear: { lt: parsed.data },
         },
         _count: { id: true },
         orderBy: { calendarYear: 'desc' },

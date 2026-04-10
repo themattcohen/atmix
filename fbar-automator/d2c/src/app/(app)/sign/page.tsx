@@ -52,15 +52,22 @@ export default function SignPage() {
         }
 
         if (filingData.data?.length > 0) {
-          // Prioritize active filing — don't redirect to /payment if user has a filing to sign
-          const activeFiling = filingData.data.find(
-            (f: FilingData) => f.status === "REVIEWED" || f.status === "IN_PROGRESS"
-          );
+          const activeId = sessionStorage.getItem("activeFilingYearId");
+          // Prioritize active filing — prefer the one the user selected from the dashboard
+          const activeFiling =
+            (activeId && filingData.data.find(
+              (f: FilingData) => f.id === activeId && (f.status === "REVIEWED" || f.status === "IN_PROGRESS")
+            )) ||
+            filingData.data.find(
+              (f: FilingData) => f.status === "REVIEWED" || f.status === "IN_PROGRESS"
+            );
           if (activeFiling) {
             setFiling(activeFiling);
           } else {
             // No active filing — if there's a SIGNED one, redirect to payment
-            const signedFiling = filingData.data.find((f: FilingData) => f.status === "SIGNED");
+            const signedFiling =
+              (activeId && filingData.data.find((f: FilingData) => f.id === activeId && f.status === "SIGNED")) ||
+              filingData.data.find((f: FilingData) => f.status === "SIGNED");
             if (signedFiling) {
               router.push("/payment");
               return;

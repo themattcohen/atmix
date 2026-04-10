@@ -69,18 +69,24 @@ export default function AccountsPage() {
       const filingData = await filingRes.json();
 
       let year = new Date().getFullYear() - 1;
-      if (filingData.data?.length > 0) {
-        const active = filingData.data.find((f: { status: string; calendarYear: number; id: string; tier: string }) =>
-          ["IN_PROGRESS", "REVIEWED"].includes(f.status)
-        );
-        if (active) {
-          year = active.calendarYear;
-          setFilingYearId(active.id);
-          setTier(active.tier || "BASIC");
-          // If tier was already explicitly set to PREMIUM, skip tier selection
-          if (active.tier === "PREMIUM") {
-            setTierSelected(true);
-          }
+      const activeId = sessionStorage.getItem("activeFilingYearId");
+      type FilingEntry = { status: string; calendarYear: number; id: string; tier: "BASIC" | "PREMIUM" };
+      const active: FilingEntry | undefined =
+        filingData.data?.length > 0
+          ? (activeId && filingData.data.find((f: FilingEntry) =>
+              f.id === activeId && ["IN_PROGRESS", "REVIEWED"].includes(f.status)
+            )) ||
+            filingData.data.find((f: FilingEntry) =>
+              ["IN_PROGRESS", "REVIEWED"].includes(f.status)
+            )
+          : undefined;
+      if (active) {
+        year = active.calendarYear;
+        setFilingYearId(active.id);
+        setTier(active.tier || "BASIC");
+        // If tier was already explicitly set to PREMIUM, skip tier selection
+        if (active.tier === "PREMIUM") {
+          setTierSelected(true);
         }
       }
       setCalendarYear(year);
@@ -105,18 +111,15 @@ export default function AccountsPage() {
 
       // Recovery: if no saved accounts but completed statements exist, recover extractions
       const savedAccounts: AccountDisplay[] = data.data || [];
-      const activeFilingId = filingData.data?.find(
-        (f: { status: string; id: string; tier: string }) =>
-          ["IN_PROGRESS", "REVIEWED"].includes(f.status)
-      );
+      const activeFiling = active;
       if (
         savedAccounts.length === 0 &&
-        activeFilingId?.tier === "PREMIUM" &&
-        activeFilingId?.id
+        activeFiling?.tier === "PREMIUM" &&
+        activeFiling?.id
       ) {
         try {
           const stmtRes = await fetch(
-            `/api/statements?filingYearId=${activeFilingId.id}`
+            `/api/statements?filingYearId=${activeFiling.id}`
           );
           if (stmtRes.ok) {
             const stmtData = await stmtRes.json();

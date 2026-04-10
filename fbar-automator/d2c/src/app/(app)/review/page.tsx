@@ -37,12 +37,18 @@ export default function ReviewPage() {
         let year = new Date().getFullYear() - 1;
         let activeFiling: FilingInfo | null = null;
         if (filingData.data?.length > 0) {
-          // Prefer actively-being-worked-on filings over already-signed ones
-          // (prevents a SIGNED filing from a different year overshadowing an IN_PROGRESS one)
+          const activeId = sessionStorage.getItem("activeFilingYearId");
+          // Prefer the filing the user selected from the dashboard, then fall back to status-based search
           const active =
+            (activeId && filingData.data.find((f: FilingInfo) =>
+              f.id === activeId && ["IN_PROGRESS", "REVIEWED"].includes(f.status)
+            )) ||
             filingData.data.find((f: FilingInfo) =>
               ["IN_PROGRESS", "REVIEWED"].includes(f.status)
             ) ||
+            (activeId && filingData.data.find((f: FilingInfo) =>
+              f.id === activeId && ["SIGNED", "PAID"].includes(f.status)
+            )) ||
             filingData.data.find((f: FilingInfo) =>
               ["SIGNED", "PAID"].includes(f.status)
             );
