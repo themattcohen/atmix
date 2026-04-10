@@ -56,12 +56,12 @@ describe.skipIf(!process.env.SDTM_SANDBOX_HOST)("Sandbox SFTP submission", () =>
     );
 
     // Transmitter config — use TBSATEST TCC for sandbox
-    process.env.FINCEN_TRANSMITTER_NAME = "FBAR Direct LLC";
-    process.env.FINCEN_TRANSMITTER_TIN = "123456789";
+    process.env.FINCEN_TRANSMITTER_NAME = "All Solutions Consulting";
+    process.env.FINCEN_TRANSMITTER_TIN = "883761328";
     process.env.FINCEN_TRANSMITTER_TCC = "TBSATEST";
-    process.env.FINCEN_TRANSMITTER_ADDRESS = "123 Main St, Denver, CO 80202";
-    process.env.FINCEN_TRANSMITTER_CONTACT_NAME = "Test Admin";
-    process.env.FINCEN_TRANSMITTER_CONTACT_PHONE = "3035551234";
+    process.env.FINCEN_TRANSMITTER_ADDRESS = "6732 W Coal Mine Ave Ste 451, Littleton, CO 80123";
+    process.env.FINCEN_TRANSMITTER_CONTACT_NAME = "Matthew Cohen";
+    process.env.FINCEN_TRANSMITTER_CONTACT_PHONE = "8888635518";
 
     // Point SFTP at the sandbox host and disable sandbox mock mode
     // so submitBatch actually connects via SFTP instead of logging.
@@ -76,7 +76,7 @@ describe.skipIf(!process.env.SDTM_SANDBOX_HOST)("Sandbox SFTP submission", () =>
         passwordHash,
         firstName: "Sandbox",
         lastName: "Tester",
-        tin: encrypt("900000001"),
+        tin: encrypt("563952262"),
         tinType: "SSN",
         dateOfBirth: new Date("1990-01-15"),
         usAddress: {
@@ -115,6 +115,30 @@ describe.skipIf(!process.env.SDTM_SANDBOX_HOST)("Sandbox SFTP submission", () =>
         exchangeRateSource: "TREASURY",
         isJointAccount: false,
         jointOwnerInfo: null,
+        institutionAddress: Prisma.DbNull,
+      },
+    });
+
+    // Joint account — validates Party type 42 generation
+    await prisma.foreignAccount.create({
+      data: {
+        userId: testUserId,
+        calendarYear: 2024,
+        institutionName: "Sandbox Joint Test Bank",
+        accountNumber: encrypt("CH0000000000SANDBOX2"),
+        accountType: "BANK",
+        ownershipType: "FINANCIAL_INTEREST",
+        countryCode: "CH",
+        currencyCode: "CHF",
+        maxValueLocal: 5000,
+        maxValueUsd: 5000,
+        exchangeRate: 1.0,
+        exchangeRateSource: "TREASURY",
+        isJointAccount: true,
+        jointOwnerInfo: "Sandbox JointOwner",
+        jointOwnerFirstName: "Sandbox",
+        jointOwnerLastName: "JointOwner",
+        jointOwnerAddress: { street: "Test Strasse 1", city: "Zurich", country: "CH", zip: "8001" },
         institutionAddress: Prisma.DbNull,
       },
     });
