@@ -515,6 +515,7 @@
   // Not-found screen
   // ---------------------------------------------------------------------------
   function renderNotFound(slug) {
+    document.title = 'Treatment Not Found | US Mobile IV';
     var msg = slug
       ? 'The treatment <strong>' + esc(slug) + '</strong> was not found.'
       : 'No treatment was specified.';

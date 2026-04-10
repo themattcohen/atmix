@@ -1471,20 +1471,6 @@
   border-color: var(--tw-color-teal-wcag);
 }
 
-.tw-rec-card-header {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--tw-space-3);
-}
-
-.tw-rec-card-header-text {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--tw-space-1);
-}
-
 .tw-rec-name {
   font-family: var(--tw-font-heading);
   font-size: var(--tw-font-size-md);
@@ -1771,16 +1757,6 @@
   padding: var(--tw-space-4) var(--tw-modal-padding-x) var(--tw-space-5);
   background-color: rgba(42, 138, 143, 0.04);
   border-top: 1px solid var(--tw-color-teal-mid);
-}
-
-.tw-session-plan-title {
-  font-family: var(--tw-font-heading);
-  font-size: var(--tw-font-size-xs);
-  font-weight: 700;
-  color: var(--tw-color-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0 0 var(--tw-space-3) 0;
 }
 
 .tw-session-empty {
