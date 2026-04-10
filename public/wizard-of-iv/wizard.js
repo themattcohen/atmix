@@ -585,6 +585,7 @@
       state.multiResults = [];
       state.sessionPlan = [];
       state.stepNumber = Math.max(0, state.stepNumber - 1);
+      // Preserve selectedMulti so user sees their previous selections
       dom.progressFill.style.width = Math.min(Math.round(((state.stepNumber) / EXPECTED_MAX_STEPS) * 100), 90) + '%';
       dom.progressFill.setAttribute('aria-valuenow', Math.min(Math.round(((state.stepNumber) / EXPECTED_MAX_STEPS) * 100), 90));
       renderCurrentStep();
@@ -1409,6 +1410,7 @@
     itemsList.className = 'tw-session-items';
 
     var total = 0;
+    var hasMonthly = false;
 
     plan.forEach(function (treatmentId) {
       var t = config.treatments[treatmentId];
@@ -1416,6 +1418,7 @@
 
       var price = t.price || 0;
       total += price;
+      if (t.category === 'weightLoss') { hasMonthly = true; }
 
       var li = document.createElement('li');
       li.className = 'tw-session-item';
@@ -1448,7 +1451,7 @@
 
     var totalEl = document.createElement('p');
     totalEl.className = 'tw-session-total';
-    totalEl.textContent = 'Total: $' + total;
+    totalEl.textContent = 'Total: $' + total + (hasMonthly ? ' (includes monthly program pricing)' : '');
     section.appendChild(totalEl);
 
     var bookBtn = document.createElement('a');
