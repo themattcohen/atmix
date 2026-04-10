@@ -656,6 +656,11 @@
   // Show result screen
   // ---------------------------------------------------------------------------
   function showResult(treatmentId) {
+    // Auto-bundle: nad250 always shows with lab panel add-on
+    if (treatmentId === 'nad250') {
+      treatmentId = 'nadPlusLabs';
+    }
+
     var rec = resolveRecommendation(treatmentId);
     var t = rec.primary;
 
@@ -876,6 +881,12 @@
       noteEl.className = 'tw-result-note';
       noteEl.textContent = t.note;
       wrap.appendChild(noteEl);
+    }
+
+    // --- Add-on suggestions (for single-select results too) ---
+    var addonSection = renderAddonSuggestions(rec.primaryId);
+    if (addonSection) {
+      wrap.appendChild(addonSection);
     }
 
     // --- Trust bar ---

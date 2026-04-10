@@ -972,7 +972,7 @@
         },
         {
           "label": "I just want a quick injection",
-          "sublabel": "B12, Glutathione, Tri-Immune, Vitamin D -- $35",
+          "sublabel": "B12, Biotin, Glutathione, and more -- $35 each",
           "icon": "zap",
           "next": "quickShot"
         },
@@ -1008,7 +1008,7 @@
         {
           "label": "Dehydrated or exhausted",
           "icon": "droplet",
-          "recommend": "hydration"
+          "next": "dehydratedOrTired"
         },
         {
           "label": "Altitude sickness",
@@ -1046,7 +1046,7 @@
         {
           "label": "Athletic performance / recovery",
           "icon": "dumbbell",
-          "recommend": "performance"
+          "next": "athleticGoal"
         },
         {
           "label": "Anti-aging / longevity",
@@ -1062,6 +1062,18 @@
           "label": "Immune system support",
           "icon": "shield",
           "recommend": "immunity"
+        },
+        {
+          "label": "Recurring migraines / prevention",
+          "sublabel": "Regular magnesium IV for chronic migraine management",
+          "icon": "head",
+          "recommend": "migraine"
+        },
+        {
+          "label": "Addiction / withdrawal support",
+          "sublabel": "NAD+ therapy supports neurological recovery",
+          "icon": "heart",
+          "next": "nadDose"
         },
         {
           "label": "Prenatal support",
@@ -1093,10 +1105,50 @@
         }
       ]
     },
+    "dehydratedOrTired": {
+      "id": "dehydratedOrTired",
+      "title": "What best describes how you feel?",
+      "subtitle": "This helps us recommend the right treatment.",
+      "type": "single",
+      "options": [
+        {
+          "label": "Dehydrated -- not drinking enough, heat, vomiting",
+          "sublabel": "Pure saline rehydration, $120",
+          "icon": "droplet",
+          "recommend": "hydration"
+        },
+        {
+          "label": "Exhausted / run-down / depleted",
+          "sublabel": "Full vitamin IV to restore what's missing",
+          "icon": "battery",
+          "next": "myersUpgrade"
+        }
+      ]
+    },
+    "athleticGoal": {
+      "id": "athleticGoal",
+      "title": "What's your focus?",
+      "subtitle": "Different goals benefit from different approaches.",
+      "type": "single",
+      "options": [
+        {
+          "label": "Post-workout / competition recovery",
+          "sublabel": "Amino acids, vitamins, and hydration. $295",
+          "icon": "dumbbell",
+          "recommend": "performance"
+        },
+        {
+          "label": "Cellular energy and deep recovery",
+          "sublabel": "NAD+ therapy targets recovery at the cellular level, from $100",
+          "icon": "zap",
+          "next": "nadDose"
+        }
+      ]
+    },
     "nadDose": {
       "id": "nadDose",
       "title": "Which NAD+ dose is right for you?",
-      "subtitle": "Higher doses run longer but deliver deeper cellular repair.",
+      "subtitle": "NAD+ is a natural coenzyme your cells use for energy. It depletes with age and stress. Higher doses deliver deeper repair.",
       "type": "single",
       "options": [
         {
@@ -1127,7 +1179,7 @@
       "options": [
         {
           "label": "Longevity IV -- full vitamin stack + NAD+",
-          "sublabel": "$250. Myers' formula with 50mg NAD+. Broad anti-aging support.",
+          "sublabel": "$250. Full vitamin stack with 50mg NAD+. For higher NAD+ doses, choose the dedicated option below.",
           "icon": "heart",
           "recommend": "longevity"
         },
@@ -1142,7 +1194,7 @@
     "myersUpgrade": {
       "id": "myersUpgrade",
       "title": "Which Myers' level fits you?",
-      "subtitle": "Same proven formula -- higher doses for a stronger effect.",
+      "subtitle": "Same proven vitamin IV formula -- higher doses for a stronger effect",
       "type": "single",
       "options": [
         {
@@ -1159,9 +1211,15 @@
         },
         {
           "label": "Myers' Platinum -- $375",
-          "sublabel": "Triple dose + NAD+. Our strongest general wellness IV.",
+          "sublabel": "Triple dose + NAD+ (50mg). Our strongest general wellness IV.",
           "icon": "star",
           "recommend": "myersPlatinum"
+        },
+        {
+          "label": "I'd rather try NAD+ therapy",
+          "sublabel": "Pure cellular energy restoration, from $100. NAD+ is a coenzyme your cells use for energy -- it depletes with age and stress.",
+          "icon": "zap",
+          "next": "nadDose"
         }
       ]
     },
@@ -1216,13 +1274,13 @@
       "type": "single",
       "options": [
         {
-          "label": "Semaglutide -- from $199/mo",
+          "label": "Semaglutide (Ozempic/Wegovy) -- from $199/mo",
           "sublabel": "Up to 15% weight loss. Established track record.",
           "icon": "scale",
           "recommend": "semaglutide"
         },
         {
-          "label": "Tirzepatide -- from $399/mo",
+          "label": "Tirzepatide (Mounjaro/Zepbound) -- from $399/mo",
           "sublabel": "Dual-action GLP-1 + GIP. Up to 20% weight loss.",
           "icon": "scale",
           "recommend": "tirzepatide"
@@ -1335,7 +1393,7 @@
     "symptoms": {
       "id": "symptoms",
       "title": "What resonates with you?",
-      "subtitle": "Select all that apply -- we'll build your personalized session.",
+      "subtitle": "Select all that apply -- even just one. We'll find your best match.",
       "type": "multi",
       "options": [
         {
@@ -1346,7 +1404,8 @@
             "nad250": 3,
             "nad100": 2,
             "revival": 2,
-            "b12Shot": 2
+            "b12Shot": 2,
+            "labVitamin": 1
           },
           "addressedBy": {
             "myers": "The Myers' B-vitamin stack replenishes cellular fuel",
@@ -1403,7 +1462,8 @@
           "scores": {
             "performance": 5,
             "myers": 2,
-            "nad250": 2
+            "nad500": 2,
+            "nad250": 1
           },
           "addressedBy": {
             "performance": "Amino acids, NAD+, and Taurine accelerate muscle repair",
@@ -1457,7 +1517,7 @@
           "label": "Stressed and burnt out",
           "icon": "fire",
           "scores": {
-            "revival": 4,
+            "revival": 3,
             "myers": 3,
             "nad250": 3
           },
