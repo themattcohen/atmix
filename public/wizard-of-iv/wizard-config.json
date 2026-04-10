@@ -1211,6 +1211,32 @@
           "label": "Help me choose",
           "sublabel": "We'll walk you through both options",
           "icon": "help",
+          "next": "glp1Compare"
+        }
+      ]
+    },
+    "glp1Compare": {
+      "id": "glp1Compare",
+      "title": "Semaglutide vs. Tirzepatide",
+      "subtitle": "Both are GLP-1 medications. The key difference is strength and cost.",
+      "type": "single",
+      "options": [
+        {
+          "label": "Semaglutide -- the proven choice",
+          "sublabel": "From $199/mo. Average 15% body weight loss. Single-action GLP-1. Lower cost, strong clinical track record (Wegovy/Ozempic).",
+          "icon": "scale",
+          "recommend": "semaglutide"
+        },
+        {
+          "label": "Tirzepatide -- maximum results",
+          "sublabel": "From $399/mo. Up to 20% body weight loss. Dual-action GLP-1 + GIP. Stronger appetite suppression, newer medication (Mounjaro/Zepbound).",
+          "icon": "scale",
+          "recommend": "tirzepatide"
+        },
+        {
+          "label": "I'd like to talk to someone first",
+          "sublabel": "Call us at 303-406-4500 for a free consultation",
+          "icon": "help",
           "recommend": "weightLossConsult"
         }
       ]
@@ -1234,7 +1260,7 @@
         {
           "label": "I want to explore my options",
           "sublabel": "We'll walk you through everything",
-          "recommend": "weightLossConsult"
+          "next": "glp1Compare"
         }
       ]
     },
