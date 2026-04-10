@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { parseRejectionReason } from "@/lib/rejection-parser";
 import type { FilingDisplay } from "@/types";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [filings, setFilings] = useState<FilingDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -104,12 +106,15 @@ export default function DashboardPage() {
     };
 
     return (
-      <Link
-        href={action.path}
+      <button
+        onClick={() => {
+          sessionStorage.setItem("activeFilingYearId", filing.id);
+          router.push(action.path);
+        }}
         className={`inline-block px-4 py-2 rounded-md font-medium text-sm ${action.className}`}
       >
         {action.label}
-      </Link>
+      </button>
     );
   };
 

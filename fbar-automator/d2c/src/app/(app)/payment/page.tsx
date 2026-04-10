@@ -39,17 +39,19 @@ export default function PaymentPage() {
         const data = await res.json();
         const filings = data.data || [];
 
-        // P1-9: Redirect completed filings to confirmation
-        const completedFiling = filings.find((f: FilingData) =>
-          ["PAID", "SUBMITTED", "ACCEPTED", "SUBMITTING"].includes(f.status)
-        );
-        if (completedFiling) {
-          router.push("/confirmation");
-          return;
+        // Get the active filing ID from the wizard flow (set by dashboard/sign/review)
+        const activeId = sessionStorage.getItem("activeFilingYearId");
+
+        // Only redirect if the ACTIVE filing is already paid/submitted (not a different year)
+        if (activeId) {
+          const activeFiling = filings.find((f: FilingData) => f.id === activeId);
+          if (activeFiling && ["PAID", "SUBMITTED", "ACCEPTED", "SUBMITTING"].includes(activeFiling.status)) {
+            router.push("/confirmation");
+            return;
+          }
         }
 
-        // P1-8: Find SIGNED filing — prefer the one tracked through the wizard flow
-        const activeId = sessionStorage.getItem("activeFilingYearId");
+        // Find SIGNED filing — prefer the one tracked through the wizard flow
         const signedFiling =
           (activeId && filings.find((f: FilingData) => f.id === activeId && f.status === "SIGNED")) ||
           filings.find((f: FilingData) => f.status === "SIGNED");
