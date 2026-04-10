@@ -63,7 +63,15 @@
     selectedMulti: [],    // for multi-select (option indices)
     multiResults: [],     // array of scored recommendation objects
     sessionPlan: [],      // array of treatment IDs added to session
-    source: 'button'
+    source: 'button',
+    booking: {
+      treatmentId: null,
+      acuityTypeId: null,
+      acuityDropdownValue: null,
+      selectedDate: null,
+      selectedTime: null,
+      loadedMonth: null
+    }
   };
 
   // ---------------------------------------------------------------------------
@@ -112,7 +120,7 @@
   // ---------------------------------------------------------------------------
   // Progress bar
   // ---------------------------------------------------------------------------
-  var EXPECTED_MAX_STEPS = 4; // max question depth before result
+  var EXPECTED_MAX_STEPS = 6; // max question depth before result + booking
 
   function updateProgress() {
     var pct = Math.min(Math.round((state.stepNumber / EXPECTED_MAX_STEPS) * 100), 90);
@@ -137,6 +145,14 @@
     state.multiResults = [];
     state.sessionPlan = [];
     state.source = source || 'button';
+    state.booking = {
+      treatmentId: null,
+      acuityTypeId: null,
+      acuityDropdownValue: null,
+      selectedDate: null,
+      selectedTime: null,
+      loadedMonth: null
+    };
 
     document.body.style.overflow = 'hidden';
     dom.overlay.classList.add('tw-overlay--visible');
@@ -247,6 +263,18 @@
   // Render dispatch
   // ---------------------------------------------------------------------------
   function renderCurrentStep() {
+    // Booking flow views
+    if (state.currentView === 'booking-date') {
+      transitionStep(function () { return renderBookingDate(); });
+      updateProgress();
+      return;
+    }
+    if (state.currentView === 'booking-time') {
+      transitionStep(function () { return renderBookingTime(); });
+      updateProgress();
+      return;
+    }
+
     var q = state.config.questions[state.currentQuestionId];
     if (!q) { return; }
 
@@ -582,6 +610,25 @@
   }
 
   function handleBack() {
+    // Booking flow back navigation
+    if (state.currentView === 'booking-time') {
+      state.booking.selectedDate = null;
+      state.currentView = 'booking-date';
+      state.stepNumber = Math.max(0, state.stepNumber - 1);
+      renderCurrentStep();
+      return;
+    }
+    if (state.currentView === 'booking-date') {
+      state.currentView = state.multiResults.length > 0 ? 'multi-results' : 'result';
+      state.stepNumber = Math.max(0, state.stepNumber - 1);
+      if (state.currentView === 'multi-results') {
+        showMultiResults();
+      } else {
+        showResult(state.booking.treatmentId);
+      }
+      return;
+    }
+
     // If on multi-results, go back to the symptoms question
     if (state.currentView === 'multi-results') {
       state.currentView = 'question';
@@ -917,27 +964,36 @@
     var ctas = document.createElement('div');
     ctas.className = 'tw-result-ctas tw-result-ctas--horizontal';
 
-    // Book button
-    var bookBtn = document.createElement('a');
-    bookBtn.className = 'tw-btn-primary';
-    bookBtn.textContent = 'Book This Treatment';
-    bookBtn.setAttribute('target', '_blank');
-    bookBtn.setAttribute('rel', 'noopener noreferrer');
+    // Book button — enters booking flow if acuityTypeId is set, otherwise external link
+    if (t.acuityTypeId && meta.proxyBase) {
+      var bookBtn = document.createElement('button');
+      bookBtn.className = 'tw-btn-primary';
+      bookBtn.textContent = 'Book This Treatment';
+      bookBtn.type = 'button';
 
-    var acuityUrl = meta.acuityBase;
-    if (t.acuityTypeId) {
-      acuityUrl += '?appointmentTypeID=' + encodeURIComponent(t.acuityTypeId);
-    }
-    bookBtn.href = acuityUrl;
-
-    bookBtn.addEventListener('click', function () {
-      pushEvent({
-        event: 'wizard_book_clicked',
-        treatment_id: rec.primaryId,
-        treatment_name: t.name
+      bookBtn.addEventListener('click', function () {
+        startBookingFlow(rec.primaryId, t.acuityTypeId, t.acuityDropdownValue);
       });
-      _doClose();
-    });
+    } else {
+      var bookBtn = document.createElement('a');
+      bookBtn.className = 'tw-btn-primary';
+      bookBtn.textContent = 'Book This Treatment';
+      bookBtn.setAttribute('target', '_blank');
+      bookBtn.setAttribute('rel', 'noopener noreferrer');
+      var acuityUrl = meta.acuityBase;
+      if (t.acuityTypeId) {
+        acuityUrl += '?appointmentTypeID=' + encodeURIComponent(t.acuityTypeId);
+      }
+      bookBtn.href = acuityUrl;
+      bookBtn.addEventListener('click', function () {
+        pushEvent({
+          event: 'wizard_book_clicked',
+          treatment_id: rec.primaryId,
+          treatment_name: t.name
+        });
+        _doClose();
+      });
+    }
 
     ctas.appendChild(bookBtn);
 
@@ -1359,6 +1415,448 @@
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // Booking flow — date/time selection with live Acuity availability
+  // ---------------------------------------------------------------------------
+
+  function proxyGet(path, params) {
+    var base = state.config.meta.proxyBase || '';
+    var url = base + path;
+    if (params) {
+      var qs = Object.keys(params).map(function (k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+      }).join('&');
+      url += '?' + qs;
+    }
+    return fetch(url).then(function (r) {
+      if (!r.ok) {
+        return r.json().catch(function () { return { error: 'network_error' }; }).then(function (e) {
+          throw e;
+        });
+      }
+      return r.json();
+    });
+  }
+
+  function startBookingFlow(treatmentId, acuityTypeId, acuityDropdownValue) {
+    state.booking = {
+      treatmentId: treatmentId,
+      acuityTypeId: acuityTypeId,
+      acuityDropdownValue: acuityDropdownValue || null,
+      selectedDate: null,
+      selectedTime: null,
+      loadedMonth: null
+    };
+    state.currentView = 'booking-date';
+    state.stepNumber++;
+
+    pushEvent({
+      event: 'wizard_booking_started',
+      treatment_id: treatmentId
+    });
+
+    renderCurrentStep();
+  }
+
+  function buildSmartAcuityUrl() {
+    var meta = state.config.meta;
+    var b = state.booking;
+    var base = meta.acuityScheduleBase || meta.acuityBase || '';
+    var url = base;
+
+    url += '?appointmentType=' + encodeURIComponent(b.acuityTypeId);
+
+    if (b.selectedTime) {
+      url += '&datetime=' + encodeURIComponent(b.selectedTime);
+    }
+
+    if (b.acuityDropdownValue && meta.acuityFieldId) {
+      url += '&field:' + meta.acuityFieldId + '=' + encodeURIComponent(b.acuityDropdownValue);
+    }
+
+    // Pass session add-ons as notes
+    if (state.sessionPlan.length > 1) {
+      var addons = state.sessionPlan.filter(function (id) { return id !== b.treatmentId; });
+      if (addons.length) {
+        var addonNames = addons.map(function (id) {
+          var t = state.config.treatments[id];
+          return t ? t.name : id;
+        });
+        var primary = state.config.treatments[b.treatmentId];
+        var notes = 'Session: ' + (primary ? primary.name : '') + ' + ' + addonNames.join(', ');
+        url += '&notes=' + encodeURIComponent(notes);
+      }
+    }
+
+    return url;
+  }
+
+  function renderBookingDate() {
+    var wrap = document.createElement('div');
+    wrap.className = 'tw-booking tw-booking-date';
+
+    var treatment = state.config.treatments[state.booking.treatmentId];
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'tw-booking-header';
+
+    var title = document.createElement('h3');
+    title.className = 'tw-booking-title';
+    title.textContent = 'Select a Date';
+
+    var subtitle = document.createElement('p');
+    subtitle.className = 'tw-booking-subtitle';
+    subtitle.textContent = treatment ? treatment.name : '';
+
+    header.appendChild(title);
+    header.appendChild(subtitle);
+    wrap.appendChild(header);
+
+    // Month navigation
+    var now = new Date();
+    var viewMonth = state.booking.loadedMonth
+      ? new Date(state.booking.loadedMonth + '-01T00:00:00')
+      : new Date(now.getFullYear(), now.getMonth(), 1);
+
+    var monthNav = document.createElement('div');
+    monthNav.className = 'tw-booking-month-nav';
+
+    var prevBtn = document.createElement('button');
+    prevBtn.className = 'tw-booking-nav-btn';
+    prevBtn.type = 'button';
+    prevBtn.innerHTML = '&#8592;';
+    prevBtn.setAttribute('aria-label', 'Previous month');
+
+    var monthLabel = document.createElement('span');
+    monthLabel.className = 'tw-booking-month-label';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'tw-booking-nav-btn';
+    nextBtn.type = 'button';
+    nextBtn.innerHTML = '&#8594;';
+    nextBtn.setAttribute('aria-label', 'Next month');
+
+    monthNav.appendChild(prevBtn);
+    monthNav.appendChild(monthLabel);
+    monthNav.appendChild(nextBtn);
+    wrap.appendChild(monthNav);
+
+    // Calendar grid
+    var calendarWrap = document.createElement('div');
+    calendarWrap.className = 'tw-booking-calendar-wrap';
+    wrap.appendChild(calendarWrap);
+
+    // Back button
+    var backBtn = document.createElement('button');
+    backBtn.className = 'tw-btn-secondary tw-booking-back';
+    backBtn.type = 'button';
+    backBtn.textContent = 'Back';
+    backBtn.addEventListener('click', function () {
+      state.currentView = 'question';
+      state.stepNumber--;
+      // Go back to result view
+      state.currentView = state.multiResults.length > 0 ? 'multi-results' : 'result';
+      renderCurrentStep();
+    });
+    wrap.appendChild(backBtn);
+
+    // Render calendar for a given month
+    function renderMonth(year, month) {
+      var monthStr = year + '-' + String(month + 1).padStart(2, '0');
+      state.booking.loadedMonth = monthStr;
+
+      var monthNames = ['January','February','March','April','May','June',
+        'July','August','September','October','November','December'];
+      monthLabel.textContent = monthNames[month] + ' ' + year;
+
+      // Disable prev if at current month
+      var currentMonth = now.getFullYear() * 12 + now.getMonth();
+      var viewMonthNum = year * 12 + month;
+      prevBtn.disabled = viewMonthNum <= currentMonth;
+
+      // Disable next if > 3 months ahead
+      nextBtn.disabled = viewMonthNum >= currentMonth + 3;
+
+      // Show loading
+      calendarWrap.innerHTML = '';
+      var loading = document.createElement('div');
+      loading.className = 'tw-booking-loading';
+      loading.textContent = 'Loading availability...';
+      calendarWrap.appendChild(loading);
+
+      proxyGet('/api/acuity/availability/dates', {
+        appointmentTypeID: state.booking.acuityTypeId,
+        month: monthStr
+      }).then(function (dates) {
+        var availableDates = {};
+        dates.forEach(function (d) { availableDates[d.date] = true; });
+        renderCalendarGrid(calendarWrap, year, month, availableDates);
+      }).catch(function (err) {
+        calendarWrap.innerHTML = '';
+        var errorEl = document.createElement('div');
+        errorEl.className = 'tw-booking-error';
+        errorEl.textContent = 'Unable to load availability. ';
+        var retryBtn = document.createElement('button');
+        retryBtn.className = 'tw-booking-retry';
+        retryBtn.type = 'button';
+        retryBtn.textContent = 'Try again';
+        retryBtn.addEventListener('click', function () { renderMonth(year, month); });
+        errorEl.appendChild(retryBtn);
+        calendarWrap.appendChild(errorEl);
+      });
+    }
+
+    function renderCalendarGrid(container, year, month, availableDates) {
+      container.innerHTML = '';
+
+      var grid = document.createElement('div');
+      grid.className = 'tw-booking-calendar';
+      grid.setAttribute('role', 'grid');
+      grid.setAttribute('aria-label', 'Available dates');
+
+      // Day headers
+      var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var headerRow = document.createElement('div');
+      headerRow.className = 'tw-booking-calendar-header';
+      dayNames.forEach(function (d) {
+        var cell = document.createElement('div');
+        cell.className = 'tw-booking-day-header';
+        cell.textContent = d;
+        headerRow.appendChild(cell);
+      });
+      grid.appendChild(headerRow);
+
+      // Days grid
+      var firstDay = new Date(year, month, 1).getDay();
+      var daysInMonth = new Date(year, month + 1, 0).getDate();
+      var today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
+      var row = document.createElement('div');
+      row.className = 'tw-booking-calendar-row';
+
+      // Empty cells before first day
+      for (var e = 0; e < firstDay; e++) {
+        var empty = document.createElement('div');
+        empty.className = 'tw-booking-day tw-booking-day--empty';
+        row.appendChild(empty);
+      }
+
+      for (var d = 1; d <= daysInMonth; d++) {
+        var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+        var isAvailable = availableDates[dateStr] === true;
+        var isPast = dateStr < today;
+
+        var dayEl = document.createElement('button');
+        dayEl.className = 'tw-booking-day';
+        dayEl.type = 'button';
+        dayEl.textContent = d;
+
+        if (!isAvailable || isPast) {
+          dayEl.className += ' tw-booking-day--unavailable';
+          dayEl.disabled = true;
+          dayEl.setAttribute('aria-disabled', 'true');
+        } else {
+          dayEl.className += ' tw-booking-day--available';
+          dayEl.setAttribute('aria-label', dateStr);
+          (function (ds) {
+            dayEl.addEventListener('click', function () {
+              state.booking.selectedDate = ds;
+              state.currentView = 'booking-time';
+              state.stepNumber++;
+              pushEvent({ event: 'wizard_date_selected', date: ds });
+              renderCurrentStep();
+            });
+          })(dateStr);
+        }
+
+        row.appendChild(dayEl);
+
+        // New row every 7 cells
+        if ((firstDay + d) % 7 === 0) {
+          grid.appendChild(row);
+          row = document.createElement('div');
+          row.className = 'tw-booking-calendar-row';
+        }
+      }
+
+      // Append last row if it has cells
+      if (row.children.length > 0) {
+        grid.appendChild(row);
+      }
+
+      container.appendChild(grid);
+    }
+
+    // Nav handlers
+    prevBtn.addEventListener('click', function () {
+      var d = new Date(viewMonth);
+      d.setMonth(d.getMonth() - 1);
+      viewMonth = d;
+      renderMonth(d.getFullYear(), d.getMonth());
+    });
+
+    nextBtn.addEventListener('click', function () {
+      var d = new Date(viewMonth);
+      d.setMonth(d.getMonth() + 1);
+      viewMonth = d;
+      renderMonth(d.getFullYear(), d.getMonth());
+    });
+
+    // Initial render
+    renderMonth(viewMonth.getFullYear(), viewMonth.getMonth());
+
+    return wrap;
+  }
+
+  function renderBookingTime() {
+    var wrap = document.createElement('div');
+    wrap.className = 'tw-booking tw-booking-time';
+
+    var treatment = state.config.treatments[state.booking.treatmentId];
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'tw-booking-header';
+
+    var title = document.createElement('h3');
+    title.className = 'tw-booking-title';
+    title.textContent = 'Select a Time';
+
+    var subtitle = document.createElement('p');
+    subtitle.className = 'tw-booking-subtitle';
+
+    // Format the selected date nicely
+    var dateParts = state.booking.selectedDate.split('-');
+    var dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+    var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var monthNames = ['January','February','March','April','May','June',
+      'July','August','September','October','November','December'];
+    subtitle.textContent = dayNames[dateObj.getDay()] + ', ' +
+      monthNames[dateObj.getMonth()] + ' ' + dateObj.getDate();
+
+    header.appendChild(title);
+    header.appendChild(subtitle);
+    wrap.appendChild(header);
+
+    // Timeslot container
+    var slotsWrap = document.createElement('div');
+    slotsWrap.className = 'tw-booking-timeslots-wrap';
+
+    // Loading
+    var loading = document.createElement('div');
+    loading.className = 'tw-booking-loading';
+    loading.textContent = 'Loading available times...';
+    slotsWrap.appendChild(loading);
+    wrap.appendChild(slotsWrap);
+
+    // Back button
+    var backBtn = document.createElement('button');
+    backBtn.className = 'tw-btn-secondary tw-booking-back';
+    backBtn.type = 'button';
+    backBtn.textContent = 'Back';
+    backBtn.addEventListener('click', function () {
+      state.booking.selectedDate = null;
+      state.currentView = 'booking-date';
+      state.stepNumber--;
+      renderCurrentStep();
+    });
+    wrap.appendChild(backBtn);
+
+    // Fetch time slots
+    proxyGet('/api/acuity/availability/times', {
+      appointmentTypeID: state.booking.acuityTypeId,
+      date: state.booking.selectedDate
+    }).then(function (times) {
+      slotsWrap.innerHTML = '';
+
+      if (times.length === 0) {
+        var noSlots = document.createElement('p');
+        noSlots.className = 'tw-booking-no-slots';
+        noSlots.textContent = 'No times available for this date. Please select another date.';
+        slotsWrap.appendChild(noSlots);
+
+        var changeDateBtn = document.createElement('button');
+        changeDateBtn.className = 'tw-btn-secondary';
+        changeDateBtn.type = 'button';
+        changeDateBtn.textContent = 'Choose Another Date';
+        changeDateBtn.addEventListener('click', function () {
+          state.booking.selectedDate = null;
+          state.currentView = 'booking-date';
+          state.stepNumber--;
+          renderCurrentStep();
+        });
+        slotsWrap.appendChild(changeDateBtn);
+        return;
+      }
+
+      var grid = document.createElement('div');
+      grid.className = 'tw-booking-timeslots';
+      grid.setAttribute('role', 'listbox');
+      grid.setAttribute('aria-label', 'Available times');
+
+      times.forEach(function (slot) {
+        var btn = document.createElement('button');
+        btn.className = 'tw-booking-timeslot';
+        btn.type = 'button';
+        btn.setAttribute('role', 'option');
+
+        // Format time for display (e.g., "10:00 AM")
+        var timeDate = new Date(slot.time);
+        var hours = timeDate.getHours();
+        var minutes = String(timeDate.getMinutes()).padStart(2, '0');
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        var displayHour = hours % 12 || 12;
+        btn.textContent = displayHour + ':' + minutes + ' ' + ampm;
+
+        btn.addEventListener('click', function () {
+          state.booking.selectedTime = slot.time;
+
+          pushEvent({
+            event: 'wizard_time_selected',
+            date: state.booking.selectedDate,
+            time: slot.time,
+            treatment_id: state.booking.treatmentId
+          });
+
+          // Build the pre-filled Acuity URL and open it
+          var url = buildSmartAcuityUrl();
+          window.open(url, '_blank', 'noopener,noreferrer');
+
+          pushEvent({
+            event: 'wizard_book_clicked',
+            treatment_id: state.booking.treatmentId,
+            treatment_name: treatment ? treatment.name : '',
+            booking_method: 'inline_availability'
+          });
+
+          _doClose();
+        });
+
+        grid.appendChild(btn);
+      });
+
+      slotsWrap.appendChild(grid);
+    }).catch(function (err) {
+      slotsWrap.innerHTML = '';
+      var errorEl = document.createElement('div');
+      errorEl.className = 'tw-booking-error';
+      errorEl.textContent = 'Unable to load times. ';
+      var retryBtn = document.createElement('button');
+      retryBtn.className = 'tw-booking-retry';
+      retryBtn.type = 'button';
+      retryBtn.textContent = 'Try again';
+      retryBtn.addEventListener('click', function () {
+        state.currentView = 'booking-time';
+        renderCurrentStep();
+      });
+      errorEl.appendChild(retryBtn);
+      slotsWrap.appendChild(errorEl);
+    });
+
+    return wrap;
+  }
+
   function buildAcuityUrl() {
     var config = state.config;
     var meta = config.meta;
@@ -1468,21 +1966,42 @@
     totalEl.textContent = 'Total: $' + total + (hasMonthly ? ' (includes monthly program pricing)' : '');
     section.appendChild(totalEl);
 
-    var bookBtn = document.createElement('a');
-    bookBtn.className = 'tw-btn-primary tw-session-book';
-    bookBtn.textContent = 'Book This Session';
-    bookBtn.setAttribute('target', '_blank');
-    bookBtn.setAttribute('rel', 'noopener noreferrer');
-    bookBtn.href = buildAcuityUrl();
-
-    bookBtn.addEventListener('click', function () {
-      pushEvent({
-        event: 'wizard_book_clicked',
-        session_plan: state.sessionPlan.join(','),
-        total: total
-      });
-      _doClose();
+    // Find primary treatment for booking flow
+    var sessionPrimaryId = null;
+    state.sessionPlan.forEach(function (id) {
+      if (sessionPrimaryId) { return; }
+      var st = config.treatments[id];
+      if (st && st.category !== 'injection') { sessionPrimaryId = id; }
     });
+    if (!sessionPrimaryId && state.sessionPlan.length > 0) {
+      sessionPrimaryId = state.sessionPlan[0];
+    }
+    var sessionPrimary = sessionPrimaryId ? config.treatments[sessionPrimaryId] : null;
+
+    if (sessionPrimary && sessionPrimary.acuityTypeId && config.meta.proxyBase) {
+      var bookBtn = document.createElement('button');
+      bookBtn.className = 'tw-btn-primary tw-session-book';
+      bookBtn.textContent = 'Book This Session';
+      bookBtn.type = 'button';
+      bookBtn.addEventListener('click', function () {
+        startBookingFlow(sessionPrimaryId, sessionPrimary.acuityTypeId, sessionPrimary.acuityDropdownValue);
+      });
+    } else {
+      var bookBtn = document.createElement('a');
+      bookBtn.className = 'tw-btn-primary tw-session-book';
+      bookBtn.textContent = 'Book This Session';
+      bookBtn.setAttribute('target', '_blank');
+      bookBtn.setAttribute('rel', 'noopener noreferrer');
+      bookBtn.href = buildAcuityUrl();
+      bookBtn.addEventListener('click', function () {
+        pushEvent({
+          event: 'wizard_book_clicked',
+          session_plan: state.sessionPlan.join(','),
+          total: total
+        });
+        _doClose();
+      });
+    }
 
     section.appendChild(bookBtn);
 

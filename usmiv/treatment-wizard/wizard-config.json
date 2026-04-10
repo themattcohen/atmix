@@ -4,7 +4,10 @@
     "acuityBase": "https://usmobilemedics.as.me/usmobileiv",
     "phoneNumber": "303-406-4500",
     "reviewCount": "546",
-    "reviewRating": "5.0"
+    "reviewRating": "5.0",
+    "proxyBase": "https://usmiv-acuity-proxy.shiny-field-7198.workers.dev",
+    "acuityScheduleBase": "https://USMobileMedics.as.me/schedule.php",
+    "acuityFieldId": 13062568
   },
   "treatments": {
     "hydration": {
@@ -12,7 +15,7 @@
       "price": 120,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=hydration",
       "shortDesc": "Pure saline rehydration to restore your body's fluid balance fast.",
       "ingredients": [
@@ -26,14 +29,15 @@
         "Post-workout",
         "Heat exposure",
         "General fatigue"
-      ]
+      ],
+      "acuityDropdownValue": "Dehydration"
     },
     "myers": {
       "name": "Myers' Cocktail",
       "price": 220,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=myers",
       "shortDesc": "The gold standard vitamin IV for energy, immunity, and overall wellness.",
       "ingredients": [
@@ -67,14 +71,15 @@
         "Fatigue",
         "Stress",
         "Feeling run-down"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "immunity": {
       "name": "Immunity IV",
       "price": 220,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=immunity",
       "shortDesc": "High-dose immune support to fight off illness or keep you protected.",
       "ingredients": [
@@ -104,14 +109,15 @@
         "Seasonal illness prevention",
         "Frequent travelers",
         "Weakened immunity"
-      ]
+      ],
+      "acuityDropdownValue": "Cold/Flu"
     },
     "pregnancy": {
       "name": "Pregnancy / Prenatal IV",
       "price": 220,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=pregnancy",
       "shortDesc": "Safe prenatal hydration and nutrient support for mom and baby.",
       "ingredients": [
@@ -144,14 +150,15 @@
         "Morning sickness",
         "Prenatal fatigue",
         "Dehydration during pregnancy"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "altitude": {
       "name": "Altitude Sickness IV",
       "price": 250,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=altitude",
       "shortDesc": "Fast relief from Colorado's high elevation symptoms.",
       "ingredients": [
@@ -185,14 +192,15 @@
         "Elevation headache",
         "Nausea at altitude",
         "Shortness of breath"
-      ]
+      ],
+      "acuityDropdownValue": "Nausea"
     },
     "hangover": {
       "name": "Hangover IV",
       "price": 250,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=hangover",
       "shortDesc": "Get back on your feet fast with rehydration, anti-nausea, and pain relief.",
       "ingredients": [
@@ -226,14 +234,15 @@
         "Nausea and vomiting",
         "Pounding headache",
         "Event recovery"
-      ]
+      ],
+      "acuityDropdownValue": "Hangover"
     },
     "migraine": {
       "name": "Migraine IV",
       "price": 250,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=migraine",
       "shortDesc": "Targeted migraine relief with high-dose magnesium and pain medication.",
       "ingredients": [
@@ -271,14 +280,15 @@
         "Chronic migraines",
         "Severe headache with nausea",
         "Light/sound sensitivity"
-      ]
+      ],
+      "acuityDropdownValue": "Migraine"
     },
     "longevity": {
       "name": "Longevity IV",
       "price": 250,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=longevity",
       "shortDesc": "Anti-aging cellular support with NAD+ and a full vitamin stack.",
       "ingredients": [
@@ -316,14 +326,15 @@
         "Cellular health",
         "Long-term vitality",
         "Biohacking"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "myersGold": {
       "name": "Myers' Gold",
       "price": 275,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=myersGold",
       "shortDesc": "An enhanced Myers' Cocktail with upgraded vitamin concentrations.",
       "ingredients": [
@@ -359,14 +370,15 @@
       "bestFor": [
         "Upgraded wellness experience",
         "Those who want more than the standard Myers'"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "performance": {
       "name": "Performance IV",
       "price": 295,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=performance",
       "shortDesc": "Fuel recovery and performance with amino acids, NAD+, and essential nutrients.",
       "ingredients": [
@@ -404,14 +416,15 @@
         "Post-competition recovery",
         "Training support",
         "Muscle soreness"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "myersPlatinum": {
       "name": "Myers' Platinum",
       "price": 375,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=myersPlatinum",
       "shortDesc": "The ultimate Myers' experience with premium vitamin concentrations.",
       "ingredients": [
@@ -451,14 +464,15 @@
       "bestFor": [
         "Premium wellness seekers",
         "Maximum nutrient delivery"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "revival": {
       "name": "Revival IV",
       "price": 395,
       "duration": "30-45 min",
       "category": "iv",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=revival",
       "shortDesc": "Our most comprehensive IV with a full vitamin stack plus your choice of 3 medications.",
       "ingredients": [
@@ -488,7 +502,7 @@
         },
         {
           "name": "Your choice of 3 medications",
-          "benefit": "Toradol, Zofran, Benadryl, Pepcid, or Reglan — discussed with your nurse"
+          "benefit": "Toradol, Zofran, Benadryl, Pepcid, or Reglan \u00e2\u20ac\u201d discussed with your nurse"
         }
       ],
       "bestFor": [
@@ -496,14 +510,15 @@
         "Burnout",
         "Chronic fatigue",
         "Post-event recovery"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "nad100": {
       "name": "NAD+ IV (100mg)",
       "price": 100,
       "duration": "60-90 min",
       "category": "nad",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=nad100",
       "shortDesc": "Entry-level NAD+ therapy for energy and mental clarity.",
       "ingredients": [
@@ -516,14 +531,15 @@
         "First-time NAD+ users",
         "Mild brain fog",
         "Energy boost"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "nad250": {
       "name": "NAD+ IV (250mg)",
       "price": 250,
       "duration": "60-90 min",
       "category": "nad",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=nad250",
       "shortDesc": "Mid-range NAD+ therapy for sustained energy and anti-aging benefits.",
       "ingredients": [
@@ -537,14 +553,15 @@
         "Anti-aging",
         "Brain fog",
         "Athletic recovery"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "nad500": {
       "name": "NAD+ IV (500mg)",
       "price": 400,
       "duration": "60-90 min",
       "category": "nad",
-      "acuityTypeId": null,
+      "acuityTypeId": 43274230,
       "pageUrl": "/wizard-of-iv/treatments/?slug=nad500",
       "shortDesc": "High-dose NAD+ for deep cellular restoration and longevity.",
       "ingredients": [
@@ -558,7 +575,8 @@
         "Addiction recovery",
         "Chronic conditions",
         "Longevity focus"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "semaglutide": {
       "name": "Semaglutide (GLP-1) Weight Loss",
@@ -566,7 +584,7 @@
       "priceLabel": "from $199/month",
       "duration": "Ongoing program",
       "category": "weightLoss",
-      "acuityTypeId": null,
+      "acuityTypeId": 47840203,
       "pageUrl": "/wizard-of-iv/treatments/?slug=semaglutide",
       "shortDesc": "FDA-studied GLP-1 medication for significant, sustained weight loss with medical supervision.",
       "ingredients": [
@@ -581,7 +599,8 @@
         "Sustained weight loss",
         "Appetite control"
       ],
-      "note": "Requires initial bloodwork ($99) and medical consultation."
+      "note": "Requires initial bloodwork ($99) and medical consultation.",
+      "acuityDropdownValue": null
     },
     "tirzepatide": {
       "name": "Tirzepatide (GLP-1+GIP) Weight Loss",
@@ -589,7 +608,7 @@
       "priceLabel": "from $399/month",
       "duration": "Ongoing program",
       "category": "weightLoss",
-      "acuityTypeId": null,
+      "acuityTypeId": 47840203,
       "pageUrl": "/wizard-of-iv/treatments/?slug=tirzepatide",
       "shortDesc": "Dual-action GLP-1/GIP medication for up to 20% body weight reduction.",
       "ingredients": [
@@ -604,7 +623,8 @@
         "Maximum weight loss",
         "Dual-action medication"
       ],
-      "note": "Requires initial bloodwork ($99) and medical consultation."
+      "note": "Requires initial bloodwork ($99) and medical consultation.",
+      "acuityDropdownValue": null
     },
     "lipoShots": {
       "name": "Lipo-Mino Injections",
@@ -612,7 +632,7 @@
       "priceLabel": "$35/shot",
       "duration": "5 min",
       "category": "injection",
-      "acuityTypeId": null,
+      "acuityTypeId": 72157177,
       "pageUrl": "/wizard-of-iv/treatments/?slug=lipoShots",
       "shortDesc": "Lipotropic fat-metabolism injections to support your weight loss program.",
       "ingredients": [
@@ -629,7 +649,8 @@
         "Active weight loss programs",
         "Metabolic support",
         "Energy during dieting"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "b12Shot": {
       "name": "B12 Injection",
@@ -637,7 +658,7 @@
       "priceLabel": "$35/shot",
       "duration": "5 min",
       "category": "injection",
-      "acuityTypeId": null,
+      "acuityTypeId": 72157177,
       "pageUrl": "/wizard-of-iv/treatments/?slug=b12Shot",
       "shortDesc": "Quick energy and metabolism boost with vitamin B12.",
       "ingredients": [
@@ -651,7 +672,8 @@
         "Vegans/vegetarians",
         "B12 deficiency",
         "Quick pick-me-up"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "biotinShot": {
       "name": "Biotin Injection",
@@ -659,7 +681,7 @@
       "priceLabel": "$35/shot",
       "duration": "5 min",
       "category": "injection",
-      "acuityTypeId": null,
+      "acuityTypeId": 72157177,
       "pageUrl": "/wizard-of-iv/treatments/?slug=biotinShot",
       "shortDesc": "Support stronger hair, skin, and nails with biotin (B7).",
       "ingredients": [
@@ -673,7 +695,8 @@
         "Brittle nails",
         "Skin health",
         "Beauty support"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "glutathioneShot": {
       "name": "Glutathione Injection",
@@ -681,7 +704,7 @@
       "priceLabel": "$35/shot",
       "duration": "5 min",
       "category": "injection",
-      "acuityTypeId": null,
+      "acuityTypeId": 72157177,
       "pageUrl": "/wizard-of-iv/treatments/?slug=glutathioneShot",
       "shortDesc": "The body's master antioxidant for detox and skin brightening.",
       "ingredients": [
@@ -694,7 +717,8 @@
         "Detox support",
         "Skin brightening",
         "Antioxidant protection"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "triImmuneShot": {
       "name": "Tri-Immune Injection",
@@ -702,7 +726,7 @@
       "priceLabel": "$35/shot",
       "duration": "5 min",
       "category": "injection",
-      "acuityTypeId": null,
+      "acuityTypeId": 72157177,
       "pageUrl": "/wizard-of-iv/treatments/?slug=triImmuneShot",
       "shortDesc": "Triple immune defense with Vitamin C, Zinc, and Glutathione in one shot.",
       "ingredients": [
@@ -723,7 +747,8 @@
         "Immune boost",
         "Cold/flu season",
         "Quick immune defense"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "vitaminDShot": {
       "name": "Vitamin D Injection",
@@ -731,7 +756,7 @@
       "priceLabel": "$35/shot",
       "duration": "5 min",
       "category": "injection",
-      "acuityTypeId": null,
+      "acuityTypeId": 72157177,
       "pageUrl": "/wizard-of-iv/treatments/?slug=vitaminDShot",
       "shortDesc": "High-dose vitamin D for bone health, immunity, and mood support.",
       "ingredients": [
@@ -745,14 +770,15 @@
         "Low sun exposure",
         "Bone health",
         "Mood support"
-      ]
+      ],
+      "acuityDropdownValue": "General Wellness"
     },
     "labGeneral": {
       "name": "General Wellness Panel",
       "price": 175,
       "duration": "15 min draw",
       "category": "lab",
-      "acuityTypeId": null,
+      "acuityTypeId": 55698420,
       "pageUrl": "/wizard-of-iv/treatments/?slug=labGeneral",
       "shortDesc": "Essential blood work covering your core health markers.",
       "tests": [
@@ -763,28 +789,29 @@
       "ingredients": [
         {
           "name": "CBC (Complete Blood Count)",
-          "benefit": "Red/white cells, hemoglobin, platelets — screens for anemia and infection"
+          "benefit": "Red/white cells, hemoglobin, platelets \u00e2\u20ac\u201d screens for anemia and infection"
         },
         {
           "name": "CMP (Comprehensive Metabolic Panel)",
-          "benefit": "Kidney, liver, blood sugar, electrolytes — 14 core markers"
+          "benefit": "Kidney, liver, blood sugar, electrolytes \u00e2\u20ac\u201d 14 core markers"
         },
         {
           "name": "Lipid Panel",
-          "benefit": "Total cholesterol, LDL, HDL, triglycerides — cardiovascular risk"
+          "benefit": "Total cholesterol, LDL, HDL, triglycerides \u00e2\u20ac\u201d cardiovascular risk"
         }
       ],
       "bestFor": [
         "Annual check-up",
         "Baseline health snapshot"
-      ]
+      ],
+      "acuityDropdownValue": null
     },
     "labInDepth": {
       "name": "In-Depth Wellness Panel",
       "price": 199,
       "duration": "15 min draw",
       "category": "lab",
-      "acuityTypeId": null,
+      "acuityTypeId": 55698420,
       "pageUrl": "/wizard-of-iv/treatments/?slug=labInDepth",
       "shortDesc": "Deeper health assessment including thyroid and blood sugar markers.",
       "tests": [
@@ -809,25 +836,26 @@
         },
         {
           "name": "TSH (Thyroid)",
-          "benefit": "Thyroid function — fatigue, metabolism, mood"
+          "benefit": "Thyroid function \u00e2\u20ac\u201d fatigue, metabolism, mood"
         },
         {
           "name": "HbA1c",
-          "benefit": "3-month blood sugar average — diabetes risk screening"
+          "benefit": "3-month blood sugar average \u00e2\u20ac\u201d diabetes risk screening"
         }
       ],
       "bestFor": [
         "Thyroid concerns",
         "Blood sugar monitoring",
         "Comprehensive health check"
-      ]
+      ],
+      "acuityDropdownValue": null
     },
     "labVitamin": {
       "name": "Vitamin Level Panel",
       "price": 225,
       "duration": "15 min draw",
       "category": "lab",
-      "acuityTypeId": null,
+      "acuityTypeId": 55698420,
       "pageUrl": "/wizard-of-iv/treatments/?slug=labVitamin",
       "shortDesc": "Check your vitamin and mineral levels to target exactly what your body needs.",
       "tests": [
@@ -847,7 +875,7 @@
         },
         {
           "name": "B12",
-          "benefit": "Energy, nerve health, mood — common deficiency"
+          "benefit": "Energy, nerve health, mood \u00e2\u20ac\u201d common deficiency"
         },
         {
           "name": "Folate",
@@ -863,7 +891,7 @@
         },
         {
           "name": "Iron",
-          "benefit": "Energy transport — key for fatigue investigation"
+          "benefit": "Energy transport \u00e2\u20ac\u201d key for fatigue investigation"
         },
         {
           "name": "Magnesium",
@@ -874,14 +902,15 @@
         "Fatigue investigation",
         "Nutrient deficiency check",
         "Before starting IV therapy"
-      ]
+      ],
+      "acuityDropdownValue": null
     },
     "labComplete": {
       "name": "Complete Wellness Panel",
       "price": 449,
       "duration": "15 min draw",
       "category": "lab",
-      "acuityTypeId": null,
+      "acuityTypeId": 55698420,
       "pageUrl": "/wizard-of-iv/treatments/?slug=labComplete",
       "shortDesc": "Our most comprehensive panel with 45+ biomarkers for a full health picture.",
       "tests": [
@@ -936,7 +965,8 @@
         "Full health assessment",
         "Longevity optimization",
         "Hormone concerns"
-      ]
+      ],
+      "acuityDropdownValue": null
     }
   },
   "questions": {
@@ -1583,7 +1613,9 @@
       "addOn": "biotinShot",
       "addOnLabel": "Add a Biotin shot for hair, skin, and nails (+$35)",
       "addOnInteractive": true,
-      "whyMatch": "A Myers' Cocktail with Glutathione gives your skin an antioxidant glow, plus Biotin supports keratin production for stronger hair and nails."
+      "whyMatch": "A Myers' Cocktail with Glutathione gives your skin an antioxidant glow, plus Biotin supports keratin production for stronger hair and nails.",
+      "acuityTypeId": 43274230,
+      "acuityDropdownValue": "General Wellness"
     },
     "nadPlusLabs": {
       "name": "NAD+ IV + Vitamin Level Panel",
@@ -1591,43 +1623,49 @@
       "addOn": "labVitamin",
       "addOnLabel": "Add a Vitamin Level Panel to check what you're low on ($225)",
       "addOnInteractive": true,
-      "whyMatch": "Long-term fatigue often has an underlying nutrient deficiency. NAD+ restores cellular energy while the lab panel reveals exactly what your body needs."
+      "whyMatch": "Long-term fatigue often has an underlying nutrient deficiency. NAD+ restores cellular energy while the lab panel reveals exactly what your body needs.",
+      "acuityTypeId": 43274230,
+      "acuityDropdownValue": "General Wellness"
     },
     "weightLossConsult": {
       "name": "Weight Loss Consultation",
       "primary": "semaglutide",
       "isConsultation": true,
-      "whyMatch": "Our weight loss programs include weekly GLP-1 medication, personalized dosing, and ongoing RN support. We'll help you find the right fit."
+      "whyMatch": "Our weight loss programs include weekly GLP-1 medication, personalized dosing, and ongoing RN support. We'll help you find the right fit.",
+      "acuityTypeId": 47840203,
+      "acuityDropdownValue": null
     },
     "jetLagMyers": {
       "name": "Myers' Cocktail",
       "primary": "myers",
-      "whyMatch": "Jet lag disrupts your circadian rhythm and accelerates dehydration. A Myers' Cocktail rehydrates and delivers B vitamins that support melatonin production and nervous system reset. Best taken within 4 hours of landing or first thing the morning after arrival."
+      "whyMatch": "Jet lag disrupts your circadian rhythm and accelerates dehydration. A Myers' Cocktail rehydrates and delivers B vitamins that support melatonin production and nervous system reset. Best taken within 4 hours of landing or first thing the morning after arrival.",
+      "acuityTypeId": 43274230,
+      "acuityDropdownValue": "General Wellness"
     }
   },
   "whyMatch": {
-    "hydration": "Pure saline contains sodium and chloride in the same ratio as your blood plasma. IV delivery restores fluid balance within 20-30 minutes — significantly faster than drinking water, which takes 1-2 hours to absorb through the GI tract.",
+    "hydration": "Pure saline contains sodium and chloride in the same ratio as your blood plasma. IV delivery restores fluid balance within 20-30 minutes \u00e2\u20ac\u201d significantly faster than drinking water, which takes 1-2 hours to absorb through the GI tract.",
     "immunity": "This IV is most effective at the first sign of illness. High-dose Vitamin C activates white blood cell production. Zinc has been shown to reduce cold duration by up to 33% when started within 24 hours. Glutathione clears cellular damage before it compounds.",
-    "altitude": "Colorado's elevation hits hard — most visitors feel symptoms within 6-12 hours above 8,000 ft. This IV rapidly replaces the fluid your body loses at altitude while anti-nausea medication addresses the dizziness and headache directly.",
+    "altitude": "Colorado's elevation hits hard \u00e2\u20ac\u201d most visitors feel symptoms within 6-12 hours above 8,000 ft. This IV rapidly replaces the fluid your body loses at altitude while anti-nausea medication addresses the dizziness and headache directly.",
     "hangover": "Alcohol depletes B vitamins, causes significant dehydration, and triggers inflammation. Toradol (ketorolac) is a prescription-strength anti-inflammatory for your headache. Zofran stops nausea fast. Most patients feel 80-90% better before the bag is done.",
-    "migraine": "Triple-dose Magnesium blocks NMDA receptors in pain signaling pathways — this is the same approach used in ER migraine protocols. Combined with Toradol (prescription anti-inflammatory) and Zofran (anti-nausea), this targets migraine from multiple angles simultaneously.",
+    "migraine": "Triple-dose Magnesium blocks NMDA receptors in pain signaling pathways \u00e2\u20ac\u201d this is the same approach used in ER migraine protocols. Combined with Toradol (prescription anti-inflammatory) and Zofran (anti-nausea), this targets migraine from multiple angles simultaneously.",
     "pregnancy": "This IV is specifically formulated for pregnant patients. Magnesium helps reduce cramping and nausea. B12 supports fetal neural tube development. All ingredients are nurse-administered and pregnancy-safe. We recommend letting your OB provider know.",
-    "revival": "Our most comprehensive IV. The full vitamin stack covers B12, B-Complex, Vitamin C, Magnesium, Glutathione, and Zinc. You then choose 3 medications from Toradol, Zofran, Benadryl, Pepcid, or Reglan — your nurse reviews all options with you before starting.",
-    "longevity": "NAD+ activates sirtuins — the proteins responsible for DNA repair and cellular longevity. Combined with a full vitamin stack, this IV works at the cellular level. Most patients notice improved energy and mental clarity within 24 hours, with cumulative benefits over regular sessions.",
-    "performance": "Amino acids drive muscle protein synthesis and recovery. NAD+ supports mitochondrial energy production. Taurine reduces exercise-induced oxidative stress. This combination is designed to help you recover faster and train harder — most effective within 2 hours post-workout.",
-    "lipoShots": "Lipotropic injections contain MIC (Methionine, Inositol, Choline) — three compounds that help your liver process and mobilize stored fat. Combined with B12 for energy, these work best taken 1-2x per week alongside a caloric deficit.",
-    "nad100": "NAD+ is a coenzyme found in every cell. At 100mg, this is a gentle introduction — expect improved energy, sharper focus, and mental clarity that builds over 24-48 hours. Ideal for first-timers or as a maintenance dose.",
+    "revival": "Our most comprehensive IV. The full vitamin stack covers B12, B-Complex, Vitamin C, Magnesium, Glutathione, and Zinc. You then choose 3 medications from Toradol, Zofran, Benadryl, Pepcid, or Reglan \u00e2\u20ac\u201d your nurse reviews all options with you before starting.",
+    "longevity": "NAD+ activates sirtuins \u00e2\u20ac\u201d the proteins responsible for DNA repair and cellular longevity. Combined with a full vitamin stack, this IV works at the cellular level. Most patients notice improved energy and mental clarity within 24 hours, with cumulative benefits over regular sessions.",
+    "performance": "Amino acids drive muscle protein synthesis and recovery. NAD+ supports mitochondrial energy production. Taurine reduces exercise-induced oxidative stress. This combination is designed to help you recover faster and train harder \u00e2\u20ac\u201d most effective within 2 hours post-workout.",
+    "lipoShots": "Lipotropic injections contain MIC (Methionine, Inositol, Choline) \u00e2\u20ac\u201d three compounds that help your liver process and mobilize stored fat. Combined with B12 for energy, these work best taken 1-2x per week alongside a caloric deficit.",
+    "nad100": "NAD+ is a coenzyme found in every cell. At 100mg, this is a gentle introduction \u00e2\u20ac\u201d expect improved energy, sharper focus, and mental clarity that builds over 24-48 hours. Ideal for first-timers or as a maintenance dose.",
     "nad500": "At 500mg, NAD+ therapy reaches deep cellular restoration. This dose is particularly beneficial for longevity protocols, supporting addiction recovery, and rebuilding mitochondrial function after chronic stress or illness.",
     "myersGold": "The Gold upgrade doubles the B12, B-Complex, and Magnesium concentrations. If you've had a standard Myers' before and want a stronger effect, or you're dealing with more than mild fatigue, this is the step up.",
-    "myersPlatinum": "Our maximum-dose Myers': triple vitamin concentrations plus 50mg of NAD+ for cellular energy repair. This is our most potent general wellness IV — the closest thing to a full reset.",
-    "b12Shot": "B12 injections bypass digestion entirely — 100% bioavailable versus roughly 1-2% for oral supplements. If you're vegan, vegetarian, over 50, or have GI absorption issues, injections are the most reliable way to maintain levels.",
-    "glutathioneShot": "Glutathione is your body's master antioxidant and primary detox molecule. Oral glutathione is poorly absorbed — injection delivers it directly to your tissues where it neutralizes free radicals and supports liver function.",
+    "myersPlatinum": "Our maximum-dose Myers': triple vitamin concentrations plus 50mg of NAD+ for cellular energy repair. This is our most potent general wellness IV \u00e2\u20ac\u201d the closest thing to a full reset.",
+    "b12Shot": "B12 injections bypass digestion entirely \u00e2\u20ac\u201d 100% bioavailable versus roughly 1-2% for oral supplements. If you're vegan, vegetarian, over 50, or have GI absorption issues, injections are the most reliable way to maintain levels.",
+    "glutathioneShot": "Glutathione is your body's master antioxidant and primary detox molecule. Oral glutathione is poorly absorbed \u00e2\u20ac\u201d injection delivers it directly to your tissues where it neutralizes free radicals and supports liver function.",
     "triImmuneShot": "Three proven immune compounds in one quick shot: Vitamin C activates white blood cells, Zinc regulates inflammatory response, and Glutathione provides antioxidant protection. Best taken at the first sign of illness or before travel.",
-    "vitaminDShot": "Most adults in Colorado are deficient. A single Vitamin D injection loads your stores immediately — no waiting weeks for oral supplements to build up. Supports immune regulation, bone density, and mood.",
-    "biotinShot": "Biotin (B7) is the key nutrient for keratin production — the structural protein in hair, skin, and nails. Oral biotin has limited absorption. The injection form delivers directly for stronger, faster results.",
+    "vitaminDShot": "Most adults in Colorado are deficient. A single Vitamin D injection loads your stores immediately \u00e2\u20ac\u201d no waiting weeks for oral supplements to build up. Supports immune regulation, bone density, and mood.",
+    "biotinShot": "Biotin (B7) is the key nutrient for keratin production \u00e2\u20ac\u201d the structural protein in hair, skin, and nails. Oral biotin has limited absorption. The injection form delivers directly for stronger, faster results.",
     "labGeneral": "A quick at-home blood draw covering your essential health markers. CBC checks your blood cells, CMP assesses organ function, and the Lipid Panel evaluates cardiovascular risk. Results in 2-5 business days.",
-    "labInDepth": "Goes deeper than the basics with thyroid (TSH) and blood sugar (HbA1c) markers. TSH screens for thyroid issues — a common cause of unexplained fatigue and weight changes. HbA1c shows your 3-month blood sugar average.",
-    "labVitamin": "Checks the specific vitamins and minerals that drive energy and wellness. If you've been tired, foggy, or just not feeling right, this panel tells you exactly what your body is low on — so you can target your IV and injection choices.",
+    "labInDepth": "Goes deeper than the basics with thyroid (TSH) and blood sugar (HbA1c) markers. TSH screens for thyroid issues \u00e2\u20ac\u201d a common cause of unexplained fatigue and weight changes. HbA1c shows your 3-month blood sugar average.",
+    "labVitamin": "Checks the specific vitamins and minerals that drive energy and wellness. If you've been tired, foggy, or just not feeling right, this panel tells you exactly what your body is low on \u00e2\u20ac\u201d so you can target your IV and injection choices.",
     "labComplete": "Our most comprehensive panel with 45+ biomarkers including hormones (testosterone, estradiol, cortisol), insulin, ApoB (best cardiovascular predictor), and more. This is the full picture for anyone serious about optimizing their health.",
     "myers": "The Myers' Cocktail is the gold standard vitamin IV -- a proven blend of B vitamins, Vitamin C, Magnesium, and Glutathione for overall energy and wellness.",
     "nad250": "NAD+ is a coenzyme in every cell of your body. At 250mg, this infusion restores cellular energy production and clears brain fog from the inside out.",

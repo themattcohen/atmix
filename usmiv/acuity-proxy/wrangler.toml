@@ -1,0 +1,8 @@
+name = "usmiv-acuity-proxy"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+# Secrets (set via `wrangler secret put`):
+#   ACUITY_USER_ID
+#   ACUITY_API_KEY
+#   ALLOWED_ORIGINS
