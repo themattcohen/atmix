@@ -1,0 +1,82 @@
+/*
+ * index.css — Main CSS entry point for wizard-v2
+ *
+ * Import order matters:
+ *   1. tokens   — CSS custom properties (must be first, all others depend on them)
+ *   2. base     — Modal overlay, shell, close button, progress bar, error screen
+ *   3. question — Question step, option cards, nav bar
+ *   4. result   — Single-result screen sections, CTA buttons, trust bar
+ *   5. multi-result — Recommendation cards, addon chips, session plan
+ *   6. booking  — Calendar grid, time slots, error card, skeleton
+ *   7. animations — Keyframes, step transitions, reduced-motion overrides
+ *
+ * Scoping:
+ *   All styles are scoped to .tw-overlay or .tw-overlay descendants.
+ *   No global resets. Box-sizing and font-family are applied only to
+ *   .tw-overlay and its children to avoid leaking to the host page.
+ */
+
+@import './tokens.css';
+@import './base.css';
+@import './question.css';
+@import './result.css';
+@import './multi-result.css';
+@import './booking.css';
+@import './animations.css';
+
+
+/* ── Scoped base reset ─────────────────────────────────────────── */
+/*
+ * Applied only to .tw-overlay and its children.
+ * Does NOT touch host page elements.
+ */
+
+.tw-overlay,
+.tw-overlay *,
+.tw-overlay *::before,
+.tw-overlay *::after {
+  box-sizing: border-box;
+}
+
+.tw-overlay {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-base);
+  line-height: var(--tw-line-height-normal);
+  color: var(--tw-color-dark-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default button/input reset within wizard only */
+.tw-overlay button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.tw-overlay a {
+  color: inherit;
+}
+
+/* Remove default list styles for lists used in wizard */
+.tw-overlay ul,
+.tw-overlay ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Remove default paragraph margins */
+.tw-overlay p {
+  margin: 0;
+}
+
+/* Remove default heading margins */
+.tw-overlay h1,
+.tw-overlay h2,
+.tw-overlay h3,
+.tw-overlay h4,
+.tw-overlay h5,
+.tw-overlay h6 {
+  margin: 0;
+  font-weight: inherit;
+}

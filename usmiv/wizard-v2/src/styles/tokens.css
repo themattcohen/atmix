@@ -1,0 +1,130 @@
+/*
+ * tokens.css — Design system CSS custom properties
+ * All scoped to .tw-overlay to prevent leaking to host page.
+ * Prefix: --tw- (Treatment Wizard)
+ */
+
+.tw-overlay {
+  /* ── Brand colors ──────────────────────────────────────────── */
+  --tw-color-teal-brand:   #44B7BC;   /* Large fills, progress bar, decorative */
+  --tw-color-teal-wcag:    #2A8A8F;   /* Text on white: 4.7:1 contrast (WCAG AA) */
+  --tw-color-teal-light:   #E8F6F7;   /* Background tints */
+  --tw-color-teal-mid:     #B8E4E6;   /* Borders, subtle hover states */
+  --tw-color-teal-safe:    #2A8A8F;   /* Alias for teal-wcag */
+
+  /* ── Navy ──────────────────────────────────────────────────── */
+  --tw-color-navy:         #1E4969;   /* Primary interactive, headings */
+  --tw-color-navy-dark:    #163650;   /* Hover state for navy elements */
+  --tw-color-navy-light:   #EAF0F5;   /* Secondary button hover background */
+
+  /* ── Text ──────────────────────────────────────────────────── */
+  --tw-color-dark-text:    #081E2B;   /* Primary body copy */
+  --tw-color-muted:        #5A7384;   /* Secondary text, labels */
+  --tw-color-text-muted:   #5A7384;   /* Alias for muted */
+  --tw-color-muted-light:  #8BA3B3;   /* Remove button default, placeholder */
+
+  /* ── Surfaces ──────────────────────────────────────────────── */
+  --tw-color-surface:      #FFFFFF;
+  --tw-color-bg-page:      #F4F7F9;   /* Light gray background for sections */
+  --tw-color-border:       #D6E2E9;   /* Default border color */
+  --tw-color-border-focus: #2A8A8F;   /* Focus ring border */
+
+  /* ── Semantic ──────────────────────────────────────────────── */
+  --tw-color-success:      #1E7E3E;   /* Added / confirmed state text */
+  --tw-color-success-bg:   rgba(39, 174, 96, 0.08);
+  --tw-color-success-border: rgba(39, 174, 96, 0.4);
+  --tw-color-warning:      #B45309;
+  --tw-color-warning-bg:   #FFFBEB;
+  --tw-color-error:        #B91C1C;
+  --tw-color-error-bg:     #FEF2F2;
+  --tw-color-error-border: #FECACA;
+
+  /* ── Stars / ratings ──────────────────────────────────────── */
+  --tw-color-star:         #F5A623;
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --tw-font-body:          'Open Sans', system-ui, -apple-system, sans-serif;
+  --tw-font-heading:       'Montserrat', system-ui, -apple-system, sans-serif;
+
+  --tw-font-size-xs:       0.75rem;    /* 12px */
+  --tw-font-size-sm:       0.875rem;   /* 14px */
+  --tw-font-size-base:     1rem;       /* 16px */
+  --tw-font-size-md:       1.0625rem;  /* 17px */
+  --tw-font-size-lg:       1.25rem;    /* 20px */
+  --tw-font-size-xl:       1.5rem;     /* 24px */
+  --tw-font-size-2xl:      1.875rem;   /* 30px */
+  --tw-font-size-3xl:      2.25rem;    /* 36px */
+
+  --tw-font-weight-normal:  400;
+  --tw-font-weight-medium:  500;
+  --tw-font-weight-semibold: 600;
+  --tw-font-weight-bold:    700;
+  --tw-font-weight-extrabold: 800;
+
+  --tw-line-height-tight:  1.2;
+  --tw-line-height-snug:   1.35;
+  --tw-line-height-normal: 1.5;
+  --tw-line-height-relaxed: 1.65;
+
+  /* ── Spacing scale ─────────────────────────────────────────── */
+  --tw-space-xs:   0.25rem;   /* 4px  */
+  --tw-space-sm:   0.5rem;    /* 8px  */
+  --tw-space-md:   1rem;      /* 16px */
+  --tw-space-lg:   1.5rem;    /* 24px */
+  --tw-space-xl:   2rem;      /* 32px */
+
+  /* Numeric scale (used for fine-grained control) */
+  --tw-space-1:    0.25rem;   /* 4px  */
+  --tw-space-2:    0.5rem;    /* 8px  */
+  --tw-space-3:    0.75rem;   /* 12px */
+  --tw-space-4:    1rem;      /* 16px */
+  --tw-space-5:    1.25rem;   /* 20px */
+  --tw-space-6:    1.5rem;    /* 24px */
+  --tw-space-8:    2rem;      /* 32px */
+  --tw-space-10:   2.5rem;    /* 40px */
+  --tw-space-12:   3rem;      /* 48px */
+
+  /* ── Border radius ─────────────────────────────────────────── */
+  --tw-radius-sm:   4px;
+  --tw-radius-md:   8px;
+  --tw-radius-lg:   12px;
+  --tw-radius-xl:   16px;
+  --tw-radius-2xl:  20px;
+  --tw-radius-full: 9999px;
+
+  /* ── Shadows ───────────────────────────────────────────────── */
+  --tw-shadow-sm:
+    0 1px 2px rgba(8, 30, 43, 0.06);
+  --tw-shadow-card:
+    0 1px 3px rgba(8, 30, 43, 0.08),
+    0 4px 12px rgba(8, 30, 43, 0.06);
+  --tw-shadow-hover:
+    0 4px 16px rgba(8, 30, 43, 0.14);
+  --tw-shadow-lifted:
+    0 6px 20px rgba(8, 30, 43, 0.16);
+  --tw-shadow-modal:
+    0 8px 40px rgba(8, 30, 43, 0.18),
+    0 2px 8px rgba(8, 30, 43, 0.10);
+
+  /* ── Transitions ───────────────────────────────────────────── */
+  --tw-ease:           cubic-bezier(0.22, 0.61, 0.36, 1);
+  --tw-ease-bounce:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --tw-ease-out:       cubic-bezier(0, 0, 0.2, 1);
+  --tw-duration-fast:  150ms;
+  --tw-duration-mid:   200ms;
+  --tw-duration-slow:  300ms;
+
+  /* ── Modal dimensions ──────────────────────────────────────── */
+  --tw-modal-max-width: 600px;
+  --tw-modal-padding-x: 2rem;
+  --tw-modal-padding-y: 1.5rem;
+
+  /* ── Progress bar ──────────────────────────────────────────── */
+  --tw-progress-height: 4px;
+
+  /* ── Z-index layers ────────────────────────────────────────── */
+  --tw-z-overlay:  9000;
+  --tw-z-modal:    9001;
+  --tw-z-close:    9002;
+  --tw-z-sticky:   9003;   /* sticky session plan footer */
+}

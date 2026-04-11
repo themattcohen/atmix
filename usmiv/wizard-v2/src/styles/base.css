@@ -1,0 +1,258 @@
+/*
+ * base.css — Modal shell, overlay backdrop, close button, progress bar
+ * Scoped under .tw-overlay (fixed full-viewport root element).
+ * Mobile-first: base styles for mobile, 768px+ breakpoint for desktop.
+ */
+
+
+/* ── Overlay backdrop ──────────────────────────────────────────
+   Root element appended to document.body by wizard self-mount.
+   All design tokens live here as CSS custom properties.
+   ─────────────────────────────────────────────────────────────── */
+
+.tw-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--tw-z-overlay);
+  background-color: rgba(8, 30, 43, 0.65);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-end;    /* mobile: bottom sheet */
+  justify-content: center;
+
+  /* Default state: hidden */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity var(--tw-duration-slow) var(--tw-ease),
+    visibility var(--tw-duration-slow) var(--tw-ease);
+}
+
+.tw-overlay--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+/* ── Modal container ───────────────────────────────────────────
+   Mobile: full-width bottom sheet, slides up from translateY(100%)
+   ─────────────────────────────────────────────────────────────── */
+
+.tw-overlay .tw-modal {
+  position: relative;
+  z-index: var(--tw-z-modal);
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  background-color: var(--tw-color-surface);
+  border-radius: var(--tw-radius-xl) var(--tw-radius-xl) 0 0;
+  box-shadow: var(--tw-shadow-modal);
+
+  /* Entrance: slides up from below on mobile */
+  transform: translateY(100%);
+  opacity: 0;
+
+  transition:
+    opacity var(--tw-duration-slow) var(--tw-ease),
+    transform var(--tw-duration-slow) var(--tw-ease);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--tw-color-teal-mid) transparent;
+}
+
+.tw-overlay .tw-modal::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tw-overlay .tw-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tw-overlay .tw-modal::-webkit-scrollbar-thumb {
+  background-color: var(--tw-color-teal-mid);
+  border-radius: var(--tw-radius-full);
+}
+
+/* Visible state: overlay open triggers modal reveal */
+.tw-overlay--visible .tw-modal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.tw-overlay .tw-modal:focus {
+  outline: none;
+}
+
+.tw-overlay .tw-modal:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+
+/* ── Scrollable content wrapper ────────────────────────────────
+   Houses the step content between progress bar and nav bar.
+   ─────────────────────────────────────────────────────────────── */
+
+.tw-overlay .tw-content-area {
+  min-height: 280px;
+}
+
+
+/* ── Close button ──────────────────────────────────────────────
+   Fixed in top-right corner of modal.
+   Minimum 44x44px touch target.
+   ─────────────────────────────────────────────────────────────── */
+
+.tw-overlay .tw-close {
+  position: absolute;
+  top: var(--tw-space-4);
+  right: var(--tw-space-4);
+  z-index: var(--tw-z-close);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  color: var(--tw-color-muted);
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-close:hover {
+  background-color: var(--tw-color-bg-page);
+  border-color: var(--tw-color-border);
+  color: var(--tw-color-dark-text);
+}
+
+.tw-overlay .tw-close:active {
+  background-color: var(--tw-color-teal-light);
+}
+
+.tw-overlay .tw-close:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.tw-overlay .tw-close svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+}
+
+
+/* ── Progress bar ──────────────────────────────────────────────
+   Thin bar at top of modal.
+   Width of .tw-progress-fill set via inline style by React.
+   ─────────────────────────────────────────────────────────────── */
+
+.tw-overlay .tw-progress {
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  background-color: var(--tw-color-surface);
+}
+
+.tw-overlay .tw-progress-track {
+  height: var(--tw-progress-height);
+  background-color: var(--tw-color-border);
+  border-radius: var(--tw-radius-full);
+  overflow: hidden;
+}
+
+.tw-overlay .tw-progress-fill {
+  width: 0%;
+  height: 100%;
+  background-color: var(--tw-color-teal-brand);
+  border-radius: var(--tw-radius-full);
+  transition: width 350ms var(--tw-ease);
+  will-change: width;
+}
+
+
+/* ── Error state screen ────────────────────────────────────────
+   Shown by WizardRouter when state.error is set.
+   ─────────────────────────────────────────────────────────────── */
+
+.tw-overlay .tw-error-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--tw-space-10) var(--tw-modal-padding-x);
+  gap: var(--tw-space-4);
+}
+
+.tw-overlay .tw-error-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-lg);
+  font-weight: 700;
+  color: var(--tw-color-navy);
+  margin: 0;
+}
+
+.tw-overlay .tw-error-message {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-normal);
+  margin: 0;
+  max-width: 360px;
+}
+
+.tw-overlay .tw-error-actions {
+  display: flex;
+  gap: var(--tw-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--tw-space-2);
+}
+
+
+/* ── Responsive: desktop (≥ 768px) ───────────────────────────── */
+
+@media (min-width: 768px) {
+  .tw-overlay {
+    align-items: center;   /* centered modal on desktop */
+    padding: var(--tw-space-6);
+  }
+
+  .tw-overlay .tw-modal {
+    width: calc(100% - 2 * var(--tw-space-6));
+    max-width: var(--tw-modal-max-width);
+    max-height: min(calc(100vh - 3rem), 780px);
+    border-radius: var(--tw-radius-xl);
+
+    /* Desktop entrance: slides up from 24px below center */
+    transform: translateY(24px);
+  }
+
+  .tw-overlay--visible .tw-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+/* ── Responsive: large desktop (≥ 1024px) ─────────────────────── */
+
+@media (min-width: 1024px) {
+  .tw-overlay {
+    --tw-modal-padding-x: 2.5rem;
+    --tw-modal-padding-y: 1.75rem;
+  }
+}

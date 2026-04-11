@@ -1,0 +1,561 @@
+/*
+ * result.css — Single-result screen layout
+ * Covers: treatment header, why-match, ingredients, best-for,
+ *         note, trust bar, CTA buttons, nav bar.
+ * All classes prefixed with tw-.
+ * Scoped under .tw-overlay.
+ */
+
+
+/* ── Result screen container ───────────────────────────────────── */
+
+.tw-overlay .tw-result {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ── Result header (treatment name, price, duration) ───────────── */
+
+.tw-overlay .tw-result-header {
+  padding: var(--tw-space-6) var(--tw-modal-padding-x) var(--tw-space-5);
+  padding-right: calc(var(--tw-modal-padding-x) + 48px);
+  background: linear-gradient(135deg, var(--tw-color-navy) 0%, #1a5f81 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background glow */
+.tw-overlay .tw-result-header::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(
+    circle,
+    rgba(68, 183, 188, 0.25) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.tw-overlay .tw-result-match-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-semibold);
+  color: #A8E0E3;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  margin: 0 0 var(--tw-space-2) 0;
+  display: block;
+}
+
+.tw-overlay .tw-result-name {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-2xl);
+  font-weight: var(--tw-font-weight-extrabold);
+  color: var(--tw-color-surface);
+  line-height: 1.15;
+  margin: 0 0 var(--tw-space-3) 0;
+  letter-spacing: -0.02em;
+}
+
+.tw-overlay .tw-result-desc {
+  margin: var(--tw-space-2) 0 0;
+  font-family: var(--tw-font-body);
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: var(--tw-line-height-normal);
+}
+
+.tw-overlay .tw-result-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tw-space-3);
+  flex-wrap: wrap;
+}
+
+.tw-overlay .tw-result-price {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: var(--tw-font-weight-bold);
+  color: #A8E0E3;
+  line-height: 1;
+}
+
+.tw-overlay .tw-result-duration {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1;
+}
+
+
+/* ── Why we matched you ────────────────────────────────────────── */
+
+.tw-overlay .tw-result-match {
+  margin: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  background-color: var(--tw-color-teal-light);
+  border: 1px solid var(--tw-color-teal-mid);
+  border-radius: var(--tw-radius-lg);
+  padding: var(--tw-space-5);
+}
+
+.tw-overlay .tw-result-match-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-teal-wcag);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--tw-space-3) 0;
+}
+
+.tw-overlay .tw-result-match-text {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-dark-text);
+  line-height: var(--tw-line-height-relaxed);
+  margin: 0;
+}
+
+
+/* ── Ingredients section ───────────────────────────────────────── */
+
+.tw-overlay .tw-result-ingredients {
+  margin: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  border: 1px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-lg);
+  overflow: hidden;
+}
+
+.tw-overlay .tw-result-section-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--tw-space-4) var(--tw-space-5);
+  margin: 0;
+  background-color: var(--tw-color-bg-page);
+  border-bottom: 1px solid var(--tw-color-border);
+}
+
+.tw-overlay .tw-result-ing-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tw-overlay .tw-result-ing-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-4) var(--tw-space-5);
+  border-bottom: 1px solid var(--tw-color-border);
+}
+
+.tw-overlay .tw-result-ing-item:last-child {
+  border-bottom: none;
+}
+
+.tw-overlay .tw-result-ing-name {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-dark-text);
+  line-height: var(--tw-line-height-snug);
+  display: block;
+  flex: 1;
+}
+
+.tw-overlay .tw-result-ing-benefit {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: 1.4;
+  display: block;
+  flex: 2;
+}
+
+
+/* ── Best For pill tags ────────────────────────────────────────── */
+
+.tw-overlay .tw-result-bestfor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-3) var(--tw-modal-padding-x);
+}
+
+.tw-overlay .tw-result-bestfor-label {
+  font-family: var(--tw-font-heading);
+  font-weight: var(--tw-font-weight-semibold);
+  font-size: 0.8125rem;
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tw-overlay .tw-result-bestfor-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-2);
+}
+
+.tw-overlay .tw-result-bestfor-tag {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--tw-font-body);
+  font-size: 0.8125rem;
+  color: var(--tw-color-teal-wcag);
+  background-color: rgba(42, 138, 143, 0.08);
+  border: 1px solid rgba(42, 138, 143, 0.20);
+  border-radius: var(--tw-radius-full);
+  white-space: nowrap;
+  line-height: var(--tw-line-height-snug);
+}
+
+
+/* ── Italic footnote / note ────────────────────────────────────── */
+
+.tw-overlay .tw-result-note {
+  padding: var(--tw-space-3) var(--tw-modal-padding-x);
+  font-family: var(--tw-font-body);
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-normal);
+}
+
+
+/* ── Bundle add-on card ────────────────────────────────────────── */
+
+.tw-overlay .tw-result-bundle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tw-space-4);
+  margin: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+  padding: var(--tw-space-5);
+  border: 1.5px dashed var(--tw-color-teal-mid);
+  border-radius: var(--tw-radius-lg);
+  background-color: var(--tw-color-bg-page);
+
+  transition:
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    background-color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-result-bundle:hover {
+  border-color: var(--tw-color-teal-wcag);
+  background-color: var(--tw-color-teal-light);
+}
+
+.tw-overlay .tw-result-bundle--added {
+  border-style: solid;
+  border-color: var(--tw-color-success-border);
+  background-color: var(--tw-color-success-bg);
+}
+
+.tw-overlay .tw-result-bundle-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tw-radius-md);
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-teal-wcag);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tw-overlay .tw-result-bundle-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  pointer-events: none;
+}
+
+.tw-overlay .tw-result-bundle-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tw-overlay .tw-result-bundle-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-dark-text);
+  line-height: var(--tw-line-height-snug);
+  margin: 0 0 var(--tw-space-1) 0;
+  display: block;
+}
+
+.tw-overlay .tw-result-bundle-desc {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: 1.4;
+  margin: 0 0 var(--tw-space-3) 0;
+  display: block;
+}
+
+/* Toggle button inside bundle add-on card */
+.tw-overlay .tw-btn-bundle-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-4);
+  min-height: 36px;
+
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  border: none;
+  border-radius: var(--tw-radius-full);
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-bundle-toggle:hover {
+  background-color: #236f73;
+  box-shadow: var(--tw-shadow-card);
+}
+
+.tw-overlay .tw-btn-bundle-toggle:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+.tw-overlay .tw-btn-bundle-toggle--added {
+  background-color: var(--tw-color-success-bg);
+  color: var(--tw-color-success);
+  border: 1.5px solid var(--tw-color-success-border);
+}
+
+.tw-overlay .tw-btn-bundle-toggle--added:hover {
+  background-color: rgba(39, 174, 96, 0.15);
+  box-shadow: none;
+}
+
+
+/* ── Trust bar ─────────────────────────────────────────────────── */
+
+.tw-overlay .tw-result-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-3);
+  padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  margin-top: var(--tw-space-5);
+  border-top: 1px solid var(--tw-color-border);
+  background-color: var(--tw-color-bg-page);
+  flex-wrap: wrap;
+}
+
+.tw-overlay .tw-result-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 1;
+}
+
+.tw-overlay .tw-star {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--tw-color-star);
+  flex-shrink: 0;
+}
+
+.tw-overlay .tw-star svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.tw-overlay .tw-result-reviews {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-muted);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+
+/* ── CTA buttons ───────────────────────────────────────────────── */
+
+.tw-overlay .tw-result-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-4);
+}
+
+/* Primary — "Book This Treatment" */
+.tw-overlay .tw-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-6);
+  min-height: 50px;
+
+  background-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: var(--tw-font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-overlay .tw-btn-primary:hover {
+  background-color: var(--tw-color-navy-dark);
+  border-color: var(--tw-color-navy-dark);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-overlay .tw-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-overlay .tw-btn-primary:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-overlay .tw-btn-primary svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Secondary — "Learn More" */
+.tw-overlay .tw-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-6);
+  min-height: 50px;
+
+  background-color: transparent;
+  color: var(--tw-color-navy);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: var(--tw-font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-overlay .tw-btn-secondary:hover {
+  background-color: var(--tw-color-navy-light);
+  box-shadow: var(--tw-shadow-card);
+  transform: translateY(-1px);
+}
+
+.tw-overlay .tw-btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-overlay .tw-btn-secondary:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-overlay .tw-btn-secondary svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+
+/* ── Responsive: mobile overrides ─────────────────────────────── */
+
+@media (max-width: 767px) {
+  .tw-overlay .tw-result-name {
+    font-size: var(--tw-font-size-xl);
+  }
+
+  .tw-overlay .tw-result-ctas {
+    gap: var(--tw-space-3);
+    padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  }
+
+  .tw-overlay .tw-result-trust {
+    gap: var(--tw-space-3);
+  }
+}
+
+
+/* ── Responsive: very small phones (< 374px) ──────────────────── */
+
+@media (max-width: 374px) {
+  .tw-overlay .tw-result-name {
+    font-size: var(--tw-font-size-lg);
+  }
+}
+
+
+/* ── Responsive: desktop side-by-side CTAs ────────────────────── */
+
+@media (min-width: 768px) {
+  .tw-overlay .tw-result-ctas--horizontal {
+    flex-direction: row;
+  }
+
+  .tw-overlay .tw-result-ctas--horizontal .tw-btn-primary,
+  .tw-overlay .tw-result-ctas--horizontal .tw-btn-secondary {
+    flex: 1;
+    width: auto;
+  }
+}

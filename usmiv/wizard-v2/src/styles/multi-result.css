@@ -1,0 +1,669 @@
+/*
+ * multi-result.css — Multi-result (scored symptom) screen
+ * Covers: multi-result header, recommendation cards, addon chips row,
+ *         session plan sticky footer.
+ * All classes prefixed with tw-.
+ * Scoped under .tw-overlay.
+ */
+
+
+/* ── Multi-result header ───────────────────────────────────────── */
+
+.tw-overlay .tw-multi-header {
+  padding: var(--tw-space-6) var(--tw-modal-padding-x) var(--tw-space-4);
+  padding-right: calc(var(--tw-modal-padding-x) + 48px);
+}
+
+.tw-overlay .tw-multi-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-navy);
+  line-height: var(--tw-line-height-tight);
+  margin: 0 0 var(--tw-space-2) 0;
+  letter-spacing: -0.01em;
+}
+
+.tw-overlay .tw-multi-subtitle {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-normal);
+  margin: 0;
+}
+
+
+/* ── Recommendation cards list ─────────────────────────────────── */
+
+.tw-overlay .tw-rec-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-4);
+  padding: 0 var(--tw-modal-padding-x) var(--tw-space-5);
+}
+
+.tw-overlay .tw-rec-card {
+  background-color: var(--tw-color-surface);
+  border: 1.5px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-lg);
+  padding: var(--tw-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+
+  transition:
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-rec-card:hover {
+  border-color: var(--tw-color-teal-mid);
+  box-shadow: var(--tw-shadow-hover);
+}
+
+
+/* ── Rank badge ────────────────────────────────────────────────── */
+
+.tw-overlay .tw-rec-rank-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-3);
+}
+
+.tw-overlay .tw-rec-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-bold);
+  line-height: 1;
+
+  /* Default (#2, #3): neutral */
+  background-color: var(--tw-color-bg-page);
+  color: var(--tw-color-navy);
+  border: 1px solid var(--tw-color-border);
+}
+
+/* Top rank (#1) */
+.tw-overlay .tw-rec-rank--top {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  border-color: var(--tw-color-teal-wcag);
+}
+
+.tw-overlay .tw-rec-name {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-md);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-navy);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.tw-overlay .tw-rec-price {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-snug);
+  margin: 0;
+}
+
+
+/* ── "Addresses:" symptom pills row ────────────────────────────── */
+
+.tw-overlay .tw-rec-addresses {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tw-space-2);
+}
+
+.tw-overlay .tw-rec-addresses-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tw-overlay .tw-rec-address-tag {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--tw-font-body);
+  font-size: 0.8125rem;
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-teal-wcag);
+  background-color: rgba(42, 138, 143, 0.08);
+  border: 1px solid rgba(42, 138, 143, 0.20);
+  border-radius: var(--tw-radius-full);
+  white-space: nowrap;
+  line-height: var(--tw-line-height-snug);
+}
+
+
+/* ── Why text (clinical explanation) ──────────────────────────── */
+
+.tw-overlay .tw-rec-why {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  font-style: italic;
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-relaxed);
+  margin: 0;
+}
+
+
+/* ── Card action buttons ───────────────────────────────────────── */
+
+.tw-overlay .tw-rec-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-3);
+  padding-top: var(--tw-space-1);
+  flex-wrap: wrap;
+}
+
+/* "Add to Session" — teal outline pill, fills on hover */
+.tw-overlay .tw-btn-add-session {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-5);
+  min-height: 44px;
+
+  background-color: transparent;
+  color: var(--tw-color-teal-wcag);
+  border: 1.5px solid var(--tw-color-teal-wcag);
+  border-radius: var(--tw-radius-full);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  line-height: 1;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-add-session:hover {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  box-shadow: var(--tw-shadow-card);
+}
+
+.tw-overlay .tw-btn-add-session:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* "Added" confirmed state — non-interactive */
+.tw-overlay .tw-btn-added {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-5);
+  min-height: 44px;
+
+  background-color: var(--tw-color-success-bg);
+  color: var(--tw-color-success);
+  border: 1.5px solid var(--tw-color-success-border);
+  border-radius: var(--tw-radius-full);
+  white-space: nowrap;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  line-height: 1;
+
+  cursor: default;
+  pointer-events: none;
+}
+
+/* "Details" text-link button */
+.tw-overlay .tw-btn-details {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  padding: var(--tw-space-2) 0;
+  min-height: 44px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-navy);
+  line-height: 1;
+  white-space: nowrap;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-details:hover {
+  text-decoration: underline;
+  color: var(--tw-color-navy-dark);
+}
+
+.tw-overlay .tw-btn-details:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+
+/* ── Add-on suggestions section ───────────────────────────────── */
+
+.tw-overlay .tw-addon-section {
+  padding: var(--tw-space-4) var(--tw-modal-padding-x) var(--tw-space-5);
+  border-top: 1px solid var(--tw-color-border);
+}
+
+.tw-overlay .tw-addon-section-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--tw-space-3) 0;
+}
+
+
+/* ── Addon chips ───────────────────────────────────────────────── */
+
+/* Scrollable horizontal row of chips */
+.tw-overlay .tw-addon-chips-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: var(--tw-space-2);
+  padding-bottom: var(--tw-space-2);
+  scrollbar-width: none;    /* hide scrollbar on Firefox */
+  -ms-overflow-style: none; /* hide scrollbar on IE/Edge */
+}
+
+.tw-overlay .tw-addon-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Wrapping grid when space allows */
+.tw-overlay .tw-addon-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tw-space-2);
+}
+
+/* Individual chip — dashed border pill, toggleable */
+.tw-overlay .tw-addon-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-4);
+  min-height: 44px;
+
+  background-color: transparent;
+  color: var(--tw-color-teal-wcag);
+  border: 1.5px dashed var(--tw-color-teal-wcag);
+  border-radius: var(--tw-radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-medium);
+  line-height: 1;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-addon-chip:hover {
+  background-color: var(--tw-color-teal-light);
+  border-color: var(--tw-color-teal-brand);
+  box-shadow: var(--tw-shadow-sm);
+}
+
+.tw-overlay .tw-addon-chip:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* Chip "+" icon */
+.tw-overlay .tw-addon-chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Chip name and price */
+.tw-overlay .tw-addon-chip-name {
+  font-weight: var(--tw-font-weight-medium);
+}
+
+.tw-overlay .tw-addon-chip-price {
+  font-size: var(--tw-font-size-xs);
+  opacity: 0.80;
+}
+
+/* "Added" state — teal fill, checkmark */
+.tw-overlay .tw-addon-chip--added {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  border-style: solid;
+  border-color: var(--tw-color-teal-wcag);
+}
+
+.tw-overlay .tw-addon-chip--added:hover {
+  background-color: #236f73;
+  border-color: #236f73;
+}
+
+
+/* ── Injection promo notice ────────────────────────────────────── */
+
+.tw-overlay .tw-promo-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-3) var(--tw-modal-padding-x);
+  background-color: var(--tw-color-navy-light);
+  border-top: 1px solid var(--tw-color-border);
+}
+
+.tw-overlay .tw-promo-notice-text {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-navy);
+  line-height: var(--tw-line-height-snug);
+}
+
+
+/* ── Session plan (sticky cart footer) ────────────────────────── */
+
+.tw-overlay .tw-session-plan {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--tw-z-sticky);
+
+  background-color: var(--tw-color-surface);
+  border-top: 1.5px solid var(--tw-color-border);
+  box-shadow: 0 -4px 16px rgba(8, 30, 43, 0.10);
+
+  padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+}
+
+/* Items list */
+.tw-overlay .tw-session-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-2);
+  max-height: 120px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tw-color-teal-mid) transparent;
+}
+
+.tw-overlay .tw-session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-3);
+}
+
+.tw-overlay .tw-session-item-name {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-dark-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tw-overlay .tw-session-item-price {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  white-space: nowrap;
+}
+
+/* Remove (x) button per item */
+.tw-overlay .tw-btn-remove-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  flex-shrink: 0;
+
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--tw-color-muted-light);
+
+  transition: color var(--tw-duration-fast) var(--tw-ease),
+              background-color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-remove-item:hover {
+  color: var(--tw-color-error);
+  background-color: var(--tw-color-error-bg);
+}
+
+.tw-overlay .tw-btn-remove-item:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 1px;
+}
+
+.tw-overlay .tw-btn-remove-item svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+
+/* ── Session total row ─────────────────────────────────────────── */
+
+.tw-overlay .tw-session-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--tw-space-4);
+  padding-top: var(--tw-space-2);
+  border-top: 1px solid var(--tw-color-border);
+}
+
+.tw-overlay .tw-session-total-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-muted);
+}
+
+.tw-overlay .tw-session-total-price {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-lg);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-navy);
+}
+
+
+/* ── Promo banner above book button ────────────────────────────── */
+
+.tw-overlay .tw-session-promo {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-teal-wcag);
+  text-align: center;
+  background-color: var(--tw-color-teal-light);
+  border-radius: var(--tw-radius-sm);
+  padding: var(--tw-space-2) var(--tw-space-3);
+}
+
+
+/* ── "Book This Session" CTA ───────────────────────────────────── */
+
+.tw-overlay .tw-btn-book-session {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+  width: 100%;
+  padding: var(--tw-space-4) var(--tw-space-6);
+  min-height: 50px;
+
+  background-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: var(--tw-font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-overlay .tw-btn-book-session:hover {
+  background-color: var(--tw-color-navy-dark);
+  border-color: var(--tw-color-navy-dark);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-overlay .tw-btn-book-session:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-overlay .tw-btn-book-session:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+.tw-overlay .tw-btn-book-session:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* ── Session plan: collapsed state on mobile ──────────────────── */
+
+.tw-overlay .tw-session-plan--collapsed .tw-session-items {
+  display: none;
+}
+
+.tw-overlay .tw-session-plan--collapsed .tw-session-promo {
+  display: none;
+}
+
+/* Collapse toggle button */
+.tw-overlay .tw-btn-session-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin-bottom: var(--tw-space-1);
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-muted);
+  gap: var(--tw-space-1);
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-session-toggle:hover {
+  color: var(--tw-color-dark-text);
+}
+
+.tw-overlay .tw-btn-session-toggle:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+
+/* ── Responsive: mobile ────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .tw-overlay .tw-multi-header {
+    padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-3);
+    padding-right: calc(var(--tw-modal-padding-x) + 48px);
+  }
+
+  .tw-overlay .tw-multi-title {
+    font-size: var(--tw-font-size-lg);
+  }
+
+  .tw-overlay .tw-rec-cards {
+    padding: 0 var(--tw-modal-padding-x) var(--tw-space-4);
+    gap: var(--tw-space-3);
+  }
+
+  .tw-overlay .tw-rec-card {
+    padding: var(--tw-space-4);
+  }
+
+  .tw-overlay .tw-session-plan {
+    padding: var(--tw-space-3) var(--tw-modal-padding-x);
+  }
+}

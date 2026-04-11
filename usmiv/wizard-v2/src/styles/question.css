@@ -1,0 +1,456 @@
+/*
+ * question.css — Question screens, option cards, navigation bar
+ * All classes prefixed with tw-.
+ * Scoped under .tw-overlay.
+ */
+
+
+/* ── Question screen container ─────────────────────────────────── */
+
+.tw-overlay .tw-question {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ── Question header (title + subtitle) ─────────────────────────── */
+
+.tw-overlay .tw-question-header {
+  padding: var(--tw-space-6) var(--tw-modal-padding-x) var(--tw-space-4);
+  /* Leave room for close button (44px + right padding) */
+  padding-right: calc(var(--tw-modal-padding-x) + 48px);
+}
+
+.tw-overlay .tw-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-navy);
+  line-height: var(--tw-line-height-tight);
+  margin: 0 0 var(--tw-space-2) 0;
+  letter-spacing: -0.01em;
+}
+
+.tw-overlay .tw-subtitle {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-normal);
+  margin: 0;
+}
+
+
+/* ── Options list ──────────────────────────────────────────────── */
+
+.tw-overlay .tw-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+  padding: 0 var(--tw-modal-padding-x) var(--tw-space-4);
+  margin: 0;
+  list-style: none;
+}
+
+
+/* ── Option card ───────────────────────────────────────────────── */
+/* Minimum 44px touch target per WCAG 2.5.5 */
+
+.tw-overlay .tw-option {
+  display: flex;
+  align-items: center;
+  gap: var(--tw-space-4);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--tw-space-4) var(--tw-space-5);
+  margin: 0;
+
+  background-color: var(--tw-color-surface);
+  border: 1.5px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-lg);
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tw-overlay .tw-option:hover {
+  border-color: var(--tw-color-teal-brand);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-overlay .tw-option:active {
+  transform: translateY(0);
+  box-shadow: var(--tw-shadow-card);
+}
+
+.tw-overlay .tw-option:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-color: var(--tw-color-teal-wcag);
+}
+
+/* Selected state — JS adds .tw-option--selected and aria-checked="true" */
+.tw-overlay .tw-option--selected,
+.tw-overlay .tw-option[aria-checked="true"] {
+  border: 2.5px solid var(--tw-color-teal-wcag);
+  background-color: rgba(42, 138, 143, 0.06);
+  box-shadow:
+    0 0 0 3px rgba(42, 138, 143, 0.12),
+    0 2px 10px rgba(42, 138, 143, 0.10);
+  transform: translateY(0);
+}
+
+.tw-overlay .tw-option--selected .tw-option-label,
+.tw-overlay .tw-option[aria-checked="true"] .tw-option-label {
+  color: var(--tw-color-navy);
+}
+
+.tw-overlay .tw-option--selected .tw-option-sublabel,
+.tw-overlay .tw-option[aria-checked="true"] .tw-option-sublabel {
+  color: var(--tw-color-muted);
+}
+
+.tw-overlay .tw-option--selected .tw-option-icon,
+.tw-overlay .tw-option[aria-checked="true"] .tw-option-icon {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+}
+
+
+/* ── Option icon ───────────────────────────────────────────────── */
+
+.tw-overlay .tw-option-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--tw-radius-md);
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-teal-wcag);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-option-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+}
+
+.tw-overlay .tw-option:hover:not(.tw-option--selected) .tw-option-icon {
+  background-color: var(--tw-color-teal-mid);
+  color: var(--tw-color-navy);
+}
+
+
+/* ── Option labels ─────────────────────────────────────────────── */
+
+.tw-overlay .tw-option-labels {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-1);
+}
+
+.tw-overlay .tw-option-label {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-md);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-dark-text);
+  line-height: var(--tw-line-height-snug);
+  display: block;
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-option-sublabel {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: 1.4;
+  display: block;
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+
+/* ── Checkbox / radio indicator ────────────────────────────────── */
+
+.tw-overlay .tw-option-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--tw-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  margin-left: auto;
+  transition: all var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-option-check svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+
+.tw-overlay .tw-option--selected .tw-option-check,
+.tw-overlay .tw-option[aria-checked="true"] .tw-option-check {
+  border-color: var(--tw-color-teal-wcag);
+  background-color: var(--tw-color-teal-wcag);
+  color: white;
+}
+
+/* Multi-select: square checkbox shape */
+.tw-overlay .tw-options--multi .tw-option-check {
+  border-radius: var(--tw-radius-sm);
+}
+
+
+/* ── Step navigation bar ───────────────────────────────────────── */
+
+.tw-overlay .tw-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-6);
+  border-top: 1px solid var(--tw-color-border);
+  background-color: var(--tw-color-surface);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.tw-overlay .tw-nav--result {
+  justify-content: space-between;
+}
+
+.tw-overlay .tw-nav-spacer {
+  display: inline-block;
+  visibility: hidden;
+  pointer-events: none;
+  width: 1px;
+}
+
+
+/* ── Back button ───────────────────────────────────────────────── */
+
+.tw-overlay .tw-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-3);
+  min-height: 44px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-muted);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-back:hover {
+  color: var(--tw-color-dark-text);
+}
+
+.tw-overlay .tw-btn-back:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+.tw-overlay .tw-btn-back svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+
+/* ── Continue / Submit button ──────────────────────────────────── */
+
+.tw-overlay .tw-btn-continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tw-space-2);
+
+  padding: var(--tw-space-3) var(--tw-space-8);
+  min-height: 46px;
+
+  background-color: var(--tw-color-navy);
+  color: var(--tw-color-surface);
+  border: 2px solid var(--tw-color-navy);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease),
+    transform var(--tw-duration-fast) var(--tw-ease-bounce);
+}
+
+.tw-overlay .tw-btn-continue:hover {
+  background-color: var(--tw-color-navy-dark);
+  border-color: var(--tw-color-navy-dark);
+  box-shadow: var(--tw-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.tw-overlay .tw-btn-continue:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.tw-overlay .tw-btn-continue:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 3px;
+}
+
+/* Aria-disabled (not HTML disabled): preserves focus for screen readers */
+.tw-overlay .tw-btn-continue[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.tw-overlay .tw-btn-continue:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* ── Restart button ────────────────────────────────────────────── */
+
+.tw-overlay .tw-btn-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-3);
+  min-height: 44px;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-medium);
+  color: var(--tw-color-muted);
+  line-height: 1;
+  white-space: nowrap;
+
+  transition: color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-restart:hover {
+  color: var(--tw-color-dark-text);
+}
+
+.tw-overlay .tw-btn-restart:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+  border-radius: var(--tw-radius-sm);
+}
+
+
+/* ── Responsive: mobile overrides ─────────────────────────────── */
+
+@media (max-width: 767px) {
+  .tw-overlay .tw-question-header {
+    padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-3);
+    padding-right: calc(var(--tw-modal-padding-x) + 48px);
+  }
+
+  .tw-overlay .tw-title {
+    font-size: var(--tw-font-size-lg);
+  }
+
+  .tw-overlay .tw-option {
+    padding: var(--tw-space-4);
+    gap: var(--tw-space-3);
+  }
+
+  .tw-overlay .tw-option-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .tw-overlay .tw-option-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .tw-overlay .tw-nav {
+    padding: var(--tw-space-4) var(--tw-modal-padding-x);
+  }
+
+  .tw-overlay .tw-btn-continue {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: var(--tw-space-3) var(--tw-space-4);
+  }
+}
+
+
+/* ── Responsive: very small phones (< 374px) ──────────────────── */
+
+@media (max-width: 374px) {
+  .tw-overlay .tw-option-label {
+    font-size: var(--tw-font-size-sm);
+  }
+
+  .tw-overlay .tw-options {
+    gap: var(--tw-space-2);
+  }
+}
+
+
+/* ── Responsive: desktop (≥ 768px) ───────────────────────────── */
+
+@media (min-width: 768px) {
+  .tw-overlay .tw-btn-continue {
+    min-width: 160px;
+  }
+
+  .tw-overlay .tw-nav {
+    justify-content: space-between;
+  }
+}

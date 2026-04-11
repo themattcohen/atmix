@@ -1,0 +1,141 @@
+/*
+ * animations.css — Step transitions, outcome reveal, keyframes
+ * Includes prefers-reduced-motion override block.
+ * All classes prefixed with tw-.
+ * Scoped under .tw-overlay.
+ */
+
+
+/* ── Step transition keyframes ─────────────────────────────────── */
+
+/* New content slides in from the right */
+@keyframes tw-step-enter {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Old content slides out to the left */
+@keyframes tw-step-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* Simple fade in */
+@keyframes tw-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Outcome reveal — subtle scale-up for result screens */
+@keyframes tw-outcome-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Bottom sheet slide-up (used by modal on mobile enter) */
+@keyframes tw-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0);    }
+}
+
+/* Shimmer (used by skeleton loaders) */
+@keyframes tw-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+
+/* ── Step transition classes ───────────────────────────────────── */
+
+/* Applied to outgoing content before removal (200ms) */
+.tw-overlay .tw-step-exiting {
+  animation: tw-step-exit var(--tw-duration-mid) var(--tw-ease) forwards;
+  pointer-events: none;
+}
+
+/* Applied to incoming content after insertion (250ms) */
+.tw-overlay .tw-step-entering {
+  animation: tw-step-enter 250ms var(--tw-ease) forwards;
+}
+
+/* Outcome reveal animation on result screens */
+.tw-overlay .tw-result {
+  animation: tw-outcome-reveal var(--tw-duration-slow) var(--tw-ease) forwards;
+}
+
+.tw-overlay .tw-multi-result {
+  animation: tw-outcome-reveal var(--tw-duration-slow) var(--tw-ease) forwards;
+}
+
+
+/* ── prefers-reduced-motion override ──────────────────────────── */
+/*
+ * Replace all slide animations with simple opacity transitions.
+ * The timing durations are preserved so the UX rhythm is unchanged.
+ * Only the motion (translateX, scale, translateY) is removed.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Override step enter/exit keyframes with fade-only versions */
+  @keyframes tw-step-enter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes tw-step-exit {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  @keyframes tw-outcome-reveal {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes tw-slide-up {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Disable bounce easing on interactive elements */
+  .tw-overlay .tw-option,
+  .tw-overlay .tw-btn-primary,
+  .tw-overlay .tw-btn-secondary,
+  .tw-overlay .tw-btn-continue,
+  .tw-overlay .tw-btn-add-session,
+  .tw-overlay .tw-btn-book-session {
+    transition-timing-function: var(--tw-ease);
+  }
+
+  /* Disable transform-based hover lifts */
+  .tw-overlay .tw-option:hover,
+  .tw-overlay .tw-btn-primary:hover,
+  .tw-overlay .tw-btn-secondary:hover,
+  .tw-overlay .tw-btn-continue:hover,
+  .tw-overlay .tw-btn-book-session:hover {
+    transform: none;
+  }
+
+  /* Modal entrance: skip slide, use fade */
+  .tw-overlay .tw-modal {
+    transition: opacity var(--tw-duration-slow) var(--tw-ease);
+  }
+}

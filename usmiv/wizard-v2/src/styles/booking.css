@@ -1,0 +1,495 @@
+/*
+ * booking.css — Booking flow: date picker, time slots
+ * Covers: booking header, calendar grid, time slot grid,
+ *         selected states, error card, loading skeleton.
+ * All classes prefixed with tw-.
+ * Scoped under .tw-overlay.
+ */
+
+
+/* ── Booking screen container ──────────────────────────────────── */
+
+.tw-overlay .tw-booking {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 var(--tw-space-6);
+}
+
+
+/* ── Booking header ────────────────────────────────────────────── */
+
+.tw-overlay .tw-booking-header {
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-4);
+  padding-right: calc(var(--tw-modal-padding-x) + 48px);
+}
+
+.tw-overlay .tw-booking-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-xl);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-navy);
+  line-height: var(--tw-line-height-tight);
+  margin: 0 0 var(--tw-space-2) 0;
+  letter-spacing: -0.01em;
+}
+
+.tw-overlay .tw-booking-subtitle {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-muted);
+  line-height: var(--tw-line-height-normal);
+  margin: 0;
+}
+
+
+/* ── Calendar month navigation ─────────────────────────────────── */
+
+.tw-overlay .tw-calendar {
+  padding: 0 var(--tw-modal-padding-x);
+}
+
+.tw-overlay .tw-calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--tw-space-4);
+}
+
+.tw-overlay .tw-calendar-month {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-base);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-navy);
+  margin: 0;
+}
+
+.tw-overlay .tw-btn-month-prev,
+.tw-overlay .tw-btn-month-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: transparent;
+  border: 1px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+  color: var(--tw-color-muted);
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-month-prev:hover,
+.tw-overlay .tw-btn-month-next:hover {
+  background-color: var(--tw-color-bg-page);
+  border-color: var(--tw-color-teal-mid);
+  color: var(--tw-color-navy);
+}
+
+.tw-overlay .tw-btn-month-prev:focus-visible,
+.tw-overlay .tw-btn-month-next:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+.tw-overlay .tw-btn-month-prev:disabled,
+.tw-overlay .tw-btn-month-next:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tw-overlay .tw-btn-month-prev svg,
+.tw-overlay .tw-btn-month-next svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+
+/* ── Day-of-week headers ───────────────────────────────────────── */
+
+.tw-overlay .tw-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: var(--tw-space-2);
+}
+
+.tw-overlay .tw-calendar-weekday {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-xs);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-muted);
+  text-align: center;
+  padding: var(--tw-space-1) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+
+/* ── Calendar day grid ─────────────────────────────────────────── */
+
+.tw-overlay .tw-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+/* Day cell base */
+.tw-overlay .tw-calendar-day {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-height: 40px;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  color: var(--tw-color-dark-text);
+
+  background-color: transparent;
+  border: 1.5px solid transparent;
+  border-radius: var(--tw-radius-md);
+  cursor: default;
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+/* Empty cell (padding before first of month) */
+.tw-overlay .tw-calendar-day--empty {
+  pointer-events: none;
+}
+
+/* Available day */
+.tw-overlay .tw-calendar-day--available {
+  cursor: pointer;
+  border-color: var(--tw-color-border);
+  background-color: var(--tw-color-surface);
+}
+
+.tw-overlay .tw-calendar-day--available:hover {
+  border-color: var(--tw-color-teal-brand);
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-navy);
+}
+
+.tw-overlay .tw-calendar-day--available:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* Selected day */
+.tw-overlay .tw-calendar-day--selected {
+  background-color: var(--tw-color-teal-wcag);
+  border-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  font-weight: var(--tw-font-weight-semibold);
+  cursor: pointer;
+}
+
+.tw-overlay .tw-calendar-day--selected:hover {
+  background-color: #236f73;
+  border-color: #236f73;
+}
+
+/* Unavailable day */
+.tw-overlay .tw-calendar-day--unavailable {
+  color: var(--tw-color-muted-light);
+  background-color: var(--tw-color-bg-page);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Today indicator */
+.tw-overlay .tw-calendar-day--today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--tw-color-teal-wcag);
+}
+
+.tw-overlay .tw-calendar-day--today.tw-calendar-day--selected::after {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* ── Time slot section ─────────────────────────────────────────── */
+
+.tw-overlay .tw-timeslots {
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) 0;
+}
+
+.tw-overlay .tw-timeslots-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  color: var(--tw-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--tw-space-3) 0;
+}
+
+/* 3-column grid by default */
+.tw-overlay .tw-timeslots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--tw-space-2);
+}
+
+/* Time slot button */
+.tw-overlay .tw-timeslot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tw-space-3) var(--tw-space-2);
+  min-height: 44px;
+
+  background-color: var(--tw-color-surface);
+  color: var(--tw-color-dark-text);
+  border: 1.5px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-normal);
+  line-height: 1;
+  text-align: center;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    border-color var(--tw-duration-fast) var(--tw-ease),
+    color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-timeslot:hover {
+  border-color: var(--tw-color-teal-brand);
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-navy);
+}
+
+.tw-overlay .tw-timeslot:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* Selected time slot */
+.tw-overlay .tw-timeslot--selected {
+  background-color: var(--tw-color-teal-wcag);
+  border-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+  font-weight: var(--tw-font-weight-semibold);
+}
+
+.tw-overlay .tw-timeslot--selected:hover {
+  background-color: #236f73;
+  border-color: #236f73;
+}
+
+
+/* ── Loading skeleton / shimmer ────────────────────────────────── */
+
+@keyframes tw-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0;  }
+}
+
+.tw-overlay .tw-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--tw-color-bg-page) 25%,
+    var(--tw-color-border) 50%,
+    var(--tw-color-bg-page) 75%
+  );
+  background-size: 800px 100%;
+  animation: tw-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--tw-radius-md);
+}
+
+.tw-overlay .tw-skeleton-calendar {
+  height: 200px;
+  margin: 0 var(--tw-modal-padding-x);
+  border-radius: var(--tw-radius-lg);
+}
+
+.tw-overlay .tw-skeleton-timeslots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-4) var(--tw-modal-padding-x) 0;
+}
+
+.tw-overlay .tw-skeleton-timeslot {
+  height: 44px;
+  border-radius: var(--tw-radius-md);
+}
+
+
+/* ── Error card ────────────────────────────────────────────────── */
+
+.tw-overlay .tw-booking-error {
+  margin: var(--tw-space-5) var(--tw-modal-padding-x);
+  padding: var(--tw-space-5);
+  background-color: var(--tw-color-error-bg);
+  border: 1px solid var(--tw-color-error-border);
+  border-radius: var(--tw-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-space-3);
+}
+
+.tw-overlay .tw-booking-error-title {
+  font-family: var(--tw-font-heading);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-bold);
+  color: var(--tw-color-error);
+  margin: 0;
+}
+
+.tw-overlay .tw-booking-error-text {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  color: var(--tw-color-dark-text);
+  line-height: var(--tw-line-height-normal);
+  margin: 0;
+}
+
+.tw-overlay .tw-booking-error-actions {
+  display: flex;
+  gap: var(--tw-space-3);
+  flex-wrap: wrap;
+}
+
+.tw-overlay .tw-btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-2);
+  padding: var(--tw-space-2) var(--tw-space-4);
+  min-height: 38px;
+
+  background-color: var(--tw-color-error);
+  color: var(--tw-color-surface);
+  border: none;
+  border-radius: var(--tw-radius-md);
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-semibold);
+  line-height: 1;
+
+  transition:
+    background-color var(--tw-duration-fast) var(--tw-ease),
+    box-shadow var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-btn-retry:hover {
+  background-color: #991b1b;
+  box-shadow: var(--tw-shadow-card);
+}
+
+.tw-overlay .tw-btn-retry:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+/* Direct Acuity fallback link */
+.tw-overlay .tw-booking-fallback-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tw-space-1);
+  padding: var(--tw-space-2) var(--tw-space-4);
+  min-height: 38px;
+
+  background: transparent;
+  border: 1px solid var(--tw-color-border);
+  border-radius: var(--tw-radius-md);
+  color: var(--tw-color-navy);
+  text-decoration: none;
+  cursor: pointer;
+
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  font-weight: var(--tw-font-weight-medium);
+  line-height: 1;
+
+  transition: border-color var(--tw-duration-fast) var(--tw-ease);
+}
+
+.tw-overlay .tw-booking-fallback-link:hover {
+  border-color: var(--tw-color-navy);
+}
+
+.tw-overlay .tw-booking-fallback-link:focus-visible {
+  outline: 3px solid var(--tw-color-teal-brand);
+  outline-offset: 2px;
+}
+
+
+/* ── Booking nav bar ───────────────────────────────────────────── */
+
+.tw-overlay .tw-booking-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tw-space-4);
+  padding: var(--tw-space-5) var(--tw-modal-padding-x) var(--tw-space-6);
+  border-top: 1px solid var(--tw-color-border);
+  background-color: var(--tw-color-surface);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+
+/* ── Responsive: narrow screens (< 400px) ─────────────────────── */
+
+@media (max-width: 400px) {
+  .tw-overlay .tw-timeslots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tw-overlay .tw-skeleton-timeslots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tw-overlay .tw-calendar-day {
+    min-height: 34px;
+  }
+
+  .tw-overlay .tw-calendar-weekday {
+    font-size: 0.6875rem;
+  }
+}
+
+
+/* ── Responsive: desktop (≥ 768px) ───────────────────────────── */
+
+@media (min-width: 768px) {
+  .tw-overlay .tw-timeslots-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tw-overlay .tw-skeleton-timeslots {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tw-overlay .tw-calendar-day {
+    min-height: 44px;
+  }
+}
