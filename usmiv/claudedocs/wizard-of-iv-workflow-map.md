@@ -336,86 +336,246 @@ When results come from the multi-select symptom scoring path, each primary treat
 
 ---
 
-## Visual Flow Summary
+## Visual Flowchart (Mermaid)
 
+Paste this into any Mermaid renderer (GitHub renders it natively, or use mermaid.live) to see the full interactive flowchart.
+
+```mermaid
+flowchart TD
+    START["<b>START</b><br/>What brings you in today?"]
+
+    START -->|"I need relief right now"| ACUTE
+    START -->|"I want to improve my wellness"| WELLNESS
+    START -->|"I want to lose weight"| WEIGHTLOSS
+    START -->|"I need blood work done"| LABS
+    START -->|"I just want a quick injection"| QUICKSHOT
+    START -->|"I'm not sure -- help me decide"| SYMPTOMS
+
+    %% ── PATH 1: ACUTE ──────────────────────────────────────
+    ACUTE["<b>ACUTE</b><br/>What's going on?"]
+    ACUTE -->|"Hangover"| R_HANGOVER(["Hangover IV<br/>$250"])
+    ACUTE -->|"Migraine"| R_MIGRAINE(["Migraine IV<br/>$250"])
+    ACUTE -->|"Sick / cold or flu"| R_IMMUNITY(["Immunity IV<br/>$220"])
+    ACUTE -->|"Dehydrated or exhausted"| DEHYDRATED
+    ACUTE -->|"Altitude sickness"| R_ALTITUDE(["Altitude IV<br/>$250"])
+    ACUTE -->|"Jet lag"| R_JETLAG(["Myers' Cocktail<br/>$220<br/><i>bundle: jetLagMyers</i>"])
+    ACUTE -->|"Burnout / recovering"| R_REVIVAL(["Revival IV<br/>$395"])
+
+    DEHYDRATED["<b>DEHYDRATED OR TIRED</b><br/>What best describes you?"]
+    DEHYDRATED -->|"Dehydrated"| R_HYDRATION(["Hydration IV<br/>$120"])
+    DEHYDRATED -->|"Exhausted / depleted"| MYERSUPGRADE
+
+    %% ── PATH 2: WELLNESS ───────────────────────────────────
+    WELLNESS["<b>WELLNESS</b><br/>What's your wellness goal?"]
+    WELLNESS -->|"Energy / brain fog"| ENERGY
+    WELLNESS -->|"Skin, hair, nails"| R_BEAUTY(["Beauty Glow Package<br/>Myers' $220<br/>+ optional Biotin +$35<br/><i>bundle: beautyBundle</i>"])
+    WELLNESS -->|"Athletic / recovery"| ATHLETIC
+    WELLNESS -->|"Anti-aging"| ANTIAGING
+    WELLNESS -->|"General tune-up"| MYERSUPGRADE
+    WELLNESS -->|"Immune support"| R_IMMUNITY
+    WELLNESS -->|"Recurring migraines"| R_MIGRAINE
+    WELLNESS -->|"Addiction / withdrawal"| NADDOSE
+    WELLNESS -->|"Prenatal"| R_PREGNANCY(["Pregnancy IV<br/>$220"])
+
+    ENERGY["<b>ENERGY</b><br/>How long feeling this way?"]
+    ENERGY -->|"Just this week"| MYERSUPGRADE
+    ENERGY -->|"Weeks or months"| NADDOSE
+    ENERGY -->|"Months or years"| NADDOSE
+
+    ATHLETIC["<b>ATHLETIC</b><br/>What's your focus?"]
+    ATHLETIC -->|"Post-workout recovery"| R_PERFORMANCE(["Performance IV<br/>$295"])
+    ATHLETIC -->|"Cellular energy"| NADDOSE
+
+    ANTIAGING["<b>ANTI-AGING</b><br/>Your approach?"]
+    ANTIAGING -->|"Longevity IV"| R_LONGEVITY(["Longevity IV<br/>$250"])
+    ANTIAGING -->|"NAD+ IV"| NADDOSE
+
+    %% ── SHARED: MYERS UPGRADE ──────────────────────────────
+    MYERSUPGRADE["<b>MYERS' UPGRADE</b><br/>Which level fits you?<br/><i>(shared node -- 4 paths lead here)</i>"]
+    MYERSUPGRADE -->|"Standard $220"| R_MYERS(["Myers' Cocktail<br/>$220"])
+    MYERSUPGRADE -->|"Gold $275"| R_MYERSGOLD(["Myers' Gold<br/>$275"])
+    MYERSUPGRADE -->|"Platinum $375"| R_MYERSPLAT(["Myers' Platinum<br/>$375"])
+    MYERSUPGRADE -->|"Try NAD+ instead"| NADDOSE
+
+    %% ── SHARED: NAD+ DOSE ──────────────────────────────────
+    NADDOSE["<b>NAD+ DOSE</b><br/>Which dose is right?<br/><i>(shared node -- 6 paths lead here)</i>"]
+    NADDOSE -->|"100mg -- Entry"| R_NAD100(["NAD+ 100mg<br/>$100"])
+    NADDOSE -->|"250mg -- Popular"| R_NAD250(["NAD+ 250mg<br/>$250<br/>+ optional Vitamin Lab +$225<br/><i>auto-bundle: nadPlusLabs</i>"])
+    NADDOSE -->|"500mg -- Deep"| R_NAD500(["NAD+ 500mg<br/>$400"])
+
+    %% ── PATH 3: WEIGHT LOSS ────────────────────────────────
+    WEIGHTLOSS["<b>WEIGHT LOSS</b><br/>Where are you in your journey?"]
+    WEIGHTLOSS -->|"Just starting"| GLP1CHOICE
+    WEIGHTLOSS -->|"Already on program"| WLBOOST
+    WEIGHTLOSS -->|"Explore options"| GLP1COMPARE
+
+    GLP1CHOICE["<b>GLP-1 CHOICE</b><br/>Which program?"]
+    GLP1CHOICE -->|"Semaglutide"| R_SEMA(["Semaglutide<br/>from $199/mo"])
+    GLP1CHOICE -->|"Tirzepatide"| R_TIRZ(["Tirzepatide<br/>from $399/mo"])
+    GLP1CHOICE -->|"Help me choose"| GLP1COMPARE
+
+    GLP1COMPARE["<b>GLP-1 COMPARE</b><br/>Semaglutide vs Tirzepatide"]
+    GLP1COMPARE -->|"Semaglutide"| R_SEMA
+    GLP1COMPARE -->|"Tirzepatide"| R_TIRZ
+    GLP1COMPARE -->|"Talk to someone"| R_CONSULT(["Weight Loss Consultation<br/>Call 303-406-4500<br/><i>bundle: weightLossConsult</i>"])
+
+    WLBOOST["<b>WEIGHT LOSS BOOST</b><br/>What support?"]
+    WLBOOST -->|"Lipo-Mino shots"| R_LIPO(["Lipo-Mino<br/>$35/shot"])
+    WLBOOST -->|"IV for energy"| MYERSUPGRADE
+
+    %% ── PATH 4: LABS ────────────────────────────────────────
+    LABS["<b>LABS</b><br/>What blood work?"]
+    LABS -->|"Basic"| R_LABGEN(["General Panel<br/>$175"])
+    LABS -->|"Deeper"| R_LABDEPTH(["In-Depth Panel<br/>$199"])
+    LABS -->|"Vitamins"| R_LABVIT(["Vitamin Panel<br/>$225"])
+    LABS -->|"Full"| R_LABCOMP(["Complete Panel<br/>$449"])
+
+    %% ── PATH 5: QUICK SHOTS ────────────────────────────────
+    QUICKSHOT["<b>QUICK SHOT</b><br/>Which injection? $35 each"]
+    QUICKSHOT -->|"B12"| R_B12(["B12 Shot $35"])
+    QUICKSHOT -->|"Glutathione"| R_GLUT(["Glutathione Shot $35"])
+    QUICKSHOT -->|"Tri-Immune"| R_TRIIMM(["Tri-Immune Shot $35"])
+    QUICKSHOT -->|"Vitamin D"| R_VITD(["Vitamin D Shot $35"])
+    QUICKSHOT -->|"Biotin"| R_BIOTIN(["Biotin Shot $35"])
+    QUICKSHOT -->|"Lipo-Mino"| R_LIPO
+
+    %% ── PATH 6: SYMPTOMS ───────────────────────────────────
+    SYMPTOMS["<b>SYMPTOMS</b><br/>Select all that apply<br/><i>(multi-select)</i>"]
+    SYMPTOMS -->|"Submit selections"| SCORING["Weighted Scoring Algorithm<br/>Score per treatment, dedup by category,<br/>top 3 IV/NAD + programs + labs"]
+    SCORING --> MULTIRESULTS(["Ranked Results<br/>+ Add-on Suggestions<br/>+ Session Plan Builder"])
+
+    %% ── STYLES ──────────────────────────────────────────────
+    classDef question fill:#e8f4fd,stroke:#2196F3,stroke-width:2px,color:#1565C0
+    classDef result fill:#e8f5e9,stroke:#4CAF50,stroke-width:2px,color:#2E7D32
+    classDef bundle fill:#fff3e0,stroke:#FF9800,stroke-width:2px,color:#E65100
+    classDef shared fill:#f3e5f5,stroke:#9C27B0,stroke-width:2px,color:#6A1B9A
+    classDef scoring fill:#fce4ec,stroke:#E91E63,stroke-width:2px,color:#880E4F
+
+    class START,ACUTE,WELLNESS,ENERGY,ATHLETIC,ANTIAGING,DEHYDRATED,WEIGHTLOSS,GLP1CHOICE,GLP1COMPARE,WLBOOST,LABS,QUICKSHOT question
+    class R_HANGOVER,R_MIGRAINE,R_IMMUNITY,R_ALTITUDE,R_REVIVAL,R_HYDRATION,R_PREGNANCY,R_PERFORMANCE,R_LONGEVITY,R_MYERS,R_MYERSGOLD,R_MYERSPLAT,R_NAD100,R_NAD500,R_SEMA,R_TIRZ,R_LIPO,R_LABGEN,R_LABDEPTH,R_LABVIT,R_LABCOMP,R_B12,R_GLUT,R_TRIIMM,R_VITD,R_BIOTIN result
+    class R_BEAUTY,R_NAD250,R_JETLAG,R_CONSULT bundle
+    class MYERSUPGRADE,NADDOSE shared
+    class SYMPTOMS,SCORING,MULTIRESULTS scoring
 ```
-START
- |
- +--> Acute Relief
- |     +--> Hangover --> [Hangover IV $250]
- |     +--> Migraine --> [Migraine IV $250]
- |     +--> Sick --> [Immunity IV $220]
- |     +--> Dehydrated/Tired
- |     |     +--> Dehydrated --> [Hydration IV $120]
- |     |     +--> Exhausted --> Myers' Upgrade (shared)
- |     +--> Altitude --> [Altitude IV $250]
- |     +--> Jet lag --> [Myers' $220] (bundle: jetLagMyers)
- |     +--> Burnout --> [Revival IV $395]
- |
- +--> Wellness
- |     +--> Energy
- |     |     +--> This week --> Myers' Upgrade (shared)
- |     |     +--> Weeks/months --> NAD+ Dose (shared)
- |     |     +--> Long time --> NAD+ Dose (shared)
- |     +--> Beauty --> [Beauty Bundle: Myers' $220 + Biotin +$35]
- |     +--> Athletic
- |     |     +--> Recovery --> [Performance IV $295]
- |     |     +--> Cellular --> NAD+ Dose (shared)
- |     +--> Anti-aging
- |     |     +--> Longevity IV --> [Longevity IV $250]
- |     |     +--> NAD+ --> NAD+ Dose (shared)
- |     +--> Tune-up --> Myers' Upgrade (shared)
- |     +--> Immunity --> [Immunity IV $220]
- |     +--> Migraines --> [Migraine IV $250]
- |     +--> Addiction --> NAD+ Dose (shared)
- |     +--> Prenatal --> [Pregnancy IV $220]
- |
- +--> Weight Loss
- |     +--> Starting --> GLP-1 Choice
- |     |     +--> Semaglutide --> [Semaglutide $199/mo]
- |     |     +--> Tirzepatide --> [Tirzepatide $399/mo]
- |     |     +--> Help me choose --> GLP-1 Compare
- |     |           +--> Semaglutide --> [Semaglutide $199/mo]
- |     |           +--> Tirzepatide --> [Tirzepatide $399/mo]
- |     |           +--> Talk to someone --> [Consult bundle]
- |     +--> Already on program --> Weight Loss Boost
- |     |     +--> Lipo-Mino --> [Lipo-Mino $35/shot]
- |     |     +--> IV energy --> Myers' Upgrade (shared)
- |     +--> Explore options --> GLP-1 Compare (same as above)
- |
- +--> Labs
- |     +--> Basic --> [General Panel $175]
- |     +--> Deeper --> [In-Depth Panel $199]
- |     +--> Vitamins --> [Vitamin Panel $225]
- |     +--> Full --> [Complete Panel $449]
- |
- +--> Quick Injection
- |     +--> B12 --> [$35]
- |     +--> Glutathione --> [$35]
- |     +--> Tri-Immune --> [$35]
- |     +--> Vitamin D --> [$35]
- |     +--> Biotin --> [$35]
- |     +--> Lipo-Mino --> [$35]
- |
- +--> Not Sure (Multi-Select Symptoms)
-       +--> Select 1+ symptoms --> Weighted scoring algorithm
-             +--> Returns ranked results across all categories
-             +--> Top 3 IV/NAD + weight loss + labs/injections
 
+### Color key
 
-SHARED NODES:
+| Color | Meaning |
+|-------|---------|
+| Blue | Question screen (user picks an option) |
+| Green | Terminal result (single treatment recommendation) |
+| Orange | Bundle result (primary + optional add-on) |
+| Purple | Shared node (reachable from multiple paths) |
+| Pink | Symptom scoring flow (multi-select algorithm) |
 
-Myers' Upgrade (reachable from 4 paths)
- +--> Standard Myers' --> [Myers' $220]
- +--> Myers' Gold --> [Myers' Gold $275]
- +--> Myers' Platinum --> [Myers' Platinum $375]
- +--> Try NAD+ --> NAD+ Dose
+---
 
-NAD+ Dose (reachable from 6 paths)
- +--> 100mg --> [NAD+ 100mg $100]
- +--> 250mg --> [NAD+ 250mg $250 + optional Vitamin Lab $225]
- +--> 500mg --> [NAD+ 500mg $400]
+## Tags -- What They Are and How They're Used
+
+**Tags are NOT used for routing or scoring.** The wizard previously used a tag-based matching system, but that was replaced with weighted scoring (the comment on `wizard.js:503` says "Weighted symptom scoring -- replaces tag-based logic").
+
+Tags appear in **two places** in the current system, both purely for **display purposes**:
+
+### 1. "Best For" tags (result screen)
+
+Every treatment has a `bestFor` array in the config. These render as small pill-shaped tags on the result screen under a "Best for:" label. They are cosmetic -- they help the user see at a glance what a treatment is good for but do NOT affect routing, scoring, or recommendations.
+
+**Example:** Hangover IV shows tags: `Post-drinking recovery`, `Nausea and vomiting`, `Pounding headache`, `Event recovery`
+
+**Code:** `wizard.js:831-852` -- iterates `t.bestFor`, creates `<span class="tw-result-bestfor-tag">` elements.
+
+### 2. "Addresses" tags (multi-result cards only)
+
+When the symptom scoring path produces results, each recommendation card shows which of the user's selected symptoms it addresses as small tags. These come from the `matchingSymptoms` array built during scoring -- NOT from static config tags.
+
+**Example:** If user selected "Tired all the time" + "Brain fog", the NAD+ 250 card would show both as "Addresses:" tags.
+
+**Code:** `wizard.js:1183-1204` -- iterates `rec.matchingSymptoms`, creates `<span class="tw-rec-address-tag">` elements.
+
+---
+
+## Add-Ons & Upsells -- Complete Breakdown
+
+There are **three separate add-on/upsell mechanisms**, each working differently:
+
+### Mechanism 1: Bundle Add-Ons (config-driven, single-result path)
+
+**Where:** On the single-result screen when a recommendation resolves to a bundle.
+
+**How it works:**
+- Certain recommendation IDs point to a **bundle** in `wizard-config.json` instead of a direct treatment
+- The bundle defines a `primary` treatment + an optional `addOn` treatment
+- If `addOnInteractive: true`, the add-on renders as a **toggleable button** the user can click to add/remove before booking
+- If `addOnInteractive: false` (or missing), the add-on shows as static informational text
+
+**The 4 bundles and their add-ons:**
+
+| Bundle ID | When triggered | Primary | Add-On | Interactive? |
+|-----------|---------------|---------|--------|-------------|
+| `beautyBundle` | Wellness > "Skin, hair, nails" | Myers' $220 | Biotin Shot +$35 | **Yes** (toggle) |
+| `nadPlusLabs` | ANY path leading to NAD+ 250mg | NAD+ 250mg $250 | Vitamin Level Panel +$225 | **Yes** (toggle) |
+| `jetLagMyers` | Acute > "Jet lag" | Myers' $220 | None | N/A |
+| `weightLossConsult` | GLP-1 Compare > "Talk to someone" | Semaglutide info | None (shows phone #) | N/A |
+
+**Hidden auto-bundle rule (`wizard.js:707-709`):** Whenever `nad250` is the recommendation (from ANY path), the code silently swaps it to `nadPlusLabs`. This means NAD+ 250mg ALWAYS shows with the lab panel upsell toggle, no matter how the user got there.
+
+```javascript
+// wizard.js:707-709
+if (treatmentId === 'nad250') {
+  treatmentId = 'nadPlusLabs';
+}
 ```
+
+### Mechanism 2: Add-On Suggestion Chips (config-driven, appears on ALL result screens)
+
+**Where:** Below the main result on BOTH single-result and multi-result screens.
+
+**How it works:**
+- Defined in `wizard-config.json` under `questions.symptoms.symptomRules.addonSuggestions`
+- Maps a primary treatment ID to an array of suggested injection IDs
+- Renders as clickable "chip" buttons with a "+" icon, name, and price
+- Clicking a chip adds that injection to the **session plan** (a cart-like list)
+- Shows a promo banner: **"Buy 3 injections, get 4th free"**
+- Max 3 injections can be added to the session
+
+**The suggestion mappings:**
+
+| If primary result is... | Suggested add-on chips |
+|------------------------|----------------------|
+| **Immunity IV** | Tri-Immune Shot ($35), Vitamin D Shot ($35) |
+| **Myers' Cocktail** | B12 Shot ($35), Glutathione Shot ($35) |
+| **Performance IV** | Lipo-Mino Shot ($35), B12 Shot ($35) |
+| **Longevity IV** | Glutathione Shot ($35) |
+| **Hydration IV** | B12 Shot ($35) |
+| **Migraine IV** | Vitamin D Shot ($35) |
+| **Hangover IV** | B12 Shot ($35) |
+
+**On multi-result screens:** Suggestions are based on the **#1 ranked result** only (`wizard.js:1105-1111`).
+
+**Code:** `wizard.js:1264-1331` (`renderAddonSuggestions` function)
+
+### Mechanism 3: Session Plan Builder (multi-result path only)
+
+**Where:** Sticky section at the bottom of the multi-result screen.
+
+**How it works:**
+- When viewing scored symptom results, users can add treatments to a "session plan"
+- Clicking "Add to session" on any recommendation card OR clicking an add-on chip adds it
+- The session plan renders as a summary with treatment names and a total price
+- **Constraint:** Only 1 primary (IV/NAD/program) at a time. Adding a new primary replaces the old one.
+- **Constraint:** Max 3 injections
+- The "Book This Session" button sends the full plan to Acuity, with add-on names passed in the booking notes field
+
+**Code:** `wizard.js:1336-1377` (`addToSession` function)
+
+### How add-ons flow into booking
+
+When the user clicks "Book This Treatment" (or "Book This Session"):
+
+1. The primary treatment's `acuityTypeId` determines which Acuity appointment type opens
+2. The primary treatment's `acuityDropdownValue` pre-selects the service dropdown
+3. Any session plan add-ons are concatenated into a notes string: `"Session: Myers' Cocktail + B12 Shot, Glutathione Shot"`
+4. This notes string is passed to Acuity so the nurse sees the full requested session
 
 ---
 
