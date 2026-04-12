@@ -267,6 +267,7 @@
 .wde-cat-badge-sm--weightloss { background: rgba(234,88,12,0.2);   color: #fdba74; }
 .wde-cat-badge-sm--injection  { background: rgba(219,39,119,0.2);  color: #f9a8d4; }
 .wde-cat-badge-sm--lab        { background: rgba(124,58,237,0.2);  color: #c4b5fd; }
+.wde-cat-badge-sm--bundle     { background: rgba(20,184,166,0.2);  color: #5eead4; }
 
 /* Status dots */
 .wde-dot {
@@ -1538,4 +1539,71 @@
 
 .wde-dialog-confirm:not(:disabled):hover {
   filter: brightness(0.9);
+}
+
+/* ── Mode toggle (Treatments / Bundles) ───────────────────────────────────── */
+
+.wde-mode-toggle {
+  display: flex;
+  gap: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 2px;
+  margin: 8px 12px;
+  flex-shrink: 0;
+}
+
+.wde-mode-pill {
+  flex: 1;
+  padding: 6px 0;
+  text-align: center;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--wde-sidebar-text-muted, #94a3b8);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--wde-font-sans);
+}
+
+.wde-mode-pill:hover {
+  background: rgba(255,255,255,0.07);
+  color: #cbd5e1;
+}
+
+.wde-mode-pill--active {
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+/* ── Bundle form ──────────────────────────────────────────────────────────── */
+
+.wde-bundle-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--wde-input-border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: var(--wde-font-sans);
+  background: var(--wde-input-bg, #ffffff);
+  color: var(--wde-content-text);
+  outline: none;
+  transition: border-color var(--wde-t), box-shadow var(--wde-t);
+}
+
+.wde-bundle-select:focus {
+  border-color: var(--wde-accent);
+  box-shadow: var(--wde-shadow-focus);
+}
+
+.wde-bundle-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--wde-content-text);
 }

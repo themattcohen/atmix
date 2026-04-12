@@ -242,3 +242,80 @@ export function issuesForTreatment(
     warnings: result.warnings.filter((i) => i.subject === subject),
   };
 }
+
+// ── EditableBundle ────────────────────────────────────────────────────────────
+
+import type { Bundle, BundleId } from '../../../types/bundle';
+
+export interface EditableBundle {
+  id: BundleId;
+  name: string;
+  primary: string;       // treatment ID
+  addOn: string | null;  // treatment ID or null
+  addOnInteractive: boolean;
+  whyMatch: string;
+}
+
+// ── Clone: Bundle (readonly) -> EditableBundle (mutable) ─────────────────────
+
+export function cloneBundleToEditable(b: Bundle): EditableBundle {
+  return {
+    id: b.id,
+    name: b.name,
+    primary: b.primary,
+    addOn: b.addOn ?? null,
+    addOnInteractive: b.addOnInteractive,
+    whyMatch: b.whyMatch,
+  };
+}
+
+// ── Clone all bundles in a record ────────────────────────────────────────────
+
+export function cloneAllBundlesToEditable(
+  bundles: Readonly<Record<BundleId, Bundle>>,
+): Record<BundleId, EditableBundle> {
+  return Object.fromEntries(
+    Object.entries(bundles).map(([id, b]) => [id, cloneBundleToEditable(b as Bundle)]),
+  ) as Record<BundleId, EditableBundle>;
+}
+
+// ── Bundle dirty check ────────────────────────────────────────────────────────
+
+function canonicalizeBundle(b: EditableBundle): string {
+  return JSON.stringify({
+    name: b.name,
+    primary: b.primary,
+    addOn: b.addOn,
+    addOnInteractive: b.addOnInteractive,
+    whyMatch: b.whyMatch,
+  });
+}
+
+function canonicalizeBundleOriginal(b: Bundle): string {
+  return JSON.stringify({
+    name: b.name,
+    primary: b.primary,
+    addOn: b.addOn ?? null,
+    addOnInteractive: b.addOnInteractive,
+    whyMatch: b.whyMatch,
+  });
+}
+
+export function isBundleDirty(draft: EditableBundle, original: Bundle): boolean {
+  return canonicalizeBundle(draft) !== canonicalizeBundleOriginal(original);
+}
+
+// ── Derive dirty bundle ID sets ───────────────────────────────────────────────
+
+export function computeDirtyBundleIds(
+  drafts: Record<BundleId, EditableBundle>,
+  originals: Readonly<Record<BundleId, Bundle>>,
+): Set<BundleId> {
+  const dirty = new Set<BundleId>();
+  for (const id of Object.keys(drafts) as BundleId[]) {
+    if (isBundleDirty(drafts[id], originals[id])) {
+      dirty.add(id);
+    }
+  }
+  return dirty;
+}

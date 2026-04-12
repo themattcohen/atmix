@@ -12,7 +12,7 @@
  */
 
 import type { TreatmentCategory } from '../../../types/treatment';
-import type { EditableTreatment } from './types';
+import type { EditableTreatment, EditableBundle } from './types';
 import { SYMPTOM_LABELS } from '../../../data';
 
 // ── String escaping ───────────────────────────────────────────────────────────
@@ -292,6 +292,62 @@ export function generateCategoryFileTs(
   blocks.push(`export const ${constName} = [`);
   blocks.push(footerIds);
   blocks.push('] as const;');
+  blocks.push('');
+
+  return blocks.join('\n');
+}
+
+// ── Bundle code generation ────────────────────────────────────────────────────
+
+/**
+ * Generates the `export const <id> = { ... } as const satisfies Bundle;` block
+ * for a single bundle. Matches the format of src/data/bundles.ts.
+ * Output ends with a newline.
+ */
+export function generateBundleTs(bundle: EditableBundle): string {
+  const i = '  ';
+  const lines: string[] = [];
+
+  lines.push(`export const ${bundle.id} = {`);
+  lines.push(`${i}id: ${escapeStr(bundle.id)},`);
+  lines.push(`${i}name: ${escapeStr(bundle.name)},`);
+  lines.push(`${i}primary: ${escapeStr(bundle.primary)},`);
+
+  if (bundle.addOn !== null && bundle.addOn.trim() !== '') {
+    lines.push(`${i}addOn: ${escapeStr(bundle.addOn)},`);
+    // addOnLabel is not editable in this editor (we omit it from EditableBundle),
+    // so we emit a placeholder comment to prompt manual update.
+    lines.push(`${i}// TODO: update addOnLabel if needed`);
+  }
+
+  lines.push(`${i}addOnInteractive: ${bundle.addOnInteractive},`);
+  lines.push(`${i}isConsultation: false,`);
+  lines.push(`${i}whyMatch:`);
+  lines.push(`${i}  ${escapeStr(bundle.whyMatch)},`);
+  lines.push(`${i}acuityTypeId: 0, // TODO: set correct acuityTypeId`);
+  lines.push(`${i}acuityDropdownValue: null, // TODO: set correct value`);
+  lines.push('} as const satisfies Bundle;');
+
+  return lines.join('\n') + '\n';
+}
+
+/**
+ * Generates the complete bundles.ts file for all bundles.
+ * Matches the format of src/data/bundles.ts.
+ */
+export function generateBundlesFileTs(bundles: EditableBundle[]): string {
+  const blocks: string[] = [];
+
+  blocks.push("import type { Bundle } from '../types/bundle';");
+  blocks.push('');
+
+  for (const bundle of bundles) {
+    blocks.push(generateBundleTs(bundle));
+    blocks.push('');
+  }
+
+  const ids = bundles.map((b) => b.id).join(', ');
+  blocks.push(`export const BUNDLES_ARRAY = [${ids}] as const;`);
   blocks.push('');
 
   return blocks.join('\n');

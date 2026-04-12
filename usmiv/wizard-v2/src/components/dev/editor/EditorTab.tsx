@@ -2,11 +2,12 @@
  * editor/EditorTab.tsx -- Root component for the Treatment Config Editor tab.
  *
  * Manages all editor state: drafts, selection, search/filter, validation.
- * Renders the two-column layout: EditorSidebar (left) + EditorMain (right).
+ * Renders the two-column layout: EditorSidebar (left) + EditorMain or BundleEditPanel (right).
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import type { TreatmentId, Treatment, TreatmentCategory } from '../../../types/treatment';
+import type { BundleId } from '../../../types/bundle';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import { validateConfig } from '../../../engine/validateConfig';
 import { QUESTIONS, BUNDLES } from '../../../data';
@@ -17,11 +18,16 @@ import {
   computeDirtyIds,
   computeErrorIds,
   isDirty,
+  cloneAllBundlesToEditable,
+  computeDirtyBundleIds,
+  isBundleDirty,
 } from './types';
-import type { EditableTreatment } from './types';
+import type { EditableTreatment, EditableBundle } from './types';
 import { generateCategoryFileTs } from './codeGen';
 import { EditorSidebar } from './EditorSidebar';
+import type { EditorMode } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
+import { BundleEditPanel } from './BundleEditPanel';
 import { AddTreatmentDialog } from './AddTreatmentDialog';
 
 // ── Save result ───────────────────────────────────────────────────────────────
@@ -61,15 +67,29 @@ export function EditorTab({
     [],
   );
 
+  // Bundle state
+  const [bundleDrafts, setBundleDrafts] = useState<Record<string, EditableBundle>>(
+    () => cloneAllBundlesToEditable(BUNDLES),
+  );
+  const bundleOriginals = useMemo(
+    () => cloneAllBundlesToEditable(BUNDLES),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const [editorMode, setEditorMode] = useState<EditorMode>('treatments');
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId ?? null);
+  const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
 
   // When initialSelectedId changes (e.g. "Fix in Editor" clicked from another tab),
   // update the selection -- but only if the new value is non-null.
   useEffect(() => {
     if (initialSelectedId) {
       setSelectedId(initialSelectedId);
+      setEditorMode('treatments');
     }
   }, [initialSelectedId]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<TreatmentCategory | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
@@ -93,8 +113,12 @@ export function EditorTab({
     () => computeErrorIds(validationResult),
     [validationResult],
   );
+  const dirtyBundleIds = useMemo(
+    () => computeDirtyBundleIds(bundleDrafts as Record<BundleId, EditableBundle>, BUNDLES),
+    [bundleDrafts],
+  );
 
-  // Update a single field on the selected draft.
+  // Update a single field on the selected treatment draft.
   const handleUpdate = useCallback(
     (field: keyof EditableTreatment, value: unknown) => {
       if (!selectedId) return;
@@ -106,7 +130,7 @@ export function EditorTab({
     [selectedId],
   );
 
-  // Reset the selected draft to the original.
+  // Reset the selected treatment draft to the original.
   const handleReset = useCallback(() => {
     if (!selectedId) return;
     setDrafts((prev) => ({
@@ -114,6 +138,27 @@ export function EditorTab({
       [selectedId]: { ...originals[selectedId as TreatmentId] },
     }));
   }, [selectedId, originals]);
+
+  // Update a single field on the selected bundle draft.
+  const handleBundleUpdate = useCallback(
+    (field: keyof EditableBundle, value: unknown) => {
+      if (!selectedBundleId) return;
+      setBundleDrafts((prev) => ({
+        ...prev,
+        [selectedBundleId]: { ...prev[selectedBundleId], [field]: value },
+      }));
+    },
+    [selectedBundleId],
+  );
+
+  // Reset the selected bundle draft to the original.
+  const handleBundleReset = useCallback(() => {
+    if (!selectedBundleId) return;
+    setBundleDrafts((prev) => ({
+      ...prev,
+      [selectedBundleId]: { ...bundleOriginals[selectedBundleId as BundleId] },
+    }));
+  }, [selectedBundleId, bundleOriginals]);
 
   // Save a single category to disk via the Vite dev middleware.
   const saveCategoryToDisk = useCallback(
@@ -129,14 +174,17 @@ export function EditorTab({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ category, content }),
         });
+        const contentType = resp.headers.get('content-type') ?? '';
+        if (!contentType.includes('application/json')) {
+          return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy TS" on the live site.' };
+        }
         const json = await resp.json() as { ok?: boolean; path?: string; error?: string };
         if (resp.ok && json.ok) {
           return { ok: true, path: json.path ?? category };
         }
         return { ok: false, message: json.error ?? `HTTP ${resp.status}` };
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
-        return { ok: false, message };
+        return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy TS" on the live site.' };
       }
     },
     [drafts],
@@ -219,9 +267,16 @@ export function EditorTab({
     ? isDirty(drafts[selectedId] as EditableTreatment, treatments[selectedId as TreatmentId])
     : false;
 
+  const selectedBundleDraft = selectedBundleId ? bundleDrafts[selectedBundleId] : null;
+  const selectedBundleIsDirty = selectedBundleId && selectedBundleDraft
+    ? isBundleDirty(selectedBundleDraft, BUNDLES[selectedBundleId as BundleId])
+    : false;
+
   return (
     <div className="wde-editor wde-layout">
       <EditorSidebar
+        mode={editorMode}
+        onModeChange={setEditorMode}
         drafts={drafts}
         selectedId={selectedId}
         onSelect={setSelectedId}
@@ -232,6 +287,10 @@ export function EditorTab({
         dirtyIds={dirtyIds}
         errorIds={errorIds}
         onAddTreatment={() => setShowAddDialog(true)}
+        bundles={bundleDrafts}
+        selectedBundleId={selectedBundleId}
+        onSelectBundle={setSelectedBundleId}
+        dirtyBundleIds={dirtyBundleIds}
       />
 
       {showAddDialog && (
@@ -242,29 +301,51 @@ export function EditorTab({
         />
       )}
 
-      {selectedDraft ? (
-        <EditorMain
-          draft={selectedDraft}
-          isDirty={selectedIsDirty}
-          dirtyIds={dirtyIds}
-          validationResult={validationResult}
-          allDrafts={drafts}
-          saveStatus={saveStatus}
-          allPaths={allPaths}
-          onUpdate={handleUpdate}
-          onReset={handleReset}
-          onSave={handleSave}
-          onSaveAll={handleSaveAll}
-        />
-      ) : (
-        <div className="wde-main">
-          <div className="wde-empty-state">
-            <div>Select a treatment</div>
-            <div className="wde-empty-state-hint">
-              Choose a treatment from the sidebar to begin editing.
+      {editorMode === 'treatments' ? (
+        selectedDraft ? (
+          <EditorMain
+            draft={selectedDraft}
+            isDirty={selectedIsDirty}
+            dirtyIds={dirtyIds}
+            validationResult={validationResult}
+            allDrafts={drafts}
+            saveStatus={saveStatus}
+            allPaths={allPaths}
+            onUpdate={handleUpdate}
+            onReset={handleReset}
+            onSave={handleSave}
+            onSaveAll={handleSaveAll}
+          />
+        ) : (
+          <div className="wde-main">
+            <div className="wde-empty-state">
+              <div>Select a treatment</div>
+              <div className="wde-empty-state-hint">
+                Choose a treatment from the sidebar to begin editing.
+              </div>
             </div>
           </div>
-        </div>
+        )
+      ) : (
+        selectedBundleDraft ? (
+          <BundleEditPanel
+            bundle={selectedBundleDraft}
+            isDirty={selectedBundleIsDirty}
+            allBundles={Object.values(bundleDrafts)}
+            allTreatments={drafts}
+            onUpdate={handleBundleUpdate}
+            onReset={handleBundleReset}
+          />
+        ) : (
+          <div className="wde-main">
+            <div className="wde-empty-state">
+              <div>Select a bundle</div>
+              <div className="wde-empty-state-hint">
+                Choose a bundle from the sidebar to begin editing.
+              </div>
+            </div>
+          </div>
+        )
       )}
     </div>
   );
