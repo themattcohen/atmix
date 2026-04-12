@@ -134,13 +134,24 @@ export function FlowCanvas({ questions, treatments, bundles, onSelectNode }: Flo
     const ch = container.clientHeight;
     const scaleX = cw / layout.totalWidth;
     const scaleY = ch / layout.totalHeight;
-    const newZoom = Math.min(scaleX, scaleY, 1);  // never scale up beyond 1x
+    const newZoom = Math.max(Math.min(scaleX, scaleY, 1), 0.35);  // never scale up beyond 1x, floor at 0.35
     const offsetX = (cw - layout.totalWidth * newZoom) / 2;
     const offsetY = (ch - layout.totalHeight * newZoom) / 2;
 
     setZoom(newZoom);
     setPan({ x: offsetX, y: offsetY });
   }, [layout.totalWidth, layout.totalHeight]);
+
+  // Auto-collapse deep question nodes for a cleaner initial view (runs once on mount)
+  useEffect(() => {
+    const toCollapse = new Set<string>();
+    for (const node of layout.nodes) {
+      if (node.kind === 'question' && node.depth >= 2) {
+        toCollapse.add(node.key);
+      }
+    }
+    if (toCollapse.size > 0) setCollapsed(toCollapse);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fit on first render
   useEffect(() => {

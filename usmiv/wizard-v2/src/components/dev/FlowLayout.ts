@@ -60,13 +60,14 @@ export interface FlowLayout {
 
 // ── Layout constants ──────────────────────────────────────────────────────────
 
-const Q_WIDTH  = 200;
+const Q_WIDTH  = 180;
 const Q_HEIGHT = 60;
-const T_WIDTH  = 160;
+const T_WIDTH  = 140;
 const T_HEIGHT = 50;
-const ROW_HEIGHT = 110;  // vertical distance between parent top and child top
-const H_GAP     = 20;   // horizontal gap between sibling subtrees
+const ROW_HEIGHT = 150;  // vertical distance between parent top and child top
+const H_GAP     = 12;   // horizontal gap between sibling subtrees
 const CANVAS_PAD = 40;  // padding around entire diagram
+const SHARED_REF_WIDTH = 120;  // shared-ref nodes only say "see above" so they're narrower
 
 // ── Internal tree building ────────────────────────────────────────────────────
 
@@ -89,6 +90,7 @@ interface TreeItem {
 }
 
 function nodeWidth(kind: NodeKind): number {
+  if (kind === 'shared-ref') return SHARED_REF_WIDTH;
   return (kind === 'question' || kind === 'symptoms') ? Q_WIDTH : T_WIDTH;
 }
 
@@ -171,7 +173,7 @@ function buildTree(
         parentKey,
         children: [],
         depth,
-        subtreeWidth: Q_WIDTH,
+        subtreeWidth: SHARED_REF_WIDTH,
       };
     }
 
