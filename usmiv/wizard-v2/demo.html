@@ -69,6 +69,25 @@
       box-shadow: 0 6px 20px rgba(42, 138, 143, 0.35);
     }
     .demo-cta:active { transform: translateY(0); }
+    .demo-admin {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: transparent;
+      color: #2a8a8f;
+      border: 1.5px solid #2a8a8f;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .demo-admin:hover {
+      background: #2a8a8f;
+      color: white;
+    }
     .demo-footer {
       margin-top: 48px;
       font-size: 13px;
@@ -91,9 +110,9 @@
     <button class="demo-cta" data-treatment-wizard>
       Get Started
     </button>
+    <a href="?wizard-dev=true" class="demo-admin">Admin Dashboard</a>
     <p class="demo-footer">
       Powered by <a href="https://atmix.org">atmix</a> &middot; US Mobile IV & Labs
-      &middot; <a href="?wizard-dev=true">Admin Dashboard</a>
     </p>
   </main>
   <script src="wizard.js"></script>
