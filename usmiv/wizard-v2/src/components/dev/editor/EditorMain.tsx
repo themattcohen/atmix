@@ -11,6 +11,7 @@ import type { TreatmentId, TreatmentCategory } from '../../../types/treatment';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import type { EditableTreatment } from './types';
 import { issuesForTreatment } from './types';
+import type { SaveStatus } from './EditorTab';
 import { generateTreatmentTs, generateCategoryFileTs, categoryFileName } from './codeGen';
 import { SYMPTOM_LABELS } from '../../../data';
 
@@ -41,10 +42,14 @@ function catBadgeCls(cat: TreatmentCategory): string {
 interface EditorMainProps {
   draft: EditableTreatment;
   isDirty: boolean;
+  dirtyIds: Set<TreatmentId>;
   validationResult: ValidationResult | null;
   allDrafts: Record<string, EditableTreatment>;
+  saveStatus: SaveStatus;
   onUpdate: (field: keyof EditableTreatment, value: unknown) => void;
   onReset: () => void;
+  onSave: () => void;
+  onSaveAll: () => void;
 }
 
 // ── TagEditor (bestFor) ───────────────────────────────────────────────────────
@@ -476,10 +481,14 @@ function FieldRow({ label, errorMsg, warningMsg, children }: FieldRowProps): Rea
 export function EditorMain({
   draft,
   isDirty,
+  dirtyIds,
   validationResult,
   allDrafts,
+  saveStatus,
   onUpdate,
   onReset,
+  onSave,
+  onSaveAll,
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -526,14 +535,59 @@ export function EditorMain({
   }
 
   const headerCopyKey = `header-ts-${draft.id}`;
+  const isSaving = saveStatus.state === 'saving';
+
+  // Count dirty categories for "Save All" label
+  const dirtyCategoryCount = new Set(
+    [...dirtyIds].map((id) => (allDrafts[id] as EditableTreatment | undefined)?.category).filter(Boolean),
+  ).size;
 
   return (
     <div className="wde-main">
+      {/* Save status banner */}
+      {saveStatus.state === 'saved' && (
+        <div className="wde-save-banner wde-save-banner--ok">
+          Saved to {saveStatus.path}. Vite will hot-reload the module.{' '}
+          <button
+            className="wde-save-banner-reload"
+            type="button"
+            onClick={() => window.location.reload()}
+          >
+            Reload now
+          </button>
+        </div>
+      )}
+      {saveStatus.state === 'error' && (
+        <div className="wde-save-banner wde-save-banner--error">
+          Save failed: {saveStatus.message}
+        </div>
+      )}
+
       {/* Sticky header */}
       <div className="wde-form-header">
         <span className="wde-form-id">{draft.id}</span>
         <span className="wde-form-title">{draft.name}</span>
         <span className={statusBadgeCls}>{statusLabel}</span>
+        <button
+          className={`wde-save-btn${!isDirty || isSaving ? ' wde-save-btn--disabled' : ''}`}
+          type="button"
+          disabled={!isDirty || isSaving}
+          onClick={onSave}
+          title={isDirty ? 'Write this category to disk' : 'No changes to save'}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
+        {dirtyCategoryCount > 1 && (
+          <button
+            className={`wde-save-all-btn${isSaving ? ' wde-save-btn--disabled' : ''}`}
+            type="button"
+            disabled={isSaving}
+            onClick={onSaveAll}
+            title={`Save all ${dirtyCategoryCount} modified categories`}
+          >
+            {isSaving ? 'Saving...' : `Save All (${dirtyCategoryCount})`}
+          </button>
+        )}
         <button
           className={`wde-copy-btn wde-copy-btn--sm${copiedKey === headerCopyKey ? ' wde-copy-btn--ok' : ''}`}
           type="button"
