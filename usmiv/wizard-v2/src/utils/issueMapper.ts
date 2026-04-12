@@ -39,7 +39,7 @@ interface FieldMeta {
  * `scoringWeights['Headache']` or `addressedBy['Nausea']` comes in,
  * we match the leading key segment.
  */
-const FIELD_METADATA: Record<string, FieldMeta> = {
+export const FIELD_METADATA: Record<string, FieldMeta> = {
   acuityTypeId: {
     why: 'The Acuity type ID links this treatment to the correct appointment type in the Acuity scheduling system. A value of 0 means no type has been assigned, so the booking flow cannot complete.',
     fix: 'Log into Acuity Scheduling, find the appointment type for this treatment, and paste its numeric ID into the Acuity Type ID field.',
@@ -89,6 +89,20 @@ function resolveMetadata(field: string): FieldMeta {
     fix: 'Review the flagged value and correct it to match an existing ID in the config.',
     editorSection: 'Basic Info',
   };
+}
+
+// ── getFieldExplanation ───────────────────────────────────────────────────────
+
+/**
+ * Returns the why/fix explanation for a raw field name.
+ * Handles prefixed fields like "addressedBy['Fatigue']" via prefix matching.
+ * Returns undefined when no metadata is found.
+ */
+export function getFieldExplanation(field: string): { why: string; fix: string } | undefined {
+  const key = field.split(/[.[]/, 1)[0];
+  const meta = FIELD_METADATA[field] ?? FIELD_METADATA[key];
+  if (!meta) return undefined;
+  return { why: meta.why, fix: meta.fix };
 }
 
 // ── mapIssuesToFields ─────────────────────────────────────────────────────────

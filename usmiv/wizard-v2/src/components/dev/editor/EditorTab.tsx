@@ -10,6 +10,7 @@ import type { TreatmentId, Treatment, TreatmentCategory } from '../../../types/t
 import type { ValidationResult } from '../../../engine/validateConfig';
 import { validateConfig } from '../../../engine/validateConfig';
 import { QUESTIONS, BUNDLES } from '../../../data';
+import type { ResolvedPath } from '../../../utils/pathResolver';
 import {
   cloneAllToEditable,
   toTreatmentMap,
@@ -21,6 +22,7 @@ import type { EditableTreatment } from './types';
 import { generateCategoryFileTs } from './codeGen';
 import { EditorSidebar } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
+import { AddTreatmentDialog } from './AddTreatmentDialog';
 
 // ── Save result ───────────────────────────────────────────────────────────────
 
@@ -34,13 +36,21 @@ export type SaveStatus =
 
 interface EditorTabProps {
   treatments: Readonly<Record<TreatmentId, Treatment>>;
+  allPaths: ResolvedPath[];
   /** When set, the editor will select this treatment on mount or when it changes. */
   initialSelectedId?: string | null;
+  /** Called whenever validation re-runs (on each draft change). */
+  onValidationChange?: (result: ValidationResult) => void;
 }
 
 // ── EditorTab ─────────────────────────────────────────────────────────────────
 
-export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): React.ReactElement {
+export function EditorTab({
+  treatments,
+  allPaths,
+  initialSelectedId,
+  onValidationChange,
+}: EditorTabProps): React.ReactElement {
   // Initialize mutable drafts and pristine originals once on mount.
   const [drafts, setDrafts] = useState<Record<string, EditableTreatment>>(
     () => cloneAllToEditable(treatments),
@@ -64,13 +74,15 @@ export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): Re
   const [categoryFilter, setCategoryFilter] = useState<TreatmentCategory | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>({ state: 'idle' });
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
-  // Re-run validation whenever drafts change.
+  // Re-run validation whenever drafts change, and bubble result to dashboard.
   useEffect(() => {
     const treatmentMap = toTreatmentMap(drafts as Record<TreatmentId, EditableTreatment>);
     const result = validateConfig(treatmentMap, QUESTIONS, BUNDLES);
     setValidationResult(result);
-  }, [drafts]);
+    onValidationChange?.(result);
+  }, [drafts, onValidationChange]);
 
   // Derived dirty/error sets for sidebar indicators.
   const dirtyIds = useMemo(
@@ -130,13 +142,6 @@ export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): Re
     [drafts],
   );
 
-  // Mark all treatments in a category as clean (update originals tracking) by
-  // replacing the relevant draft entries with fresh clones -- originals are
-  // computed once at mount from the original treatments prop and are read-only,
-  // so we track "saved originals" as a separate piece of state. Instead of that
-  // complexity, after a successful save we reload the page so Vite HMR picks up
-  // the new file. The banner and reload button handle this UX.
-
   // Save the current category (triggered from EditorMain header).
   const handleSave = useCallback(async () => {
     if (!selectedId) return;
@@ -179,6 +184,36 @@ export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): Re
     }
   }, [dirtyIds, drafts, saveCategoryToDisk]);
 
+  // Add Treatment dialog handler.
+  const handleAddTreatment = useCallback(
+    (id: string, name: string, category: TreatmentCategory) => {
+      const newDraft: EditableTreatment = {
+        id: id as TreatmentId,
+        name,
+        price: 0,
+        priceLabel: undefined,
+        duration: '',
+        category,
+        acuityTypeId: 0,
+        acuityDropdownValue: null,
+        pageUrl: '',
+        shortDesc: '',
+        ingredients: [],
+        bestFor: [],
+        whyMatch: '',
+        scoringWeights: {},
+        addressedBy: {},
+        addonSuggestions: [],
+        note: undefined,
+        tests: category === 'lab' ? [] : undefined,
+      };
+      setDrafts((prev) => ({ ...prev, [id]: newDraft }));
+      setSelectedId(id);
+      setShowAddDialog(false);
+    },
+    [],
+  );
+
   const selectedDraft = selectedId ? drafts[selectedId] : null;
   const selectedIsDirty = selectedId
     ? isDirty(drafts[selectedId] as EditableTreatment, treatments[selectedId as TreatmentId])
@@ -196,7 +231,16 @@ export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): Re
         onCategoryChange={setCategoryFilter}
         dirtyIds={dirtyIds}
         errorIds={errorIds}
+        onAddTreatment={() => setShowAddDialog(true)}
       />
+
+      {showAddDialog && (
+        <AddTreatmentDialog
+          existingIds={new Set(Object.keys(drafts))}
+          onConfirm={handleAddTreatment}
+          onCancel={() => setShowAddDialog(false)}
+        />
+      )}
 
       {selectedDraft ? (
         <EditorMain
@@ -206,6 +250,7 @@ export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): Re
           validationResult={validationResult}
           allDrafts={drafts}
           saveStatus={saveStatus}
+          allPaths={allPaths}
           onUpdate={handleUpdate}
           onReset={handleReset}
           onSave={handleSave}

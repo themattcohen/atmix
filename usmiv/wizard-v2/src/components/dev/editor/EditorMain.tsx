@@ -7,40 +7,17 @@
  */
 
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-import type { TreatmentId, TreatmentCategory } from '../../../types/treatment';
+import type { TreatmentId } from '../../../types/treatment';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import type { EditableTreatment } from './types';
 import { issuesForTreatment } from './types';
 import type { SaveStatus } from './EditorTab';
 import { generateTreatmentTs, generateCategoryFileTs, categoryFileName } from './codeGen';
-import { SYMPTOM_LABELS, TREATMENTS, BUNDLES, QUESTIONS as EDITOR_QUESTIONS } from '../../../data';
+import { SYMPTOM_LABELS, TREATMENTS } from '../../../data';
 import { mapIssuesToFields } from '../../../utils/issueMapper';
-import { computeAllPaths, pathsForTreatment } from '../../../utils/pathResolver';
-
-// Pre-compute all paths once (data is static at runtime).
-const EDITOR_ALL_PATHS = computeAllPaths(EDITOR_QUESTIONS, BUNDLES);
-
-// ── Category display helper ───────────────────────────────────────────────────
-
-function catLabel(cat: TreatmentCategory): string {
-  switch (cat) {
-    case 'iv':         return 'IV';
-    case 'nad':        return 'NAD';
-    case 'weightLoss': return 'Weight Loss';
-    case 'injection':  return 'Injection';
-    case 'lab':        return 'Lab';
-  }
-}
-
-function catBadgeCls(cat: TreatmentCategory): string {
-  switch (cat) {
-    case 'iv':         return 'wde-cat-badge-sm wde-cat-badge-sm--iv';
-    case 'nad':        return 'wde-cat-badge-sm wde-cat-badge-sm--nad';
-    case 'weightLoss': return 'wde-cat-badge-sm wde-cat-badge-sm--weightloss';
-    case 'injection':  return 'wde-cat-badge-sm wde-cat-badge-sm--injection';
-    case 'lab':        return 'wde-cat-badge-sm wde-cat-badge-sm--lab';
-  }
-}
+import { categoryLabel, catBadgeSmClass } from '../../../utils/dashboardHelpers';
+import type { ResolvedPath } from '../../../utils/pathResolver';
+import { pathsForTreatment } from '../../../utils/pathResolver';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -51,6 +28,7 @@ interface EditorMainProps {
   validationResult: ValidationResult | null;
   allDrafts: Record<string, EditableTreatment>;
   saveStatus: SaveStatus;
+  allPaths: ResolvedPath[];
   onUpdate: (field: keyof EditableTreatment, value: unknown) => void;
   onReset: () => void;
   onSave: () => void;
@@ -402,12 +380,11 @@ function AddonSuggestionsEditor({
 // ── PathsInEditor ─────────────────────────────────────────────────────────────
 
 interface PathsInEditorProps {
-  treatmentId: string;
+  paths: ResolvedPath[];
   treatmentName: string;
 }
 
-function PathsInEditor({ treatmentId, treatmentName }: PathsInEditorProps): React.ReactElement {
-  const paths = useMemo(() => pathsForTreatment(treatmentId, EDITOR_ALL_PATHS), [treatmentId]);
+function PathsInEditor({ paths, treatmentName }: PathsInEditorProps): React.ReactElement {
 
   return (
     <div>
@@ -560,6 +537,7 @@ export function EditorMain({
   validationResult,
   allDrafts,
   saveStatus,
+  allPaths,
   onUpdate,
   onReset,
   onSave,
@@ -602,6 +580,12 @@ export function EditorMain({
   // All drafts in the same category for full-file copy
   const allDraftsInCategory = Object.values(allDrafts).filter(
     (d) => d.category === draft.category,
+  );
+
+  // Pre-compute paths to this treatment once
+  const pathsToDraftMemo = useMemo(
+    () => pathsForTreatment(draft.id, allPaths),
+    [draft.id, allPaths],
   );
 
   // Status badge
@@ -771,8 +755,8 @@ export function EditorMain({
           </FieldRow>
 
           <FieldRow label="category">
-            <span className={catBadgeCls(draft.category)} style={{ display: 'inline-block', padding: '4px 10px', fontSize: 11 }}>
-              {catLabel(draft.category)}
+            <span className={catBadgeSmClass(draft.category)} style={{ display: 'inline-block', padding: '4px 10px', fontSize: 11 }}>
+              {categoryLabel(draft.category)}
             </span>
           </FieldRow>
 
@@ -888,16 +872,16 @@ export function EditorMain({
 
         {/* 7. Paths to this Treatment */}
         {(() => {
-          const editorPaths = pathsForTreatment(draft.id, EDITOR_ALL_PATHS);
+          const pathsToDraft = pathsToDraftMemo;
           return (
             <div className="wde-section">
               <div className="wde-section-head">
                 PATHS TO THIS TREATMENT
                 <span style={{ fontWeight: 400, fontSize: 11, color: '#64748b', marginLeft: 6 }}>
-                  ({editorPaths.length} path{editorPaths.length !== 1 ? 's' : ''})
+                  ({pathsToDraft.length} path{pathsToDraft.length !== 1 ? 's' : ''})
                 </span>
               </div>
-              <PathsInEditor treatmentId={draft.id} treatmentName={draft.name} />
+              <PathsInEditor paths={pathsToDraft} treatmentName={draft.name} />
             </div>
           );
         })()}

@@ -13,22 +13,7 @@
 
 import type { TreatmentCategory } from '../../../types/treatment';
 import type { EditableTreatment } from './types';
-
-// ── Canonical symptom order ───────────────────────────────────────────────────
-// Must stay in sync with SYMPTOM_LABELS in data/index.ts
-
-const SYMPTOM_LABELS: readonly string[] = [
-  'Tired all the time',
-  'Frequent headaches',
-  'Getting sick often',
-  'Skin looks dull or aging',
-  'Sore muscles / slow recovery',
-  'Struggling with weight',
-  "Brain fog / can't focus",
-  'Dehydrated / dry all the time',
-  'Stressed and burnt out',
-  "Not sure what I'm missing",
-];
+import { SYMPTOM_LABELS } from '../../../data';
 
 // ── String escaping ───────────────────────────────────────────────────────────
 

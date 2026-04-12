@@ -9,17 +9,22 @@
  * Access: ?wizard-dev=true URL param, or Ctrl+Shift+W keyboard shortcut.
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { TREATMENTS, QUESTIONS, BUNDLES } from '../../data';
 import { validateConfig, type ValidationResult, type ValidationIssue } from '../../engine/validateConfig';
-import type { TreatmentId, Treatment, TreatmentCategory } from '../../types/treatment';
+import type { TreatmentId, Treatment } from '../../types/treatment';
 import type { QuestionId, Question } from '../../types/question';
 import type { BundleId, Bundle } from '../../types/bundle';
-import { computeAllPaths, reachableTreatmentIds, type ResolvedPath } from '../../utils/pathResolver';
+import { computeAllPaths, pathsForTreatment, reachableTreatmentIds, type ResolvedPath } from '../../utils/pathResolver';
+import { getFieldExplanation } from '../../utils/issueMapper';
+import {
+  categoryBadgeClass,
+  sortedTreatments,
+  formatTreatmentPrice,
+} from '../../utils/dashboardHelpers';
 import '../../styles/dev/dashboard.css';
 import '../../styles/dev/editor.css';
-import '../../styles/dev/tour.css';
 import { EditorTab } from './editor/EditorTab';
 import { FlowCanvas } from './FlowCanvas';
 import { PathsTab } from './PathsTab';
@@ -32,35 +37,6 @@ type DashboardTab = 'editor' | 'paths' | 'tree' | 'coverage' | 'validation';
 // Pre-compute these once at module level (they never change at runtime).
 const ALL_PATHS: ResolvedPath[] = computeAllPaths(QUESTIONS, BUNDLES);
 const REACHABLE_SET: Set<string> = reachableTreatmentIds(ALL_PATHS);
-
-// ── Category display helpers ─────────────────────────────────────────────────
-
-function categoryBadgeClass(cat: TreatmentCategory): string {
-  switch (cat) {
-    case 'iv':         return 'wdd-cat-badge wdd-cat-badge--iv';
-    case 'nad':        return 'wdd-cat-badge wdd-cat-badge--nad';
-    case 'weightLoss': return 'wdd-cat-badge wdd-cat-badge--weightloss';
-    case 'injection':  return 'wdd-cat-badge wdd-cat-badge--injection';
-    case 'lab':        return 'wdd-cat-badge wdd-cat-badge--lab';
-  }
-}
-
-function formatPrice(t: Treatment): string {
-  if (t.priceLabel) return t.priceLabel;
-  return `$${t.price}`;
-}
-
-// ── Sorted treatments for coverage matrix ────────────────────────────────────
-
-const CATEGORY_ORDER: TreatmentCategory[] = ['iv', 'nad', 'weightLoss', 'injection', 'lab'];
-
-function sortedTreatments(): Treatment[] {
-  return Object.values(TREATMENTS).sort((a, b) => {
-    const catDiff = CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category);
-    if (catDiff !== 0) return catDiff;
-    return b.price - a.price;  // descending price within category
-  });
-}
 
 // ── Flow tab side panel ───────────────────────────────────────────────────────
 
@@ -149,12 +125,12 @@ function TreeSidePanel({ selectedTreatment, selectedQuestion }: TreeSidePanelPro
         </div>
         <div className="wdd-detail-row">
           <span className="wdd-detail-key">primary $</span>
-          <span className="wdd-detail-val">{primary ? formatPrice(primary) : '?'}</span>
+          <span className="wdd-detail-val">{primary ? formatTreatmentPrice(primary) : '?'}</span>
         </div>
         {addOn && (
           <div className="wdd-detail-row">
             <span className="wdd-detail-key">addOn $</span>
-            <span className="wdd-detail-val">{formatPrice(addOn)}</span>
+            <span className="wdd-detail-val">{formatTreatmentPrice(addOn)}</span>
           </div>
         )}
         <div className="wdd-section-title">whyMatch</div>
@@ -178,7 +154,7 @@ function TreeSidePanel({ selectedTreatment, selectedQuestion }: TreeSidePanelPro
   const t = TREATMENTS[selectedTreatment as TreatmentId] as Treatment | undefined;
   if (!t) return <div className="wdd-sidebar"><span className="wdd-empty">Unknown treatment: {selectedTreatment}</span></div>;
 
-  const paths = ALL_PATHS.filter((p) => p.terminal === selectedTreatment);
+  const paths = pathsForTreatment(selectedTreatment, ALL_PATHS);
   const weightEntries = Object.entries(t.scoringWeights).filter(([, v]) => (v ?? 0) > 0);
 
   return (
@@ -191,7 +167,7 @@ function TreeSidePanel({ selectedTreatment, selectedQuestion }: TreeSidePanelPro
       </div>
       <div className="wdd-detail-row">
         <span className="wdd-detail-key">price</span>
-        <span className="wdd-detail-val">{formatPrice(t)}</span>
+        <span className="wdd-detail-val">{formatTreatmentPrice(t)}</span>
       </div>
       <div className="wdd-detail-row">
         <span className="wdd-detail-key">acuityId</span>
@@ -262,7 +238,7 @@ interface CoverageMatrixProps {
 
 function CoverageMatrix({ onSelectTreatment, onSwitchToValidation, onFixInEditor }: CoverageMatrixProps): React.ReactElement {
   const [selectedRow, setSelectedRow] = useState<TreatmentId | null>(null);
-  const treatments = sortedTreatments();
+  const treatments = sortedTreatments(TREATMENTS);
 
   // For each treatment, determine which bundles include it
   const treatmentBundleMap = new Map<TreatmentId, string[]>();
@@ -353,7 +329,7 @@ function CoverageMatrix({ onSelectTreatment, onSwitchToValidation, onFixInEditor
                         {t.category}
                       </span>
                     </td>
-                    <td>{formatPrice(t)}</td>
+                    <td>{formatTreatmentPrice(t)}</td>
                     <td>
                       {isReachable ? (
                         <span className="wdd-cell-ok">Yes</span>
@@ -443,35 +419,6 @@ function CoverageMatrix({ onSelectTreatment, onSwitchToValidation, onFixInEditor
   );
 }
 
-// ── Issue explanation map ─────────────────────────────────────────────────────
-
-const ISSUE_EXPLANATIONS: Record<string, { why: string; fix: string }> = {
-  acuityTypeId: {
-    why: "The booking system needs this ID to create appointments. Without it, clicking 'Book' will fail.",
-    fix: "Open the treatment in the Editor and set the Acuity Type ID in the Basic Info section.",
-  },
-  reachability: {
-    why: "No question path leads to this treatment. Users can never see or book it.",
-    fix: "Add this treatment as a 'recommend' option in one of the question nodes, or add symptom scoring weights.",
-  },
-  whyMatch: {
-    why: "The result screen shows a 'Why This Is Your Match' section. Without text here, it shows nothing.",
-    fix: "Open the treatment in the Editor and fill in the whyMatch field in the Descriptions section.",
-  },
-  addonSuggestions: {
-    why: "Add-on injection suggestions appear below the result. No add-ons means no upsell revenue.",
-    fix: "Open the treatment in the Editor and check injection add-ons in the Addon Suggestions section.",
-  },
-  scoringWeights: {
-    why: "The 'help me decide' symptom path uses these weights to rank treatments. Without any, this treatment is invisible to symptom matching.",
-    fix: "Open the treatment in the Editor and set scoring weights in the Scoring Weights section.",
-  },
-  addressedBy: {
-    why: "When a treatment matches a symptom, this text explains why. Missing text means the match has no explanation.",
-    fix: "Open the treatment in the Editor and fill in the addressedBy text for scored symptoms.",
-  },
-};
-
 /**
  * Extract the treatment ID from an issue subject string like "treatment:hangover"
  * Returns null for non-treatment subjects (e.g. "question:...", "bundle:...").
@@ -479,15 +426,6 @@ const ISSUE_EXPLANATIONS: Record<string, { why: string; fix: string }> = {
 function treatmentIdFromSubject(subject: string): string | null {
   const match = subject.match(/^treatment:(.+)$/);
   return match ? match[1] : null;
-}
-
-/**
- * Get a lookup key for ISSUE_EXPLANATIONS from the issue field string.
- * Handles cases like "addressedBy['Fatigue']" -> "addressedBy".
- */
-function explanationKey(field: string): string {
-  const bracketIdx = field.indexOf('[');
-  return bracketIdx >= 0 ? field.slice(0, bracketIdx) : field;
 }
 
 // ── ValidationView (Health) ────────────────────────────────────────────────────
@@ -510,8 +448,12 @@ function ValidationView({ result, filterTreatment, onFixInEditor }: ValidationVi
 
   const allIssues = [...result.errors, ...result.warnings];
   const hasFilter = Boolean(filterTreatment);
+  // Bug 4 fix: exact match instead of substring match
   const visibleIssues = hasFilter
-    ? allIssues.filter((i) => i.subject.includes(filterTreatment!))
+    ? allIssues.filter((i) =>
+        i.subject === `treatment:${filterTreatment!}` ||
+        i.subject.startsWith(`treatment:${filterTreatment!}:`)
+      )
     : allIssues;
 
   // Health status
@@ -525,19 +467,13 @@ function ValidationView({ result, filterTreatment, onFixInEditor }: ValidationVi
     : healthStatus === 'warning' ? 'NEEDS ATTENTION'
     : 'GOOD';
 
-  // Find first highlighted issue to attach scroll ref
-  let firstHighlightedIdx = -1;
-  if (hasFilter) {
-    firstHighlightedIdx = visibleIssues.findIndex((i) => i.subject.includes(filterTreatment!));
-  }
-
   const renderIssueCard = (issue: ValidationIssue, index: number) => {
-    const isFirst = hasFilter && index === firstHighlightedIdx;
+    // When filtered, index 0 is always the first match
+    const isFirst = hasFilter && index === 0;
     const tid = treatmentIdFromSubject(issue.subject);
     const treatment = tid ? TREATMENTS[tid as TreatmentId] : null;
     const displaySubject = treatment ? treatment.name : issue.subject;
-    const expKey = explanationKey(issue.field);
-    const explanation = ISSUE_EXPLANATIONS[expKey];
+    const explanation = getFieldExplanation(issue.field);
 
     return (
       <div
@@ -632,8 +568,15 @@ export function WizardDevDashboard(): React.ReactElement {
     setTourOpen(false);
   }
 
-  // Called synchronously -- no async concerns, these are static maps
-  const validation = validateConfig(TREATMENTS, QUESTIONS, BUNDLES);
+  // Lifted validation state: updated by EditorTab whenever drafts change.
+  // Initialized from compiled data; updated live as the editor modifies drafts.
+  const [validation, setValidation] = useState<ValidationResult>(
+    () => validateConfig(TREATMENTS, QUESTIONS, BUNDLES),
+  );
+
+  const handleValidationChange = useCallback((result: ValidationResult) => {
+    setValidation(result);
+  }, []);
 
   function handleSwitchToValidation(treatmentId: string): void {
     setValidationFilter(treatmentId);
@@ -722,7 +665,9 @@ export function WizardDevDashboard(): React.ReactElement {
         {tab === 'editor' && (
           <EditorTab
             treatments={TREATMENTS}
+            allPaths={ALL_PATHS}
             initialSelectedId={pendingEditId}
+            onValidationChange={handleValidationChange}
           />
         )}
         {tab === 'paths' && (

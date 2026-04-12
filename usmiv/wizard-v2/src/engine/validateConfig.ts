@@ -1,6 +1,7 @@
 import type { TreatmentId, Treatment } from '../types/treatment';
 import type { Question, QuestionId, SingleQuestion } from '../types/question';
 import type { Bundle, BundleId } from '../types/bundle';
+import { computeAllPaths, reachableTreatmentIds } from '../utils/pathResolver';
 
 export interface ValidationIssue {
   severity: 'error' | 'warning';
@@ -13,44 +14,6 @@ export interface ValidationResult {
   errors:   readonly ValidationIssue[];
   warnings: readonly ValidationIssue[];
   isValid: boolean;  // true only if errors is empty
-}
-
-// Walk all question paths from 'start' and collect every recommend value
-// reachable via single-select navigation. Bundles are resolved to their
-// primary treatmentId as well, so we track treatment reachability correctly.
-function collectReachableIds(
-  questions: Readonly<Record<QuestionId, Question>>,
-  bundles: Readonly<Record<BundleId, Bundle>>,
-): Set<string> {
-  const reachable = new Set<string>();
-  const visited = new Set<string>();
-  const queue: string[] = ['start'];
-
-  while (queue.length > 0) {
-    const qid = queue.shift()!;
-    if (visited.has(qid)) continue;
-    visited.add(qid);
-
-    const q = questions[qid as QuestionId];
-    if (!q || q.type !== 'single') continue;
-
-    for (const opt of (q as SingleQuestion).options) {
-      if (opt.recommend) {
-        reachable.add(opt.recommend);
-        // If the recommend is a bundle, also mark the bundle's primary as reachable
-        const bundle = bundles[opt.recommend as BundleId];
-        if (bundle) {
-          reachable.add(bundle.primary);
-          if (bundle.addOn) reachable.add(bundle.addOn);
-        }
-      }
-      if (opt.next) {
-        queue.push(opt.next);
-      }
-    }
-  }
-
-  return reachable;
 }
 
 export function validateConfig(
@@ -97,7 +60,7 @@ export function validateConfig(
   }
 
   // Check all treatments
-  const reachableIds = collectReachableIds(questions, bundles);
+  const reachableIds = reachableTreatmentIds(computeAllPaths(questions, bundles));
 
   for (const [tid, t] of Object.entries(treatments) as [TreatmentId, Treatment][]) {
     // Error: missing Acuity type ID

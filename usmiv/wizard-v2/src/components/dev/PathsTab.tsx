@@ -12,6 +12,13 @@ import { TREATMENTS, BUNDLES } from '../../data';
 import type { TreatmentCategory, TreatmentId, Treatment } from '../../types/treatment';
 import type { BundleId, Bundle } from '../../types/bundle';
 import { pathsForTreatment, orphanedTreatments, type ResolvedPath } from '../../utils/pathResolver';
+import {
+  CATEGORY_ORDER,
+  categoryBadgeClass,
+  categoryLabel,
+  sortedTreatments,
+  formatTreatmentPrice,
+} from '../../utils/dashboardHelpers';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -25,8 +32,6 @@ interface PathsTabProps {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-const CATEGORY_ORDER: TreatmentCategory[] = ['iv', 'nad', 'weightLoss', 'injection', 'lab'];
 
 function terminalCategoryClass(terminal: string): string {
   const t = TREATMENTS[terminal as TreatmentId] as Treatment | undefined;
@@ -50,7 +55,7 @@ function terminalCategory(terminal: string): TreatmentCategory | null {
 
 function formatPrice(terminal: string): string {
   const t = TREATMENTS[terminal as TreatmentId] as Treatment | undefined;
-  if (t) return t.priceLabel ? t.priceLabel : `$${t.price}`;
+  if (t) return formatTreatmentPrice(t);
   const b = BUNDLES[terminal as BundleId] as Bundle | undefined;
   if (b) {
     const primary = TREATMENTS[b.primary];
@@ -72,33 +77,6 @@ function optionLabels(path: ResolvedPath): string[] {
   return path.steps.filter((_, i) => i % 2 === 1);
 }
 
-function sortedTreatments(): Treatment[] {
-  return Object.values(TREATMENTS).sort((a, b) => {
-    const catDiff = CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category);
-    if (catDiff !== 0) return catDiff;
-    return a.name.localeCompare(b.name);
-  });
-}
-
-function categoryLabel(cat: TreatmentCategory): string {
-  switch (cat) {
-    case 'iv':         return 'IV';
-    case 'nad':        return 'NAD';
-    case 'weightLoss': return 'Weight Loss';
-    case 'injection':  return 'Injection';
-    case 'lab':        return 'Lab';
-  }
-}
-
-function categoryBadgeClass(cat: TreatmentCategory): string {
-  switch (cat) {
-    case 'iv':         return 'wdd-cat-badge wdd-cat-badge--iv';
-    case 'nad':        return 'wdd-cat-badge wdd-cat-badge--nad';
-    case 'weightLoss': return 'wdd-cat-badge wdd-cat-badge--weightloss';
-    case 'injection':  return 'wdd-cat-badge wdd-cat-badge--injection';
-    case 'lab':        return 'wdd-cat-badge wdd-cat-badge--lab';
-  }
-}
 
 // ── PathBreadcrumb (shared renderer) ─────────────────────────────────────────
 
@@ -217,11 +195,11 @@ interface ByTreatmentViewProps {
 function ByTreatmentView({ allPaths, onFixInEditor }: ByTreatmentViewProps): React.ReactElement {
   const [selected, setSelected] = useState<string | null>(null);
 
-  const treatments = useMemo(() => sortedTreatments(), []);
+  const treatments = useMemo(() => sortedTreatments(TREATMENTS), []);
 
   const pathsByTreatment = useMemo(() => {
     const map = new Map<string, ResolvedPath[]>();
-    for (const t of sortedTreatments()) {
+    for (const t of sortedTreatments(TREATMENTS)) {
       map.set(t.id, pathsForTreatment(t.id, allPaths));
     }
     return map;
@@ -263,7 +241,7 @@ function ByTreatmentView({ allPaths, onFixInEditor }: ByTreatmentViewProps): Rea
                       {categoryLabel(t.category)}
                     </span>
                     <span style={{ fontSize: 12, color: 'var(--wdd-text-secondary)' }}>
-                      {t.priceLabel ?? `$${t.price}`}
+                      {formatTreatmentPrice(t)}
                     </span>
                   </div>
                 </div>
@@ -366,7 +344,7 @@ function OrphansView({ allPaths, onFixInEditor }: OrphansViewProps): React.React
                 {categoryLabel(t.category)}
               </span>
               <span style={{ fontSize: 12, color: 'var(--wdd-text-secondary)' }}>
-                {t.priceLabel ?? `$${t.price}`}
+                {formatTreatmentPrice(t)}
               </span>
               <span className="wdd-orphan-badge">No paths</span>
             </div>

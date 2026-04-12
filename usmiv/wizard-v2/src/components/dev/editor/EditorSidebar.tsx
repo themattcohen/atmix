@@ -9,6 +9,7 @@
 import React, { useCallback } from 'react';
 import type { TreatmentCategory, TreatmentId } from '../../../types/treatment';
 import type { EditableTreatment } from './types';
+import { CATEGORY_ORDER, catBadgeSmClass } from '../../../utils/dashboardHelpers';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -22,6 +23,7 @@ interface EditorSidebarProps {
   onCategoryChange: (cat: TreatmentCategory | null) => void;
   dirtyIds: Set<TreatmentId>;
   errorIds: Set<TreatmentId>;
+  onAddTreatment: () => void;
 }
 
 // ── Category config ───────────────────────────────────────────────────────────
@@ -40,18 +42,6 @@ const CATEGORIES: CategoryConfig[] = [
   { id: 'lab',        label: 'Lab',         activeCls: 'wde-cat-pill--active-lab' },
 ];
 
-function catBadgeSmCls(cat: TreatmentCategory): string {
-  switch (cat) {
-    case 'iv':         return 'wde-cat-badge-sm wde-cat-badge-sm--iv';
-    case 'nad':        return 'wde-cat-badge-sm wde-cat-badge-sm--nad';
-    case 'weightLoss': return 'wde-cat-badge-sm wde-cat-badge-sm--weightloss';
-    case 'injection':  return 'wde-cat-badge-sm wde-cat-badge-sm--injection';
-    case 'lab':        return 'wde-cat-badge-sm wde-cat-badge-sm--lab';
-  }
-}
-
-const CATEGORY_ORDER: TreatmentCategory[] = ['iv', 'nad', 'weightLoss', 'injection', 'lab'];
-
 function formatDraftPrice(d: EditableTreatment): string {
   if (d.priceLabel && d.priceLabel.trim()) return d.priceLabel;
   return `$${d.price}`;
@@ -69,6 +59,7 @@ export function EditorSidebar({
   onCategoryChange,
   dirtyIds,
   errorIds,
+  onAddTreatment,
 }: EditorSidebarProps): React.ReactElement {
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value),
@@ -140,7 +131,7 @@ export function EditorSidebar({
               className={cls}
               onClick={() => onSelect(d.id)}
             >
-              <span className={catBadgeSmCls(d.category)}>
+              <span className={catBadgeSmClass(d.category)}>
                 {d.category === 'weightLoss' ? 'wt' : d.category}
               </span>
               <span className="wde-list-item-info">
@@ -148,8 +139,7 @@ export function EditorSidebar({
                 <span className="wde-list-item-price">{formatDraftPrice(d)}</span>
               </span>
               {hasError && <span className="wde-dot wde-dot--error" title="Has validation errors" />}
-              {isDirty && !hasError && <span className="wde-dot wde-dot--dirty" title="Unsaved changes" />}
-              {isDirty && hasError && <span className="wde-dot wde-dot--dirty" title="Unsaved changes" />}
+              {isDirty && <span className="wde-dot wde-dot--dirty" title="Unsaved changes" />}
             </li>
           );
         })}
@@ -159,6 +149,17 @@ export function EditorSidebar({
           </li>
         )}
       </ul>
+
+      {/* Add Treatment footer button */}
+      <div className="wde-sidebar-footer">
+        <button
+          className="wde-add-treatment-btn"
+          type="button"
+          onClick={onAddTreatment}
+        >
+          + New Treatment
+        </button>
+      </div>
     </aside>
   );
 }

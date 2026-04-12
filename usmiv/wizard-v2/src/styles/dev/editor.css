@@ -1357,3 +1357,185 @@
   outline: 2px solid var(--wde-accent);
   outline-offset: 2px;
 }
+
+/* ── Add Treatment button ─────────────────────────────────────────────────── */
+
+.wde-add-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px dashed var(--wde-sidebar-border, rgba(255,255,255,0.15));
+  border-radius: 6px;
+  color: var(--wde-sidebar-muted, #94a3b8);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  transition: all 0.15s;
+  font-family: var(--wde-font-sans);
+}
+
+.wde-add-btn:hover {
+  border-color: var(--wde-accent, #3b82f6);
+  color: var(--wde-accent, #3b82f6);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+/* ── Sidebar footer (New Treatment button) ────────────────────────────────── */
+
+.wde-sidebar-footer {
+  padding: 8px 8px 10px;
+  border-top: 1px solid var(--wde-sidebar-border, #1f2937);
+  flex-shrink: 0;
+}
+
+.wde-add-treatment-btn {
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  color: var(--wde-sidebar-muted, #64748b);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.15s;
+  font-family: var(--wde-font-sans);
+}
+
+.wde-add-treatment-btn:hover {
+  border-color: var(--wde-sidebar-accent, #3b82f6);
+  color: var(--wde-sidebar-accent, #3b82f6);
+  background: rgba(59, 130, 246, 0.07);
+}
+
+/* ── Add Treatment Dialog ─────────────────────────────────────────────────── */
+
+.wde-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.wde-dialog {
+  background: white;
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 440px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.wde-dialog-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+.wde-dialog-field {
+  margin-bottom: 16px;
+}
+
+.wde-dialog-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.wde-dialog-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: var(--wde-font-sans);
+  box-sizing: border-box;
+}
+
+.wde-dialog-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wde-dialog-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  font-family: var(--wde-font-sans);
+  box-sizing: border-box;
+}
+
+.wde-dialog-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wde-dialog-error {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 4px;
+}
+
+.wde-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.wde-dialog-cancel {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: var(--wde-font-sans);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.wde-dialog-cancel:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.wde-dialog-confirm {
+  padding: 8px 20px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--wde-font-sans);
+  transition: filter 0.15s;
+}
+
+.wde-dialog-confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wde-dialog-confirm:not(:disabled):hover {
+  filter: brightness(0.9);
+}
