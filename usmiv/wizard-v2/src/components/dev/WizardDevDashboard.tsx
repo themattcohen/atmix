@@ -18,9 +18,11 @@ import type { QuestionId, Question, SingleQuestion } from '../../types/question'
 import type { BundleId, Bundle } from '../../types/bundle';
 import '../../styles/dev/dashboard.css';
 import '../../styles/dev/editor.css';
+import '../../styles/dev/tour.css';
 import { EditorTab } from './editor/EditorTab';
 import { FlowCanvas } from './FlowCanvas';
 import { PathsTab } from './PathsTab';
+import { OnboardingTour } from './OnboardingTour';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -688,6 +690,23 @@ export function WizardDevDashboard(): React.ReactElement {
   // and switch to the editor tab. EditorTab reads it via initialSelectedId.
   const [pendingEditId, setPendingEditId] = useState<string | null>(null);
 
+  // Tour state -- auto-open on first visit
+  const [tourOpen, setTourOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem('wizard-admin-tour-seen')) {
+      setTourOpen(true);
+    }
+  }, []);
+
+  function handleTourSwitchTab(newTab: string): void {
+    setTab(newTab as DashboardTab);
+  }
+
+  function handleTourClose(): void {
+    setTourOpen(false);
+  }
+
   // Called synchronously -- no async concerns, these are static maps
   const validation = validateConfig(TREATMENTS, QUESTIONS, BUNDLES);
 
@@ -723,6 +742,14 @@ export function WizardDevDashboard(): React.ReactElement {
           {Object.keys(BUNDLES).length} bundles &middot;{' '}
           {ALL_PATHS.length} paths
         </span>
+        <button
+          className="wdd-help-btn"
+          onClick={() => setTourOpen(true)}
+          title="Open onboarding tour"
+          aria-label="Open onboarding tour"
+        >
+          ?
+        </button>
         <button className="wdd-close" onClick={unmountDevDashboard}>
           Close  [Ctrl+Shift+W]
         </button>
@@ -732,36 +759,41 @@ export function WizardDevDashboard(): React.ReactElement {
         <button
           onClick={() => setTab('editor')}
           data-active={tab === 'editor' ? 'true' : 'false'}
+          data-tour="editor-tab"
         >
           Editor
         </button>
         <button
           onClick={() => setTab('paths')}
           data-active={tab === 'paths' ? 'true' : 'false'}
+          data-tour="paths-tab"
         >
           Paths
         </button>
         <button
           onClick={() => setTab('tree')}
           data-active={tab === 'tree' ? 'true' : 'false'}
+          data-tour="flow-tab"
         >
           Flow
         </button>
         <button
           onClick={() => setTab('coverage')}
           data-active={tab === 'coverage' ? 'true' : 'false'}
+          data-tour="coverage-tab"
         >
           Coverage
         </button>
         <button
           onClick={() => { setTab('validation'); setValidationFilter(null); }}
           data-active={tab === 'validation' ? 'true' : 'false'}
+          data-tour="health-tab"
         >
           Health{validation.errors.length > 0 ? ` (${validation.errors.length})` : ''}
         </button>
       </nav>
 
-      <div className="wdd-content">
+      <div className="wdd-content" data-tour="content-area">
         {tab === 'editor' && (
           <EditorTab
             treatments={TREATMENTS}
@@ -811,6 +843,12 @@ export function WizardDevDashboard(): React.ReactElement {
           />
         )}
       </div>
+
+      <OnboardingTour
+        isOpen={tourOpen}
+        onClose={handleTourClose}
+        onSwitchTab={handleTourSwitchTab}
+      />
     </div>
   );
 }
