@@ -33,6 +33,9 @@ interface EditorMainProps {
   onReset: () => void;
   onSave: () => void;
   onSaveAll: () => void;
+  onPublish?: () => void;
+  canPublish?: boolean;
+  publishStatus?: SaveStatus;
 }
 
 // ── TagEditor (bestFor) ───────────────────────────────────────────────────────
@@ -542,6 +545,9 @@ export function EditorMain({
   onReset,
   onSave,
   onSaveAll,
+  onPublish,
+  canPublish,
+  publishStatus,
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -634,6 +640,16 @@ export function EditorMain({
           Save failed: {saveStatus.message}
         </div>
       )}
+      {publishStatus?.state === 'saved' && (
+        <div className="wde-save-banner wde-save-banner--ok">
+          {(publishStatus as { state: 'saved'; path: string }).path}
+        </div>
+      )}
+      {publishStatus?.state === 'error' && (
+        <div className="wde-save-banner wde-save-banner--error">
+          Publish failed: {(publishStatus as { state: 'error'; message: string }).message}
+        </div>
+      )}
 
       {/* Sticky header */}
       <div className="wde-form-header">
@@ -679,6 +695,12 @@ export function EditorMain({
         >
           {copiedKey === headerCopyKey ? 'Copied!' : 'Copy TS'}
         </button>
+        {canPublish && onPublish && (
+          <button type="button" className="wde-publish-btn" onClick={onPublish}
+            disabled={publishStatus?.state === 'saving'}>
+            {publishStatus?.state === 'saving' ? 'Publishing...' : 'Publish Live'}
+          </button>
+        )}
         <button
           className={`wde-reset-btn${!isDirty ? ' wde-reset-btn--hidden' : ''}`}
           type="button"

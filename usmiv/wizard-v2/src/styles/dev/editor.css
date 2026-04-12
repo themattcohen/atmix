@@ -1627,3 +1627,19 @@
   font-size: 14px;
   color: var(--wde-content-text);
 }
+
+/* ── Publish button ───────────────────────────────────────────────────────── */
+
+.wde-publish-btn {
+  padding: 6px 14px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wde-publish-btn:hover { background: #4338ca; }
+.wde-publish-btn:disabled { opacity: 0.5; cursor: not-allowed; }

@@ -1,6 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { WizardModal } from './components/WizardModal';
+import { META } from './data/meta';
+import { TREATMENTS, BUNDLES, QUESTIONS, setRuntimeConfig } from './data';
+import { fetchRemoteConfig, mergeWithDefaults } from './config/remoteConfig';
 import './styles/index.css';
 
 // Public API mirroring v1's window.TreatmentWizard
@@ -9,7 +12,16 @@ interface TreatmentWizardAPI {
   close: () => void;
 }
 
-function mount(): void {
+async function mount(): Promise<void> {
+  // Load remote config before rendering (falls back to compiled data silently)
+  if (META.configWorkerUrl) {
+    const remote = await fetchRemoteConfig(META.configWorkerUrl);
+    if (remote) {
+      const merged = mergeWithDefaults(remote, { treatments: TREATMENTS, bundles: BUNDLES, questions: QUESTIONS });
+      setRuntimeConfig(merged);
+    }
+  }
+
   // Create a single React root hosted in a dedicated div
   const host = document.createElement('div');
   host.id = 'tw-v2-root';

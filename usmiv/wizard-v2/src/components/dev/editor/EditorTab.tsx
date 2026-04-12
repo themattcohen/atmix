@@ -28,6 +28,8 @@ import type { EditorMode } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
 import { BundleEditPanel } from './BundleEditPanel';
 import { AddTreatmentDialog } from './AddTreatmentDialog';
+import { getStoredApiKey, setStoredApiKey, clearStoredApiKey, saveConfigToWorker } from '../../../utils/configApi';
+import { META } from '../../../data/meta';
 
 // ── Save result ───────────────────────────────────────────────────────────────
 
@@ -96,6 +98,8 @@ export function EditorTab({
   const [saveStatus, setSaveStatus] = useState<SaveStatus>({ state: 'idle' });
   const [bundleSaveStatus, setBundleSaveStatus] = useState<SaveStatus>({ state: 'idle' });
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [publishStatus, setPublishStatus] = useState<SaveStatus>({ state: 'idle' });
+  const canPublish = !!META.configWorkerUrl;
 
   // Re-run validation whenever drafts change, and bubble result to dashboard.
   useEffect(() => {
@@ -281,6 +285,40 @@ export function EditorTab({
     }
   }, [dirtyIds, drafts, saveCategoryToDisk]);
 
+  const handlePublishToCloud = useCallback(async () => {
+    const workerUrl = META.configWorkerUrl;
+    if (!workerUrl) return;
+
+    let apiKey = getStoredApiKey();
+    if (!apiKey) {
+      apiKey = window.prompt('Enter the admin API key:');
+      if (!apiKey) return;
+    }
+
+    setPublishStatus({ state: 'saving' });
+
+    const config = {
+      treatments: Object.fromEntries(Object.entries(drafts).map(([k, v]) => [k, v])),
+      bundles: Object.fromEntries(Object.entries(bundleDrafts).map(([k, v]) => [k, v])),
+      questions: QUESTIONS,
+    };
+
+    const result = await saveConfigToWorker(workerUrl, config, apiKey);
+
+    if (result.ok) {
+      setStoredApiKey(apiKey);
+      setPublishStatus({ state: 'saved', path: 'Live config updated' });
+      setTimeout(() => setPublishStatus({ state: 'idle' }), 3000);
+    } else {
+      if (result.message === 'unauthorized') {
+        clearStoredApiKey();
+        setPublishStatus({ state: 'error', message: 'Invalid API key. Try again.' });
+      } else {
+        setPublishStatus({ state: 'error', message: result.message });
+      }
+    }
+  }, [drafts, bundleDrafts]);
+
   // Save bundles.ts to disk via the Vite dev middleware.
   const saveBundlesToDisk = useCallback(
     async (): Promise<{ ok: true; path: string } | { ok: false; message: string }> => {
@@ -407,6 +445,9 @@ export function EditorTab({
             onReset={handleReset}
             onSave={handleSave}
             onSaveAll={handleSaveAll}
+            onPublish={handlePublishToCloud}
+            canPublish={canPublish}
+            publishStatus={publishStatus}
           />
         ) : (
           <div className="wde-main">
@@ -429,6 +470,9 @@ export function EditorTab({
             onReset={handleBundleReset}
             onSave={handleBundleSave}
             saveStatus={bundleSaveStatus}
+            onPublish={handlePublishToCloud}
+            canPublish={canPublish}
+            publishStatus={publishStatus}
           />
         ) : (
           <div className="wde-main">

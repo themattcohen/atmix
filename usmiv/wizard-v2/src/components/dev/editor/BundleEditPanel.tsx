@@ -10,6 +10,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import type { EditableBundle } from './types';
 import type { EditableTreatment } from './types';
 import { generateBundleTs, generateBundlesFileTs } from './codeGen';
+import type { SaveStatus } from './EditorTab';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,10 @@ interface BundleEditPanelProps {
   onUpdate: (field: keyof EditableBundle, value: unknown) => void;
   onReset: () => void;
   onSave: () => void;
-  saveStatus?: { state: string; message?: string; path?: string };
+  saveStatus?: SaveStatus;
+  onPublish?: () => void;
+  canPublish?: boolean;
+  publishStatus?: SaveStatus;
 }
 
 // ── FieldRow ──────────────────────────────────────────────────────────────────
@@ -88,6 +92,9 @@ export function BundleEditPanel({
   onReset,
   onSave,
   saveStatus,
+  onPublish,
+  canPublish,
+  publishStatus,
 }: BundleEditPanelProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -116,6 +123,16 @@ export function BundleEditPanel({
       {saveStatus?.state === 'error' && (
         <div className="wde-save-banner wde-save-banner--error">
           Save failed: {saveStatus.message}
+        </div>
+      )}
+      {publishStatus?.state === 'saved' && (
+        <div className="wde-save-banner wde-save-banner--ok">
+          {(publishStatus as { state: 'saved'; path: string }).path}
+        </div>
+      )}
+      {publishStatus?.state === 'error' && (
+        <div className="wde-save-banner wde-save-banner--error">
+          Publish failed: {(publishStatus as { state: 'error'; message: string }).message}
         </div>
       )}
 
@@ -148,6 +165,12 @@ export function BundleEditPanel({
         >
           {copiedKey === fileKey ? 'Copied!' : 'Copy bundles.ts'}
         </button>
+        {canPublish && onPublish && (
+          <button type="button" className="wde-publish-btn" onClick={onPublish}
+            disabled={publishStatus?.state === 'saving'}>
+            {publishStatus?.state === 'saving' ? 'Publishing...' : 'Publish Live'}
+          </button>
+        )}
         <button
           className={`wde-reset-btn${!isDirty ? ' wde-reset-btn--hidden' : ''}`}
           type="button"

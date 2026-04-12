@@ -18,14 +18,31 @@ const ALL_TREATMENTS = [
 ] as const;
 
 // O(1) lookup map used by engine and components
-export const TREATMENTS: Readonly<Record<TreatmentId, Treatment>> =
+// eslint-disable-next-line prefer-const -- reassigned by setRuntimeConfig when remote config loads
+export let TREATMENTS: Readonly<Record<TreatmentId, Treatment>> =
   Object.fromEntries(ALL_TREATMENTS.map((t) => [t.id, t])) as unknown as Readonly<Record<TreatmentId, Treatment>>;
 
-export const BUNDLES: Readonly<Record<BundleId, Bundle>> =
+// eslint-disable-next-line prefer-const
+export let BUNDLES: Readonly<Record<BundleId, Bundle>> =
   Object.fromEntries(BUNDLES_ARRAY.map((b) => [b.id, b])) as unknown as Readonly<Record<BundleId, Bundle>>;
 
-export const QUESTIONS: Readonly<Record<QuestionId, Question>> =
+// eslint-disable-next-line prefer-const
+export let QUESTIONS: Readonly<Record<QuestionId, Question>> =
   Object.fromEntries(QUESTIONS_ARRAY.map((q) => [q.id, q])) as unknown as Readonly<Record<QuestionId, Question>>;
+
+/**
+ * Replace the in-memory config maps with remotely fetched data.
+ * Called once at startup before React renders.
+ */
+export function setRuntimeConfig(config: {
+  treatments: Record<string, Treatment>;
+  bundles: Record<string, Bundle>;
+  questions: Record<string, Question>;
+}): void {
+  TREATMENTS = config.treatments as unknown as Readonly<Record<TreatmentId, Treatment>>;
+  BUNDLES = config.bundles as unknown as Readonly<Record<BundleId, Bundle>>;
+  QUESTIONS = config.questions as unknown as Readonly<Record<QuestionId, Question>>;
+}
 
 export { META } from './meta';
 
