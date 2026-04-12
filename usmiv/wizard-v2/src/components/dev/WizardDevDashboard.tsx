@@ -17,10 +17,12 @@ import type { TreatmentId, Treatment, TreatmentCategory } from '../../types/trea
 import type { QuestionId, Question, SingleQuestion } from '../../types/question';
 import type { BundleId, Bundle } from '../../types/bundle';
 import '../../styles/dev/dashboard.css';
+import '../../styles/dev/editor.css';
+import { EditorTab } from './editor/EditorTab';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-type DashboardTab = 'tree' | 'coverage' | 'validation';
+type DashboardTab = 'tree' | 'coverage' | 'validation' | 'editor';
 
 // A resolved path from start to a terminal (treatment or bundle)
 interface WalkPath {
@@ -895,6 +897,12 @@ export function WizardDevDashboard(): React.ReactElement {
         >
           Validation{validation.errors.length > 0 ? ` (${validation.errors.length})` : ''}
         </button>
+        <button
+          onClick={() => setTab('editor')}
+          data-active={tab === 'editor' ? 'true' : 'false'}
+        >
+          Editor
+        </button>
       </nav>
 
       <div className="wdd-content">
@@ -923,6 +931,9 @@ export function WizardDevDashboard(): React.ReactElement {
             result={validation}
             filterTreatment={validationFilter}
           />
+        )}
+        {tab === 'editor' && (
+          <EditorTab treatments={TREATMENTS} />
         )}
       </div>
     </div>
