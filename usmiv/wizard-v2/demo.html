@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wizard of IV v2 -- Demo</title>
+  <link rel="stylesheet" href="wizard.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color: #1a1a2e;
+      background: #f8f9fb;
+      min-height: 100vh;
+    }
+    .demo-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .demo-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #e8f5f5;
+      color: #2a8a8f;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .demo-title {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      color: #0d1b2a;
+    }
+    .demo-subtitle {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: #5a6a7a;
+      max-width: 520px;
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+    .demo-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 36px;
+      background: #2a8a8f;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 14px rgba(42, 138, 143, 0.3);
+    }
+    .demo-cta:hover {
+      background: #237175;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(42, 138, 143, 0.35);
+    }
+    .demo-cta:active { transform: translateY(0); }
+    .demo-footer {
+      margin-top: 48px;
+      font-size: 13px;
+      color: #9aa5b4;
+    }
+    .demo-footer a {
+      color: #2a8a8f;
+      text-decoration: none;
+    }
+    .demo-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="demo-hero">
+    <span class="demo-badge">v2 Demo</span>
+    <h1 class="demo-title">Find Your Treatment</h1>
+    <p class="demo-subtitle">
+      Answer a few quick questions and we'll match you with the right IV therapy, injection, or wellness program.
+    </p>
+    <button class="demo-cta" data-treatment-wizard>
+      Get Started
+    </button>
+    <p class="demo-footer">
+      Powered by <a href="https://atmix.org">atmix</a> &middot; US Mobile IV & Labs
+    </p>
+  </main>
+  <script src="wizard.js"></script>
+</body>
+</html>

@@ -56,6 +56,19 @@ jobs:
           rm -rf dist/restaurantweek2026
           cp -r restaurantweek2026/dist dist/restaurantweek2026
 
+      - name: Install wizard-v2 dependencies
+        run: cd usmiv/wizard-v2 && npm ci
+
+      - name: Build wizard-v2
+        run: cd usmiv/wizard-v2 && npm run build
+
+      - name: Copy wizard-v2 into dist
+        run: |
+          mkdir -p dist/wizard-of-iv-v2
+          cp usmiv/wizard-v2/dist/wizard.js dist/wizard-of-iv-v2/
+          cp usmiv/wizard-v2/dist/wizard.css dist/wizard-of-iv-v2/
+          cp usmiv/wizard-v2/demo.html dist/wizard-of-iv-v2/index.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
