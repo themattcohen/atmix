@@ -25,7 +25,7 @@ interface FlowCanvasProps {
   questions: Record<string, Question>;
   treatments: Record<string, Treatment>;
   bundles: Record<string, Bundle>;
-  onSelectNode?: (id: string, kind: string) => void;
+  onSelectNode?: (id: string | null, kind: string | null) => void;
 }
 
 // ── Highlight path computation ────────────────────────────────────────────────
@@ -204,6 +204,10 @@ export function FlowCanvas({ questions, treatments, bundles, onSelectNode }: Flo
 
   function handleBackgroundClick(): void {
     setHighlightedKey(null);
+    // Also clear the side panel in the parent (fixes highlight/panel desync)
+    if (onSelectNode) {
+      onSelectNode(null, null);
+    }
   }
 
   function handleCollapseClick(nodeKey: string, e: React.MouseEvent): void {

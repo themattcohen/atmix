@@ -15,7 +15,6 @@ import type { ResolvedPath } from '../../../utils/pathResolver';
 import {
   cloneAllToEditable,
   toTreatmentMap,
-  computeDirtyIds,
   computeErrorIds,
   isDirty,
   cloneAllBundlesToEditable,
@@ -23,7 +22,7 @@ import {
   isBundleDirty,
 } from './types';
 import type { EditableTreatment, EditableBundle } from './types';
-import { generateCategoryFileTs } from './codeGen';
+import { generateCategoryFileTs, generateBundlesFileTs } from './codeGen';
 import { EditorSidebar } from './EditorSidebar';
 import type { EditorMode } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
@@ -61,10 +60,11 @@ export function EditorTab({
   const [drafts, setDrafts] = useState<Record<string, EditableTreatment>>(
     () => cloneAllToEditable(treatments),
   );
-  const originals = useMemo(
+  // originals is state (not memo) so we can add new treatment originals
+  // when handleAddTreatment creates a new draft. Without this, isDirty()
+  // receives undefined as the original and crashes.
+  const [originals, setOriginals] = useState<Record<string, EditableTreatment>>(
     () => cloneAllToEditable(treatments),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
   );
 
   // Bundle state
@@ -94,6 +94,7 @@ export function EditorTab({
   const [categoryFilter, setCategoryFilter] = useState<TreatmentCategory | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>({ state: 'idle' });
+  const [bundleSaveStatus, setBundleSaveStatus] = useState<SaveStatus>({ state: 'idle' });
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   // Re-run validation whenever drafts change, and bubble result to dashboard.
@@ -105,10 +106,58 @@ export function EditorTab({
   }, [drafts, onValidationChange]);
 
   // Derived dirty/error sets for sidebar indicators.
-  const dirtyIds = useMemo(
-    () => computeDirtyIds(drafts as Record<TreatmentId, EditableTreatment>, treatments),
-    [drafts, treatments],
-  );
+  // Use originals state (not the treatments prop) so new treatments added via
+  // handleAddTreatment have a defined original to compare against.
+  const dirtyIds = useMemo(() => {
+    const dirty = new Set<TreatmentId>();
+    for (const id of Object.keys(drafts) as TreatmentId[]) {
+      const original = originals[id as string];
+      // New treatment (no original) is always dirty
+      if (!original) {
+        dirty.add(id);
+        continue;
+      }
+      // Compare against editable original using same canonicalize logic
+      const draftJson = JSON.stringify({
+        name: drafts[id].name,
+        price: drafts[id].price,
+        priceLabel: drafts[id].priceLabel ?? null,
+        duration: drafts[id].duration,
+        acuityTypeId: drafts[id].acuityTypeId,
+        acuityDropdownValue: drafts[id].acuityDropdownValue,
+        pageUrl: drafts[id].pageUrl,
+        shortDesc: drafts[id].shortDesc,
+        ingredients: drafts[id].ingredients,
+        bestFor: drafts[id].bestFor,
+        whyMatch: drafts[id].whyMatch,
+        scoringWeights: drafts[id].scoringWeights,
+        addressedBy: drafts[id].addressedBy,
+        addonSuggestions: drafts[id].addonSuggestions,
+        note: drafts[id].note ?? null,
+        tests: drafts[id].tests ?? null,
+      });
+      const origJson = JSON.stringify({
+        name: original.name,
+        price: original.price,
+        priceLabel: original.priceLabel ?? null,
+        duration: original.duration,
+        acuityTypeId: original.acuityTypeId,
+        acuityDropdownValue: original.acuityDropdownValue,
+        pageUrl: original.pageUrl,
+        shortDesc: original.shortDesc,
+        ingredients: original.ingredients,
+        bestFor: original.bestFor,
+        whyMatch: original.whyMatch,
+        scoringWeights: original.scoringWeights,
+        addressedBy: original.addressedBy,
+        addonSuggestions: original.addonSuggestions,
+        note: original.note ?? null,
+        tests: original.tests ?? null,
+      });
+      if (draftJson !== origJson) dirty.add(id);
+    }
+    return dirty;
+  }, [drafts, originals]);
   const errorIds = useMemo(
     () => computeErrorIds(validationResult),
     [validationResult],
@@ -232,6 +281,44 @@ export function EditorTab({
     }
   }, [dirtyIds, drafts, saveCategoryToDisk]);
 
+  // Save bundles.ts to disk via the Vite dev middleware.
+  const saveBundlesToDisk = useCallback(
+    async (): Promise<{ ok: true; path: string } | { ok: false; message: string }> => {
+      const content = generateBundlesFileTs(Object.values(bundleDrafts));
+
+      try {
+        const resp = await fetch('/api/wizard-editor/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: 'bundles', content }),
+        });
+        const contentType = resp.headers.get('content-type') ?? '';
+        if (!contentType.includes('application/json')) {
+          return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy bundles.ts" on the live site.' };
+        }
+        const json = await resp.json() as { ok?: boolean; path?: string; error?: string };
+        if (resp.ok && json.ok) {
+          return { ok: true, path: json.path ?? 'bundles.ts' };
+        }
+        return { ok: false, message: json.error ?? `HTTP ${resp.status}` };
+      } catch {
+        return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy bundles.ts" on the live site.' };
+      }
+    },
+    [bundleDrafts],
+  );
+
+  const handleBundleSave = useCallback(async () => {
+    setBundleSaveStatus({ state: 'saving' });
+    const result = await saveBundlesToDisk();
+    if (result.ok) {
+      setBundleSaveStatus({ state: 'saved', path: result.path });
+      setTimeout(() => setBundleSaveStatus({ state: 'idle' }), 3000);
+    } else {
+      setBundleSaveStatus({ state: 'error', message: result.message });
+    }
+  }, [saveBundlesToDisk]);
+
   // Add Treatment dialog handler.
   const handleAddTreatment = useCallback(
     (id: string, name: string, category: TreatmentCategory) => {
@@ -256,6 +343,8 @@ export function EditorTab({
         tests: category === 'lab' ? [] : undefined,
       };
       setDrafts((prev) => ({ ...prev, [id]: newDraft }));
+      // Fix 2: add to originals so isDirty() has something to compare against
+      setOriginals((prev) => ({ ...prev, [id]: { ...newDraft } }));
       setSelectedId(id);
       setShowAddDialog(false);
     },
@@ -264,7 +353,10 @@ export function EditorTab({
 
   const selectedDraft = selectedId ? drafts[selectedId] : null;
   const selectedIsDirty = selectedId
-    ? isDirty(drafts[selectedId] as EditableTreatment, treatments[selectedId as TreatmentId])
+    // New treatments (not in compiled catalog) are always considered dirty
+    ? (treatments[selectedId as TreatmentId]
+        ? isDirty(drafts[selectedId] as EditableTreatment, treatments[selectedId as TreatmentId])
+        : true)
     : false;
 
   const selectedBundleDraft = selectedBundleId ? bundleDrafts[selectedBundleId] : null;
@@ -335,6 +427,8 @@ export function EditorTab({
             allTreatments={drafts}
             onUpdate={handleBundleUpdate}
             onReset={handleBundleReset}
+            onSave={handleBundleSave}
+            saveStatus={bundleSaveStatus}
           />
         ) : (
           <div className="wde-main">

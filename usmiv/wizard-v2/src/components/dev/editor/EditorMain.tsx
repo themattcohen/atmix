@@ -572,6 +572,9 @@ export function EditorMain({
     });
   }, []);
 
+  // Detect if this is a newly-created treatment (not in compiled TREATMENTS catalog)
+  const isNewTreatment = !(draft.id in TREATMENTS);
+
   // All injection-category drafts for addon suggestions
   const injectionDrafts = Object.values(allDrafts).filter(
     (d) => d.category === 'injection',
@@ -616,7 +619,11 @@ export function EditorMain({
           <button
             className="wde-save-banner-reload"
             type="button"
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              const hasOtherDirty = dirtyIds.size > 1 || (dirtyIds.size === 1 && !dirtyIds.has(draft.id));
+              if (hasOtherDirty && !window.confirm('You have unsaved changes in other treatments. Reload anyway?')) return;
+              window.location.reload();
+            }}
           >
             Reload now
           </button>
@@ -683,6 +690,13 @@ export function EditorMain({
       </div>
 
       <div className="wde-form-body">
+        {/* New treatment banner */}
+        {isNewTreatment && (
+          <div className="wde-new-treatment-banner">
+            <strong>New treatment created.</strong> Fill in the required fields below to complete setup, then click Save.
+          </div>
+        )}
+
         {/* 0. Issues summary (shown when there are errors or warnings) */}
         {mappedIssues.length > 0 && (
           <div className="wde-issues-summary" ref={issuesSummaryRef}>

@@ -254,6 +254,7 @@ export interface EditableBundle {
   addOn: string | null;  // treatment ID or null
   addOnInteractive: boolean;
   whyMatch: string;
+  acuityTypeId: number;
 }
 
 // ── Clone: Bundle (readonly) -> EditableBundle (mutable) ─────────────────────
@@ -266,6 +267,7 @@ export function cloneBundleToEditable(b: Bundle): EditableBundle {
     addOn: b.addOn ?? null,
     addOnInteractive: b.addOnInteractive,
     whyMatch: b.whyMatch,
+    acuityTypeId: b.acuityTypeId ?? 0,
   };
 }
 
@@ -288,6 +290,7 @@ function canonicalizeBundle(b: EditableBundle): string {
     addOn: b.addOn,
     addOnInteractive: b.addOnInteractive,
     whyMatch: b.whyMatch,
+    acuityTypeId: b.acuityTypeId,
   });
 }
 
@@ -298,6 +301,7 @@ function canonicalizeBundleOriginal(b: Bundle): string {
     addOn: b.addOn ?? null,
     addOnInteractive: b.addOnInteractive,
     whyMatch: b.whyMatch,
+    acuityTypeId: b.acuityTypeId ?? 0,
   });
 }
 

@@ -590,7 +590,10 @@ export function WizardDevDashboard(): React.ReactElement {
   }
 
   function handleFixInEditor(treatmentId: string): void {
-    setPendingEditId(treatmentId);
+    // Clear and re-set to force re-render even if same treatment is already selected.
+    // This ensures EditorTab scrolls the form into view on repeat clicks.
+    setPendingEditId(null);
+    setTimeout(() => setPendingEditId(treatmentId), 0);
     setTab('editor');
   }
 
@@ -683,7 +686,11 @@ export function WizardDevDashboard(): React.ReactElement {
               treatments={TREATMENTS}
               bundles={BUNDLES}
               onSelectNode={(id, kind) => {
-                if (kind === 'treatment' || kind === 'bundle') {
+                if (id === null || kind === null) {
+                  // Background click: clear side panel
+                  setSelectedTreatment(null);
+                  setSelectedQuestion(null);
+                } else if (kind === 'treatment' || kind === 'bundle') {
                   setSelectedTreatment(id);
                   setSelectedQuestion(null);
                 } else {

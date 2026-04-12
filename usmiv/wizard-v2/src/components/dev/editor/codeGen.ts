@@ -324,7 +324,7 @@ export function generateBundleTs(bundle: EditableBundle): string {
   lines.push(`${i}isConsultation: false,`);
   lines.push(`${i}whyMatch:`);
   lines.push(`${i}  ${escapeStr(bundle.whyMatch)},`);
-  lines.push(`${i}acuityTypeId: 0, // TODO: set correct acuityTypeId`);
+  lines.push(`${i}acuityTypeId: ${bundle.acuityTypeId},`);
   lines.push(`${i}acuityDropdownValue: null, // TODO: set correct value`);
   lines.push('} as const satisfies Bundle;');
 

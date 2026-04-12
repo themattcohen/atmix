@@ -147,6 +147,19 @@ export function EditorSidebar({
         </button>
       </div>
 
+      {/* New Treatment button -- visible in treatments mode, above category pills */}
+      {mode === 'treatments' && (
+        <div className="wde-add-btn-row">
+          <button
+            className="wde-add-btn"
+            type="button"
+            onClick={onAddTreatment}
+          >
+            + New Treatment
+          </button>
+        </div>
+      )}
+
       {/* Category filter pills -- treatments mode only */}
       {mode === 'treatments' && (
         <div className="wde-category-pills">
@@ -231,18 +244,6 @@ export function EditorSidebar({
         </ul>
       )}
 
-      {/* Footer */}
-      {mode === 'treatments' && (
-        <div className="wde-sidebar-footer">
-          <button
-            className="wde-add-treatment-btn"
-            type="button"
-            onClick={onAddTreatment}
-          >
-            + New Treatment
-          </button>
-        </div>
-      )}
     </aside>
   );
 }

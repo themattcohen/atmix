@@ -20,6 +20,8 @@ interface BundleEditPanelProps {
   allTreatments: Record<string, EditableTreatment>;
   onUpdate: (field: keyof EditableBundle, value: unknown) => void;
   onReset: () => void;
+  onSave: () => void;
+  saveStatus?: { state: string; message?: string; path?: string };
 }
 
 // ── FieldRow ──────────────────────────────────────────────────────────────────
@@ -84,6 +86,8 @@ export function BundleEditPanel({
   allTreatments,
   onUpdate,
   onReset,
+  onSave,
+  saveStatus,
 }: BundleEditPanelProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -99,12 +103,35 @@ export function BundleEditPanel({
   const bundleKey = `bundle-${bundle.id}`;
   const fileKey = `bundles-file`;
 
+  const isSaving = saveStatus?.state === 'saving';
+
   return (
     <div className="wde-main">
+      {/* Save status banner */}
+      {saveStatus?.state === 'saved' && (
+        <div className="wde-save-banner wde-save-banner--ok">
+          Saved to {saveStatus.path}. Vite will hot-reload the module.
+        </div>
+      )}
+      {saveStatus?.state === 'error' && (
+        <div className="wde-save-banner wde-save-banner--error">
+          Save failed: {saveStatus.message}
+        </div>
+      )}
+
       {/* Sticky header */}
       <div className="wde-form-header">
         <span className="wde-form-id">{bundle.id}</span>
         <span className="wde-form-title">{bundle.name}</span>
+        <button
+          className={`wde-save-btn${!isDirty || isSaving ? ' wde-save-btn--disabled' : ''}`}
+          type="button"
+          disabled={!isDirty || isSaving}
+          onClick={onSave}
+          title={isDirty ? 'Write bundles.ts to disk' : 'No changes to save'}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
         <button
           className={`wde-copy-btn wde-copy-btn--sm${copiedKey === bundleKey ? ' wde-copy-btn--ok' : ''}`}
           type="button"
@@ -187,6 +214,18 @@ export function BundleEditPanel({
               />
               <span>Allow patients to toggle this add-on on/off</span>
             </label>
+          </FieldRow>
+
+          <FieldRow label="acuityTypeId">
+            <input
+              className={`wde-input wde-field-input${bundle.acuityTypeId === 0 ? ' wde-input--error' : ''}`}
+              type="number"
+              value={bundle.acuityTypeId}
+              onChange={(e) => onUpdate('acuityTypeId', Number(e.target.value))}
+            />
+            {bundle.acuityTypeId === 0 && (
+              <span className="wde-field-error">Required for booking</span>
+            )}
           </FieldRow>
         </div>
 

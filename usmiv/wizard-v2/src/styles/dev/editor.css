@@ -1359,30 +1359,34 @@
   outline-offset: 2px;
 }
 
-/* ── Add Treatment button ─────────────────────────────────────────────────── */
+/* ── Add Treatment button row (above category pills) ─────────────────────── */
+
+.wde-add-btn-row {
+  padding: 6px 8px 4px;
+  flex-shrink: 0;
+}
 
 .wde-add-btn {
   width: 100%;
   padding: 8px 12px;
-  background: transparent;
-  border: 1px dashed var(--wde-sidebar-border, rgba(255,255,255,0.15));
+  background: var(--wde-accent, #2a8a8f);
+  border: none;
   border-radius: 6px;
-  color: var(--wde-sidebar-muted, #94a3b8);
+  color: white;
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 8px;
-  transition: all 0.15s;
+  transition: opacity 0.15s, background 0.15s;
   font-family: var(--wde-font-sans);
 }
 
 .wde-add-btn:hover {
-  border-color: var(--wde-accent, #3b82f6);
-  color: var(--wde-accent, #3b82f6);
-  background: rgba(59, 130, 246, 0.05);
+  opacity: 0.88;
+  background: var(--wde-accent, #2a8a8f);
 }
 
 /* ── Sidebar footer (New Treatment button) ────────────────────────────────── */
@@ -1414,6 +1418,22 @@
   border-color: var(--wde-sidebar-accent, #3b82f6);
   color: var(--wde-sidebar-accent, #3b82f6);
   background: rgba(59, 130, 246, 0.07);
+}
+
+/* ── New Treatment Banner ─────────────────────────────────────────────────── */
+
+.wde-new-treatment-banner {
+  padding: 10px 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1d4ed8;
+  margin-bottom: 12px;
+}
+
+.wde-new-treatment-banner strong {
+  font-weight: 700;
 }
 
 /* ── Add Treatment Dialog ─────────────────────────────────────────────────── */
