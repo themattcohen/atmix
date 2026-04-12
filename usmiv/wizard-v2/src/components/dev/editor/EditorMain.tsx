@@ -6,7 +6,7 @@
  * code output.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import type { TreatmentId, TreatmentCategory } from '../../../types/treatment';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import type { EditableTreatment } from './types';
@@ -14,7 +14,11 @@ import { issuesForTreatment } from './types';
 import type { SaveStatus } from './EditorTab';
 import { generateTreatmentTs, generateCategoryFileTs, categoryFileName } from './codeGen';
 import { SYMPTOM_LABELS, TREATMENTS, BUNDLES, QUESTIONS as EDITOR_QUESTIONS } from '../../../data';
-import type { QuestionId, SingleQuestion, Question } from '../../../types/question';
+import { mapIssuesToFields } from '../../../utils/issueMapper';
+import { computeAllPaths, pathsForTreatment } from '../../../utils/pathResolver';
+
+// Pre-compute all paths once (data is static at runtime).
+const EDITOR_ALL_PATHS = computeAllPaths(EDITOR_QUESTIONS, BUNDLES);
 
 // ── Category display helper ───────────────────────────────────────────────────
 
@@ -395,45 +399,6 @@ function AddonSuggestionsEditor({
   );
 }
 
-// ── Inline path data for editor ──────────────────────────────────────────────
-
-interface EditorWalkPath {
-  steps: string[];      // question IDs + option labels interleaved
-  terminal: string;     // treatment or bundle ID that terminates this path
-}
-
-// Walks from 'start' and collects all paths that ultimately reach targetId,
-// either directly (recommend === targetId) or via a bundle that includes it.
-function walkPathsForTarget(targetId: string): EditorWalkPath[] {
-  const paths: EditorWalkPath[] = [];
-
-  function walk(qid: string, steps: string[], visited: Set<string>): void {
-    if (visited.has(qid)) return;
-    const q = EDITOR_QUESTIONS[qid as QuestionId] as Question | undefined;
-    if (!q || q.type !== 'single') return;
-    const sq = q as SingleQuestion;
-    const next = new Set(visited);
-    next.add(qid);
-    for (const opt of sq.options) {
-      const newSteps = [...steps, qid, opt.label];
-      if (opt.recommend === targetId) {
-        paths.push({ steps: newSteps, terminal: targetId });
-      } else if (opt.recommend) {
-        // Check if a bundle terminal includes our target
-        const bundle = (BUNDLES as Record<string, { primary: string; addOn?: string } | undefined>)[opt.recommend];
-        if (bundle && (bundle.primary === targetId || bundle.addOn === targetId)) {
-          paths.push({ steps: newSteps, terminal: opt.recommend });
-        }
-      } else if (opt.next) {
-        walk(opt.next, newSteps, next);
-      }
-    }
-  }
-
-  walk('start', [], new Set());
-  return paths;
-}
-
 // ── PathsInEditor ─────────────────────────────────────────────────────────────
 
 interface PathsInEditorProps {
@@ -442,7 +407,7 @@ interface PathsInEditorProps {
 }
 
 function PathsInEditor({ treatmentId, treatmentName }: PathsInEditorProps): React.ReactElement {
-  const paths = React.useMemo(() => walkPathsForTarget(treatmentId), [treatmentId]);
+  const paths = useMemo(() => pathsForTreatment(treatmentId, EDITOR_ALL_PATHS), [treatmentId]);
 
   return (
     <div>
@@ -602,8 +567,14 @@ export function EditorMain({
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const issuesSummaryRef = useRef<HTMLDivElement>(null);
 
   const issues = issuesForTreatment(validationResult, draft.id);
+
+  const mappedIssues = useMemo(
+    () => mapIssuesToFields(validationResult, draft.id),
+    [validationResult, draft.id],
+  );
   const hasErrors = issues.errors.length > 0;
   const hasWarnings = issues.warnings.length > 0;
 
@@ -677,7 +648,18 @@ export function EditorMain({
       <div className="wde-form-header">
         <span className="wde-form-id">{draft.id}</span>
         <span className="wde-form-title">{draft.name}</span>
-        <span className={statusBadgeCls}>{statusLabel}</span>
+        {(hasErrors || hasWarnings) ? (
+          <button
+            type="button"
+            className={`${statusBadgeCls} wde-status-badge--clickable`}
+            title="Click to scroll to issues"
+            onClick={() => issuesSummaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          >
+            {statusLabel}
+          </button>
+        ) : (
+          <span className={statusBadgeCls}>{statusLabel}</span>
+        )}
         <button
           className={`wde-save-btn${!isDirty || isSaving ? ' wde-save-btn--disabled' : ''}`}
           type="button"
@@ -717,6 +699,33 @@ export function EditorMain({
       </div>
 
       <div className="wde-form-body">
+        {/* 0. Issues summary (shown when there are errors or warnings) */}
+        {mappedIssues.length > 0 && (
+          <div className="wde-issues-summary" ref={issuesSummaryRef}>
+            {mappedIssues.map((issue, idx) => (
+              <div
+                key={idx}
+                className={`wde-issue-item wde-issue-item--${issue.severity}`}
+              >
+                <div className="wde-issue-badge">
+                  {issue.severity === 'error' ? 'Error' : 'Warning'}
+                </div>
+                <div className="wde-issue-content">
+                  <div className="wde-issue-field">
+                    <span className="wde-issue-field-name">{issue.field}</span>
+                    <span className="wde-issue-section">{issue.editorSection}</span>
+                  </div>
+                  <div className="wde-issue-message">{issue.message}</div>
+                  <div className="wde-issue-why">{issue.why}</div>
+                  <div className="wde-issue-fix">
+                    <strong>Fix:</strong> {issue.fix}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* 1. Basic Info */}
         <div className="wde-section">
           <div className="wde-section-head">Basic Info</div>
@@ -879,7 +888,7 @@ export function EditorMain({
 
         {/* 7. Paths to this Treatment */}
         {(() => {
-          const editorPaths = walkPathsForTarget(draft.id);
+          const editorPaths = pathsForTreatment(draft.id, EDITOR_ALL_PATHS);
           return (
             <div className="wde-section">
               <div className="wde-section-head">

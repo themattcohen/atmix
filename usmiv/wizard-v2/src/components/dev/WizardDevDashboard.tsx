@@ -14,8 +14,9 @@ import { createRoot } from 'react-dom/client';
 import { TREATMENTS, QUESTIONS, BUNDLES } from '../../data';
 import { validateConfig, type ValidationResult, type ValidationIssue } from '../../engine/validateConfig';
 import type { TreatmentId, Treatment, TreatmentCategory } from '../../types/treatment';
-import type { QuestionId, Question, SingleQuestion } from '../../types/question';
+import type { QuestionId, Question } from '../../types/question';
 import type { BundleId, Bundle } from '../../types/bundle';
+import { computeAllPaths, reachableTreatmentIds, type ResolvedPath } from '../../utils/pathResolver';
 import '../../styles/dev/dashboard.css';
 import '../../styles/dev/editor.css';
 import '../../styles/dev/tour.css';
@@ -28,85 +29,9 @@ import { OnboardingTour } from './OnboardingTour';
 
 type DashboardTab = 'editor' | 'paths' | 'tree' | 'coverage' | 'validation';
 
-// A resolved path from start to a terminal (treatment or bundle)
-interface WalkPath {
-  steps: string[];           // question IDs + option labels interleaved
-  terminal: string;          // treatment or bundle ID
-  terminalKind: 'treatment' | 'bundle';
-}
-
-// ── Path walking utility ─────────────────────────────────────────────────────
-
-/**
- * Walk the question graph from 'start' and collect all complete paths to
- * terminal nodes (recommend values). Returns an array of WalkPath objects.
- * Handles cycle detection to prevent infinite loops.
- */
-function collectAllPaths(): WalkPath[] {
-  const paths: WalkPath[] = [];
-
-  function walk(
-    qid: string,
-    currentSteps: string[],
-    visitedQuestions: Set<string>,
-  ): void {
-    if (visitedQuestions.has(qid)) return;  // cycle guard
-
-    const q = QUESTIONS[qid as QuestionId] as Question | undefined;
-    if (!q || q.type !== 'single') return;  // symptoms question has no direct paths
-
-    const newVisited = new Set(visitedQuestions);
-    newVisited.add(qid);
-
-    for (const opt of (q as SingleQuestion).options) {
-      const stepsWithOption = [...currentSteps, qid, opt.label];
-      if (opt.recommend) {
-        const isBunde = opt.recommend in BUNDLES;
-        paths.push({
-          steps: stepsWithOption,
-          terminal: opt.recommend,
-          terminalKind: isBunde ? 'bundle' : 'treatment',
-        });
-      } else if (opt.next) {
-        walk(opt.next, stepsWithOption, newVisited);
-      }
-    }
-  }
-
-  walk('start', [], new Set());
-  return paths;
-}
-
-/**
- * Find all paths that end at a given terminal ID (treatment or bundle).
- */
-function pathsToTerminal(targetId: string, allPaths: WalkPath[]): WalkPath[] {
-  return allPaths.filter((p) => p.terminal === targetId);
-}
-
-/**
- * Collect the set of reachable terminal IDs from question paths.
- * Bundles are marked as reachable; their primary treatment is also reachable.
- */
-function buildReachableSet(): Set<string> {
-  const reachable = new Set<string>();
-  const allPaths = collectAllPaths();
-  for (const p of allPaths) {
-    reachable.add(p.terminal);
-    if (p.terminalKind === 'bundle') {
-      const bundle = BUNDLES[p.terminal as BundleId];
-      if (bundle) {
-        reachable.add(bundle.primary);
-        if (bundle.addOn) reachable.add(bundle.addOn);
-      }
-    }
-  }
-  return reachable;
-}
-
 // Pre-compute these once at module level (they never change at runtime).
-const ALL_PATHS = collectAllPaths();
-const REACHABLE_SET = buildReachableSet();
+const ALL_PATHS: ResolvedPath[] = computeAllPaths(QUESTIONS, BUNDLES);
+const REACHABLE_SET: Set<string> = reachableTreatmentIds(ALL_PATHS);
 
 // ── Category display helpers ─────────────────────────────────────────────────
 
@@ -202,7 +127,7 @@ function TreeSidePanel({ selectedTreatment, selectedQuestion }: TreeSidePanelPro
     const bundle = BUNDLES[selectedTreatment as BundleId] as Bundle;
     const primary = TREATMENTS[bundle.primary];
     const addOn = bundle.addOn ? TREATMENTS[bundle.addOn] : null;
-    const paths = pathsToTerminal(selectedTreatment, ALL_PATHS);
+    const paths = ALL_PATHS.filter((p) => p.terminal === selectedTreatment);
 
     return (
       <div className="wdd-sidebar">
@@ -253,7 +178,7 @@ function TreeSidePanel({ selectedTreatment, selectedQuestion }: TreeSidePanelPro
   const t = TREATMENTS[selectedTreatment as TreatmentId] as Treatment | undefined;
   if (!t) return <div className="wdd-sidebar"><span className="wdd-empty">Unknown treatment: {selectedTreatment}</span></div>;
 
-  const paths = pathsToTerminal(selectedTreatment, ALL_PATHS);
+  const paths = ALL_PATHS.filter((p) => p.terminal === selectedTreatment);
   const weightEntries = Object.entries(t.scoringWeights).filter(([, v]) => (v ?? 0) > 0);
 
   return (

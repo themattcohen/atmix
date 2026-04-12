@@ -11,22 +11,16 @@ import React, { useState, useMemo } from 'react';
 import { TREATMENTS, BUNDLES } from '../../data';
 import type { TreatmentCategory, TreatmentId, Treatment } from '../../types/treatment';
 import type { BundleId, Bundle } from '../../types/bundle';
+import { pathsForTreatment, orphanedTreatments, type ResolvedPath } from '../../utils/pathResolver';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
-/** A resolved path from start to a terminal (treatment or bundle). */
-export interface WalkPath {
-  steps: string[];           // question IDs + option labels interleaved
-  terminal: string;          // treatment or bundle ID
-  terminalKind: 'treatment' | 'bundle';
-}
 
 type SubView = 'all' | 'byTreatment' | 'orphans';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface PathsTabProps {
-  allPaths: WalkPath[];
+  allPaths: ResolvedPath[];
   onFixInEditor: (treatmentId: string) => void;
 }
 
@@ -74,7 +68,7 @@ function terminalDisplayName(terminal: string): string {
 }
 
 /** Option labels are the even-indexed elements (qId, label, qId, label, ...) */
-function optionLabels(path: WalkPath): string[] {
+function optionLabels(path: ResolvedPath): string[] {
   return path.steps.filter((_, i) => i % 2 === 1);
 }
 
@@ -109,7 +103,7 @@ function categoryBadgeClass(cat: TreatmentCategory): string {
 // ── PathBreadcrumb (shared renderer) ─────────────────────────────────────────
 
 interface PathBreadcrumbProps {
-  path: WalkPath;
+  path: ResolvedPath;
 }
 
 function PathBreadcrumb({ path }: PathBreadcrumbProps): React.ReactElement {
@@ -135,7 +129,7 @@ function PathBreadcrumb({ path }: PathBreadcrumbProps): React.ReactElement {
 // ── Sub-view A: All Paths ─────────────────────────────────────────────────────
 
 interface AllPathsViewProps {
-  allPaths: WalkPath[];
+  allPaths: ResolvedPath[];
 }
 
 function AllPathsView({ allPaths }: AllPathsViewProps): React.ReactElement {
@@ -216,7 +210,7 @@ function AllPathsView({ allPaths }: AllPathsViewProps): React.ReactElement {
 // ── Sub-view B: By Treatment ──────────────────────────────────────────────────
 
 interface ByTreatmentViewProps {
-  allPaths: WalkPath[];
+  allPaths: ResolvedPath[];
   onFixInEditor: (treatmentId: string) => void;
 }
 
@@ -225,17 +219,15 @@ function ByTreatmentView({ allPaths, onFixInEditor }: ByTreatmentViewProps): Rea
 
   const treatments = useMemo(() => sortedTreatments(), []);
 
-  const pathsByTerminal = useMemo(() => {
-    const map = new Map<string, WalkPath[]>();
-    for (const p of allPaths) {
-      const existing = map.get(p.terminal) ?? [];
-      existing.push(p);
-      map.set(p.terminal, existing);
+  const pathsByTreatment = useMemo(() => {
+    const map = new Map<string, ResolvedPath[]>();
+    for (const t of sortedTreatments()) {
+      map.set(t.id, pathsForTreatment(t.id, allPaths));
     }
     return map;
   }, [allPaths]);
 
-  const selectedPaths = selected ? (pathsByTerminal.get(selected) ?? []) : [];
+  const selectedPaths = selected ? (pathsByTreatment.get(selected) ?? []) : [];
 
   return (
     <div style={{ display: 'flex', height: '100%', overflow: 'hidden', minHeight: 0 }}>
@@ -249,7 +241,7 @@ function ByTreatmentView({ allPaths, onFixInEditor }: ByTreatmentViewProps): Rea
         }}
       >
         {treatments.map((t) => {
-          const count = (pathsByTerminal.get(t.id) ?? []).length;
+          const count = (pathsByTreatment.get(t.id) ?? []).length;
           const isSelected = selected === t.id;
           return (
             <div
@@ -333,18 +325,14 @@ function ByTreatmentView({ allPaths, onFixInEditor }: ByTreatmentViewProps): Rea
 // ── Sub-view C: Orphans ───────────────────────────────────────────────────────
 
 interface OrphansViewProps {
-  allPaths: WalkPath[];
+  allPaths: ResolvedPath[];
   onFixInEditor: (treatmentId: string) => void;
 }
 
 function OrphansView({ allPaths, onFixInEditor }: OrphansViewProps): React.ReactElement {
-  const reachableTerminals = useMemo(() => {
-    return new Set(allPaths.map((p) => p.terminal));
-  }, [allPaths]);
-
   const orphans = useMemo(() => {
-    return sortedTreatments().filter((t) => !reachableTerminals.has(t.id));
-  }, [reachableTerminals]);
+    return orphanedTreatments(allPaths, TREATMENTS);
+  }, [allPaths]);
 
   if (orphans.length === 0) {
     return (
