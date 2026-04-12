@@ -8,7 +8,7 @@
  * which itself is guarded by `import.meta.env.DEV`.
  */
 
-import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from 'react';
 import '../../styles/dev/tour.css';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -19,7 +19,7 @@ export interface TourStep {
   /** CSS selector for the element to spotlight. Empty string = no spotlight (centered tooltip). */
   target: string;
   title: string;
-  description: string;
+  description: string | React.ReactNode;
   /** If set, call onSwitchTab with this value before showing the step. */
   tabToActivate?: string;
   position: TourPosition;
@@ -47,42 +47,107 @@ interface OnboardingTourProps {
 
 const TOUR_STEPS: TourStep[] = [
   {
+    target: '',
+    title: 'How patients use the wizard',
+    description: (
+      <>
+        Before managing treatments, it helps to understand how a patient experiences the wizard.
+        They answer a series of questions — "What are you looking for?" then "Which feeling best describes you?" — and
+        the wizard recommends the right treatment at the end. Every path through those questions must lead somewhere.
+        This dashboard shows you what those paths are and whether they all work correctly.
+      </>
+    ),
+    tabToActivate: 'editor',
+    position: 'bottom',
+  },
+  {
     target: '[data-tour="editor-tab"]',
-    title: 'Editor Tab',
-    description:
-      'The Editor is where you manage treatments. Select a treatment from the sidebar, edit its details (pricing, ingredients, addon suggestions, scoring weights), and save your changes. This is your home base -- everything else helps you understand what\'s happening here.',
+    title: 'Managing your treatments',
+    description: (
+      <>
+        The Editor is where you update treatment details — pricing, description, ingredients, and add-on suggestions.
+        Select any treatment from the sidebar on the left to edit it.
+        <br /><br />
+        The <strong>scoring weights</strong> control how the wizard ranks multiple matching treatments. A higher
+        weight means the wizard is more likely to recommend that treatment when several could fit a patient's answers.
+        Most treatments can stay at the default weight unless you want to push a specific option.
+      </>
+    ),
     tabToActivate: 'editor',
     position: 'bottom',
   },
   {
     target: '[data-tour="paths-tab"]',
-    title: 'Paths Tab',
-    description:
-      'Paths show every possible journey a patient can take through the wizard. Think of it as: "If a patient clicks X, then Y, they end up at Z treatment." Use "By Treatment" to see all the ways patients can find a specific treatment. If a treatment has zero paths, patients can never reach it.',
+    title: 'How patients find each treatment',
+    description: (
+      <>
+        Every treatment is reached through a specific sequence of question answers. The Paths tab shows you every
+        route patients can take through the wizard, and which treatment each route ends at.
+        <br /><br />
+        Switch to <strong>"By Treatment"</strong> to see all routes that lead to one specific treatment. If a treatment
+        shows zero paths, no patient can ever find it — that's either intentional (it's meant to be off-menu) or a bug
+        you'll want to fix.
+        <br /><br />
+        Example: the Hangover IV is reached when a patient picks "I need relief right now" then "Hangover." You'd see
+        that exact sequence listed here.
+      </>
+    ),
     tabToActivate: 'paths',
     position: 'bottom',
   },
   {
     target: '[data-tour="flow-tab"]',
-    title: 'Flow Tab',
-    description:
-      'The Flow view is a visual map of the entire wizard. Each blue box is a question, each colored pill is a treatment. Click any treatment to see which paths lead to it. Use the zoom controls to navigate. Collapse branches to focus on specific areas.',
+    title: 'Visual map of the entire wizard',
+    description: (
+      <>
+        The Flow view draws the whole wizard as a tree. Blue boxes are questions; colored pills are treatments. Follow
+        any branch from left to right to trace a patient's journey from their first answer to their final recommendation.
+        <br /><br />
+        Click any treatment pill to see which question paths lead to it. Use this tab when you want to understand the
+        big picture — for example, to check that a new question branch actually connects to the right treatments, or to
+        spot questions that lead to dead ends.
+        <br /><br />
+        Use the zoom controls to navigate. Collapse branches to reduce noise when you're focused on one area.
+      </>
+    ),
     tabToActivate: 'tree',
     position: 'bottom',
   },
   {
     target: '[data-tour="coverage-tab"]',
-    title: 'Coverage Tab',
-    description:
-      'Coverage shows the health of each treatment\'s configuration at a glance. Green = good. Yellow = warning (missing optional data). Red = error (something will break). Hover any column header for an explanation. Click "Edit" on any row to jump straight to that treatment in the Editor.',
+    title: 'Spotting missing or incomplete data',
+    description: (
+      <>
+        Coverage gives you a one-page health check across all treatments. Each column is a data field; each row is a
+        treatment. The color tells you the status:
+        <br /><br />
+        <strong style={{ color: '#16a34a' }}>Green</strong> — complete and correct.{' '}
+        <strong style={{ color: '#ca8a04' }}>Yellow</strong> — working but missing something optional (like a
+        description or an ingredient list). Fix these to improve what patients see.{' '}
+        <strong style={{ color: '#dc2626' }}>Red</strong> — a real error that will cause problems.
+        <br /><br />
+        Hover any column header for a plain-English explanation of what that field does. Click <strong>Edit</strong> on
+        any row to jump straight to that treatment in the Editor.
+      </>
+    ),
     tabToActivate: 'coverage',
     position: 'bottom',
   },
   {
     target: '[data-tour="health-tab"]',
-    title: 'Health Tab',
-    description:
-      'Health checks your entire configuration for problems. Each issue tells you what\'s wrong, why it matters, and exactly how to fix it. Click "Fix in Editor" on any issue to jump directly to the treatment that needs attention.',
+    title: 'Finding and fixing problems',
+    description: (
+      <>
+        The Health tab runs a full check of your configuration every time you open it. Each issue tells you exactly
+        what's wrong, why it matters for patients, and the specific steps to fix it.
+        <br /><br />
+        Start here after making any changes to the wizard config. If Health shows zero issues, you're in good shape.
+        Click <strong>"Fix in Editor"</strong> on any issue to go directly to the treatment that needs attention.
+        <br /><br />
+        That's the whole dashboard. A good weekly habit: open Coverage to scan for yellows, then open Health to check
+        for errors. The Editor is where you make the actual changes.
+      </>
+    ),
     tabToActivate: 'validation',
     position: 'bottom',
   },
@@ -162,12 +227,41 @@ export function OnboardingTour({ isOpen, onClose, onSwitchTab }: OnboardingTourP
   const [tooltipPos, setTooltipPos] = useState<TooltipPos>({ top: 0, left: 0 });
   const [tooltipHeight, setTooltipHeight] = useState<number>(200);
   const tooltipRef = React.useRef<HTMLDivElement>(null);
+  const welcomeStartRef = useRef<HTMLButtonElement>(null);
+  const tooltipNextRef = useRef<HTMLButtonElement>(null);
 
   // Reset to welcome screen whenever the tour is opened
   useEffect(() => {
     if (isOpen) {
       setStepIndex(-1);
     }
+  }, [isOpen]);
+
+  // Move focus to primary action when step or screen changes
+  useEffect(() => {
+    if (!isOpen) return;
+    if (stepIndex === -1) {
+      // Small delay to let the DOM render
+      const t = setTimeout(() => welcomeStartRef.current?.focus(), 50);
+      return () => clearTimeout(t);
+    } else {
+      const t = setTimeout(() => tooltipNextRef.current?.focus(), 80);
+      return () => clearTimeout(t);
+    }
+  }, [isOpen, stepIndex]);
+
+  // Global Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleSkip();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const positionTooltip = useCallback(
@@ -247,19 +341,32 @@ export function OnboardingTour({ isOpen, onClose, onSwitchTab }: OnboardingTourP
 
   if (stepIndex === -1) {
     return (
-      <div className="wdd-tour-welcome" role="dialog" aria-modal="true" aria-label="Welcome to the Wizard Admin Dashboard">
+      <div
+        className="wdd-tour-welcome"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wdd-tour-welcome-title"
+        aria-describedby="wdd-tour-welcome-desc"
+      >
         <div className="wdd-tour-welcome-card">
-          <div className="wdd-tour-welcome-title">Welcome to the Wizard Admin Dashboard</div>
-          <div className="wdd-tour-welcome-desc">
-            This tool lets you manage your IV treatment wizard -- see how patients find
-            treatments, edit treatment details, and check for configuration issues.
+          <div id="wdd-tour-welcome-title" className="wdd-tour-welcome-title">
+            You're in the admin dashboard
+          </div>
+          <div id="wdd-tour-welcome-desc" className="wdd-tour-welcome-desc">
+            This is where you control everything patients see in the IV treatment wizard — what treatments are
+            available, how they're described, and which questions lead patients to them. The 2-minute tour walks you
+            through each section so you know where to go when something needs updating.
           </div>
           <div className="wdd-tour-welcome-actions">
-            <button className="wdd-tour-welcome-start" onClick={handleStartTour}>
-              Take a 2-minute tour
+            <button
+              ref={welcomeStartRef}
+              className="wdd-tour-welcome-start"
+              onClick={handleStartTour}
+            >
+              Take the 2-minute tour
             </button>
-            <button className="wdd-tour-welcome-skip" onClick={handleSkip}>
-              Skip tour
+            <button className="wdd-tour-welcome-skip" onClick={handleSkip} aria-label="Skip tour and go to dashboard">
+              Skip — I know my way around
             </button>
           </div>
         </div>
@@ -272,6 +379,7 @@ export function OnboardingTour({ isOpen, onClose, onSwitchTab }: OnboardingTourP
   const step = TOUR_STEPS[stepIndex];
   const isLastStep = stepIndex === TOUR_STEPS.length - 1;
   const arrowClass = `wdd-tour-arrow wdd-tour-arrow--${step.position === 'bottom' ? 'top' : step.position === 'top' ? 'bottom' : step.position === 'right' ? 'left' : 'right'}`;
+  const descId = `wdd-tour-desc-${stepIndex}`;
 
   return (
     <>
@@ -298,32 +406,33 @@ export function OnboardingTour({ isOpen, onClose, onSwitchTab }: OnboardingTourP
         className="wdd-tour-tooltip"
         role="dialog"
         aria-modal="false"
-        aria-label={`Tour step ${stepIndex + 1} of ${TOUR_STEPS.length}: ${step.title}`}
+        aria-labelledby={`wdd-tour-title-${stepIndex}`}
+        aria-describedby={descId}
         style={{ top: tooltipPos.top, left: tooltipPos.left }}
       >
         {/* Arrow pointing toward target */}
-        <div className={arrowClass} aria-hidden="true" />
+        {step.target && <div className={arrowClass} aria-hidden="true" />}
 
         {/* Progress dots */}
-        <div className="wdd-tour-dots" role="tablist" aria-label="Tour progress">
+        <div className="wdd-tour-dots" role="list" aria-label={`Tour progress: step ${stepIndex + 1} of ${TOUR_STEPS.length}`}>
           {TOUR_STEPS.map((_, i) => (
             <div
               key={i}
               className={`wdd-tour-dot${i === stepIndex ? ' wdd-tour-dot--active' : ''}`}
-              role="tab"
-              aria-selected={i === stepIndex}
-              aria-label={`Step ${i + 1}`}
+              role="listitem"
+              aria-current={i === stepIndex ? 'step' : undefined}
+              aria-label={`Step ${i + 1}${i === stepIndex ? ' (current)' : ''}`}
             />
           ))}
         </div>
 
-        <div className="wdd-tour-title">{step.title}</div>
-        <div className="wdd-tour-desc">{step.description}</div>
+        <div id={`wdd-tour-title-${stepIndex}`} className="wdd-tour-title">{step.title}</div>
+        <div id={descId} className="wdd-tour-desc">{step.description}</div>
 
         <div className="wdd-tour-actions">
           {/* Left side: back or skip */}
           {stepIndex > 0 ? (
-            <button className="wdd-tour-back" onClick={handleBack} aria-label="Previous step">
+            <button className="wdd-tour-back" onClick={handleBack} aria-label="Go to previous step">
               Back
             </button>
           ) : (
@@ -340,17 +449,17 @@ export function OnboardingTour({ isOpen, onClose, onSwitchTab }: OnboardingTourP
               </button>
             )}
             <button
+              ref={tooltipNextRef}
               className="wdd-tour-next"
               onClick={handleNext}
-              aria-label={isLastStep ? 'Finish tour' : 'Next step'}
+              aria-label={isLastStep ? 'Finish tour and go to Editor' : `Next: ${TOUR_STEPS[stepIndex + 1]?.title ?? ''}`}
             >
-              {isLastStep ? 'Done' : 'Next'}
+              {isLastStep ? 'Start editing' : 'Next'}
             </button>
           </div>
         </div>
 
-        {/* Step counter text below actions */}
-        <div style={{ marginTop: 10, fontSize: 11, color: '#94a3b8', textAlign: 'right' }}>
+        <div className="wdd-tour-step-counter" aria-hidden="true">
           Step {stepIndex + 1} of {TOUR_STEPS.length}
         </div>
       </div>
