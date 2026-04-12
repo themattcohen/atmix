@@ -34,11 +34,13 @@ export type SaveStatus =
 
 interface EditorTabProps {
   treatments: Readonly<Record<TreatmentId, Treatment>>;
+  /** When set, the editor will select this treatment on mount or when it changes. */
+  initialSelectedId?: string | null;
 }
 
 // ── EditorTab ─────────────────────────────────────────────────────────────────
 
-export function EditorTab({ treatments }: EditorTabProps): React.ReactElement {
+export function EditorTab({ treatments, initialSelectedId }: EditorTabProps): React.ReactElement {
   // Initialize mutable drafts and pristine originals once on mount.
   const [drafts, setDrafts] = useState<Record<string, EditableTreatment>>(
     () => cloneAllToEditable(treatments),
@@ -49,7 +51,15 @@ export function EditorTab({ treatments }: EditorTabProps): React.ReactElement {
     [],
   );
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId ?? null);
+
+  // When initialSelectedId changes (e.g. "Fix in Editor" clicked from another tab),
+  // update the selection -- but only if the new value is non-null.
+  useEffect(() => {
+    if (initialSelectedId) {
+      setSelectedId(initialSelectedId);
+    }
+  }, [initialSelectedId]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<TreatmentCategory | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);

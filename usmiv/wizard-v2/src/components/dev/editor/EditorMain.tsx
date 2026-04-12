@@ -13,7 +13,8 @@ import type { EditableTreatment } from './types';
 import { issuesForTreatment } from './types';
 import type { SaveStatus } from './EditorTab';
 import { generateTreatmentTs, generateCategoryFileTs, categoryFileName } from './codeGen';
-import { SYMPTOM_LABELS } from '../../../data';
+import { SYMPTOM_LABELS, TREATMENTS, BUNDLES, QUESTIONS as EDITOR_QUESTIONS } from '../../../data';
+import type { QuestionId, SingleQuestion, Question } from '../../../types/question';
 
 // ── Category display helper ───────────────────────────────────────────────────
 
@@ -394,6 +395,115 @@ function AddonSuggestionsEditor({
   );
 }
 
+// ── Inline path data for editor ──────────────────────────────────────────────
+
+interface EditorWalkPath {
+  steps: string[];      // question IDs + option labels interleaved
+  terminal: string;     // treatment or bundle ID that terminates this path
+}
+
+// Walks from 'start' and collects all paths that ultimately reach targetId,
+// either directly (recommend === targetId) or via a bundle that includes it.
+function walkPathsForTarget(targetId: string): EditorWalkPath[] {
+  const paths: EditorWalkPath[] = [];
+
+  function walk(qid: string, steps: string[], visited: Set<string>): void {
+    if (visited.has(qid)) return;
+    const q = EDITOR_QUESTIONS[qid as QuestionId] as Question | undefined;
+    if (!q || q.type !== 'single') return;
+    const sq = q as SingleQuestion;
+    const next = new Set(visited);
+    next.add(qid);
+    for (const opt of sq.options) {
+      const newSteps = [...steps, qid, opt.label];
+      if (opt.recommend === targetId) {
+        paths.push({ steps: newSteps, terminal: targetId });
+      } else if (opt.recommend) {
+        // Check if a bundle terminal includes our target
+        const bundle = (BUNDLES as Record<string, { primary: string; addOn?: string } | undefined>)[opt.recommend];
+        if (bundle && (bundle.primary === targetId || bundle.addOn === targetId)) {
+          paths.push({ steps: newSteps, terminal: opt.recommend });
+        }
+      } else if (opt.next) {
+        walk(opt.next, newSteps, next);
+      }
+    }
+  }
+
+  walk('start', [], new Set());
+  return paths;
+}
+
+// ── PathsInEditor ─────────────────────────────────────────────────────────────
+
+interface PathsInEditorProps {
+  treatmentId: string;
+  treatmentName: string;
+}
+
+function PathsInEditor({ treatmentId, treatmentName }: PathsInEditorProps): React.ReactElement {
+  const paths = React.useMemo(() => walkPathsForTarget(treatmentId), [treatmentId]);
+
+  return (
+    <div>
+      {paths.length === 0 ? (
+        <div style={{
+          padding: '8px 12px',
+          background: '#fffbeb',
+          border: '1px solid #fde68a',
+          borderRadius: 4,
+          fontSize: 12,
+          color: '#92400e',
+        }}>
+          No wizard paths reach this treatment. Add it as a recommend option in a question, or add scoring weights.
+        </div>
+      ) : (
+        paths.map((p, i) => {
+          const labels = p.steps.filter((_, idx) => idx % 2 === 1);
+          return (
+            <div key={i} style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 4,
+              padding: '6px 10px',
+              borderBottom: '1px solid #f1f5f9',
+            }}>
+              {labels.map((label, j) => (
+                <React.Fragment key={j}>
+                  <span style={{
+                    display: 'inline-flex',
+                    padding: '2px 7px',
+                    background: '#f1f5f9',
+                    borderRadius: 4,
+                    fontSize: 12,
+                    color: '#0f172a',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {label}
+                  </span>
+                  <span style={{ color: '#94a3b8', fontSize: 10, margin: '0 1px' }}>&gt;</span>
+                </React.Fragment>
+              ))}
+              <span style={{
+                fontWeight: 600,
+                padding: '2px 7px',
+                borderRadius: 4,
+                fontSize: 12,
+                background: '#e0f2f1',
+                color: '#00695c',
+                whiteSpace: 'nowrap',
+              }}>
+                {treatmentName}
+              </span>
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}
+
 // ── CodeSection ───────────────────────────────────────────────────────────────
 
 interface CodeSectionProps {
@@ -767,7 +877,23 @@ export function EditorMain({
           />
         </div>
 
-        {/* 7. Code Output */}
+        {/* 7. Paths to this Treatment */}
+        {(() => {
+          const editorPaths = walkPathsForTarget(draft.id);
+          return (
+            <div className="wde-section">
+              <div className="wde-section-head">
+                PATHS TO THIS TREATMENT
+                <span style={{ fontWeight: 400, fontSize: 11, color: '#64748b', marginLeft: 6 }}>
+                  ({editorPaths.length} path{editorPaths.length !== 1 ? 's' : ''})
+                </span>
+              </div>
+              <PathsInEditor treatmentId={draft.id} treatmentName={draft.name} />
+            </div>
+          );
+        })()}
+
+        {/* 8. Code Output */}
         <CodeSection
           draft={draft}
           allDraftsInCategory={allDraftsInCategory}

@@ -19,10 +19,12 @@ import type { BundleId, Bundle } from '../../types/bundle';
 import '../../styles/dev/dashboard.css';
 import '../../styles/dev/editor.css';
 import { EditorTab } from './editor/EditorTab';
+import { FlowCanvas } from './FlowCanvas';
+import { PathsTab } from './PathsTab';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-type DashboardTab = 'tree' | 'coverage' | 'validation' | 'editor';
+type DashboardTab = 'editor' | 'paths' | 'tree' | 'coverage' | 'validation';
 
 // A resolved path from start to a terminal (treatment or bundle)
 interface WalkPath {
@@ -133,195 +135,8 @@ function sortedTreatments(): Treatment[] {
   });
 }
 
-// ── TreeView ─────────────────────────────────────────────────────────────────
+// ── Flow tab side panel ───────────────────────────────────────────────────────
 
-/**
- * Renders the question graph as nested inline-block columns.
- * Each question is a column (left to right = tree depth).
- * Each option in that column has an edge label + the next node.
- */
-
-interface TreeViewProps {
-  selectedTreatment: string | null;
-  selectedQuestion: QuestionId | null;
-  onSelectTreatment: (id: string | null) => void;
-  onSelectQuestion: (id: QuestionId | null) => void;
-}
-
-// Shared questions appear in multiple places in the tree.
-const SHARED_QUESTIONS: Set<string> = new Set(['myersUpgrade', 'nadDose']);
-
-interface TreeNodeProps {
-  qid: string;
-  depth: number;
-  visitedInBranch: Set<string>;
-  selectedTreatment: string | null;
-  selectedQuestion: QuestionId | null;
-  onSelectTreatment: (id: string | null) => void;
-  onSelectQuestion: (id: QuestionId | null) => void;
-}
-
-function TreeNode({
-  qid,
-  depth,
-  visitedInBranch,
-  selectedTreatment,
-  selectedQuestion,
-  onSelectTreatment,
-  onSelectQuestion,
-}: TreeNodeProps): React.ReactElement {
-  const q = QUESTIONS[qid as QuestionId] as Question | undefined;
-  const isShared = SHARED_QUESTIONS.has(qid) && depth > 0;
-
-  // If this is a shared question that we've already rendered, show a stub.
-  // Don't expand it again to avoid infinite recursion.
-  const alreadyVisited = visitedInBranch.has(qid);
-
-  const handleClickQuestion = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSelectTreatment(null);
-    onSelectQuestion(
-      selectedQuestion === qid ? null : (qid as QuestionId),
-    );
-  };
-
-  if (!q) {
-    return (
-      <span className="wdd-q-node" style={{ opacity: 0.5 }}>
-        <span className="wdd-q-node-header">{qid}</span>
-        <span className="wdd-q-node-title">(unknown question)</span>
-      </span>
-    );
-  }
-
-  // Multi-question (symptoms) -- terminal, shown as a purple leaf
-  if (q.type === 'multi') {
-    return (
-      <span className="wdd-symptoms-leaf">
-        <span className="wdd-symptoms-leaf-header">Multi / Scoring</span>
-        <span className="wdd-symptoms-leaf-label">{q.title}</span>
-      </span>
-    );
-  }
-
-  const sq = q as SingleQuestion;
-
-  // If we already visited this in the current branch, show a reference stub only
-  if (alreadyVisited) {
-    return (
-      <span
-        className="wdd-q-node"
-        data-selected={selectedQuestion === qid ? 'true' : 'false'}
-        onClick={handleClickQuestion}
-        style={{ opacity: 0.7 }}
-      >
-        <span className="wdd-q-node-header">
-          {qid}
-          {isShared && <span className="wdd-shared-badge">SHARED</span>}
-        </span>
-        <span className="wdd-q-node-title">[see earlier] {sq.title}</span>
-      </span>
-    );
-  }
-
-  const newVisited = new Set(visitedInBranch);
-  newVisited.add(qid);
-
-  return (
-    <span className="wdd-tree-node">
-      {/* The question block */}
-      <span
-        className="wdd-q-node"
-        data-selected={selectedQuestion === qid ? 'true' : 'false'}
-        onClick={handleClickQuestion}
-        style={{ display: 'inline-flex' }}
-      >
-        <span className="wdd-q-node-header">
-          {qid}
-          {isShared && <span className="wdd-shared-badge">SHARED</span>}
-        </span>
-        <span className="wdd-q-node-title">{sq.title}</span>
-      </span>
-
-      {/* Options */}
-      {sq.options.map((opt, i) => (
-        <span key={i} className="wdd-tree-option-row" style={{ display: 'flex', alignItems: 'center' }}>
-          <span className="wdd-edge">
-            <span className="wdd-edge-label">{opt.label}</span>
-            <span className="wdd-edge-arrow"> →</span>
-          </span>
-
-          {opt.recommend ? (
-            (() => {
-              const isBundleId = opt.recommend in BUNDLES;
-              if (isBundleId) {
-                const bundle = BUNDLES[opt.recommend as BundleId];
-                return (
-                  <span
-                    className="wdd-bundle-leaf"
-                    data-selected={selectedTreatment === opt.recommend ? 'true' : 'false'}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectQuestion(null);
-                      onSelectTreatment(
-                        selectedTreatment === opt.recommend ? null : (opt.recommend as string),
-                      );
-                    }}
-                  >
-                    <span className="wdd-bundle-leaf-header">Bundle</span>
-                    <span className="wdd-bundle-leaf-id">{opt.recommend}</span>
-                    {bundle && (
-                      <span style={{ fontSize: 9, padding: '2px 8px', color: '#9a3412' }}>
-                        {bundle.name}
-                      </span>
-                    )}
-                  </span>
-                );
-              } else {
-                const t = TREATMENTS[opt.recommend as TreatmentId];
-                return (
-                  <span
-                    className="wdd-treatment-leaf"
-                    data-selected={selectedTreatment === opt.recommend ? 'true' : 'false'}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectQuestion(null);
-                      onSelectTreatment(
-                        selectedTreatment === opt.recommend ? null : (opt.recommend as string),
-                      );
-                    }}
-                  >
-                    <span className="wdd-treatment-leaf-header">Treatment</span>
-                    <span className="wdd-treatment-leaf-id">{opt.recommend}</span>
-                    {t && (
-                      <span style={{ fontSize: 9, padding: '2px 8px', color: '#14532d' }}>
-                        {formatPrice(t)}
-                      </span>
-                    )}
-                  </span>
-                );
-              }
-            })()
-          ) : opt.next ? (
-            <TreeNode
-              qid={opt.next}
-              depth={depth + 1}
-              visitedInBranch={newVisited}
-              selectedTreatment={selectedTreatment}
-              selectedQuestion={selectedQuestion}
-              onSelectTreatment={onSelectTreatment}
-              onSelectQuestion={onSelectQuestion}
-            />
-          ) : (
-            <span className="wdd-empty">(no next)</span>
-          )}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-// Side panel for the tree view
 interface TreeSidePanelProps {
   selectedTreatment: string | null;
   selectedQuestion: QuestionId | null;
@@ -510,35 +325,15 @@ function TreeSidePanel({ selectedTreatment, selectedQuestion }: TreeSidePanelPro
   );
 }
 
-function TreeView({ selectedTreatment, selectedQuestion, onSelectTreatment, onSelectQuestion }: TreeViewProps): React.ReactElement {
-  return (
-    <div className="wdd-layout">
-      <div className="wdd-main">
-        <div className="wdd-tree">
-          <TreeNode
-            qid="start"
-            depth={0}
-            visitedInBranch={new Set()}
-            selectedTreatment={selectedTreatment}
-            selectedQuestion={selectedQuestion}
-            onSelectTreatment={onSelectTreatment}
-            onSelectQuestion={onSelectQuestion}
-          />
-        </div>
-      </div>
-      <TreeSidePanel selectedTreatment={selectedTreatment} selectedQuestion={selectedQuestion} />
-    </div>
-  );
-}
-
 // ── CoverageMatrix ────────────────────────────────────────────────────────────
 
 interface CoverageMatrixProps {
   onSelectTreatment: (id: TreatmentId | null) => void;
   onSwitchToValidation: (filter: string) => void;
+  onFixInEditor: (treatmentId: string) => void;
 }
 
-function CoverageMatrix({ onSelectTreatment, onSwitchToValidation }: CoverageMatrixProps): React.ReactElement {
+function CoverageMatrix({ onSelectTreatment, onSwitchToValidation, onFixInEditor }: CoverageMatrixProps): React.ReactElement {
   const [selectedRow, setSelectedRow] = useState<TreatmentId | null>(null);
   const treatments = sortedTreatments();
 
@@ -565,142 +360,218 @@ function CoverageMatrix({ onSelectTreatment, onSwitchToValidation }: CoverageMat
     onSwitchToValidation(tid);
   }
 
+  // "Fully configured" = reachable AND has whyMatch AND has acuityTypeId > 0
+  const fullyConfiguredCount = treatments.filter((t) => {
+    const isReachable = REACHABLE_SET.has(t.id) || Object.keys(t.scoringWeights).length > 0;
+    return isReachable && t.whyMatch.trim().length > 0 && t.acuityTypeId > 0;
+  }).length;
+
   return (
     <div className="wdd-layout">
-      <div className="wdd-main">
-        <table className="wdd-matrix-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Reachable</th>
-              <th>Has whyMatch</th>
-              <th>Scoring Weights</th>
-              <th>Addon Suggestions</th>
-              <th>Acuity ID</th>
-              <th>In Bundle</th>
-            </tr>
-          </thead>
-          <tbody>
-            {treatments.map((t) => {
-              const isReachable = REACHABLE_SET.has(t.id) || Object.keys(t.scoringWeights).length > 0;
-              const hasWhyMatch = t.whyMatch.trim().length > 0;
-              const weightCount = Object.values(t.scoringWeights).filter((v) => (v ?? 0) > 0).length;
-              const hasAddons = t.addonSuggestions.length > 0;
-              const hasAcuity = t.acuityTypeId > 0;
-              const bundles = treatmentBundleMap.get(t.id) ?? [];
+      <div className="wdd-main" style={{ padding: 0, display: 'flex', flexDirection: 'column' }}>
+        {/* Summary line */}
+        <div className="wdd-matrix-summary">
+          <span>
+            <strong>{fullyConfiguredCount} of {treatments.length}</strong> treatments fully configured
+          </span>
+          <span className="wdd-legend">
+            <span className="wdd-legend-item wdd-legend-ok">OK</span>
+            <span className="wdd-legend-item wdd-legend-warn">Warning</span>
+            <span className="wdd-legend-item wdd-legend-error">Error</span>
+          </span>
+        </div>
+        <div style={{ flex: 1, overflow: 'auto', padding: '0 16px 16px' }}>
+          <table className="wdd-matrix-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th title="Can a user reach this treatment through the wizard? If No, this treatment can never be booked.">Reachable</th>
+                <th title="The clinical explanation shown on the result screen. Empty means a blank explanation area.">Has whyMatch</th>
+                <th title="How many symptoms score for this treatment in the 'help me decide' path. 0 means it's invisible to symptom matching.">Scoring Weights</th>
+                <th title="Injection add-ons suggested on the result screen. 0 means no upsell opportunity.">Addon Suggestions</th>
+                <th title="Booking system appointment type ID. Required for booking to work.">Acuity ID</th>
+                <th title="Which bundle package includes this treatment.">In Bundle</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {treatments.map((t) => {
+                const isReachable = REACHABLE_SET.has(t.id) || Object.keys(t.scoringWeights).length > 0;
+                const hasWhyMatch = t.whyMatch.trim().length > 0;
+                const weightCount = Object.values(t.scoringWeights).filter((v) => (v ?? 0) > 0).length;
+                const hasAddons = t.addonSuggestions.length > 0;
+                const hasAcuity = t.acuityTypeId > 0;
+                const bundles = treatmentBundleMap.get(t.id) ?? [];
 
-              const hasError = !isReachable || !hasAcuity;
-              const hasWarn = !hasWhyMatch || !hasAddons;
+                const hasError = !isReachable || !hasAcuity;
+                const hasWarn = !hasWhyMatch || !hasAddons;
 
-              return (
-                <tr
-                  key={t.id}
-                  data-selected={selectedRow === t.id ? 'true' : 'false'}
-                  data-has-error={hasError ? 'true' : 'false'}
-                  data-has-warning={!hasError && hasWarn ? 'true' : 'false'}
-                  onClick={() => handleRowClick(t.id)}
-                >
-                  <td>
-                    <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{t.id}</span>
-                  </td>
-                  <td>{t.name}</td>
-                  <td>
-                    <span className={categoryBadgeClass(t.category)}>
-                      {t.category}
-                    </span>
-                  </td>
-                  <td>{formatPrice(t)}</td>
-                  <td>
-                    {isReachable ? (
-                      <span className="wdd-cell-ok">Yes</span>
-                    ) : (
-                      <span
-                        className="wdd-cell-error"
-                        onClick={(e) => handleWarningCellClick(e, t.id)}
-                        title="Click to see in Validation tab"
-                      >
-                        No
+                return (
+                  <tr
+                    key={t.id}
+                    data-selected={selectedRow === t.id ? 'true' : 'false'}
+                    data-has-error={hasError ? 'true' : 'false'}
+                    data-has-warning={!hasError && hasWarn ? 'true' : 'false'}
+                    onClick={() => handleRowClick(t.id)}
+                  >
+                    <td>
+                      <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11 }}>{t.id}</span>
+                    </td>
+                    <td>{t.name}</td>
+                    <td>
+                      <span className={categoryBadgeClass(t.category)}>
+                        {t.category}
                       </span>
-                    )}
-                  </td>
-                  <td>
-                    {hasWhyMatch ? (
-                      <span className="wdd-cell-ok">Yes</span>
-                    ) : (
-                      <span
-                        className="wdd-cell-warn"
-                        onClick={(e) => handleWarningCellClick(e, t.id)}
-                        title="Click to see in Validation tab"
+                    </td>
+                    <td>{formatPrice(t)}</td>
+                    <td>
+                      {isReachable ? (
+                        <span className="wdd-cell-ok">Yes</span>
+                      ) : (
+                        <span
+                          className="wdd-cell-error"
+                          onClick={(e) => handleWarningCellClick(e, t.id)}
+                          title="Click to see in Validation tab"
+                        >
+                          No
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {hasWhyMatch ? (
+                        <span className="wdd-cell-ok">Yes</span>
+                      ) : (
+                        <span
+                          className="wdd-cell-warn"
+                          onClick={(e) => handleWarningCellClick(e, t.id)}
+                          title="Click to see in Validation tab"
+                        >
+                          No
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {weightCount > 0 ? (
+                        <span className="wdd-cell-ok">{weightCount}</span>
+                      ) : (
+                        <span className="wdd-cell-na">0</span>
+                      )}
+                    </td>
+                    <td>
+                      {hasAddons ? (
+                        <span className="wdd-cell-ok">{t.addonSuggestions.length}</span>
+                      ) : (
+                        <span
+                          className="wdd-cell-warn"
+                          onClick={(e) => handleWarningCellClick(e, t.id)}
+                          title="Click to see in Validation tab"
+                        >
+                          0
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {hasAcuity ? (
+                        <span className="wdd-cell-ok">{t.acuityTypeId}</span>
+                      ) : (
+                        <span
+                          className="wdd-cell-error"
+                          onClick={(e) => handleWarningCellClick(e, t.id)}
+                          title="Click to see in Validation tab"
+                        >
+                          MISSING
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {bundles.length > 0 ? (
+                        <div className="wdd-tag-list">
+                          {bundles.map((bid) => (
+                            <span key={bid} className="wdd-addon-tag">{bid}</span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="wdd-cell-na">--</span>
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        className="wdd-matrix-edit"
+                        onClick={(e) => { e.stopPropagation(); onFixInEditor(t.id); }}
                       >
-                        No
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {weightCount > 0 ? (
-                      <span className="wdd-cell-ok">{weightCount}</span>
-                    ) : (
-                      <span className="wdd-cell-na">0</span>
-                    )}
-                  </td>
-                  <td>
-                    {hasAddons ? (
-                      <span className="wdd-cell-ok">{t.addonSuggestions.length}</span>
-                    ) : (
-                      <span
-                        className="wdd-cell-warn"
-                        onClick={(e) => handleWarningCellClick(e, t.id)}
-                        title="Click to see in Validation tab"
-                      >
-                        0
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {hasAcuity ? (
-                      <span className="wdd-cell-ok">{t.acuityTypeId}</span>
-                    ) : (
-                      <span
-                        className="wdd-cell-error"
-                        onClick={(e) => handleWarningCellClick(e, t.id)}
-                        title="Click to see in Validation tab"
-                      >
-                        MISSING
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {bundles.length > 0 ? (
-                      <div className="wdd-tag-list">
-                        {bundles.map((bid) => (
-                          <span key={bid} className="wdd-addon-tag">{bid}</span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="wdd-cell-na">--</span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
 
-// ── ValidationView ────────────────────────────────────────────────────────────
+// ── Issue explanation map ─────────────────────────────────────────────────────
+
+const ISSUE_EXPLANATIONS: Record<string, { why: string; fix: string }> = {
+  acuityTypeId: {
+    why: "The booking system needs this ID to create appointments. Without it, clicking 'Book' will fail.",
+    fix: "Open the treatment in the Editor and set the Acuity Type ID in the Basic Info section.",
+  },
+  reachability: {
+    why: "No question path leads to this treatment. Users can never see or book it.",
+    fix: "Add this treatment as a 'recommend' option in one of the question nodes, or add symptom scoring weights.",
+  },
+  whyMatch: {
+    why: "The result screen shows a 'Why This Is Your Match' section. Without text here, it shows nothing.",
+    fix: "Open the treatment in the Editor and fill in the whyMatch field in the Descriptions section.",
+  },
+  addonSuggestions: {
+    why: "Add-on injection suggestions appear below the result. No add-ons means no upsell revenue.",
+    fix: "Open the treatment in the Editor and check injection add-ons in the Addon Suggestions section.",
+  },
+  scoringWeights: {
+    why: "The 'help me decide' symptom path uses these weights to rank treatments. Without any, this treatment is invisible to symptom matching.",
+    fix: "Open the treatment in the Editor and set scoring weights in the Scoring Weights section.",
+  },
+  addressedBy: {
+    why: "When a treatment matches a symptom, this text explains why. Missing text means the match has no explanation.",
+    fix: "Open the treatment in the Editor and fill in the addressedBy text for scored symptoms.",
+  },
+};
+
+/**
+ * Extract the treatment ID from an issue subject string like "treatment:hangover"
+ * Returns null for non-treatment subjects (e.g. "question:...", "bundle:...").
+ */
+function treatmentIdFromSubject(subject: string): string | null {
+  const match = subject.match(/^treatment:(.+)$/);
+  return match ? match[1] : null;
+}
+
+/**
+ * Get a lookup key for ISSUE_EXPLANATIONS from the issue field string.
+ * Handles cases like "addressedBy['Fatigue']" -> "addressedBy".
+ */
+function explanationKey(field: string): string {
+  const bracketIdx = field.indexOf('[');
+  return bracketIdx >= 0 ? field.slice(0, bracketIdx) : field;
+}
+
+// ── ValidationView (Health) ────────────────────────────────────────────────────
 
 interface ValidationViewProps {
   result: ValidationResult;
   filterTreatment: string | null;
+  onFixInEditor: (treatmentId: string) => void;
 }
 
-function ValidationView({ result, filterTreatment }: ValidationViewProps): React.ReactElement {
+function ValidationView({ result, filterTreatment, onFixInEditor }: ValidationViewProps): React.ReactElement {
   const highlightRef = useRef<HTMLDivElement>(null);
 
   // Scroll to first highlighted item when filter changes
@@ -710,50 +581,80 @@ function ValidationView({ result, filterTreatment }: ValidationViewProps): React
     }
   }, [filterTreatment]);
 
-  const isHighlighted = (issue: ValidationIssue): boolean => {
-    if (!filterTreatment) return false;
-    return issue.subject.includes(filterTreatment);
-  };
-
   const allIssues = [...result.errors, ...result.warnings];
   const hasFilter = Boolean(filterTreatment);
+  const visibleIssues = hasFilter
+    ? allIssues.filter((i) => i.subject.includes(filterTreatment!))
+    : allIssues;
 
-  // Find first highlighted issue to attach ref
+  // Health status
+  const healthStatus = result.errors.length > 0
+    ? 'critical'
+    : result.warnings.length > 0
+      ? 'warning'
+      : 'good';
+
+  const healthLabel = healthStatus === 'critical' ? 'CRITICAL'
+    : healthStatus === 'warning' ? 'NEEDS ATTENTION'
+    : 'GOOD';
+
+  // Find first highlighted issue to attach scroll ref
   let firstHighlightedIdx = -1;
   if (hasFilter) {
-    firstHighlightedIdx = allIssues.findIndex((i) => isHighlighted(i));
+    firstHighlightedIdx = visibleIssues.findIndex((i) => i.subject.includes(filterTreatment!));
   }
+
+  const renderIssueCard = (issue: ValidationIssue, index: number) => {
+    const isFirst = hasFilter && index === firstHighlightedIdx;
+    const tid = treatmentIdFromSubject(issue.subject);
+    const treatment = tid ? TREATMENTS[tid as TreatmentId] : null;
+    const displaySubject = treatment ? treatment.name : issue.subject;
+    const expKey = explanationKey(issue.field);
+    const explanation = ISSUE_EXPLANATIONS[expKey];
+
+    return (
+      <div
+        key={`${issue.subject}-${issue.field}-${index}`}
+        ref={isFirst ? highlightRef : undefined}
+        className="wdd-issue-card"
+      >
+        <div className="wdd-issue-card-header">
+          <span className={`wdd-issue-severity wdd-issue-severity--${issue.severity === 'error' ? 'error' : 'warning'}`}>
+            {issue.severity === 'error' ? 'ERROR' : 'WARN'}
+          </span>
+          <span className="wdd-issue-card-subject">{displaySubject}</span>
+          <span className="wdd-issue-card-field">{issue.field}</span>
+        </div>
+        <div className="wdd-issue-card-body">
+          <div>{issue.message}</div>
+          {explanation && (
+            <>
+              <div className="wdd-issue-card-why">Why it matters: {explanation.why}</div>
+              <div className="wdd-issue-card-fix">How to fix: {explanation.fix}</div>
+            </>
+          )}
+          {tid && (
+            <button
+              className="wdd-fix-btn"
+              onClick={() => onFixInEditor(tid)}
+            >
+              Fix in Editor
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="wdd-main" style={{ overflow: 'auto' }}>
-      {/* Summary */}
-      <div className="wdd-validation-summary">
-        {result.isValid ? (
-          <div className="wdd-summary-card wdd-summary-card--ok">
-            <span className="wdd-count">0</span>
-            Errors
-          </div>
-        ) : (
-          <div className="wdd-summary-card wdd-summary-card--error">
-            <span className="wdd-count">{result.errors.length}</span>
-            Error{result.errors.length !== 1 ? 's' : ''}
-          </div>
-        )}
-        <div className={`wdd-summary-card wdd-summary-card--${result.warnings.length > 0 ? 'warning' : 'ok'}`}>
-          <span className="wdd-count">{result.warnings.length}</span>
-          Warning{result.warnings.length !== 1 ? 's' : ''}
-        </div>
-        <div className="wdd-summary-card wdd-summary-card--ok">
-          <span className="wdd-count">{Object.keys(TREATMENTS).length}</span>
-          Treatments
-        </div>
-        <div className="wdd-summary-card wdd-summary-card--ok">
-          <span className="wdd-count">{Object.keys(QUESTIONS).length}</span>
-          Questions
-        </div>
-        <div className="wdd-summary-card wdd-summary-card--ok">
-          <span className="wdd-count">{Object.keys(BUNDLES).length}</span>
-          Bundles
+      {/* Health banner */}
+      <div className={`wdd-health-banner wdd-health-banner--${healthStatus}`}>
+        <div className="wdd-health-score">Config Health: {healthLabel}</div>
+        <div className="wdd-health-stats">
+          {result.errors.length} error{result.errors.length !== 1 ? 's' : ''} &middot;{' '}
+          {result.warnings.length} warning{result.warnings.length !== 1 ? 's' : ''} &middot;{' '}
+          {Object.keys(TREATMENTS).length} treatments
         </div>
       </div>
 
@@ -763,73 +664,14 @@ function ValidationView({ result, filterTreatment }: ValidationViewProps): React
         </div>
       )}
 
-      {allIssues.length === 0 ? (
+      {visibleIssues.length === 0 ? (
         <div style={{ padding: 24, textAlign: 'center', color: '#16a34a', fontSize: 14, fontWeight: 700 }}>
-          All validation checks passed.
+          {hasFilter ? 'No issues found for this treatment.' : 'All validation checks passed.'}
         </div>
       ) : (
-        <>
-          {/* Errors first */}
-          {result.errors.length > 0 && (
-            <>
-              <div className="wdd-issues-header wdd-issues-header--error">
-                Errors ({result.errors.length})
-              </div>
-              <div className="wdd-issue-list">
-                {result.errors.map((issue, i) => {
-                  const highlighted = isHighlighted(issue);
-                  const isFirst = hasFilter && i === allIssues.findIndex((x) => isHighlighted(x));
-                  return (
-                    <div
-                      key={i}
-                      ref={isFirst ? highlightRef : undefined}
-                      className="wdd-issue-item wdd-issue-item--error"
-                      data-highlighted={highlighted ? 'true' : 'false'}
-                    >
-                      <span className="wdd-issue-severity wdd-issue-severity--error">ERROR</span>
-                      <div>
-                        <div className="wdd-issue-subject">{issue.subject}</div>
-                        <div className="wdd-issue-field">{issue.field}</div>
-                      </div>
-                      <div className="wdd-issue-message">{issue.message}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-
-          {/* Warnings */}
-          {result.warnings.length > 0 && (
-            <>
-              <div className="wdd-issues-header wdd-issues-header--warning" style={{ marginTop: result.errors.length > 0 ? 20 : 0 }}>
-                Warnings ({result.warnings.length})
-              </div>
-              <div className="wdd-issue-list">
-                {result.warnings.map((issue, i) => {
-                  const highlighted = isHighlighted(issue);
-                  const globalIdx = result.errors.length + i;
-                  const isFirst = hasFilter && globalIdx === firstHighlightedIdx;
-                  return (
-                    <div
-                      key={i}
-                      ref={isFirst ? highlightRef : undefined}
-                      className="wdd-issue-item wdd-issue-item--warning"
-                      data-highlighted={highlighted ? 'true' : 'false'}
-                    >
-                      <span className="wdd-issue-severity wdd-issue-severity--warning">WARN</span>
-                      <div>
-                        <div className="wdd-issue-subject">{issue.subject}</div>
-                        <div className="wdd-issue-field">{issue.field}</div>
-                      </div>
-                      <div className="wdd-issue-message">{issue.message}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-        </>
+        <div className="wdd-issue-list">
+          {visibleIssues.map((issue, i) => renderIssueCard(issue, i))}
+        </div>
       )}
     </div>
   );
@@ -838,10 +680,13 @@ function ValidationView({ result, filterTreatment }: ValidationViewProps): React
 // ── WizardDevDashboard (root component) ──────────────────────────────────────
 
 export function WizardDevDashboard(): React.ReactElement {
-  const [tab, setTab] = useState<DashboardTab>('tree');
+  const [tab, setTab] = useState<DashboardTab>('editor');
   const [selectedTreatment, setSelectedTreatment] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionId | null>(null);
   const [validationFilter, setValidationFilter] = useState<string | null>(null);
+  // pendingEditId: when "Fix in Editor" is clicked, we store the target ID here
+  // and switch to the editor tab. EditorTab reads it via initialSelectedId.
+  const [pendingEditId, setPendingEditId] = useState<string | null>(null);
 
   // Called synchronously -- no async concerns, these are static maps
   const validation = validateConfig(TREATMENTS, QUESTIONS, BUNDLES);
@@ -855,6 +700,11 @@ export function WizardDevDashboard(): React.ReactElement {
     setSelectedTreatment(id);
     setSelectedQuestion(null);
     setTab('tree');
+  }
+
+  function handleFixInEditor(treatmentId: string): void {
+    setPendingEditId(treatmentId);
+    setTab('editor');
   }
 
   return (
@@ -880,60 +730,85 @@ export function WizardDevDashboard(): React.ReactElement {
 
       <nav className="wdd-tabs">
         <button
-          onClick={() => setTab('tree')}
-          data-active={tab === 'tree' ? 'true' : 'false'}
-        >
-          Decision Tree
-        </button>
-        <button
-          onClick={() => setTab('coverage')}
-          data-active={tab === 'coverage' ? 'true' : 'false'}
-        >
-          Coverage Matrix ({Object.keys(TREATMENTS).length} rows)
-        </button>
-        <button
-          onClick={() => { setTab('validation'); setValidationFilter(null); }}
-          data-active={tab === 'validation' ? 'true' : 'false'}
-        >
-          Validation{validation.errors.length > 0 ? ` (${validation.errors.length})` : ''}
-        </button>
-        <button
           onClick={() => setTab('editor')}
           data-active={tab === 'editor' ? 'true' : 'false'}
         >
           Editor
         </button>
+        <button
+          onClick={() => setTab('paths')}
+          data-active={tab === 'paths' ? 'true' : 'false'}
+        >
+          Paths
+        </button>
+        <button
+          onClick={() => setTab('tree')}
+          data-active={tab === 'tree' ? 'true' : 'false'}
+        >
+          Flow
+        </button>
+        <button
+          onClick={() => setTab('coverage')}
+          data-active={tab === 'coverage' ? 'true' : 'false'}
+        >
+          Coverage
+        </button>
+        <button
+          onClick={() => { setTab('validation'); setValidationFilter(null); }}
+          data-active={tab === 'validation' ? 'true' : 'false'}
+        >
+          Health{validation.errors.length > 0 ? ` (${validation.errors.length})` : ''}
+        </button>
       </nav>
 
       <div className="wdd-content">
-        {tab === 'tree' && (
-          <TreeView
-            selectedTreatment={selectedTreatment}
-            selectedQuestion={selectedQuestion}
-            onSelectTreatment={(id) => {
-              setSelectedTreatment(id);
-              setSelectedQuestion(null);
-            }}
-            onSelectQuestion={(id) => {
-              setSelectedQuestion(id);
-              setSelectedTreatment(null);
-            }}
+        {tab === 'editor' && (
+          <EditorTab
+            treatments={TREATMENTS}
+            initialSelectedId={pendingEditId}
           />
+        )}
+        {tab === 'paths' && (
+          <PathsTab
+            allPaths={ALL_PATHS}
+            onFixInEditor={handleFixInEditor}
+          />
+        )}
+        {tab === 'tree' && (
+          <div className="wdd-layout">
+            <FlowCanvas
+              questions={QUESTIONS}
+              treatments={TREATMENTS}
+              bundles={BUNDLES}
+              onSelectNode={(id, kind) => {
+                if (kind === 'treatment' || kind === 'bundle') {
+                  setSelectedTreatment(id);
+                  setSelectedQuestion(null);
+                } else {
+                  setSelectedQuestion(id as QuestionId);
+                  setSelectedTreatment(null);
+                }
+              }}
+            />
+            <TreeSidePanel
+              selectedTreatment={selectedTreatment}
+              selectedQuestion={selectedQuestion}
+            />
+          </div>
         )}
         {tab === 'coverage' && (
           <CoverageMatrix
             onSelectTreatment={handleSelectTreatmentFromMatrix}
             onSwitchToValidation={handleSwitchToValidation}
+            onFixInEditor={handleFixInEditor}
           />
         )}
         {tab === 'validation' && (
           <ValidationView
             result={validation}
             filterTreatment={validationFilter}
+            onFixInEditor={handleFixInEditor}
           />
-        )}
-        {tab === 'editor' && (
-          <EditorTab treatments={TREATMENTS} />
         )}
       </div>
     </div>
