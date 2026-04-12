@@ -62,33 +62,17 @@ function mount(): void {
 
 mount();
 
-// Dev-only: dashboard gating + config validation
-// The vite.config.ts define block replaces import.meta.env.DEV with 'false' in
-// production, making both blocks dead code that esbuild eliminates entirely.
-if (import.meta.env.DEV) {
-  (async () => {
-    const { mountDevDashboard } = await import('./components/dev/WizardDevDashboard');
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('wizard-dev') === 'true') {
+// Dashboard: loads when ?wizard-dev=true or Ctrl+Shift+W
+(async () => {
+  const { mountDevDashboard } = await import('./components/dev/WizardDevDashboard');
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('wizard-dev') === 'true') {
+    mountDevDashboard();
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'W') {
+      e.preventDefault();
       mountDevDashboard();
     }
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'W') {
-        e.preventDefault();
-        mountDevDashboard();
-      }
-    });
-  })();
-
-  import('./engine/validateConfig').then(({ validateConfig }) => {
-    import('./data').then(({ TREATMENTS, QUESTIONS, BUNDLES }) => {
-      const result = validateConfig(TREATMENTS, QUESTIONS, BUNDLES);
-      result.errors.forEach((err) =>
-        console.error(`[wizard-config] ERROR [${err.subject}] ${err.field}: ${err.message}`)
-      );
-      result.warnings.forEach((w) =>
-        console.warn(`[wizard-config] WARNING [${w.subject}] ${w.field}: ${w.message}`)
-      );
-    });
   });
-}
+})();

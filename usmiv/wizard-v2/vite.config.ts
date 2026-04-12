@@ -100,12 +100,11 @@ export default defineConfig({
     outDir: 'dist',
   },
   define: {
-    // In production build: silence React warnings and tree-shake dev dashboard
-    // In dev mode: Vite handles these automatically, so only override for build
+    // In production build: silence React warnings
+    // Dashboard is included in prod (accessible via ?wizard-dev=true)
     ...(process.env.NODE_ENV === 'production' || process.argv.includes('build')
       ? {
           'process.env.NODE_ENV': '"production"',
-          'import.meta.env.DEV': 'false',
         }
       : {}),
   },
