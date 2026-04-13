@@ -1,0 +1,108 @@
+Admin Dashboard Guide
+======================
+
+URL: https://atmix.org/wizard-of-iv-v2/?wizard-dev=true
+
+The dashboard has 5 tabs. Here's what each one does.
+
+
+EDITOR (default tab)
+---------------------
+
+This is where you manage treatments, bundles, and questions.
+
+The left sidebar has three modes:
+
+  Treatments -- All 27 treatments. Click one to edit its details:
+    pricing, ingredients, descriptions, addon suggestions,
+    symptom scoring weights, and booking integration fields.
+
+  Bundles -- Package deals (e.g. Beauty Glow = Myers' + Biotin).
+    Edit the primary treatment, add-on, and whether patients
+    can toggle the add-on on or off.
+
+  Questions -- The 16 questions in the decision tree. Edit question
+    titles, option labels, and where each option leads (which
+    question or which treatment).
+
+Buttons in the header:
+  Save        -- saves to local files (developer use only)
+  Copy TS     -- copies code to clipboard (developer use)
+  Publish Live -- pushes changes to the live config (goes live immediately)
+  Delete      -- removes the treatment (with reference warnings)
+
+"+ New Treatment" creates a blank treatment to fill in.
+
+
+PATHS
+------
+
+Shows every possible journey a patient can take through the wizard.
+
+  All Paths     -- every route from start to treatment, as breadcrumbs
+  By Treatment  -- select a treatment to see all paths that lead to it
+  Orphans       -- treatments that no patient path can reach
+
+If a treatment is orphaned, click "Fix in Editor" to wire it
+into the question flow.
+
+
+FLOW
+-----
+
+A visual flowchart of the entire decision tree. Each blue box is a
+question, each colored pill is a treatment.
+
+  Click a treatment to highlight all paths that lead to it.
+  Use +/- buttons to zoom.
+  Click the fit button (rectangle icon) to fit the whole tree.
+  Branches auto-collapse for a cleaner view -- click to expand.
+
+
+COVERAGE
+---------
+
+A table showing every treatment's configuration health.
+
+  Green = configured correctly
+  Yellow = warning (missing optional data)
+  Red = error (something will break)
+
+Hover over any column header for an explanation of what it measures.
+Click "Edit" on any row to jump to that treatment in the Editor.
+
+"27 of 27 fully configured" at the top means everything is set up.
+
+
+HEALTH
+-------
+
+Lists every configuration issue with plain-English explanations.
+
+Each issue tells you:
+  What's wrong
+  Why it matters (how it affects patients)
+  How to fix it
+
+Click "Fix in Editor" on any issue to jump directly to the treatment
+that needs attention.
+
+The banner at top shows overall status:
+  GOOD            -- 0 errors, 0 warnings
+  NEEDS ATTENTION -- warnings only (nothing is broken)
+  CRITICAL        -- errors exist (something will break)
+
+
+PUBLISHING WORKFLOW
+--------------------
+
+1. Make your changes in the Editor tab.
+2. Click "Publish Live" in the header.
+3. Enter the API key when prompted (stored for the session).
+4. The config pushes to Cloudflare instantly.
+5. Refresh any page that shows the wizard -- it loads the new data.
+
+Changes are live within seconds. No code changes, no deployments.
+
+The "Save" button is for developers working locally. Use "Publish Live"
+for making changes that go live on the actual site.
