@@ -36,6 +36,7 @@ interface EditorMainProps {
   onPublish?: () => void;
   canPublish?: boolean;
   publishStatus?: SaveStatus;
+  onDelete?: () => void;
 }
 
 // ── TagEditor (bestFor) ───────────────────────────────────────────────────────
@@ -548,6 +549,7 @@ export function EditorMain({
   onPublish,
   canPublish,
   publishStatus,
+  onDelete,
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -709,6 +711,11 @@ export function EditorMain({
         >
           Reset
         </button>
+        {onDelete && (
+          <button type="button" className="wde-delete-btn" onClick={onDelete}>
+            Delete
+          </button>
+        )}
       </div>
 
       <div className="wde-form-body">

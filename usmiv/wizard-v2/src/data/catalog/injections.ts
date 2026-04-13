@@ -24,7 +24,7 @@ export const lipoShots = {
   addressedBy: {
     'Struggling with weight': 'Lipotropic injections accelerate fat metabolism',
   },
-  addonSuggestions: [],
+  addonSuggestions: ['b12Shot'],
 } as const satisfies Treatment;
 
 export const b12Shot = {
@@ -50,7 +50,7 @@ export const b12Shot = {
   addressedBy: {
     'Tired all the time': 'B12 deficiency is the #1 reversible cause of persistent fatigue',
   },
-  addonSuggestions: [],
+  addonSuggestions: ['glutathioneShot'],
 } as const satisfies Treatment;
 
 export const biotinShot = {
@@ -76,7 +76,7 @@ export const biotinShot = {
   addressedBy: {
     'Skin looks dull or aging': 'Biotin supports keratin production for healthier skin, hair, and nails',
   },
-  addonSuggestions: [],
+  addonSuggestions: ['glutathioneShot'],
 } as const satisfies Treatment;
 
 export const glutathioneShot = {
@@ -102,7 +102,7 @@ export const glutathioneShot = {
   addressedBy: {
     'Skin looks dull or aging': 'Glutathione is the master antioxidant for skin brightening',
   },
-  addonSuggestions: [],
+  addonSuggestions: ['biotinShot'],
 } as const satisfies Treatment;
 
 export const triImmuneShot = {
@@ -130,7 +130,7 @@ export const triImmuneShot = {
   addressedBy: {
     'Getting sick often': 'Concentrated triple-immune shot for rapid defense',
   },
-  addonSuggestions: [],
+  addonSuggestions: ['vitaminDShot'],
 } as const satisfies Treatment;
 
 export const vitaminDShot = {
@@ -156,7 +156,7 @@ export const vitaminDShot = {
   addressedBy: {
     'Getting sick often': 'Vitamin D deficiency is directly linked to immune weakness',
   },
-  addonSuggestions: [],
+  addonSuggestions: ['triImmuneShot'],
 } as const satisfies Treatment;
 
 export const INJECTION_TREATMENTS = [

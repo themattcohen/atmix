@@ -20,13 +20,18 @@ import {
   cloneAllBundlesToEditable,
   computeDirtyBundleIds,
   isBundleDirty,
+  cloneAllQuestionsToEditable,
+  computeDirtyQuestionIds,
+  isQuestionDirty,
+  toQuestionMap,
 } from './types';
-import type { EditableTreatment, EditableBundle } from './types';
-import { generateCategoryFileTs, generateBundlesFileTs } from './codeGen';
+import type { EditableTreatment, EditableBundle, EditableQuestion } from './types';
+import { generateCategoryFileTs, generateBundlesFileTs, generateQuestionsFileTs } from './codeGen';
 import { EditorSidebar } from './EditorSidebar';
 import type { EditorMode } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
 import { BundleEditPanel } from './BundleEditPanel';
+import { QuestionEditPanel } from './QuestionEditPanel';
 import { AddTreatmentDialog } from './AddTreatmentDialog';
 import { getStoredApiKey, setStoredApiKey, clearStoredApiKey, saveConfigToWorker } from '../../../utils/configApi';
 import { META } from '../../../data/meta';
@@ -78,6 +83,18 @@ export function EditorTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  // Question state
+  const [questionDrafts, setQuestionDrafts] = useState<Record<string, EditableQuestion>>(
+    () => cloneAllQuestionsToEditable(QUESTIONS as Record<string, import('../../../types/question').Question>),
+  );
+  const questionOriginals = useMemo(
+    () => cloneAllQuestionsToEditable(QUESTIONS as Record<string, import('../../../types/question').Question>),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
+  const [questionSaveStatus, setQuestionSaveStatus] = useState<SaveStatus>({ state: 'idle' });
 
   const [editorMode, setEditorMode] = useState<EditorMode>('treatments');
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId ?? null);
@@ -171,6 +188,11 @@ export function EditorTab({
     [bundleDrafts],
   );
 
+  const dirtyQuestionIds = useMemo(
+    () => computeDirtyQuestionIds(questionDrafts, questionOriginals),
+    [questionDrafts, questionOriginals],
+  );
+
   // Update a single field on the selected treatment draft.
   const handleUpdate = useCallback(
     (field: keyof EditableTreatment, value: unknown) => {
@@ -212,6 +234,29 @@ export function EditorTab({
       [selectedBundleId]: { ...bundleOriginals[selectedBundleId as BundleId] },
     }));
   }, [selectedBundleId, bundleOriginals]);
+
+  // Update the selected question draft.
+  const handleQuestionUpdate = useCallback(
+    (updated: EditableQuestion) => {
+      if (!selectedQuestionId) return;
+      setQuestionDrafts((prev) => ({
+        ...prev,
+        [selectedQuestionId]: updated,
+      }));
+    },
+    [selectedQuestionId],
+  );
+
+  // Reset the selected question draft to the original.
+  const handleQuestionReset = useCallback(() => {
+    if (!selectedQuestionId) return;
+    const orig = questionOriginals[selectedQuestionId];
+    if (!orig) return;
+    setQuestionDrafts((prev) => ({
+      ...prev,
+      [selectedQuestionId]: { ...orig, options: orig.options.map((o) => ({ ...o })) },
+    }));
+  }, [selectedQuestionId, questionOriginals]);
 
   // Save a single category to disk via the Vite dev middleware.
   const saveCategoryToDisk = useCallback(
@@ -320,7 +365,7 @@ export function EditorTab({
     const config = {
       treatments: Object.fromEntries(Object.entries(drafts).map(([k, v]) => [k, v])),
       bundles: Object.fromEntries(Object.entries(bundleDrafts).map(([k, v]) => [k, v])),
-      questions: QUESTIONS,
+      questions: toQuestionMap(questionDrafts),
     };
 
     const result = await saveConfigToWorker(workerUrl, config, apiKey);
@@ -337,7 +382,7 @@ export function EditorTab({
         setPublishStatus({ state: 'error', message: result.message });
       }
     }
-  }, [drafts, bundleDrafts]);
+  }, [drafts, bundleDrafts, questionDrafts]);
 
   // Save bundles.ts to disk via the Vite dev middleware.
   const saveBundlesToDisk = useCallback(
@@ -376,6 +421,70 @@ export function EditorTab({
       setBundleSaveStatus({ state: 'error', message: result.message });
     }
   }, [saveBundlesToDisk]);
+
+  // Save questions.ts to disk via the Vite dev middleware.
+  const saveQuestionsToDisk = useCallback(
+    async (): Promise<{ ok: true; path: string } | { ok: false; message: string }> => {
+      const content = generateQuestionsFileTs(Object.values(questionDrafts));
+
+      try {
+        const resp = await fetch('/api/wizard-editor/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: 'questions', content }),
+        });
+        const contentType = resp.headers.get('content-type') ?? '';
+        if (!contentType.includes('application/json')) {
+          return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy questions.ts" on the live site.' };
+        }
+        const json = await resp.json() as { ok?: boolean; path?: string; error?: string };
+        if (resp.ok && json.ok) {
+          return { ok: true, path: json.path ?? 'questions.ts' };
+        }
+        return { ok: false, message: json.error ?? `HTTP ${resp.status}` };
+      } catch {
+        return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy questions.ts" on the live site.' };
+      }
+    },
+    [questionDrafts],
+  );
+
+  const handleQuestionSave = useCallback(async () => {
+    setQuestionSaveStatus({ state: 'saving' });
+    const result = await saveQuestionsToDisk();
+    if (result.ok) {
+      setQuestionSaveStatus({ state: 'saved', path: result.path });
+      setTimeout(() => setQuestionSaveStatus({ state: 'idle' }), 3000);
+    } else {
+      setQuestionSaveStatus({ state: 'error', message: result.message });
+    }
+  }, [saveQuestionsToDisk]);
+
+  // Delete the selected treatment from editor state.
+  const handleDeleteTreatment = useCallback(() => {
+    if (!selectedId) return;
+    const draft = drafts[selectedId];
+    if (!draft) return;
+
+    // Count references for the warning message
+    const questionRefs = Object.values(QUESTIONS).filter(q =>
+      q.type === 'single' && q.options.some(o => 'recommend' in o && o.recommend === selectedId)
+    ).length;
+    const bundleRefs = Object.values(bundleDrafts).filter(b =>
+      b.primary === selectedId || b.addOn === selectedId
+    ).length;
+
+    const refCount = questionRefs + bundleRefs;
+    const msg = refCount > 0
+      ? `Delete "${draft.name}"? Referenced by ${questionRefs} question(s) and ${bundleRefs} bundle(s). Those references will break.`
+      : `Delete "${draft.name}"?`;
+
+    if (!window.confirm(msg)) return;
+
+    setDrafts(prev => { const n = { ...prev }; delete n[selectedId]; return n; });
+    setOriginals(prev => { const n = { ...prev }; delete n[selectedId]; return n; });
+    setSelectedId(null);
+  }, [selectedId, drafts, bundleDrafts]);
 
   // Add Treatment dialog handler.
   const handleAddTreatment = useCallback(
@@ -422,6 +531,11 @@ export function EditorTab({
     ? isBundleDirty(selectedBundleDraft, BUNDLES[selectedBundleId as BundleId])
     : false;
 
+  const selectedQuestionDraft = selectedQuestionId ? questionDrafts[selectedQuestionId] : null;
+  const selectedQuestionIsDirty = selectedQuestionId && selectedQuestionDraft
+    ? isQuestionDirty(selectedQuestionDraft, questionOriginals[selectedQuestionId])
+    : false;
+
   return (
     <div className="wde-editor wde-layout">
       <EditorSidebar
@@ -441,6 +555,10 @@ export function EditorTab({
         selectedBundleId={selectedBundleId}
         onSelectBundle={setSelectedBundleId}
         dirtyBundleIds={dirtyBundleIds}
+        questions={questionDrafts}
+        selectedQuestionId={selectedQuestionId}
+        onSelectQuestion={setSelectedQuestionId}
+        dirtyQuestionIds={dirtyQuestionIds}
       />
 
       {showAddDialog && (
@@ -468,6 +586,7 @@ export function EditorTab({
             onPublish={handlePublishToCloud}
             canPublish={canPublish}
             publishStatus={publishStatus}
+            onDelete={handleDeleteTreatment}
           />
         ) : (
           <div className="wde-main">
@@ -479,7 +598,7 @@ export function EditorTab({
             </div>
           </div>
         )
-      ) : (
+      ) : editorMode === 'bundles' ? (
         selectedBundleDraft ? (
           <BundleEditPanel
             bundle={selectedBundleDraft}
@@ -500,6 +619,32 @@ export function EditorTab({
               <div>Select a bundle</div>
               <div className="wde-empty-state-hint">
                 Choose a bundle from the sidebar to begin editing.
+              </div>
+            </div>
+          </div>
+        )
+      ) : (
+        selectedQuestionDraft ? (
+          <QuestionEditPanel
+            question={selectedQuestionDraft}
+            isDirty={selectedQuestionIsDirty}
+            allQuestions={questionDrafts}
+            allTreatments={drafts}
+            allBundles={bundleDrafts}
+            onUpdate={handleQuestionUpdate}
+            onReset={handleQuestionReset}
+            onSave={handleQuestionSave}
+            saveStatus={questionSaveStatus}
+            onPublish={handlePublishToCloud}
+            canPublish={canPublish}
+            publishStatus={publishStatus}
+          />
+        ) : (
+          <div className="wde-main">
+            <div className="wde-empty-state">
+              <div>Select a question</div>
+              <div className="wde-empty-state-hint">
+                Choose a question from the sidebar to begin editing the decision tree.
               </div>
             </div>
           </div>

@@ -51,9 +51,10 @@ export const nad250 = {
     'Stressed and burnt out':     3,
   },
   addressedBy: {
-    'Tired all the time':         'NAD+ restores the mitochondrial energy your cells need',
-    'Brain fog / can\'t focus':   'NAD+ is the coenzyme your neurons need for sustained energy',
-    'Stressed and burnt out':     'Burnout depletes NAD+ — this replenishes it at the cellular level',
+    'Tired all the time':           'NAD+ restores the mitochondrial energy your cells need',
+    'Sore muscles / slow recovery': 'NAD+ supports mitochondrial energy production in muscle cells for faster recovery',
+    'Brain fog / can\'t focus':     'NAD+ is the coenzyme your neurons need for sustained energy',
+    'Stressed and burnt out':       'Burnout depletes NAD+ — this replenishes it at the cellular level',
   },
   // nad250 auto-bundles with labVitamin (nadPlusLabs bundle)
   addonSuggestions: ['b12Shot', 'glutathioneShot'],
@@ -80,7 +81,8 @@ export const nad500 = {
     'Brain fog / can\'t focus':     4,
   },
   addressedBy: {
-    'Brain fog / can\'t focus': 'High-dose NAD+ for deep cognitive restoration',
+    'Sore muscles / slow recovery': 'High-dose NAD+ delivers deep mitochondrial restoration for comprehensive muscle repair',
+    'Brain fog / can\'t focus':     'High-dose NAD+ for deep cognitive restoration',
   },
   // Gap fix: nad500 had no addon suggestions
   addonSuggestions: ['glutathioneShot'],

@@ -43,6 +43,8 @@ function wizardEditorPlugin() {
           weightLoss: 'src/data/catalog/weightLoss.ts',
           injection:  'src/data/catalog/injections.ts',
           lab:        'src/data/catalog/labs.ts',
+          bundles:    'src/data/bundles.ts',
+          questions:  'src/data/questions.ts',
         };
 
         const filePath = fileMap[category];

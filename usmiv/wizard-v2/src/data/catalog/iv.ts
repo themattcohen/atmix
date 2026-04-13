@@ -60,7 +60,11 @@ export const myers = {
   },
   addressedBy: {
     'Tired all the time':       'The Myers\' B-vitamin stack replenishes cellular fuel',
+    'Frequent headaches':       'B vitamins and Magnesium address nutrient deficiencies that trigger tension headaches',
+    'Getting sick often':       'Vitamin C and Zinc support immune activation and reduce illness duration',
+    'Skin looks dull or aging': 'Glutathione and Vitamin C support collagen synthesis and antioxidant protection',
     'Sore muscles / slow recovery': 'Magnesium and B vitamins reduce soreness and cramping',
+    'Brain fog / can\'t focus': 'B vitamins and Magnesium restore neurotransmitter support for mental clarity',
     'Dehydrated / dry all the time': 'Full vitamin IV that also addresses dehydration',
     'Stressed and burnt out':   'The gold-standard stress and burnout reset',
   },
@@ -146,7 +150,9 @@ export const altitude = {
   scoringWeights: {
     'Dehydrated / dry all the time': 2,
   },
-  addressedBy: {},
+  addressedBy: {
+    'Dehydrated / dry all the time': 'High-altitude air is extremely dry -- this IV replaces fluid your body loses faster at elevation',
+  },
   addonSuggestions: ['b12Shot'],
 } as const satisfies Treatment;
 
@@ -273,8 +279,13 @@ export const myersGold = {
     'Stressed and burnt out':        4,
   },
   addressedBy: {
-    'Tired all the time':   'Double-dose B12 and B-Complex deliver a stronger cellular energy boost than the standard Myers\'',
-    'Stressed and burnt out': 'Doubled vitamin concentrations provide a deeper reset for burnout and chronic stress',
+    'Tired all the time':         'Double-dose B12 and B-Complex deliver a stronger cellular energy boost than the standard Myers\'',
+    'Frequent headaches':         'Double-dose Magnesium is a proven migraine and tension headache preventative',
+    'Getting sick often':         'High-dose Vitamin C and Zinc provide stronger immune activation',
+    'Skin looks dull or aging':   'Glutathione and Calcium Gluconate support skin health at elevated concentrations',
+    'Sore muscles / slow recovery': 'Double-dose Magnesium and B-Complex accelerate muscle repair',
+    'Dehydrated / dry all the time': 'Elevated saline base and double electrolytes address deeper dehydration',
+    'Stressed and burnt out':     'Doubled vitamin concentrations provide a deeper reset for burnout and chronic stress',
   },
   addonSuggestions: ['b12Shot', 'glutathioneShot'],
 } as const satisfies Treatment;
@@ -345,9 +356,14 @@ export const myersPlatinum = {
     'Stressed and burnt out':        5,
   },
   addressedBy: {
-    'Tired all the time':   'Triple-dose B12 and B-Complex plus NAD+ deliver maximum cellular energy restoration',
-    'Stressed and burnt out': 'Triple vitamin concentrations plus NAD+ — our strongest burnout reset',
-    'Brain fog / can\'t focus': 'NAD+ 50mg combined with triple B-Complex for peak cognitive support',
+    'Tired all the time':         'Triple-dose B12 and B-Complex plus NAD+ deliver maximum cellular energy restoration',
+    'Frequent headaches':         'Triple-dose Magnesium exceeds ER migraine protocol concentrations',
+    'Getting sick often':         'Maximum-dose Vitamin C and Zinc for peak immune activation',
+    'Skin looks dull or aging':   'High-dose Glutathione with NAD+ delivers aggressive cellular anti-aging',
+    'Sore muscles / slow recovery': 'Triple-dose Magnesium and B-Complex at maximum concentrations for full recovery',
+    'Brain fog / can\'t focus':   'NAD+ 50mg combined with triple B-Complex for peak cognitive support',
+    'Dehydrated / dry all the time': 'Triple vitamin concentration plus NAD+ addresses dehydration and cellular depletion',
+    'Stressed and burnt out':     'Triple vitamin concentrations plus NAD+ — our strongest burnout reset',
   },
   addonSuggestions: ['glutathioneShot', 'b12Shot'],
 } as const satisfies Treatment;

@@ -307,3 +307,137 @@ export function computeDirtyBundleIds(
   }
   return dirty;
 }
+
+// ── EditableOption / EditableQuestion ─────────────────────────────────────────
+
+import type { Question, SingleQuestion, MultiQuestion, SingleOption, SymptomOption } from '../../../types/question';
+import type { QuestionId } from '../../../types/question';
+
+export interface EditableOption {
+  label: string;
+  sublabel: string;
+  icon: string;
+  next: string;       // question ID, '' if using recommend
+  recommend: string;  // treatment/bundle ID, '' if using next
+}
+
+export interface EditableQuestion {
+  id: string;
+  type: 'single' | 'multi';
+  title: string;
+  subtitle: string;
+  options: EditableOption[];
+}
+
+// ── Clone: Question (readonly) -> EditableQuestion (mutable) ─────────────────
+
+function cloneOptionToEditable(opt: SingleOption | SymptomOption): EditableOption {
+  return {
+    label: opt.label,
+    sublabel: opt.sublabel ?? '',
+    icon: opt.icon ?? '',
+    next: ('next' in opt ? opt.next : undefined) ?? '',
+    recommend: ('recommend' in opt ? opt.recommend : undefined) ?? '',
+  };
+}
+
+export function cloneQuestionToEditable(q: Question): EditableQuestion {
+  return {
+    id: q.id,
+    type: q.type,
+    title: q.title,
+    subtitle: q.subtitle ?? '',
+    options: q.options.map((opt) => cloneOptionToEditable(opt as SingleOption | SymptomOption)),
+  };
+}
+
+export function cloneAllQuestionsToEditable(
+  questions: Record<string, Question>,
+): Record<string, EditableQuestion> {
+  return Object.fromEntries(
+    Object.entries(questions).map(([id, q]) => [id, cloneQuestionToEditable(q)]),
+  );
+}
+
+// ── Question dirty checks ─────────────────────────────────────────────────────
+
+function canonicalizeQuestion(q: EditableQuestion): string {
+  return JSON.stringify({
+    title: q.title,
+    subtitle: q.subtitle,
+    options: q.options.map((o) => ({
+      label: o.label,
+      sublabel: o.sublabel,
+      icon: o.icon,
+      next: o.next,
+      recommend: o.recommend,
+    })),
+  });
+}
+
+export function isQuestionDirty(draft: EditableQuestion, original: EditableQuestion): boolean {
+  return canonicalizeQuestion(draft) !== canonicalizeQuestion(original);
+}
+
+export function computeDirtyQuestionIds(
+  drafts: Record<string, EditableQuestion>,
+  originals: Record<string, EditableQuestion>,
+): Set<string> {
+  const dirty = new Set<string>();
+  for (const id of Object.keys(drafts)) {
+    const orig = originals[id];
+    if (!orig || isQuestionDirty(drafts[id], orig)) {
+      dirty.add(id);
+    }
+  }
+  return dirty;
+}
+
+// ── Convert EditableQuestion drafts back to Question map ─────────────────────
+
+function editableToSingleOption(o: EditableOption): SingleOption {
+  return {
+    label: o.label,
+    ...(o.sublabel ? { sublabel: o.sublabel } : {}),
+    ...(o.icon ? { icon: o.icon } : {}),
+    ...(o.next ? { next: o.next as QuestionId } : {}),
+    ...(o.recommend ? { recommend: o.recommend } : {}),
+  } as SingleOption;
+}
+
+function editableToSymptomOption(o: EditableOption): SymptomOption {
+  return {
+    label: o.label,
+    ...(o.sublabel ? { sublabel: o.sublabel } : {}),
+    ...(o.icon ? { icon: o.icon } : {}),
+  } as SymptomOption;
+}
+
+function editableToQuestion(q: EditableQuestion): Question {
+  if (q.type === 'multi') {
+    const mq: MultiQuestion = {
+      id: q.id as 'symptoms',
+      type: 'multi',
+      title: q.title,
+      options: q.options.map(editableToSymptomOption) as unknown as readonly SymptomOption[],
+    };
+    if (q.subtitle) (mq as { subtitle?: string }).subtitle = q.subtitle;
+    return mq;
+  }
+  const sq: SingleQuestion = {
+    id: q.id as QuestionId,
+    type: 'single',
+    title: q.title,
+    options: q.options.map(editableToSingleOption) as unknown as readonly SingleOption[],
+  };
+  if (q.subtitle) (sq as { subtitle?: string }).subtitle = q.subtitle;
+  return sq;
+}
+
+export function toQuestionMap(
+  drafts: Record<string, EditableQuestion>,
+): Record<string, Question> {
+  return Object.fromEntries(
+    Object.entries(drafts).map(([id, q]) => [id, editableToQuestion(q)]),
+  );
+}

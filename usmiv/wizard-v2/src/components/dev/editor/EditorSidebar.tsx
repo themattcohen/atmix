@@ -10,11 +10,12 @@ import type { TreatmentCategory, TreatmentId } from '../../../types/treatment';
 import type { BundleId } from '../../../types/bundle';
 import type { EditableTreatment } from './types';
 import type { EditableBundle } from './types';
+import type { EditableQuestion } from './types';
 import { CATEGORY_ORDER, catBadgeSmClass } from '../../../utils/dashboardHelpers';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type EditorMode = 'treatments' | 'bundles';
+export type EditorMode = 'treatments' | 'bundles' | 'questions';
 
 interface EditorSidebarProps {
   // Mode
@@ -38,6 +39,12 @@ interface EditorSidebarProps {
   selectedBundleId: string | null;
   onSelectBundle: (id: string) => void;
   dirtyBundleIds: Set<BundleId>;
+
+  // Questions mode
+  questions: Record<string, EditableQuestion>;
+  selectedQuestionId: string | null;
+  onSelectQuestion: (id: string) => void;
+  dirtyQuestionIds: Set<string>;
 }
 
 // ── Category config ───────────────────────────────────────────────────────────
@@ -80,6 +87,10 @@ export function EditorSidebar({
   selectedBundleId,
   onSelectBundle,
   dirtyBundleIds,
+  questions,
+  selectedQuestionId,
+  onSelectQuestion,
+  dirtyQuestionIds,
 }: EditorSidebarProps): React.ReactElement {
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value),
@@ -116,6 +127,13 @@ export function EditorSidebar({
     return b.name.toLowerCase().includes(q) || b.id.toLowerCase().includes(q);
   });
 
+  // Filter questions (search only -- no category)
+  const filteredQuestions = Object.values(questions).filter((q) => {
+    if (!searchQuery.trim()) return true;
+    const s = searchQuery.toLowerCase();
+    return q.id.toLowerCase().includes(s) || q.title.toLowerCase().includes(s);
+  });
+
   return (
     <aside className="wde-sidebar">
       {/* Search */}
@@ -123,7 +141,13 @@ export function EditorSidebar({
         <input
           className="wde-search-input"
           type="search"
-          placeholder={mode === 'bundles' ? 'Search bundles...' : 'Search treatments...'}
+          placeholder={
+            mode === 'bundles'
+              ? 'Search bundles...'
+              : mode === 'questions'
+              ? 'Search questions...'
+              : 'Search treatments...'
+          }
           value={searchQuery}
           onChange={handleSearchChange}
         />
@@ -144,6 +168,13 @@ export function EditorSidebar({
           onClick={() => onModeChange('bundles')}
         >
           Bundles
+        </button>
+        <button
+          className={`wde-mode-pill${mode === 'questions' ? ' wde-mode-pill--active' : ''}`}
+          type="button"
+          onClick={() => onModeChange('questions')}
+        >
+          Questions
         </button>
       </div>
 
@@ -210,7 +241,7 @@ export function EditorSidebar({
             </li>
           )}
         </ul>
-      ) : (
+      ) : mode === 'bundles' ? (
         <ul className="wde-list">
           {filteredBundles.map((b) => {
             const isBundleDirtyFlag = dirtyBundleIds.has(b.id as BundleId);
@@ -239,6 +270,40 @@ export function EditorSidebar({
           {filteredBundles.length === 0 && (
             <li style={{ padding: '20px 12px', color: '#64748b', fontSize: 12, textAlign: 'center' }}>
               No bundles match
+            </li>
+          )}
+        </ul>
+      ) : (
+        <ul className="wde-list">
+          {filteredQuestions.map((q) => {
+            const isQuestionDirty = dirtyQuestionIds.has(q.id);
+            const isSelected = selectedQuestionId === q.id;
+
+            let cls = 'wde-list-item';
+            if (isSelected) cls += ' wde-list-item--selected';
+
+            return (
+              <li
+                key={q.id}
+                className={cls}
+                onClick={() => onSelectQuestion(q.id)}
+              >
+                <span className="wde-cat-badge-sm wde-cat-badge-sm--question">
+                  {q.type === 'multi' ? 'mlt' : 'sngl'}
+                </span>
+                <span className="wde-list-item-info">
+                  <span className="wde-list-item-name">{q.title}</span>
+                  <span className="wde-list-item-price" style={{ fontFamily: 'var(--wde-font-mono)', fontSize: 10 }}>
+                    {q.id}
+                  </span>
+                </span>
+                {isQuestionDirty && <span className="wde-dot wde-dot--dirty" title="Unsaved changes" />}
+              </li>
+            );
+          })}
+          {filteredQuestions.length === 0 && (
+            <li style={{ padding: '20px 12px', color: '#64748b', fontSize: 12, textAlign: 'center' }}>
+              No questions match
             </li>
           )}
         </ul>

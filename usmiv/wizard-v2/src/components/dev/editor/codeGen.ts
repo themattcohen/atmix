@@ -12,7 +12,7 @@
  */
 
 import type { TreatmentCategory } from '../../../types/treatment';
-import type { EditableTreatment, EditableBundle } from './types';
+import type { EditableTreatment, EditableBundle, EditableOption, EditableQuestion } from './types';
 import { SYMPTOM_LABELS } from '../../../data';
 
 // ── String escaping ───────────────────────────────────────────────────────────
@@ -348,6 +348,108 @@ export function generateBundlesFileTs(bundles: EditableBundle[]): string {
 
   const ids = bundles.map((b) => b.id).join(', ');
   blocks.push(`export const BUNDLES_ARRAY = [${ids}] as const;`);
+  blocks.push('');
+
+  return blocks.join('\n');
+}
+
+// ── Question code generation ──────────────────────────────────────────────────
+
+/**
+ * Formats a single option object for a SingleQuestion.
+ * Produces a compact inline object when all fields are short, or
+ * multi-line when there is a sublabel.
+ */
+function formatSingleOption(opt: EditableOption, indent: string): string {
+  const parts: string[] = [];
+  parts.push(`label: ${escapeStr(opt.label)}`);
+  if (opt.sublabel) parts.push(`sublabel: ${escapeStr(opt.sublabel)}`);
+  if (opt.icon) parts.push(`icon: ${escapeStr(opt.icon)}`);
+  if (opt.next) parts.push(`next: ${escapeStr(opt.next)}`);
+  if (opt.recommend) parts.push(`recommend: ${escapeStr(opt.recommend)}`);
+
+  // Use inline if only label+icon+next/recommend and no sublabel
+  const hasSubLabel = !!opt.sublabel;
+  if (!hasSubLabel && parts.length <= 3) {
+    return `${indent}{ ${parts.join(', ')} },`;
+  }
+  // Multi-line
+  const inner = `${indent}  `;
+  const lines = parts.map((p) => `${inner}${p},`).join('\n');
+  return `${indent}{\n${lines}\n${indent}},`;
+}
+
+/**
+ * Formats a single option object for a MultiQuestion (SymptomOption).
+ * Only label and icon are used (no next/recommend).
+ */
+function formatSymptomOption(opt: EditableOption, indent: string): string {
+  const parts: string[] = [];
+  parts.push(`label: ${escapeStr(opt.label)}`);
+  if (opt.sublabel) parts.push(`sublabel: ${escapeStr(opt.sublabel)}`);
+  if (opt.icon) parts.push(`icon: ${escapeStr(opt.icon)}`);
+  // Pad label for alignment when only label+icon (matches original questions.ts style)
+  return `${indent}{ ${parts.join(', ')} },`;
+}
+
+/**
+ * Generates the `export const <id>: SingleQuestion = { ... };` or
+ * `export const <id>: MultiQuestion = { ... };` block for one question.
+ * Output ends with a newline. Matches the format of src/data/questions.ts.
+ */
+export function generateQuestionTs(q: EditableQuestion): string {
+  const i = '  '; // 2-space indent
+  const typeName = q.type === 'multi' ? 'MultiQuestion' : 'SingleQuestion';
+  const lines: string[] = [];
+
+  lines.push(`export const ${q.id}: ${typeName} = {`);
+  lines.push(`${i}id: ${escapeStr(q.id)},`);
+  lines.push(`${i}type: ${escapeStr(q.type)},`);
+  lines.push(`${i}title: ${escapeStr(q.title)},`);
+  if (q.subtitle) {
+    lines.push(`${i}subtitle: ${escapeStr(q.subtitle)},`);
+  }
+
+  if (q.options.length === 0) {
+    lines.push(`${i}options: [],`);
+  } else {
+    lines.push(`${i}options: [`);
+    for (const opt of q.options) {
+      if (q.type === 'multi') {
+        lines.push(formatSymptomOption(opt, `${i}  `));
+      } else {
+        lines.push(formatSingleOption(opt, `${i}  `));
+      }
+    }
+    lines.push(`${i}],`);
+  }
+
+  lines.push('};');
+  return lines.join('\n') + '\n';
+}
+
+/**
+ * Generates the complete questions.ts file for all questions.
+ * Matches the format of src/data/questions.ts exactly, including
+ * the QUESTIONS_ARRAY export at the bottom.
+ */
+export function generateQuestionsFileTs(questions: EditableQuestion[]): string {
+  const blocks: string[] = [];
+
+  blocks.push("import type { Question, SingleQuestion, MultiQuestion } from '../types/question';");
+  blocks.push('');
+
+  for (const q of questions) {
+    blocks.push(generateQuestionTs(q));
+    blocks.push('');
+  }
+
+  // QUESTIONS_ARRAY footer — matches the original file
+  blocks.push('export const QUESTIONS_ARRAY: readonly Question[] = [');
+  for (const q of questions) {
+    blocks.push(`  ${q.id},`);
+  }
+  blocks.push('];');
   blocks.push('');
 
   return blocks.join('\n');

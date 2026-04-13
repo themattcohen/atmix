@@ -1643,3 +1643,121 @@
 }
 .wde-publish-btn:hover { background: #4338ca; }
 .wde-publish-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.wde-delete-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.wde-delete-btn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+/* ── Question option rows ─────────────────────────────────────────────────── */
+
+.wde-option-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--wde-input-border, #e2e8f0);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: var(--wde-content-surface);
+  transition: border-color var(--wde-t), box-shadow var(--wde-t);
+}
+
+.wde-option-row:hover {
+  border-color: var(--wde-content-border-mid);
+  box-shadow: var(--wde-shadow-card);
+}
+
+.wde-option-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wde-option-routing {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.wde-routing-toggle {
+  display: flex;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.wde-routing-pill {
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: var(--wde-content-muted);
+  font-family: var(--wde-font-sans);
+  font-weight: 500;
+  transition: background var(--wde-t), color var(--wde-t);
+  white-space: nowrap;
+}
+
+.wde-routing-pill:hover {
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--wde-accent);
+}
+
+.wde-routing-pill--active {
+  background: var(--wde-accent);
+  color: white;
+}
+
+.wde-routing-select {
+  flex: 1;
+  min-width: 160px;
+}
+
+.wde-option-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.wde-option-add {
+  width: 100%;
+  padding: 8px;
+  border: 1px dashed var(--wde-input-border, #e2e8f0);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wde-content-muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--wde-font-sans);
+  font-weight: 500;
+  transition: border-color var(--wde-t), color var(--wde-t), background var(--wde-t);
+  margin-top: 4px;
+}
+
+.wde-option-add:hover {
+  border-color: var(--wde-accent);
+  color: var(--wde-accent);
+  background: var(--wde-accent-light);
+}
+
+/* Question badge in sidebar */
+.wde-cat-badge-sm--question { background: rgba(14,165,233,0.2); color: #38bdf8; }
