@@ -617,18 +617,25 @@
     var params = new URLSearchParams(root.location.search);
     var slug   = params.get('slug') || '';
 
-    // Fetch both JSON files in parallel
+    // Fetch treatment data: try Cloudflare Worker first (live config), fall back to static JSON
     var detailUrl  = './treatments-detail.json';
     var configUrl  = '../wizard-config.json';
+    var workerUrl  = 'https://wizard-config.shiny-field-7198.workers.dev/config';
 
     Promise.all([
       fetch(detailUrl).then(function (r) {
         if (!r.ok) return {};
         return r.json().catch(function () { return {}; });
       }),
-      fetch(configUrl).then(function (r) {
-        if (!r.ok) throw new Error('Failed to load wizard config');
+      fetch(workerUrl).then(function (r) {
+        if (!r.ok) throw new Error('Worker unavailable');
         return r.json();
+      }).catch(function () {
+        // Fall back to static config if Worker is down
+        return fetch(configUrl).then(function (r) {
+          if (!r.ok) throw new Error('Failed to load wizard config');
+          return r.json();
+        });
       })
     ]).then(function (results) {
       var rawDetail    = results[0];
