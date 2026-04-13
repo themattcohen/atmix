@@ -1,15 +1,15 @@
 const API_KEY_STORAGE_KEY = 'wde_config_api_key';
 
 export function getStoredApiKey(): string | null {
-  try { return localStorage.getItem(API_KEY_STORAGE_KEY); } catch { return null; }
+  try { return sessionStorage.getItem(API_KEY_STORAGE_KEY); } catch { return null; }
 }
 
 export function setStoredApiKey(key: string): void {
-  try { localStorage.setItem(API_KEY_STORAGE_KEY, key); } catch { /* ignore */ }
+  try { sessionStorage.setItem(API_KEY_STORAGE_KEY, key); } catch { /* ignore */ }
 }
 
 export function clearStoredApiKey(): void {
-  try { localStorage.removeItem(API_KEY_STORAGE_KEY); } catch { /* ignore */ }
+  try { sessionStorage.removeItem(API_KEY_STORAGE_KEY); } catch { /* ignore */ }
 }
 
 export async function saveConfigToWorker(

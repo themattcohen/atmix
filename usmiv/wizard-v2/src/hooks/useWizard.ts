@@ -127,7 +127,6 @@ export function wizardReducer(state: WizardState, action: WizardAction): WizardS
           currentView: 'question',
           currentQuestionId: 'symptoms',
           multiResults: [],
-          sessionPlan: [],
           stepNumber: Math.max(0, state.stepNumber - 1),
         };
       }

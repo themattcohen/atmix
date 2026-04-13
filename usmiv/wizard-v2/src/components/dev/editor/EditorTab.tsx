@@ -252,6 +252,16 @@ export function EditorTab({
     if (result.ok) {
       setSaveStatus({ state: 'saved', path: result.path });
       setTimeout(() => setSaveStatus({ state: 'idle' }), 3000);
+      // Update originals for the saved category so dirty indicators clear.
+      setOriginals((prev) => {
+        const updated = { ...prev };
+        for (const [id, draft] of Object.entries(drafts)) {
+          if ((draft as EditableTreatment).category === category) {
+            updated[id] = { ...(draft as EditableTreatment) };
+          }
+        }
+        return updated;
+      });
     } else {
       setSaveStatus({ state: 'error', message: result.message });
     }
@@ -280,6 +290,16 @@ export function EditorTab({
     if (errors.length === 0) {
       setSaveStatus({ state: 'saved', path: savedPaths.join(', ') });
       setTimeout(() => setSaveStatus({ state: 'idle' }), 3000);
+      // Update originals for all saved categories so dirty indicators clear.
+      setOriginals((prev) => {
+        const updated = { ...prev };
+        for (const [id, draft] of Object.entries(drafts)) {
+          if (dirtyCategories.has((draft as EditableTreatment).category)) {
+            updated[id] = { ...(draft as EditableTreatment) };
+          }
+        }
+        return updated;
+      });
     } else {
       setSaveStatus({ state: 'error', message: errors.join(' | ') });
     }

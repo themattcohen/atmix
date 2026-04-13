@@ -204,10 +204,7 @@ function buildBookingUrl(
   params.set('datetime', selectedTime);
 
   if (acuityDropdownValue) {
-    // field param requires acuityFieldId from meta, which is not yet exposed
-    // in data/meta.ts. Omit it until meta is extended.
-    // When acuityFieldId is added to META, replace with:
-    //   params.set(`field:${META.acuityFieldId}`, acuityDropdownValue);
+    params.set('field:' + META.acuityFieldId, acuityDropdownValue);
   }
 
   const addOnNames: string[] = [];

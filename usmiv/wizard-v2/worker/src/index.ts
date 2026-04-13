@@ -16,26 +16,55 @@ const BACKUP_KEY_PREFIX = 'wizard-config-backup-';
 const BACKUP_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
 const CACHE_MAX_AGE = 60; // seconds
 
-const CORS_HEADERS: Record<string, string> = {
+// CORS headers for public GET responses (wildcard is safe for read-only data).
+const CORS_HEADERS_PUBLIC: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, X-API-Key',
   'Access-Control-Max-Age': '86400',
 };
 
-function jsonResponse(data: unknown, status: number, extraHeaders: Record<string, string> = {}): Response {
+// For write (PUT) responses, reflect the request's Origin instead of wildcard
+// so that CORS provides origin-level defense-in-depth alongside the API key.
+function corsHeadersForOrigin(origin: string | null): Record<string, string> {
+  return {
+    'Access-Control-Allow-Origin': origin ?? '*',
+    'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-API-Key',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
+async function timeSafeEqual(a: string, b: string): Promise<boolean> {
+  const enc = new TextEncoder();
+  const aKey = await crypto.subtle.importKey(
+    'raw', enc.encode(a), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  );
+  const aSig = await crypto.subtle.sign('HMAC', aKey, enc.encode('verify'));
+  const bKey = await crypto.subtle.importKey(
+    'raw', enc.encode(b), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  );
+  const bSig = await crypto.subtle.sign('HMAC', bKey, enc.encode('verify'));
+  const aArr = new Uint8Array(aSig);
+  const bArr = new Uint8Array(bSig);
+  if (aArr.length !== bArr.length) return false;
+  let diff = 0;
+  for (let i = 0; i < aArr.length; i++) diff |= aArr[i] ^ bArr[i];
+  return diff === 0;
+}
+
+function jsonResponse(data: unknown, status: number, corsHeaders: Record<string, string> = CORS_HEADERS_PUBLIC): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json',
-      ...CORS_HEADERS,
-      ...extraHeaders,
+      ...corsHeaders,
     },
   });
 }
 
-function errorResponse(message: string, status: number): Response {
-  return jsonResponse({ error: message }, status);
+function errorResponse(message: string, status: number, corsHeaders: Record<string, string> = CORS_HEADERS_PUBLIC): Response {
+  return jsonResponse({ error: message }, status, corsHeaders);
 }
 
 /**
@@ -63,8 +92,8 @@ function validateConfigShape(config: unknown): { valid: boolean; reason?: string
   if (typeof obj.bundles !== 'object' || obj.bundles === null) {
     return { valid: false, reason: 'bundles must be an object' };
   }
-  if (!Array.isArray(obj.questions)) {
-    return { valid: false, reason: 'questions must be an array' };
+  if (typeof obj.questions !== 'object' || obj.questions === null || Array.isArray(obj.questions)) {
+    return { valid: false, reason: 'questions must be an object' };
   }
 
   return { valid: true };
@@ -82,16 +111,20 @@ async function handleGet(env: Env): Promise<Response> {
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': `public, max-age=${CACHE_MAX_AGE}, s-maxage=${CACHE_MAX_AGE}`,
-      ...CORS_HEADERS,
+      ...CORS_HEADERS_PUBLIC,
     },
   });
 }
 
 async function handlePut(request: Request, env: Env): Promise<Response> {
+  // Reflect the request's Origin for PUT responses so CORS provides
+  // origin-level defense-in-depth alongside the API key (H3).
+  const putCors = corsHeadersForOrigin(request.headers.get('Origin'));
+
   // Authenticate
   const apiKey = request.headers.get('X-API-Key');
-  if (!apiKey || apiKey !== env.API_KEY) {
-    return errorResponse('unauthorized', 401);
+  if (!apiKey || !(await timeSafeEqual(apiKey, env.API_KEY))) {
+    return errorResponse('unauthorized', 401, putCors);
   }
 
   // Parse body
@@ -99,13 +132,13 @@ async function handlePut(request: Request, env: Env): Promise<Response> {
   try {
     body = await request.json();
   } catch {
-    return errorResponse('invalid_json', 400);
+    return errorResponse('invalid_json', 400, putCors);
   }
 
   // Validate shape
   const { valid, reason } = validateConfigShape(body);
   if (!valid) {
-    return jsonResponse({ error: 'invalid_config_shape', reason }, 400);
+    return jsonResponse({ error: 'invalid_config_shape', reason }, 400, putCors);
   }
 
   // Back up existing config before overwriting
@@ -119,7 +152,7 @@ async function handlePut(request: Request, env: Env): Promise<Response> {
   const payload = JSON.stringify(body);
   await env.WIZARD_CONFIG.put(CONFIG_KEY, payload);
 
-  return jsonResponse({ ok: true, updatedAt: new Date().toISOString() }, 200);
+  return jsonResponse({ ok: true, updatedAt: new Date().toISOString() }, 200, putCors);
 }
 
 async function handleGetHistory(env: Env): Promise<Response> {
@@ -146,7 +179,7 @@ export default {
 
     // CORS preflight
     if (method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: CORS_HEADERS });
+      return new Response(null, { status: 204, headers: CORS_HEADERS_PUBLIC });
     }
 
     if (path === '/config') {

@@ -173,6 +173,13 @@ export function MultiResultScreen({
         </div>
       )}
 
+      {/* Hint when no items have been added to session yet */}
+      {sessionPlan.length === 0 && results.length > 0 && (
+        <p className="tw-session-hint">
+          Add at least one treatment above to book your session.
+        </p>
+      )}
+
       {/* Session plan (sticky cart footer) */}
       <SessionPlan
         items={sessionPlan}

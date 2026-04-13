@@ -5,6 +5,7 @@ export interface WizardMeta {
   readonly phoneNumber: string;
   readonly reviewCount: string;
   readonly promoText?: string;
+  readonly acuityFieldId: number;
 }
 
 export const META: WizardMeta = {
@@ -15,4 +16,5 @@ export const META: WizardMeta = {
   configWorkerUrl: '',
   phoneNumber: '303-406-4500',
   reviewCount: '546',
+  acuityFieldId: 13062568,
 };

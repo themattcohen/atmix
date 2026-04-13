@@ -198,22 +198,6 @@ export function editableToTreatment(d: EditableTreatment): Treatment {
 import type { ValidationResult } from '../../../engine/validateConfig';
 
 /**
- * Returns the set of treatment IDs whose draft differs from the original.
- */
-export function computeDirtyIds(
-  drafts: Record<TreatmentId, EditableTreatment>,
-  originals: Readonly<Record<TreatmentId, Treatment>>,
-): Set<TreatmentId> {
-  const dirty = new Set<TreatmentId>();
-  for (const id of Object.keys(drafts) as TreatmentId[]) {
-    if (isDirty(drafts[id], originals[id])) {
-      dirty.add(id);
-    }
-  }
-  return dirty;
-}
-
-/**
  * Returns the set of treatment IDs that have at least one validation error.
  * Parses subjects of the form 'treatment:<id>'.
  */
