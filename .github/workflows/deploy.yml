@@ -68,6 +68,7 @@ jobs:
           cp usmiv/wizard-v2/dist/wizard.js dist/wizard-of-iv-v2/
           cp usmiv/wizard-v2/dist/wizard.css dist/wizard-of-iv-v2/
           cp usmiv/wizard-v2/demo.html dist/wizard-of-iv-v2/index.html
+          cp usmiv/wizard-v2/wordpress/treatment-sync.js dist/wizard-of-iv-v2/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

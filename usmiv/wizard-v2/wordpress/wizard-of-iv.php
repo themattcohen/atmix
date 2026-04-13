@@ -58,3 +58,18 @@ function wizard_of_iv_shortcode($atts) {
     );
 }
 add_shortcode('treatment-wizard', 'wizard_of_iv_shortcode');
+
+// Auto-load the treatment sync script on pages with ?slug= parameter.
+// This keeps treatment detail pages in sync with the Cloudflare config.
+function wizard_of_iv_treatment_sync() {
+    if (isset($_GET['slug']) && !empty($_GET['slug'])) {
+        wp_enqueue_script(
+            'wizard-of-iv-sync',
+            'https://atmix.org/wizard-of-iv-v2/treatment-sync.js',
+            [],
+            '2.0.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'wizard_of_iv_treatment_sync');
