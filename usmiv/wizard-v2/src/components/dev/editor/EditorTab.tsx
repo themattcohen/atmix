@@ -406,7 +406,7 @@ export function EditorTab({
     <div className="wde-editor wde-layout">
       <EditorSidebar
         mode={editorMode}
-        onModeChange={setEditorMode}
+        onModeChange={(m) => { setEditorMode(m); setSearchQuery(''); }}
         drafts={drafts}
         selectedId={selectedId}
         onSelect={setSelectedId}

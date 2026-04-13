@@ -1,0 +1,222 @@
+Wizard of IV v2 -- Deployment Guide
+=====================================
+
+This guide is for the web developer deploying the wizard to the US Mobile IV
+WordPress site. It covers everything: embedding the wizard, setting up the
+config backend, and going live.
+
+
+WHAT YOU'RE DEPLOYING
+----------------------
+
+The wizard is a single JavaScript file + CSS file that drops onto any page.
+When it loads, it attaches to any button with a data-treatment-wizard
+attribute. Clicking that button opens a modal with the treatment finder.
+
+Files:
+  wizard.js   (~95KB gzip) -- the wizard app (React bundled in)
+  wizard.css  (~15KB gzip) -- all styles (scoped, won't conflict with your CSS)
+
+Currently hosted at:
+  https://atmix.org/wizard-of-iv-v2/wizard.js
+  https://atmix.org/wizard-of-iv-v2/wizard.css
+
+
+STEP 1: ADD THE WIZARD TO WORDPRESS
+-------------------------------------
+
+Option A: WordPress Plugin (recommended)
+
+  1. In the repo, find: usmiv/wizard-v2/wordpress/wizard-of-iv.php
+  2. Create folder: wp-content/plugins/wizard-of-iv/
+  3. Copy wizard-of-iv.php into that folder
+  4. Go to WordPress Admin > Plugins > Activate "Wizard of IV"
+  5. On any page, add the shortcode: [treatment-wizard]
+  6. Done -- the wizard appears as a "Find My Treatment" button
+
+  Shortcode options:
+    [treatment-wizard]                        -- default button
+    [treatment-wizard text="Get Started"]     -- custom button text
+    [treatment-wizard class="my-class"]       -- add a CSS class
+    [treatment-wizard style="margin: 20px;"]  -- inline styles
+
+  The plugin only loads wizard.js/css on pages that use the shortcode.
+  No extra load on other pages.
+
+Option B: Manual Embed (no plugin)
+
+  Add to the theme's header.php or a Custom HTML widget:
+
+    <link rel="stylesheet" href="https://atmix.org/wizard-of-iv-v2/wizard.css">
+    <script src="https://atmix.org/wizard-of-iv-v2/wizard.js" defer></script>
+
+  Then add a button anywhere:
+
+    <button data-treatment-wizard>Find My Treatment</button>
+
+  Any HTML element with data-treatment-wizard will open the wizard.
+
+
+STEP 2: SET UP THE CONFIG BACKEND (Cloudflare Worker)
+-------------------------------------------------------
+
+This step makes it so treatment config (prices, descriptions, addon
+suggestions, etc.) can be edited live from the admin dashboard without
+touching any code.
+
+Prerequisites:
+  - A Cloudflare account (free plan is fine)
+  - Node.js installed
+  - The repo cloned locally
+
+Setup:
+
+  1. Open a terminal in the repo:
+     cd usmiv/wizard-v2/worker
+     npm install
+
+  2. Log in to Cloudflare (one-time):
+     npx wrangler login
+     (Opens a browser window to authenticate)
+
+  3. Create the KV storage:
+     npx wrangler kv:namespace create WIZARD_CONFIG
+
+     This prints an ID like: { id: "abc123..." }
+
+     Copy that ID and paste it into wrangler.toml replacing the placeholder:
+       id = "abc123..."
+
+  4. Also create a preview namespace (for local dev):
+     npx wrangler kv:namespace create WIZARD_CONFIG --preview
+
+     Paste the preview ID into wrangler.toml:
+       preview_id = "def456..."
+
+  5. Set the admin API key:
+     npx wrangler secret put API_KEY
+
+     It will prompt you to type a password. Choose something strong.
+     This is the key you'll enter in the admin dashboard when saving.
+
+  6. Deploy the Worker:
+     npx wrangler deploy
+
+     This prints the Worker URL, something like:
+       https://wizard-config.YOUR-SUBDOMAIN.workers.dev
+
+  7. Tell the wizard about the Worker:
+     Open usmiv/wizard-v2/src/data/meta.ts
+     Find: configWorkerUrl: ''
+     Change to: configWorkerUrl: 'https://wizard-config.YOUR-SUBDOMAIN.workers.dev'
+
+     Then rebuild and push:
+       cd usmiv/wizard-v2
+       npm run build
+       cd ../..
+       git add . && git commit -m "set config worker URL" && git push
+
+  8. Seed the initial config:
+     Open the admin dashboard: atmix.org/wizard-of-iv-v2/?wizard-dev=true
+     Click any treatment, then click "Publish Live"
+     Enter the API key you set in step 5
+     This pushes all current treatment data to the Worker
+
+  After this, edits in the admin dashboard can be published live without
+  any code changes or git pushes.
+
+
+STEP 3: VERIFY
+----------------
+
+  1. Open the wizard on the WordPress site
+     Click "Find My Treatment"
+     Navigate through a few paths
+     Verify prices and treatment names are correct
+
+  2. Open the admin dashboard
+     Go to: your-site.com/wizard-of-iv-v2/?wizard-dev=true
+     (or wherever you host the wizard files)
+
+     Check each tab:
+       Editor -- select a treatment, verify data is correct
+       Paths -- verify all 71 paths show
+       Coverage -- all green (no red/missing)
+       Health -- check for any errors
+
+  3. Test a live edit (after Worker is set up)
+     In the Editor, change a treatment's price
+     Click "Publish Live"
+     Refresh the wizard page
+     Verify the new price appears
+
+
+ADMIN DASHBOARD TABS
+---------------------
+
+  Editor    -- Edit treatment details (pricing, ingredients, descriptions,
+               addon suggestions, symptom scoring weights)
+
+  Paths     -- See every possible patient journey through the wizard.
+               "By Treatment" shows which paths lead to each treatment.
+               "Orphans" shows treatments no patient can reach.
+
+  Flow      -- Visual flowchart of the entire decision tree.
+               Click a treatment to highlight its paths.
+
+  Coverage  -- Table showing configuration health per treatment.
+               Green = configured, yellow = warning, red = error.
+
+  Health    -- Configuration issues with explanations and fix links.
+
+
+SELF-HOSTING THE WIZARD FILES
+-------------------------------
+
+If you want to host wizard.js and wizard.css on your own server instead
+of loading from atmix.org:
+
+  1. Build the wizard:
+     cd usmiv/wizard-v2
+     npm run build
+
+  2. Copy dist/wizard.js and dist/wizard.css to your server
+
+  3. Update the URLs in the WordPress plugin (wizard-of-iv.php)
+     or in your embed snippet
+
+  The wizard is a static IIFE bundle with no server requirements.
+  It works from any HTTP server, CDN, or even a local file.
+
+
+TROUBLESHOOTING
+-----------------
+
+  Wizard doesn't open:
+    Check browser console for JS errors.
+    Verify wizard.js is loaded (Network tab).
+    Verify the trigger element has data-treatment-wizard attribute.
+
+  Wizard shows wrong data after editing:
+    The wizard caches config for the browser session.
+    Hard refresh (Ctrl+Shift+R) to pick up new config.
+    If using the Worker: check that "Publish Live" succeeded.
+
+  "Save requires local dev server" error:
+    The "Save" button writes to local TypeScript files and only works
+    when running npm run dev locally. On the live site, use "Publish Live"
+    (requires the Cloudflare Worker to be set up) or "Copy TS" (copies
+    code to clipboard for manual pasting).
+
+  Admin dashboard tour keeps showing:
+    Clear localStorage key "wizard-admin-tour-seen" in browser dev tools.
+
+  Worker deploy fails:
+    Run wrangler login to re-authenticate.
+    Check that wrangler.toml has the correct KV namespace ID.
+
+
+CONTACT
+--------
+
+Questions? Contact Matt at matt@atmix.org
