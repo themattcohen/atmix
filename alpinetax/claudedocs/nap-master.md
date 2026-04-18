@@ -52,7 +52,7 @@ Alpine Tax & Consulting LLC is an IRS-registered tax professional specializing i
 |-------|-------|
 | CID | 0xb034e06b34ee038a |
 | Knowledge Graph ID | /g/11z10fh99t |
-| Google Review Link | (available after verification completes) |
+| Google Review Link | https://g.page/r/CYoD7jRr4DSwEBM/review |
 
 ## Payment Methods
 
@@ -73,3 +73,4 @@ Credit card, debit card, check, bank transfer
 |------|--------|------------|
 | 2026-03-03 | Initial creation with pending fields | Claude |
 | 2026-03-09 | All fields confirmed — phone, address, hours locked in. Added GBP IDs, descriptions, payment methods. | Matt/Claude |
+| 2026-04-17 | GBP verification complete. Added Google Review Link `https://g.page/r/CYoD7jRr4DSwEBM/review`. Flagged duplicate GBP (KGMID `/g/11ltp7mx1t`, 2 reviews) pending merge with Google Support. | Matt/Claude |

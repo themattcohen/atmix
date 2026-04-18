@@ -7,7 +7,7 @@
 
 | # | Directory | URL | Status | Date Submitted | Date Live | Notes |
 |---|-----------|-----|--------|----------------|-----------|-------|
-| 1 | Google Business Profile | business.google.com | Pending | | | SAB, needs home address |
+| 1 | Google Business Profile | business.google.com | Live | 2026-03-09 | 2026-04-17 | SAB via home address. Managed CID `0xb034e06b34ee038a`, KGMID `/g/11z10fh99t`. Duplicate listing `/g/11ltp7mx1t` (2 legacy reviews) needs merge with Google Support. |
 | 2 | Yelp | biz.yelp.com | Pending | | | |
 | 3 | Facebook Business | facebook.com/business | Pending | | | Page only, no active posting |
 | 4 | Apple Business Connect | businessconnect.apple.com | Pending | | | |

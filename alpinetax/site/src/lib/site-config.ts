@@ -68,7 +68,7 @@ export const siteConfig = {
   ],
 
   social: {
-    google: 'https://g.page/r/alpine-tax-consulting',
+    google: 'https://g.page/r/CYoD7jRr4DSwEBM/review',
   },
 
   calcomUsername: 'alpinetax/initialconsultation',

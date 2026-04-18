@@ -34,4 +34,5 @@
 ## Outstanding Items
 
 - [ ] BrightLocal citation submissions (ATM-38) — pending, not in scope for this checklist
-- [ ] Google review link — available after GBP verification completes
+- [x] Google review link — `https://g.page/r/CYoD7jRr4DSwEBM/review` wired into `site-config.ts` (2026-04-17)
+- [ ] Resolve duplicate GBP — unmanaged listing `/g/11ltp7mx1t` holds Vinnie's 2 legacy reviews; file merge request with Google Business Profile Support
