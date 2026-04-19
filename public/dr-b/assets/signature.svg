@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" fill="none" width="320" height="80" aria-label="Dr. Stacy Barron signature">
+  <!-- Dr. Stacy Barron — handwritten-style cursive signature placeholder -->
+  <path d="M12,52 C14,42 18,34 24,30 C28,27 30,30 28,36 C26,40 22,44 22,48 C22,52 26,50 30,46 C36,40 40,34 44,30"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- S -->
+  <path d="M50,38 C54,34 62,32 64,36 C66,40 60,44 58,48 C56,52 60,54 66,52"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- t -->
+  <path d="M72,28 L72,54 M68,38 L78,38"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- a -->
+  <path d="M84,38 C84,34 96,32 96,40 C96,48 84,50 84,54 L96,54"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- c -->
+  <path d="M112,36 C106,32 100,36 100,44 C100,52 106,56 112,52"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- y -->
+  <path d="M116,36 L122,50 M128,36 L122,50 C120,56 116,60 112,62"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- space then B -->
+  <path d="M142,26 L142,54 M142,26 C150,26 156,28 156,34 C156,40 150,40 142,40 M142,40 C150,40 158,42 158,48 C158,54 150,54 142,54"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- a -->
+  <path d="M164,38 C164,34 176,32 176,40 C176,48 164,50 164,54 L176,54"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- r -->
+  <path d="M182,38 L182,54 M182,42 C186,38 194,36 196,40"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- r -->
+  <path d="M202,38 L202,54 M202,42 C206,38 214,36 216,40"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- o -->
+  <path d="M220,44 C220,36 234,36 234,44 C234,52 220,52 220,44 Z"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- n with trailing flourish -->
+  <path d="M240,38 L240,54 M240,38 C244,34 252,34 254,40 L254,54 M254,54 C258,58 268,62 278,58"
+        stroke="#1A1C22" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

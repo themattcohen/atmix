@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500" role="img" aria-label="Photo placeholder: Dr. Stacy environmental portrait">
+  <!-- Background: warm Tobacco-tinted flat fill -->
+  <rect width="400" height="500" fill="#D9C4A8"/>
+
+  <!-- Subtle inner tone layer -->
+  <rect x="0" y="280" width="400" height="220" fill="#E8E3DA" opacity="0.35"/>
+
+  <!-- Frame outline — elegant inset rectangle -->
+  <rect x="32" y="32" width="336" height="436" fill="none" stroke="#2E2620" stroke-width="1.5" opacity="0.35"/>
+
+  <!-- Inner frame accent line -->
+  <rect x="44" y="44" width="312" height="412" fill="none" stroke="#8B6842" stroke-width="0.75" opacity="0.5"/>
+
+  <!-- Frame icon: simple camera/portrait frame suggestion — centered rectangle with cross marks at corners -->
+  <g opacity="0.6">
+    <!-- Top-left corner mark -->
+    <line x1="140" y1="158" x2="150" y2="158" stroke="#2E2620" stroke-width="1.5"/>
+    <line x1="140" y1="158" x2="140" y2="168" stroke="#2E2620" stroke-width="1.5"/>
+    <!-- Top-right corner mark -->
+    <line x1="260" y1="158" x2="250" y2="158" stroke="#2E2620" stroke-width="1.5"/>
+    <line x1="260" y1="158" x2="260" y2="168" stroke="#2E2620" stroke-width="1.5"/>
+    <!-- Bottom-left corner mark -->
+    <line x1="140" y1="248" x2="150" y2="248" stroke="#2E2620" stroke-width="1.5"/>
+    <line x1="140" y1="248" x2="140" y2="238" stroke="#2E2620" stroke-width="1.5"/>
+    <!-- Bottom-right corner mark -->
+    <line x1="260" y1="248" x2="250" y2="248" stroke="#2E2620" stroke-width="1.5"/>
+    <line x1="260" y1="248" x2="260" y2="238" stroke="#2E2620" stroke-width="1.5"/>
+  </g>
+
+  <!-- Vertical divider above text -->
+  <line x1="200" y1="278" x2="200" y2="294" stroke="#8B6842" stroke-width="1" opacity="0.7"/>
+
+  <!-- Label text -->
+  <text x="200" y="320" font-family="'Inter Tight', 'Helvetica Neue', sans-serif" font-size="11" font-weight="500" letter-spacing="0.12em" text-anchor="middle" fill="#2E2620" opacity="0.7" text-transform="uppercase">DR. STACY</text>
+  <text x="200" y="344" font-family="'Inter Tight', 'Helvetica Neue', sans-serif" font-size="10" font-weight="400" letter-spacing="0.04em" text-anchor="middle" fill="#2E2620" opacity="0.5">environmental portrait</text>
+  <text x="200" y="362" font-family="'Inter Tight', 'Helvetica Neue', sans-serif" font-size="10" font-weight="400" letter-spacing="0.04em" text-anchor="middle" fill="#2E2620" opacity="0.5">warm light, half-body, soft attention</text>
+
+  <!-- Corner annotation -->
+  <text x="356" y="488" font-family="'Inter Tight', 'Helvetica Neue', sans-serif" font-size="9" font-weight="400" letter-spacing="0.03em" text-anchor="end" fill="#8B6842" opacity="0.55">placeholder v1</text>
+</svg>
