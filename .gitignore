@@ -53,3 +53,22 @@ test-results.json
 
 # Blog pipeline WIP
 fbar-automator/d2c/src/content/drafts/*.wip
+
+# Scratch/junk (moved from root for cleanup)
+_scratch/
+
+# Visual QA screenshots
+tmp/screenshots/
+
+# Spikeball (NetSuite client) — secrets, keys, large data dumps, downloaded artifacts
+spikeball/.env*
+spikeball/scripts/*.pem
+spikeball/scripts/netsuite-mcp-v3/
+spikeball/clients.xlsx*
+spikeball/**/*.xlsx.bak
+spikeball/tmp/*.json
+spikeball/tmp/*.txt
+spikeball/tmp/screenshots/
+spikeball/Monthly Close/
+spikeball/claudedocs/exception-reports/
+spikeball/claudedocs/coding-applied-*.csv
