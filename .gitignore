@@ -24,10 +24,11 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment
+# Environment — secrets live in Doppler (project: atmix). See claudedocs/doppler-migration-plan.md.
 .env
 .env.local
 .env.production
+*.DO-NOT-USE-secrets-in-doppler
 
 # Python
 __pycache__/
@@ -72,3 +73,59 @@ spikeball/tmp/screenshots/
 spikeball/Monthly Close/
 spikeball/claudedocs/exception-reports/
 spikeball/claudedocs/coding-applied-*.csv
+
+# Stray screenshots and debug media
+Screenshot*.jpg
+Screenshot*.png
+*.webm
+claudedocs/temp-screenshot.jpg
+
+# Excel credential stores and Office lock files
+*.xlsx.bak
+~$*.xlsx
+~$*.xls
+~$*.docx
+bank-puller/v3/clients.xlsx
+
+# Browser automation artifacts
+.playwright-mcp/
+browser-profiles/
+debug-screenshots/
+debug_screenshots/
+bank-puller/v2/
+bank-puller/v3/
+bank-puller/v4/profiles/
+bank-puller/v4/output/
+bank-puller/v4/_*.json
+bank-puller/v4/Bank Recordings And Instructions/
+bank-puller/v4/**/*.docx
+bank-puller/rizzdev/
+
+# Scratch / scratchpad
+tmp/
+
+# Commit audits (may contain raw secret findings before redaction)
+claudedocs/commit-audit-*.md
+
+# Runtime locks / coverage
+.claude/scheduled_tasks.lock
+.coverage
+
+# Live databases
+clickup-mcp/data/
+
+# Local backup archives
+ebay-tracker/backups/
+*.tar.gz
+drstacy.zip
+
+# Binary doc clutter
+*.docx
+*.bak
+
+# fbar-automator binary debug artifacts
+fbar-automator/d2c/claudedocs/dispute-form114a.pdf
+fbar-automator/d2c/claudedocs/dispute-stripe-receipt.png
+fbar-automator/d2c/claudedocs/stripe-captcha.png
+fbar-automator/d2c/claudedocs/stripe-login-attempt.png
+fbar-automator/claudedocs/archive/*.png
