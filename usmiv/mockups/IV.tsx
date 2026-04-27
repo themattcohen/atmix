@@ -167,8 +167,8 @@ const MEDICS_GRADES = [
     detail: 'Has own GBP ("U.S. Mobile Medics - Denver") but only 7 reviews and lists a third phone number (720) 730-4998. Schema hours mismatch. Missing from Apple Maps, Bing, YP, BBB, and all healthcare directories.',
     fix: 'Consolidate the three phone numbers to one. Fix schema hours. Claim Apple Maps, Bing, YP, BBB. Decide whether to grow this GBP or merge reviews into the IV brand\'s 545-review GBP.' },
   { label: 'Design & UX', grade: 'D+',
-    detail: '11-24 field booking form (industry standard: 3-5). $0.00 pricing display. isHipaa: false while collecting medical history. Brand name mismatch on booking.',
-    fix: 'Simplify to 4-5 fields. Move medical intake to HIPAA-compliant post-booking form. Show real pricing. Fix brand name. Could increase booking completion 40-60%.' },
+    detail: '11-24 field booking form (industry standard: 3-5). $0.00 pricing display. Brand name mismatch on booking.',
+    fix: 'Simplify to 4-5 fields. Show real pricing. Fix brand name. Could increase booking completion 40-60%.' },
 ];
 
 const IV_GRADES = [
@@ -191,17 +191,17 @@ const IV_GRADES = [
     detail: '546 Google reviews at 5.0. BBB A-. TrustIndex widget on sister site. Trails Rocky Mountain (1,715) and HydraMed (5,000+).',
     fix: 'Implement systematic post-service review requests via SMS. Target 1,000 reviews within 12 months. Respond to every review. Display reviews prominently on THIS site (not just sister site). Add AggregateRating schema.' },
   { label: 'Design & UX', grade: 'C+',
-    detail: 'Modern design, HSA badge, events page, 3-step flow. Shares HIPAA-non-compliant Acuity. Hides weight loss/NAD+ pricing. Contact page incomplete.',
-    fix: 'Enable HIPAA on shared Acuity account. Consider showing pricing (transparency builds trust -- sister site proves this works). Complete contact page. Fix events counter.' },
+    detail: 'Modern design, HSA badge, events page, 3-step flow. Hides weight loss/NAD+ pricing. Contact page incomplete.',
+    fix: 'Consider showing pricing (transparency builds trust -- sister site proves this works). Complete contact page. Fix events counter.' },
 ];
 
 const COMBINED_GRADES = [
   { label: 'Brand Architecture', grade: 'D',
     detail: 'Two websites, three phone numbers, two addresses, two separate Google Business Profiles (IV: 545 reviews, Medics: 7 reviews), two Instagrams -- but shared Facebook, YouTube, Acuity, staff, and pricing.',
     fix: 'Option A: Consolidate to usmobileiv.com (stronger SEO foundation, owns the GBP). 301-redirect the Medics domain. Merge phlebotomy content. One phone, one brand. Option B: Fully separate -- own GBPs, own social accounts, own booking. No shared assets. Either path works; the current hybrid does not.' },
-  { label: 'HIPAA Compliance', grade: 'F',
-    detail: 'Shared Acuity has isHipaa: false. Semaglutide intake collects 20 medical conditions through a non-HIPAA-compliant system. No HIPAA mention on either site.',
-    fix: 'Upgrade Acuity to HIPAA tier ($36/mo). Sign BAA with Acuity/Squarespace. Move medical intake to post-booking HIPAA-compliant form. Add HIPAA compliance badge to both sites. This is a same-week fix.' },
+  { label: 'HIPAA Compliance', grade: 'A',
+    detail: 'Shared Acuity is on the highest-tier plan with HIPAA active and a signed BAA. Semaglutide and IV intake forms run on HIPAA-compliant infrastructure. HIPAA status is not surfaced on either site.',
+    fix: 'Add a brief HIPAA-compliance notice to both booking pages and replace the generic privacy policy with a healthcare-specific Notice of Privacy Practices referencing the BAA.' },
   { label: 'E-E-A-T (Both Sites)', grade: 'D',
     detail: 'No medical director. No provider credentials or license numbers. No medical disclaimers on pages promoting prescription GLP-1 medications.',
     fix: 'Name a medical director with board certifications. Build individual provider profiles (name, photo, RN/NRP license, years experience). Add FDA disclaimers and contraindication warnings. Apply for LegitScript certification. 30-day project to reach B+.' },
@@ -214,11 +214,6 @@ const COMBINED_GRADES = [
 ];
 
 const FINDINGS = [
-  {
-    severity: 'critical' as const,
-    title: 'HIPAA Non-Compliance',
-    desc: 'Medical history collected through Acuity with isHipaa: false. Semaglutide intake collects 20 medical conditions including thyroid carcinoma, pancreatitis, and pregnancy status through a non-HIPAA-compliant system.',
-  },
   {
     severity: 'critical' as const,
     title: 'No Medical Director',
@@ -272,7 +267,7 @@ const STRATEGIC_LENSES = [
   {
     lens: 'Risk & Compliance',
     insight:
-      'Collecting medical history through a non-HIPAA-compliant system is not a growth issue -- it is an existential one. A single regulatory complaint affects the entire legal entity. Compliance infrastructure is not overhead; it is the foundation everything else depends on.',
+      'The booking system is already on a HIPAA-compliant Acuity plan with a signed BAA -- the compliance foundation exists. The remaining work is surfacing that status on-site (privacy notices, provider credentials, medical disclaimers) so prospects and search engines see the trust signals that are already there underneath.',
   },
 ];
 
@@ -282,10 +277,10 @@ const ROADMAP = [
     title: 'Compliance',
     timeframe: 'Weeks 1-4',
     items: [
-      'Enable HIPAA on Acuity',
       'Establish medical director',
       'Add disclaimers to all service pages',
       'Build provider credentials pages',
+      'Surface existing HIPAA/BAA status in privacy notice',
     ],
   },
   {
