@@ -90,6 +90,8 @@ bank-puller/v3/clients.xlsx
 # Browser automation artifacts
 .playwright-mcp/
 browser-profiles/
+.browser-profile*/
+**/.browser-profile*/
 debug-screenshots/
 debug_screenshots/
 bank-puller/v2/
