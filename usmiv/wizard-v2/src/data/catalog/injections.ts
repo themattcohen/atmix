@@ -9,7 +9,7 @@ export const lipoShots = {
   category: 'injection',
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=lipoShots',
+  pageUrl: '/treatments/lipoShots/',
   shortDesc: 'Lipotropic fat-metabolism injections to support your weight loss program.',
   ingredients: [
     { name: 'MIC Complex (Methionine, Inositol, Choline)', benefit: 'Liver fat processing and fat mobilization' },
@@ -36,7 +36,7 @@ export const b12Shot = {
   category: 'injection',
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=b12Shot',
+  pageUrl: '/treatments/b12Shot/',
   shortDesc: 'Quick energy and metabolism boost with vitamin B12.',
   ingredients: [
     { name: 'B12 (Methylcobalamin)', benefit: 'Energy production, red blood cell formation, nerve function' },
@@ -62,7 +62,7 @@ export const biotinShot = {
   category: 'injection',
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=biotinShot',
+  pageUrl: '/treatments/biotinShot/',
   shortDesc: 'Support stronger hair, skin, and nails with biotin (B7).',
   ingredients: [
     { name: 'Biotin (B7)', benefit: 'Keratin production for hair, skin, and nail strength' },
@@ -88,7 +88,7 @@ export const glutathioneShot = {
   category: 'injection',
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=glutathioneShot',
+  pageUrl: '/treatments/glutathioneShot/',
   shortDesc: 'The body\'s master antioxidant for detox and skin brightening.',
   ingredients: [
     { name: 'Glutathione', benefit: 'Detoxification, skin brightening, immune support' },
@@ -114,7 +114,7 @@ export const triImmuneShot = {
   category: 'injection',
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=triImmuneShot',
+  pageUrl: '/treatments/triImmuneShot/',
   shortDesc: 'Triple immune defense with Vitamin C, Zinc, and Glutathione in one shot.',
   ingredients: [
     { name: 'Vitamin C',   benefit: 'Immune cell activation and antioxidant protection' },
@@ -142,7 +142,7 @@ export const vitaminDShot = {
   category: 'injection',
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=vitaminDShot',
+  pageUrl: '/treatments/vitaminDShot/',
   shortDesc: 'High-dose vitamin D for bone health, immunity, and mood support.',
   ingredients: [
     { name: 'Vitamin D3', benefit: 'Bone health, immune regulation, mood support' },

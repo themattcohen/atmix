@@ -1,0 +1,1674 @@
+{
+  "version": "1.0.0",
+  "treatments": [
+    {
+      "slug": "hydration",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "A sterile solution of sodium chloride that matches your body's natural fluid composition, replenishing blood plasma volume and restoring electrolyte balance.",
+          "whyItMatters": "When you're dehydrated, drinking water takes 1-2 hours to reach your bloodstream. IV saline gets there in under 30 minutes, immediately improving circulation, cognition, and how you feel.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You've been running on coffee and not enough water",
+          "detail": "Mild chronic dehydration is extremely common and causes fatigue, headaches, and brain fog before you ever feel thirsty. One liter of IV saline resets your baseline quickly."
+        },
+        {
+          "headline": "You just landed after a long flight",
+          "detail": "Cabin air is exceptionally dry — you lose significant fluid just breathing on a 3-hour flight. IV hydration gets you off the ground faster than the hotel minibar."
+        },
+        {
+          "headline": "You've been sick with vomiting or diarrhea",
+          "detail": "GI illness depletes fluids and electrolytes faster than you can replace them orally. IV hydration stabilizes you when you can't keep anything down."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "You may feel the cool saline moving through your arm initially. Most people notice improved energy and clarity within 15-20 minutes.",
+        "duration": "30 minutes, seated comfortably.",
+        "frequency": "As needed. Works well as a daily wellness tool or one-time reset.",
+        "howItFeels": "A small IV catheter is placed in your arm — a brief pinch. From there you relax, scroll your phone, or just sit quietly. Your nurse checks on you throughout."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myers",
+        "altitude",
+        "hangover"
+      ]
+    },
+    {
+      "slug": "myers",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Restores fluid balance and serves as the carrier solution for all other nutrients.",
+          "whyItMatters": "Hydration is the foundation — without it, the vitamins can't circulate effectively.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Supports red blood cell production, neurological function, and cellular energy metabolism.",
+          "whyItMatters": "B12 deficiency is surprisingly common, especially in vegetarians and anyone over 50. Most people feel a noticeable energy lift within hours.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex (B1, B2, B3, B5, B6)",
+          "whatItDoes": "A full suite of B vitamins that convert food into usable energy and support nerve and brain function.",
+          "whyItMatters": "B vitamins are water-soluble and depleted quickly by stress, alcohol, and poor diet. The full complex works better together than any single B vitamin alone.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (1g)",
+          "whatItDoes": "A potent antioxidant that supports immune function, collagen synthesis, and iron absorption.",
+          "whyItMatters": "IV Vitamin C achieves blood concentrations 50-70x higher than oral doses, making it dramatically more bioavailable when you need it most.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Magnesium (500mg)",
+          "whatItDoes": "Involved in over 300 enzyme reactions — relaxes smooth muscle, supports nerve conduction, and reduces inflammation.",
+          "whyItMatters": "Over 50% of Americans are magnesium deficient. IV delivery bypasses the GI tract, so you get the full dose without the digestive discomfort oral magnesium often causes.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Your body's master antioxidant — neutralizes free radicals, supports liver detox pathways, and recycles other antioxidants.",
+          "whyItMatters": "Glutathione breaks down rapidly in the digestive tract, so oral supplements are largely ineffective. IV administration delivers it where it matters.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Zinc (5mg)",
+          "whatItDoes": "Essential for immune cell production, wound healing, and hundreds of enzymatic processes.",
+          "whyItMatters": "Zinc is rapidly depleted during illness and physical stress. Restoring levels supports faster recovery and immune resilience.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You're running low and need a real reset",
+          "detail": "The Myers' Cocktail is the original evidence-based IV vitamin formula developed in the 1970s. It's the go-to for general wellness, fatigue, and feeling like yourself again."
+        },
+        {
+          "headline": "You've been sick and need to rebuild",
+          "detail": "Illness depletes your body's vitamin and mineral reserves. This replenishes all of them in a single 45-minute session."
+        },
+        {
+          "headline": "You want something comprehensive without going overboard",
+          "detail": "The Myers' is the most clinically studied IV cocktail in the world. It's a great starting point and highly effective on its own."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Most people notice improved energy and mental clarity starting around 20-30 minutes into the infusion.",
+        "duration": "45 minutes, seated comfortably.",
+        "frequency": "Monthly for maintenance. Weekly during illness or high-stress periods.",
+        "howItFeels": "You'll feel the saline going in — it's room temperature and occasionally you'll notice a slight magnesium warmth. Your nurse manages your rate for comfort."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myersGold",
+        "myersPlatinum",
+        "immunity"
+      ]
+    },
+    {
+      "slug": "immunity",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Restores fluid balance and delivers nutrients directly into circulation.",
+          "whyItMatters": "Dehydration suppresses immune function on its own. The fluid base addresses that first.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Supports white blood cell production and the cellular energy your immune system needs to fight.",
+          "whyItMatters": "Your immune cells are metabolically demanding. B12 ensures they have the energy substrate to do their job.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (2g)",
+          "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
+          "whyItMatters": "At high IV doses, Vitamin C has documented antiviral properties and shortens illness duration in clinical studies.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Zinc (10mg)",
+          "whatItDoes": "Directly inhibits viral replication and is required for the development of T-cells and NK cells.",
+          "whyItMatters": "Zinc deficiency is one of the most common nutritional immune deficiencies. Repleting it can noticeably improve your ability to fight off illness.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Reduces oxidative stress in immune cells and supports the liver's detox function during illness.",
+          "whyItMatters": "During a viral infection, oxidative stress spikes significantly. Glutathione helps keep the immune response controlled and efficient.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Vitamin D3 (50,000 IU)",
+          "whatItDoes": "Regulates immune cell behavior and reduces excessive inflammatory responses.",
+          "whyItMatters": "Vitamin D deficiency is strongly associated with increased susceptibility to respiratory infections. A single therapeutic dose can rapidly restore immune readiness.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You feel something coming on and want to stop it",
+          "detail": "The first 24-48 hours of an illness are when intervention matters most. Loading up your immune system's key nutrients immediately can shorten duration and reduce severity."
+        },
+        {
+          "headline": "You've been exposed to something and want a defense boost",
+          "detail": "After a long flight, a sick coworker, or a crowded event — this IV arms your immune system before symptoms start."
+        },
+        {
+          "headline": "You're in the thick of it and want to recover faster",
+          "detail": "When you're already sick, your body is burning through vitamins C, D, and zinc at an accelerated rate. Replenishing them via IV bypasses the gut symptoms that make oral supplements hard to take."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Some people notice reduced fatigue and improved breathing clarity within an hour of the infusion.",
+        "duration": "45 minutes.",
+        "frequency": "At first sign of illness. Can be repeated every 3-4 days during active illness.",
+        "howItFeels": "Standard IV drip. Your nurse monitors you throughout. Some people feel a mild flush from the high-dose Vitamin C — this is normal and passes quickly."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "triImmuneShot",
+        "vitaminDShot",
+        "myers"
+      ]
+    },
+    {
+      "slug": "pregnancy",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Restores fluid volume, which is especially critical during first trimester when nausea and vomiting cause rapid dehydration.",
+          "whyItMatters": "Dehydration during pregnancy can trigger contractions and worsen nausea. IV rehydration is often the fastest way to break the nausea-dehydration cycle.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Supports fetal neurological development and maternal red blood cell production.",
+          "whyItMatters": "Pregnancy significantly increases B12 demand, and morning sickness often prevents adequate oral intake.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex (B1, B2, B3, B5, B6)",
+          "whatItDoes": "B6 specifically is a first-line recommendation for nausea in pregnancy. The full B-complex supports maternal energy and fetal development.",
+          "whyItMatters": "B6 has strong clinical evidence for reducing nausea during the first trimester without harm to the developing baby.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (500mg)",
+          "whatItDoes": "Supports immune function and collagen synthesis for both mother and developing baby at a conservative, pregnancy-safe dose.",
+          "whyItMatters": "Kept at a conservative dose (below 2g/day) as is standard in prenatal nutrition guidelines.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Magnesium (250mg)",
+          "whatItDoes": "Reduces muscle cramping, supports healthy blood pressure, and calms the nervous system.",
+          "whyItMatters": "Leg cramps and elevated blood pressure are common in pregnancy. Magnesium is well-documented as safe and effective for both.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (300mg)",
+          "whatItDoes": "Reduces oxidative stress and supports placental health at a conservative, pregnancy-appropriate dose.",
+          "whyItMatters": "Oxidative stress in pregnancy is linked to complications. A conservative glutathione dose supports healthy antioxidant status.",
+          "evidenceLevel": "emerging"
+        },
+        {
+          "name": "Zinc (5mg)",
+          "whatItDoes": "Essential for fetal growth, immune development, and DNA synthesis.",
+          "whyItMatters": "Zinc is a required nutrient for healthy fetal development, and pregnancy increases demand significantly.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "Morning sickness has you running on empty",
+          "detail": "When you can't keep food or water down, IV is the most effective way to stay nourished and hydrated. This formula is specifically dosed for pregnancy safety."
+        },
+        {
+          "headline": "You're exhausted in your second or third trimester",
+          "detail": "Pregnancy is physically demanding. This IV provides the B vitamins and magnesium most commonly depleted during pregnancy without anything contraindicated."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Nausea relief often begins 20-30 minutes into the infusion as hydration is restored.",
+        "duration": "45 minutes.",
+        "frequency": "As needed, especially during heavy nausea periods.",
+        "howItFeels": "Same as any IV — a small catheter, then you relax. All ingredients are dosed conservatively for prenatal safety. Your nurse is there throughout."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myers",
+        "hydration",
+        "labGeneral"
+      ],
+      "clinicalNote": "Requires OB/provider clearance before your first session. Our nurse will confirm your provider has approved IV therapy during pregnancy."
+    },
+    {
+      "slug": "altitude",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Counteracts the accelerated fluid loss that happens at high altitude due to increased breathing rate and lower humidity.",
+          "whyItMatters": "At altitude, you lose water through respiration 2-3x faster than at sea level. Most altitude headaches are partly or entirely dehydration.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Supports red blood cell production, which is your body's primary mechanism for adapting to lower oxygen levels.",
+          "whyItMatters": "Your body tries to compensate for thin air by making more red blood cells. B12 is essential for that process.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex",
+          "whatItDoes": "Supports cellular energy production under the metabolic stress of altitude acclimatization.",
+          "whyItMatters": "Your cells work harder at elevation. B vitamins help them do that more efficiently.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Vitamin C (1g)",
+          "whatItDoes": "Reduces oxidative stress caused by increased UV exposure and lower oxygen availability at elevation.",
+          "whyItMatters": "High-altitude UV exposure dramatically increases free radical production. Vitamin C is your primary defense.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Magnesium (500mg)",
+          "whatItDoes": "Relaxes blood vessel walls, which helps manage the elevated blood pressure common in altitude sickness.",
+          "whyItMatters": "Magnesium's vasodilatory effects can ease the vascular component of altitude headaches.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Neutralizes the oxidative damage that accumulates during altitude exposure and exertion.",
+          "whyItMatters": "Altitude + physical activity creates significant oxidative stress. Glutathione is your most powerful tool for managing that.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Ondansetron / Zofran (4mg)",
+          "whatItDoes": "A prescription anti-nausea medication that blocks serotonin receptors in the gut and brain.",
+          "whyItMatters": "Nausea is a cardinal symptom of altitude sickness. Zofran provides fast, reliable relief so you can actually enjoy your trip.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You just flew into Denver and feel awful",
+          "detail": "Colorado sits at 5,280 feet — and mountain towns are much higher. Most visitors feel headaches, nausea, and fatigue within hours. This IV was built for exactly that."
+        },
+        {
+          "headline": "You're heading up to the mountains tomorrow",
+          "detail": "Get ahead of altitude sickness by loading up on fluids and key nutrients before you ascend. Prevention is dramatically more effective than treatment."
+        },
+        {
+          "headline": "You're a local but pushed too hard on the slopes",
+          "detail": "Even acclimatized residents experience exertion-induced altitude symptoms after a hard ski day or high-elevation hike."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Headache and nausea often improve noticeably within 20-30 minutes. Full effect by end of infusion.",
+        "duration": "45-60 minutes.",
+        "frequency": "Once upon arrival or at first symptoms. May repeat if symptoms persist beyond 24 hours.",
+        "howItFeels": "A standard IV drip with an added anti-nausea medication. The Zofran typically makes most people feel significantly better before the bag is even done."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "hydration",
+        "hangover",
+        "myers"
+      ]
+    },
+    {
+      "slug": "hangover",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Restores your blood plasma volume and corrects the electrolyte imbalances caused by alcohol.",
+          "whyItMatters": "Alcohol is a diuretic — you urinate more than you drink. IV saline rehydrates you in 30 minutes, not the 1-2 hours drinking water would take.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Replaces B12 that alcohol aggressively depletes overnight.",
+          "whyItMatters": "B12 deficiency causes exactly the fatigue and brain fog you feel after drinking. Restoring it quickly is part of why you feel human again.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex",
+          "whatItDoes": "Replenishes the full range of B vitamins depleted by alcohol metabolism.",
+          "whyItMatters": "Your liver burns through B vitamins processing alcohol. The entire complex needs to be restored for your energy and mood systems to come back online.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (1g)",
+          "whatItDoes": "Reduces oxidative stress from alcohol metabolism byproducts — specifically acetaldehyde.",
+          "whyItMatters": "Acetaldehyde is what actually makes you feel terrible the morning after. Vitamin C helps neutralize it.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Your liver's primary detox molecule — directly neutralizes acetaldehyde and other alcohol metabolites.",
+          "whyItMatters": "Glutathione is what your liver uses to process alcohol. IV delivery means it's available immediately rather than being digested.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Ondansetron / Zofran (4mg)",
+          "whatItDoes": "Prescription anti-nausea medication that stops the nausea and vomiting cycle quickly.",
+          "whyItMatters": "When your stomach is revolting, you can't hydrate orally. Zofran breaks that cycle so the saline can do its job.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Ketorolac / Toradol (30mg)",
+          "whatItDoes": "A powerful prescription NSAID — similar to high-dose ibuprofen but delivered intravenously for faster action.",
+          "whyItMatters": "Alcohol causes inflammation and dilates blood vessels in the brain, causing that crushing headache. IV Toradol addresses it faster than anything you can swallow.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You drank last night and can't function today",
+          "detail": "Alcohol causes dehydration, B vitamin depletion, and toxic acetaldehyde buildup. This IV addresses all three simultaneously, while the prescription medications handle the nausea and headache."
+        },
+        {
+          "headline": "You have something important today that you can't cancel",
+          "detail": "Whether it's a work presentation, a flight, or a family event — you need to be functional in 90 minutes, not tomorrow. This is the most direct path there."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Most people feel the nausea lift within 10-15 minutes of Zofran administration. Full recovery typically felt by end of infusion.",
+        "duration": "45-60 minutes.",
+        "frequency": "As needed. Works every time regardless of how many times you've done it.",
+        "howItFeels": "A small IV catheter, then you recline and let the drip work. The combination of anti-nausea and pain medications makes most people feel dramatically better before they're even halfway through."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myers",
+        "altitude",
+        "hydration"
+      ]
+    },
+    {
+      "slug": "migraine",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Dehydration is a common migraine trigger and exacerbator. Rapid rehydration addresses this component directly.",
+          "whyItMatters": "Even mild dehydration can prolong a migraine significantly. Full IV hydration is a standard first step in clinical migraine treatment.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Magnesium (1g — triple dose)",
+          "whatItDoes": "Relaxes blood vessel walls and interrupts the cortical spreading depression (CSD) that drives migraine pain.",
+          "whyItMatters": "IV Magnesium is a Level A evidence treatment for acute migraine in emergency settings. Many migraine sufferers are chronically deficient in magnesium, making this especially impactful.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Supports nerve function and helps restore the neurological balance disrupted during a migraine.",
+          "whyItMatters": "B12 deficiency has been associated with increased migraine frequency in research studies.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "B-Complex",
+          "whatItDoes": "Riboflavin (B2) is specifically studied as a migraine preventive. The full complex supports nervous system stability.",
+          "whyItMatters": "B2 is one of the only supplements with genuine clinical evidence for migraine prevention at sufficient doses.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Vitamin C (1g)",
+          "whatItDoes": "Reduces neuroinflammation and oxidative stress in the brain during and after a migraine attack.",
+          "whyItMatters": "Migraines involve significant neuroinflammation. Antioxidant support helps the brain recover.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Your brain's primary antioxidant defense against the neuroinflammatory cascade triggered by a migraine.",
+          "whyItMatters": "Glutathione levels in the brain drop during migraine attacks. IV delivery restores them when they're needed most.",
+          "evidenceLevel": "emerging"
+        },
+        {
+          "name": "Ondansetron / Zofran (4mg)",
+          "whatItDoes": "Controls the nausea and vomiting that accompany most severe migraines.",
+          "whyItMatters": "Migraine nausea prevents oral medication from working. Zofran administered IV bypasses this barrier completely.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Ketorolac / Toradol (30mg)",
+          "whatItDoes": "IV anti-inflammatory that addresses the vascular and inflammatory components of migraine pain.",
+          "whyItMatters": "IV Toradol is used in emergency departments for acute migraine precisely because it works so well. It's one of the most effective non-opioid options available.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You're deep in a migraine and oral meds aren't cutting it",
+          "detail": "When you can't keep medication down or you've already tried everything in your cabinet, IV therapy bypasses all the barriers that prevent oral treatment from working."
+        },
+        {
+          "headline": "You get frequent migraines and want better options",
+          "detail": "The magnesium in this IV has Level A clinical evidence for migraine treatment. Many people with regular migraines find that monthly magnesium IVs reduce both frequency and severity over time."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Nausea relief usually within 10-15 minutes. Pain reduction typically begins within 20-30 minutes of the magnesium.",
+        "duration": "60 minutes — magnesium infuses slowly to maximize comfort.",
+        "frequency": "As needed for acute episodes. Monthly preventive infusions for chronic migraine.",
+        "howItFeels": "Magnesium infused quickly causes a warm flush throughout the body — we infuse it slowly to keep you comfortable. Your nurse adjusts the rate based on your feedback. Lights can be dimmed on request."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myers",
+        "hydration",
+        "vitaminDShot"
+      ]
+    },
+    {
+      "slug": "longevity",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Hydration base that ensures optimal nutrient delivery and cellular function.",
+          "whyItMatters": "Cellular hydration is foundational to every anti-aging mechanism in this formula.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "NAD+ (50mg)",
+          "whatItDoes": "A coenzyme found in every cell that powers DNA repair, mitochondrial function, and cellular energy production.",
+          "whyItMatters": "NAD+ levels decline 50% by age 50. This decline is directly linked to aging, fatigue, and reduced cellular repair. IV delivery achieves much higher levels than oral supplements.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Protects neurons, supports methylation (a key process in DNA repair), and maintains the myelin sheath around nerves.",
+          "whyItMatters": "B12 is essential to the same cellular repair pathways that NAD+ activates.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex",
+          "whatItDoes": "Supports the metabolic processes that convert nutrients into energy and maintain cellular integrity.",
+          "whyItMatters": "The B vitamins and NAD+ work synergistically — together they support the full energy-production cycle in your mitochondria.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (1g)",
+          "whatItDoes": "Stimulates collagen synthesis and provides antioxidant protection against age-accelerating free radicals.",
+          "whyItMatters": "Collagen production declines with age and Vitamin C is its primary cofactor. High-dose IV delivery supports skin, joint, and vascular integrity.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Recycles other antioxidants (including Vitamin C) and is the master regulator of cellular oxidative stress.",
+          "whyItMatters": "Glutathione levels decline significantly with age. Restoring them is one of the most evidence-based longevity interventions available.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Magnesium (500mg)",
+          "whatItDoes": "Required for DNA synthesis, repair, and the activation of over 300 enzymes involved in cellular maintenance.",
+          "whyItMatters": "Magnesium deficiency accelerates the hallmarks of cellular aging. It's a foundational longevity mineral.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Zinc (5mg)",
+          "whatItDoes": "Critical cofactor for antioxidant enzymes and immune surveillance against abnormal cells.",
+          "whyItMatters": "Zinc deficiency impairs the immune system's ability to identify and clear damaged cells — a key longevity mechanism.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You're in your 40s or 50s and feel the gap between how old you are and how you want to feel",
+          "detail": "NAD+ decline is one of the most studied mechanisms of aging. This IV specifically targets the cellular energy and repair systems that decline first."
+        },
+        {
+          "headline": "You invest in your health and want the most comprehensive wellness IV available",
+          "detail": "This formula combines the classic Myers' cocktail with NAD+ and upgraded doses — everything your cells need for optimal function, delivered directly."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "NAD+ infusions often produce a subtle energy and mental clarity effect that builds over the first hour and continues improving over the following 24-48 hours.",
+        "duration": "60-90 minutes. NAD+ infuses slowly for best tolerance.",
+        "frequency": "Monthly for maintenance. More frequent initially if starting a longevity protocol.",
+        "howItFeels": "NAD+ can cause a transient chest tightness, nausea, or flushed feeling when infused too quickly. Your nurse controls the rate and monitors you throughout — most people find it very manageable."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "nad250",
+        "myersPlatinum",
+        "glutathioneShot"
+      ]
+    },
+    {
+      "slug": "myersGold",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Full hydration base for optimal nutrient delivery.",
+          "whyItMatters": "Proper hydration enhances the absorption and circulation of all other nutrients.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (2mg — doubled)",
+          "whatItDoes": "Deeper neurological support and more sustained energy impact than standard dose.",
+          "whyItMatters": "Double dosing ensures saturation of B12-dependent pathways, particularly useful for those with absorption issues or higher metabolic demand.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex (double dose)",
+          "whatItDoes": "Saturates all cellular energy pathways with the full range of B vitamins.",
+          "whyItMatters": "At double dose, the B-complex provides more robust mitochondrial support — especially valuable for athletic recovery or high-demand periods.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (2g — doubled)",
+          "whatItDoes": "Enhanced antioxidant protection and immune stimulation at therapeutic dose.",
+          "whyItMatters": "2g IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Magnesium (1g — doubled)",
+          "whatItDoes": "Deeper muscle relaxation, stronger anti-inflammatory effect, and more pronounced vascular dilation.",
+          "whyItMatters": "1g IV magnesium is the dose used in clinical settings for migraine and cardiovascular support.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (1,200mg — doubled)",
+          "whatItDoes": "Comprehensive cellular detox and antioxidant restoration at a full therapeutic dose.",
+          "whyItMatters": "The higher dose produces more sustained glutathione elevation and a more noticeable liver detox effect.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Zinc (10mg — doubled)",
+          "whatItDoes": "Full immune system support and enzyme cofactor saturation.",
+          "whyItMatters": "Higher zinc dose is particularly valuable during active immune challenges or recovery from intense training.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Calcium Gluconate (200mg)",
+          "whatItDoes": "Supports neuromuscular transmission and cardiac function, and balances the magnesium at higher doses.",
+          "whyItMatters": "At elevated magnesium doses, calcium co-administration ensures optimal neuromuscular function and prevents any imbalance.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "The regular Myers' works well for you and you want more",
+          "detail": "The Gold is the Myers' at full therapeutic doses — the same formulation, doubled. Bigger effect, same trusted formula."
+        },
+        {
+          "headline": "You're recovering from illness, overtraining, or a major stressor",
+          "detail": "When your body has been through something significant, standard doses may not be enough to move the needle. The Gold is built for when you need to rebuild, not just maintain."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Most people notice a more pronounced energy effect than the standard Myers' — typically within 20-30 minutes.",
+        "duration": "60 minutes.",
+        "frequency": "Monthly or quarterly as an upgrade to your regular Myers' protocol.",
+        "howItFeels": "The higher magnesium dose may produce more warmth during infusion. Your nurse manages your infusion rate based on your feedback."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myers",
+        "myersPlatinum",
+        "b12Shot"
+      ]
+    },
+    {
+      "slug": "performance",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Replaces the significant fluid lost through sweat during intense training.",
+          "whyItMatters": "Even 2% dehydration measurably impairs athletic performance. IV rehydration restores you faster than drinking alone.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "NAD+ (50mg)",
+          "whatItDoes": "Activates sirtuins (longevity proteins) and supports mitochondrial efficiency for better energy output.",
+          "whyItMatters": "NAD+ is essential to the ATP synthesis cycle that powers muscle contraction. Athletes with optimized NAD+ levels recover faster and perform better.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Amino Acid Blend",
+          "whatItDoes": "Provides the essential building blocks for muscle protein synthesis and repair.",
+          "whyItMatters": "Amino acids delivered IV reach muscle tissue faster than oral protein, accelerating the repair process in the critical post-workout window.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Supports red blood cell production for better oxygen delivery to working muscles.",
+          "whyItMatters": "Endurance performance is limited by oxygen delivery. B12 supports the RBC production that underlies aerobic capacity.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex",
+          "whatItDoes": "Powers the metabolic pathways that convert carbohydrates, fat, and protein into ATP.",
+          "whyItMatters": "B vitamins are essential cofactors in energy metabolism. Athletes deplete them faster and need more.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (1g)",
+          "whatItDoes": "Reduces exercise-induced oxidative stress and supports collagen synthesis for tendon and joint health.",
+          "whyItMatters": "High-intensity training generates significant free radicals. Vitamin C is the primary water-soluble antioxidant defense.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Magnesium (500mg)",
+          "whatItDoes": "Reduces muscle cramping, supports relaxation/recovery, and is required for over 300 enzymatic reactions in energy production.",
+          "whyItMatters": "Athletes lose significant magnesium through sweat. Low magnesium is a primary cause of muscle cramps and impaired recovery.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Neutralizes the oxidative damage generated during intense training and supports faster cellular repair.",
+          "whyItMatters": "Elite athletes experience significantly higher oxidative stress. Glutathione is the cell's most potent mechanism for handling it.",
+          "evidenceLevel": "moderate"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You just finished a hard workout or race and want to recover faster",
+          "detail": "The 24-48 hours post-training are when your muscles rebuild. This IV delivers fluids, amino acids, and key nutrients in the window when they matter most."
+        },
+        {
+          "headline": "You compete in endurance sports or CrossFit and train multiple days in a row",
+          "detail": "High-volume training depletes what oral nutrition can keep up with. Weekly IV support can be the difference between adapting and breaking down."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Improved hydration and reduced fatigue typically felt within 20-30 minutes.",
+        "duration": "60 minutes.",
+        "frequency": "Post-training as needed. Some athletes do weekly during competition season.",
+        "howItFeels": "A standard IV drip. Some people notice a slight muscle relaxation effect from the magnesium during the infusion."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "nad250",
+        "lipoShots",
+        "b12Shot"
+      ]
+    },
+    {
+      "slug": "myersPlatinum",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Full hydration base for all platinum-dose nutrients.",
+          "whyItMatters": "Optimal nutrient delivery requires adequate circulatory volume.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (3mg — tripled)",
+          "whatItDoes": "Maximum neurological support and red blood cell optimization.",
+          "whyItMatters": "Triple B12 is used for cases of significant B12 deficiency or when neurological support is the primary goal.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex (triple dose)",
+          "whatItDoes": "Complete saturation of B vitamin-dependent energy pathways.",
+          "whyItMatters": "At triple dose, the B-complex delivers the most robust mitochondrial support available in an IV formulation.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (3g — tripled)",
+          "whatItDoes": "High-dose immune stimulation and powerful antioxidant protection at near-therapeutic IV range.",
+          "whyItMatters": "3g IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Magnesium (1g — tripled from standard)",
+          "whatItDoes": "Clinical-grade vascular relaxation, migraine prevention, and neuromuscular support.",
+          "whyItMatters": "1g IV magnesium is the dose used in emergency medicine. This is real pharmacological effect, not supplement-level dosing.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (1,800mg — tripled)",
+          "whatItDoes": "Maximum detoxification support and cellular antioxidant restoration.",
+          "whyItMatters": "At this dose, glutathione provides a thorough liver and cellular detox effect that is noticeably more profound than standard doses.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Zinc (15mg — tripled)",
+          "whatItDoes": "Maximum immune enzyme activation and antiviral support.",
+          "whyItMatters": "This dose is used therapeutically for significant zinc depletion states and intense immune challenges.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Calcium Gluconate (200mg)",
+          "whatItDoes": "Balances the elevated magnesium and supports cardiac and neuromuscular function.",
+          "whyItMatters": "Required to ensure safety and comfort at triple-magnesium doses.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "NAD+ (50mg)",
+          "whatItDoes": "Activates cellular repair, mitochondrial energy, and longevity pathways alongside the elevated vitamin doses.",
+          "whyItMatters": "The combination of high-dose vitamins and NAD+ creates a synergistic effect — each enhancing the other's impact on cellular restoration.",
+          "evidenceLevel": "moderate"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want the most comprehensive IV therapy available in a single session",
+          "detail": "The Platinum delivers every ingredient at its maximum therapeutic dose. This is what we recommend for people coming off a serious illness, preparing for a major physical challenge, or investing in a quarterly full-system reset."
+        },
+        {
+          "headline": "You've done Myers' before and are ready to go further",
+          "detail": "Platinum is the Myers' Gold formula amplified again — with NAD+ added. It's the top of the IV drip stack."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Many people feel a notable shift in energy and clarity that builds through the infusion and peaks about an hour after.",
+        "duration": "75-90 minutes. The high doses require a controlled infusion rate.",
+        "frequency": "Quarterly or monthly. Not typically needed more frequently.",
+        "howItFeels": "This is a comfortable but potent infusion. Your nurse closely monitors your rate and comfort throughout. Expect warmth from the magnesium and a gradual energy build from the B vitamins and NAD+."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myersGold",
+        "longevity",
+        "nad250"
+      ]
+    },
+    {
+      "slug": "revival",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Full hydration foundation — addresses the dehydration that's often at the root of not feeling well.",
+          "whyItMatters": "Whatever brought you in, rehydration is always beneficial and improves the effectiveness of everything else.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin B12 (2mg)",
+          "whatItDoes": "Neurological and energy support at an elevated dose.",
+          "whyItMatters": "B12 is depleted by virtually every stressor — illness, alcohol, poor sleep, medication use. This restores it quickly.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B-Complex (double dose)",
+          "whatItDoes": "Comprehensive energy system restoration.",
+          "whyItMatters": "When your body has been through something — a long illness, a hard week, a rough stretch — your B vitamins need restoring.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Vitamin C (2g)",
+          "whatItDoes": "High-dose antioxidant and immune support.",
+          "whyItMatters": "2g IV is therapeutic-range Vitamin C — meaningfully different from what any capsule can achieve.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (1,200mg)",
+          "whatItDoes": "Deep cellular detox and antioxidant restoration.",
+          "whyItMatters": "At this dose, glutathione produces a more thorough cellular cleansing effect.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Magnesium (1g)",
+          "whatItDoes": "Clinical-level muscle relaxation and anti-inflammatory support.",
+          "whyItMatters": "1g IV magnesium is a clinically meaningful dose for pain, inflammation, and neuromuscular function.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Zinc (10mg)",
+          "whatItDoes": "Immune support and enzymatic restoration.",
+          "whyItMatters": "Higher zinc dose is particularly helpful after illness, stress, or prolonged depletion.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Choose 3 Medications (from menu)",
+          "whatItDoes": "Customizable add-on medications to address your specific symptoms: Zofran (nausea), Toradol (pain/inflammation), Pepcid (heartburn/reflux), Benadryl (allergy/sleep), B12 push, or Vitamin C push.",
+          "whyItMatters": "The Revival is designed to be adaptable. Your nurse reviews your symptoms and helps you choose the three medications that will have the most impact for you specifically.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You're not sure exactly what's wrong — you just need to feel better",
+          "detail": "The Revival's customizable medication menu means it can be tailored to your exact situation, whether that's pain, nausea, allergies, or just complete exhaustion."
+        },
+        {
+          "headline": "You've been through something hard and need a serious reset",
+          "detail": "High-dose vitamins, full glutathione, clinical magnesium, plus whatever medications your symptoms require. This is the all-hands-on-deck IV."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Varies by medication selection. Nausea and pain medications take effect within 15-20 minutes. Vitamin effects build through the infusion.",
+        "duration": "60-75 minutes.",
+        "frequency": "As needed for acute situations. Also popular as an occasional deep-reset.",
+        "howItFeels": "Your nurse reviews your symptoms and personalizes your medication selection before you start. This is the most customized IV we offer."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "myersPlatinum",
+        "myers",
+        "labGeneral"
+      ]
+    },
+    {
+      "slug": "nad100",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "NAD+ (100mg)",
+          "whatItDoes": "Nicotinamide adenine dinucleotide — a coenzyme present in every cell that drives energy production, DNA repair, and cellular communication.",
+          "whyItMatters": "NAD+ declines dramatically with age — levels at 60 can be half what they were at 20. IV delivery achieves significantly higher cellular concentrations than oral NMN or NR supplements.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Normal Saline (500mL)",
+          "whatItDoes": "Carrier solution that ensures comfortable, well-tolerated NAD+ delivery.",
+          "whyItMatters": "NAD+ infused too quickly causes side effects. The saline dilution allows us to manage your infusion rate for comfort.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You're curious about NAD+ and want to try it before committing to a larger dose",
+          "detail": "100mg is our entry-level NAD+ experience. It gives you a real sense of the effects — mental clarity, mild energy shift — without the longer infusion time of higher doses."
+        },
+        {
+          "headline": "You want an add-on to your Myers' without extending your session much",
+          "detail": "NAD+ 100mg can be stacked with most of our IV drips for an enhanced longevity effect."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "NAD+ effects are often subtle during the infusion but build over the following 24-48 hours. Some people notice improved mental clarity or mood the day after.",
+        "duration": "30-45 minutes at the 100mg dose.",
+        "frequency": "Can be done monthly or stacked with other IVs. A good starting point for a NAD+ protocol.",
+        "howItFeels": "Some people experience mild chest tightness, nausea, or a warm flushed feeling — these are normal and resolve quickly. Your nurse controls your infusion rate based on tolerance."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "nad250",
+        "nad500",
+        "longevity"
+      ]
+    },
+    {
+      "slug": "nad250",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "NAD+ (250mg)",
+          "whatItDoes": "A meaningful therapeutic dose of NAD+ that activates sirtuins, supports mitochondrial biogenesis, and enables cellular DNA repair mechanisms.",
+          "whyItMatters": "250mg is widely considered the sweet spot for NAD+ therapy — high enough for clinically meaningful effects, manageable in a single outpatient session. Most people notice effects lasting 3-5 days post-infusion.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Normal Saline (500mL)",
+          "whatItDoes": "Dilution medium that allows precise control of NAD+ infusion rate.",
+          "whyItMatters": "A slower infusion rate dramatically improves tolerance and ensures the full dose is delivered comfortably.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want to experience what NAD+ is actually about",
+          "detail": "250mg is our most popular NAD+ dose — enough to produce the mental clarity, energy, and recovery effects that have made NAD+ therapy so popular. Most people who try this come back monthly."
+        },
+        {
+          "headline": "You're in your 40s+ and want to address the cellular aging process directly",
+          "detail": "NAD+ decline is one of the most studied mechanisms of aging. 250mg IV NAD+ is a direct intervention at the cellular level."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Many people feel a subtle mental sharpening during the infusion. The full effect — improved energy, mood clarity, and cognitive performance — typically peaks 12-24 hours later.",
+        "duration": "60-90 minutes.",
+        "frequency": "Monthly is a popular maintenance schedule. Some people do it every 2-3 weeks.",
+        "howItFeels": "NAD+ has a characteristic feeling — some describe it as an intensified aliveness or heightened sensory awareness. Side effects (mild nausea, chest tightness) are dose-related and manageable by adjusting infusion rate."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "nad500",
+        "longevity",
+        "myersPlatinum"
+      ]
+    },
+    {
+      "slug": "nad500",
+      "category": "iv",
+      "ingredients": [
+        {
+          "name": "NAD+ (500mg)",
+          "whatItDoes": "A high-dose NAD+ infusion that deeply saturates cellular NAD+ stores, producing a sustained and pronounced effect on energy, cognition, and cellular repair.",
+          "whyItMatters": "500mg IV NAD+ is used in clinical settings for addiction recovery, neurodegenerative support, and deep anti-aging protocols. The effects are noticeably more profound and longer-lasting than lower doses.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Normal Saline (1L)",
+          "whatItDoes": "Full-volume carrier that provides hydration alongside the high-dose NAD+ for maximum tolerability.",
+          "whyItMatters": "At 500mg, the extra saline is important for both tolerability and optimal nutrient delivery.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You've done NAD+ before and want the full experience",
+          "detail": "500mg is the dose where most people describe feeling a meaningful shift — deeper sleep, sustained cognitive clarity for days, and accelerated recovery from physical exertion."
+        },
+        {
+          "headline": "You're doing a structured longevity or recovery protocol",
+          "detail": "500mg sessions are used in clinical NAD+ protocols for burnout, addiction recovery, traumatic brain injury support, and serious anti-aging programs. This is a meaningful therapeutic intervention."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Some people feel effects building during the infusion. The signature experience — improved energy, mental clarity, sense of restoration — peaks over the 24-48 hours after.",
+        "duration": "2-3 hours. High-dose NAD+ must be infused slowly for comfort.",
+        "frequency": "Every 1-3 months for maintenance. Can be done more frequently during an intensive initial protocol.",
+        "howItFeels": "This is a longer session and NAD+ side effects (nausea, chest pressure, warmth) are more likely at this dose. Your nurse stays with you and adjusts rate as needed. Most people find it deeply worth it."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "nad250",
+        "longevity",
+        "labComplete"
+      ]
+    },
+    {
+      "slug": "semaglutide",
+      "category": "weightLoss",
+      "ingredients": [
+        {
+          "name": "Semaglutide",
+          "whatItDoes": "A GLP-1 receptor agonist that mimics the body's natural satiety hormone, reducing appetite and slowing gastric emptying.",
+          "whyItMatters": "Semaglutide works at the level of the brain's appetite centers, reducing hunger in a way that willpower alone cannot replicate. Clinical trials show 10-15% average body weight reduction over 12-16 weeks.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You've tried everything and the weight isn't moving",
+          "detail": "GLP-1 medications work differently from diets or exercise — they change your brain's relationship with food. Many people describe the absence of food noise as transformative."
+        },
+        {
+          "headline": "Your doctor has recommended addressing your weight for health reasons",
+          "detail": "Obesity is associated with dozens of downstream health risks. Semaglutide has more clinical evidence for sustainable weight loss than any other prescription option currently available."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Reduced appetite typically noticed within the first week. Meaningful weight loss usually begins in weeks 2-4.",
+        "duration": "Weekly subcutaneous injections, administered in-office or self-administered at home.",
+        "frequency": "Once weekly. This is an ongoing program, not a one-time treatment.",
+        "howItFeels": "A small injection, typically in the abdomen, thigh, or upper arm. Most people find it comfortable. Nausea is the most common early side effect and usually resolves within 2-4 weeks."
+      },
+      "glp1": {
+        "mechanism": "GLP-1 (glucagon-like peptide-1) receptor agonist. Mimics the body's natural post-meal satiety signal, suppressing appetite and slowing digestion.",
+        "eligibility": {
+          "bmiRequirement": "BMI 27+ with a weight-related condition (hypertension, diabetes, high cholesterol), or BMI 30+ without comorbidities",
+          "contraindications": [
+            "Personal or family history of medullary thyroid carcinoma",
+            "Multiple endocrine neoplasia syndrome type 2 (MEN2)",
+            "Active pancreatitis",
+            "Pregnancy or planning pregnancy",
+            "Severe GI disorders"
+          ],
+          "requiresConsult": true
+        },
+        "dosingSchedule": [
+          {
+            "week": "1-4",
+            "dose": "0.25mg weekly",
+            "purpose": "Tolerance induction"
+          },
+          {
+            "week": "5-8",
+            "dose": "0.5mg weekly",
+            "purpose": "Initial therapeutic dose"
+          },
+          {
+            "week": "9-12",
+            "dose": "1.0mg weekly",
+            "purpose": "Standard therapeutic dose"
+          },
+          {
+            "week": "13+",
+            "dose": "1.0-2.0mg weekly",
+            "purpose": "Maintenance or escalation per response"
+          }
+        ],
+        "sideEffects": {
+          "common": [
+            "Nausea (most common, especially early)",
+            "Decreased appetite",
+            "Vomiting",
+            "Diarrhea or constipation",
+            "Fatigue in first weeks"
+          ],
+          "serious": [
+            "Pancreatitis — seek immediate care for severe abdominal pain",
+            "Gallbladder issues",
+            "Increased heart rate",
+            "Rare: thyroid tumors (based on animal data)"
+          ],
+          "managementTips": "Nausea is dramatically reduced by eating smaller meals, avoiding fatty or spicy foods, and staying hydrated. Most patients adapt within 3-4 weeks."
+        },
+        "monitoring": "Initial consult + monthly check-ins to assess weight loss, side effects, and dose adjustments."
+      },
+      "relatedSlugs": [
+        "tirzepatide",
+        "lipoShots",
+        "labGeneral"
+      ]
+    },
+    {
+      "slug": "tirzepatide",
+      "category": "weightLoss",
+      "ingredients": [
+        {
+          "name": "Tirzepatide",
+          "whatItDoes": "A dual GLP-1 and GIP receptor agonist — it activates two different gut hormone pathways simultaneously for greater appetite suppression and metabolic benefit.",
+          "whyItMatters": "Clinical trials show tirzepatide produces 20-22% average body weight reduction — the highest of any approved weight loss medication. The dual mechanism provides broader metabolic benefits including improved insulin sensitivity.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want the most effective medical weight loss option currently available",
+          "detail": "Tirzepatide consistently outperforms semaglutide in head-to-head comparisons. The dual GLP-1/GIP mechanism produces greater weight loss with comparable or better tolerability in clinical studies."
+        },
+        {
+          "headline": "You have type 2 diabetes or metabolic syndrome alongside your weight goals",
+          "detail": "The GIP component of tirzepatide provides additional metabolic benefits including improved insulin sensitivity and glucose control — making it particularly valuable for those with metabolic conditions."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Appetite reduction usually noticed within the first week. Weight loss typically becomes apparent by weeks 3-4.",
+        "duration": "Weekly subcutaneous injections.",
+        "frequency": "Once weekly ongoing program.",
+        "howItFeels": "A small weekly injection. Similar tolerability profile to semaglutide. Nausea, if it occurs, is typically mild and resolves within a few weeks at each dose level."
+      },
+      "glp1": {
+        "mechanism": "Dual GLP-1 and GIP (glucose-dependent insulinotropic polypeptide) receptor agonist. Activates two complementary gut hormone pathways for enhanced appetite suppression and improved insulin sensitivity.",
+        "eligibility": {
+          "bmiRequirement": "BMI 27+ with a weight-related condition, or BMI 30+ without comorbidities",
+          "contraindications": [
+            "Personal or family history of medullary thyroid carcinoma",
+            "Multiple endocrine neoplasia syndrome type 2 (MEN2)",
+            "Active pancreatitis",
+            "Pregnancy or planning pregnancy",
+            "Severe GI disorders"
+          ],
+          "requiresConsult": true
+        },
+        "dosingSchedule": [
+          {
+            "week": "1-4",
+            "dose": "2.5mg weekly",
+            "purpose": "Tolerance induction"
+          },
+          {
+            "week": "5-8",
+            "dose": "5mg weekly",
+            "purpose": "Initial therapeutic dose"
+          },
+          {
+            "week": "9-12",
+            "dose": "7.5mg weekly",
+            "purpose": "Standard therapeutic dose"
+          },
+          {
+            "week": "13-16",
+            "dose": "10mg weekly",
+            "purpose": "Escalation if needed"
+          },
+          {
+            "week": "17+",
+            "dose": "12.5-15mg weekly",
+            "purpose": "Maximum therapeutic dose per response"
+          }
+        ],
+        "sideEffects": {
+          "common": [
+            "Nausea (most common early on)",
+            "Decreased appetite",
+            "Diarrhea",
+            "Vomiting",
+            "Constipation",
+            "Abdominal discomfort"
+          ],
+          "serious": [
+            "Pancreatitis — seek immediate care for severe abdominal pain",
+            "Gallbladder disease",
+            "Increased resting heart rate",
+            "Rare: thyroid tumors (based on animal data)"
+          ],
+          "managementTips": "Side effects are dose-dependent and typically manageable with slower dose escalation. Eating slowly, avoiding overeating, and staying well hydrated significantly reduces GI symptoms."
+        },
+        "monitoring": "Initial consult + monthly check-ins for weight tracking, side effect management, and dose optimization."
+      },
+      "relatedSlugs": [
+        "semaglutide",
+        "lipoShots",
+        "labGeneral"
+      ]
+    },
+    {
+      "slug": "b12Shot",
+      "category": "injection",
+      "ingredients": [
+        {
+          "name": "Methylcobalamin B12 (1mg)",
+          "whatItDoes": "The active, bioavailable form of B12 that your cells can use immediately — supports red blood cell formation, neurological function, and DNA synthesis.",
+          "whyItMatters": "Methylcobalamin is significantly better absorbed than the cheaper cyanocobalamin form used in most supplements. IM injection bypasses the stomach entirely, achieving near-complete absorption regardless of your gut health.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You feel tired more than you should",
+          "detail": "B12 deficiency is one of the most common and most overlooked causes of persistent fatigue. It's especially common in vegetarians, vegans, and people over 50 who have reduced stomach acid."
+        },
+        {
+          "headline": "You want a quick energy boost without a full IV",
+          "detail": "The B12 shot is our fastest, most affordable treatment — a 2-minute injection that many people report feeling within a few hours."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Some people notice increased energy within a few hours. The full effect builds over 24-48 hours as B12 enters the cells.",
+        "duration": "5 minutes including prep. One quick intramuscular injection.",
+        "frequency": "Weekly or monthly, depending on your baseline levels and energy goals.",
+        "howItFeels": "A quick intramuscular injection — a brief pinch in the deltoid or glute. Done in minutes."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "glutathioneShot",
+        "triImmuneShot",
+        "myers"
+      ]
+    },
+    {
+      "slug": "biotinShot",
+      "category": "injection",
+      "ingredients": [
+        {
+          "name": "Biotin / Vitamin B7 (10mg)",
+          "whatItDoes": "A B vitamin that is an essential cofactor for enzymes involved in fatty acid synthesis, amino acid metabolism, and gluconeogenesis — all of which directly affect the health of hair, skin, and nails.",
+          "whyItMatters": "At 10mg IM injection, biotin reaches concentrations that oral supplements at typical doses cannot match. Deficiency (or insufficiency) causes brittle nails, hair thinning, and skin changes.",
+          "evidenceLevel": "moderate"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "Your hair is thinning or your nails keep breaking",
+          "detail": "Biotin is the primary B vitamin involved in keratin production — the protein that makes up hair and nails. High-dose injection delivers it where oral supplements often can't."
+        },
+        {
+          "headline": "You want to support skin, hair, and nails alongside your IV wellness routine",
+          "detail": "Biotin stacks well with glutathione — together they address both keratin production and the oxidative stress that contributes to skin aging."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Hair and nail changes take weeks to appear as new growth reflects improved nutrient status. Skin improvements may be noticed sooner.",
+        "duration": "5 minutes. One intramuscular injection.",
+        "frequency": "Weekly for 4-8 weeks to build levels, then monthly for maintenance.",
+        "howItFeels": "A quick IM injection. No significant sensation beyond a brief pinch."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "glutathioneShot",
+        "b12Shot",
+        "longevity"
+      ]
+    },
+    {
+      "slug": "glutathioneShot",
+      "category": "injection",
+      "ingredients": [
+        {
+          "name": "Glutathione (600mg)",
+          "whatItDoes": "Your body's master antioxidant — neutralizes free radicals, supports liver detox pathways, recycles other antioxidants, and plays a central role in cellular immunity.",
+          "whyItMatters": "Glutathione is destroyed in the digestive tract, making oral supplements largely ineffective. IM injection achieves dramatically higher bioavailability. It's involved in skin brightening, liver health, athletic recovery, and immune function.",
+          "evidenceLevel": "moderate"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want skin brightening and antioxidant support in one shot",
+          "detail": "Glutathione is widely used for skin clarity and an even complexion — it inhibits melanin production while simultaneously improving cellular health."
+        },
+        {
+          "headline": "You've been doing IV wellness and want to add liver and detox support",
+          "detail": "Glutathione is the liver's primary detox molecule. Regular IM dosing helps maintain the antioxidant and detox capacity that daily toxin exposure depletes."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Skin changes from glutathione take several weeks of consistent use. Antioxidant and energy effects may be noticed more quickly.",
+        "duration": "5 minutes. One intramuscular injection.",
+        "frequency": "2-3x per week for cosmetic goals. Weekly for general wellness.",
+        "howItFeels": "A brief, quick injection. Occasionally patients notice a mild sulfur-like taste or smell briefly after — this is normal and passes in seconds."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "biotinShot",
+        "b12Shot",
+        "longevity"
+      ]
+    },
+    {
+      "slug": "triImmuneShot",
+      "category": "injection",
+      "ingredients": [
+        {
+          "name": "Vitamin C (500mg)",
+          "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
+          "whyItMatters": "IM Vitamin C at 500mg achieves blood concentrations significantly above what oral dosing can reach.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Zinc (5mg)",
+          "whatItDoes": "Essential for immune cell development and directly inhibits the replication of many viruses.",
+          "whyItMatters": "Zinc is one of the most evidence-backed immune nutrients. IM delivery ensures full absorption without GI side effects.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Glutathione (200mg)",
+          "whatItDoes": "Reduces oxidative stress in immune cells and supports liver function during immune responses.",
+          "whyItMatters": "Glutathione keeps immune cells functional during the high oxidative stress of fighting an infection.",
+          "evidenceLevel": "moderate"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want immune support in a quick shot, not a full IV",
+          "detail": "Three of the most evidence-backed immune nutrients delivered in a single 5-minute injection. Great before travel, during cold and flu season, or at the first sign of illness."
+        },
+        {
+          "headline": "You're a regular IV client and want to add immune support between sessions",
+          "detail": "The Tri-Immune shot stacks perfectly with any IV drip — your nurse can administer it at the end of your infusion."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Immune effects are systemic and build over hours. Some people notice improved energy the next day.",
+        "duration": "5 minutes. One intramuscular injection.",
+        "frequency": "Weekly during illness season. Monthly for general maintenance.",
+        "howItFeels": "A quick IM injection. Volume is slightly larger than a B12 shot — a brief, manageable pinch."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "vitaminDShot",
+        "immunity",
+        "b12Shot"
+      ]
+    },
+    {
+      "slug": "vitaminDShot",
+      "category": "injection",
+      "ingredients": [
+        {
+          "name": "Vitamin D3 (50,000 IU)",
+          "whatItDoes": "Regulates calcium absorption for bone density, modulates immune system behavior, supports mood regulation, and reduces systemic inflammation.",
+          "whyItMatters": "Vitamin D deficiency affects an estimated 41% of American adults. At 50,000 IU IM, this single injection can restore deficient levels in one dose — something oral supplements take weeks to accomplish.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You live in a northern climate or work indoors and haven't seen real sunlight in weeks",
+          "detail": "Vitamin D is synthesized from sunlight. Northern latitude + indoor work = almost certain deficiency. This shot restores your levels quickly and completely."
+        },
+        {
+          "headline": "Your doctor told you your Vitamin D is low",
+          "detail": "A single 50,000 IU IM injection is equivalent to several weeks of high-dose oral supplementation. For documented deficiency, this is the fastest path to replenishment."
+        },
+        {
+          "headline": "You feel low mood or low energy in winter months",
+          "detail": "Vitamin D plays a significant role in serotonin production and mood regulation. Seasonal mood dips are often partly driven by D deficiency."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Blood levels begin rising within 24-48 hours. Mood and energy improvements, if related to deficiency, may be noticed within a week.",
+        "duration": "5 minutes. One intramuscular injection.",
+        "frequency": "Monthly or quarterly maintenance once levels are restored. More frequently if severely deficient.",
+        "howItFeels": "A quick IM injection — the oil-based solution may produce slightly more awareness at the injection site than water-based shots, but it's brief."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "triImmuneShot",
+        "b12Shot",
+        "immunity"
+      ]
+    },
+    {
+      "slug": "lipoShots",
+      "category": "injection",
+      "ingredients": [
+        {
+          "name": "MIC Complex (Methionine, Inositol, Choline)",
+          "whatItDoes": "Three compounds that work together to enhance fat metabolism, prevent fat accumulation in the liver, and support bile production for dietary fat digestion.",
+          "whyItMatters": "Methionine is an essential amino acid that metabolizes fat and prevents fat buildup in the liver. Inositol supports insulin signaling and fat emulsification. Choline is essential for fat transport out of the liver.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Vitamin B12 (1mg)",
+          "whatItDoes": "Boosts metabolic rate at the cellular level and provides the energy support needed when in a caloric deficit.",
+          "whyItMatters": "B12 deficiency can slow metabolism and impair the energy production pathways that support fat burning. Combining it with MIC creates a synergistic metabolic support effect.",
+          "evidenceLevel": "strong"
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You're using a GLP-1 medication and want additional metabolic support",
+          "detail": "Lipo shots are frequently used alongside semaglutide or tirzepatide programs to support liver function and fat metabolism as weight loss accelerates."
+        },
+        {
+          "headline": "You're working on weight loss and want every tool in the toolkit",
+          "detail": "Lipo shots don't burn fat on their own — but they support the metabolic machinery that does. Most effective when combined with diet and exercise."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "No immediate effect. Metabolic support is cumulative and works best as part of a consistent program.",
+        "duration": "5 minutes. One intramuscular injection.",
+        "frequency": "1-3x per week during active weight loss. Weekly for maintenance.",
+        "howItFeels": "A quick IM injection. No significant sensation beyond a brief pinch."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "semaglutide",
+        "b12Shot",
+        "performance"
+      ]
+    },
+    {
+      "slug": "labGeneral",
+      "category": "lab",
+      "ingredients": null,
+      "labTests": [
+        {
+          "name": "Complete Blood Count (CBC)",
+          "measuresWhat": "Red blood cells, white blood cells, hemoglobin, hematocrit, and platelets.",
+          "whyItMatters": "Screens for anemia, infection, immune disorders, and bleeding problems — all at once.",
+          "flaggedBy": "Low hemoglobin often explains unexplained fatigue. Elevated WBC can signal active infection. Low platelets flag clotting risk."
+        },
+        {
+          "name": "Comprehensive Metabolic Panel (CMP)",
+          "measuresWhat": "Kidney function (BUN, creatinine), liver function (ALT, AST), electrolytes (sodium, potassium, calcium), blood sugar (glucose), and blood protein levels.",
+          "whyItMatters": "A full picture of how your organs are functioning — kidney, liver, and metabolic health in one panel.",
+          "flaggedBy": "Elevated creatinine signals kidney stress. High liver enzymes can indicate inflammation or fatty liver. Blood sugar flags pre-diabetes or diabetes."
+        },
+        {
+          "name": "Lipid Panel",
+          "measuresWhat": "Total cholesterol, LDL (bad) cholesterol, HDL (good) cholesterol, and triglycerides.",
+          "whyItMatters": "The core cardiovascular risk screen. Abnormal lipids significantly increase heart disease and stroke risk — often with no symptoms until it's serious.",
+          "flaggedBy": "High LDL with low HDL is the classic risk pattern. High triglycerides often signal metabolic issues (diet, insulin resistance). Low HDL alone is also a risk factor."
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You haven't had blood work done recently and want to know where you stand",
+          "detail": "This panel covers the three most important foundational screens — blood cells, organ function, and cardiovascular risk. Most people have these run annually."
+        },
+        {
+          "headline": "Your doctor recommends routine monitoring",
+          "detail": "CBC + CMP + Lipid Panel is the standard annual health screen. Fast results, same-day draw."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Results typically available within 24-48 hours.",
+        "duration": "10 minutes for the blood draw.",
+        "frequency": "Annually for most healthy adults. More frequently if managing a chronic condition.",
+        "howItFeels": "A standard venipuncture (same as any blood draw). Your nurse explains each test and what to watch for."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "labInDepth",
+        "labComplete",
+        "myers"
+      ]
+    },
+    {
+      "slug": "labInDepth",
+      "category": "lab",
+      "ingredients": null,
+      "labTests": [
+        {
+          "name": "Complete Blood Count (CBC)",
+          "measuresWhat": "Red blood cells, white blood cells, hemoglobin, hematocrit, and platelets.",
+          "whyItMatters": "Screens for anemia, infection, immune disorders, and clotting issues.",
+          "flaggedBy": "Low hemoglobin = possible anemia. High WBC = possible infection or immune activation. Low platelets = clotting risk."
+        },
+        {
+          "name": "Comprehensive Metabolic Panel (CMP)",
+          "measuresWhat": "Kidney function, liver enzymes, electrolytes, blood sugar, and protein levels.",
+          "whyItMatters": "Organ function snapshot — kidney, liver, and metabolic health.",
+          "flaggedBy": "Elevated liver enzymes, abnormal kidney markers, blood sugar out of range."
+        },
+        {
+          "name": "Lipid Panel",
+          "measuresWhat": "Total cholesterol, LDL, HDL, and triglycerides.",
+          "whyItMatters": "Core cardiovascular risk assessment.",
+          "flaggedBy": "LDL/HDL ratio, triglyceride elevation, total cholesterol thresholds."
+        },
+        {
+          "name": "TSH (Thyroid Stimulating Hormone)",
+          "measuresWhat": "The pituitary hormone that drives thyroid function — when elevated, the thyroid is underperforming; when low, it may be overactive.",
+          "whyItMatters": "Thyroid dysfunction is extremely common, especially in women, and causes fatigue, weight changes, hair loss, mood issues, and temperature sensitivity — all often misattributed to other causes.",
+          "flaggedBy": "Elevated TSH suggests hypothyroidism (underactive thyroid). Low TSH suggests hyperthyroidism. Borderline values warrant further testing."
+        },
+        {
+          "name": "HbA1c (Hemoglobin A1c)",
+          "measuresWhat": "Your average blood sugar over the past 3 months — a much more reliable diabetes screen than a single fasting glucose.",
+          "whyItMatters": "Pre-diabetes and early type 2 diabetes are often missed on spot glucose tests. HbA1c catches the pattern. Early detection allows intervention before serious complications develop.",
+          "flaggedBy": "5.7-6.4% = pre-diabetes. 6.5%+ = diabetes. Values below 5.7% are normal."
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want to cover thyroid and blood sugar in addition to the basics",
+          "detail": "TSH and HbA1c are the two most commonly missed tests on standard annual panels. This package adds them at a meaningful discount."
+        },
+        {
+          "headline": "You have fatigue, weight changes, or mood issues that haven't been explained",
+          "detail": "Thyroid dysfunction and blood sugar dysregulation are two of the most common and most commonly missed causes of these symptoms. This panel looks for both."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Results within 24-48 hours.",
+        "duration": "10-15 minutes for the blood draw.",
+        "frequency": "Annually, or every 6 months if managing thyroid or metabolic conditions.",
+        "howItFeels": "A single blood draw. Your nurse reviews results with you and can recommend next steps or specialist referral if values are flagged."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "labComplete",
+        "labGeneral",
+        "vitaminDShot"
+      ]
+    },
+    {
+      "slug": "labComplete",
+      "category": "lab",
+      "ingredients": null,
+      "labTests": [
+        {
+          "name": "Complete Blood Count (CBC)",
+          "measuresWhat": "Red and white blood cells, hemoglobin, hematocrit, and platelets.",
+          "whyItMatters": "Comprehensive blood cell health and immune status baseline.",
+          "flaggedBy": "Anemia patterns, immune activation, clotting disorders."
+        },
+        {
+          "name": "Comprehensive Metabolic Panel (CMP)",
+          "measuresWhat": "Kidney and liver function, electrolytes, blood sugar, and protein levels.",
+          "whyItMatters": "Organ function across multiple systems.",
+          "flaggedBy": "Organ stress, metabolic dysfunction, electrolyte imbalance."
+        },
+        {
+          "name": "Lipid Panel (Extended)",
+          "measuresWhat": "Total cholesterol, LDL, HDL, triglycerides, and LDL particle size.",
+          "whyItMatters": "Full cardiovascular risk picture including particle size — a better predictor of risk than standard lipid values alone.",
+          "flaggedBy": "Small dense LDL particles, unfavorable ratios, elevated non-HDL cholesterol."
+        },
+        {
+          "name": "TSH + Free T4 + Free T3",
+          "measuresWhat": "The full thyroid panel — TSH (pituitary signal), Free T4 (storage hormone), and Free T3 (active hormone your cells use).",
+          "whyItMatters": "TSH alone misses conversion issues between T4 and T3, which are common and cause symptoms even with normal TSH.",
+          "flaggedBy": "Abnormal T3/T4 ratio suggests conversion issues. Low Free T3 with normal TSH is a common pattern in symptomatic patients."
+        },
+        {
+          "name": "HbA1c + Fasting Insulin",
+          "measuresWhat": "3-month blood sugar average plus fasting insulin level — together these reveal insulin resistance before blood sugar becomes abnormal.",
+          "whyItMatters": "You can have insulin resistance — the root cause of type 2 diabetes — for years before glucose rises. This panel catches it early.",
+          "flaggedBy": "Elevated fasting insulin with normal glucose is the earliest warning sign of metabolic syndrome."
+        },
+        {
+          "name": "CRP-hs (High-Sensitivity C-Reactive Protein)",
+          "measuresWhat": "A sensitive marker of systemic inflammation, particularly relevant for cardiovascular disease risk.",
+          "whyItMatters": "Chronic low-grade inflammation is now recognized as a primary driver of heart disease, metabolic disease, and accelerated aging.",
+          "flaggedBy": "Above 1 mg/L increases cardiovascular risk. Above 3 mg/L signals significant systemic inflammation."
+        },
+        {
+          "name": "Homocysteine",
+          "measuresWhat": "An amino acid byproduct of methionine metabolism — elevated levels damage blood vessel walls.",
+          "whyItMatters": "High homocysteine is an independent cardiovascular and neurological risk factor, and is directly corrected by B vitamins (B6, B12, folate).",
+          "flaggedBy": "Above 15 umol/L is elevated. Usually responsive to B-vitamin optimization."
+        },
+        {
+          "name": "Vitamin D (25-OH)",
+          "measuresWhat": "Your stored Vitamin D level — the best indicator of functional Vitamin D status.",
+          "whyItMatters": "Deficiency affects immune function, bone health, mood, and cardiovascular risk. Essential for personalizing your supplementation and IV protocols.",
+          "flaggedBy": "Below 30 ng/mL is deficient. Optimal range is 40-80 ng/mL for most adults."
+        },
+        {
+          "name": "Ferritin + Iron + TIBC",
+          "measuresWhat": "Iron storage (ferritin), circulating iron, and iron-binding capacity — together giving a complete iron status picture.",
+          "whyItMatters": "Low ferritin causes fatigue, hair loss, and reduced exercise tolerance — even when hemoglobin is still normal. This panel catches iron issues before they progress to anemia.",
+          "flaggedBy": "Ferritin below 30 ng/mL is associated with fatigue and hair loss even without anemia."
+        },
+        {
+          "name": "Comprehensive Hormone Panel (Sex Hormones)",
+          "measuresWhat": "Total and Free Testosterone, Estradiol, DHEA-S, Progesterone, FSH, LH.",
+          "whyItMatters": "Hormone imbalances cause a wide range of symptoms — low energy, low libido, mood changes, weight gain, sleep disruption — and are often missed on standard panels.",
+          "flaggedBy": "Low testosterone in men/women, estrogen dominance patterns, adrenal insufficiency indicators."
+        },
+        {
+          "name": "Cortisol (AM)",
+          "measuresWhat": "Your morning cortisol level — the baseline readout of your adrenal stress response system.",
+          "whyItMatters": "Cortisol dysregulation (too high or too low) affects energy, sleep, metabolism, immune function, and stress resilience.",
+          "flaggedBy": "Elevated AM cortisol suggests chronic stress activation. Low AM cortisol can indicate adrenal fatigue or insufficiency."
+        },
+        {
+          "name": "PSA (Men) / CA-125 (Women) — Cancer Markers",
+          "measuresWhat": "PSA: prostate-specific antigen for prostate health screening. CA-125: marker associated with ovarian cancer risk.",
+          "whyItMatters": "Screening markers that provide baseline values and flag significant changes over time.",
+          "flaggedBy": "Elevated PSA warrants urological consultation. Elevated CA-125 warrants gynecological evaluation."
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You want a complete picture of your health — not just the basics",
+          "detail": "This 45+ biomarker panel covers everything from hormones and inflammation to metabolic health, organ function, and cancer screening markers. It's a proper annual deep dive."
+        },
+        {
+          "headline": "You're starting a longevity or optimization protocol and need a real baseline",
+          "detail": "You can't optimize what you don't measure. The Complete panel gives you the full data set to make informed decisions about your IV protocols, supplements, and lifestyle interventions."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Most results available within 48-72 hours. Some hormone tests may take longer.",
+        "duration": "15-20 minutes for the blood draw.",
+        "frequency": "Annually as a comprehensive health review. Quarterly if actively managing health conditions.",
+        "howItFeels": "A single blood draw — multiple tubes are collected. Your nurse reviews the full panel with you when results come in and can help you understand what the numbers mean."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "labInDepth",
+        "labGeneral",
+        "semaglutide"
+      ]
+    },
+    {
+      "slug": "labVitamin",
+      "category": "lab",
+      "ingredients": null,
+      "labTests": [
+        {
+          "name": "Complete Blood Count (CBC)",
+          "measuresWhat": "Red and white blood cells, hemoglobin, platelets.",
+          "whyItMatters": "Baseline blood cell health and anemia screening.",
+          "flaggedBy": "Low hemoglobin or iron may explain fatigue."
+        },
+        {
+          "name": "Comprehensive Metabolic Panel (CMP)",
+          "measuresWhat": "Kidney function, liver enzymes, blood sugar, electrolytes.",
+          "whyItMatters": "Core organ function baseline.",
+          "flaggedBy": "Elevated creatinine, glucose, or liver enzymes warrant follow-up."
+        },
+        {
+          "name": "Vitamin B12",
+          "measuresWhat": "Serum B12 levels.",
+          "whyItMatters": "B12 deficiency is one of the most common and reversible causes of fatigue, brain fog, and nerve tingling. Vegans, vegetarians, and adults over 50 are at highest risk.",
+          "flaggedBy": "Levels below 300 pg/mL may benefit from B12 injections."
+        },
+        {
+          "name": "Folate",
+          "measuresWhat": "Serum folate (vitamin B9).",
+          "whyItMatters": "Essential for cell division and DNA synthesis. Low folate contributes to anemia and fatigue.",
+          "flaggedBy": "Low folate alongside low B12 suggests a dual deficiency."
+        },
+        {
+          "name": "Vitamin D (25-OH)",
+          "measuresWhat": "Serum 25-hydroxyvitamin D.",
+          "whyItMatters": "Most adults are deficient, especially in Colorado winters. Vitamin D regulates immune function, bone health, and mood.",
+          "flaggedBy": "Levels below 30 ng/mL indicate deficiency. Below 20 is severe."
+        },
+        {
+          "name": "Potassium",
+          "measuresWhat": "Serum potassium levels.",
+          "whyItMatters": "Critical for heart rhythm, muscle contractions, and nerve signaling.",
+          "flaggedBy": "Both high and low potassium are clinically significant."
+        },
+        {
+          "name": "Iron (Serum)",
+          "measuresWhat": "Circulating iron levels.",
+          "whyItMatters": "Iron is essential for oxygen transport. Deficiency is the most common nutritional deficiency worldwide and a leading cause of fatigue, especially in women.",
+          "flaggedBy": "Low iron with low hemoglobin confirms iron-deficiency anemia."
+        },
+        {
+          "name": "Magnesium",
+          "measuresWhat": "Serum magnesium levels.",
+          "whyItMatters": "Magnesium is involved in 300+ enzymatic reactions including energy production, sleep regulation, and muscle function. Most Americans are mildly deficient.",
+          "flaggedBy": "Low magnesium is associated with muscle cramps, poor sleep, and migraines."
+        }
+      ],
+      "personas": [
+        {
+          "headline": "You feel off but can't pinpoint why",
+          "detail": "Fatigue, brain fog, and low energy often come down to one or two specific deficiencies. This panel checks the most common ones so you can target exactly what you need."
+        },
+        {
+          "headline": "You want to optimize your IV and injection choices",
+          "detail": "Instead of guessing which vitamins you need, get data first. Your results tell you exactly where to focus your treatments for maximum benefit."
+        },
+        {
+          "headline": "You suspect a specific deficiency",
+          "detail": "If you've been tired, losing hair, getting sick often, or having mood changes, one of these markers is likely the answer."
+        }
+      ],
+      "whatToExpect": {
+        "onset": "Results typically available within 2-5 business days.",
+        "duration": "15-minute blood draw at your location.",
+        "frequency": "Every 6-12 months for monitoring. More frequently if actively correcting a deficiency.",
+        "howItFeels": "A standard venipuncture by a licensed RN. Most patients feel only a brief pinch. Your nurse can review results with you and recommend targeted IV or injection treatments."
+      },
+      "glp1": null,
+      "relatedSlugs": [
+        "labComplete",
+        "labInDepth",
+        "nad250"
+      ]
+    }
+  ]
+}

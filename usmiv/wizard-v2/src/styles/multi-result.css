@@ -105,6 +105,47 @@
   color: var(--tw-color-navy);
   line-height: 1.25;
   margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* ── Match tier badges ─────────────────────────────────────────── */
+
+.tw-overlay .tw-rec-match-badge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+
+  font-family: var(--tw-font-body);
+  font-size: 0.6875rem;    /* 11px */
+  font-weight: var(--tw-font-weight-semibold);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: var(--tw-radius-full);
+}
+
+/* "Best Match" — teal filled */
+.tw-overlay .tw-rec-match-badge--best {
+  background-color: var(--tw-color-teal-wcag);
+  color: var(--tw-color-surface);
+}
+
+/* "Strong Match" — teal outline */
+.tw-overlay .tw-rec-match-badge--strong {
+  background-color: var(--tw-color-teal-light);
+  color: var(--tw-color-teal-wcag);
+  border: 1px solid var(--tw-color-teal-mid);
+}
+
+/* "Good Match" — neutral */
+.tw-overlay .tw-rec-match-badge--good {
+  background-color: var(--tw-color-bg-page);
+  color: var(--tw-color-muted);
+  border: 1px solid var(--tw-color-border);
 }
 
 .tw-overlay .tw-rec-price {

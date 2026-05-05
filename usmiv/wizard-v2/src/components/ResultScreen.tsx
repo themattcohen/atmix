@@ -98,7 +98,12 @@ export function ResultScreen({
         <h2 className="tw-result-name">{displayName}</h2>
         <div className="tw-result-price-row">
           <span className="tw-result-price">{priceDisplay}</span>
-          <span className="tw-result-duration">{treatment.duration}</span>
+          {treatment.duration && (
+            <>
+              <span className="tw-result-price-sep" aria-hidden="true">&#xB7;</span>
+              <span className="tw-result-duration">{treatment.duration}</span>
+            </>
+          )}
         </div>
         {treatment.shortDesc && (
           <p className="tw-result-desc">{treatment.shortDesc}</p>

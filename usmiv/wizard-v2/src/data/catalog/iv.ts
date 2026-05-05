@@ -8,7 +8,7 @@ export const hydration = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'Dehydration',
-  pageUrl: '/wizard-of-iv/treatments/?slug=hydration',
+  pageUrl: '/treatments/hydration/',
   shortDesc: 'Pure saline rehydration to restore your body\'s fluid balance fast.',
   ingredients: [
     { name: 'Normal Saline (NS/LR)', benefit: 'Restores hydration and electrolyte balance' },
@@ -35,7 +35,7 @@ export const myers = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=myers',
+  pageUrl: '/treatments/myers/',
   shortDesc: 'The gold standard vitamin IV for energy, immunity, and overall wellness.',
   ingredients: [
     { name: 'B12',         benefit: 'Energy and neurological support' },
@@ -79,7 +79,7 @@ export const immunity = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'Cold/Flu',
-  pageUrl: '/wizard-of-iv/treatments/?slug=immunity',
+  pageUrl: '/treatments/immunity/',
   shortDesc: 'High-dose immune support to fight off illness or keep you protected.',
   ingredients: [
     { name: 'B12',        benefit: 'Energy for immune cell activity' },
@@ -108,7 +108,7 @@ export const pregnancy = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=pregnancy',
+  pageUrl: '/treatments/pregnancy/',
   shortDesc: 'Safe prenatal hydration and nutrient support for mom and baby.',
   ingredients: [
     { name: 'B12',         benefit: 'Fetal neural development' },
@@ -134,7 +134,7 @@ export const altitude = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'Nausea',
-  pageUrl: '/wizard-of-iv/treatments/?slug=altitude',
+  pageUrl: '/treatments/altitude/',
   shortDesc: 'Fast relief from Colorado\'s high elevation symptoms.',
   ingredients: [
     { name: 'B12',                    benefit: 'Energy and oxygen transport support' },
@@ -164,7 +164,7 @@ export const hangover = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'Hangover',
-  pageUrl: '/wizard-of-iv/treatments/?slug=hangover',
+  pageUrl: '/treatments/hangover/',
   shortDesc: 'Get back on your feet fast with rehydration, anti-nausea, and pain relief.',
   ingredients: [
     { name: 'B12',         benefit: 'Replenishes alcohol-depleted stores' },
@@ -190,7 +190,7 @@ export const migraine = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'Migraine',
-  pageUrl: '/wizard-of-iv/treatments/?slug=migraine',
+  pageUrl: '/treatments/migraine/',
   shortDesc: 'Targeted migraine relief with high-dose magnesium and pain medication.',
   ingredients: [
     { name: 'B-Complex',             benefit: 'Neurological support' },
@@ -221,7 +221,7 @@ export const longevity = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=longevity',
+  pageUrl: '/treatments/longevity/',
   shortDesc: 'Anti-aging cellular support with NAD+ and a full vitamin stack.',
   ingredients: [
     { name: 'B12',          benefit: 'Energy and nerve health' },
@@ -254,7 +254,7 @@ export const myersGold = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=myersGold',
+  pageUrl: '/treatments/myersGold/',
   shortDesc: 'An enhanced Myers\' Cocktail with upgraded vitamin concentrations.',
   ingredients: [
     { name: 'B12 (double dose)',       benefit: 'Elevated energy and neurological support' },
@@ -298,7 +298,7 @@ export const performance = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=performance',
+  pageUrl: '/treatments/performance/',
   shortDesc: 'Fuel recovery and performance with amino acids, NAD+, and essential nutrients.',
   ingredients: [
     { name: 'B12',                    benefit: 'Energy metabolism' },
@@ -329,7 +329,7 @@ export const myersPlatinum = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=myersPlatinum',
+  pageUrl: '/treatments/myersPlatinum/',
   shortDesc: 'The ultimate Myers\' experience with premium vitamin concentrations.',
   ingredients: [
     { name: 'B12 (triple dose)',       benefit: 'Maximum energy and nerve support' },
@@ -376,7 +376,7 @@ export const revival = {
   category: 'iv',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=revival',
+  pageUrl: '/treatments/revival/',
   shortDesc: 'Our most comprehensive IV with a full vitamin stack plus your choice of 3 medications.',
   ingredients: [
     { name: 'B12',         benefit: 'Energy and neurological recovery' },

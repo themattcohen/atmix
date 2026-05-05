@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { WizardModal } from './components/WizardModal';
-import { META } from './data/meta';
+import { configUrl } from './data/meta';
 import { TREATMENTS, BUNDLES, QUESTIONS, setRuntimeConfig } from './data';
 import { fetchRemoteConfig, mergeWithDefaults } from './config/remoteConfig';
 import './styles/index.css';
@@ -14,8 +14,9 @@ interface TreatmentWizardAPI {
 
 async function mount(): Promise<void> {
   // Load remote config before rendering (falls back to compiled data silently)
-  if (META.configWorkerUrl) {
-    const remote = await fetchRemoteConfig(META.configWorkerUrl);
+  const remoteConfigUrl = configUrl();
+  if (remoteConfigUrl) {
+    const remote = await fetchRemoteConfig(remoteConfigUrl);
     if (remote) {
       const merged = mergeWithDefaults(remote, { treatments: TREATMENTS, bundles: BUNDLES, questions: QUESTIONS });
       setRuntimeConfig(merged);

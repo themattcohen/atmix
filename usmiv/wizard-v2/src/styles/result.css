@@ -85,6 +85,14 @@
   line-height: 1;
 }
 
+.tw-overlay .tw-result-price-sep {
+  font-family: var(--tw-font-body);
+  font-size: var(--tw-font-size-sm);
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .tw-overlay .tw-result-duration {
   font-family: var(--tw-font-body);
   font-size: var(--tw-font-size-sm);

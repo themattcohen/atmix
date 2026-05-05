@@ -8,7 +8,7 @@ export const labGeneral = {
   category: 'lab',
   acuityTypeId: 55698420,
   acuityDropdownValue: null,
-  pageUrl: '/wizard-of-iv/treatments/?slug=labGeneral',
+  pageUrl: '/treatments/labGeneral/',
   shortDesc: 'Essential blood work covering your core health markers.',
   ingredients: [
     { name: 'CBC (Complete Blood Count)', benefit: 'Red/white cells, hemoglobin, platelets — screens for anemia and infection' },
@@ -37,7 +37,7 @@ export const labInDepth = {
   category: 'lab',
   acuityTypeId: 55698420,
   acuityDropdownValue: null,
-  pageUrl: '/wizard-of-iv/treatments/?slug=labInDepth',
+  pageUrl: '/treatments/labInDepth/',
   shortDesc: 'Deeper health assessment including thyroid and blood sugar markers.',
   ingredients: [
     { name: 'CBC',          benefit: 'Blood cell health and anemia screen' },
@@ -68,7 +68,7 @@ export const labVitamin = {
   category: 'lab',
   acuityTypeId: 55698420,
   acuityDropdownValue: null,
-  pageUrl: '/wizard-of-iv/treatments/?slug=labVitamin',
+  pageUrl: '/treatments/labVitamin/',
   shortDesc: 'Check your vitamin and mineral levels to target exactly what your body needs.',
   ingredients: [
     { name: 'CBC + CMP',   benefit: 'Core health baseline' },
@@ -103,7 +103,7 @@ export const labComplete = {
   category: 'lab',
   acuityTypeId: 55698420,
   acuityDropdownValue: null,
-  pageUrl: '/wizard-of-iv/treatments/?slug=labComplete',
+  pageUrl: '/treatments/labComplete/',
   shortDesc: 'Our most comprehensive panel with 45+ biomarkers for a full health picture.',
   ingredients: [
     { name: 'Full baseline (CBC + CMP + Lipid + TSH + HbA1c)', benefit: 'Complete metabolic and thyroid picture' },

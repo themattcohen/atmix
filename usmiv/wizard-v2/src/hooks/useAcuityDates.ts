@@ -34,7 +34,7 @@ export function useAcuityDates(
     setError(null);
 
     fetch(
-      `${proxyBase}/api/acuity/availability/dates?appointmentTypeID=${appointmentTypeId}&month=${encodeURIComponent(month)}`,
+      `${proxyBase}/acuity/dates?appointmentTypeID=${appointmentTypeId}&month=${encodeURIComponent(month)}`,
       { signal: controller.signal },
     )
       .then((r) => {

@@ -10,6 +10,15 @@ interface RecommendationCardProps {
   isInSession: boolean;
   sessionSize: number;
   onAddToSession: () => void;
+  topScore: number;
+}
+
+function getMatchTier(score: number, topScore: number, rank: number): { label: string; className: string } | null {
+  if (topScore === 0) return null;
+  const ratio = score / topScore;
+  if (rank === 1 || ratio >= 0.85) return { label: 'Best Match', className: 'tw-rec-match-badge tw-rec-match-badge--best' };
+  if (ratio >= 0.5) return { label: 'Strong Match', className: 'tw-rec-match-badge tw-rec-match-badge--strong' };
+  return { label: 'Good Match', className: 'tw-rec-match-badge tw-rec-match-badge--good' };
 }
 
 export function RecommendationCard({
@@ -19,10 +28,12 @@ export function RecommendationCard({
   isInSession,
   sessionSize,
   onAddToSession,
+  topScore,
 }: RecommendationCardProps): React.ReactElement {
   const analytics = useAnalytics();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const priceDisplay = treatment.priceLabel ?? `$${treatment.price}`;
+  const matchTier = getMatchTier(candidate.score, topScore, rank);
 
   function handleAddToSession(): void {
     if (isInSession) return;
@@ -52,6 +63,11 @@ export function RecommendationCard({
           #{rank}
         </span>
         <p className="tw-rec-name">{treatment.name}</p>
+        {matchTier && (
+          <span className={matchTier.className} aria-label={matchTier.label}>
+            {matchTier.label}
+          </span>
+        )}
       </div>
 
       <p className="tw-rec-price">{priceDisplay}</p>

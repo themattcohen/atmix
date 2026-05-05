@@ -1,17 +1,25 @@
 /**
  * WizardDevDashboard.tsx -- Dev-only visibility and management tool
  *
- * Never imported from production builds. The entry point (index.ts) wraps
- * this dynamic import behind `if (import.meta.env.DEV)`, and vite.config.ts
- * sets `'import.meta.env.DEV': 'false'` in production, making the entire
- * block dead code that the minifier eliminates.
+ * In the WP-admin context, the PHP admin page injects window.wizardOfIvBootstrap
+ * before this script runs. When that global is present the dashboard:
+ *   - Uses bootstrap.config as initial state (skips the first remote fetch)
+ *   - Authenticates saves with X-WP-Nonce from bootstrap.nonce
+ *   - Posts saves to bootstrap.restUrl
  *
- * Access: ?wizard-dev=true URL param, or Ctrl+Shift+W keyboard shortcut.
+ * Legacy fallback (atmix.org / ?wizard-dev=true): when wizardOfIvBootstrap is
+ * absent the dashboard falls back to reading from the remote config URL and
+ * displays a manual "Save & Publish" button that POSTs with the WP nonce if
+ * restUrl is available.
+ *
+ * Access in WP admin: wp-admin/admin.php?page=wizard-of-iv
+ * Access on atmix.org: ?wizard-dev=true URL param, or Ctrl+Shift+W keyboard shortcut.
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useTransition } from 'react';
 import { createRoot } from 'react-dom/client';
 import { TREATMENTS, QUESTIONS, BUNDLES } from '../../data';
+import { configUrl } from '../../data/meta';
 import { validateConfig, type ValidationResult, type ValidationIssue } from '../../engine/validateConfig';
 import type { TreatmentId, Treatment } from '../../types/treatment';
 import type { QuestionId, Question } from '../../types/question';
@@ -33,6 +41,9 @@ import { OnboardingTour } from './OnboardingTour';
 // ── Types ────────────────────────────────────────────────────────────────────
 
 type DashboardTab = 'editor' | 'paths' | 'tree' | 'coverage' | 'validation';
+
+// WizardOfIvBootstrap and the window.wizardOfIvBootstrap augmentation are
+// declared in src/types/global.d.ts and available throughout the project.
 
 // Pre-compute these once at module level (they never change at runtime).
 const ALL_PATHS: ResolvedPath[] = computeAllPaths(QUESTIONS, BUNDLES);
@@ -578,6 +589,84 @@ export function WizardDevDashboard(): React.ReactElement {
     setValidation(result);
   }, []);
 
+  // ── Save & Publish (WP REST or legacy) ────────────────────────────────────
+
+  type SaveStatus = 'idle' | 'saving' | 'success' | 'error';
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const [saveMessage, setSaveMessage] = useState<string>('');
+  const [, startSaveTransition] = useTransition();
+
+  /**
+   * Resolve the REST endpoint URL and nonce from whichever source is available:
+   *   1. window.wizardOfIvBootstrap (WP admin context, injected by PHP)
+   *   2. configUrl() (same-origin WP REST, nonce-less -- save will be rejected
+   *      by WP unless user happens to have a wpApiSettings.nonce in scope)
+   *
+   * Returns { restUrl, nonce } or null if neither source is usable.
+   */
+  function resolveSaveTarget(): { restUrl: string; nonce: string | null } | null {
+    if (typeof window !== 'undefined' && window.wizardOfIvBootstrap) {
+      const bootstrap = window.wizardOfIvBootstrap!;
+      return { restUrl: bootstrap.restUrl, nonce: bootstrap.nonce };
+    }
+    const url = configUrl();
+    if (url) return { restUrl: url, nonce: null };
+    return null;
+  }
+
+  async function handleSaveAndPublish(): Promise<void> {
+    const target = resolveSaveTarget();
+    if (!target) {
+      setSaveStatus('error');
+      setSaveMessage('No REST endpoint available. Cannot save.');
+      return;
+    }
+
+    setSaveStatus('saving');
+    setSaveMessage('');
+
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (target.nonce) {
+        headers['X-WP-Nonce'] = target.nonce;
+      }
+
+      // Build the config payload from current runtime data
+      const payload = {
+        treatments: TREATMENTS,
+        bundles: BUNDLES,
+        questions: QUESTIONS,
+      };
+
+      const res = await fetch(target.restUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (res.ok) {
+        startSaveTransition(() => {
+          setSaveStatus('success');
+          setSaveMessage('Saved successfully.');
+        });
+        setTimeout(() => setSaveStatus('idle'), 3000);
+      } else {
+        const text = await res.text().catch(() => '');
+        setSaveStatus('error');
+        setSaveMessage(`Save failed: ${res.status} ${res.statusText}${text ? ' — ' + text.slice(0, 120) : ''}`);
+      }
+    } catch (err: unknown) {
+      setSaveStatus('error');
+      setSaveMessage(`Save failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  const isBootstrapContext = typeof window !== 'undefined' &&
+    !!window.wizardOfIvBootstrap;
+
   function handleSwitchToValidation(treatmentId: string): void {
     setValidationFilter(treatmentId);
     setTab('validation');
@@ -613,6 +702,26 @@ export function WizardDevDashboard(): React.ReactElement {
           {Object.keys(BUNDLES).length} bundles &middot;{' '}
           {ALL_PATHS.length} paths
         </span>
+        {/* Save & Publish: posts current config to WP REST endpoint */}
+        <button
+          className={`wdd-save-btn wdd-save-btn--${saveStatus}`}
+          onClick={() => { void handleSaveAndPublish(); }}
+          disabled={saveStatus === 'saving'}
+          title={isBootstrapContext
+            ? 'Save config to WordPress (WP nonce auth)'
+            : 'Save config to WP REST endpoint (same-origin)'}
+          style={{ marginLeft: 'auto' }}
+        >
+          {saveStatus === 'saving' ? 'Saving...' : 'Save & Publish'}
+        </button>
+        {saveMessage && (
+          <span
+            className={`wdd-save-msg wdd-save-msg--${saveStatus}`}
+            style={{ fontSize: 11, marginLeft: 8 }}
+          >
+            {saveMessage}
+          </span>
+        )}
         <button
           className="wdd-help-btn"
           onClick={() => setTourOpen(true)}
@@ -621,9 +730,11 @@ export function WizardDevDashboard(): React.ReactElement {
         >
           ?
         </button>
-        <button className="wdd-close" onClick={unmountDevDashboard}>
-          Close  [Ctrl+Shift+W]
-        </button>
+        {!isBootstrapContext && (
+          <button className="wdd-close" onClick={unmountDevDashboard}>
+            Close  [Ctrl+Shift+W]
+          </button>
+        )}
       </header>
 
       <nav className="wdd-tabs">

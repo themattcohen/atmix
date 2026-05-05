@@ -16,12 +16,14 @@ interface CompiledConfig {
 }
 
 /**
- * Fetch wizard config from a Cloudflare Worker.
+ * Fetch wizard config from the WP REST endpoint (or any full URL).
+ * The url parameter is now the complete endpoint URL -- no path suffix is appended.
  * Returns parsed JSON on success, null on any error (network, parse, timeout).
  */
-export async function fetchRemoteConfig(workerUrl: string): Promise<WizardRemoteConfig | null> {
+export async function fetchRemoteConfig(url: string): Promise<WizardRemoteConfig | null> {
+  if (!url) return null;
   try {
-    const res = await fetch(`${workerUrl}/config`, {
+    const res = await fetch(url, {
       signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) return null;

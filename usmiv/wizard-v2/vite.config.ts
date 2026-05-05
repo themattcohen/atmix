@@ -2,6 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
+// Build mode:
+//   (default / no --mode flag): builds the customer-facing wizard IIFE bundle
+//     → dist/wizard.js + dist/wizard.css
+//   --mode admin: builds the WordPress admin dashboard bundle
+//     → dist/admin-dashboard.js + dist/admin-dashboard.css
+const isAdminBuild = process.env.BUILD_MODE === 'admin';
+
 // ── Dev-only plugin: writes generated catalog files to disk ───────────────────
 // This plugin adds a POST /api/wizard-editor/save endpoint that accepts
 // { category, content } and writes the content to the corresponding catalog
@@ -75,35 +82,67 @@ function wizardEditorPlugin() {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), wizardEditorPlugin()],
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'WizardOfIV',
-      fileName: 'wizard',
-      formats: ['iife'],
-    },
-    rollupOptions: {
-      // React and ReactDOM are bundled in. The host page has NO React requirement.
-      // This keeps the bundle self-contained at the cost of ~45KB gzip.
-      external: [],
-      output: {
-        entryFileNames: 'wizard.js',
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name?.endsWith('.css')) return 'wizard.css';
-          return assetInfo.name ?? '[name][extname]';
-        },
+// ── Wizard (customer-facing IIFE) config ─────────────────────────────────────
+
+const wizardBuildConfig = {
+  lib: {
+    entry: resolve(__dirname, 'src/index.ts'),
+    name: 'WizardOfIV',
+    fileName: 'wizard',
+    formats: ['iife' as const],
+  },
+  rollupOptions: {
+    // React and ReactDOM are bundled in. The host page has NO React requirement.
+    // This keeps the bundle self-contained at the cost of ~45KB gzip.
+    external: [],
+    output: {
+      entryFileNames: 'wizard.js',
+      assetFileNames: (assetInfo: { name?: string }) => {
+        if (assetInfo.name?.endsWith('.css')) return 'wizard.css';
+        return assetInfo.name ?? '[name][extname]';
       },
     },
-    cssCodeSplit: false,  // single wizard.css output
-    minify: 'esbuild',
-    target: 'es2017',
-    outDir: 'dist',
   },
+  cssCodeSplit: false,   // single wizard.css output
+  minify: 'esbuild' as const,
+  target: 'es2017' as const,
+  outDir: 'dist',
+};
+
+// ── Admin dashboard (WP admin React app) config ───────────────────────────────
+
+const adminBuildConfig = {
+  lib: {
+    entry: resolve(__dirname, 'src/admin-entry.tsx'),
+    name: 'WizardOfIVAdmin',
+    fileName: 'admin-dashboard',
+    formats: ['iife' as const],
+  },
+  rollupOptions: {
+    // React and ReactDOM bundled in -- the WP admin page has no React.
+    external: [],
+    output: {
+      entryFileNames: 'admin-dashboard.js',
+      assetFileNames: (assetInfo: { name?: string }) => {
+        if (assetInfo.name?.endsWith('.css')) return 'admin-dashboard.css';
+        return assetInfo.name ?? '[name][extname]';
+      },
+    },
+  },
+  cssCodeSplit: false,
+  minify: 'esbuild' as const,
+  target: 'es2017' as const,
+  outDir: 'dist',
+  // Do NOT empty the output directory -- the wizard build already wrote wizard.js
+  // and wizard.css into dist/ and we need both sets to coexist.
+  emptyOutDir: false,
+};
+
+export default defineConfig({
+  plugins: [react(), wizardEditorPlugin()],
+  build: isAdminBuild ? adminBuildConfig : wizardBuildConfig,
   define: {
     // In production build: silence React warnings
-    // Dashboard is included in prod (accessible via ?wizard-dev=true)
     ...(process.env.NODE_ENV === 'production' || process.argv.includes('build')
       ? {
           'process.env.NODE_ENV': '"production"',

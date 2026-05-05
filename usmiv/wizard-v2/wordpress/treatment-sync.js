@@ -1,26 +1,33 @@
 /**
- * Treatment Sync -- Auto-updates WordPress treatment pages from Cloudflare config.
+ * Treatment Sync -- Auto-updates WordPress treatment pages from WP REST config.
  *
  * Add data-wizard-field="fieldName" to any element on a treatment page.
- * The script reads ?slug= from the URL, fetches the live config, and
- * replaces matching elements with current data.
+ * The script reads the treatment slug from the last non-empty segment of
+ * window.location.pathname and fetches the config from the WP REST API.
  *
  * Supported fields: price, name, shortDesc, duration, whyMatch, ingredients, bestFor
  *
  * If the config fetch fails, WordPress content stays unchanged (graceful fallback).
+ * If the slug is missing or resolves to "treatments" (the parent page), exits early.
  */
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://wizard-config.shiny-field-7198.workers.dev';
+  // Derive the treatment slug from the URL path.
+  // /treatments/myers/ -> "myers"
+  // /treatments/ or / -> exit early
+  var pathSegments = window.location.pathname
+    .split('/')
+    .filter(function (s) { return s.length > 0; });
 
-  // Get the treatment slug from the URL
-  var params = new URLSearchParams(window.location.search);
-  var slug = params.get('slug');
-  if (!slug) return;
+  var slug = pathSegments[pathSegments.length - 1] || '';
 
-  // Fetch config and update elements
-  fetch(WORKER_URL + '/config', { headers: { Accept: 'application/json' } })
+  if (!slug || slug === 'treatments') return;
+
+  // Config URL is same-origin WP REST endpoint.
+  var configUrl = window.location.origin + '/wp-json/wizard-of-iv/v1/config';
+
+  fetch(configUrl, { headers: { Accept: 'application/json' } })
     .then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
@@ -65,7 +72,7 @@
               for (var j = 0; j < t.ingredients.length; j++) {
                 var ing = t.ingredients[j];
                 html += '<li><strong>' + escapeHtml(ing.name) + '</strong>';
-                if (ing.benefit) html += ' &mdash; ' + escapeHtml(ing.benefit);
+                if (ing.benefit) html += '. ' + escapeHtml(ing.benefit);
                 html += '</li>';
               }
               el.innerHTML = html;
@@ -85,7 +92,7 @@
       }
     })
     .catch(function () {
-      // Silent fail -- WordPress content stays as-is
+      // Silent fail -- WordPress content stays as-is.
     });
 
   function escapeHtml(str) {

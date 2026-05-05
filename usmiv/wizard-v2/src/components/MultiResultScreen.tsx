@@ -91,6 +91,9 @@ export function MultiResultScreen({
     });
   }
 
+  // Top score for badge tier computation
+  const topScore = results.length > 0 ? results[0].score : 0;
+
   // Addon suggestions from the #1 ranked result
   const primaryResult = results[0];
   const primaryTreatment = primaryResult ? treatments[primaryResult.treatmentId] : null;
@@ -122,6 +125,7 @@ export function MultiResultScreen({
               isInSession={isInSession}
               sessionSize={sessionPlan.length}
               onAddToSession={() => handleAddToSession(candidate)}
+              topScore={topScore}
             />
           );
         })}

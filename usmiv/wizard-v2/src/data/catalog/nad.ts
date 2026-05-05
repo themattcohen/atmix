@@ -8,7 +8,7 @@ export const nad100 = {
   category: 'nad',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=nad100',
+  pageUrl: '/treatments/nad100/',
   shortDesc: 'Entry-level NAD+ therapy for energy and mental clarity.',
   ingredients: [
     { name: 'NAD+ (100mg)', benefit: 'Cellular energy, DNA repair, cognitive clarity' },
@@ -36,7 +36,7 @@ export const nad250 = {
   category: 'nad',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=nad250',
+  pageUrl: '/treatments/nad250/',
   shortDesc: 'Mid-range NAD+ therapy for sustained energy and anti-aging benefits.',
   ingredients: [
     { name: 'NAD+ (250mg)', benefit: 'Enhanced cellular repair, sirtuin activation, anti-aging' },
@@ -68,7 +68,7 @@ export const nad500 = {
   category: 'nad',
   acuityTypeId: 43274230,
   acuityDropdownValue: 'General Wellness',
-  pageUrl: '/wizard-of-iv/treatments/?slug=nad500',
+  pageUrl: '/treatments/nad500/',
   shortDesc: 'High-dose NAD+ for deep cellular restoration and longevity.',
   ingredients: [
     { name: 'NAD+ (500mg)', benefit: 'Deep cellular repair, addiction recovery support, longevity' },

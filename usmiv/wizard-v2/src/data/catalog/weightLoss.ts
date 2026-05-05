@@ -9,7 +9,7 @@ export const semaglutide = {
   category: 'weightLoss',
   acuityTypeId: 47840203,
   acuityDropdownValue: null,
-  pageUrl: '/wizard-of-iv/treatments/?slug=semaglutide',
+  pageUrl: '/treatments/semaglutide/',
   shortDesc: 'FDA-studied GLP-1 medication for significant, sustained weight loss with medical supervision.',
   ingredients: [
     {
@@ -40,7 +40,7 @@ export const tirzepatide = {
   category: 'weightLoss',
   acuityTypeId: 47840203,
   acuityDropdownValue: null,
-  pageUrl: '/wizard-of-iv/treatments/?slug=tirzepatide',
+  pageUrl: '/treatments/tirzepatide/',
   shortDesc: 'Dual-action GLP-1/GIP medication for up to 20% body weight reduction.',
   ingredients: [
     {
