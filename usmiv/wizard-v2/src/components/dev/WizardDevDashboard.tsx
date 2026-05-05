@@ -34,6 +34,8 @@ import {
 import '../../styles/dev/dashboard.css';
 import '../../styles/dev/editor.css';
 import { EditorTab } from './editor/EditorTab';
+import type { EditorDraftsSnapshot } from './editor/EditorTab';
+import { mergePreservingUnedited } from './editor/codeGen';
 import { FlowCanvas } from './FlowCanvas';
 import { PathsTab } from './PathsTab';
 import { OnboardingTour } from './OnboardingTour';
@@ -589,6 +591,14 @@ export function WizardDevDashboard(): React.ReactElement {
     setValidation(result);
   }, []);
 
+  // Tracks the latest editor draft snapshot. Null until EditorTab first mounts
+  // and fires onDraftsChange (within 100ms of mount).
+  const [currentDrafts, setCurrentDrafts] = useState<EditorDraftsSnapshot | null>(null);
+
+  const handleDraftsChange = useCallback((snapshot: EditorDraftsSnapshot) => {
+    setCurrentDrafts(snapshot);
+  }, []);
+
   // ── Save & Publish (WP REST or legacy) ────────────────────────────────────
 
   type SaveStatus = 'idle' | 'saving' | 'success' | 'error';
@@ -633,12 +643,18 @@ export function WizardDevDashboard(): React.ReactElement {
         headers['X-WP-Nonce'] = target.nonce;
       }
 
-      // Build the config payload from current runtime data
-      const payload = {
-        treatments: TREATMENTS,
-        bundles: BUNDLES,
-        questions: QUESTIONS,
+      // Build the config payload from the editor's live draft state.
+      // mergePreservingUnedited starts from the runtime objects and overlays
+      // draft fields on top, so all editor fields win and any future
+      // runtime-only fields are preserved rather than silently dropped.
+      const runtime = {
+        treatments: TREATMENTS as unknown as Record<string, Treatment>,
+        bundles: BUNDLES as unknown as Record<string, Bundle>,
+        questions: QUESTIONS as unknown as Record<string, Question>,
       };
+      const payload = currentDrafts
+        ? mergePreservingUnedited(runtime, currentDrafts)
+        : runtime;
 
       const res = await fetch(target.restUrl, {
         method: 'POST',
@@ -782,6 +798,7 @@ export function WizardDevDashboard(): React.ReactElement {
             allPaths={ALL_PATHS}
             initialSelectedId={pendingEditId}
             onValidationChange={handleValidationChange}
+            onDraftsChange={handleDraftsChange}
           />
         )}
         {tab === 'paths' && (

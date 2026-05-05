@@ -330,6 +330,67 @@ function ScoringWeightsEditor({
   );
 }
 
+// ── TestsEditor (lab-specific) ────────────────────────────────────────────────
+
+interface TestsEditorProps {
+  tests: string[];
+  onChange: (tests: string[]) => void;
+}
+
+function TestsEditor({ tests, onChange }: TestsEditorProps): React.ReactElement {
+  const handleChange = useCallback(
+    (idx: number, value: string) => {
+      const next = tests.map((t, i) => i === idx ? value : t);
+      onChange(next);
+    },
+    [tests, onChange],
+  );
+
+  const handleRemove = useCallback(
+    (idx: number) => {
+      onChange(tests.filter((_, i) => i !== idx));
+    },
+    [tests, onChange],
+  );
+
+  const handleAdd = useCallback(() => {
+    onChange([...tests, '']);
+  }, [tests, onChange]);
+
+  return (
+    <div>
+      <div className="wde-ingredient-rows">
+        {tests.map((test, idx) => (
+          <div key={idx} className="wde-ingredient-row">
+            <input
+              className="wde-input wde-ingredient-name"
+              type="text"
+              placeholder="Test code or test name"
+              value={test}
+              onChange={(e) => handleChange(idx, e.target.value)}
+            />
+            <button
+              className="wde-ingredient-btn wde-ingredient-btn--remove"
+              type="button"
+              title="Remove test"
+              onClick={() => handleRemove(idx)}
+            >
+              &times;
+            </button>
+          </div>
+        ))}
+      </div>
+      <button
+        className="wde-ingredient-add-btn"
+        type="button"
+        onClick={handleAdd}
+      >
+        + Add test
+      </button>
+    </div>
+  );
+}
+
 // ── AddonSuggestionsEditor ────────────────────────────────────────────────────
 
 interface AddonSuggestionsEditorProps {
@@ -902,7 +963,18 @@ export function EditorMain({
           )}
         </div>
 
-        {/* 6. Scoring Weights */}
+        {/* 6. Lab Tests (lab category only) */}
+        {draft.category === 'lab' && (
+          <div className="wde-section">
+            <div className="wde-section-head">Lab Tests</div>
+            <TestsEditor
+              tests={draft.tests ?? []}
+              onChange={(tests) => onUpdate('tests', tests.length > 0 ? tests : undefined)}
+            />
+          </div>
+        )}
+
+        {/* 7. Scoring Weights */}
         <div className="wde-section">
           <div className="wde-section-head">Scoring Weights</div>
           <ScoringWeightsEditor
@@ -913,7 +985,7 @@ export function EditorMain({
           />
         </div>
 
-        {/* 7. Paths to this Treatment */}
+        {/* 8. Paths to this Treatment */}
         {(() => {
           const pathsToDraft = pathsToDraftMemo;
           return (
@@ -929,7 +1001,7 @@ export function EditorMain({
           );
         })()}
 
-        {/* 8. Code Output */}
+        {/* 9. Code Output */}
         <CodeSection
           draft={draft}
           allDraftsInCategory={allDraftsInCategory}

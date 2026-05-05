@@ -12,7 +12,11 @@
  */
 
 import type { TreatmentCategory } from '../../../types/treatment';
+import type { Treatment } from '../../../types/treatment';
+import type { Bundle } from '../../../types/bundle';
+import type { Question } from '../../../types/question';
 import type { EditableTreatment, EditableBundle, EditableOption, EditableQuestion } from './types';
+import { editableToTreatment, toQuestionMap } from './types';
 import { SYMPTOM_LABELS } from '../../../data';
 
 // ── String escaping ───────────────────────────────────────────────────────────
@@ -315,17 +319,39 @@ export function generateBundleTs(bundle: EditableBundle): string {
 
   if (bundle.addOn !== null && bundle.addOn.trim() !== '') {
     lines.push(`${i}addOn: ${escapeStr(bundle.addOn)},`);
-    // addOnLabel is not editable in this editor (we omit it from EditableBundle),
-    // so we emit a placeholder comment to prompt manual update.
-    lines.push(`${i}// TODO: update addOnLabel if needed`);
+    if (bundle.addOnLabel && bundle.addOnLabel.trim() !== '') {
+      lines.push(`${i}addOnLabel: ${escapeStr(bundle.addOnLabel)},`);
+    }
   }
 
   lines.push(`${i}addOnInteractive: ${bundle.addOnInteractive},`);
-  lines.push(`${i}isConsultation: false,`);
+
+  if (bundle.shortDesc && bundle.shortDesc.trim() !== '') {
+    lines.push(`${i}shortDesc: ${escapeStr(bundle.shortDesc)},`);
+  }
+
+  if (bundle.price !== undefined && bundle.price !== null) {
+    lines.push(`${i}price: ${bundle.price},`);
+  }
+
+  if (bundle.priceLabel && bundle.priceLabel.trim() !== '') {
+    lines.push(`${i}priceLabel: ${escapeStr(bundle.priceLabel)},`);
+  }
+
+  if (bundle.pageUrl && bundle.pageUrl.trim() !== '') {
+    lines.push(`${i}pageUrl: ${escapeStr(bundle.pageUrl)},`);
+  }
+
   lines.push(`${i}whyMatch:`);
   lines.push(`${i}  ${escapeStr(bundle.whyMatch)},`);
   lines.push(`${i}acuityTypeId: ${bundle.acuityTypeId},`);
-  lines.push(`${i}acuityDropdownValue: null, // TODO: set correct value`);
+
+  if (bundle.acuityDropdownValue !== undefined && bundle.acuityDropdownValue !== null) {
+    lines.push(`${i}acuityDropdownValue: ${escapeStr(bundle.acuityDropdownValue)},`);
+  } else {
+    lines.push(`${i}acuityDropdownValue: null,`);
+  }
+
   lines.push('} as const satisfies Bundle;');
 
   return lines.join('\n') + '\n';
@@ -426,6 +452,68 @@ export function generateQuestionTs(q: EditableQuestion): string {
 
   lines.push('};');
   return lines.join('\n') + '\n';
+}
+
+// ── Merge-preserving save payload ────────────────────────────────────────────
+
+/**
+ * Build a save payload that preserves any field the editor does not expose.
+ *
+ * Starts from the runtime config (TREATMENTS / BUNDLES / QUESTIONS at the time
+ * of save) and overlays the editor's drafts on top. Fields present on the
+ * runtime object but absent from the draft fall through unchanged. Fields
+ * present on both are taken from the draft.
+ *
+ * Per-entity logic:
+ * - For treatments: convert each EditableTreatment via editableToTreatment, then
+ *   merge onto the runtime treatment with draft fields winning.
+ * - For bundles: shallow merge EditableBundle onto the runtime Bundle so that
+ *   all editor fields win and any future runtime-only fields pass through.
+ * - For questions: convert each EditableQuestion via the existing path, merge onto
+ *   the runtime question.
+ *
+ * Important: this is a one-level merge. Nested objects (scoringWeights, addressedBy,
+ * ingredients[]) are taken wholesale from the draft when present (the editor owns
+ * the entire array/map for those fields). This matches the current behavior.
+ */
+export function mergePreservingUnedited(
+  runtime: {
+    treatments: Record<string, Treatment>;
+    bundles: Record<string, Bundle>;
+    questions: Record<string, Question>;
+  },
+  drafts: {
+    treatments: Record<string, EditableTreatment>;
+    bundles: Record<string, EditableBundle>;
+    questions: Record<string, EditableQuestion>;
+  },
+): {
+  treatments: Record<string, Treatment>;
+  bundles: Record<string, Bundle>;
+  questions: Record<string, Question>;
+} {
+  // Treatments: convert draft then overlay onto runtime so draft fields win.
+  const treatments: Record<string, Treatment> = { ...runtime.treatments };
+  for (const id of Object.keys(drafts.treatments)) {
+    const converted = editableToTreatment(drafts.treatments[id]);
+    treatments[id] = { ...runtime.treatments[id], ...converted };
+  }
+
+  // Bundles: shallow merge draft onto runtime so all editor fields win
+  // and any future runtime-only fields pass through unchanged.
+  const bundles: Record<string, Bundle> = { ...runtime.bundles };
+  for (const id of Object.keys(drafts.bundles)) {
+    bundles[id] = { ...runtime.bundles[id], ...drafts.bundles[id] } as Bundle;
+  }
+
+  // Questions: convert draft then overlay onto runtime.
+  const convertedQuestions = toQuestionMap(drafts.questions);
+  const questions: Record<string, Question> = { ...runtime.questions };
+  for (const id of Object.keys(drafts.questions)) {
+    questions[id] = { ...runtime.questions[id], ...convertedQuestions[id] };
+  }
+
+  return { treatments, bundles, questions };
 }
 
 /**

@@ -5,7 +5,7 @@
  * Renders the two-column layout: EditorSidebar (left) + EditorMain or BundleEditPanel (right).
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { TreatmentId, Treatment, TreatmentCategory } from '../../../types/treatment';
 import type { BundleId } from '../../../types/bundle';
 import type { ValidationResult } from '../../../engine/validateConfig';
@@ -26,6 +26,13 @@ import {
   toQuestionMap,
 } from './types';
 import type { EditableTreatment, EditableBundle, EditableQuestion } from './types';
+
+// ── Snapshot type exposed to parent ──────────────────────────────────────────
+export interface EditorDraftsSnapshot {
+  treatments: Record<string, EditableTreatment>;
+  bundles: Record<string, EditableBundle>;
+  questions: Record<string, EditableQuestion>;
+}
 import { generateCategoryFileTs, generateBundlesFileTs, generateQuestionsFileTs } from './codeGen';
 import { EditorSidebar } from './EditorSidebar';
 import type { EditorMode } from './EditorSidebar';
@@ -53,6 +60,12 @@ interface EditorTabProps {
   initialSelectedId?: string | null;
   /** Called whenever validation re-runs (on each draft change). */
   onValidationChange?: (result: ValidationResult) => void;
+  /**
+   * Called whenever any draft map changes (treatments, bundles, or questions).
+   * The parent uses this snapshot to build the Save & Publish payload.
+   * Debounced to 100ms to avoid flooding the parent on rapid keystrokes.
+   */
+  onDraftsChange?: (snapshot: EditorDraftsSnapshot) => void;
 }
 
 // ── EditorTab ─────────────────────────────────────────────────────────────────
@@ -62,6 +75,7 @@ export function EditorTab({
   allPaths,
   initialSelectedId,
   onValidationChange,
+  onDraftsChange,
 }: EditorTabProps): React.ReactElement {
   // Initialize mutable drafts and pristine originals once on mount.
   const [drafts, setDrafts] = useState<Record<string, EditableTreatment>>(
@@ -125,6 +139,23 @@ export function EditorTab({
     setValidationResult(result);
     onValidationChange?.(result);
   }, [drafts, onValidationChange]);
+
+  // Notify parent of current draft snapshot whenever any draft map changes.
+  // Debounced 100ms so rapid keystrokes don't flood the parent with re-renders.
+  const onDraftsChangeRef = useRef(onDraftsChange);
+  useEffect(() => { onDraftsChangeRef.current = onDraftsChange; });
+
+  useEffect(() => {
+    if (!onDraftsChangeRef.current) return;
+    const timer = setTimeout(() => {
+      onDraftsChangeRef.current?.({
+        treatments: drafts,
+        bundles: bundleDrafts,
+        questions: questionDrafts,
+      });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [drafts, bundleDrafts, questionDrafts]);
 
   // Derived dirty/error sets for sidebar indicators.
   // Use originals state (not the treatments prop) so new treatments added via

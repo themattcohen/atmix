@@ -494,6 +494,14 @@ body:has(.wiz-treatment-v1) article.hentry {
   line-height: 1.65;
   margin: 0;
 }
+.wiz-treatment-v1 .td-why__note {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--td-color-muted);
+  line-height: 1.5;
+}
 
 /* --- Ingredients / Lab Cards --- */
 .wiz-treatment-v1 .td-ingredients {
@@ -1274,13 +1282,17 @@ const V1_RENDERER_JS = `(function (root) {
     ].join('');
   }
 
-  function renderWhySection(whyText) {
+  function renderWhySection(whyText, noteText) {
     if (!whyText) return '';
+    var noteHtml = noteText
+      ? '<em class="td-why__note">' + esc(noteText) + '</em>'
+      : '';
     return [
       '<section class="td-section td-why" aria-labelledby="td-why-heading">',
         '<div class="td-why__inner">',
           '<h2 class="td-section-title" id="td-why-heading">Why This Works</h2>',
           '<p class="td-why__text">' + esc(whyText) + '</p>',
+          noteHtml,
         '</div>',
       '</section>'
     ].join('');
@@ -1636,6 +1648,7 @@ const V1_RENDERER_JS = `(function (root) {
     }
 
     var whyText      = (coreTreatment && coreTreatment.whyMatch) || (wizardConfig.whyMatch || {})[slug] || '';
+    var noteText     = (coreTreatment && coreTreatment.note) || '';
     var relatedSlugs = (detailData && detailData.relatedSlugs) || [];
 
     document.title = treatment.name + ' | US Mobile IV';
@@ -1644,7 +1657,7 @@ const V1_RENDERER_JS = `(function (root) {
       renderNav(),
       '<main id="td-main">',
         renderHero(treatment, wizardConfig),
-        renderWhySection(whyText),
+        renderWhySection(whyText, noteText),
         renderIngredientsSection(treatment, detailData),
         renderPersonasSection(detailData, treatment),
         renderExpectSection(detailData),

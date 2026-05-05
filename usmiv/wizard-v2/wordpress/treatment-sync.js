@@ -94,6 +94,12 @@
               el.innerHTML = tags.trim();
             }
             break;
+
+          case 'note':
+            if (t.note) {
+              el.innerHTML = '<em>' + escapeHtml(t.note) + '</em>';
+            }
+            break;
         }
       }
     })

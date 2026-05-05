@@ -59,19 +59,121 @@ export function validateConfig(
     }
   }
 
+  // v2.0.5 server-mirrored constants
+  const VALID_CATEGORIES = new Set(['iv', 'nad', 'weightLoss', 'injection', 'lab']);
+  const PAGE_URL_RE = /^\/[a-zA-Z0-9_/-]+\/?$/;
+
   // Check all treatments
   const reachableIds = reachableTreatmentIds(computeAllPaths(questions, bundles));
 
   for (const [tid, t] of Object.entries(treatments) as [TreatmentId, Treatment][]) {
-    // Error: missing Acuity type ID
-    if (t.acuityTypeId === 0) {
+    // Error: missing Acuity type ID (> 0 required -- mirrors server H5)
+    if (!t.acuityTypeId || t.acuityTypeId <= 0) {
       errors.push({
         severity: 'error',
         subject: `treatment:${tid}`,
         field: 'acuityTypeId',
-        message: 'acuityTypeId is 0 -- booking flow will fail',
+        message: 'acuityTypeId must be a positive integer -- booking flow will fail',
       });
     }
+
+    // Error: invalid category (mirrors server H2)
+    if (!VALID_CATEGORIES.has(t.category)) {
+      errors.push({
+        severity: 'error',
+        subject: `treatment:${tid}`,
+        field: 'category',
+        message: `category '${t.category}' is not in [iv, nad, weightLoss, injection, lab]`,
+      });
+    }
+
+    // Error: name required, max 200 chars (mirrors server H3)
+    if (!t.name || t.name.trim() === '') {
+      errors.push({
+        severity: 'error',
+        subject: `treatment:${tid}`,
+        field: 'name',
+        message: 'name is required',
+      });
+    } else if (t.name.length > 200) {
+      errors.push({
+        severity: 'error',
+        subject: `treatment:${tid}`,
+        field: 'name',
+        message: `name exceeds 200 characters (${t.name.length})`,
+      });
+    }
+
+    // Error: pageUrl format (mirrors server H4)
+    if (t.pageUrl && t.pageUrl.trim() !== '') {
+      if (t.pageUrl.length > 200) {
+        errors.push({
+          severity: 'error',
+          subject: `treatment:${tid}`,
+          field: 'pageUrl',
+          message: `pageUrl exceeds 200 characters (${t.pageUrl.length})`,
+        });
+      } else if (!PAGE_URL_RE.test(t.pageUrl)) {
+        errors.push({
+          severity: 'error',
+          subject: `treatment:${tid}`,
+          field: 'pageUrl',
+          message: `pageUrl must match ^/[a-zA-Z0-9_/-]+/?$`,
+        });
+      }
+    }
+
+    // Error: shortDesc max 500 chars
+    if (t.shortDesc && t.shortDesc.length > 500) {
+      errors.push({
+        severity: 'error',
+        subject: `treatment:${tid}`,
+        field: 'shortDesc',
+        message: `shortDesc exceeds 500 characters (${t.shortDesc.length})`,
+      });
+    }
+
+    // Error: whyMatch max 5000 chars
+    if (t.whyMatch && t.whyMatch.length > 5000) {
+      errors.push({
+        severity: 'error',
+        subject: `treatment:${tid}`,
+        field: 'whyMatch',
+        message: `whyMatch exceeds 5000 characters (${t.whyMatch.length})`,
+      });
+    }
+
+    // Error: ingredient name/benefit length caps
+    t.ingredients.forEach((ing, idx) => {
+      if (ing.name.length > 100) {
+        errors.push({
+          severity: 'error',
+          subject: `treatment:${tid}`,
+          field: `ingredients[${idx}].name`,
+          message: `ingredient name exceeds 100 characters (${ing.name.length})`,
+        });
+      }
+      if (ing.benefit.length > 300) {
+        errors.push({
+          severity: 'error',
+          subject: `treatment:${tid}`,
+          field: `ingredients[${idx}].benefit`,
+          message: `ingredient benefit exceeds 300 characters (${ing.benefit.length})`,
+        });
+      }
+    });
+
+    // Error: bestFor entry max 100 chars
+    t.bestFor.forEach((entry, idx) => {
+      if (entry.length > 100) {
+        errors.push({
+          severity: 'error',
+          subject: `treatment:${tid}`,
+          field: `bestFor[${idx}]`,
+          message: `bestFor entry exceeds 100 characters (${entry.length})`,
+        });
+      }
+    });
 
     // Error: orphan symptom weight key (typo guard)
     for (const key of Object.keys(t.scoringWeights)) {
@@ -144,13 +246,13 @@ export function validateConfig(
 
   // Check all bundles
   for (const [bid, b] of Object.entries(bundles)) {
-    // Error: missing Acuity type ID on bundle
-    if (b.acuityTypeId === 0) {
+    // Error: missing Acuity type ID on bundle (> 0 required)
+    if (!b.acuityTypeId || b.acuityTypeId <= 0) {
       errors.push({
         severity: 'error',
         subject: `bundle:${bid}`,
         field: 'acuityTypeId',
-        message: 'acuityTypeId is 0 -- booking flow will fail',
+        message: 'acuityTypeId must be a positive integer -- booking flow will fail',
       });
     }
 
@@ -171,6 +273,62 @@ export function validateConfig(
         subject: `bundle:${bid}`,
         field: 'addOn',
         message: `'${b.addOn}' is not a valid TreatmentId`,
+      });
+    }
+
+    // Error: bundle name required, max 200 chars
+    if (!b.name || b.name.trim() === '') {
+      errors.push({
+        severity: 'error',
+        subject: `bundle:${bid}`,
+        field: 'name',
+        message: 'name is required',
+      });
+    } else if (b.name.length > 200) {
+      errors.push({
+        severity: 'error',
+        subject: `bundle:${bid}`,
+        field: 'name',
+        message: `name exceeds 200 characters (${b.name.length})`,
+      });
+    }
+
+    // Error: bundle pageUrl format
+    if (b.pageUrl && b.pageUrl.trim() !== '') {
+      if (b.pageUrl.length > 200) {
+        errors.push({
+          severity: 'error',
+          subject: `bundle:${bid}`,
+          field: 'pageUrl',
+          message: `pageUrl exceeds 200 characters (${b.pageUrl.length})`,
+        });
+      } else if (!PAGE_URL_RE.test(b.pageUrl)) {
+        errors.push({
+          severity: 'error',
+          subject: `bundle:${bid}`,
+          field: 'pageUrl',
+          message: `pageUrl must match ^/[a-zA-Z0-9_/-]+/?$`,
+        });
+      }
+    }
+
+    // Error: bundle shortDesc max 500 chars
+    if (b.shortDesc && b.shortDesc.length > 500) {
+      errors.push({
+        severity: 'error',
+        subject: `bundle:${bid}`,
+        field: 'shortDesc',
+        message: `shortDesc exceeds 500 characters (${b.shortDesc.length})`,
+      });
+    }
+
+    // Error: bundle price must be >= 0 if set
+    if (b.price !== undefined && b.price !== null && b.price < 0) {
+      errors.push({
+        severity: 'error',
+        subject: `bundle:${bid}`,
+        field: 'price',
+        message: 'price must be >= 0',
       });
     }
   }

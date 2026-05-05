@@ -250,6 +250,83 @@ export function BundleEditPanel({
               <span className="wde-field-error">Required for booking</span>
             )}
           </FieldRow>
+
+          <FieldRow label="acuityDropdownValue">
+            <input
+              className="wde-input wde-field-input"
+              type="text"
+              placeholder="null (leave blank for null)"
+              value={bundle.acuityDropdownValue ?? ''}
+              onChange={(e) => onUpdate('acuityDropdownValue', e.target.value || null)}
+            />
+          </FieldRow>
+
+          <FieldRow label="addOnLabel">
+            <input
+              className="wde-input wde-field-input"
+              type="text"
+              placeholder="e.g. + Vitamin B12 Push (optional)"
+              value={bundle.addOnLabel ?? ''}
+              onChange={(e) => onUpdate('addOnLabel', e.target.value || undefined)}
+            />
+          </FieldRow>
+        </div>
+
+        {/* Pricing */}
+        <div className="wde-section">
+          <div className="wde-section-head">Pricing</div>
+
+          <FieldRow label="price">
+            <input
+              className="wde-input wde-field-input"
+              type="number"
+              placeholder="Bundle price in dollars (optional)"
+              value={bundle.price ?? ''}
+              onChange={(e) => {
+                const raw = e.target.value;
+                onUpdate('price', raw === '' ? undefined : Number(raw));
+              }}
+            />
+            <span className="wde-field-note">Overrides primary treatment price on result card. Leave blank to inherit.</span>
+          </FieldRow>
+
+          <FieldRow label="priceLabel">
+            <input
+              className="wde-input wde-field-input"
+              type="text"
+              placeholder="e.g. from $199/month (optional)"
+              value={bundle.priceLabel ?? ''}
+              onChange={(e) => onUpdate('priceLabel', e.target.value || undefined)}
+            />
+            <span className="wde-field-note">Overrides price when set.</span>
+          </FieldRow>
+        </div>
+
+        {/* Display */}
+        <div className="wde-section">
+          <div className="wde-section-head">Display</div>
+
+          <FieldRow label="shortDesc">
+            <textarea
+              className="wde-input wde-field-textarea"
+              rows={2}
+              placeholder="Bundle subtitle shown under headline on result card (optional)"
+              value={bundle.shortDesc ?? ''}
+              onChange={(e) => onUpdate('shortDesc', e.target.value || undefined)}
+            />
+            <span className="wde-field-note">{(bundle.shortDesc ?? '').length}/500 characters</span>
+          </FieldRow>
+
+          <FieldRow label="pageUrl">
+            <input
+              className="wde-input wde-field-input"
+              type="text"
+              placeholder="/treatments/myers-cocktail/ (optional)"
+              value={bundle.pageUrl ?? ''}
+              onChange={(e) => onUpdate('pageUrl', e.target.value || undefined)}
+            />
+            <span className="wde-field-note">Overrides primary treatment Learn More URL. Must start with /.</span>
+          </FieldRow>
         </div>
 
         {/* whyMatch */}

@@ -239,6 +239,13 @@ export interface EditableBundle {
   addOnInteractive: boolean;
   whyMatch: string;
   acuityTypeId: number;
+  // Fields that now have editor UIs (previously preservation-only)
+  addOnLabel?: string;
+  acuityDropdownValue?: string | null;
+  price?: number;
+  priceLabel?: string;
+  shortDesc?: string;
+  pageUrl?: string;
 }
 
 // ── Clone: Bundle (readonly) -> EditableBundle (mutable) ─────────────────────
@@ -252,6 +259,12 @@ export function cloneBundleToEditable(b: Bundle): EditableBundle {
     addOnInteractive: b.addOnInteractive,
     whyMatch: b.whyMatch,
     acuityTypeId: b.acuityTypeId ?? 0,
+    addOnLabel: b.addOnLabel,
+    acuityDropdownValue: b.acuityDropdownValue,
+    price: b.price,
+    priceLabel: b.priceLabel,
+    shortDesc: b.shortDesc,
+    pageUrl: b.pageUrl,
   };
 }
 
@@ -275,6 +288,12 @@ function canonicalizeBundle(b: EditableBundle): string {
     addOnInteractive: b.addOnInteractive,
     whyMatch: b.whyMatch,
     acuityTypeId: b.acuityTypeId,
+    addOnLabel: b.addOnLabel ?? null,
+    acuityDropdownValue: b.acuityDropdownValue ?? null,
+    price: b.price ?? null,
+    priceLabel: b.priceLabel ?? null,
+    shortDesc: b.shortDesc ?? null,
+    pageUrl: b.pageUrl ?? null,
   });
 }
 
@@ -286,6 +305,12 @@ function canonicalizeBundleOriginal(b: Bundle): string {
     addOnInteractive: b.addOnInteractive,
     whyMatch: b.whyMatch,
     acuityTypeId: b.acuityTypeId ?? 0,
+    addOnLabel: b.addOnLabel ?? null,
+    acuityDropdownValue: b.acuityDropdownValue ?? null,
+    price: b.price ?? null,
+    priceLabel: b.priceLabel ?? null,
+    shortDesc: b.shortDesc ?? null,
+    pageUrl: b.pageUrl ?? null,
   });
 }
 

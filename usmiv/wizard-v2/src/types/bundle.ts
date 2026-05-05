@@ -9,7 +9,6 @@ export interface Bundle {
   readonly addOn?: TreatmentId;
   readonly addOnLabel?: string;
   readonly addOnInteractive: boolean;
-  readonly isConsultation: boolean;
   readonly whyMatch: string;
   /** Bundle-specific subtitle shown under the headline on the result card. */
   readonly shortDesc?: string;
