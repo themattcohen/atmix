@@ -6,26 +6,18 @@
  * and whyMatch. Includes Copy TS button.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React from 'react';
 import type { EditableBundle } from './types';
 import type { EditableTreatment } from './types';
-import { generateBundleTs, generateBundlesFileTs } from './codeGen';
-import type { SaveStatus } from './EditorTab';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface BundleEditPanelProps {
   bundle: EditableBundle;
   isDirty: boolean;
-  allBundles: EditableBundle[];
   allTreatments: Record<string, EditableTreatment>;
   onUpdate: (field: keyof EditableBundle, value: unknown) => void;
   onReset: () => void;
-  onSave: () => void;
-  saveStatus?: SaveStatus;
-  onPublish?: () => void;
-  canPublish?: boolean;
-  publishStatus?: SaveStatus;
 }
 
 // ── FieldRow ──────────────────────────────────────────────────────────────────
@@ -86,91 +78,16 @@ function TreatmentSelect({
 export function BundleEditPanel({
   bundle,
   isDirty,
-  allBundles,
   allTreatments,
   onUpdate,
   onReset,
-  onSave,
-  saveStatus,
-  onPublish,
-  canPublish,
-  publishStatus,
 }: BundleEditPanelProps): React.ReactElement {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleCopy = useCallback((key: string, text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedKey(key);
-      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
-      copiedTimerRef.current = setTimeout(() => setCopiedKey(null), 2000);
-    });
-  }, []);
-
-  const bundleKey = `bundle-${bundle.id}`;
-  const fileKey = `bundles-file`;
-
-  const isSaving = saveStatus?.state === 'saving';
-
   return (
     <div className="wde-main">
-      {/* Save status banner */}
-      {saveStatus?.state === 'saved' && (
-        <div className="wde-save-banner wde-save-banner--ok">
-          Saved to {saveStatus.path}. Vite will hot-reload the module.
-        </div>
-      )}
-      {saveStatus?.state === 'error' && (
-        <div className="wde-save-banner wde-save-banner--error">
-          Save failed: {saveStatus.message}
-        </div>
-      )}
-      {publishStatus?.state === 'saved' && (
-        <div className="wde-save-banner wde-save-banner--ok">
-          {(publishStatus as { state: 'saved'; path: string }).path}
-        </div>
-      )}
-      {publishStatus?.state === 'error' && (
-        <div className="wde-save-banner wde-save-banner--error">
-          Publish failed: {(publishStatus as { state: 'error'; message: string }).message}
-        </div>
-      )}
-
       {/* Sticky header */}
       <div className="wde-form-header">
         <span className="wde-form-id">{bundle.id}</span>
         <span className="wde-form-title">{bundle.name}</span>
-        <button
-          className={`wde-save-btn${!isDirty || isSaving ? ' wde-save-btn--disabled' : ''}`}
-          type="button"
-          disabled={!isDirty || isSaving}
-          onClick={onSave}
-          title={isDirty ? 'Write bundles.ts to disk' : 'No changes to save'}
-        >
-          {isSaving ? 'Saving...' : 'Save'}
-        </button>
-        <button
-          className={`wde-copy-btn wde-copy-btn--sm${copiedKey === bundleKey ? ' wde-copy-btn--ok' : ''}`}
-          type="button"
-          onClick={() => handleCopy(bundleKey, generateBundleTs(bundle))}
-          title="Copy TypeScript for this bundle"
-        >
-          {copiedKey === bundleKey ? 'Copied!' : 'Copy TS'}
-        </button>
-        <button
-          className={`wde-copy-btn wde-copy-btn--sm${copiedKey === fileKey ? ' wde-copy-btn--ok' : ''}`}
-          type="button"
-          onClick={() => handleCopy(fileKey, generateBundlesFileTs(allBundles))}
-          title="Copy full bundles.ts file"
-        >
-          {copiedKey === fileKey ? 'Copied!' : 'Copy bundles.ts'}
-        </button>
-        {canPublish && onPublish && (
-          <button type="button" className="wde-publish-btn" onClick={onPublish}
-            disabled={publishStatus?.state === 'saving'}>
-            {publishStatus?.state === 'saving' ? 'Publishing...' : 'Publish Live'}
-          </button>
-        )}
         <button
           className={`wde-reset-btn${!isDirty ? ' wde-reset-btn--hidden' : ''}`}
           type="button"
@@ -326,6 +243,9 @@ export function BundleEditPanel({
               onChange={(e) => onUpdate('pageUrl', e.target.value || undefined)}
             />
             <span className="wde-field-note">Overrides primary treatment Learn More URL. Must start with /.</span>
+            <div className="wdd-help-text">
+              Link target for the wizard's Learn More button. Editing this does not rename the WP page; only updates where the button navigates.
+            </div>
           </FieldRow>
         </div>
 
@@ -344,27 +264,6 @@ export function BundleEditPanel({
           </FieldRow>
         </div>
 
-        {/* Code output */}
-        <div className="wde-section">
-          <div className="wde-section-head">Code Output</div>
-          <div className="wde-code-actions" style={{ marginBottom: 8 }}>
-            <button
-              className={`wde-copy-btn${copiedKey === bundleKey ? ' wde-copy-btn--ok' : ''}`}
-              type="button"
-              onClick={() => handleCopy(bundleKey, generateBundleTs(bundle))}
-            >
-              {copiedKey === bundleKey ? 'Copied!' : 'Copy bundle code'}
-            </button>
-            <button
-              className={`wde-copy-btn${copiedKey === fileKey ? ' wde-copy-btn--ok' : ''}`}
-              type="button"
-              onClick={() => handleCopy(fileKey, generateBundlesFileTs(allBundles))}
-            >
-              {copiedKey === fileKey ? 'Copied!' : 'Copy full bundles.ts file'}
-            </button>
-          </div>
-          <pre className="wde-code-pre">{generateBundleTs(bundle)}</pre>
-        </div>
       </div>
     </div>
   );

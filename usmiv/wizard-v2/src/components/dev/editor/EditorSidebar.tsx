@@ -33,6 +33,8 @@ interface EditorSidebarProps {
   dirtyIds: Set<TreatmentId>;
   errorIds: Set<TreatmentId>;
   onAddTreatment: () => void;
+  onAddBundle: () => void;
+  onAddQuestion: () => void;
 
   // Bundles mode
   bundles: Record<string, EditableBundle>;
@@ -83,6 +85,8 @@ export function EditorSidebar({
   dirtyIds,
   errorIds,
   onAddTreatment,
+  onAddBundle,
+  onAddQuestion,
   bundles,
   selectedBundleId,
   onSelectBundle,
@@ -178,7 +182,7 @@ export function EditorSidebar({
         </button>
       </div>
 
-      {/* New Treatment button -- visible in treatments mode, above category pills */}
+      {/* Mode-conditional New button */}
       {mode === 'treatments' && (
         <div className="wde-add-btn-row">
           <button
@@ -187,6 +191,28 @@ export function EditorSidebar({
             onClick={onAddTreatment}
           >
             + New Treatment
+          </button>
+        </div>
+      )}
+      {mode === 'bundles' && (
+        <div className="wde-add-btn-row">
+          <button
+            className="wde-add-btn"
+            type="button"
+            onClick={onAddBundle}
+          >
+            + New Bundle
+          </button>
+        </div>
+      )}
+      {mode === 'questions' && (
+        <div className="wde-add-btn-row">
+          <button
+            className="wde-add-btn"
+            type="button"
+            onClick={onAddQuestion}
+          >
+            + New Question
           </button>
         </div>
       )}

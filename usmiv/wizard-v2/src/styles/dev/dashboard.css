@@ -112,6 +112,31 @@
   background: #64748b;
 }
 
+/* ── Save & Publish button ───────────────────────────────────── */
+.wdd-save-btn {
+  padding: 5px 14px;
+  background: #2a8a8f;
+  border: 1px solid #1e6e72;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.wdd-save-btn:hover { background: #1e6e72; }
+.wdd-save-btn--saving { opacity: 0.6; cursor: not-allowed; }
+.wdd-save-btn--success { background: #166534; border-color: #14532d; }
+.wdd-save-btn--error { background: #991b1b; border-color: #7f1d1d; }
+
+/* ── Help text ───────────────────────────────────────────────── */
+.wdd-help-text {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
 /* ── Tab nav ─────────────────────────────────────────────────── */
 .wdd-tabs {
   display: flex;
@@ -936,4 +961,42 @@ tr:hover .wdd-matrix-edit {
 
 .wdd-overlay ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* ── Route chips (path traversal navigation) ────────────────── */
+.wde-routing-destination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.wdd-route-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #e0f2f3;
+  color: #1e6e72;
+  border: 1px solid #1e6e72;
+  border-radius: 12px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  cursor: pointer;
+  margin-left: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.12s, color 0.12s;
+}
+.wdd-route-chip:hover {
+  background: #1e6e72;
+  color: #fff;
+}
+.wdd-route-chip--treatment {
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: #c2410c;
+}
+.wdd-route-chip--treatment:hover {
+  background: #c2410c;
+  color: #fff;
 }

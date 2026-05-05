@@ -11,7 +11,6 @@ import type { TreatmentId } from '../../../types/treatment';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import type { EditableTreatment } from './types';
 import { issuesForTreatment } from './types';
-import type { SaveStatus } from './EditorTab';
 import { generateTreatmentTs, generateCategoryFileTs, categoryFileName } from './codeGen';
 import { SYMPTOM_LABELS, TREATMENTS } from '../../../data';
 import { mapIssuesToFields } from '../../../utils/issueMapper';
@@ -24,18 +23,11 @@ import { pathsForTreatment } from '../../../utils/pathResolver';
 interface EditorMainProps {
   draft: EditableTreatment;
   isDirty: boolean;
-  dirtyIds: Set<TreatmentId>;
   validationResult: ValidationResult | null;
   allDrafts: Record<string, EditableTreatment>;
-  saveStatus: SaveStatus;
   allPaths: ResolvedPath[];
   onUpdate: (field: keyof EditableTreatment, value: unknown) => void;
   onReset: () => void;
-  onSave: () => void;
-  onSaveAll: () => void;
-  onPublish?: () => void;
-  canPublish?: boolean;
-  publishStatus?: SaveStatus;
   onDelete?: () => void;
 }
 
@@ -598,18 +590,11 @@ function FieldRow({ label, errorMsg, warningMsg, children }: FieldRowProps): Rea
 export function EditorMain({
   draft,
   isDirty,
-  dirtyIds,
   validationResult,
   allDrafts,
-  saveStatus,
   allPaths,
   onUpdate,
   onReset,
-  onSave,
-  onSaveAll,
-  onPublish,
-  canPublish,
-  publishStatus,
   onDelete,
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -672,48 +657,9 @@ export function EditorMain({
   }
 
   const headerCopyKey = `header-ts-${draft.id}`;
-  const isSaving = saveStatus.state === 'saving';
-
-  // Count dirty categories for "Save All" label
-  const dirtyCategoryCount = new Set(
-    [...dirtyIds].map((id) => (allDrafts[id] as EditableTreatment | undefined)?.category).filter(Boolean),
-  ).size;
 
   return (
     <div className="wde-main">
-      {/* Save status banner */}
-      {saveStatus.state === 'saved' && (
-        <div className="wde-save-banner wde-save-banner--ok">
-          Saved to {saveStatus.path}. Vite will hot-reload the module.{' '}
-          <button
-            className="wde-save-banner-reload"
-            type="button"
-            onClick={() => {
-              const hasOtherDirty = dirtyIds.size > 1 || (dirtyIds.size === 1 && !dirtyIds.has(draft.id));
-              if (hasOtherDirty && !window.confirm('You have unsaved changes in other treatments. Reload anyway?')) return;
-              window.location.reload();
-            }}
-          >
-            Reload now
-          </button>
-        </div>
-      )}
-      {saveStatus.state === 'error' && (
-        <div className="wde-save-banner wde-save-banner--error">
-          Save failed: {saveStatus.message}
-        </div>
-      )}
-      {publishStatus?.state === 'saved' && (
-        <div className="wde-save-banner wde-save-banner--ok">
-          {(publishStatus as { state: 'saved'; path: string }).path}
-        </div>
-      )}
-      {publishStatus?.state === 'error' && (
-        <div className="wde-save-banner wde-save-banner--error">
-          Publish failed: {(publishStatus as { state: 'error'; message: string }).message}
-        </div>
-      )}
-
       {/* Sticky header */}
       <div className="wde-form-header">
         <span className="wde-form-id">{draft.id}</span>
@@ -729,40 +675,6 @@ export function EditorMain({
           </button>
         ) : (
           <span className={statusBadgeCls}>{statusLabel}</span>
-        )}
-        <button
-          className={`wde-save-btn${!isDirty || isSaving ? ' wde-save-btn--disabled' : ''}`}
-          type="button"
-          disabled={!isDirty || isSaving}
-          onClick={onSave}
-          title={isDirty ? 'Write this category to disk' : 'No changes to save'}
-        >
-          {isSaving ? 'Saving...' : 'Save'}
-        </button>
-        {dirtyCategoryCount > 1 && (
-          <button
-            className={`wde-save-all-btn${isSaving ? ' wde-save-btn--disabled' : ''}`}
-            type="button"
-            disabled={isSaving}
-            onClick={onSaveAll}
-            title={`Save all ${dirtyCategoryCount} modified categories`}
-          >
-            {isSaving ? 'Saving...' : `Save All (${dirtyCategoryCount})`}
-          </button>
-        )}
-        <button
-          className={`wde-copy-btn wde-copy-btn--sm${copiedKey === headerCopyKey ? ' wde-copy-btn--ok' : ''}`}
-          type="button"
-          onClick={() => handleCopy(headerCopyKey, generateTreatmentTs(draft))}
-          title="Copy TypeScript for this treatment"
-        >
-          {copiedKey === headerCopyKey ? 'Copied!' : 'Copy TS'}
-        </button>
-        {canPublish && onPublish && (
-          <button type="button" className="wde-publish-btn" onClick={onPublish}
-            disabled={publishStatus?.state === 'saving'}>
-            {publishStatus?.state === 'saving' ? 'Publishing...' : 'Publish Live'}
-          </button>
         )}
         <button
           className={`wde-reset-btn${!isDirty ? ' wde-reset-btn--hidden' : ''}`}
@@ -890,6 +802,9 @@ export function EditorMain({
               value={draft.pageUrl}
               onChange={(e) => onUpdate('pageUrl', e.target.value)}
             />
+            <div className="wdd-help-text">
+              Link target for the wizard's Learn More button. Editing this does not rename the WP page; only updates where the button navigates.
+            </div>
           </FieldRow>
         </div>
 
@@ -995,6 +910,9 @@ export function EditorMain({
                 <span style={{ fontWeight: 400, fontSize: 11, color: '#64748b', marginLeft: 6 }}>
                   ({pathsToDraft.length} path{pathsToDraft.length !== 1 ? 's' : ''})
                 </span>
+              </div>
+              <div className="wdd-help-text wdd-help-text--paths">
+                Paths shown are direct-recommendation routes (question option to treatment). Scoring weights below affect ranking on the symptom-picker path; they do not add new paths.
               </div>
               <PathsInEditor paths={pathsToDraft} treatmentName={draft.name} />
             </div>

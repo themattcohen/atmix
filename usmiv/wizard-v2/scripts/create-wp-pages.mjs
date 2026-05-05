@@ -496,6 +496,7 @@ body:has(.wiz-treatment-v1) article.hentry {
 .wiz-treatment-v1 .td-ingredient-list {
   display: flex !important;
   flex-direction: column !important;
+  align-items: stretch !important;
   gap: 8px;
 }
 .wiz-treatment-v1 .td-ingredient-card {
@@ -535,7 +536,7 @@ body:has(.wiz-treatment-v1) article.hentry {
   line-height: 1.4;
 }
 .wiz-treatment-v1 .td-ingredient-card__short {
-  display: inline-block !important;
+  display: block !important;
   flex: 2;
   font-size: 14px;
   color: var(--td-color-muted);

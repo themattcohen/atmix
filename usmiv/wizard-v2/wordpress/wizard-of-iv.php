@@ -11,7 +11,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WIZARD_OF_IV_VERSION', '2.0.7');
+define('WIZARD_OF_IV_VERSION', '2.0.8');
 define('WIZARD_OF_IV_OPTION', 'wizard_of_iv_config');
 define('WIZARD_OF_IV_HISTORY_OPTION', 'wizard_of_iv_config_history');
 define('WIZARD_OF_IV_HISTORY_MAX', 20);

@@ -5,12 +5,10 @@
  * Sections: Question Info, Options (with routing toggle), Code Output.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import type { EditableQuestion, EditableOption } from './types';
 import type { EditableTreatment } from './types';
 import type { EditableBundle } from './types';
-import { generateQuestionTs, generateQuestionsFileTs } from './codeGen';
-import type { SaveStatus } from './EditorTab';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -22,11 +20,10 @@ interface QuestionEditPanelProps {
   allBundles: Record<string, EditableBundle>;
   onUpdate: (q: EditableQuestion) => void;
   onReset: () => void;
-  onSave: () => void;
-  saveStatus?: SaveStatus;
-  onPublish?: () => void;
-  canPublish?: boolean;
-  publishStatus?: SaveStatus;
+  /** Jump editor selection to a different question (path traversal). */
+  onSelectQuestion?: (id: string) => void;
+  /** Jump editor selection to a treatment and switch to treatments mode (path traversal). */
+  onSelectTreatment?: (id: string) => void;
 }
 
 // ── FieldRow ──────────────────────────────────────────────────────────────────
@@ -60,6 +57,8 @@ interface OptionRowProps {
   onMoveUp: (index: number) => void;
   onMoveDown: (index: number) => void;
   onDelete: (index: number) => void;
+  onSelectQuestion?: (id: string) => void;
+  onSelectTreatment?: (id: string) => void;
 }
 
 function OptionRow({
@@ -75,6 +74,8 @@ function OptionRow({
   onMoveUp,
   onMoveDown,
   onDelete,
+  onSelectQuestion,
+  onSelectTreatment,
 }: OptionRowProps): React.ReactElement {
   // Routing toggle: if opt.recommend is set, mode = 'recommend'; else mode = 'next'
   const routingMode: 'next' | 'recommend' = opt.recommend ? 'recommend' : 'next';
@@ -149,40 +150,64 @@ function OptionRow({
               </button>
             </div>
             {routingMode === 'next' ? (
-              <select
-                className="wde-bundle-select wde-routing-select"
-                value={opt.next}
-                onChange={(e) => onChange(index, { ...opt, next: e.target.value, recommend: '' })}
-              >
-                <option value="">-- select question --</option>
-                {questionOptions.map((q) => (
-                  <option key={q.id} value={q.id}>
-                    {q.id} — {q.title}
-                  </option>
-                ))}
-              </select>
+              <div className="wde-routing-destination">
+                <select
+                  className="wde-bundle-select wde-routing-select"
+                  value={opt.next}
+                  onChange={(e) => onChange(index, { ...opt, next: e.target.value, recommend: '' })}
+                >
+                  <option value="">-- select question --</option>
+                  {questionOptions.map((q) => (
+                    <option key={q.id} value={q.id}>
+                      {q.id} — {q.title}
+                    </option>
+                  ))}
+                </select>
+                {opt.next && onSelectQuestion && (
+                  <button
+                    type="button"
+                    className="wdd-route-chip"
+                    onClick={() => onSelectQuestion(opt.next!)}
+                    title={`Jump to question: ${opt.next}`}
+                  >
+                    {opt.next}
+                  </button>
+                )}
+              </div>
             ) : (
-              <select
-                className="wde-bundle-select wde-routing-select"
-                value={opt.recommend}
-                onChange={(e) => onChange(index, { ...opt, recommend: e.target.value, next: '' })}
-              >
-                <option value="">-- select treatment/bundle --</option>
-                <optgroup label="Treatments">
-                  {treatmentOptions.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="Bundles">
-                  {bundleOptions.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              <div className="wde-routing-destination">
+                <select
+                  className="wde-bundle-select wde-routing-select"
+                  value={opt.recommend}
+                  onChange={(e) => onChange(index, { ...opt, recommend: e.target.value, next: '' })}
+                >
+                  <option value="">-- select treatment/bundle --</option>
+                  <optgroup label="Treatments">
+                    {treatmentOptions.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Bundles">
+                    {bundleOptions.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+                {opt.recommend && onSelectTreatment && (
+                  <button
+                    type="button"
+                    className="wdd-route-chip wdd-route-chip--treatment"
+                    onClick={() => onSelectTreatment(opt.recommend!)}
+                    title={`Jump to treatment/bundle: ${opt.recommend}`}
+                  >
+                    {opt.recommend}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -230,27 +255,9 @@ export function QuestionEditPanel({
   allBundles,
   onUpdate,
   onReset,
-  onSave,
-  saveStatus,
-  onPublish,
-  canPublish,
-  publishStatus,
+  onSelectQuestion,
+  onSelectTreatment,
 }: QuestionEditPanelProps): React.ReactElement {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleCopy = useCallback((key: string, text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedKey(key);
-      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
-      copiedTimerRef.current = setTimeout(() => setCopiedKey(null), 2000);
-    });
-  }, []);
-
-  const singleKey = `question-${question.id}`;
-  const fileKey = `questions-file`;
-
-  const isSaving = saveStatus?.state === 'saving';
 
   // ── Option mutation helpers ───────────────────────────────────────────────
 
@@ -302,73 +309,12 @@ export function QuestionEditPanel({
     onUpdate({ ...question, options: [...question.options, newOpt] });
   }, [question, onUpdate]);
 
-  // The "Copy full questions.ts" button needs a sorted list matching QUESTIONS_ARRAY order.
-  // We preserve the insertion order from allQuestions which matches the original array.
-  const allQuestionsArray = Object.values(allQuestions);
-
   return (
     <div className="wde-main">
-      {/* Save status banner */}
-      {saveStatus?.state === 'saved' && (
-        <div className="wde-save-banner wde-save-banner--ok">
-          Saved to {saveStatus.path}. Vite will hot-reload the module.
-        </div>
-      )}
-      {saveStatus?.state === 'error' && (
-        <div className="wde-save-banner wde-save-banner--error">
-          Save failed: {saveStatus.message}
-        </div>
-      )}
-      {publishStatus?.state === 'saved' && (
-        <div className="wde-save-banner wde-save-banner--ok">
-          {(publishStatus as { state: 'saved'; path: string }).path}
-        </div>
-      )}
-      {publishStatus?.state === 'error' && (
-        <div className="wde-save-banner wde-save-banner--error">
-          Publish failed: {(publishStatus as { state: 'error'; message: string }).message}
-        </div>
-      )}
-
       {/* Sticky header */}
       <div className="wde-form-header">
         <span className="wde-form-id">{question.id}</span>
         <span className="wde-form-title">{question.title}</span>
-        <button
-          className={`wde-save-btn${!isDirty || isSaving ? ' wde-save-btn--disabled' : ''}`}
-          type="button"
-          disabled={!isDirty || isSaving}
-          onClick={onSave}
-          title={isDirty ? 'Write questions.ts to disk' : 'No changes to save'}
-        >
-          {isSaving ? 'Saving...' : 'Save'}
-        </button>
-        <button
-          className={`wde-copy-btn wde-copy-btn--sm${copiedKey === singleKey ? ' wde-copy-btn--ok' : ''}`}
-          type="button"
-          onClick={() => handleCopy(singleKey, generateQuestionTs(question))}
-          title="Copy TypeScript for this question"
-        >
-          {copiedKey === singleKey ? 'Copied!' : 'Copy TS'}
-        </button>
-        <button
-          className={`wde-copy-btn wde-copy-btn--sm${copiedKey === fileKey ? ' wde-copy-btn--ok' : ''}`}
-          type="button"
-          onClick={() => handleCopy(fileKey, generateQuestionsFileTs(allQuestionsArray))}
-          title="Copy full questions.ts file"
-        >
-          {copiedKey === fileKey ? 'Copied!' : 'Copy questions.ts'}
-        </button>
-        {canPublish && onPublish && (
-          <button
-            type="button"
-            className="wde-publish-btn"
-            onClick={onPublish}
-            disabled={publishStatus?.state === 'saving'}
-          >
-            {publishStatus?.state === 'saving' ? 'Publishing...' : 'Publish Live'}
-          </button>
-        )}
         <button
           className={`wde-reset-btn${!isDirty ? ' wde-reset-btn--hidden' : ''}`}
           type="button"
@@ -455,6 +401,8 @@ export function QuestionEditPanel({
               onMoveUp={handleMoveUp}
               onMoveDown={handleMoveDown}
               onDelete={handleDelete}
+              onSelectQuestion={onSelectQuestion}
+              onSelectTreatment={onSelectTreatment}
             />
           ))}
 
@@ -467,27 +415,6 @@ export function QuestionEditPanel({
           </button>
         </div>
 
-        {/* Code Output */}
-        <div className="wde-section">
-          <div className="wde-section-head">Code Output</div>
-          <div className="wde-code-actions" style={{ marginBottom: 8 }}>
-            <button
-              className={`wde-copy-btn${copiedKey === singleKey ? ' wde-copy-btn--ok' : ''}`}
-              type="button"
-              onClick={() => handleCopy(singleKey, generateQuestionTs(question))}
-            >
-              {copiedKey === singleKey ? 'Copied!' : 'Copy question code'}
-            </button>
-            <button
-              className={`wde-copy-btn${copiedKey === fileKey ? ' wde-copy-btn--ok' : ''}`}
-              type="button"
-              onClick={() => handleCopy(fileKey, generateQuestionsFileTs(allQuestionsArray))}
-            >
-              {copiedKey === fileKey ? 'Copied!' : 'Copy full questions.ts file'}
-            </button>
-          </div>
-          <pre className="wde-code-pre">{generateQuestionTs(question)}</pre>
-        </div>
       </div>
     </div>
   );

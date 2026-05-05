@@ -10,7 +10,7 @@ import type { TreatmentId, Treatment, TreatmentCategory } from '../../../types/t
 import type { BundleId } from '../../../types/bundle';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import { validateConfig } from '../../../engine/validateConfig';
-import { QUESTIONS, BUNDLES } from '../../../data';
+import { QUESTIONS, BUNDLES, TREATMENTS } from '../../../data';
 import type { ResolvedPath } from '../../../utils/pathResolver';
 import {
   cloneAllToEditable,
@@ -23,7 +23,6 @@ import {
   cloneAllQuestionsToEditable,
   computeDirtyQuestionIds,
   isQuestionDirty,
-  toQuestionMap,
 } from './types';
 import type { EditableTreatment, EditableBundle, EditableQuestion } from './types';
 
@@ -33,15 +32,15 @@ export interface EditorDraftsSnapshot {
   bundles: Record<string, EditableBundle>;
   questions: Record<string, EditableQuestion>;
 }
-import { generateCategoryFileTs, generateBundlesFileTs, generateQuestionsFileTs } from './codeGen';
 import { EditorSidebar } from './EditorSidebar';
 import type { EditorMode } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
 import { BundleEditPanel } from './BundleEditPanel';
 import { QuestionEditPanel } from './QuestionEditPanel';
 import { AddTreatmentDialog } from './AddTreatmentDialog';
-import { getStoredApiKey, setStoredApiKey, clearStoredApiKey, saveConfigToWorker } from '../../../utils/configApi';
-import { META } from '../../../data/meta';
+import { AddQuestionDialog } from './AddQuestionDialog';
+import type { StarterOption } from './AddQuestionDialog';
+import { AddBundleDialog } from './AddBundleDialog';
 
 // ── Save result ───────────────────────────────────────────────────────────────
 
@@ -108,7 +107,6 @@ export function EditorTab({
     [],
   );
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
-  const [questionSaveStatus, setQuestionSaveStatus] = useState<SaveStatus>({ state: 'idle' });
 
   const [editorMode, setEditorMode] = useState<EditorMode>('treatments');
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId ?? null);
@@ -126,11 +124,9 @@ export function EditorTab({
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<TreatmentCategory | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>({ state: 'idle' });
-  const [bundleSaveStatus, setBundleSaveStatus] = useState<SaveStatus>({ state: 'idle' });
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [publishStatus, setPublishStatus] = useState<SaveStatus>({ state: 'idle' });
-  const canPublish = !!META.configWorkerUrl;
+  const [showAddQuestionDialog, setShowAddQuestionDialog] = useState(false);
+  const [showAddBundleDialog, setShowAddBundleDialog] = useState(false);
 
   // Re-run validation whenever drafts change, and bubble result to dashboard.
   useEffect(() => {
@@ -289,208 +285,6 @@ export function EditorTab({
     }));
   }, [selectedQuestionId, questionOriginals]);
 
-  // Save a single category to disk via the Vite dev middleware.
-  const saveCategoryToDisk = useCallback(
-    async (category: TreatmentCategory): Promise<{ ok: true; path: string } | { ok: false; message: string }> => {
-      const categoryDrafts = Object.values(drafts).filter(
-        (d) => d.category === category,
-      ) as EditableTreatment[];
-      const content = generateCategoryFileTs(categoryDrafts, category);
-
-      try {
-        const resp = await fetch('/api/wizard-editor/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category, content }),
-        });
-        const contentType = resp.headers.get('content-type') ?? '';
-        if (!contentType.includes('application/json')) {
-          return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy TS" on the live site.' };
-        }
-        const json = await resp.json() as { ok?: boolean; path?: string; error?: string };
-        if (resp.ok && json.ok) {
-          return { ok: true, path: json.path ?? category };
-        }
-        return { ok: false, message: json.error ?? `HTTP ${resp.status}` };
-      } catch (err: unknown) {
-        return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy TS" on the live site.' };
-      }
-    },
-    [drafts],
-  );
-
-  // Save the current category (triggered from EditorMain header).
-  const handleSave = useCallback(async () => {
-    if (!selectedId) return;
-    const category = (drafts[selectedId] as EditableTreatment).category;
-    setSaveStatus({ state: 'saving' });
-    const result = await saveCategoryToDisk(category);
-    if (result.ok) {
-      setSaveStatus({ state: 'saved', path: result.path });
-      setTimeout(() => setSaveStatus({ state: 'idle' }), 3000);
-      // Update originals for the saved category so dirty indicators clear.
-      setOriginals((prev) => {
-        const updated = { ...prev };
-        for (const [id, draft] of Object.entries(drafts)) {
-          if ((draft as EditableTreatment).category === category) {
-            updated[id] = { ...(draft as EditableTreatment) };
-          }
-        }
-        return updated;
-      });
-    } else {
-      setSaveStatus({ state: 'error', message: result.message });
-    }
-  }, [selectedId, drafts, saveCategoryToDisk]);
-
-  // Save all dirty categories at once.
-  const handleSaveAll = useCallback(async () => {
-    const dirtyCategories = new Set(
-      [...dirtyIds].map((id) => (drafts[id] as EditableTreatment).category),
-    );
-    if (dirtyCategories.size === 0) return;
-
-    setSaveStatus({ state: 'saving' });
-    const savedPaths: string[] = [];
-    const errors: string[] = [];
-
-    for (const category of dirtyCategories) {
-      const result = await saveCategoryToDisk(category);
-      if (result.ok) {
-        savedPaths.push(result.path);
-      } else {
-        errors.push(`${category}: ${result.message}`);
-      }
-    }
-
-    if (errors.length === 0) {
-      setSaveStatus({ state: 'saved', path: savedPaths.join(', ') });
-      setTimeout(() => setSaveStatus({ state: 'idle' }), 3000);
-      // Update originals for all saved categories so dirty indicators clear.
-      setOriginals((prev) => {
-        const updated = { ...prev };
-        for (const [id, draft] of Object.entries(drafts)) {
-          if (dirtyCategories.has((draft as EditableTreatment).category)) {
-            updated[id] = { ...(draft as EditableTreatment) };
-          }
-        }
-        return updated;
-      });
-    } else {
-      setSaveStatus({ state: 'error', message: errors.join(' | ') });
-    }
-  }, [dirtyIds, drafts, saveCategoryToDisk]);
-
-  const handlePublishToCloud = useCallback(async () => {
-    const workerUrl = META.configWorkerUrl;
-    if (!workerUrl) return;
-
-    let apiKey = getStoredApiKey();
-    if (!apiKey) {
-      apiKey = window.prompt('Enter the admin API key:');
-      if (!apiKey) return;
-    }
-
-    setPublishStatus({ state: 'saving' });
-
-    const config = {
-      treatments: Object.fromEntries(Object.entries(drafts).map(([k, v]) => [k, v])),
-      bundles: Object.fromEntries(Object.entries(bundleDrafts).map(([k, v]) => [k, v])),
-      questions: toQuestionMap(questionDrafts),
-    };
-
-    const result = await saveConfigToWorker(workerUrl, config, apiKey);
-
-    if (result.ok) {
-      setStoredApiKey(apiKey);
-      setPublishStatus({ state: 'saved', path: 'Live config updated' });
-      setTimeout(() => setPublishStatus({ state: 'idle' }), 3000);
-    } else {
-      if (result.message === 'unauthorized') {
-        clearStoredApiKey();
-        setPublishStatus({ state: 'error', message: 'Invalid API key. Try again.' });
-      } else {
-        setPublishStatus({ state: 'error', message: result.message });
-      }
-    }
-  }, [drafts, bundleDrafts, questionDrafts]);
-
-  // Save bundles.ts to disk via the Vite dev middleware.
-  const saveBundlesToDisk = useCallback(
-    async (): Promise<{ ok: true; path: string } | { ok: false; message: string }> => {
-      const content = generateBundlesFileTs(Object.values(bundleDrafts));
-
-      try {
-        const resp = await fetch('/api/wizard-editor/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category: 'bundles', content }),
-        });
-        const contentType = resp.headers.get('content-type') ?? '';
-        if (!contentType.includes('application/json')) {
-          return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy bundles.ts" on the live site.' };
-        }
-        const json = await resp.json() as { ok?: boolean; path?: string; error?: string };
-        if (resp.ok && json.ok) {
-          return { ok: true, path: json.path ?? 'bundles.ts' };
-        }
-        return { ok: false, message: json.error ?? `HTTP ${resp.status}` };
-      } catch {
-        return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy bundles.ts" on the live site.' };
-      }
-    },
-    [bundleDrafts],
-  );
-
-  const handleBundleSave = useCallback(async () => {
-    setBundleSaveStatus({ state: 'saving' });
-    const result = await saveBundlesToDisk();
-    if (result.ok) {
-      setBundleSaveStatus({ state: 'saved', path: result.path });
-      setTimeout(() => setBundleSaveStatus({ state: 'idle' }), 3000);
-    } else {
-      setBundleSaveStatus({ state: 'error', message: result.message });
-    }
-  }, [saveBundlesToDisk]);
-
-  // Save questions.ts to disk via the Vite dev middleware.
-  const saveQuestionsToDisk = useCallback(
-    async (): Promise<{ ok: true; path: string } | { ok: false; message: string }> => {
-      const content = generateQuestionsFileTs(Object.values(questionDrafts));
-
-      try {
-        const resp = await fetch('/api/wizard-editor/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category: 'questions', content }),
-        });
-        const contentType = resp.headers.get('content-type') ?? '';
-        if (!contentType.includes('application/json')) {
-          return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy questions.ts" on the live site.' };
-        }
-        const json = await resp.json() as { ok?: boolean; path?: string; error?: string };
-        if (resp.ok && json.ok) {
-          return { ok: true, path: json.path ?? 'questions.ts' };
-        }
-        return { ok: false, message: json.error ?? `HTTP ${resp.status}` };
-      } catch {
-        return { ok: false, message: 'Save requires the local dev server (npm run dev). Use "Copy questions.ts" on the live site.' };
-      }
-    },
-    [questionDrafts],
-  );
-
-  const handleQuestionSave = useCallback(async () => {
-    setQuestionSaveStatus({ state: 'saving' });
-    const result = await saveQuestionsToDisk();
-    if (result.ok) {
-      setQuestionSaveStatus({ state: 'saved', path: result.path });
-      setTimeout(() => setQuestionSaveStatus({ state: 'idle' }), 3000);
-    } else {
-      setQuestionSaveStatus({ state: 'error', message: result.message });
-    }
-  }, [saveQuestionsToDisk]);
-
   // Delete the selected treatment from editor state.
   const handleDeleteTreatment = useCallback(() => {
     if (!selectedId) return;
@@ -549,6 +343,64 @@ export function EditorTab({
     [],
   );
 
+  // Add Question dialog handler.
+  const handleAddQuestion = useCallback(
+    (
+      id: string,
+      title: string,
+      subtitle: string | undefined,
+      type: 'single' | 'multi',
+      starterOption: StarterOption,
+    ) => {
+      const newQuestion: EditableQuestion = {
+        id,
+        title,
+        subtitle: subtitle ?? '',
+        type,
+        options: [
+          {
+            label: starterOption.label,
+            sublabel: '',
+            icon: '',
+            next: starterOption.next ?? '',
+            recommend: starterOption.recommend ?? '',
+          },
+        ],
+      };
+      setQuestionDrafts((prev) => ({ ...prev, [id]: newQuestion }));
+      setSelectedQuestionId(id);
+      setEditorMode('questions');
+      setShowAddQuestionDialog(false);
+    },
+    [],
+  );
+
+  // Add Bundle dialog handler.
+  const handleAddBundle = useCallback(
+    (id: string, name: string, primary: string, addOn: string | null, acuityTypeId: number) => {
+      const newBundle: EditableBundle = {
+        id: id as import('../../../types/bundle').BundleId,
+        name,
+        primary,
+        addOn,
+        addOnInteractive: false,
+        whyMatch: '',
+        acuityTypeId,
+        addOnLabel: undefined,
+        acuityDropdownValue: undefined,
+        price: undefined,
+        priceLabel: undefined,
+        shortDesc: undefined,
+        pageUrl: undefined,
+      };
+      setBundleDrafts((prev) => ({ ...prev, [id]: newBundle }));
+      setSelectedBundleId(id);
+      setEditorMode('bundles');
+      setShowAddBundleDialog(false);
+    },
+    [],
+  );
+
   const selectedDraft = selectedId ? drafts[selectedId] : null;
   const selectedIsDirty = selectedId
     // New treatments (not in compiled catalog) are always considered dirty
@@ -582,6 +434,8 @@ export function EditorTab({
         dirtyIds={dirtyIds}
         errorIds={errorIds}
         onAddTreatment={() => setShowAddDialog(true)}
+        onAddBundle={() => setShowAddBundleDialog(true)}
+        onAddQuestion={() => setShowAddQuestionDialog(true)}
         bundles={bundleDrafts}
         selectedBundleId={selectedBundleId}
         onSelectBundle={setSelectedBundleId}
@@ -600,23 +454,35 @@ export function EditorTab({
         />
       )}
 
+      {showAddQuestionDialog && (
+        <AddQuestionDialog
+          existingIds={[...Object.keys(QUESTIONS), ...Object.keys(questionDrafts)]}
+          questions={QUESTIONS}
+          treatments={TREATMENTS}
+          onConfirm={handleAddQuestion}
+          onCancel={() => setShowAddQuestionDialog(false)}
+        />
+      )}
+
+      {showAddBundleDialog && (
+        <AddBundleDialog
+          existingIds={[...Object.keys(BUNDLES), ...Object.keys(bundleDrafts)]}
+          treatments={TREATMENTS}
+          onConfirm={handleAddBundle}
+          onCancel={() => setShowAddBundleDialog(false)}
+        />
+      )}
+
       {editorMode === 'treatments' ? (
         selectedDraft ? (
           <EditorMain
             draft={selectedDraft}
             isDirty={selectedIsDirty}
-            dirtyIds={dirtyIds}
             validationResult={validationResult}
             allDrafts={drafts}
-            saveStatus={saveStatus}
             allPaths={allPaths}
             onUpdate={handleUpdate}
             onReset={handleReset}
-            onSave={handleSave}
-            onSaveAll={handleSaveAll}
-            onPublish={handlePublishToCloud}
-            canPublish={canPublish}
-            publishStatus={publishStatus}
             onDelete={handleDeleteTreatment}
           />
         ) : (
@@ -634,15 +500,9 @@ export function EditorTab({
           <BundleEditPanel
             bundle={selectedBundleDraft}
             isDirty={selectedBundleIsDirty}
-            allBundles={Object.values(bundleDrafts)}
             allTreatments={drafts}
             onUpdate={handleBundleUpdate}
             onReset={handleBundleReset}
-            onSave={handleBundleSave}
-            saveStatus={bundleSaveStatus}
-            onPublish={handlePublishToCloud}
-            canPublish={canPublish}
-            publishStatus={publishStatus}
           />
         ) : (
           <div className="wde-main">
@@ -664,11 +524,8 @@ export function EditorTab({
             allBundles={bundleDrafts}
             onUpdate={handleQuestionUpdate}
             onReset={handleQuestionReset}
-            onSave={handleQuestionSave}
-            saveStatus={questionSaveStatus}
-            onPublish={handlePublishToCloud}
-            canPublish={canPublish}
-            publishStatus={publishStatus}
+            onSelectQuestion={(id) => { setSelectedQuestionId(id); setEditorMode('questions'); }}
+            onSelectTreatment={(id) => { setSelectedId(id); setEditorMode('treatments'); }}
           />
         ) : (
           <div className="wde-main">
