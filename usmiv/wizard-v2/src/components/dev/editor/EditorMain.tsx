@@ -29,6 +29,7 @@ interface EditorMainProps {
   onUpdate: (field: keyof EditableTreatment, value: unknown) => void;
   onReset: () => void;
   onDelete?: () => void;
+  onSelectQuestion?: (id: string) => void;
 }
 
 // ── TagEditor (bestFor) ───────────────────────────────────────────────────────
@@ -439,9 +440,10 @@ function AddonSuggestionsEditor({
 interface PathsInEditorProps {
   paths: ResolvedPath[];
   treatmentName: string;
+  onSelectQuestion?: (id: string) => void;
 }
 
-function PathsInEditor({ paths, treatmentName }: PathsInEditorProps): React.ReactElement {
+function PathsInEditor({ paths, treatmentName, onSelectQuestion }: PathsInEditorProps): React.ReactElement {
 
   return (
     <div>
@@ -458,7 +460,13 @@ function PathsInEditor({ paths, treatmentName }: PathsInEditorProps): React.Reac
         </div>
       ) : (
         paths.map((p, i) => {
-          const labels = p.steps.filter((_, idx) => idx % 2 === 1);
+          // p.steps alternates [questionId, optionLabel, questionId, optionLabel, ...].
+          // For every label at odd index, the owning question is at the preceding even index.
+          const segments = p.steps
+            .map((value, idx) => (idx % 2 === 1
+              ? { label: value, questionId: p.steps[idx - 1] }
+              : null))
+            .filter((seg): seg is { label: string; questionId: string } => seg !== null);
           return (
             <div key={i} style={{
               display: 'flex',
@@ -468,19 +476,20 @@ function PathsInEditor({ paths, treatmentName }: PathsInEditorProps): React.Reac
               padding: '6px 10px',
               borderBottom: '1px solid #f1f5f9',
             }}>
-              {labels.map((label, j) => (
+              {segments.map((seg, j) => (
                 <React.Fragment key={j}>
-                  <span style={{
-                    display: 'inline-flex',
-                    padding: '2px 7px',
-                    background: '#f1f5f9',
-                    borderRadius: 4,
-                    fontSize: 12,
-                    color: '#0f172a',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {label}
-                  </span>
+                  {onSelectQuestion ? (
+                    <button
+                      type="button"
+                      className="wdd-path-step-btn"
+                      onClick={() => onSelectQuestion(seg.questionId)}
+                      title={`Edit question: ${seg.questionId}`}
+                    >
+                      {seg.label}
+                    </button>
+                  ) : (
+                    <span className="wdd-path-step-btn wdd-path-step-btn--static">{seg.label}</span>
+                  )}
                   <span style={{ color: '#94a3b8', fontSize: 10, margin: '0 1px' }}>&gt;</span>
                 </React.Fragment>
               ))}
@@ -596,6 +605,7 @@ export function EditorMain({
   onUpdate,
   onReset,
   onDelete,
+  onSelectQuestion,
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -914,7 +924,11 @@ export function EditorMain({
               <div className="wdd-help-text wdd-help-text--paths">
                 Paths shown are direct-recommendation routes (question option to treatment). Scoring weights below affect ranking on the symptom-picker path; they do not add new paths.
               </div>
-              <PathsInEditor paths={pathsToDraft} treatmentName={draft.name} />
+              <PathsInEditor
+                paths={pathsToDraft}
+                treatmentName={draft.name}
+                onSelectQuestion={onSelectQuestion}
+              />
             </div>
           );
         })()}

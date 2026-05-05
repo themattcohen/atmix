@@ -1000,3 +1000,30 @@ tr:hover .wdd-matrix-edit {
   background: #c2410c;
   color: #fff;
 }
+
+.wdd-path-step-btn {
+  display: inline-flex;
+  padding: 2px 7px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s;
+}
+.wdd-path-step-btn:hover {
+  background: #e0f2f3;
+  border-color: #1e6e72;
+  color: #1e6e72;
+}
+.wdd-path-step-btn--static {
+  cursor: default;
+}
+.wdd-path-step-btn--static:hover {
+  background: #f1f5f9;
+  border-color: transparent;
+  color: #0f172a;
+}
