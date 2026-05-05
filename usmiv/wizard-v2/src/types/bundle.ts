@@ -11,6 +11,14 @@ export interface Bundle {
   readonly addOnInteractive: boolean;
   readonly isConsultation: boolean;
   readonly whyMatch: string;
+  /** Bundle-specific subtitle shown under the headline on the result card. */
+  readonly shortDesc?: string;
+  /** Bundle headline price in cents/dollars. Overrides primary treatment price on the card. */
+  readonly price?: number;
+  /** Bundle-level price label (e.g. "from $199/month"). Overrides price when set. */
+  readonly priceLabel?: string;
+  /** Destination URL for the Learn More button. Overrides primary treatment pageUrl. */
+  readonly pageUrl?: string;
   readonly acuityTypeId: number;
   readonly acuityDropdownValue: string | null;
 }

@@ -11,7 +11,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WIZARD_OF_IV_VERSION', '2.0.2');
+define('WIZARD_OF_IV_VERSION', '2.0.3');
 define('WIZARD_OF_IV_OPTION', 'wizard_of_iv_config');
 define('WIZARD_OF_IV_HISTORY_OPTION', 'wizard_of_iv_config_history');
 define('WIZARD_OF_IV_HISTORY_MAX', 20);
@@ -53,8 +53,12 @@ function wizard_of_iv_rocket_delay_exclusions($exclusions) {
 
 // Auto-purge WP Rocket cache on treatment pages whenever the config option
 // changes, so price/copy edits propagate without a manual purge.
+// Also bust the REST config transient on any wp_options write to this key
+// (covers WP-CLI, migration scripts, and admin meta editors in addition to
+// the REST save handler).
 add_action('update_option_wizard_of_iv_config', 'wizard_of_iv_rocket_purge_after_save', 10, 2);
 function wizard_of_iv_rocket_purge_after_save($old_value, $new_value) {
+    delete_transient('wizard_of_iv_config_cache');
     if (function_exists('rocket_clean_domain')) {
         rocket_clean_domain();
     }
@@ -547,14 +551,25 @@ function wizard_of_iv_update_post_meta(WP_REST_Request $request) {
 }
 
 function wizard_of_iv_get_config(WP_REST_Request $request) {
-    header('Cache-Control: no-cache, no-store, must-revalidate');
-    header('Pragma: no-cache');
-    header('Expires: 0');
+    // Serve from transient for anonymous requests. Logged-in users (admin
+    // editing) always get a fresh read so they see their own saves immediately.
+    if (!is_user_logged_in()) {
+        $cached = get_transient('wizard_of_iv_config_cache');
+        if ($cached !== false) {
+            $response = rest_ensure_response($cached);
+            $response->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+            return $response;
+        }
+    }
 
     $raw = get_option(WIZARD_OF_IV_OPTION, '');
 
     if (empty($raw)) {
-        return rest_ensure_response((object)[]);
+        $response = rest_ensure_response((object)[]);
+        if (!is_user_logged_in()) {
+            $response->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+        }
+        return $response;
     }
 
     $data = json_decode($raw);
@@ -566,7 +581,15 @@ function wizard_of_iv_get_config(WP_REST_Request $request) {
         );
     }
 
-    return rest_ensure_response($data);
+    if (!is_user_logged_in()) {
+        set_transient('wizard_of_iv_config_cache', $data, MINUTE_IN_SECONDS);
+    }
+
+    $response = rest_ensure_response($data);
+    if (!is_user_logged_in()) {
+        $response->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+    }
+    return $response;
 }
 
 function wizard_of_iv_save_config(WP_REST_Request $request) {
@@ -610,6 +633,10 @@ function wizard_of_iv_save_config(WP_REST_Request $request) {
     // Normalise to compact JSON for storage.
     $json = wp_json_encode($decoded);
     update_option(WIZARD_OF_IV_OPTION, $json, 'yes');
+    // Bust the GET transient immediately so the next anonymous request sees
+    // the new value. The update_option hook also calls this, but calling it
+    // here is an explicit belt-and-suspenders guarantee for the REST path.
+    delete_transient('wizard_of_iv_config_cache');
     update_option('wizard_of_iv_config_updated_at', gmdate('c'), 'yes');
 
     return rest_ensure_response([

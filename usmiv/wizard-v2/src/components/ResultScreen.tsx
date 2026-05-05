@@ -32,9 +32,15 @@ export function ResultScreen({
   // Resolve the primary treatment and display name depending on kind
   const isPrimary = recommendation.kind === 'treatment';
   const treatment = isPrimary ? recommendation.treatment : recommendation.primary;
+  const bundle = recommendation.kind === 'bundle' ? recommendation.bundle : null;
   const displayName = isPrimary ? recommendation.treatment.name : recommendation.bundle.name;
   const whyMatch = isPrimary ? recommendation.treatment.whyMatch : recommendation.bundle.whyMatch;
-  const priceDisplay = treatment.priceLabel ?? `$${treatment.price}`;
+  // Prefer bundle-level price/priceLabel/shortDesc/pageUrl over primary treatment's values.
+  const effectivePrice = bundle?.price ?? treatment.price;
+  const effectivePriceLabel = bundle?.priceLabel ?? treatment.priceLabel;
+  const effectiveShortDesc = bundle?.shortDesc ?? undefined;
+  const effectivePageUrl = bundle?.pageUrl ?? treatment.pageUrl;
+  const priceDisplay = effectivePriceLabel ?? `$${effectivePrice}`;
 
   // Addon suggestions from the primary treatment
   const addonSuggestions = treatment.addonSuggestions;
@@ -105,9 +111,11 @@ export function ResultScreen({
             </>
           )}
         </div>
-        {treatment.shortDesc && (
+        {effectiveShortDesc ? (
+          <p className="tw-result-desc">{effectiveShortDesc}</p>
+        ) : treatment.shortDesc ? (
           <p className="tw-result-desc">{treatment.shortDesc}</p>
-        )}
+        ) : null}
       </div>
 
       {/* Why we matched you */}
@@ -199,14 +207,14 @@ export function ResultScreen({
           meta={meta}
           dispatch={dispatch}
         />
-        {treatment.pageUrl && (
+        {effectivePageUrl && (
           <a
-            href={treatment.pageUrl}
+            href={effectivePageUrl}
             className="tw-btn-secondary"
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleLearnMore}
-            aria-label={`Learn more about ${treatment.name}, opens in new tab`}
+            aria-label={`Learn more about ${displayName}, opens in new tab`}
           >
             Learn More
           </a>

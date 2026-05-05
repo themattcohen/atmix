@@ -8,6 +8,8 @@ export const beautyBundle = {
   addOnLabel: 'Add a Biotin shot for hair, skin, and nails (+$35)',
   addOnInteractive: true,
   isConsultation: false,
+  shortDesc: 'A targeted skin, hair, and nails IV with biotin, glutathione, and vitamin C for collagen and antioxidant support.',
+  price: 220,
   whyMatch:
     "A Myers' Cocktail with Glutathione gives your skin an antioxidant glow, plus Biotin supports keratin production for stronger hair and nails.",
   acuityTypeId: 43274230,
@@ -22,6 +24,8 @@ export const nadPlusLabs = {
   addOnLabel: 'Add a Vitamin Level Panel to check what you\'re low on ($225)',
   addOnInteractive: true,
   isConsultation: false,
+  shortDesc: 'NAD+ IV therapy paired with a vitamin level blood panel to identify deficiencies and guide your next session.',
+  price: 475,
   whyMatch:
     'Long-term fatigue often has an underlying nutrient deficiency. NAD+ restores cellular energy while the lab panel reveals exactly what your body needs.',
   acuityTypeId: 43274230,
@@ -34,6 +38,9 @@ export const weightLossConsult = {
   primary: 'semaglutide',
   addOnInteractive: false,
   isConsultation: true,
+  shortDesc: 'A no-commitment consultation to find the right GLP-1 program for your goals, with RN support from day one.',
+  priceLabel: 'from $199/month',
+  pageUrl: '/weight-loss-services/',
   whyMatch:
     'Our weight loss programs include weekly GLP-1 medication, personalized dosing, and ongoing RN support. We\'ll help you find the right fit.',
   acuityTypeId: 47840203,
@@ -46,6 +53,7 @@ export const jetLagMyers = {
   primary: 'myers',
   addOnInteractive: false,
   isConsultation: false,
+  price: 220,
   whyMatch:
     "Jet lag disrupts your circadian rhythm and accelerates dehydration. A Myers' Cocktail rehydrates and delivers B vitamins that support melatonin production and nervous system reset. Best taken within 4 hours of landing or first thing the morning after arrival.",
   acuityTypeId: 43274230,
