@@ -484,6 +484,7 @@ export function EditorTab({
             onUpdate={handleUpdate}
             onReset={handleReset}
             onDelete={handleDeleteTreatment}
+            onSelectQuestion={(id) => { setSelectedQuestionId(id); setEditorMode('questions'); }}
           />
         ) : (
           <div className="wde-main">
