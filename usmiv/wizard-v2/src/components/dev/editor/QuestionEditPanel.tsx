@@ -9,6 +9,7 @@ import React, { useCallback } from 'react';
 import type { EditableQuestion, EditableOption } from './types';
 import type { EditableTreatment } from './types';
 import type { EditableBundle } from './types';
+import type { ValidationFailure } from '../WizardDevDashboard';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -24,6 +25,8 @@ interface QuestionEditPanelProps {
   onSelectQuestion?: (id: string) => void;
   /** Jump editor selection to a treatment and switch to treatments mode (path traversal). */
   onSelectTreatment?: (id: string) => void;
+  validationFailure?: ValidationFailure | null;
+  clearValidationFailure?: () => void;
 }
 
 // ── FieldRow ──────────────────────────────────────────────────────────────────
@@ -257,7 +260,12 @@ export function QuestionEditPanel({
   onReset,
   onSelectQuestion,
   onSelectTreatment,
+  validationFailure,
+  clearValidationFailure,
 }: QuestionEditPanelProps): React.ReactElement {
+  function isInvalid(fieldName: string): boolean {
+    return validationFailure?.id === question.id && validationFailure?.field === fieldName;
+  }
 
   // ── Option mutation helpers ───────────────────────────────────────────────
 
@@ -365,20 +373,26 @@ export function QuestionEditPanel({
 
           <FieldRow label="title">
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('title') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={question.title}
-              onChange={(e) => onUpdate({ ...question, title: e.target.value })}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate({ ...question, title: e.target.value }); }}
             />
+            {isInvalid('title') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
 
           <FieldRow label="subtitle">
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('subtitle') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={question.subtitle}
-              onChange={(e) => onUpdate({ ...question, subtitle: e.target.value })}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate({ ...question, subtitle: e.target.value }); }}
             />
+            {isInvalid('subtitle') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
         </div>
 

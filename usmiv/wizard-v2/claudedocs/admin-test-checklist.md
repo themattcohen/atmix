@@ -187,6 +187,63 @@ Also check `https://usmobileiv.com/treatments/revival/?cb=8` -- the ingredients 
 
 ---
 
+## Test 14: Save-validation UX -- invalid pageUrl highlights field
+
+**Set up:** Editor tab > select any treatment (e.g., **revival**) in the sidebar.
+
+**Change:** In Basic Info, set the **pageUrl** field to `<script>alert(1)</script>`. Click **Save & Publish**.
+
+**Verify:**
+- The save banner shows a red error message naming the entity, field, and reason (e.g., "Save failed: treatment 'revival' field 'pageUrl': ...").
+- A "Fix in Editor" button appears next to the banner. Clicking it should navigate to (or stay on) the Editor tab with that treatment selected.
+- The pageUrl input has a red border and a small red error text below it.
+- Type a valid value (e.g., `/treatments/revival/`). The red border clears immediately.
+
+**Restore:** Type `/treatments/revival/` and click Save & Publish. Confirm green banner.
+
+---
+
+## Test 15: acuityTypeId empty-string does not dirty the draft
+
+**Set up:** Editor tab > select any treatment. Note whether the "unsaved" indicator is visible.
+
+**Change:** Click into the **acuityTypeId** field and select-all, then delete all characters so the field is blank. Do not type anything else.
+
+**Verify:** The draft does not become dirty from clearing the field alone (no orange indicator unless other fields were already changed). The field displays as blank, not "0".
+
+**Restore:** Type the original Acuity ID back in.
+
+---
+
+## Test 16: scoringWeight=0 preserves addressedBy prose
+
+**Set up:** Editor tab > select **revival**. Scroll to Scoring Weights.
+
+**Change:** Find a symptom with a non-zero weight (e.g., "Dehydrated or low energy"). Set the weight slider to a non-zero value (e.g., 5), then type some test text in the "Addressed by text" field. Now set the weight slider to 0.
+
+**Verify:**
+- The addressedBy textarea is still visible but appears greyed out (50% opacity).
+- The text you typed is still present in the field.
+- A note reads "Weight is 0; this prose will be preserved but does not affect ranking."
+- Set the weight back to 5. The prose is still present and the greyed state clears.
+
+**Restore:** Set weight back to original value. Click Save & Publish.
+
+---
+
+## Test 17: Mount-time draft snapshot (early Save click)
+
+**Set up:** Open a fresh admin page (no cached dashboard state). Open the browser DevTools Console before the page loads.
+
+**Change:** After the dashboard renders, immediately run in console:
+```js
+setTimeout(() => document.querySelector('.wdd-save-btn').click(), 30)
+```
+
+**Verify:** The Save & Publish fires within 30ms of mount. The response should be a successful save (green banner), not a fallback error. If it shows "currentDrafts is null" in any error, the mount-time snapshot is not working.
+
+---
+
 ## Pass criteria
 
 Every test above should produce:

@@ -37,6 +37,7 @@ import type { EditorMode } from './EditorSidebar';
 import { EditorMain } from './EditorMain';
 import { BundleEditPanel } from './BundleEditPanel';
 import { QuestionEditPanel } from './QuestionEditPanel';
+import type { ValidationFailure } from '../WizardDevDashboard';
 import { AddTreatmentDialog } from './AddTreatmentDialog';
 import { AddQuestionDialog } from './AddQuestionDialog';
 import type { StarterOption } from './AddQuestionDialog';
@@ -57,6 +58,10 @@ interface EditorTabProps {
   allPaths: ResolvedPath[];
   /** When set, the editor will select this treatment on mount or when it changes. */
   initialSelectedId?: string | null;
+  /** When set, the editor will select this bundle on mount or when it changes. */
+  initialSelectedBundleId?: string | null;
+  /** When set, the editor will select this question on mount or when it changes. */
+  initialSelectedQuestionId?: string | null;
   /** Called whenever validation re-runs (on each draft change). */
   onValidationChange?: (result: ValidationResult) => void;
   /**
@@ -65,6 +70,10 @@ interface EditorTabProps {
    * Debounced to 100ms to avoid flooding the parent on rapid keystrokes.
    */
   onDraftsChange?: (snapshot: EditorDraftsSnapshot) => void;
+  /** Server-side validation failure from the last Save & Publish attempt. */
+  validationFailure?: ValidationFailure | null;
+  /** Clears the validation failure (call when user starts editing the field). */
+  clearValidationFailure?: () => void;
 }
 
 // ── EditorTab ─────────────────────────────────────────────────────────────────
@@ -73,8 +82,12 @@ export function EditorTab({
   treatments,
   allPaths,
   initialSelectedId,
+  initialSelectedBundleId,
+  initialSelectedQuestionId,
   onValidationChange,
   onDraftsChange,
+  validationFailure,
+  clearValidationFailure,
 }: EditorTabProps): React.ReactElement {
   // Initialize mutable drafts and pristine originals once on mount.
   const [drafts, setDrafts] = useState<Record<string, EditableTreatment>>(
@@ -121,6 +134,20 @@ export function EditorTab({
     }
   }, [initialSelectedId]);
 
+  useEffect(() => {
+    if (initialSelectedBundleId) {
+      setSelectedBundleId(initialSelectedBundleId);
+      setEditorMode('bundles');
+    }
+  }, [initialSelectedBundleId]);
+
+  useEffect(() => {
+    if (initialSelectedQuestionId) {
+      setSelectedQuestionId(initialSelectedQuestionId);
+      setEditorMode('questions');
+    }
+  }, [initialSelectedQuestionId]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<TreatmentCategory | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
@@ -140,6 +167,14 @@ export function EditorTab({
   // Debounced 100ms so rapid keystrokes don't flood the parent with re-renders.
   const onDraftsChangeRef = useRef(onDraftsChange);
   useEffect(() => { onDraftsChangeRef.current = onDraftsChange; });
+
+  // Mount-time snapshot: fires synchronously on first render so currentDrafts
+  // in the parent is non-null before any Save & Publish can fire.
+  useEffect(() => {
+    if (!onDraftsChangeRef.current) return;
+    onDraftsChangeRef.current({ treatments: drafts, bundles: bundleDrafts, questions: questionDrafts });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally fires on mount only
 
   useEffect(() => {
     if (!onDraftsChangeRef.current) return;
@@ -485,6 +520,8 @@ export function EditorTab({
             onReset={handleReset}
             onDelete={handleDeleteTreatment}
             onSelectQuestion={(id) => { setSelectedQuestionId(id); setEditorMode('questions'); }}
+            validationFailure={validationFailure}
+            clearValidationFailure={clearValidationFailure}
           />
         ) : (
           <div className="wde-main">
@@ -504,6 +541,8 @@ export function EditorTab({
             allTreatments={drafts}
             onUpdate={handleBundleUpdate}
             onReset={handleBundleReset}
+            validationFailure={validationFailure}
+            clearValidationFailure={clearValidationFailure}
           />
         ) : (
           <div className="wde-main">
@@ -527,6 +566,8 @@ export function EditorTab({
             onReset={handleQuestionReset}
             onSelectQuestion={(id) => { setSelectedQuestionId(id); setEditorMode('questions'); }}
             onSelectTreatment={(id) => { setSelectedId(id); setEditorMode('treatments'); }}
+            validationFailure={validationFailure}
+            clearValidationFailure={clearValidationFailure}
           />
         ) : (
           <div className="wde-main">

@@ -44,6 +44,28 @@ import { OnboardingTour } from './OnboardingTour';
 
 type DashboardTab = 'editor' | 'paths' | 'tree' | 'coverage' | 'validation';
 
+export type ValidationFailure = {
+  entity: 'treatment' | 'bundle' | 'question';
+  id: string;
+  field: string;
+  reason: string;
+};
+
+/**
+ * Parse a structured WP_Error message from the wizard-of-iv.php save endpoint.
+ * Matches three formats:
+ *   "Treatment '<id>' field '<field>' invalid: <reason>"
+ *   "Bundle '<id>' field '<field>' invalid: <reason>"
+ *   "Question '<id>' field '<field>' invalid: <reason>"
+ * Returns null for generic/unstructured errors.
+ */
+function parseSaveError(code: string, message: string): ValidationFailure | null {
+  const m = message.match(/^(Treatment|Bundle|Question) '([^']+)' field '([^']+)' invalid: (.+)$/);
+  if (!m) return null;
+  const entity = m[1].toLowerCase() as 'treatment' | 'bundle' | 'question';
+  return { entity, id: m[2], field: m[3], reason: m[4] };
+}
+
 // WizardOfIvBootstrap and the window.wizardOfIvBootstrap augmentation are
 // declared in src/types/global.d.ts and available throughout the project.
 
@@ -563,6 +585,8 @@ export function WizardDevDashboard(): React.ReactElement {
   // pendingEditId: when "Fix in Editor" is clicked, we store the target ID here
   // and switch to the editor tab. EditorTab reads it via initialSelectedId.
   const [pendingEditId, setPendingEditId] = useState<string | null>(null);
+  const [pendingEditBundleId, setPendingEditBundleId] = useState<string | null>(null);
+  const [pendingEditQuestionId, setPendingEditQuestionId] = useState<string | null>(null);
 
   // Tour state -- auto-open on first visit
   const [tourOpen, setTourOpen] = useState<boolean>(false);
@@ -604,7 +628,13 @@ export function WizardDevDashboard(): React.ReactElement {
   type SaveStatus = 'idle' | 'saving' | 'success' | 'error';
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [saveMessage, setSaveMessage] = useState<string>('');
+  const [validationFailure, setValidationFailure] = useState<ValidationFailure | null>(null);
   const [, startSaveTransition] = useTransition();
+
+  // Clear validation failure whenever the user navigates to a different entity.
+  useEffect(() => {
+    setValidationFailure(null);
+  }, [pendingEditId]);
 
   /**
    * Resolve the REST endpoint URL and nonce from whichever source is available:
@@ -664,15 +694,27 @@ export function WizardDevDashboard(): React.ReactElement {
       });
 
       if (res.ok) {
+        setValidationFailure(null);
         startSaveTransition(() => {
           setSaveStatus('success');
           setSaveMessage('Saved successfully.');
         });
         setTimeout(() => setSaveStatus('idle'), 3000);
       } else {
-        const text = await res.text().catch(() => '');
-        setSaveStatus('error');
-        setSaveMessage(`Save failed: ${res.status} ${res.statusText}${text ? ' — ' + text.slice(0, 120) : ''}`);
+        let body: { code?: string; message?: string } | null = null;
+        try { body = await res.json(); } catch { /* ignore parse error */ }
+        const code = body?.code ?? '';
+        const rawMessage = body?.message ?? `${res.status} ${res.statusText}`;
+        const parsed = parseSaveError(code, rawMessage);
+        if (parsed) {
+          setValidationFailure(parsed);
+          setSaveStatus('error');
+          setSaveMessage(`Save failed: ${parsed.entity} '${parsed.id}' field '${parsed.field}': ${parsed.reason}`);
+        } else {
+          setValidationFailure(null);
+          setSaveStatus('error');
+          setSaveMessage(`Save failed: ${rawMessage.slice(0, 200)}`);
+        }
       }
     } catch (err: unknown) {
       setSaveStatus('error');
@@ -738,6 +780,28 @@ export function WizardDevDashboard(): React.ReactElement {
             {saveMessage}
           </span>
         )}
+        {validationFailure && (
+          <button
+            type="button"
+            className="wdd-fix-btn"
+            onClick={() => {
+              const vf = validationFailure;
+              if (vf.entity === 'treatment') {
+                setPendingEditId(null);
+                setTimeout(() => setPendingEditId(vf.id), 0);
+              } else if (vf.entity === 'bundle') {
+                setPendingEditBundleId(null);
+                setTimeout(() => setPendingEditBundleId(vf.id), 0);
+              } else if (vf.entity === 'question') {
+                setPendingEditQuestionId(null);
+                setTimeout(() => setPendingEditQuestionId(vf.id), 0);
+              }
+              setTab('editor');
+            }}
+          >
+            Fix in Editor
+          </button>
+        )}
         <button
           className="wdd-help-btn"
           onClick={() => setTourOpen(true)}
@@ -797,8 +861,12 @@ export function WizardDevDashboard(): React.ReactElement {
             treatments={TREATMENTS}
             allPaths={ALL_PATHS}
             initialSelectedId={pendingEditId}
+            initialSelectedBundleId={pendingEditBundleId}
+            initialSelectedQuestionId={pendingEditQuestionId}
             onValidationChange={handleValidationChange}
             onDraftsChange={handleDraftsChange}
+            validationFailure={validationFailure}
+            clearValidationFailure={() => setValidationFailure(null)}
           />
         )}
         {tab === 'paths' && (

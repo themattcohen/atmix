@@ -11,6 +11,7 @@ import type { TreatmentId } from '../../../types/treatment';
 import type { ValidationResult } from '../../../engine/validateConfig';
 import type { EditableTreatment } from './types';
 import { issuesForTreatment } from './types';
+import type { ValidationFailure } from '../WizardDevDashboard';
 import { generateTreatmentTs, generateCategoryFileTs, categoryFileName } from './codeGen';
 import { SYMPTOM_LABELS, TREATMENTS } from '../../../data';
 import { mapIssuesToFields } from '../../../utils/issueMapper';
@@ -30,6 +31,8 @@ interface EditorMainProps {
   onReset: () => void;
   onDelete?: () => void;
   onSelectQuestion?: (id: string) => void;
+  validationFailure?: ValidationFailure | null;
+  clearValidationFailure?: () => void;
 }
 
 // ── TagEditor (bestFor) ───────────────────────────────────────────────────────
@@ -248,17 +251,15 @@ function ScoringWeightsEditor({
       const value = Math.max(0, Math.min(10, rawValue));
       const nextWeights = { ...scoringWeights };
       if (value === 0) {
+        // Only remove from scoringWeights. Leave addressedBy[symptom] untouched
+        // so the prose is preserved if the user re-enters a non-zero weight.
         delete nextWeights[symptom];
-        // Also clear the addressedBy entry so it does not appear in code output
-        const nextAddressedBy = { ...addressedBy };
-        delete nextAddressedBy[symptom];
-        onAddressedByChange(nextAddressedBy);
       } else {
         nextWeights[symptom] = value;
       }
       onWeightsChange(nextWeights);
     },
-    [scoringWeights, addressedBy, onWeightsChange, onAddressedByChange],
+    [scoringWeights, onWeightsChange],
   );
 
   const handleAddressedByChange = useCallback(
@@ -304,18 +305,19 @@ function ScoringWeightsEditor({
                 onChange={(e) => handleWeightChange(symptom, Number(e.target.value))}
               />
             </div>
-            {weight > 0 && (
-              <div className="wde-addressed-wrap">
-                <span className="wde-addressed-label">Addressed by text</span>
-                <input
-                  className="wde-input wde-addressed-input"
-                  type="text"
-                  placeholder={`How this addresses "${symptom}"...`}
-                  value={addressedText}
-                  onChange={(e) => handleAddressedByChange(symptom, e.target.value)}
-                />
-              </div>
-            )}
+            <div className={`wde-addressed-wrap${weight === 0 ? ' wde-addressedby--inactive' : ''}`}>
+              <span className="wde-addressed-label">Addressed by text</span>
+              <input
+                className="wde-input wde-addressed-input"
+                type="text"
+                placeholder={`How this addresses "${symptom}"...`}
+                value={addressedText}
+                onChange={(e) => handleAddressedByChange(symptom, e.target.value)}
+              />
+              {weight === 0 && (
+                <div className="wde-help-text">Weight is 0; this prose will be preserved but does not affect ranking.</div>
+              )}
+            </div>
           </div>
         );
       })}
@@ -606,6 +608,8 @@ export function EditorMain({
   onReset,
   onDelete,
   onSelectQuestion,
+  validationFailure,
+  clearValidationFailure,
 }: EditorMainProps): React.ReactElement {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -626,6 +630,11 @@ export function EditorMain({
   }
   function fieldWarning(fieldName: string): string | undefined {
     return issues.warnings.find((i) => i.field === fieldName || i.field.startsWith(fieldName))?.message;
+  }
+
+  // Returns true when the server-side save failure targets this treatment + field.
+  function isInvalid(fieldName: string): boolean {
+    return validationFailure?.id === draft.id && validationFailure?.field === fieldName;
   }
 
   const handleCopy = useCallback((key: string, text: string) => {
@@ -742,23 +751,30 @@ export function EditorMain({
 
           <FieldRow label="name" errorMsg={fieldError('name')}>
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('name') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={draft.name}
-              onChange={(e) => onUpdate('name', e.target.value)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('name', e.target.value); }}
             />
+            {isInvalid('name') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
 
           <FieldRow label="price" errorMsg={fieldError('price')}>
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('price') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={draft.price}
               onChange={(e) => {
+                clearValidationFailure?.();
                 const n = Number(e.target.value);
                 if (!isNaN(n)) onUpdate('price', n);
               }}
             />
+            {isInvalid('price') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
 
           <FieldRow label="priceLabel">
@@ -788,11 +804,25 @@ export function EditorMain({
 
           <FieldRow label="acuityTypeId" errorMsg={fieldError('acuityTypeId')}>
             <input
-              className={`wde-input wde-field-input${fieldError('acuityTypeId') ? ' wde-input--error' : ''}`}
+              className={`wde-input wde-field-input${fieldError('acuityTypeId') ? ' wde-input--error' : ''}${isInvalid('acuityTypeId') ? ' wde-input--invalid' : ''}`}
               type="number"
-              value={draft.acuityTypeId}
-              onChange={(e) => onUpdate('acuityTypeId', Number(e.target.value))}
+              value={draft.acuityTypeId ?? ''}
+              onChange={(e) => {
+                clearValidationFailure?.();
+                const val = e.target.value;
+                if (val === '') {
+                  onUpdate('acuityTypeId', undefined);
+                  return;
+                }
+                const n = Number(val);
+                if (Number.isFinite(n) && n >= 0) {
+                  onUpdate('acuityTypeId', n);
+                }
+              }}
             />
+            {isInvalid('acuityTypeId') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
 
           <FieldRow label="acuityDropdownValue">
@@ -807,11 +837,14 @@ export function EditorMain({
 
           <FieldRow label="pageUrl">
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('pageUrl') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={draft.pageUrl}
-              onChange={(e) => onUpdate('pageUrl', e.target.value)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('pageUrl', e.target.value); }}
             />
+            {isInvalid('pageUrl') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
             <div className="wdd-help-text">
               Link target for the wizard's Learn More button. Editing this does not rename the WP page; only updates where the button navigates.
             </div>
@@ -824,11 +857,14 @@ export function EditorMain({
 
           <FieldRow label="shortDesc">
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('shortDesc') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={draft.shortDesc}
-              onChange={(e) => onUpdate('shortDesc', e.target.value)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('shortDesc', e.target.value); }}
             />
+            {isInvalid('shortDesc') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
 
           <FieldRow
@@ -836,11 +872,14 @@ export function EditorMain({
             warningMsg={fieldWarning('whyMatch')}
           >
             <textarea
-              className="wde-input wde-field-textarea"
+              className={`wde-input wde-field-textarea${isInvalid('whyMatch') ? ' wde-input--invalid' : ''}`}
               rows={4}
               value={draft.whyMatch}
-              onChange={(e) => onUpdate('whyMatch', e.target.value)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('whyMatch', e.target.value); }}
             />
+            {isInvalid('whyMatch') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
             <span className="wde-field-note">{draft.whyMatch.length} characters</span>
           </FieldRow>
 

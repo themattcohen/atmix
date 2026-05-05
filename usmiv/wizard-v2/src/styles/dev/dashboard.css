@@ -1027,3 +1027,33 @@ tr:hover .wdd-matrix-edit {
   border-color: transparent;
   color: #0f172a;
 }
+
+/* ── Save-validation UX: field-level error highlighting ─────── */
+.wde-input--invalid {
+  border: 1px solid #dc2626 !important;
+  background: #fef2f2;
+}
+.wde-input--invalid:focus {
+  outline: 2px solid #fca5a5;
+  outline-offset: 1px;
+}
+.wde-field-error-text {
+  font-size: 11px;
+  color: #b91c1c;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* "Fix in Editor" button in save banner header: override margin for inline header context */
+.wdd-header .wdd-fix-btn {
+  margin-top: 0;
+  margin-left: 4px;
+}
+
+/* ── scoringWeight=0: greyed addressedBy area ───────────────── */
+.wde-addressedby--inactive {
+  opacity: 0.5;
+}
+.wde-addressedby--inactive .wde-help-text {
+  color: #6b7280;
+}

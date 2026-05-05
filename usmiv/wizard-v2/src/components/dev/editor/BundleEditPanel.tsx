@@ -9,6 +9,7 @@
 import React from 'react';
 import type { EditableBundle } from './types';
 import type { EditableTreatment } from './types';
+import type { ValidationFailure } from '../WizardDevDashboard';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -18,6 +19,8 @@ interface BundleEditPanelProps {
   allTreatments: Record<string, EditableTreatment>;
   onUpdate: (field: keyof EditableBundle, value: unknown) => void;
   onReset: () => void;
+  validationFailure?: ValidationFailure | null;
+  clearValidationFailure?: () => void;
 }
 
 // ── FieldRow ──────────────────────────────────────────────────────────────────
@@ -81,7 +84,13 @@ export function BundleEditPanel({
   allTreatments,
   onUpdate,
   onReset,
+  validationFailure,
+  clearValidationFailure,
 }: BundleEditPanelProps): React.ReactElement {
+  function isInvalid(fieldName: string): boolean {
+    return validationFailure?.id === bundle.id && validationFailure?.field === fieldName;
+  }
+
   return (
     <div className="wde-main">
       {/* Sticky header */}
@@ -119,11 +128,14 @@ export function BundleEditPanel({
 
           <FieldRow label="name">
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('name') ? ' wde-input--invalid' : ''}`}
               type="text"
               value={bundle.name}
-              onChange={(e) => onUpdate('name', e.target.value)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('name', e.target.value); }}
             />
+            {isInvalid('name') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
           </FieldRow>
 
           <FieldRow label="primary">
@@ -158,13 +170,27 @@ export function BundleEditPanel({
 
           <FieldRow label="acuityTypeId">
             <input
-              className={`wde-input wde-field-input${bundle.acuityTypeId === 0 ? ' wde-input--error' : ''}`}
+              className={`wde-input wde-field-input${bundle.acuityTypeId === 0 ? ' wde-input--error' : ''}${isInvalid('acuityTypeId') ? ' wde-input--invalid' : ''}`}
               type="number"
-              value={bundle.acuityTypeId}
-              onChange={(e) => onUpdate('acuityTypeId', Number(e.target.value))}
+              value={bundle.acuityTypeId ?? ''}
+              onChange={(e) => {
+                clearValidationFailure?.();
+                const val = e.target.value;
+                if (val === '') {
+                  onUpdate('acuityTypeId', undefined);
+                  return;
+                }
+                const n = Number(val);
+                if (Number.isFinite(n) && n >= 0) {
+                  onUpdate('acuityTypeId', n);
+                }
+              }}
             />
             {bundle.acuityTypeId === 0 && (
               <span className="wde-field-error">Required for booking</span>
+            )}
+            {isInvalid('acuityTypeId') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
             )}
           </FieldRow>
 
@@ -225,23 +251,29 @@ export function BundleEditPanel({
 
           <FieldRow label="shortDesc">
             <textarea
-              className="wde-input wde-field-textarea"
+              className={`wde-input wde-field-textarea${isInvalid('shortDesc') ? ' wde-input--invalid' : ''}`}
               rows={2}
               placeholder="Bundle subtitle shown under headline on result card (optional)"
               value={bundle.shortDesc ?? ''}
-              onChange={(e) => onUpdate('shortDesc', e.target.value || undefined)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('shortDesc', e.target.value || undefined); }}
             />
+            {isInvalid('shortDesc') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
             <span className="wde-field-note">{(bundle.shortDesc ?? '').length}/500 characters</span>
           </FieldRow>
 
           <FieldRow label="pageUrl">
             <input
-              className="wde-input wde-field-input"
+              className={`wde-input wde-field-input${isInvalid('pageUrl') ? ' wde-input--invalid' : ''}`}
               type="text"
               placeholder="/treatments/myers-cocktail/ (optional)"
               value={bundle.pageUrl ?? ''}
-              onChange={(e) => onUpdate('pageUrl', e.target.value || undefined)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('pageUrl', e.target.value || undefined); }}
             />
+            {isInvalid('pageUrl') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
             <span className="wde-field-note">Overrides primary treatment Learn More URL. Must start with /.</span>
             <div className="wdd-help-text">
               Link target for the wizard's Learn More button. Editing this does not rename the WP page; only updates where the button navigates.
@@ -255,11 +287,14 @@ export function BundleEditPanel({
 
           <FieldRow label="whyMatch">
             <textarea
-              className="wde-input wde-field-textarea"
+              className={`wde-input wde-field-textarea${isInvalid('whyMatch') ? ' wde-input--invalid' : ''}`}
               rows={4}
               value={bundle.whyMatch}
-              onChange={(e) => onUpdate('whyMatch', e.target.value)}
+              onChange={(e) => { clearValidationFailure?.(); onUpdate('whyMatch', e.target.value); }}
             />
+            {isInvalid('whyMatch') && (
+              <div className="wde-field-error-text">{validationFailure!.reason}</div>
+            )}
             <span className="wde-field-note">{bundle.whyMatch.length} characters</span>
           </FieldRow>
         </div>
