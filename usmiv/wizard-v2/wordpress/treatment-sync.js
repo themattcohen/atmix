@@ -13,6 +13,12 @@
 (function () {
   'use strict';
 
+  // Exit early if this page has no data-wizard-field elements.
+  // On treatment pages rendered by nextpt_front.js (or similar), those elements
+  // are present. On all other pages (including /find-my-treatment/) they are
+  // absent and there is no reason to fetch the config endpoint.
+  if (document.querySelectorAll('[data-wizard-field]').length === 0) return;
+
   // Derive the treatment slug from the URL path.
   // /treatments/myers/ -> "myers"
   // /treatments/ or / -> exit early

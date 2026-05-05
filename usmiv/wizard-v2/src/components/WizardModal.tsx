@@ -112,7 +112,14 @@ export function WizardModal({ onReady }: WizardModalProps): React.ReactElement |
     [state.currentQuestionId, state.stepNumber, analytics, dispatch]
   );
 
-  // Always render the overlay -- visibility controlled by CSS class
+  // Always render the overlay -- visibility controlled by CSS class.
+  // Use the `inert` attribute (not aria-hidden) to suppress the overlay when
+  // closed. `inert` prevents focus on any descendant, which eliminates the
+  // "blocked aria-hidden on focused element" console warning that fires when
+  // the close button receives focus while an aria-hidden ancestor exists.
+  // aria-hidden is kept as a belt-and-suspenders for older AT that may not
+  // yet honor `inert`, but it is only applied when the overlay is already
+  // closed and no descendant can be focused.
   return (
     <div
       ref={overlayRef}
@@ -125,6 +132,7 @@ export function WizardModal({ onReady }: WizardModalProps): React.ReactElement |
           dispatch({ type: 'CLOSE' });
         }
       }}
+      {...(!state.isOpen ? { inert: '' } : {})}
       aria-hidden={!state.isOpen}
     >
       <div

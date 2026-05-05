@@ -11,6 +11,7 @@
   --tw-color-teal-light:   #E8F6F7;   /* Background tints */
   --tw-color-teal-mid:     #B8E4E6;   /* Borders, subtle hover states */
   --tw-color-teal-safe:    #2A8A8F;   /* Alias for teal-wcag */
+  --tw-color-teal-deep:    #1A6E73;   /* Text on teal-light bg: 5.1:1 contrast (WCAG AA) */
 
   /* ── Navy ──────────────────────────────────────────────────── */
   --tw-color-navy:         #1E4969;   /* Primary interactive, headings */

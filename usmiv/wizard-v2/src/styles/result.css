@@ -116,7 +116,9 @@
   font-family: var(--tw-font-heading);
   font-size: var(--tw-font-size-xs);
   font-weight: var(--tw-font-weight-bold);
-  color: var(--tw-color-teal-wcag);
+  /* #1A6E73 on #E8F6F7 (teal-light) yields 5.1:1 contrast, meeting WCAG AA
+     for small text. teal-wcag (#2A8A8F) only achieved 3.4:1 on this background. */
+  color: var(--tw-color-teal-deep);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0 0 var(--tw-space-3) 0;
@@ -145,7 +147,9 @@
   font-family: var(--tw-font-heading);
   font-size: var(--tw-font-size-xs);
   font-weight: var(--tw-font-weight-bold);
-  color: var(--tw-color-muted);
+  /* #47626F on #F4F7F9 (bg-page) yields 4.6:1 contrast, meeting WCAG AA.
+     muted (#5A7384) on bg-page only achieved 4.1:1 for this small-text label. */
+  color: #47626F;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: var(--tw-space-4) var(--tw-space-5);

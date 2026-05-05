@@ -274,50 +274,42 @@ await runTest(
 // 7. Treatment with no fields (empty treatment object)
 await runTest(
   'Treatment with no fields',
-  '{"treatments":{"t1":{}}} -- accepted (no inner validation)',
-  200,
+  '{"treatments":{"t1":{}}} -- H2: now REJECTED (missing name and price)',
+  400,
   async () => {
-    const r = await post({ treatments: { t1: {} } });
-    await restoreOriginal(originalParsed);
-    return r;
+    return post({ treatments: { t1: {} } });
   }
 );
 
 // 8. price as string "$200"
 await runTest(
   'price as string "$200"',
-  '{"treatments":{"t1":{"name":"Test","price":"$200"}}}',
-  200,
+  '{"treatments":{"t1":{"name":"Test","price":"$200"}}} -- H2: now REJECTED (non-numeric price, no priceLabel)',
+  400,
   async () => {
-    const r = await post({ treatments: { t1: { name: 'Test', price: '$200' } } });
-    await restoreOriginal(originalParsed);
-    return r;
+    return post({ treatments: { t1: { name: 'Test', price: '$200' } } });
   }
 );
 
 // 9. price as negative number
 await runTest(
   'price as negative number',
-  '{"treatments":{"t1":{"price":-100}}}',
-  200,
+  '{"treatments":{"t1":{"price":-100}}} -- H2: now REJECTED (negative price)',
+  400,
   async () => {
-    const r = await post({ treatments: { t1: { price: -100 } } });
-    await restoreOriginal(originalParsed);
-    return r;
+    return post({ treatments: { t1: { price: -100 } } });
   }
 );
 
 // 10. price as Infinity (JSON.stringify converts to null)
 await runTest(
   'price as Infinity (serializes to null)',
-  '{"treatments":{"t1":{"price":null}}} -- Infinity -> null in JSON',
-  200,
+  '{"treatments":{"t1":{"price":null}}} -- H2: now REJECTED (null price, no priceLabel, no name)',
+  400,
   async () => {
     // Build manually since JSON.stringify(Infinity) === 'null'
     const payload = '{"treatments":{"t1":{"price":null}}}';
-    const r = await post(payload);
-    await restoreOriginal(originalParsed);
-    return r;
+    return post(payload);
   }
 );
 
@@ -336,31 +328,37 @@ await runTest(
 // 12. name with 64KB of repeated chars
 await runTest(
   '64KB string in treatment name',
-  '{"treatments":{"t1":{"name":"<64KB string>"}}}',
-  200,
+  '{"treatments":{"t1":{"name":"<64KB string>"}}} -- H6: now REJECTED (name > 200 chars)',
+  400,
   async () => {
     const bigName = 'A'.repeat(65536);
-    const r = await post({ treatments: { t1: { name: bigName } } });
-    await restoreOriginal(originalParsed);
-    return r;
+    return post({ treatments: { t1: { name: bigName, price: 100 } } });
   }
 );
 
-// 13. Whole config at 5MB
+// 13. Whole config at ~3MB -- H1: plugin-level 2MB cap now rejects before PHP parses
 await runTest(
-  '5MB config payload',
-  'treatments object padded to ~5MB with junk keys',
-  200,
+  '3MB config payload (plugin 2MB cap)',
+  'treatments object padded to ~3MB -- H1: now REJECTED (exceeds 2MB plugin cap)',
+  413,
   async () => {
     const padding = {};
+    // Build ~3MB: 600 entries x 5000-char name = ~3MB
     const padValue = 'X'.repeat(5000);
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 600; i++) {
       padding[`pad_${i}`] = { name: padValue, price: i };
     }
     const payload = { ...originalParsed, treatments: { ...originalParsed.treatments, ...padding } };
-    const r = await post(payload);
-    await restoreOriginal(originalParsed);
-    return r;
+    const payloadStr = JSON.stringify(payload);
+    console.log(`  Payload size: ${(payloadStr.length / 1024 / 1024).toFixed(2)}MB`);
+    const opts = {
+      method: 'POST',
+      headers: { 'Authorization': AUTH_HEADER, 'Content-Type': 'application/json' },
+      body: payloadStr,
+    };
+    const resp = await fetch(ENDPOINT, opts);
+    const body = await resp.text();
+    return { status: resp.status, body };
   }
 );
 
@@ -395,16 +393,14 @@ await runTest(
 // 15. Deeply nested object (100 levels)
 await runTest(
   'Deeply nested object (100 levels)',
-  '{"treatments":{"a":{...100 levels deep...}}}',
-  200,
+  '{"treatments":{"a":{...100 levels deep...}}} -- H2: now REJECTED (no name/price on treatment)',
+  400,
   async () => {
     let nested = { leaf: true };
     for (let i = 0; i < 100; i++) {
       nested = { child: nested };
     }
-    const r = await post({ treatments: { a: nested } });
-    await restoreOriginal(originalParsed);
-    return r;
+    return post({ treatments: { a: nested } });
   }
 );
 
@@ -412,13 +408,11 @@ await runTest(
 await runTest(
   'NULL byte in string value',
   'treatment name containing \\u0000 (null byte)',
-  200,
+  400,
   async () => {
     // Build payload string manually to include literal null byte
     const payload = '{"treatments":{"t1":{"name":"hello world","price":100}}}';
-    const r = await post(payload);
-    await restoreOriginal(originalParsed);
-    return r;
+    return post(payload);
   }
 );
 
@@ -463,7 +457,7 @@ await runTest(
 await runTest(
   "SQL injection string in name",
   "'; DROP TABLE wp_options; --",
-  200,
+  403, // Cloudflare WAF blocks this before PHP; unchanged by hardening
   async () => {
     const r = await post({ treatments: { t1: { name: "'; DROP TABLE wp_options; --", price: 100 } } });
     await restoreOriginal(originalParsed);
@@ -474,12 +468,10 @@ await runTest(
 // 21. Path traversal in pageUrl
 await runTest(
   'Path traversal in pageUrl',
-  '{"treatments":{"t1":{"pageUrl":"../../etc/passwd"}}}',
-  200,
+  '{"treatments":{"t1":{"pageUrl":"../../etc/passwd","name":"Test","price":100}}} -- H5: now REJECTED',
+  400,
   async () => {
-    const r = await post({ treatments: { t1: { pageUrl: '../../etc/passwd', name: 'Test', price: 100 } } });
-    await restoreOriginal(originalParsed);
-    return r;
+    return post({ treatments: { t1: { pageUrl: '../../etc/passwd', name: 'Test', price: 100 } } });
   }
 );
 
@@ -492,11 +484,17 @@ await runTest(
     // Send as raw string since JS will strip __proto__ from object literals in some engines
     const payload = '{"treatments":{},"__proto__":{"polluted":true}}';
     const r = await post(payload);
-    // After acceptance, verify __proto__ did not leak into the stored object
+    // After acceptance, verify __proto__ did not pollute the Object prototype.
+    // Use getPrototypeOf to inspect the actual prototype chain, not the own property.
+    // JSON.parse in Node >=v22 stores __proto__ as an own enumerable property (not prototype pollution).
+    // True prototype pollution would show on Object.getPrototypeOf(live.json).
     const live = await getLive();
     let polluted = false;
-    if (live.json && live.json.__proto__ && live.json.__proto__.polluted === true) {
-      polluted = true;
+    if (live.json) {
+      const proto = Object.getPrototypeOf(live.json);
+      if (proto && proto.polluted === true) {
+        polluted = true;
+      }
     }
     if (polluted) {
       // This is a P0 -- flag it

@@ -11,10 +11,16 @@
 
 defined('ABSPATH') || exit;
 
-define('WIZARD_OF_IV_VERSION', '2.0.3');
+define('WIZARD_OF_IV_VERSION', '2.0.4');
 define('WIZARD_OF_IV_OPTION', 'wizard_of_iv_config');
 define('WIZARD_OF_IV_HISTORY_OPTION', 'wizard_of_iv_config_history');
 define('WIZARD_OF_IV_HISTORY_MAX', 20);
+
+// H1: Payload size cap (2 MB).
+define('WIZARD_OF_IV_MAX_PAYLOAD_BYTES', 2 * 1024 * 1024);
+
+// H2 / H6: Allowed treatment categories and field length caps.
+define('WIZARD_OF_IV_ALLOWED_CATEGORIES', serialize(['iv', 'nad', 'weightLoss', 'injection', 'lab']));
 
 // ---------------------------------------------------------------------------
 // WP Rocket integration
@@ -592,11 +598,297 @@ function wizard_of_iv_get_config(WP_REST_Request $request) {
     return $response;
 }
 
+// ---------------------------------------------------------------------------
+// H3: Recursive string sanitizer — strips null bytes and C0 control chars.
+// Preserves \t (0x09), \n (0x0A), \r (0x0D). Operates on stdClass / array / string.
+// ---------------------------------------------------------------------------
+
+function wizard_of_iv_sanitize_strings($value) {
+    if (is_object($value)) {
+        foreach ($value as $k => $v) {
+            $value->$k = wizard_of_iv_sanitize_strings($v);
+        }
+    } elseif (is_array($value)) {
+        foreach ($value as $i => $v) {
+            $value[$i] = wizard_of_iv_sanitize_strings($v);
+        }
+    } elseif (is_string($value)) {
+        // Strip null bytes.
+        $value = str_replace("\0", '', $value);
+        // Strip C0 control characters, keeping \t \n \r.
+        $value = preg_replace('/[\x01-\x08\x0B\x0C\x0E-\x1F]/', '', $value);
+    }
+    return $value;
+}
+
+// ---------------------------------------------------------------------------
+// H5: pageUrl validator. Returns true or WP_Error.
+// Accepts relative paths like /treatments/myers/ with no protocol, no .., no query.
+// ---------------------------------------------------------------------------
+
+function wizard_of_iv_validate_page_url($url, $context_label) {
+    if (!is_string($url)) {
+        return new WP_Error(
+            'wizard_invalid_pageUrl',
+            "{$context_label} field 'pageUrl' must be a string.",
+            ['status' => 400]
+        );
+    }
+    if (strlen($url) > 200) {
+        return new WP_Error(
+            'wizard_field_too_long',
+            "{$context_label} field 'pageUrl' exceeds 200 characters.",
+            ['status' => 400]
+        );
+    }
+    if (!preg_match('#^/[a-zA-Z0-9_/-]+/?$#', $url)) {
+        return new WP_Error(
+            'wizard_invalid_pageUrl',
+            "{$context_label} field 'pageUrl' is invalid: must start with /, contain only alphanumerics/hyphens/underscores/slashes, no protocol, no query string, no '..'.",
+            ['status' => 400]
+        );
+    }
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// H2 + H6: Treatment validator. Returns true or WP_Error.
+// ---------------------------------------------------------------------------
+
+function wizard_of_iv_validate_treatment($tid, $t) {
+    $allowed_categories = unserialize(WIZARD_OF_IV_ALLOWED_CATEGORIES);
+
+    // Must be an object.
+    if (!is_object($t)) {
+        return new WP_Error(
+            'wizard_invalid_treatment',
+            "Treatment '{$tid}' must be an object.",
+            ['status' => 400]
+        );
+    }
+
+    // name: required, non-empty string, max 200 chars.
+    if (!isset($t->name) || !is_string($t->name) || $t->name === '') {
+        return new WP_Error(
+            'wizard_invalid_treatment',
+            "Treatment '{$tid}' field 'name' invalid: required non-empty string.",
+            ['status' => 400]
+        );
+    }
+    if (strlen($t->name) > 200) {
+        return new WP_Error(
+            'wizard_field_too_long',
+            "Treatment '{$tid}' field 'name' exceeds 200 characters.",
+            ['status' => 400]
+        );
+    }
+
+    // price: required numeric >= 0, OR priceLabel string fallback if price absent.
+    $has_price       = isset($t->price) && is_numeric($t->price);
+    $has_price_label = isset($t->priceLabel) && is_string($t->priceLabel) && $t->priceLabel !== '';
+
+    if (!$has_price && !$has_price_label) {
+        return new WP_Error(
+            'wizard_invalid_treatment',
+            "Treatment '{$tid}' field 'price' invalid: requires a non-negative numeric price or a priceLabel string.",
+            ['status' => 400]
+        );
+    }
+    if ($has_price && $t->price < 0) {
+        return new WP_Error(
+            'wizard_invalid_treatment',
+            "Treatment '{$tid}' field 'price' invalid: must be >= 0.",
+            ['status' => 400]
+        );
+    }
+
+    // shortDesc: optional, max 500 chars.
+    if (isset($t->shortDesc)) {
+        if (!is_string($t->shortDesc)) {
+            return new WP_Error(
+                'wizard_invalid_treatment',
+                "Treatment '{$tid}' field 'shortDesc' must be a string.",
+                ['status' => 400]
+            );
+        }
+        if (strlen($t->shortDesc) > 500) {
+            return new WP_Error(
+                'wizard_field_too_long',
+                "Treatment '{$tid}' field 'shortDesc' exceeds 500 characters.",
+                ['status' => 400]
+            );
+        }
+    }
+
+    // whyMatch: optional, max 5000 chars.
+    if (isset($t->whyMatch)) {
+        if (!is_string($t->whyMatch)) {
+            return new WP_Error(
+                'wizard_invalid_treatment',
+                "Treatment '{$tid}' field 'whyMatch' must be a string.",
+                ['status' => 400]
+            );
+        }
+        if (strlen($t->whyMatch) > 5000) {
+            return new WP_Error(
+                'wizard_field_too_long',
+                "Treatment '{$tid}' field 'whyMatch' exceeds 5000 characters.",
+                ['status' => 400]
+            );
+        }
+    }
+
+    // pageUrl: optional, validated if present.
+    if (isset($t->pageUrl)) {
+        $url_check = wizard_of_iv_validate_page_url($t->pageUrl, "Treatment '{$tid}'");
+        if (is_wp_error($url_check)) {
+            return $url_check;
+        }
+    }
+
+    // category: optional, must be in allowed set if present.
+    if (isset($t->category)) {
+        if (!is_string($t->category) || !in_array($t->category, $allowed_categories, true)) {
+            return new WP_Error(
+                'wizard_invalid_treatment',
+                "Treatment '{$tid}' field 'category' invalid: must be one of " . implode(', ', $allowed_categories) . ".",
+                ['status' => 400]
+            );
+        }
+    }
+
+    // acuityTypeId: optional, must be positive integer if present.
+    if (isset($t->acuityTypeId)) {
+        if (!is_int($t->acuityTypeId) && !ctype_digit((string) $t->acuityTypeId)) {
+            return new WP_Error(
+                'wizard_invalid_treatment',
+                "Treatment '{$tid}' field 'acuityTypeId' invalid: must be a positive integer.",
+                ['status' => 400]
+            );
+        }
+        if ((int) $t->acuityTypeId <= 0) {
+            return new WP_Error(
+                'wizard_invalid_treatment',
+                "Treatment '{$tid}' field 'acuityTypeId' invalid: must be > 0.",
+                ['status' => 400]
+            );
+        }
+    }
+
+    // ingredients: optional array, each entry max name 100 / benefit 300.
+    if (isset($t->ingredients) && is_array($t->ingredients)) {
+        foreach ($t->ingredients as $idx => $ing) {
+            if (!is_object($ing)) continue;
+            if (isset($ing->name) && is_string($ing->name) && strlen($ing->name) > 100) {
+                return new WP_Error(
+                    'wizard_field_too_long',
+                    "Treatment '{$tid}' ingredient[{$idx}] field 'name' exceeds 100 characters.",
+                    ['status' => 400]
+                );
+            }
+            if (isset($ing->benefit) && is_string($ing->benefit) && strlen($ing->benefit) > 300) {
+                return new WP_Error(
+                    'wizard_field_too_long',
+                    "Treatment '{$tid}' ingredient[{$idx}] field 'benefit' exceeds 300 characters.",
+                    ['status' => 400]
+                );
+            }
+        }
+    }
+
+    // bestFor: optional array, each entry max 100 chars.
+    if (isset($t->bestFor) && is_array($t->bestFor)) {
+        foreach ($t->bestFor as $idx => $bf) {
+            if (is_string($bf) && strlen($bf) > 100) {
+                return new WP_Error(
+                    'wizard_field_too_long',
+                    "Treatment '{$tid}' bestFor[{$idx}] exceeds 100 characters.",
+                    ['status' => 400]
+                );
+            }
+        }
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// H2: Bundle validator. Returns true or WP_Error.
+// ---------------------------------------------------------------------------
+
+function wizard_of_iv_validate_bundle($bid, $b) {
+    if (!is_object($b)) {
+        return new WP_Error(
+            'wizard_invalid_bundle',
+            "Bundle '{$bid}' must be an object.",
+            ['status' => 400]
+        );
+    }
+
+    // name: required, non-empty string, max 200 chars.
+    if (!isset($b->name) || !is_string($b->name) || $b->name === '') {
+        return new WP_Error(
+            'wizard_invalid_bundle',
+            "Bundle '{$bid}' field 'name' invalid: required non-empty string.",
+            ['status' => 400]
+        );
+    }
+    if (strlen($b->name) > 200) {
+        return new WP_Error(
+            'wizard_field_too_long',
+            "Bundle '{$bid}' field 'name' exceeds 200 characters.",
+            ['status' => 400]
+        );
+    }
+
+    // price: optional numeric >= 0 if present; priceLabel string is a fallback.
+    $has_price       = isset($b->price) && is_numeric($b->price);
+    $has_price_label = isset($b->priceLabel) && is_string($b->priceLabel) && $b->priceLabel !== '';
+
+    if (isset($b->price) && !$has_price_label && !$has_price) {
+        return new WP_Error(
+            'wizard_invalid_bundle',
+            "Bundle '{$bid}' field 'price' invalid: must be numeric.",
+            ['status' => 400]
+        );
+    }
+    if ($has_price && $b->price < 0) {
+        return new WP_Error(
+            'wizard_invalid_bundle',
+            "Bundle '{$bid}' field 'price' invalid: must be >= 0.",
+            ['status' => 400]
+        );
+    }
+
+    // pageUrl: optional, validated if present.
+    if (isset($b->pageUrl)) {
+        $url_check = wizard_of_iv_validate_page_url($b->pageUrl, "Bundle '{$bid}'");
+        if (is_wp_error($url_check)) {
+            return $url_check;
+        }
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// Save config handler
+// ---------------------------------------------------------------------------
+
 function wizard_of_iv_save_config(WP_REST_Request $request) {
     $body = $request->get_body();
 
     if (empty($body)) {
         return new WP_Error('wizard_empty_body', 'Request body is empty.', ['status' => 400]);
+    }
+
+    // H1: Payload size cap — reject before json_decode to avoid parsing cost.
+    if (strlen($body) > WIZARD_OF_IV_MAX_PAYLOAD_BYTES) {
+        return new WP_Error(
+            'wizard_payload_too_large',
+            'Config exceeds 2MB cap.',
+            ['status' => 413]
+        );
     }
 
     $decoded = json_decode($body);
@@ -611,6 +903,27 @@ function wizard_of_iv_save_config(WP_REST_Request $request) {
             ['status' => 400]
         );
     }
+
+    // H2: Per-treatment validation — fail fast on first invalid entry, never partial-write.
+    foreach ($decoded->treatments as $tid => $t) {
+        $check = wizard_of_iv_validate_treatment((string) $tid, $t);
+        if (is_wp_error($check)) {
+            return $check;
+        }
+    }
+
+    // H2: Bundle validation — if bundles key present, validate each entry.
+    if (isset($decoded->bundles) && is_object($decoded->bundles)) {
+        foreach ($decoded->bundles as $bid => $b) {
+            $check = wizard_of_iv_validate_bundle((string) $bid, $b);
+            if (is_wp_error($check)) {
+                return $check;
+            }
+        }
+    }
+
+    // H3: Recursive sanitizer — strip null bytes and C0 control characters from all strings.
+    $decoded = wizard_of_iv_sanitize_strings($decoded);
 
     // Rotate current value into history before overwriting.
     $current = get_option(WIZARD_OF_IV_OPTION, '');
@@ -630,8 +943,13 @@ function wizard_of_iv_save_config(WP_REST_Request $request) {
         update_option(WIZARD_OF_IV_HISTORY_OPTION, $history, false);
     }
 
-    // Normalise to compact JSON for storage.
-    $json = wp_json_encode($decoded);
+    // H4: Encode with JSON_HEX_TAG | JSON_HEX_AMP to entity-encode < > & in stored JSON.
+    // wp_json_encode accepts the same options arg as json_encode.
+    $json = wp_json_encode($decoded, JSON_HEX_TAG | JSON_HEX_AMP);
+    if ($json === false) {
+        // Fallback: if wp_json_encode fails (e.g., deep nesting), return error rather than storing garbage.
+        return new WP_Error('wizard_encode_failed', 'Failed to encode config to JSON.', ['status' => 500]);
+    }
     update_option(WIZARD_OF_IV_OPTION, $json, 'yes');
     // Bust the GET transient immediately so the next anonymous request sees
     // the new value. The update_option hook also calls this, but calling it
