@@ -13,7 +13,7 @@ export const lipoShots = {
   shortDesc: 'Lipotropic fat-metabolism injections to support your weight loss program.',
   ingredients: [
     { name: 'MIC Complex (Methionine, Inositol, Choline)', benefit: 'Liver fat processing and fat mobilization' },
-    { name: 'B12', benefit: 'Energy metabolism' },
+    { name: 'B12', benefit: 'Energy metabolism -- absorbed completely regardless of gut function' },
   ],
   bestFor: ['Active weight loss programs', 'Metabolic support', 'Energy during dieting'],
   whyMatch:
@@ -37,18 +37,18 @@ export const b12Shot = {
   acuityTypeId: 72157177,
   acuityDropdownValue: 'General Wellness',
   pageUrl: '/treatments/b12Shot/',
-  shortDesc: 'Quick energy and metabolism boost with vitamin B12.',
+  shortDesc: 'B12 injection for fast energy and reliable absorption -- especially for those with gut or dietary absorption barriers.',
   ingredients: [
-    { name: 'B12 (Methylcobalamin)', benefit: 'Energy production, red blood cell formation, nerve function' },
+    { name: 'B12 (Methylcobalamin)', benefit: 'Energy production, red blood cell formation, and nerve function -- delivered directly, bypassing gut absorption entirely' },
   ],
-  bestFor: ['Low energy', 'Vegans/vegetarians', 'B12 deficiency', 'Quick pick-me-up'],
+  bestFor: ['Low energy', 'Vegans/vegetarians', 'Gastric bypass / sleeve patients', 'B12 deficiency', 'Anyone on PPIs or metformin', 'GI conditions (Crohn\'s, celiac, IBD)', 'Quick pick-me-up'],
   whyMatch:
-    'B12 injections bypass digestion entirely — 100% bioavailable versus roughly 1-2% for oral supplements. If you\'re vegan, vegetarian, over 50, or have GI absorption issues, injections are the most reliable way to maintain levels.',
+    'B12 injections bypass the gut entirely -- no stomach acid, no intrinsic factor, no active transport in the small intestine required. That makes them uniquely effective for anyone with impaired absorption: gastric bypass or sleeve patients, those taking PPIs or metformin long-term, people with IBD, Crohn\'s, or celiac disease, vegans and vegetarians, and adults over 50 whose stomach acid has naturally declined. Oral supplements at typical doses achieve 1-2% absorption; injection achieves close to 100%.',
   scoringWeights: {
     'Tired all the time': 2,
   },
   addressedBy: {
-    'Tired all the time': 'B12 deficiency is the #1 reversible cause of persistent fatigue',
+    'Tired all the time': 'B12 deficiency is the #1 reversible cause of persistent fatigue -- and injection is the only form that works regardless of gut health',
   },
   addonSuggestions: ['glutathioneShot'],
 } as const satisfies Treatment;
@@ -118,7 +118,7 @@ export const triImmuneShot = {
   shortDesc: 'Triple immune defense with Vitamin C, Zinc, and Glutathione in one shot.',
   ingredients: [
     { name: 'Vitamin C',   benefit: 'Immune cell activation and antioxidant protection' },
-    { name: 'Zinc',        benefit: 'Reduces cold duration, supports immune cell function' },
+    { name: 'Zinc',        benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
     { name: 'Glutathione', benefit: 'Cellular detox and immune modulation' },
   ],
   bestFor: ['Immune boost', 'Cold/flu season', 'Quick immune defense'],

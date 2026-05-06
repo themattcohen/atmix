@@ -50,7 +50,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Supports red blood cell production, neurological function, and cellular energy metabolism.",
           "whyItMatters": "B12 deficiency is surprisingly common, especially in vegetarians and anyone over 50. Most people feel a noticeable energy lift within hours.",
           "evidenceLevel": "strong"
@@ -62,27 +62,27 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "A potent antioxidant that supports immune function, collagen synthesis, and iron absorption.",
           "whyItMatters": "IV Vitamin C achieves blood concentrations 50-70x higher than oral doses, making it dramatically more bioavailable when you need it most.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (500mg)",
+          "name": "Magnesium",
           "whatItDoes": "Involved in over 300 enzyme reactions — relaxes smooth muscle, supports nerve conduction, and reduces inflammation.",
           "whyItMatters": "Over 50% of Americans are magnesium deficient. IV delivery bypasses the GI tract, so you get the full dose without the digestive discomfort oral magnesium often causes.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Your body's master antioxidant — neutralizes free radicals, supports liver detox pathways, and recycles other antioxidants.",
           "whyItMatters": "Glutathione breaks down rapidly in the digestive tract, so oral supplements are largely ineffective. IV administration delivers it where it matters.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Zinc (5mg)",
-          "whatItDoes": "Essential for immune cell production, wound healing, and hundreds of enzymatic processes.",
-          "whyItMatters": "Zinc is rapidly depleted during illness and physical stress. Restoring levels supports faster recovery and immune resilience.",
+          "name": "Zinc",
+          "whatItDoes": "Essential for immune cell production, wound healing, hundreds of enzymatic processes, and testosterone synthesis.",
+          "whyItMatters": "Zinc is rapidly depleted during illness and physical stress. Restoring levels supports faster recovery, immune resilience, and healthy hormone production including testosterone.",
           "evidenceLevel": "strong"
         }
       ],
@@ -124,31 +124,31 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Supports white blood cell production and the cellular energy your immune system needs to fight.",
           "whyItMatters": "Your immune cells are metabolically demanding. B12 ensures they have the energy substrate to do their job.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (2g)",
+          "name": "Vitamin C",
           "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
           "whyItMatters": "At high IV doses, Vitamin C has documented antiviral properties and shortens illness duration in clinical studies.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Zinc (10mg)",
-          "whatItDoes": "Directly inhibits viral replication and is required for the development of T-cells and NK cells.",
-          "whyItMatters": "Zinc deficiency is one of the most common nutritional immune deficiencies. Repleting it can noticeably improve your ability to fight off illness.",
+          "name": "Zinc",
+          "whatItDoes": "Directly inhibits viral replication, is required for T-cell and NK cell development, and is essential for testosterone synthesis and broader endocrine function.",
+          "whyItMatters": "Zinc deficiency is one of the most common nutritional immune deficiencies, and is also linked to lower testosterone and hormone imbalances. Repleting it supports both immune function and endocrine health.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Reduces oxidative stress in immune cells and supports the liver's detox function during illness.",
           "whyItMatters": "During a viral infection, oxidative stress spikes significantly. Glutathione helps keep the immune response controlled and efficient.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin D3 (50,000 IU)",
+          "name": "Vitamin D3",
           "whatItDoes": "Regulates immune cell behavior and reduces excessive inflammatory responses.",
           "whyItMatters": "Vitamin D deficiency is strongly associated with increased susceptibility to respiratory infections. A single therapeutic dose can rapidly restore immune readiness.",
           "evidenceLevel": "strong"
@@ -192,7 +192,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Supports fetal neurological development and maternal red blood cell production.",
           "whyItMatters": "Pregnancy significantly increases B12 demand, and morning sickness often prevents adequate oral intake.",
           "evidenceLevel": "strong"
@@ -204,25 +204,25 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (500mg)",
+          "name": "Vitamin C",
           "whatItDoes": "Supports immune function and collagen synthesis for both mother and developing baby at a conservative, pregnancy-safe dose.",
-          "whyItMatters": "Kept at a conservative dose (below 2g/day) as is standard in prenatal nutrition guidelines.",
+          "whyItMatters": "Kept at a conservative, pregnancy-safe dose as is standard in prenatal nutrition guidelines.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (250mg)",
+          "name": "Magnesium",
           "whatItDoes": "Reduces muscle cramping, supports healthy blood pressure, and calms the nervous system.",
           "whyItMatters": "Leg cramps and elevated blood pressure are common in pregnancy. Magnesium is well-documented as safe and effective for both.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (300mg)",
+          "name": "Glutathione",
           "whatItDoes": "Reduces oxidative stress and supports placental health at a conservative, pregnancy-appropriate dose.",
           "whyItMatters": "Oxidative stress in pregnancy is linked to complications. A conservative glutathione dose supports healthy antioxidant status.",
           "evidenceLevel": "emerging"
         },
         {
-          "name": "Zinc (5mg)",
+          "name": "Zinc",
           "whatItDoes": "Essential for fetal growth, immune development, and DNA synthesis.",
           "whyItMatters": "Zinc is a required nutrient for healthy fetal development, and pregnancy increases demand significantly.",
           "evidenceLevel": "strong"
@@ -263,7 +263,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Supports red blood cell production, which is your body's primary mechanism for adapting to lower oxygen levels.",
           "whyItMatters": "Your body tries to compensate for thin air by making more red blood cells. B12 is essential for that process.",
           "evidenceLevel": "strong"
@@ -275,19 +275,19 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "Reduces oxidative stress caused by increased UV exposure and lower oxygen availability at elevation.",
           "whyItMatters": "High-altitude UV exposure dramatically increases free radical production. Vitamin C is your primary defense.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Magnesium (500mg)",
+          "name": "Magnesium",
           "whatItDoes": "Relaxes blood vessel walls, which helps manage the elevated blood pressure common in altitude sickness.",
           "whyItMatters": "Magnesium's vasodilatory effects can ease the vascular component of altitude headaches.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Neutralizes the oxidative damage that accumulates during altitude exposure and exertion.",
           "whyItMatters": "Altitude + physical activity creates significant oxidative stress. Glutathione is your most powerful tool for managing that.",
           "evidenceLevel": "moderate"
@@ -337,7 +337,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Replaces B12 that alcohol aggressively depletes overnight.",
           "whyItMatters": "B12 deficiency causes exactly the fatigue and brain fog you feel after drinking. Restoring it quickly is part of why you feel human again.",
           "evidenceLevel": "strong"
@@ -349,13 +349,13 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "Reduces oxidative stress from alcohol metabolism byproducts — specifically acetaldehyde.",
           "whyItMatters": "Acetaldehyde is what actually makes you feel terrible the morning after. Vitamin C helps neutralize it.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Your liver's primary detox molecule — directly neutralizes acetaldehyde and other alcohol metabolites.",
           "whyItMatters": "Glutathione is what your liver uses to process alcohol. IV delivery means it's available immediately rather than being digested.",
           "evidenceLevel": "moderate"
@@ -407,13 +407,13 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (1g — triple dose)",
+          "name": "Magnesium (triple dose)",
           "whatItDoes": "Relaxes blood vessel walls and interrupts the cortical spreading depression (CSD) that drives migraine pain.",
           "whyItMatters": "IV Magnesium is a Level A evidence treatment for acute migraine in emergency settings. Many migraine sufferers are chronically deficient in magnesium, making this especially impactful.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Supports nerve function and helps restore the neurological balance disrupted during a migraine.",
           "whyItMatters": "B12 deficiency has been associated with increased migraine frequency in research studies.",
           "evidenceLevel": "moderate"
@@ -425,13 +425,13 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "Reduces neuroinflammation and oxidative stress in the brain during and after a migraine attack.",
           "whyItMatters": "Migraines involve significant neuroinflammation. Antioxidant support helps the brain recover.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Your brain's primary antioxidant defense against the neuroinflammatory cascade triggered by a migraine.",
           "whyItMatters": "Glutathione levels in the brain drop during migraine attacks. IV delivery restores them when they're needed most.",
           "evidenceLevel": "emerging"
@@ -489,7 +489,7 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Protects neurons, supports methylation (a key process in DNA repair), and maintains the myelin sheath around nerves.",
           "whyItMatters": "B12 is essential to the same cellular repair pathways that NAD+ activates.",
           "evidenceLevel": "strong"
@@ -501,27 +501,27 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "Stimulates collagen synthesis and provides antioxidant protection against age-accelerating free radicals.",
           "whyItMatters": "Collagen production declines with age and Vitamin C is its primary cofactor. High-dose IV delivery supports skin, joint, and vascular integrity.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Recycles other antioxidants (including Vitamin C) and is the master regulator of cellular oxidative stress.",
           "whyItMatters": "Glutathione levels decline significantly with age. Restoring them is one of the most evidence-based longevity interventions available.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Magnesium (500mg)",
+          "name": "Magnesium",
           "whatItDoes": "Required for DNA synthesis, repair, and the activation of over 300 enzymes involved in cellular maintenance.",
           "whyItMatters": "Magnesium deficiency accelerates the hallmarks of cellular aging. It's a foundational longevity mineral.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Zinc (5mg)",
-          "whatItDoes": "Critical cofactor for antioxidant enzymes and immune surveillance against abnormal cells.",
-          "whyItMatters": "Zinc deficiency impairs the immune system's ability to identify and clear damaged cells — a key longevity mechanism.",
+          "name": "Zinc",
+          "whatItDoes": "Critical cofactor for antioxidant enzymes, immune surveillance against abnormal cells, and testosterone synthesis -- a key longevity marker for both men and women.",
+          "whyItMatters": "Zinc deficiency impairs the immune system's ability to identify and clear damaged cells, and is directly linked to declining testosterone and endocrine function with age -- two central longevity mechanisms.",
           "evidenceLevel": "strong"
         }
       ],
@@ -559,7 +559,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (2mg — doubled)",
+          "name": "Vitamin B12 (double dose)",
           "whatItDoes": "Deeper neurological support and more sustained energy impact than standard dose.",
           "whyItMatters": "Double dosing ensures saturation of B12-dependent pathways, particularly useful for those with absorption issues or higher metabolic demand.",
           "evidenceLevel": "strong"
@@ -571,31 +571,31 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (2g — doubled)",
+          "name": "Vitamin C (double dose)",
           "whatItDoes": "Enhanced antioxidant protection and immune stimulation at therapeutic dose.",
-          "whyItMatters": "2g IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
+          "whyItMatters": "Double-dose IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (1g — doubled)",
+          "name": "Magnesium (double dose)",
           "whatItDoes": "Deeper muscle relaxation, stronger anti-inflammatory effect, and more pronounced vascular dilation.",
-          "whyItMatters": "1g IV magnesium is the dose used in clinical settings for migraine and cardiovascular support.",
+          "whyItMatters": "The clinical-level IV magnesium dose is used for migraine and cardiovascular support.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (1,200mg — doubled)",
+          "name": "Glutathione (double dose)",
           "whatItDoes": "Comprehensive cellular detox and antioxidant restoration at a full therapeutic dose.",
           "whyItMatters": "The higher dose produces more sustained glutathione elevation and a more noticeable liver detox effect.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Zinc (10mg — doubled)",
-          "whatItDoes": "Full immune system support and enzyme cofactor saturation.",
-          "whyItMatters": "Higher zinc dose is particularly valuable during active immune challenges or recovery from intense training.",
+          "name": "Zinc (double dose)",
+          "whatItDoes": "Full immune system support, enzyme cofactor saturation, and testosterone synthesis support.",
+          "whyItMatters": "Higher zinc dose is particularly valuable during active immune challenges, recovery from intense training, and for supporting healthy testosterone levels.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Calcium Gluconate (200mg)",
+          "name": "Calcium Gluconate",
           "whatItDoes": "Supports neuromuscular transmission and cardiac function, and balances the magnesium at higher doses.",
           "whyItMatters": "At elevated magnesium doses, calcium co-administration ensures optimal neuromuscular function and prevents any imbalance.",
           "evidenceLevel": "strong"
@@ -647,7 +647,7 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Supports red blood cell production for better oxygen delivery to working muscles.",
           "whyItMatters": "Endurance performance is limited by oxygen delivery. B12 supports the RBC production that underlies aerobic capacity.",
           "evidenceLevel": "strong"
@@ -659,19 +659,19 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "Reduces exercise-induced oxidative stress and supports collagen synthesis for tendon and joint health.",
           "whyItMatters": "High-intensity training generates significant free radicals. Vitamin C is the primary water-soluble antioxidant defense.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (500mg)",
+          "name": "Magnesium",
           "whatItDoes": "Reduces muscle cramping, supports relaxation/recovery, and is required for over 300 enzymatic reactions in energy production.",
           "whyItMatters": "Athletes lose significant magnesium through sweat. Low magnesium is a primary cause of muscle cramps and impaired recovery.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Neutralizes the oxidative damage generated during intense training and supports faster cellular repair.",
           "whyItMatters": "Elite athletes experience significantly higher oxidative stress. Glutathione is the cell's most potent mechanism for handling it.",
           "evidenceLevel": "moderate"
@@ -711,7 +711,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (3mg — tripled)",
+          "name": "Vitamin B12 (triple dose)",
           "whatItDoes": "Maximum neurological support and red blood cell optimization.",
           "whyItMatters": "Triple B12 is used for cases of significant B12 deficiency or when neurological support is the primary goal.",
           "evidenceLevel": "strong"
@@ -723,31 +723,31 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (3g — tripled)",
+          "name": "Vitamin C (triple dose)",
           "whatItDoes": "High-dose immune stimulation and powerful antioxidant protection at near-therapeutic IV range.",
-          "whyItMatters": "3g IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
+          "whyItMatters": "Triple-dose IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (1g — tripled from standard)",
+          "name": "Magnesium (triple dose)",
           "whatItDoes": "Clinical-grade vascular relaxation, migraine prevention, and neuromuscular support.",
-          "whyItMatters": "1g IV magnesium is the dose used in emergency medicine. This is real pharmacological effect, not supplement-level dosing.",
+          "whyItMatters": "The clinical-grade IV magnesium dose is used in emergency medicine. This is real pharmacological effect, not supplement-level dosing.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (1,800mg — tripled)",
+          "name": "Glutathione (triple dose)",
           "whatItDoes": "Maximum detoxification support and cellular antioxidant restoration.",
           "whyItMatters": "At this dose, glutathione provides a thorough liver and cellular detox effect that is noticeably more profound than standard doses.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Zinc (15mg — tripled)",
-          "whatItDoes": "Maximum immune enzyme activation and antiviral support.",
-          "whyItMatters": "This dose is used therapeutically for significant zinc depletion states and intense immune challenges.",
+          "name": "Zinc (triple dose)",
+          "whatItDoes": "Maximum immune enzyme activation, antiviral support, and full testosterone synthesis support.",
+          "whyItMatters": "This dose is used therapeutically for significant zinc depletion states, intense immune challenges, and where hormone support is a priority.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Calcium Gluconate (200mg)",
+          "name": "Calcium Gluconate",
           "whatItDoes": "Balances the elevated magnesium and supports cardiac and neuromuscular function.",
           "whyItMatters": "Required to ensure safety and comfort at triple-magnesium doses.",
           "evidenceLevel": "strong"
@@ -793,7 +793,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (2mg)",
+          "name": "Vitamin B12 (double dose)",
           "whatItDoes": "Neurological and energy support at an elevated dose.",
           "whyItMatters": "B12 is depleted by virtually every stressor — illness, alcohol, poor sleep, medication use. This restores it quickly.",
           "evidenceLevel": "strong"
@@ -805,27 +805,27 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (2g)",
+          "name": "Vitamin C (double dose)",
           "whatItDoes": "High-dose antioxidant and immune support.",
-          "whyItMatters": "2g IV is therapeutic-range Vitamin C — meaningfully different from what any capsule can achieve.",
+          "whyItMatters": "Double-dose IV Vitamin C is therapeutic-range — meaningfully different from what any capsule can achieve.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (1,200mg)",
+          "name": "Glutathione (double dose)",
           "whatItDoes": "Deep cellular detox and antioxidant restoration.",
           "whyItMatters": "At this dose, glutathione produces a more thorough cellular cleansing effect.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Magnesium (1g)",
+          "name": "Magnesium (double dose)",
           "whatItDoes": "Clinical-level muscle relaxation and anti-inflammatory support.",
-          "whyItMatters": "1g IV magnesium is a clinically meaningful dose for pain, inflammation, and neuromuscular function.",
+          "whyItMatters": "Clinical-level IV magnesium provides meaningful support for pain, inflammation, and neuromuscular function.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Zinc (10mg)",
-          "whatItDoes": "Immune support and enzymatic restoration.",
-          "whyItMatters": "Higher zinc dose is particularly helpful after illness, stress, or prolonged depletion.",
+          "name": "Zinc (double dose)",
+          "whatItDoes": "Immune support, enzymatic restoration, and hormone synthesis.",
+          "whyItMatters": "Higher zinc dose is particularly helpful after illness, stress, or prolonged depletion, and supports testosterone recovery after physical or physiological stress.",
           "evidenceLevel": "strong"
         },
         {
@@ -1161,16 +1161,16 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Methylcobalamin B12 (1mg)",
-          "whatItDoes": "The active, bioavailable form of B12 that your cells can use immediately — supports red blood cell formation, neurological function, and DNA synthesis.",
-          "whyItMatters": "Methylcobalamin is significantly better absorbed than the cheaper cyanocobalamin form used in most supplements. IM injection bypasses the stomach entirely, achieving near-complete absorption regardless of your gut health.",
+          "name": "Methylcobalamin B12",
+          "whatItDoes": "The active, bioavailable form of B12 that your cells can use immediately — supports red blood cell formation, neurological function, and DNA synthesis. Delivered intramuscularly, absorption is complete and does not depend on stomach acid, intrinsic factor, or small intestine uptake.",
+          "whyItMatters": "Methylcobalamin is significantly better absorbed than cyanocobalamin. IM injection bypasses the stomach, intrinsic factor, and ileal transport entirely -- achieving near-complete absorption regardless of gut health. This is critical for gastric bypass and sleeve patients, those on PPIs or metformin, and people with IBD, Crohn's, or celiac disease.",
           "evidenceLevel": "strong"
         }
       ],
       "personas": [
         {
           "headline": "You feel tired more than you should",
-          "detail": "B12 deficiency is one of the most common and most overlooked causes of persistent fatigue. It's especially common in vegetarians, vegans, and people over 50 who have reduced stomach acid."
+          "detail": "B12 deficiency is one of the most common and most overlooked causes of persistent fatigue. It's especially common in vegetarians, vegans, people over 50 with reduced stomach acid, gastric bypass or sleeve patients, and anyone on long-term PPIs or metformin -- because all of these conditions impair oral B12 absorption."
         },
         {
           "headline": "You want a quick energy boost without a full IV",
@@ -1195,9 +1195,9 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Biotin / Vitamin B7 (10mg)",
+          "name": "Biotin / Vitamin B7",
           "whatItDoes": "A B vitamin that is an essential cofactor for enzymes involved in fatty acid synthesis, amino acid metabolism, and gluconeogenesis — all of which directly affect the health of hair, skin, and nails.",
-          "whyItMatters": "At 10mg IM injection, biotin reaches concentrations that oral supplements at typical doses cannot match. Deficiency (or insufficiency) causes brittle nails, hair thinning, and skin changes.",
+          "whyItMatters": "At high-dose IM injection, biotin reaches concentrations that oral supplements at typical doses cannot match. Deficiency (or insufficiency) causes brittle nails, hair thinning, and skin changes.",
           "evidenceLevel": "moderate"
         }
       ],
@@ -1229,7 +1229,7 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Glutathione (600mg)",
+          "name": "Glutathione",
           "whatItDoes": "Your body's master antioxidant — neutralizes free radicals, supports liver detox pathways, recycles other antioxidants, and plays a central role in cellular immunity.",
           "whyItMatters": "Glutathione is destroyed in the digestive tract, making oral supplements largely ineffective. IM injection achieves dramatically higher bioavailability. It's involved in skin brightening, liver health, athletic recovery, and immune function.",
           "evidenceLevel": "moderate"
@@ -1263,19 +1263,19 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Vitamin C (500mg)",
+          "name": "Vitamin C",
           "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
-          "whyItMatters": "IM Vitamin C at 500mg achieves blood concentrations significantly above what oral dosing can reach.",
+          "whyItMatters": "IM Vitamin C achieves blood concentrations significantly above what oral dosing can reach.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Zinc (5mg)",
-          "whatItDoes": "Essential for immune cell development and directly inhibits the replication of many viruses.",
-          "whyItMatters": "Zinc is one of the most evidence-backed immune nutrients. IM delivery ensures full absorption without GI side effects.",
+          "name": "Zinc",
+          "whatItDoes": "Essential for immune cell development, directly inhibits viral replication, and is required for testosterone production and healthy hormone balance.",
+          "whyItMatters": "Zinc is one of the most evidence-backed immune and hormone nutrients. IM delivery ensures full absorption without GI side effects.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (200mg)",
+          "name": "Glutathione",
           "whatItDoes": "Reduces oxidative stress in immune cells and supports liver function during immune responses.",
           "whyItMatters": "Glutathione keeps immune cells functional during the high oxidative stress of fighting an infection.",
           "evidenceLevel": "moderate"
@@ -1309,9 +1309,9 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Vitamin D3 (50,000 IU)",
+          "name": "Vitamin D3",
           "whatItDoes": "Regulates calcium absorption for bone density, modulates immune system behavior, supports mood regulation, and reduces systemic inflammation.",
-          "whyItMatters": "Vitamin D deficiency affects an estimated 41% of American adults. At 50,000 IU IM, this single injection can restore deficient levels in one dose — something oral supplements take weeks to accomplish.",
+          "whyItMatters": "Vitamin D deficiency affects an estimated 41% of American adults. A single high-dose IM injection can restore deficient levels in one dose — something oral supplements take weeks to accomplish.",
           "evidenceLevel": "strong"
         }
       ],
@@ -1353,7 +1353,7 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin B12 (1mg)",
+          "name": "Vitamin B12",
           "whatItDoes": "Boosts metabolic rate at the cellular level and provides the energy support needed when in a caloric deficit.",
           "whyItMatters": "B12 deficiency can slow metabolism and impair the energy production pathways that support fat burning. Combining it with MIC creates a synergistic metabolic support effect.",
           "evidenceLevel": "strong"

@@ -38,12 +38,12 @@ export const myers = {
   pageUrl: '/treatments/myers/',
   shortDesc: 'The gold standard vitamin IV for energy, immunity, and overall wellness.',
   ingredients: [
-    { name: 'B12',         benefit: 'Energy and neurological support' },
+    { name: 'B12',         benefit: 'Energy, neurological support, and cellular health -- absorbed directly without gut barriers' },
     { name: 'B-Complex',   benefit: 'Cellular energy metabolism' },
     { name: 'Vitamin C',   benefit: 'Immune function and antioxidant protection' },
     { name: 'Magnesium',   benefit: 'Muscle relaxation and enzyme support' },
     { name: 'Glutathione', benefit: 'Master antioxidant and detox' },
-    { name: 'Zinc',        benefit: 'Immune defense and healing' },
+    { name: 'Zinc',        benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
   ],
   bestFor: ['General wellness', 'Fatigue', 'Stress', 'Feeling run-down'],
   whyMatch:
@@ -82,9 +82,9 @@ export const immunity = {
   pageUrl: '/treatments/immunity/',
   shortDesc: 'High-dose immune support to fight off illness or keep you protected.',
   ingredients: [
-    { name: 'B12',        benefit: 'Energy for immune cell activity' },
+    { name: 'B12',        benefit: 'Energy for immune cell activity -- IV delivery bypasses gut absorption entirely' },
     { name: 'Vitamin C',  benefit: 'Immune activation and antioxidant' },
-    { name: 'Zinc',       benefit: 'Reduces cold duration by up to 33%' },
+    { name: 'Zinc',       benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
     { name: 'Glutathione', benefit: 'Cellular detox and protection' },
     { name: 'Vitamin D',  benefit: 'Immune regulation and bone health' },
   ],
@@ -116,7 +116,7 @@ export const pregnancy = {
     { name: 'Vitamin C',   benefit: 'Immune and collagen support' },
     { name: 'Magnesium',   benefit: 'Reduces cramping and nausea' },
     { name: 'Glutathione', benefit: 'Antioxidant protection' },
-    { name: 'Zinc',        benefit: 'Immune support and healing' },
+    { name: 'Zinc',        benefit: 'Immune defense and healthy fetal development.' },
   ],
   bestFor: ['Morning sickness', 'Prenatal fatigue', 'Dehydration during pregnancy'],
   whyMatch:
@@ -137,7 +137,7 @@ export const altitude = {
   pageUrl: '/treatments/altitude/',
   shortDesc: 'Fast relief from Colorado\'s high elevation symptoms.',
   ingredients: [
-    { name: 'B12',                    benefit: 'Energy and oxygen transport support' },
+    { name: 'B12',                    benefit: 'Energy and oxygen transport support -- absorbed completely via IV' },
     { name: 'B-Complex',              benefit: 'Cellular energy production' },
     { name: 'Vitamin C',              benefit: 'Antioxidant protection' },
     { name: 'Magnesium',              benefit: 'Muscle and nerve function' },
@@ -167,7 +167,7 @@ export const hangover = {
   pageUrl: '/treatments/hangover/',
   shortDesc: 'Get back on your feet fast with rehydration, anti-nausea, and pain relief.',
   ingredients: [
-    { name: 'B12',         benefit: 'Replenishes alcohol-depleted stores' },
+    { name: 'B12',         benefit: 'Replenishes alcohol-depleted stores -- IV absorption bypasses the gut entirely' },
     { name: 'B-Complex',   benefit: 'Energy metabolism recovery' },
     { name: 'Magnesium',   benefit: 'Headache and muscle relief' },
     { name: 'Glutathione', benefit: 'Liver detox support' },
@@ -194,7 +194,7 @@ export const migraine = {
   shortDesc: 'Targeted migraine relief with high-dose magnesium and pain medication.',
   ingredients: [
     { name: 'B-Complex',             benefit: 'Neurological support' },
-    { name: 'B12 (double dose)',      benefit: 'Nerve function and energy' },
+    { name: 'B12 (double dose)',      benefit: 'Nerve function and energy -- complete absorption without gut involvement' },
     { name: 'Magnesium (triple dose)', benefit: 'Blocks migraine pain pathways' },
     { name: 'Glutathione',           benefit: 'Reduces neuroinflammation' },
     { name: 'Taurine',               benefit: 'Neuroprotective support' },
@@ -224,12 +224,12 @@ export const longevity = {
   pageUrl: '/treatments/longevity/',
   shortDesc: 'Anti-aging cellular support with NAD+ and a full vitamin stack.',
   ingredients: [
-    { name: 'B12',          benefit: 'Energy and nerve health' },
+    { name: 'B12',          benefit: 'Energy, nerve health, and methylation support -- IV delivery bypasses gut absorption barriers' },
     { name: 'B-Complex',    benefit: 'Cellular metabolism' },
     { name: 'Vitamin C',    benefit: 'Collagen and antioxidant' },
     { name: 'Magnesium',    benefit: '300+ enzyme reactions' },
     { name: 'Glutathione',  benefit: 'Master antioxidant' },
-    { name: 'Zinc',         benefit: 'Immune and cellular repair' },
+    { name: 'Zinc',         benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
     { name: 'NAD+ (50mg)',  benefit: 'Cellular energy and DNA repair' },
   ],
   bestFor: ['Anti-aging', 'Cellular health', 'Long-term vitality', 'Biohacking'],
@@ -241,7 +241,7 @@ export const longevity = {
   },
   addressedBy: {
     'Skin looks dull or aging': 'Full antioxidant stack with NAD+ for cellular-level anti-aging',
-    'Brain fog / can\'t focus': 'NAD+ 50mg + full vitamin stack for mental clarity',
+    'Brain fog / can\'t focus': 'NAD+ + full vitamin stack for mental clarity',
   },
   addonSuggestions: ['glutathioneShot'],
 } as const satisfies Treatment;
@@ -257,12 +257,12 @@ export const myersGold = {
   pageUrl: '/treatments/myersGold/',
   shortDesc: 'An enhanced Myers\' Cocktail with upgraded vitamin concentrations.',
   ingredients: [
-    { name: 'B12 (double dose)',       benefit: 'Elevated energy and neurological support' },
+    { name: 'B12 (double dose)',       benefit: 'Elevated energy and neurological support -- double dose absorbed directly' },
     { name: 'B-Complex (double dose)', benefit: 'Enhanced cellular energy metabolism' },
     { name: 'Vitamin C (high dose)',   benefit: 'Stronger immune activation and antioxidant effect' },
     { name: 'Magnesium (double dose)', benefit: 'Deep muscle relaxation and headache prevention' },
     { name: 'Glutathione',             benefit: 'Master antioxidant and liver detox' },
-    { name: 'Zinc',                    benefit: 'Immune defense and cellular repair' },
+    { name: 'Zinc',                    benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
     { name: 'Calcium Gluconate',       benefit: 'Bone density and neuromuscular function' },
   ],
   bestFor: ['Upgraded wellness experience', 'Those who want more than the standard Myers\''],
@@ -301,7 +301,7 @@ export const performance = {
   pageUrl: '/treatments/performance/',
   shortDesc: 'Fuel recovery and performance with amino acids, NAD+, and essential nutrients.',
   ingredients: [
-    { name: 'B12',                    benefit: 'Energy metabolism' },
+    { name: 'B12',                    benefit: 'Energy metabolism -- direct IV absorption for maximum cellular uptake' },
     { name: 'B-Complex',              benefit: 'Cellular energy' },
     { name: 'Magnesium',              benefit: 'Muscle function and recovery' },
     { name: 'Glutathione',            benefit: 'Neutralizes exercise-induced free radicals' },
@@ -332,18 +332,18 @@ export const myersPlatinum = {
   pageUrl: '/treatments/myersPlatinum/',
   shortDesc: 'The ultimate Myers\' experience with premium vitamin concentrations.',
   ingredients: [
-    { name: 'B12 (triple dose)',       benefit: 'Maximum energy and nerve support' },
+    { name: 'B12 (triple dose)',       benefit: 'Maximum energy and nerve support -- triple dose delivered without gut absorption limits' },
     { name: 'B-Complex (triple dose)', benefit: 'Peak cellular metabolism' },
-    { name: 'Vitamin C (25g)',         benefit: 'High-dose immune activation' },
+    { name: 'Vitamin C (high dose)',   benefit: 'High-dose immune activation' },
     { name: 'Magnesium (triple dose)', benefit: 'Maximum muscle, nerve, and enzyme support' },
     { name: 'Glutathione (high dose)', benefit: 'Aggressive cellular detox and skin brightening' },
-    { name: 'Zinc',                    benefit: 'Immune defense and healing' },
+    { name: 'Zinc',                    benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
     { name: 'Calcium Gluconate',       benefit: 'Bone and neuromuscular support' },
     { name: 'NAD+ (50mg)',             benefit: 'Cellular energy and DNA repair boost' },
   ],
   bestFor: ['Premium wellness seekers', 'Maximum nutrient delivery'],
   whyMatch:
-    'Our maximum-dose Myers\': triple vitamin concentrations plus 50mg of NAD+ for cellular energy repair. This is our most potent general wellness IV — the closest thing to a full reset.',
+    'Our maximum-dose Myers\': triple vitamin concentrations plus NAD+ for cellular energy repair. This is our most potent general wellness IV -- the closest thing to a full reset.',
   // Gap fix: add scoring weights (similar to myersGold but slightly higher)
   scoringWeights: {
     'Tired all the time':            5,
@@ -361,7 +361,7 @@ export const myersPlatinum = {
     'Getting sick often':         'Maximum-dose Vitamin C and Zinc for peak immune activation',
     'Skin looks dull or aging':   'High-dose Glutathione with NAD+ delivers aggressive cellular anti-aging',
     'Sore muscles / slow recovery': 'Triple-dose Magnesium and B-Complex at maximum concentrations for full recovery',
-    'Brain fog / can\'t focus':   'NAD+ 50mg combined with triple B-Complex for peak cognitive support',
+    'Brain fog / can\'t focus':   'NAD+ combined with triple B-Complex for peak cognitive support',
     'Dehydrated / dry all the time': 'Triple vitamin concentration plus NAD+ addresses dehydration and cellular depletion',
     'Stressed and burnt out':     'Triple vitamin concentrations plus NAD+ — our strongest burnout reset',
   },
@@ -379,12 +379,12 @@ export const revival = {
   pageUrl: '/treatments/revival/',
   shortDesc: 'Our most comprehensive IV with a full vitamin stack plus your choice of 3 medications.',
   ingredients: [
-    { name: 'B12',         benefit: 'Energy and neurological recovery' },
+    { name: 'B12',         benefit: 'Energy and neurological recovery -- IV delivery bypasses all gut absorption barriers' },
     { name: 'B-Complex',   benefit: 'Cellular energy metabolism' },
     { name: 'Vitamin C',   benefit: 'Immune support and antioxidant' },
     { name: 'Magnesium',   benefit: 'Muscle relaxation and headache relief' },
     { name: 'Glutathione', benefit: 'Liver detox and cellular repair' },
-    { name: 'Zinc',        benefit: 'Immune defense' },
+    { name: 'Zinc',        benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
     {
       name: 'Your choice of 3 medications',
       benefit: 'Toradol, Zofran, Benadryl, Pepcid, or Reglan — discussed with your nurse',
