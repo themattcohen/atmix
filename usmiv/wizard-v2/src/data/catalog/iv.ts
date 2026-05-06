@@ -241,7 +241,7 @@ export const longevity = {
   },
   addressedBy: {
     'Skin looks dull or aging': 'Full antioxidant stack with NAD+ for cellular-level anti-aging',
-    'Brain fog / can\'t focus': 'NAD+ + full vitamin stack for mental clarity',
+    'Brain fog / can\'t focus': 'NAD+ 50mg + full vitamin stack for mental clarity',
   },
   addonSuggestions: ['glutathioneShot'],
 } as const satisfies Treatment;
@@ -334,7 +334,7 @@ export const myersPlatinum = {
   ingredients: [
     { name: 'B12 (triple dose)',       benefit: 'Maximum energy and nerve support -- triple dose delivered without gut absorption limits' },
     { name: 'B-Complex (triple dose)', benefit: 'Peak cellular metabolism' },
-    { name: 'Vitamin C (high dose)',   benefit: 'High-dose immune activation' },
+    { name: 'Vitamin C (25g)',         benefit: 'High-dose immune activation' },
     { name: 'Magnesium (triple dose)', benefit: 'Maximum muscle, nerve, and enzyme support' },
     { name: 'Glutathione (high dose)', benefit: 'Aggressive cellular detox and skin brightening' },
     { name: 'Zinc',                    benefit: 'Supports immune defense, healthy testosterone levels, and overall endocrine function.' },
@@ -343,7 +343,7 @@ export const myersPlatinum = {
   ],
   bestFor: ['Premium wellness seekers', 'Maximum nutrient delivery'],
   whyMatch:
-    'Our maximum-dose Myers\': triple vitamin concentrations plus NAD+ for cellular energy repair. This is our most potent general wellness IV -- the closest thing to a full reset.',
+    'Our maximum-dose Myers\': triple vitamin concentrations plus 50mg of NAD+ for cellular energy repair. This is our most potent general wellness IV -- the closest thing to a full reset.',
   // Gap fix: add scoring weights (similar to myersGold but slightly higher)
   scoringWeights: {
     'Tired all the time':            5,
@@ -361,7 +361,7 @@ export const myersPlatinum = {
     'Getting sick often':         'Maximum-dose Vitamin C and Zinc for peak immune activation',
     'Skin looks dull or aging':   'High-dose Glutathione with NAD+ delivers aggressive cellular anti-aging',
     'Sore muscles / slow recovery': 'Triple-dose Magnesium and B-Complex at maximum concentrations for full recovery',
-    'Brain fog / can\'t focus':   'NAD+ combined with triple B-Complex for peak cognitive support',
+    'Brain fog / can\'t focus':   'NAD+ 50mg combined with triple B-Complex for peak cognitive support',
     'Dehydrated / dry all the time': 'Triple vitamin concentration plus NAD+ addresses dehydration and cellular depletion',
     'Stressed and burnt out':     'Triple vitamin concentrations plus NAD+ — our strongest burnout reset',
   },

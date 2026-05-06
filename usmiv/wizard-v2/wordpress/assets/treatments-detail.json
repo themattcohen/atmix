@@ -62,7 +62,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (1g)",
           "whatItDoes": "A potent antioxidant that supports immune function, collagen synthesis, and iron absorption.",
           "whyItMatters": "IV Vitamin C achieves blood concentrations 50-70x higher than oral doses, making it dramatically more bioavailable when you need it most.",
           "evidenceLevel": "strong"
@@ -130,7 +130,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (1g)",
           "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
           "whyItMatters": "At high IV doses, Vitamin C has documented antiviral properties and shortens illness duration in clinical studies.",
           "evidenceLevel": "strong"
@@ -204,7 +204,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (500mg)",
           "whatItDoes": "Supports immune function and collagen synthesis for both mother and developing baby at a conservative, pregnancy-safe dose.",
           "whyItMatters": "Kept at a conservative, pregnancy-safe dose as is standard in prenatal nutrition guidelines.",
           "evidenceLevel": "strong"
@@ -275,7 +275,7 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (1g)",
           "whatItDoes": "Reduces oxidative stress caused by increased UV exposure and lower oxygen availability at elevation.",
           "whyItMatters": "High-altitude UV exposure dramatically increases free radical production. Vitamin C is your primary defense.",
           "evidenceLevel": "moderate"
@@ -349,7 +349,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (1g)",
           "whatItDoes": "Reduces oxidative stress from alcohol metabolism byproducts — specifically acetaldehyde.",
           "whyItMatters": "Acetaldehyde is what actually makes you feel terrible the morning after. Vitamin C helps neutralize it.",
           "evidenceLevel": "moderate"
@@ -425,7 +425,7 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (1g)",
           "whatItDoes": "Reduces neuroinflammation and oxidative stress in the brain during and after a migraine attack.",
           "whyItMatters": "Migraines involve significant neuroinflammation. Antioxidant support helps the brain recover.",
           "evidenceLevel": "moderate"
@@ -501,7 +501,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (2g)",
           "whatItDoes": "Stimulates collagen synthesis and provides antioxidant protection against age-accelerating free radicals.",
           "whyItMatters": "Collagen production declines with age and Vitamin C is its primary cofactor. High-dose IV delivery supports skin, joint, and vascular integrity.",
           "evidenceLevel": "strong"
@@ -571,9 +571,9 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (double dose)",
+          "name": "Vitamin C (2g -- doubled)",
           "whatItDoes": "Enhanced antioxidant protection and immune stimulation at therapeutic dose.",
-          "whyItMatters": "Double-dose IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
+          "whyItMatters": "2g IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
           "evidenceLevel": "strong"
         },
         {
@@ -659,7 +659,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (1g)",
           "whatItDoes": "Reduces exercise-induced oxidative stress and supports collagen synthesis for tendon and joint health.",
           "whyItMatters": "High-intensity training generates significant free radicals. Vitamin C is the primary water-soluble antioxidant defense.",
           "evidenceLevel": "strong"
@@ -723,9 +723,9 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (triple dose)",
+          "name": "Vitamin C (3g -- tripled)",
           "whatItDoes": "High-dose immune stimulation and powerful antioxidant protection at near-therapeutic IV range.",
-          "whyItMatters": "Triple-dose IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
+          "whyItMatters": "3g IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
           "evidenceLevel": "strong"
         },
         {
@@ -805,9 +805,9 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (double dose)",
+          "name": "Vitamin C (2g)",
           "whatItDoes": "High-dose antioxidant and immune support.",
-          "whyItMatters": "Double-dose IV Vitamin C is therapeutic-range — meaningfully different from what any capsule can achieve.",
+          "whyItMatters": "2g IV is therapeutic-range Vitamin C -- meaningfully different from what any capsule can achieve.",
           "evidenceLevel": "strong"
         },
         {
@@ -1263,9 +1263,9 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Vitamin C",
+          "name": "Vitamin C (500mg)",
           "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
-          "whyItMatters": "IM Vitamin C achieves blood concentrations significantly above what oral dosing can reach.",
+          "whyItMatters": "IM Vitamin C at 500mg achieves blood concentrations significantly above what oral dosing can reach.",
           "evidenceLevel": "strong"
         },
         {
