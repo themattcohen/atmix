@@ -1,6 +1,9 @@
 # Logs
 logs
 *.log
+# Exception: keep the seo_audit/data/logs/ directory placeholder so the
+# pipeline's writable log dir is present on a fresh clone.
+!usmiv/seo_audit/data/logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
