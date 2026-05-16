@@ -37,6 +37,11 @@ dist-ssr
 claudedocs/nydg/phase7-april-test.md
 claudedocs/nydg/april-2026-real/
 
+# Malformed-path junk from a buggy file write. Contains full Apps Script source dump
+# duplicating recovery/ but the filename itself is broken (path-as-filename + Unicode
+# encoding of colon char). Wildcard catches it regardless of how the colon renders.
+*Users1mattOneDriveDocumentsatmixclaudedocs*payload_check.txt
+
 # Python
 __pycache__/
 *.py[cod]
