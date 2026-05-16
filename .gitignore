@@ -33,6 +33,10 @@ dist-ssr
 .env.production
 *.DO-NOT-USE-secrets-in-doppler
 
+# NYDG: contains inline secrets (Gemini API key, OAuth client_secret). Never commit.
+claudedocs/nydg/phase7-april-test.md
+claudedocs/nydg/april-2026-real/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -123,6 +127,12 @@ clickup-mcp/data/
 ebay-tracker/backups/
 *.tar.gz
 drstacy.zip
+
+# Decommission archives (encrypted secret + DB dumps; never committed)
+archive/decommission-*/
+*.7z
+*.tar.enc
+*.tar.gpg
 
 # Binary doc clutter
 *.docx
