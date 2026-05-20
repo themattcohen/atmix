@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<!--
+  Someday — Landing Page v1 (preview)
+  Password-gated so it can be shared privately while in review.
+  Hosted under atmix.org/ss as a soft-gated preview only.
+  Source: /someday-marketing/landings/v1/index.html
+  Brief: /claudedocs/someday_locked_positioning_brief_2026-05-20.md
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Private preview.">
+  <title>Someday &mdash; preview</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --forest: #1D3A28;
+      --forest-light: #2D5040;
+      --cream: #F5F0E8;
+      --cream-light: #FAFAF7;
+      --gold: #B8972E;
+      --gold-light: #D4B850;
+      --slate: #2E2E2E;
+      --slate-mid: #5A5A5A;
+      --slate-muted: #8A8A8A;
+      --hairline: #E5DDC9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--slate);
+      background: var(--cream-light);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      line-height: 1.18;
+      color: var(--forest);
+      margin: 0 0 0.5em;
+      letter-spacing: -0.005em;
+    }
+    h1 { font-size: clamp(36px, 5.5vw, 60px); }
+    h2 { font-size: clamp(28px, 4vw, 38px); }
+    h3 { font-size: 22px; }
+
+    p { margin: 0 0 1em; }
+    em { font-style: italic; }
+
+    a { color: var(--forest); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--gold); }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+    .container-wide { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    section { padding: 80px 0; border-bottom: 1px solid var(--hairline); }
+    section:last-of-type { border-bottom: none; }
+    @media (max-width: 640px) { section { padding: 56px 0; } }
+
+    /* ---------- PASSWORD GATE ---------- */
+    .gate {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 1000;
+    }
+    .gate-card {
+      max-width: 420px;
+      width: 100%;
+      background: var(--cream-light);
+      padding: 48px 40px;
+      border-radius: 4px;
+      border: 1px solid var(--hairline);
+      text-align: center;
+    }
+    .gate-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--forest);
+      margin: 0 0 4px;
+      line-height: 1;
+    }
+    .gate-tag {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--slate-muted);
+      margin-bottom: 36px;
+    }
+    .gate-prompt {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: var(--slate-mid);
+      margin-bottom: 24px;
+    }
+    .gate-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .gate-form input {
+      padding: 13px 16px;
+      border: 1px solid var(--hairline);
+      border-radius: 3px;
+      background: var(--cream-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      color: var(--slate);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+    .gate-form input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+    .gate-form button {
+      padding: 13px 24px;
+      background: var(--forest);
+      color: var(--cream-light);
+      border: none;
+      border-radius: 3px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .gate-form button:hover { background: var(--forest-light); }
+    .gate-error {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #8a2a2a;
+      min-height: 18px;
+    }
+    .gate-footnote {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--slate-muted);
+    }
+
+    /* ---------- LANDING STYLES ---------- */
+
+    header.site-header {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--hairline);
+      background: var(--cream-light);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(6px);
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--forest);
+      text-decoration: none;
+      letter-spacing: 0.005em;
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .logo-tagline {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--slate-muted);
+      margin-top: 4px;
+    }
+    nav.primary { display: flex; gap: 32px; }
+    nav.primary a {
+      font-size: 14px;
+      color: var(--slate-mid);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    nav.primary a:hover { color: var(--forest); }
+    @media (max-width: 680px) { nav.primary { display: none; } }
+
+    .hero { padding: 96px 0 88px; background: var(--cream); border-bottom: 1px solid var(--hairline); }
+    .hero h1 { max-width: 18ch; margin-bottom: 24px; }
+    .hero-subhead {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(18px, 2.2vw, 22px);
+      color: var(--slate-mid);
+      max-width: 52ch;
+      margin-bottom: 36px;
+      line-height: 1.4;
+    }
+    .hero-proof {
+      font-size: 15px;
+      color: var(--slate);
+      background: var(--cream-light);
+      border-left: 3px solid var(--gold);
+      padding: 16px 20px;
+      margin-bottom: 36px;
+      max-width: 56ch;
+      line-height: 1.55;
+    }
+    @media (max-width: 640px) { .hero { padding: 64px 0 56px; } }
+
+    .cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s ease, background 0.15s ease;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-primary { background: var(--forest); color: var(--cream-light); }
+    .btn-primary:hover { background: var(--forest-light); opacity: 1; color: var(--cream-light); }
+    .btn-secondary { background: transparent; color: var(--forest); border: 1px solid var(--forest); }
+    .btn-secondary:hover { background: var(--forest); color: var(--cream-light); opacity: 1; }
+    .cta-microcopy {
+      display: block;
+      font-size: 13px;
+      color: var(--slate-muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    .section-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 14px;
+    }
+
+    .diff-list { margin: 32px 0; }
+    .diff-row {
+      display: grid;
+      grid-template-columns: 1fr 2.2fr;
+      gap: 28px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .diff-row:last-child { border-bottom: none; }
+    .diff-row dt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--forest);
+      line-height: 1.25;
+    }
+    .diff-row dd { margin: 0; color: var(--slate-mid); }
+    @media (max-width: 640px) { .diff-row { grid-template-columns: 1fr; gap: 6px; } }
+
+    .person {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 44px;
+      align-items: start;
+      margin-top: 24px;
+    }
+    .person-photo {
+      width: 200px;
+      height: 200px;
+      border-radius: 3px;
+      background: var(--cream);
+      border: 1px dashed var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 11px;
+      text-align: center;
+      padding: 16px;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+    .person p { color: var(--slate); margin-bottom: 0.9em; }
+    @media (max-width: 640px) {
+      .person { grid-template-columns: 1fr; gap: 20px; }
+      .person-photo { width: 160px; height: 160px; margin-bottom: 8px; }
+    }
+
+    .bio-credentials { list-style: none; padding: 0; margin: 18px 0; color: var(--slate-mid); }
+    .bio-credentials li { padding: 5px 0 5px 18px; position: relative; }
+    .bio-credentials li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 8px;
+      height: 1px;
+      background: var(--gold);
+    }
+    .bio-meta { margin-top: 16px; color: var(--slate-muted); font-size: 13px; }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+    }
+    @media (max-width: 880px) { .testimonials-grid { grid-template-columns: 1fr; } }
+    .testimonial {
+      background: var(--cream);
+      padding: 32px 28px;
+      border-radius: 3px;
+      border: 1px solid var(--hairline);
+    }
+    .testimonial-photo {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--cream-light);
+      border: 1px dashed var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .testimonial-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-style: italic;
+      line-height: 1.42;
+      color: var(--forest);
+      margin: 0 0 22px;
+    }
+    .testimonial-attribution {
+      font-size: 13px;
+      color: var(--slate-mid);
+      line-height: 1.5;
+    }
+    .testimonial-attribution strong { color: var(--slate); font-weight: 600; display: block; }
+
+    .deal-capsules { list-style: none; padding: 0; margin: 32px 0 0; }
+    .deal-capsules li {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--hairline);
+      font-size: 16px;
+      color: var(--slate);
+      display: flex;
+      gap: 14px;
+      align-items: baseline;
+    }
+    .deal-capsules li:last-child { border-bottom: none; }
+    .deal-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      flex-shrink: 0;
+      min-width: 50px;
+    }
+
+    .process-steps { counter-reset: step; list-style: none; padding: 0; margin: 32px 0 0; }
+    .process-steps li {
+      counter-increment: step;
+      padding: 28px 0 28px 88px;
+      border-bottom: 1px solid var(--hairline);
+      position: relative;
+    }
+    .process-steps li:before {
+      content: counter(step, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 24px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .process-steps li:last-child { border-bottom: none; }
+    .process-steps h3 { font-size: 22px; margin-bottom: 6px; }
+    .process-steps p { color: var(--slate-mid); margin: 0; }
+    @media (max-width: 640px) {
+      .process-steps li { padding-left: 64px; padding-top: 24px; padding-bottom: 24px; }
+      .process-steps li:before { font-size: 36px; top: 22px; }
+    }
+
+    .magnet-panel {
+      background: var(--forest);
+      color: var(--cream-light);
+      padding: 56px 48px;
+      border-radius: 3px;
+    }
+    .magnet-panel h2 { color: var(--cream-light); }
+    .magnet-panel .section-label { color: var(--gold-light); }
+    .magnet-panel p { color: var(--cream); }
+    .magnet-form { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .magnet-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 13px 18px;
+      border-radius: 3px;
+      border: 1px solid var(--forest-light);
+      background: var(--cream-light);
+      color: var(--slate);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+    }
+    .magnet-form input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+    .magnet-form .btn { background: var(--gold); color: var(--forest); }
+    .magnet-form .btn:hover { background: var(--gold-light); opacity: 1; color: var(--forest); }
+    .magnet-aside {
+      font-size: 13px;
+      color: var(--cream);
+      opacity: 0.75;
+      margin-top: 18px;
+      font-style: italic;
+    }
+    @media (max-width: 640px) { .magnet-panel { padding: 40px 26px; } }
+
+    .faq-item { padding: 26px 0; border-bottom: 1px solid var(--hairline); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--forest);
+      margin: 0 0 10px;
+    }
+    .faq-a { color: var(--slate-mid); margin: 0; }
+
+    .intake-section {
+      background: var(--cream);
+      padding: 56px 48px;
+      border-radius: 3px;
+      border: 1px solid var(--hairline);
+    }
+    .intake-fields { display: grid; gap: 22px; margin: 32px 0 24px; }
+    .intake-fields label { display: block; font-size: 14px; font-weight: 600; color: var(--slate); margin-bottom: 8px; }
+    .intake-fields select, .intake-fields textarea, .intake-fields input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--hairline);
+      border-radius: 3px;
+      background: var(--cream-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--slate);
+    }
+    .intake-fields select:focus,
+    .intake-fields textarea:focus,
+    .intake-fields input:focus {
+      outline: 2px solid var(--gold);
+      outline-offset: -1px;
+    }
+    .intake-fields textarea { resize: vertical; min-height: 88px; font-family: 'Inter', sans-serif; }
+    @media (max-width: 640px) { .intake-section { padding: 40px 26px; } }
+
+    footer.site-footer { background: var(--forest); color: var(--cream); padding: 64px 0 36px; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--cream-light);
+      margin: 0 0 6px;
+    }
+    .footer-tagline { font-size: 14px; color: var(--cream); opacity: 0.8; margin-bottom: 16px; }
+    footer h4 {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin: 0 0 16px;
+    }
+    footer p, footer a {
+      font-size: 14px;
+      color: var(--cream);
+      opacity: 0.85;
+      margin: 0 0 8px;
+      text-decoration: none;
+      display: block;
+    }
+    footer a:hover { color: var(--gold-light); opacity: 1; }
+    .footer-legal {
+      margin: 56px auto 0;
+      max-width: 960px;
+      padding: 24px 24px 0;
+      border-top: 1px solid var(--forest-light);
+      font-size: 12px;
+      color: var(--cream);
+      opacity: 0.6;
+      line-height: 1.5;
+    }
+
+    [data-placeholder] {
+      border-bottom: 1px dashed var(--gold);
+      padding: 1px 3px 0;
+      background: rgba(184, 151, 46, 0.06);
+      color: var(--gold);
+      font-style: italic;
+      font-size: 0.94em;
+    }
+
+    .sticky-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--forest);
+      color: var(--cream-light);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(100%);
+      transition: transform 0.25s ease-out;
+      z-index: 50;
+      box-shadow: 0 -2px 14px rgba(0,0,0,0.12);
+    }
+    .sticky-cta.visible { transform: translateY(0); }
+    .sticky-cta p { margin: 0; font-size: 14px; color: var(--cream); }
+    .sticky-cta .btn { background: var(--gold); color: var(--forest); padding: 10px 22px; font-size: 14px; }
+    .sticky-cta .btn:hover { background: var(--gold-light); opacity: 1; }
+    @media (max-width: 520px) {
+      .sticky-cta p { display: none; }
+      .sticky-cta { justify-content: flex-end; padding: 12px 20px; }
+    }
+
+    .skip { position: absolute; left: -9999px; }
+    .skip:focus { position: static; padding: 12px; background: var(--forest); color: var(--cream-light); }
+
+    /* Preview-only banner */
+    .preview-banner {
+      background: var(--gold);
+      color: var(--forest);
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PASSWORD GATE -->
+  <div class="gate" id="gate" role="dialog" aria-labelledby="gate-brand">
+    <div class="gate-card">
+      <p class="gate-brand" id="gate-brand">Someday</p>
+      <span class="gate-tag">Private Preview</span>
+      <p class="gate-prompt">Enter the access word to view.</p>
+      <form class="gate-form" id="gateForm" autocomplete="off">
+        <input type="password" id="gatePw" name="pw" placeholder="Access word" autofocus aria-label="Access word">
+        <button type="submit">Enter</button>
+      </form>
+      <p class="gate-error" id="gateError" role="status" aria-live="polite"></p>
+      <p class="gate-footnote">Working draft. Not for distribution.</p>
+    </div>
+  </div>
+
+  <!-- LANDING CONTENT (revealed after gate) -->
+  <div id="content" hidden>
+
+    <div class="preview-banner">Preview &mdash; private draft &middot; not indexed &middot; not for distribution</div>
+
+    <a class="skip" href="#main">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="#hero">
+          Someday
+          <span class="logo-tagline">M&amp;A Representation</span>
+        </a>
+        <nav class="primary" aria-label="Primary">
+          <a href="#process">How It Works</a>
+          <a href="#team">Sara &amp; Matt</a>
+          <a href="#deals">Transactions</a>
+          <a href="#talk">Talk to Matt</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+
+      <section class="hero" id="hero">
+        <div class="container-wide">
+          <h1>You spent 25 years building it. The exit should be built the same way.</h1>
+          <p class="hero-subhead">M&amp;A representation for accounting firm owners &mdash; from valuation through closing documents. Not a listing service.</p>
+          <div class="hero-proof">
+            <strong>Sara Sharp</strong> has closed <span data-placeholder>[DEAL COUNT]</span> accounting firm transactions worth <span data-placeholder>[$VALUE]</span> in the last <span data-placeholder>[WINDOW]</span>.<br>
+            <strong>Matt Cohen</strong> sold his own through her.
+          </div>
+          <div class="cta-row">
+            <a href="#talk" class="btn btn-primary">Talk to Matt &mdash; see if your firm is ready</a>
+            <a href="#magnet" class="btn btn-secondary">Read Matt's post-mortem</a>
+          </div>
+          <span class="cta-microcopy">Matt meets with owners actively evaluating a transition in 1&ndash;3 years.</span>
+        </div>
+      </section>
+
+      <section id="process">
+        <div class="container">
+          <p class="section-label">What full representation looks like</p>
+          <h2>Most sellers hire a listing broker. They get an intro and paperwork. They needed someone in the chair beside them.</h2>
+          <p>Someday does the work most listing services don't &mdash; the work that moves the price and the work that protects the seller.</p>
+
+          <dl class="diff-list">
+            <div class="diff-row">
+              <dt>The deal narrative</dt>
+              <dd>Confidential Information Memorandum (CIM), positioning, defensible valuation. We write the firm so the buyer sees their growth thesis, not their fixer-upper.</dd>
+            </div>
+            <div class="diff-row">
+              <dt>The diligence</dt>
+              <dd>Data room prep, response strategy, surfacing risk before the buyer does. Two re-trades caught in diligence pay for the engagement.</dd>
+            </div>
+            <div class="diff-row">
+              <dt>The negotiation</dt>
+              <dd>LOI, term sheet, definitive documents. Not introductions &mdash; advocacy. Sara represents one side of the table only.</dd>
+            </div>
+            <div class="diff-row">
+              <dt>The close</dt>
+              <dd>Signing day, transition planning, escrow, holdback, earnout structuring. The mechanics of the actual transaction.</dd>
+            </div>
+            <div class="diff-row">
+              <dt>The 90 days after</dt>
+              <dd>Client retention, staff transition, your identity after the deal. In the engagement, not an upsell.</dd>
+            </div>
+          </dl>
+
+          <p><em>Sara leads the process. Matt handles the math and operations. We are not a brokerage. We are seller-side M&amp;A counsel for accounting firms.</em></p>
+        </div>
+      </section>
+
+      <section id="team">
+        <div class="container">
+          <p class="section-label">Why this exists</p>
+          <h2>Matt sold his firm through Sara. Then he joined her.</h2>
+
+          <div class="person">
+            <div class="person-photo">PORTRAIT<br>MATT COHEN<br>(direct-to-camera, real office)</div>
+            <div>
+              <p>I sold <span data-placeholder>[FIRM NAME]</span> in <span data-placeholder>[YEAR]</span> &mdash; a <span data-placeholder>[REVENUE BAND]</span> <span data-placeholder>[CITY/STATE]</span> accounting practice &mdash; at <span data-placeholder>[MULTIPLE]</span> of revenue.</p>
+              <p>I'd interviewed three brokers. All three quoted a similar timeline, a similar commission, and a similar pitch: "We'll put you in front of buyers and shepherd the paperwork."</p>
+              <p>What I needed was someone who knew where my firm was actually weak before a buyer found it. Someone who could sit across the table from the buyer's counsel and not blink. Someone who'd think about my staff, my clients, and my name on the door six months after close.</p>
+              <p>Sara did all of that. She caught two things in diligence that would have re-traded the price. She wrote a CIM that made my firm read like the buyer's growth thesis, not their fixer-upper. She closed the deal at the number on the first LOI.</p>
+              <p>When she asked if I'd help her reach other firm owners going through the same thing, I said yes. I get a piece when I bring in a client &mdash; which is why this page exists.</p>
+              <p style="margin-top: 22px;"><strong>&mdash; Matt Cohen, CPA</strong></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <p class="section-label">Lead counsel</p>
+          <h2>About Sara Sharp.</h2>
+
+          <div class="person">
+            <div class="person-photo">PORTRAIT<br>SARA SHARP<br>(direct-to-camera, real office)</div>
+            <div>
+              <p>Sara Sharp is the lead M&amp;A counsel at Someday.</p>
+              <ul class="bio-credentials">
+                <li><span data-placeholder>[DEAL COUNT]</span>+ accounting firm transactions closed in the last <span data-placeholder>[WINDOW]</span></li>
+                <li><span data-placeholder>[$VALUE]</span> in total transaction value</li>
+                <li>40 Under 40 CPA Practice Advisor, 2025</li>
+                <li>Author, <em>Here's the Deal</em> (2026)</li>
+                <li>Host, Sara Sharp's Dealmakers (YouTube)</li>
+                <li>Founder, Deal Academy (dealacademy.org)</li>
+                <li>Speaker, 2025 Jetpack Workflow M&amp;A Summit &mdash; SBA structuring for accounting firm acquisitions</li>
+              </ul>
+              <p>Sara represents sellers only. She does not run a buyer network, does not list firms, and does not collect commission from both sides. Her practice is structured to advocate for the seller end to end.</p>
+              <p class="bio-meta"><span data-placeholder>[BAR NUMBER]</span> &nbsp;|&nbsp; Member: <span data-placeholder>[MEMBERSHIPS]</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <p class="section-label">From sellers who hired us</p>
+          <h2>What sellers say.</h2>
+
+          <div class="testimonials-grid">
+            <article class="testimonial">
+              <div class="testimonial-photo">PHOTO</div>
+              <p class="testimonial-quote"><span data-placeholder>[Quote from named CO seller 1 &mdash; 2-3 sentences on the specific moment they realized Someday was different.]</span></p>
+              <p class="testimonial-attribution">
+                <strong><span data-placeholder>[Full Name]</span></strong>
+                <span data-placeholder>[Title, Firm Name]</span><br>
+                <span data-placeholder>[City, ST] &middot; Sold [year] &middot; [outcome line]</span>
+              </p>
+            </article>
+            <article class="testimonial">
+              <div class="testimonial-photo">PHOTO</div>
+              <p class="testimonial-quote"><span data-placeholder>[Quote from named CO seller 2]</span></p>
+              <p class="testimonial-attribution">
+                <strong><span data-placeholder>[Full Name]</span></strong>
+                <span data-placeholder>[Title, Firm Name]</span><br>
+                <span data-placeholder>[City, ST] &middot; Sold [year] &middot; [outcome line]</span>
+              </p>
+            </article>
+            <article class="testimonial">
+              <div class="testimonial-photo">PHOTO</div>
+              <p class="testimonial-quote"><span data-placeholder>[Quote from named CO seller 3]</span></p>
+              <p class="testimonial-attribution">
+                <strong><span data-placeholder>[Full Name]</span></strong>
+                <span data-placeholder>[Title, Firm Name]</span><br>
+                <span data-placeholder>[City, ST] &middot; Sold [year] &middot; [outcome line]</span>
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="deals">
+        <div class="container">
+          <p class="section-label">Pattern recognition</p>
+          <h2>Recent transactions.</h2>
+          <p>Anonymized for client confidentiality. Specific enough to recognize whether your firm fits the pattern.</p>
+          <ul class="deal-capsules">
+            <li>
+              <span class="deal-tag">2025</span>
+              <span data-placeholder>$2.8M-revenue Denver CPA firm. 4 months from CIM to close. Closed at 1.2x revenue, 10% earnout, 90-day transition.</span>
+            </li>
+            <li>
+              <span class="deal-tag">2025</span>
+              <span data-placeholder>$1.4M-revenue Front Range bookkeeping practice. 6 months from engagement to wire. PE-backed roll-up acquirer.</span>
+            </li>
+            <li>
+              <span class="deal-tag">2025</span>
+              <span data-placeholder>$5.1M-revenue tax-only firm, Boulder. Strategic buyer (regional CPA firm). 5-year retention agreement for seller.</span>
+            </li>
+            <li>
+              <span class="deal-tag">2024</span>
+              <span data-placeholder>$3.2M-revenue Denver audit practice. Two-LOI competitive process; closed at 12% above initial offer.</span>
+            </li>
+            <li>
+              <span class="deal-tag">2024</span>
+              <span data-placeholder>$2.0M-revenue Colorado Springs full-service firm. Sold to former associate (internal succession). Owner-financed deal structure.</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <p class="section-label">What you'll experience</p>
+          <h2>What the process looks like.</h2>
+          <p>Written from where you'll be sitting &mdash; not from where we'll be sitting.</p>
+          <ol class="process-steps">
+            <li>
+              <h3>You book a 15-minute call with Matt.</h3>
+              <p>Three questions in the form: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
+            </li>
+            <li>
+              <h3>Matt tells you whether your firm is positioned for a deal in the next 1&ndash;3 years.</h3>
+              <p>If it's not, he tells you that too. The call is diagnostic, not promotional. No pitch.</p>
+            </li>
+            <li>
+              <h3>If your timeline is real, Matt introduces you to Sara.</h3>
+              <p>Sara takes a 45-minute working session &mdash; not a sales call. She walks you through what your firm would trade for today and what to fix to widen the band by 2027.</p>
+            </li>
+            <li>
+              <h3>If you decide to work together, Sara represents you end to end.</h3>
+              <p>CIM in 4&ndash;6 weeks. Buyer process begins after. Most deals close 4&ndash;8 months from engagement to wire.</p>
+            </li>
+            <li>
+              <h3>We sit through the first 90 days post-close.</h3>
+              <p>Client transitions, staff retention, your role and identity after handoff. In the engagement, not an upsell.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="magnet">
+        <div class="container">
+          <div class="magnet-panel">
+            <p class="section-label">Not ready to talk yet?</p>
+            <h2>Read Matt's post-mortem.</h2>
+            <p>Twelve pages on what he wishes he'd known before the LOI. What Sara caught that saved the deal. What he'd do differently if he were doing it over.</p>
+            <form class="magnet-form" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 will wire this to the backend.');">
+              <label for="magnet-name" class="skip">Name</label>
+              <input type="text" id="magnet-name" name="name" placeholder="Your name" required>
+              <label for="magnet-email" class="skip">Work email</label>
+              <input type="email" id="magnet-email" name="email" placeholder="Work email" required>
+              <button type="submit" class="btn">Send me the PDF</button>
+            </form>
+            <p class="magnet-aside">No newsletter sign-up. We send the PDF, then one follow-up two weeks later asking if it was useful. That's it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <p class="section-label">Questions owners ask</p>
+          <h2>Before you book.</h2>
+
+          <div class="faq-item">
+            <h3 class="faq-q">What size firm do you work with?</h3>
+            <p class="faq-a">We work with practices billing $300K and up. Most clients are between $500K and $5M in annual revenue.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-q">How much do you charge?</h3>
+            <p class="faq-a">We work on a flat engagement fee plus a success fee at close. Total fees typically run <span data-placeholder>[X]%</span> of transaction value &mdash; competitive with full-service M&amp;A advisory, lower than the all-in cost of a broker plus separate legal counsel. We share the structure on the discovery call.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-q">Do you only work with Colorado firms?</h3>
+            <p class="faq-a">Most of our work is in Colorado, but we represent firms nationally. We're licensed in CO; for out-of-state matters we partner with local counsel as needed.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-q">I'm not sure I want to sell yet. Should I still talk to Matt?</h3>
+            <p class="faq-a">Yes. About half of Matt's calls end with "now is not the right time" &mdash; and a plan to revisit in 12 or 24 months. The most common mistake we see is owners deciding to sell six months before they wish they had started preparing.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-q">What happens if I decide not to work with you after the call?</h3>
+            <p class="faq-a">Nothing. The 15-minute call with Matt and the 45-minute working session with Sara are both free. We don't put owners under contract until we've agreed on the engagement scope and you've seen the proposal.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="talk">
+        <div class="container">
+          <div class="intake-section">
+            <p class="section-label">Talk to Matt</p>
+            <h2>Three questions, then you'll see Matt's calendar.</h2>
+            <p>The 15-minute call is diagnostic. Matt will tell you whether your firm is positioned for a deal in the next 1&ndash;3 years &mdash; including if the honest answer is no.</p>
+
+            <form class="intake-fields" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 will wire this to the calendar.');">
+              <div>
+                <label for="i-name">Your name</label>
+                <input type="text" id="i-name" name="name" required>
+              </div>
+              <div>
+                <label for="i-email">Work email</label>
+                <input type="email" id="i-email" name="email" required>
+              </div>
+              <div>
+                <label for="revenue">What's your firm's annual revenue?</label>
+                <select id="revenue" name="revenue" required>
+                  <option value="">Select a range</option>
+                  <option>Under $300K</option>
+                  <option>$300K &ndash; $1M</option>
+                  <option>$1M &ndash; $3M</option>
+                  <option>$3M &ndash; $7M</option>
+                  <option>$7M &ndash; $15M</option>
+                  <option>Over $15M</option>
+                </select>
+              </div>
+              <div>
+                <label for="owners">How many equity owners does your firm have?</label>
+                <select id="owners" name="owners" required>
+                  <option value="">Select</option>
+                  <option>1 (just me)</option>
+                  <option>2 &ndash; 3</option>
+                  <option>4 &ndash; 7</option>
+                  <option>8+</option>
+                </select>
+              </div>
+              <div>
+                <label for="timeline">When are you thinking about a transition?</label>
+                <select id="timeline" name="timeline" required>
+                  <option value="">Select</option>
+                  <option>Within the next 12 months</option>
+                  <option>1 &ndash; 3 years out</option>
+                  <option>3 &ndash; 5 years out</option>
+                  <option>Not sure / exploring</option>
+                </select>
+              </div>
+              <div>
+                <label for="note">Anything you want Matt to know before the call? (optional)</label>
+                <textarea id="note" name="note" placeholder="He reads these. Skip if you'd rather just talk."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">See available times</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">Someday</p>
+          <p class="footer-tagline">Seller-side M&amp;A counsel for accounting firm owners.</p>
+          <p><a href="mailto:hello@somedayconsultants.com">hello@somedayconsultants.com</a></p>
+          <p><span data-placeholder>[OFFICE ADDRESS &mdash; CO]</span></p>
+        </div>
+        <div>
+          <h4>The Firm</h4>
+          <a href="#process">How It Works</a>
+          <a href="#team">Sara &amp; Matt</a>
+          <a href="#deals">Recent Transactions</a>
+          <a href="#magnet">Read the Post-Mortem</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <p>Sara Sharp, Esq. &mdash; <span data-placeholder>[BAR NUMBER]</span></p>
+          <p>Member: <span data-placeholder>[MEMBERSHIPS]</span></p>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+      <div class="footer-legal">
+        &copy; 2026 Someday Consultants, LLC. All rights reserved.<br>
+        The information on this site is for general informational purposes only and is not legal advice. Communication via this website does not establish an attorney-client relationship.
+      </div>
+    </footer>
+
+    <div class="sticky-cta" id="stickyCta" aria-hidden="true">
+      <p>Ready to see if your firm is positioned? 15 minutes with Matt.</p>
+      <a href="#talk" class="btn">Talk to Matt</a>
+    </div>
+
+  </div><!-- /#content -->
+
+  <script>
+    // ---------- Password gate ----------
+    (function() {
+      var EXPECTED = '233c0ee4290408f134284baabcdec32a2ecd764237d24aefa4f6ed62ce3f9c56';
+      var STORAGE_KEY = 'ss_unlocked_v1';
+      var gate = document.getElementById('gate');
+      var content = document.getElementById('content');
+      var form = document.getElementById('gateForm');
+      var pwInput = document.getElementById('gatePw');
+      var errorEl = document.getElementById('gateError');
+
+      function reveal() {
+        gate.style.display = 'none';
+        content.hidden = false;
+        try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch(e) {}
+        initStickyCta();
+      }
+
+      // Already unlocked this session?
+      try {
+        if (sessionStorage.getItem(STORAGE_KEY) === '1') { reveal(); return; }
+      } catch(e) { /* sessionStorage blocked; fall through to gate */ }
+
+      async function sha256Hex(str) {
+        var buf = new TextEncoder().encode(str);
+        var hash = await crypto.subtle.digest('SHA-256', buf);
+        var bytes = new Uint8Array(hash);
+        var hex = '';
+        for (var i = 0; i < bytes.length; i++) {
+          hex += bytes[i].toString(16).padStart(2, '0');
+        }
+        return hex;
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorEl.textContent = '';
+        var pw = (pwInput.value || '').trim().toLowerCase();
+        if (!pw) return;
+        try {
+          var hex = await sha256Hex(pw);
+          if (hex === EXPECTED) {
+            reveal();
+          } else {
+            errorEl.textContent = 'Not quite. Try again.';
+            pwInput.value = '';
+            pwInput.focus();
+          }
+        } catch (err) {
+          errorEl.textContent = 'Browser does not support this preview. Please use a recent Chrome, Edge, Firefox, or Safari.';
+        }
+      });
+    })();
+
+    // ---------- Sticky CTA (only meaningful after gate is open) ----------
+    function initStickyCta() {
+      var sticky = document.getElementById('stickyCta');
+      var hero = document.querySelector('.hero');
+      var talkSection = document.getElementById('talk');
+      if (!sticky || !hero) return;
+      function onScroll() {
+        var heroBottom = hero.getBoundingClientRect().bottom;
+        var talkRect = talkSection ? talkSection.getBoundingClientRect() : null;
+        var inTalkView = talkRect && talkRect.top < window.innerHeight && talkRect.bottom > 0;
+        if (heroBottom < 0 && !inTalkView) {
+          sticky.classList.add('visible');
+          sticky.setAttribute('aria-hidden', 'false');
+        } else {
+          sticky.classList.remove('visible');
+          sticky.setAttribute('aria-hidden', 'true');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+  </script>
+</body>
+</html>
