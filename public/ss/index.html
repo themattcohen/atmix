@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <!--
-  Someday — Landing Page v1 (preview)
-  Password-gated so it can be shared privately while in review.
-  Hosted under atmix.org/ss as a soft-gated preview only.
-  Source: /someday-marketing/landings/v1/index.html
-  Brief: /claudedocs/someday_locked_positioning_brief_2026-05-20.md
+  Someday — Landing Page v2 (rebalanced 2026-05-20)
+  Password-gated preview. Atmix.org/ss only.
+  Rebalanced to ~60/40 Sara/Matt per business-panel synthesis:
+  /claudedocs/business_panel_someday_rebalance_2026-05-20.md
 -->
 <html lang="en">
 <head>
@@ -115,11 +114,7 @@
       color: var(--slate-mid);
       margin-bottom: 24px;
     }
-    .gate-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .gate-form { display: flex; flex-direction: column; gap: 12px; }
     .gate-form input {
       padding: 13px 16px;
       border: 1px solid var(--hairline);
@@ -146,20 +141,10 @@
       transition: background 0.15s ease;
     }
     .gate-form button:hover { background: var(--forest-light); }
-    .gate-error {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #8a2a2a;
-      min-height: 18px;
-    }
-    .gate-footnote {
-      margin-top: 24px;
-      font-size: 12px;
-      color: var(--slate-muted);
-    }
+    .gate-error { margin-top: 14px; font-size: 13px; color: #8a2a2a; min-height: 18px; }
+    .gate-footnote { margin-top: 24px; font-size: 12px; color: var(--slate-muted); }
 
-    /* ---------- LANDING STYLES ---------- */
-
+    /* ---------- LANDING ---------- */
     header.site-header {
       padding: 22px 0;
       border-bottom: 1px solid var(--hairline);
@@ -198,7 +183,7 @@
       color: var(--slate-muted);
       margin-top: 4px;
     }
-    nav.primary { display: flex; gap: 32px; }
+    nav.primary { display: flex; gap: 28px; }
     nav.primary a {
       font-size: 14px;
       color: var(--slate-mid);
@@ -206,7 +191,7 @@
       letter-spacing: 0.01em;
     }
     nav.primary a:hover { color: var(--forest); }
-    @media (max-width: 680px) { nav.primary { display: none; } }
+    @media (max-width: 760px) { nav.primary { display: none; } }
 
     .hero { padding: 96px 0 88px; background: var(--cream); border-bottom: 1px solid var(--hairline); }
     .hero h1 { max-width: 18ch; margin-bottom: 24px; }
@@ -226,9 +211,11 @@
       border-left: 3px solid var(--gold);
       padding: 16px 20px;
       margin-bottom: 36px;
-      max-width: 56ch;
-      line-height: 1.55;
+      max-width: 60ch;
+      line-height: 1.6;
     }
+    .hero-proof p { margin: 0 0 8px; }
+    .hero-proof p:last-child { margin: 0; }
     @media (max-width: 640px) { .hero { padding: 64px 0 56px; } }
 
     .cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
@@ -288,6 +275,7 @@
     .diff-row dd { margin: 0; color: var(--slate-mid); }
     @media (max-width: 640px) { .diff-row { grid-template-columns: 1fr; gap: 6px; } }
 
+    /* Person blocks — Sara block is taller / has more content */
     .person {
       display: grid;
       grid-template-columns: 200px 1fr;
@@ -297,7 +285,7 @@
     }
     .person-photo {
       width: 200px;
-      height: 200px;
+      height: 240px;
       border-radius: 3px;
       background: var(--cream);
       border: 1px dashed var(--gold);
@@ -316,7 +304,74 @@
     .person p { color: var(--slate); margin-bottom: 0.9em; }
     @media (max-width: 640px) {
       .person { grid-template-columns: 1fr; gap: 20px; }
-      .person-photo { width: 160px; height: 160px; margin-bottom: 8px; }
+      .person-photo { width: 180px; height: 200px; margin-bottom: 8px; }
+    }
+
+    /* Sara's pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--gold);
+      padding: 14px 0 14px 22px;
+      margin: 24px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      line-height: 1.36;
+      color: var(--forest);
+    }
+    .pull-quote-attr {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--slate-muted);
+    }
+
+    /* Content strip — Sara's published work */
+    .content-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 28px 0 20px;
+    }
+    .content-card {
+      background: var(--cream);
+      border: 1px solid var(--hairline);
+      border-radius: 3px;
+      padding: 18px 18px 20px;
+      text-decoration: none;
+      color: var(--slate);
+      transition: border-color 0.15s ease;
+      display: block;
+    }
+    .content-card:hover { border-color: var(--gold); color: var(--slate); }
+    .content-card-kind {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .content-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--forest);
+      line-height: 1.2;
+      margin: 0 0 4px;
+    }
+    .content-card-meta {
+      font-size: 12px;
+      color: var(--slate-muted);
+      line-height: 1.4;
+    }
+    @media (max-width: 760px) {
+      .content-strip { grid-template-columns: 1fr; }
     }
 
     .bio-credentials { list-style: none; padding: 0; margin: 18px 0; color: var(--slate-mid); }
@@ -421,38 +476,70 @@
       .process-steps li:before { font-size: 36px; top: 22px; }
     }
 
-    .magnet-panel {
+    /* Dual magnet — two side-by-side panels */
+    .magnet-dual {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+    @media (max-width: 760px) {
+      .magnet-dual { grid-template-columns: 1fr; }
+    }
+    .magnet-primary {
       background: var(--forest);
       color: var(--cream-light);
-      padding: 56px 48px;
+      padding: 48px 40px;
       border-radius: 3px;
     }
-    .magnet-panel h2 { color: var(--cream-light); }
-    .magnet-panel .section-label { color: var(--gold-light); }
-    .magnet-panel p { color: var(--cream); }
-    .magnet-form { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .magnet-secondary {
+      background: var(--cream);
+      color: var(--slate);
+      padding: 48px 40px;
+      border-radius: 3px;
+      border: 1px solid var(--hairline);
+    }
+    .magnet-primary h3 { color: var(--cream-light); font-size: 26px; }
+    .magnet-primary .section-label { color: var(--gold-light); }
+    .magnet-primary p { color: var(--cream); }
+    .magnet-secondary h3 { color: var(--forest); font-size: 26px; }
+    .magnet-secondary .section-label { color: var(--gold); }
+    .magnet-secondary p { color: var(--slate-mid); }
+    .magnet-form { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
     .magnet-form input {
       flex: 1;
-      min-width: 200px;
-      padding: 13px 18px;
+      min-width: 160px;
+      padding: 12px 14px;
       border-radius: 3px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+    .magnet-primary .magnet-form input {
       border: 1px solid var(--forest-light);
       background: var(--cream-light);
       color: var(--slate);
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
+    }
+    .magnet-secondary .magnet-form input {
+      border: 1px solid var(--hairline);
+      background: var(--cream-light);
+      color: var(--slate);
     }
     .magnet-form input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
-    .magnet-form .btn { background: var(--gold); color: var(--forest); }
-    .magnet-form .btn:hover { background: var(--gold-light); opacity: 1; color: var(--forest); }
+    .magnet-primary .magnet-form .btn { background: var(--gold); color: var(--forest); padding: 12px 20px; font-size: 14px; }
+    .magnet-primary .magnet-form .btn:hover { background: var(--gold-light); opacity: 1; }
+    .magnet-secondary .magnet-form .btn { background: var(--forest); color: var(--cream-light); padding: 12px 20px; font-size: 14px; }
+    .magnet-secondary .magnet-form .btn:hover { background: var(--forest-light); opacity: 1; }
     .magnet-aside {
-      font-size: 13px;
-      color: var(--cream);
+      font-size: 12px;
       opacity: 0.75;
-      margin-top: 18px;
+      margin-top: 14px;
       font-style: italic;
     }
-    @media (max-width: 640px) { .magnet-panel { padding: 40px 26px; } }
+    .magnet-primary .magnet-aside { color: var(--cream); }
+    .magnet-secondary .magnet-aside { color: var(--slate-muted); }
+    @media (max-width: 760px) {
+      .magnet-primary, .magnet-secondary { padding: 36px 26px; }
+    }
 
     .faq-item { padding: 26px 0; border-bottom: 1px solid var(--hairline); }
     .faq-item:last-child { border-bottom: none; }
@@ -491,17 +578,24 @@
     }
     .intake-fields textarea { resize: vertical; min-height: 88px; font-family: 'Inter', sans-serif; }
     @media (max-width: 640px) { .intake-section { padding: 40px 26px; } }
+    .intake-meta {
+      font-size: 13px;
+      color: var(--slate-muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
 
     footer.site-footer { background: var(--forest); color: var(--cream); padding: 64px 0 36px; }
     .footer-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 48px;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
       max-width: 960px;
       margin: 0 auto;
       padding: 0 24px;
     }
-    @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+    @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
     .footer-brand {
       font-family: 'Cormorant Garamond', serif;
       font-size: 30px;
@@ -577,7 +671,6 @@
     .skip { position: absolute; left: -9999px; }
     .skip:focus { position: static; padding: 12px; background: var(--forest); color: var(--cream-light); }
 
-    /* Preview-only banner */
     .preview-banner {
       background: var(--gold);
       color: var(--forest);
@@ -607,7 +700,7 @@
     </div>
   </div>
 
-  <!-- LANDING CONTENT (revealed after gate) -->
+  <!-- LANDING CONTENT -->
   <div id="content" hidden>
 
     <div class="preview-banner">Preview &mdash; private draft &middot; not indexed &middot; not for distribution</div>
@@ -622,9 +715,10 @@
         </a>
         <nav class="primary" aria-label="Primary">
           <a href="#process">How It Works</a>
-          <a href="#team">Sara &amp; Matt</a>
+          <a href="#sara">Sara Sharp</a>
+          <a href="#matt">Why Matt Is Here</a>
           <a href="#deals">Transactions</a>
-          <a href="#talk">Talk to Matt</a>
+          <a href="#talk">Start the Call</a>
         </nav>
       </div>
     </header>
@@ -636,14 +730,15 @@
           <h1>You spent 25 years building it. The exit should be built the same way.</h1>
           <p class="hero-subhead">M&amp;A representation for accounting firm owners &mdash; from valuation through closing documents. Not a listing service.</p>
           <div class="hero-proof">
-            <strong>Sara Sharp</strong> has closed <span data-placeholder>[DEAL COUNT]</span> accounting firm transactions worth <span data-placeholder>[$VALUE]</span> in the last <span data-placeholder>[WINDOW]</span>.<br>
-            <strong>Matt Cohen</strong> sold his own through her.
+            <p><strong>Sara Sharp</strong> has closed <span data-placeholder>[DEAL COUNT]</span> accounting firm transactions worth <span data-placeholder>[$VALUE]</span> over the last <span data-placeholder>[WINDOW]</span>.</p>
+            <p>She wrote <em>Here's the Deal</em> &mdash; the book on accounting firm M&amp;A.</p>
+            <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
           </div>
           <div class="cta-row">
-            <a href="#talk" class="btn btn-primary">Talk to Matt &mdash; see if your firm is ready</a>
-            <a href="#magnet" class="btn btn-secondary">Read Matt's post-mortem</a>
+            <a href="#talk" class="btn btn-primary">Start a 15-minute call</a>
+            <a href="#magnet" class="btn btn-secondary">Read first</a>
           </div>
-          <span class="cta-microcopy">Matt meets with owners actively evaluating a transition in 1&ndash;3 years.</span>
+          <span class="cta-microcopy">Matt screens. Sara represents.</span>
         </div>
       </section>
 
@@ -656,7 +751,7 @@
           <dl class="diff-list">
             <div class="diff-row">
               <dt>The deal narrative</dt>
-              <dd>Confidential Information Memorandum (CIM), positioning, defensible valuation. We write the firm so the buyer sees their growth thesis, not their fixer-upper.</dd>
+              <dd>Confidential Information Memorandum (CIM), positioning, defensible valuation. Sara writes the firm so the buyer sees their growth thesis, not their fixer-upper.</dd>
             </div>
             <div class="diff-row">
               <dt>The diligence</dt>
@@ -664,7 +759,7 @@
             </div>
             <div class="diff-row">
               <dt>The negotiation</dt>
-              <dd>LOI, term sheet, definitive documents. Not introductions &mdash; advocacy. Sara represents one side of the table only.</dd>
+              <dd>LOI, term sheet, definitive documents. Sara is in every conversation with the buyer's counsel. The negotiation does not get delegated.</dd>
             </div>
             <div class="diff-row">
               <dt>The close</dt>
@@ -676,49 +771,76 @@
             </div>
           </dl>
 
-          <p><em>Sara leads the process. Matt handles the math and operations. We are not a brokerage. We are seller-side M&amp;A counsel for accounting firms.</em></p>
+          <p><em>Sara represents the seller end to end. Matt runs the first call so Sara's time stays on the work. We are not a brokerage. We are seller-side M&amp;A counsel for accounting firms.</em></p>
         </div>
       </section>
 
-      <section id="team">
-        <div class="container">
-          <p class="section-label">Why this exists</p>
-          <h2>Matt sold his firm through Sara. Then he joined her.</h2>
-
-          <div class="person">
-            <div class="person-photo">PORTRAIT<br>MATT COHEN<br>(direct-to-camera, real office)</div>
-            <div>
-              <p>I sold <span data-placeholder>[FIRM NAME]</span> in <span data-placeholder>[YEAR]</span> &mdash; a <span data-placeholder>[REVENUE BAND]</span> <span data-placeholder>[CITY/STATE]</span> accounting practice &mdash; at <span data-placeholder>[MULTIPLE]</span> of revenue.</p>
-              <p>I'd interviewed three brokers. All three quoted a similar timeline, a similar commission, and a similar pitch: "We'll put you in front of buyers and shepherd the paperwork."</p>
-              <p>What I needed was someone who knew where my firm was actually weak before a buyer found it. Someone who could sit across the table from the buyer's counsel and not blink. Someone who'd think about my staff, my clients, and my name on the door six months after close.</p>
-              <p>Sara did all of that. She caught two things in diligence that would have re-traded the price. She wrote a CIM that made my firm read like the buyer's growth thesis, not their fixer-upper. She closed the deal at the number on the first LOI.</p>
-              <p>When she asked if I'd help her reach other firm owners going through the same thing, I said yes. I get a piece when I bring in a client &mdash; which is why this page exists.</p>
-              <p style="margin-top: 22px;"><strong>&mdash; Matt Cohen, CPA</strong></p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section>
+      <!-- SARA — primary substance section -->
+      <section id="sara">
         <div class="container">
           <p class="section-label">Lead counsel</p>
-          <h2>About Sara Sharp.</h2>
+          <h2>Sara Sharp.</h2>
 
           <div class="person">
-            <div class="person-photo">PORTRAIT<br>SARA SHARP<br>(direct-to-camera, real office)</div>
+            <div class="person-photo">PORTRAIT<br>SARA SHARP<br>(direct-to-camera<br>real office)</div>
             <div>
-              <p>Sara Sharp is the lead M&amp;A counsel at Someday.</p>
+              <p>Sara represents sellers. Only sellers. She does not collect commission from buyers, does not list firms in a marketplace, and does not take a percentage to make introductions. Her practice is structured one way: advocate for the seller from valuation through closing documents.</p>
+
+              <p>She has closed <span data-placeholder>[DEAL COUNT]</span> accounting firm transactions in the last <span data-placeholder>[WINDOW]</span> &mdash; <span data-placeholder>[$VALUE]</span> in transaction value. The work is concentrated in sub-$5M revenue practices, mostly Colorado, mostly closing at the top of their valuation band &mdash; and a number above it.</p>
+
+              <blockquote class="pull-quote">
+                <span data-placeholder>[Sara quote &mdash; one or two sentences in her voice about what representation means vs brokering. Pulled from the book, a podcast, or her own words.]</span>
+                <span class="pull-quote-attr">&mdash; Sara Sharp</span>
+              </blockquote>
+
+              <p>Her published work on accounting firm M&amp;A:</p>
+
+              <div class="content-strip">
+                <a class="content-card" href="#" onclick="event.preventDefault();">
+                  <div class="content-card-kind">Book</div>
+                  <div class="content-card-title">Here's the Deal</div>
+                  <div class="content-card-meta">Accounting firm M&amp;A, 2026</div>
+                </a>
+                <a class="content-card" href="#" onclick="event.preventDefault();">
+                  <div class="content-card-kind">YouTube</div>
+                  <div class="content-card-title">Sara Sharp's Dealmakers</div>
+                  <div class="content-card-meta">Weekly conversations on selling a firm</div>
+                </a>
+                <a class="content-card" href="#" onclick="event.preventDefault();">
+                  <div class="content-card-kind">Course</div>
+                  <div class="content-card-title">Deal Academy</div>
+                  <div class="content-card-meta">dealacademy.org</div>
+                </a>
+              </div>
+
               <ul class="bio-credentials">
-                <li><span data-placeholder>[DEAL COUNT]</span>+ accounting firm transactions closed in the last <span data-placeholder>[WINDOW]</span></li>
-                <li><span data-placeholder>[$VALUE]</span> in total transaction value</li>
                 <li>40 Under 40 CPA Practice Advisor, 2025</li>
-                <li>Author, <em>Here's the Deal</em> (2026)</li>
-                <li>Host, Sara Sharp's Dealmakers (YouTube)</li>
-                <li>Founder, Deal Academy (dealacademy.org)</li>
                 <li>Speaker, 2025 Jetpack Workflow M&amp;A Summit &mdash; SBA structuring for accounting firm acquisitions</li>
+                <li>Member, <span data-placeholder>[MEMBERSHIPS]</span></li>
               </ul>
-              <p>Sara represents sellers only. She does not run a buyer network, does not list firms, and does not collect commission from both sides. Her practice is structured to advocate for the seller end to end.</p>
-              <p class="bio-meta"><span data-placeholder>[BAR NUMBER]</span> &nbsp;|&nbsp; Member: <span data-placeholder>[MEMBERSHIPS]</span></p>
+
+              <p class="bio-meta">Colorado Bar &mdash; <span data-placeholder>[BAR NUMBER]</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MATT — compressed peer bridge section -->
+      <section id="matt">
+        <div class="container">
+          <p class="section-label">Why Matt is here</p>
+          <h2>The CPA who sold his firm through Sara &mdash; and now opens the door.</h2>
+
+          <div class="person">
+            <div class="person-photo">PORTRAIT<br>MATT COHEN<br>(direct-to-camera<br>real office)</div>
+            <div>
+              <p>Matt Cohen is a CPA. He sold <span data-placeholder>[FIRM NAME]</span> in <span data-placeholder>[YEAR]</span> &mdash; a <span data-placeholder>[REVENUE BAND]</span> <span data-placeholder>[CITY/STATE]</span> practice &mdash; through Sara as his attorney.</p>
+
+              <p>He interviewed three brokers before picking her. None could explain how they'd raise the price, only how they'd run the process. Sara could. He hired her, closed at the number on the first LOI, and stayed in touch.</p>
+
+              <p>Matt now runs the first 15 minutes of every inquiry that comes in. He'll tell you whether your firm is positioned for a deal in the next 1&ndash;3 years &mdash; including if the honest answer is "not yet." If your timeline is real, you work with Sara directly from there.</p>
+
+              <p>Matt earns a referral fee when an inquiry becomes a client. That's why this page exists, and that's why his 15 minutes are free. His full deal post-mortem is one of the downloads below if you want the long version.</p>
             </div>
           </div>
         </div>
@@ -726,13 +848,13 @@
 
       <section>
         <div class="container">
-          <p class="section-label">From sellers who hired us</p>
+          <p class="section-label">From sellers who hired Sara</p>
           <h2>What sellers say.</h2>
 
           <div class="testimonials-grid">
             <article class="testimonial">
               <div class="testimonial-photo">PHOTO</div>
-              <p class="testimonial-quote"><span data-placeholder>[Quote from named CO seller 1 &mdash; 2-3 sentences on the specific moment they realized Someday was different.]</span></p>
+              <p class="testimonial-quote"><span data-placeholder>[Quote from named CO seller 1 &mdash; 2-3 sentences on the specific moment Sara's representation moved the deal.]</span></p>
               <p class="testimonial-attribution">
                 <strong><span data-placeholder>[Full Name]</span></strong>
                 <span data-placeholder>[Title, Firm Name]</span><br>
@@ -764,7 +886,7 @@
       <section id="deals">
         <div class="container">
           <p class="section-label">Pattern recognition</p>
-          <h2>Recent transactions.</h2>
+          <h2>Recent transactions Sara has closed.</h2>
           <p>Anonymized for client confidentiality. Specific enough to recognize whether your firm fits the pattern.</p>
           <ul class="deal-capsules">
             <li>
@@ -799,42 +921,60 @@
           <ol class="process-steps">
             <li>
               <h3>You book a 15-minute call with Matt.</h3>
-              <p>Three questions in the form: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
+              <p>Three questions on the form first: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
             </li>
             <li>
               <h3>Matt tells you whether your firm is positioned for a deal in the next 1&ndash;3 years.</h3>
-              <p>If it's not, he tells you that too. The call is diagnostic, not promotional. No pitch.</p>
+              <p>If it's not, he tells you that. The call is diagnostic. No pitch.</p>
             </li>
             <li>
-              <h3>If your timeline is real, Matt introduces you to Sara.</h3>
-              <p>Sara takes a 45-minute working session &mdash; not a sales call. She walks you through what your firm would trade for today and what to fix to widen the band by 2027.</p>
+              <h3>If your timeline is real, you work with Sara directly from there.</h3>
+              <p>Sara takes a 45-minute working session &mdash; not a sales call. She walks you through what your firm would trade for today and what would widen the band by 2027.</p>
             </li>
             <li>
-              <h3>If you decide to work together, Sara represents you end to end.</h3>
-              <p>CIM in 4&ndash;6 weeks. Buyer process begins after. Most deals close 4&ndash;8 months from engagement to wire.</p>
+              <h3>If you decide to engage, Sara represents you end to end.</h3>
+              <p>CIM in 4&ndash;6 weeks. Buyer process kicks off after. Most deals close 4&ndash;8 months from engagement to wire. Sara is in every conversation with the buyer's counsel; the negotiation does not get delegated.</p>
             </li>
             <li>
-              <h3>We sit through the first 90 days post-close.</h3>
+              <h3>Sara stays through the first 90 days post-close.</h3>
               <p>Client transitions, staff retention, your role and identity after handoff. In the engagement, not an upsell.</p>
             </li>
           </ol>
         </div>
       </section>
 
+      <!-- DUAL MAGNET — Sara primary, Matt secondary -->
       <section id="magnet">
         <div class="container">
-          <div class="magnet-panel">
-            <p class="section-label">Not ready to talk yet?</p>
-            <h2>Read Matt's post-mortem.</h2>
-            <p>Twelve pages on what he wishes he'd known before the LOI. What Sara caught that saved the deal. What he'd do differently if he were doing it over.</p>
-            <form class="magnet-form" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 will wire this to the backend.');">
-              <label for="magnet-name" class="skip">Name</label>
-              <input type="text" id="magnet-name" name="name" placeholder="Your name" required>
-              <label for="magnet-email" class="skip">Work email</label>
-              <input type="email" id="magnet-email" name="email" placeholder="Work email" required>
-              <button type="submit" class="btn">Send me the PDF</button>
-            </form>
-            <p class="magnet-aside">No newsletter sign-up. We send the PDF, then one follow-up two weeks later asking if it was useful. That's it.</p>
+          <p class="section-label">Read before you book</p>
+          <h2>Two ways in.</h2>
+          <div class="magnet-dual">
+            <div class="magnet-primary">
+              <p class="section-label">From Sara</p>
+              <h3>A chapter from <em>Here's the Deal</em>.</h3>
+              <p>The chapter on positioning your firm for a deal &mdash; what buyers actually look for, what re-trades the price, and what to fix 18 months before you intend to sell.</p>
+              <form class="magnet-form" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 wires this to the backend.');">
+                <label for="m1-name" class="skip">Name</label>
+                <input type="text" id="m1-name" name="name" placeholder="Your name" required>
+                <label for="m1-email" class="skip">Work email</label>
+                <input type="email" id="m1-email" name="email" placeholder="Work email" required>
+                <button type="submit" class="btn">Send the chapter</button>
+              </form>
+              <p class="magnet-aside">No newsletter sign-up. We send the chapter and one follow-up two weeks later asking if it was useful.</p>
+            </div>
+            <div class="magnet-secondary">
+              <p class="section-label">From Matt</p>
+              <h3>His deal post-mortem.</h3>
+              <p>Twelve pages. What he wishes he'd known before the LOI, what Sara caught that saved the deal, and what he'd do differently if he were doing it over.</p>
+              <form class="magnet-form" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 wires this to the backend.');">
+                <label for="m2-name" class="skip">Name</label>
+                <input type="text" id="m2-name" name="name" placeholder="Your name" required>
+                <label for="m2-email" class="skip">Work email</label>
+                <input type="email" id="m2-email" name="email" placeholder="Work email" required>
+                <button type="submit" class="btn">Send the PDF</button>
+              </form>
+              <p class="magnet-aside">Same single follow-up. No sequence.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -846,27 +986,27 @@
 
           <div class="faq-item">
             <h3 class="faq-q">What size firm do you work with?</h3>
-            <p class="faq-a">We work with practices billing $300K and up. Most clients are between $500K and $5M in annual revenue.</p>
+            <p class="faq-a">Sara works with practices billing $300K and up. Most clients are between $500K and $5M in annual revenue.</p>
           </div>
 
           <div class="faq-item">
             <h3 class="faq-q">How much do you charge?</h3>
-            <p class="faq-a">We work on a flat engagement fee plus a success fee at close. Total fees typically run <span data-placeholder>[X]%</span> of transaction value &mdash; competitive with full-service M&amp;A advisory, lower than the all-in cost of a broker plus separate legal counsel. We share the structure on the discovery call.</p>
+            <p class="faq-a">A flat engagement fee plus a success fee at close. Total fees typically run <span data-placeholder>[X]%</span> of transaction value &mdash; competitive with full-service M&amp;A advisory, lower than the all-in cost of a broker plus separate legal counsel. Sara shares the structure on the working session.</p>
           </div>
 
           <div class="faq-item">
             <h3 class="faq-q">Do you only work with Colorado firms?</h3>
-            <p class="faq-a">Most of our work is in Colorado, but we represent firms nationally. We're licensed in CO; for out-of-state matters we partner with local counsel as needed.</p>
+            <p class="faq-a">Most of Sara's work is in Colorado, but she represents firms nationally. She's licensed in CO; for out-of-state matters she partners with local counsel as needed.</p>
           </div>
 
           <div class="faq-item">
-            <h3 class="faq-q">I'm not sure I want to sell yet. Should I still talk to Matt?</h3>
+            <h3 class="faq-q">I'm not sure I want to sell yet. Should I still book the call?</h3>
             <p class="faq-a">Yes. About half of Matt's calls end with "now is not the right time" &mdash; and a plan to revisit in 12 or 24 months. The most common mistake we see is owners deciding to sell six months before they wish they had started preparing.</p>
           </div>
 
           <div class="faq-item">
-            <h3 class="faq-q">What happens if I decide not to work with you after the call?</h3>
-            <p class="faq-a">Nothing. The 15-minute call with Matt and the 45-minute working session with Sara are both free. We don't put owners under contract until we've agreed on the engagement scope and you've seen the proposal.</p>
+            <h3 class="faq-q">What happens if I decide not to engage after the working session?</h3>
+            <p class="faq-a">Nothing. Both the 15-minute call with Matt and the 45-minute working session with Sara are free. We don't put owners under contract until you've seen the proposal and agreed on scope.</p>
           </div>
         </div>
       </section>
@@ -874,11 +1014,11 @@
       <section id="talk">
         <div class="container">
           <div class="intake-section">
-            <p class="section-label">Talk to Matt</p>
-            <h2>Three questions, then you'll see Matt's calendar.</h2>
-            <p>The 15-minute call is diagnostic. Matt will tell you whether your firm is positioned for a deal in the next 1&ndash;3 years &mdash; including if the honest answer is no.</p>
+            <p class="section-label">Start the call</p>
+            <h2>Three questions, then Matt's calendar.</h2>
+            <p>The 15-minute call is diagnostic. Matt will tell you whether your firm is positioned for a deal in the next 1&ndash;3 years &mdash; including if the honest answer is no. If it's yes, you work with Sara from there.</p>
 
-            <form class="intake-fields" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 will wire this to the calendar.');">
+            <form class="intake-fields" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 wires this to the calendar.');">
               <div>
                 <label for="i-name">Your name</label>
                 <input type="text" id="i-name" name="name" required>
@@ -925,6 +1065,7 @@
               </div>
               <button type="submit" class="btn btn-primary">See available times</button>
             </form>
+            <p class="intake-meta">Matt screens. Sara represents.</p>
           </div>
         </div>
       </section>
@@ -940,18 +1081,25 @@
           <p><span data-placeholder>[OFFICE ADDRESS &mdash; CO]</span></p>
         </div>
         <div>
+          <h4>From Sara</h4>
+          <a href="#" onclick="event.preventDefault();">Here's the Deal (book)</a>
+          <a href="#" onclick="event.preventDefault();">Dealmakers (YouTube)</a>
+          <a href="#" onclick="event.preventDefault();">Deal Academy</a>
+        </div>
+        <div>
           <h4>The Firm</h4>
           <a href="#process">How It Works</a>
-          <a href="#team">Sara &amp; Matt</a>
-          <a href="#deals">Recent Transactions</a>
-          <a href="#magnet">Read the Post-Mortem</a>
+          <a href="#sara">Sara Sharp</a>
+          <a href="#matt">Why Matt Is Here</a>
+          <a href="#deals">Transactions</a>
+          <a href="#talk">Start the Call</a>
         </div>
         <div>
           <h4>Legal</h4>
-          <p>Sara Sharp, Esq. &mdash; <span data-placeholder>[BAR NUMBER]</span></p>
-          <p>Member: <span data-placeholder>[MEMBERSHIPS]</span></p>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <p>Sara Sharp, Esq.</p>
+          <p>CO Bar &mdash; <span data-placeholder>[BAR NUMBER]</span></p>
+          <a href="#" onclick="event.preventDefault();">Privacy</a>
+          <a href="#" onclick="event.preventDefault();">Terms</a>
         </div>
       </div>
       <div class="footer-legal">
@@ -961,14 +1109,13 @@
     </footer>
 
     <div class="sticky-cta" id="stickyCta" aria-hidden="true">
-      <p>Ready to see if your firm is positioned? 15 minutes with Matt.</p>
-      <a href="#talk" class="btn">Talk to Matt</a>
+      <p>Start with a 15-minute call. Matt screens, Sara represents.</p>
+      <a href="#talk" class="btn">Start the call</a>
     </div>
 
   </div><!-- /#content -->
 
   <script>
-    // ---------- Password gate ----------
     (function() {
       var EXPECTED = '233c0ee4290408f134284baabcdec32a2ecd764237d24aefa4f6ed62ce3f9c56';
       var STORAGE_KEY = 'ss_unlocked_v1';
@@ -985,10 +1132,9 @@
         initStickyCta();
       }
 
-      // Already unlocked this session?
       try {
         if (sessionStorage.getItem(STORAGE_KEY) === '1') { reveal(); return; }
-      } catch(e) { /* sessionStorage blocked; fall through to gate */ }
+      } catch(e) {}
 
       async function sha256Hex(str) {
         var buf = new TextEncoder().encode(str);
@@ -1021,7 +1167,6 @@
       });
     })();
 
-    // ---------- Sticky CTA (only meaningful after gate is open) ----------
     function initStickyCta() {
       var sticky = document.getElementById('stickyCta');
       var hero = document.querySelector('.hero');
