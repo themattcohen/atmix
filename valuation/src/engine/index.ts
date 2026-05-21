@@ -9,13 +9,14 @@
  */
 
 import { computeAcceleration } from './acceleration';
+import { buildAppendixTrace, type TraceContext } from './appendixTrace';
 import { computeEbitda } from './ebitda';
 import { computeMultiple } from './multiple';
 import { computeSellability } from './sellability';
 import { computeWealthGap } from './wealthGap';
 import type { EngineInputs, EngineOutput } from './types';
 
-export function compute(inputs: EngineInputs): EngineOutput {
+export function compute(inputs: EngineInputs, trace?: TraceContext): EngineOutput {
   const ebitdaFull = computeEbitda(inputs.financials, inputs.mode);
   const { sizeScore, ...ebitda } = ebitdaFull;
 
@@ -39,7 +40,7 @@ export function compute(inputs: EngineInputs): EngineOutput {
 
   const wealthGap = computeWealthGap(inputs.wealthGap, inputs.mode);
 
-  return {
+  const out: EngineOutput = {
     sellability,
     ebitda,
     multiple,
@@ -47,6 +48,13 @@ export function compute(inputs: EngineInputs): EngineOutput {
     wealthGap,
     mode: inputs.mode,
   };
+
+  if (trace) {
+    out.appendix = buildAppendixTrace(inputs, trace, sellability, multiple);
+  }
+
+  return out;
 }
 
 export type * from './types';
+export type { TraceContext, QuestionDef } from './appendixTrace';

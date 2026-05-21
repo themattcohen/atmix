@@ -15,8 +15,10 @@ dist-ssr/
 *.local
 *.tsbuildinfo
 
-# Local-only screenshots from dev verification (not committed)
+# Local-only screenshots + sample PDFs from dev verification (not committed)
 claudedocs/screenshots/
+claudedocs/appendix-screenshots/
+claudedocs/sample-*.pdf
 
 # OS
 .DS_Store

@@ -7,7 +7,7 @@ import { FirmProfileStep } from './components/steps/FirmProfileStep';
 import { FinancialsStep } from './components/steps/FinancialsStep';
 import { QuestionStep } from './components/steps/QuestionStep';
 import { ResultsStep } from './components/steps/ResultsStep';
-import { useWizard, TOTAL_STEPS } from './state/useWizard';
+import { useWizard, TOTAL_STEPS, buildEngineInputs } from './state/useWizard';
 import { fmt } from './lib/format';
 // Lazy-load PDF code — saves ~490KB gzipped from initial bundle
 
@@ -22,7 +22,7 @@ export function App() {
       const blob = await generateValuationPdf({
         firmName: w.state.firmName,
         city: w.state.city,
-        outputs: w.outputs,
+        inputs: buildEngineInputs(w.state),
         includeWealthGap: w.state.showWealthGap,
         contact: {
           matt: { name: 'Matt Cohen', email: 'hello@somedayconsultants.com' },
@@ -127,6 +127,7 @@ export function App() {
           {w.step === 4 && (
             <ResultsStep
               firmName={w.state.firmName}
+              inputs={buildEngineInputs(w.state)}
               outputs={w.outputs}
               showWealthGap={w.state.showWealthGap}
               onToggleWealthGap={(v) => w.update('showWealthGap', v)}

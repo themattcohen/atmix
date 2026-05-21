@@ -52,5 +52,15 @@ export function computeEbitda(
     currentProfitMargin,
     salaryAddBackUsed,
     sizeScore,
+    addBackComponents: {
+      pretaxProfit: fin.pretaxProfit,
+      amortizationDepreciation: fin.amortizationDepreciation,
+      longTermInterest: fin.longTermInterest,
+      discretionarySpending: fin.discretionarySpending,
+      salaryAddBack: salaryAddBackUsed,
+      rentToSelf: fin.rentToSelf,
+      marketRateUsed: typeof fin.marketRateReplacementSalary === 'number' ? fin.marketRateReplacementSalary : null,
+      ownerSalaryRaw: fin.ownerSalary,
+    },
   };
 }

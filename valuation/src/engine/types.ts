@@ -114,7 +114,19 @@ export interface EbitdaOutput {
   currentProfitMargin: number;
   /** Only differs from sheet when mode='corrected' AND marketRateReplacementSalary is provided */
   salaryAddBackUsed: number;
+  addBackComponents: {
+    pretaxProfit: number;
+    amortizationDepreciation: number;
+    longTermInterest: number;
+    discretionarySpending: number;
+    salaryAddBack: number;
+    rentToSelf: number;
+    marketRateUsed: number | null;
+    ownerSalaryRaw: number;
+  };
 }
+
+export type BandSelected = 'p10' | 'p25' | 'median' | 'median-p75-avg' | 'p75' | 'p75-p90-avg';
 
 export interface MultipleOutput {
   /** D63-I63 common bands and D64-I64 industry bands as constants */
@@ -130,6 +142,16 @@ export interface MultipleOutput {
   fromFinancialsFinal: number;
   /** J67 — the actual multiple used in valuation. Custom bypasses risk weighting. */
   ebitdaMultipleUsed: number;
+  /** Which percentile bucket the sellability % fell into */
+  bandSelected: BandSelected;
+  /** Human-readable band rule string */
+  bandRule: string;
+  /** Which table was queried: 'common' if source is Common or Custom, else 'industry' */
+  tableUsed: 'common' | 'industry';
+  /** True if custom multiple bypassed the risk-weighting chain */
+  customMultipleBypassed: boolean;
+  /** True if Canadian discount of -0.5 applied (only when not custom) */
+  canadianApplied: boolean;
 }
 
 export interface AccelerationOutput {
@@ -173,6 +195,71 @@ export interface WealthGapOutput {
   targetSalePrice: number;
 }
 
+export interface QuestionTrace {
+  id: string;
+  cell: string;
+  prompt: string;
+  answerLabel: string;
+  rawScore: number;
+  weight_G: number;
+  contribution: number;
+  maxPossible: number;
+  trackingOnly: boolean;
+}
+
+export interface FinancialsTrace {
+  revenue: number;
+  pretaxProfit: number;
+  amortizationDepreciation: number;
+  longTermInterest: number;
+  discretionarySpending: number;
+  ownerSalary: number;
+  rentToSelf: number;
+  marketRateReplacementSalary?: number;
+}
+
+export interface WealthGapInputsTrace {
+  dividends: number;
+  wages: number;
+  personalExpensesCoveredByBusiness: number;
+  otherPassiveIncome: number;
+  liquidAssets: number;
+  nonMortgageDebt: number;
+  desiredPostSaleAnnualIncome: number;
+  desiredExitTimelineYears: number;
+  ownershipPct: number;
+  feesAndTaxesPct: number;
+  longTermBusinessDebt: number;
+  returnOnPortfolio: number;
+}
+
+export interface MultipleTrace {
+  source: MultipleSource;
+  riskWeighting: RiskWeighting;
+  canadian: boolean;
+  customMultiple: number;
+  tableUsed: 'common' | 'industry';
+  bandSelected: BandSelected;
+  bandRule: string;
+  customMultipleBypassed: boolean;
+  canadianApplied: boolean;
+}
+
+export interface AccelerationTrace {
+  targetSizeIncreasePct: number;
+  targetEfficiencyIncreasePct: number;
+  targetMultipleIncreasePct: number;
+}
+
+export interface AppendixTrace {
+  readinessQuestions: QuestionTrace[];
+  riskQuestions: QuestionTrace[];
+  financials: FinancialsTrace;
+  multiple: MultipleTrace;
+  acceleration: AccelerationTrace;
+  wealthGap?: WealthGapInputsTrace;
+}
+
 export interface EngineOutput {
   sellability: SellabilityOutput;
   ebitda: EbitdaOutput;
@@ -180,4 +267,6 @@ export interface EngineOutput {
   acceleration: AccelerationOutput;
   wealthGap: WealthGapOutput;
   mode: EngineMode;
+  /** Populated when compute() is given the trace-enabling TraceContext */
+  appendix?: AppendixTrace;
 }

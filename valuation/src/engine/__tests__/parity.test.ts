@@ -13,6 +13,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
+import { READINESS_QUESTIONS, RISK_QUESTIONS } from '../../data/questions';
 import { compute } from '../index';
 import { EXPECTED_CORRECTED, EXPECTED_LITERAL, SAMPLE_FIRM } from './fixtures/sampleFirm';
 
@@ -237,5 +238,106 @@ describe('Size-score lookup boundaries', () => {
     expect(out.ebitda.adjustedEbitda).toBe(ebitda);
     expect(out.sellability.sizeScore).toBe(expectedScore);
     void EPS;
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Appendix trace builder tests
+// ---------------------------------------------------------------------------
+
+/** Build a TraceContext from the CPA question definitions and SAMPLE_FIRM inputs. */
+function makeTraceCtx() {
+  return {
+    readinessQuestionDefs: READINESS_QUESTIONS,
+    riskQuestionDefs: RISK_QUESTIONS,
+    financialsInput: SAMPLE_FIRM.financials,
+    wealthGapInput: SAMPLE_FIRM.wealthGap,
+    multipleConfigInput: SAMPLE_FIRM.multipleConfig,
+    accelerationConfigInput: SAMPLE_FIRM.acceleration,
+  };
+}
+
+describe('Appendix trace builder', () => {
+  it('readiness QuestionTrace correctness', () => {
+    const out = compute({ ...SAMPLE_FIRM, mode: 'literal' }, makeTraceCtx());
+    const rq = out.appendix!.readinessQuestions;
+
+    // Total rows matches READINESS_QUESTIONS length (9 = 7 scoring + 2 tracking)
+    expect(rq.length).toBe(READINESS_QUESTIONS.length);
+
+    // Sum of contributions across non-tracking questions equals step1Score (22)
+    const contribSum = rq
+      .filter((q) => !q.trackingOnly)
+      .reduce((acc, q) => acc + q.contribution, 0);
+    expect(contribSum).toBe(out.sellability.step1Score);
+    expect(out.sellability.step1Score).toBe(EXPECTED_LITERAL.step1Score); // 22
+
+    // Tracking-only questions have contribution=0, maxPossible=0
+    const trackingRows = rq.filter((q) => q.trackingOnly);
+    for (const row of trackingRows) {
+      expect(row.contribution).toBe(0);
+      expect(row.maxPossible).toBe(0);
+    }
+
+    // Each scoring question with a non-zero weight has a non-empty answerLabel (not '(not recorded)')
+    // q_sale_price_target has weight_G=0 and empty options (toggle UI), so it is excluded here.
+    const scoringRows = rq.filter((q) => !q.trackingOnly && q.weight_G > 0);
+    for (const row of scoringRows) {
+      expect(row.answerLabel).not.toBe('(not recorded)');
+      expect(row.answerLabel.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('risk QuestionTrace correctness', () => {
+    const out = compute({ ...SAMPLE_FIRM, mode: 'literal' }, makeTraceCtx());
+    const rq = out.appendix!.riskQuestions;
+
+    // Sum of contributions across non-tracking equals step2Score (104)
+    const contribSum = rq
+      .filter((q) => !q.trackingOnly)
+      .reduce((acc, q) => acc + q.contribution, 0);
+    expect(contribSum).toBeCloseTo(out.sellability.step2Score, 6);
+    expect(out.sellability.step2Score).toBe(EXPECTED_LITERAL.step2Score); // 104
+
+    // q_active_lawsuits row has contribution -4
+    const lawsuits = rq.find((q) => q.id === 'q_active_lawsuits');
+    expect(lawsuits).toBeDefined();
+    expect(lawsuits!.contribution).toBe(-4);
+
+    // q_spof_count row has contribution -4
+    const spof = rq.find((q) => q.id === 'q_spof_count');
+    expect(spof).toBeDefined();
+    expect(spof!.contribution).toBe(-4);
+  });
+
+  it('MultipleTrace flags for Use Custom Multiple (SAMPLE_FIRM)', () => {
+    const out = compute({ ...SAMPLE_FIRM, mode: 'literal' }, makeTraceCtx());
+
+    // customMultipleBypassed must be true for 'Use Custom Multiple'
+    expect(out.appendix!.multiple.customMultipleBypassed).toBe(true);
+
+    // tableUsed is 'common' for 'Use Custom Multiple'
+    expect(out.appendix!.multiple.tableUsed).toBe('common');
+
+    // canadianApplied is false (SAMPLE_FIRM has canadian=false)
+    expect(out.appendix!.multiple.canadianApplied).toBe(false);
+
+    // bandSelected on the MultipleOutput itself (sellability 0.7123 in (0.7, 0.85] band)
+    expect(out.multiple.bandSelected).toBe('median-p75-avg');
+
+    // bandRule is a non-empty string
+    expect(out.multiple.bandRule.length).toBeGreaterThan(0);
+  });
+
+  it('wealthGap is conditional on trace.wealthGapInput', () => {
+    // Without wealthGapInput: appendix.wealthGap should be undefined
+    const traceWithout = { ...makeTraceCtx(), wealthGapInput: undefined };
+    const outWithout = compute({ ...SAMPLE_FIRM, mode: 'literal' }, traceWithout);
+    expect(outWithout.appendix!.wealthGap).toBeUndefined();
+
+    // With wealthGapInput: appendix.wealthGap.liquidAssets should match input
+    const outWith = compute({ ...SAMPLE_FIRM, mode: 'literal' }, makeTraceCtx());
+    expect(outWith.appendix!.wealthGap).toBeDefined();
+    expect(outWith.appendix!.wealthGap!.liquidAssets).toBe(SAMPLE_FIRM.wealthGap.liquidAssets);
   });
 });

@@ -3,16 +3,21 @@
  *
  * Returns a Blob that can be downloaded, attached to an email, or previewed in an iframe.
  * Caller is responsible for cleanup (URL.revokeObjectURL).
+ *
+ * This is the ONLY place that runs compute() with a TraceContext. The trace is what
+ * populates the appendix pages in the PDF. The on-screen ValueTicker calls compute()
+ * without the trace and pays nothing for it.
  */
 
 import { pdf } from '@react-pdf/renderer';
 import { ValuationReport } from '../components/pdf/ValuationReport';
-import type { EngineOutput } from '../engine';
+import { compute, type EngineInputs } from '../engine';
+import { READINESS_QUESTIONS, RISK_QUESTIONS } from '../data/questions';
 
 export interface PdfPayload {
   firmName: string;
   city?: string;
-  outputs: EngineOutput;
+  inputs: EngineInputs;
   includeWealthGap: boolean;
   contact?: {
     matt?: { name: string; email: string; calendly?: string };
@@ -20,7 +25,24 @@ export interface PdfPayload {
 }
 
 export async function generateValuationPdf(payload: PdfPayload): Promise<Blob> {
-  const instance = pdf(<ValuationReport {...payload} />);
+  const outputs = compute(payload.inputs, {
+    readinessQuestionDefs: READINESS_QUESTIONS,
+    riskQuestionDefs: RISK_QUESTIONS,
+    financialsInput: payload.inputs.financials,
+    wealthGapInput: payload.includeWealthGap ? payload.inputs.wealthGap : undefined,
+    multipleConfigInput: payload.inputs.multipleConfig,
+    accelerationConfigInput: payload.inputs.acceleration,
+  });
+
+  const instance = pdf(
+    <ValuationReport
+      firmName={payload.firmName}
+      city={payload.city}
+      outputs={outputs}
+      includeWealthGap={payload.includeWealthGap}
+      contact={payload.contact}
+    />,
+  );
   return await instance.toBlob();
 }
 
@@ -32,7 +54,6 @@ export function downloadBlob(blob: Blob, filename: string): void {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  // Give browsers a tick to start the download before revoking
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
@@ -41,7 +62,6 @@ export function blobToBase64(blob: Blob): Promise<string> {
     const reader = new FileReader();
     reader.onloadend = () => {
       const result = reader.result as string;
-      // strip the "data:application/pdf;base64," prefix
       const idx = result.indexOf(',');
       resolve(idx >= 0 ? result.slice(idx + 1) : result);
     };

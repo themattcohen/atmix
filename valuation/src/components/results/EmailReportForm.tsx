@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import type { EngineOutput } from '../../engine';
+import type { EngineInputs, EngineOutput } from '../../engine';
 import { blobToBase64 } from '../../lib/pdf';
 
 interface Props {
   firmName: string;
+  inputs: EngineInputs;
   outputs: EngineOutput;
   includeWealthGap: boolean;
 }
@@ -19,7 +20,7 @@ const SUBMIT_URL =
   import.meta.env.VITE_SUBMIT_URL ??
   'https://somedayhq.com/api/valuation/submit';
 
-export function EmailReportForm({ firmName, outputs, includeWealthGap }: Props) {
+export function EmailReportForm({ firmName, inputs, outputs, includeWealthGap }: Props) {
   const [open, setOpen] = useState(false);
   const [ownerName, setOwnerName] = useState('');
   const [ownerEmail, setOwnerEmail] = useState('');
@@ -41,7 +42,7 @@ export function EmailReportForm({ firmName, outputs, includeWealthGap }: Props) 
       const { generateValuationPdf } = await import('../../lib/pdf');
       const blob = await generateValuationPdf({
         firmName,
-        outputs,
+        inputs,
         includeWealthGap,
         contact: { matt: { name: 'Matt Cohen', email: 'hello@somedayconsultants.com' } },
       });

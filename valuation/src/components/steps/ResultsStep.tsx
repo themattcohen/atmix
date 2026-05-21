@@ -1,4 +1,4 @@
-import type { EngineOutput, WealthGapInputs } from '../../engine';
+import type { EngineInputs, EngineOutput, WealthGapInputs } from '../../engine';
 import { SectionLabel } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { fmt } from '../../lib/format';
@@ -8,6 +8,7 @@ import { EmailReportForm } from '../results/EmailReportForm';
 
 interface Props {
   firmName: string;
+  inputs: EngineInputs;
   outputs: EngineOutput;
   showWealthGap: boolean;
   onToggleWealthGap: (v: boolean) => void;
@@ -19,6 +20,7 @@ interface Props {
 
 export function ResultsStep({
   firmName,
+  inputs,
   outputs,
   showWealthGap,
   onToggleWealthGap,
@@ -124,6 +126,7 @@ export function ResultsStep({
         <div className="flex flex-col sm:flex-row gap-3 items-start">
           <EmailReportForm
             firmName={firmName}
+            inputs={inputs}
             outputs={outputs}
             includeWealthGap={showWealthGap}
           />

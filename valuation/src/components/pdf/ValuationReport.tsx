@@ -16,6 +16,8 @@ import {
 } from '@react-pdf/renderer';
 import type { EngineOutput } from '../../engine';
 import { fmt } from '../../lib/format';
+import { AppendixPages } from './AppendixPages';
+import type { AppendixTrace } from '../../engine';
 
 // Font registration is deferred to lib/pdf.tsx (runs once on import).
 // PDF uses serif (display) and helvetica (body) as Cormorant + Inter approximations.
@@ -608,6 +610,19 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
           {displayName} · Prepared by Someday Consulting · {today}
         </Text>
       </Page>
+
+      {/* Appendix — only rendered when engine was called with TraceContext */}
+      {outputs.appendix && (
+        <>
+          {AppendixPages({
+            firmName: displayName,
+            today,
+            outputs: outputs as EngineOutput & { appendix: AppendixTrace },
+            includeWealthGap,
+            mode: outputs.mode,
+          })}
+        </>
+      )}
     </Document>
   );
 }

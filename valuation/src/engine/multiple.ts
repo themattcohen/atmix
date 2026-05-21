@@ -27,15 +27,35 @@ import {
   INDUSTRY_MULTIPLES,
   type MultipleBand,
 } from '../data/multipleBands';
-import type { MultipleConfig, MultipleOutput } from './types';
+import type { BandSelected, MultipleConfig, MultipleOutput } from './types';
+
+function pctStr(p: number): string {
+  return (p * 100).toFixed(2) + '%';
+}
+
+interface BandMeta {
+  value: number;
+  bandSelected: BandSelected;
+  bandRule: string;
+}
+
+function bandedPickWithMeta(band: MultipleBand, sellabilityPct: number): BandMeta {
+  const p = sellabilityPct;
+  if (p <= 0.5)
+    return { value: band.p10, bandSelected: 'p10', bandRule: `Sellability ${pctStr(p)} <= 50%: use 10th percentile` };
+  if (p <= 0.6)
+    return { value: band.p25, bandSelected: 'p25', bandRule: `Sellability ${pctStr(p)} in (50%, 60%]: use 25th percentile` };
+  if (p <= 0.7)
+    return { value: band.median, bandSelected: 'median', bandRule: `Sellability ${pctStr(p)} in (60%, 70%]: use median` };
+  if (p <= 0.85)
+    return { value: (band.median + band.p75) / 2, bandSelected: 'median-p75-avg', bandRule: `Sellability ${pctStr(p)} in (70%, 85%]: use average of median and 75th` };
+  if (p <= 0.95)
+    return { value: band.p75, bandSelected: 'p75', bandRule: `Sellability ${pctStr(p)} in (85%, 95%]: use 75th percentile` };
+  return { value: (band.p75 + band.p90) / 2, bandSelected: 'p75-p90-avg', bandRule: `Sellability ${pctStr(p)} > 95%: use average of 75th and 90th` };
+}
 
 function bandedPick(band: MultipleBand, sellabilityPct: number): number {
-  if (sellabilityPct <= 0.5) return band.p10;
-  if (sellabilityPct <= 0.6) return band.p25;
-  if (sellabilityPct <= 0.7) return band.median;
-  if (sellabilityPct <= 0.85) return (band.median + band.p75) / 2;
-  if (sellabilityPct <= 0.95) return band.p75;
-  return (band.p75 + band.p90) / 2;
+  return bandedPickWithMeta(band, sellabilityPct).value;
 }
 
 export interface MultipleInputs {
@@ -70,11 +90,12 @@ export function computeMultiple(inputs: MultipleInputs): MultipleOutput {
   // G66 — risk-banded pick. Common table when source is Common or Custom; industry otherwise.
   const useCommonTable = source === 'Use Common Multiples' || source === 'Use Custom Multiple';
   const tableForRisk = useCommonTable ? COMMON_MULTIPLES : INDUSTRY_MULTIPLES;
-  const riskWeightedBase = bandedPick(tableForRisk, inputs.sellabilityPct);
+  const riskBandMeta = bandedPickWithMeta(tableForRisk, inputs.sellabilityPct);
+  const riskWeightedBase = riskBandMeta.value;
 
   // J65 — informational display always = G66 (in the sheet J65 actually does the
   // same banded pick fresh, but the formula collapses to G66 when same table is used).
-  const riskWeightedDisplay = bandedPick(tableForRisk, inputs.sellabilityPct);
+  const riskWeightedDisplay = riskWeightedBase;
 
   // D66 — final from-financials multiple after risk + Canadian
   // For "From Financials" / "Use Industry Multiples", the risk pick uses INDUSTRY table.
@@ -92,7 +113,14 @@ export function computeMultiple(inputs: MultipleInputs): MultipleOutput {
   }
 
   // J67 — actual multiple used. Custom bypasses risk weighting.
-  const ebitdaMultipleUsed = source === 'Use Custom Multiple' ? customMultiple : fromFinancialsFinal;
+  const customMultipleBypassed = source === 'Use Custom Multiple';
+  const ebitdaMultipleUsed = customMultipleBypassed ? customMultiple : fromFinancialsFinal;
+
+  // tableUsed: common when source is 'Use Common Multiples' or 'Use Custom Multiple'
+  const tableUsed: 'common' | 'industry' = useCommonTable ? 'common' : 'industry';
+
+  // canadianApplied: true only when Canadian flag set AND custom multiple was NOT bypassed
+  const canadianApplied = canadian && !customMultipleBypassed;
 
   return {
     commonMultiples: commonArr,
@@ -102,5 +130,10 @@ export function computeMultiple(inputs: MultipleInputs): MultipleOutput {
     riskWeightedDisplay,
     fromFinancialsFinal,
     ebitdaMultipleUsed,
+    bandSelected: riskBandMeta.bandSelected,
+    bandRule: riskBandMeta.bandRule,
+    tableUsed,
+    customMultipleBypassed,
+    canadianApplied,
   };
 }

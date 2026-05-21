@@ -136,13 +136,13 @@ export const READINESS_QUESTIONS: Question[] = [
     weight_G: 2,
     prompt: 'How much capacity will you have between busy seasons to prepare for a sale?',
     helperText:
-      'Sale prep for a CPA firm — clean financials, staff documentation, client transition plan — takes real time. Capacity between January–April and September–October crunch periods is the realistic window.',
+      'Sale prep for a CPA firm (clean financials, staff documentation, client transition plan) takes real time. Capacity between January–April and September–October crunch periods is the realistic window.',
     scoringMode: 'unweighted_raw',
     options: [
       { label: 'Significant capacity (I can dedicate 10+ hrs/week off-season)', rawScore: 5 },
       { label: 'Moderate capacity (5 - 10 hrs/week off-season)', rawScore: 3 },
       { label: 'Limited capacity (under 5 hrs/week even off-season)', rawScore: 2 },
-      { label: 'No realistic capacity — the firm runs on me year-round', rawScore: 1 },
+      { label: 'No realistic capacity, the firm runs on me year-round', rawScore: 1 },
     ],
     cpaRewrite: true,
     sourceQuestion: 'How much energy and time do you have available for sale preparation?',
@@ -172,7 +172,7 @@ export const READINESS_QUESTIONS: Question[] = [
     step: 1,
     cell: 'H15',
     weight_G: 1,
-    prompt: 'When did the most recent partner retire or exit the firm — and was the transition clean?',
+    prompt: 'When did the most recent partner retire or exit the firm, and was the transition clean?',
     helperText:
       'A recent, clean partner exit is evidence that the firm has governance muscle and that clients transferred without attrition. "Clean" means no litigation, no client walkout, and the book of business stayed.',
     scoringMode: 'unweighted_raw',
@@ -198,9 +198,9 @@ export const READINESS_QUESTIONS: Question[] = [
       'Misalignment between partners is the single most common deal-killer in CPA firm M&A. Buyers walk when they sense a divided partnership mid-process.',
     scoringMode: 'unweighted_raw',
     options: [
-      { label: 'Complete alignment — all partners are on the same page', rawScore: 5 },
-      { label: 'Mostly aligned — minor differences on timing or price', rawScore: 4 },
-      { label: 'Alignment is a work in progress — active conversations underway', rawScore: 2 },
+      { label: 'Complete alignment, all partners are on the same page', rawScore: 5 },
+      { label: 'Mostly aligned, minor differences on timing or price', rawScore: 4 },
+      { label: 'Alignment is a work in progress, active conversations underway', rawScore: 2 },
       { label: 'Significant disagreement among partners', rawScore: 0 },
     ],
     cpaRewrite: false,
@@ -212,11 +212,11 @@ export const READINESS_QUESTIONS: Question[] = [
     weight_G: 3,
     prompt: 'Do you have a clear plan for what you will do after the sale?',
     helperText:
-      'Sellers with a defined post-sale identity — a board seat, a new practice, a retirement plan — negotiate from strength. Sellers who are ambivalent often sabotage their own deals.',
+      'Sellers with a defined post-sale identity (a board seat, a new practice, a retirement plan) negotiate from strength. Sellers who are ambivalent often sabotage their own deals.',
     scoringMode: 'unweighted_raw',
     options: [
       { label: 'Yes, I have a clear and written plan', rawScore: 5 },
-      { label: 'Partial plan — the broad strokes are clear', rawScore: 3 },
+      { label: 'Partial plan, the broad strokes are clear', rawScore: 3 },
       { label: 'Just starting to think about life after the firm', rawScore: 2 },
       { label: 'No plan yet', rawScore: 0 },
     ],
@@ -272,8 +272,8 @@ export const RISK_QUESTIONS: Question[] = [
       'Incorporated firms (PC, PLLC, LLP, S-Corp) are structurally easier to sell. Sole proprietorships must convert before a deal can close, adding cost and time.',
     scoringMode: 'weighted_raw_times_G',
     options: [
-      { label: 'Yes — incorporated as a PC, PLLC, LLP, or S-Corp', rawScore: 5 },
-      { label: 'No — operating as a sole proprietor or DBA', rawScore: 1 },
+      { label: 'Yes, incorporated as a PC, PLLC, LLP, or S-Corp', rawScore: 5 },
+      { label: 'No, operating as a sole proprietor or DBA', rawScore: 1 },
     ],
     cpaRewrite: false,
   },
@@ -318,7 +318,7 @@ export const RISK_QUESTIONS: Question[] = [
     options: [
       { label: '10%+ year-over-year steady growth', rawScore: 5 },
       { label: 'Modest but consistent growth each year', rawScore: 4 },
-      { label: 'Flat — stable and consistent but not growing', rawScore: 3 },
+      { label: 'Flat, stable and consistent but not growing', rawScore: 3 },
       { label: 'Steadily declining', rawScore: 2 },
       { label: 'Volatile (mix of up and down years)', rawScore: 1 },
     ],
@@ -349,10 +349,10 @@ export const RISK_QUESTIONS: Question[] = [
     weight_G: 3,
     prompt: 'Is there a senior manager, managing director, or operations lead who can run day-to-day firm operations without you?',
     helperText:
-      'The acquirer is not buying your hours — they are buying a system. If you are the system, they are buying a job. A capable #2 can add 0.5 - 1.0x to the multiple.',
+      'The acquirer is not buying your hours; they are buying a system. If you are the system, they are buying a job. A capable #2 can add 0.5 - 1.0x to the multiple.',
     scoringMode: 'weighted_raw_times_G',
     options: [
-      { label: 'Yes — there is a capable #2 who currently handles operations independently', rawScore: 5 },
+      { label: 'Yes, there is a capable #2 who currently handles operations independently', rawScore: 5 },
       { label: 'No', rawScore: 1 },
     ],
     cpaRewrite: false,
@@ -370,7 +370,7 @@ export const RISK_QUESTIONS: Question[] = [
       { label: 'Over 50% advisory / CAS', rawScore: 5 },
       { label: '25 - 50% advisory / CAS', rawScore: 4 },
       { label: '10 - 25% advisory / CAS', rawScore: 3 },
-      { label: 'Under 10% advisory / CAS — primarily compliance', rawScore: 1 },
+      { label: 'Under 10% advisory / CAS, primarily compliance', rawScore: 1 },
     ],
     cpaRewrite: true,
     sourceQuestion: 'Is your business primarily project-based? (No / Between / Yes)',
@@ -405,12 +405,12 @@ export const RISK_QUESTIONS: Question[] = [
     weight_G: 1,
     prompt: 'As the managing partner, roughly what share of your time is spent on billable client work versus firm management, business development, and administration?',
     helperText:
-      'A partner who is still 80% billable has not built a firm — they have built a practice. Buyers want leaders who have already transitioned to management, because that signals the revenue is not personally held.',
+      'A partner who is still 80% billable has not built a firm; they have built a practice. Buyers want leaders who have already transitioned to management, because that signals the revenue is not personally held.',
     scoringMode: 'weighted_raw_times_G',
     options: [
-      { label: 'Mostly management — under 30% of my time is billable', rawScore: 5 },
-      { label: 'Roughly even split — 30 - 60% billable', rawScore: 3 },
-      { label: 'Mostly billable — over 60% of my time is client-facing work', rawScore: 1 },
+      { label: 'Mostly management, under 30% of my time is billable', rawScore: 5 },
+      { label: 'Roughly even split, 30 to 60% billable', rawScore: 3 },
+      { label: 'Mostly billable, over 60% of my time is client-facing work', rawScore: 1 },
     ],
     cpaRewrite: true,
     sourceQuestion: 'How many hours per week does the owner work IN the business? (Under 10 / Under 20 / 20-30 / 30-50 / Over 50)',
@@ -424,7 +424,7 @@ export const RISK_QUESTIONS: Question[] = [
     weight_G: 1,
     prompt: 'What is your firm\'s average realization rate? (Collected revenue as a percentage of billable hours at standard rates)',
     helperText:
-      'A healthy CPA firm realizes nearly all of its billings. Anything under 95% indicates active discounting — often to retain at-risk clients — and buyers will model that downward.',
+      'A healthy CPA firm realizes nearly all of its billings. Anything under 95% indicates active discounting (often to retain at-risk clients), and buyers will model that downward.',
     scoringMode: 'weighted_raw_times_G',
     options: [
       { label: '95% or higher', rawScore: 5 },
@@ -487,18 +487,18 @@ export const RISK_QUESTIONS: Question[] = [
     weight_G: 2,
     prompt: 'What best describes how clients pay for ongoing work?',
     helperText:
-      'Monthly retainer or subscription arrangements allow the acquirer to underwrite cash flow with confidence. Annual tax-season billings carry reinstatement risk — the client can and occasionally does not come back.',
+      'Monthly retainer or subscription arrangements allow the acquirer to underwrite cash flow with confidence. Annual tax-season billings carry reinstatement risk: the client can, and occasionally does, not come back.',
     scoringMode: 'weighted_raw_times_G',
     options: [
       { label: '70%+ of revenue is monthly retainer or subscription-based', rawScore: 5 },
       { label: '30 - 70% retainer / subscription, rest is project or annual', rawScore: 4 },
       { label: 'Mostly project-based or annual engagements with some retainers', rawScore: 3 },
-      { label: 'Pure project / annual tax-season billing — no recurring contracts', rawScore: 1 },
+      { label: 'Pure project / annual tax-season billing, no recurring contracts', rawScore: 1 },
     ],
     cpaRewrite: true,
     sourceQuestion: 'How do your customers pay? (Contracted Recurring Monthly / Some Recurring Revenue / Cash and Carry / Deposit + Payment on Completion / 30-90 day terms)',
     rationale:
-      '"Cash and carry" and "30-90 day terms" do not translate to a professional services context. CPA firms bill on retainer or by engagement — the meaningful distinction is whether those engagements auto-renew monthly or require annual re-engagement. Monthly retainer coverage above 70% is explicitly modeled in CPA deal structures as a value premium.',
+      '"Cash and carry" and "30-90 day terms" do not translate to a professional services context. CPA firms bill on retainer or by engagement; the meaningful distinction is whether those engagements auto-renew monthly or require annual re-engagement. Monthly retainer coverage above 70% is explicitly modeled in CPA deal structures as a value premium.',
   },
   {
     id: 'q_active_lawsuits',
@@ -527,7 +527,7 @@ export const RISK_QUESTIONS: Question[] = [
       'Single points of failure are the primary driver of post-close earnout clawbacks in CPA firm deals. Buyers identify them in diligence and either price them out or hold back proceeds until they are resolved.',
     scoringMode: 'weighted_raw_times_G',
     options: [
-      { label: '0 — No identifiable SPOFs', rawScore: 0 },
+      { label: '0 (no identifiable SPOFs)', rawScore: 0 },
       { label: '1', rawScore: -2 },
       { label: '2', rawScore: -3 },
       { label: '3', rawScore: -4 },
