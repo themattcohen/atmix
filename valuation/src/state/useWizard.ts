@@ -80,9 +80,9 @@ const INITIAL_STATE: WizardState = {
   showWealthGap: false,
 };
 
-/** Demo mode prefills the RightExit sample firm — used for live-call rehearsals. */
+/** Demo mode prefills a sample CPA firm — used for live-call rehearsals. */
 const DEMO_STATE: WizardState = {
-  firmName: 'RightExit Sample Firm',
+  firmName: 'Sample CPA Firm',
   city: '',
   readinessAnswers: {
     q_how_heard: 'Referral from a colleague or friend',

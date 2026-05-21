@@ -1,5 +1,5 @@
 /**
- * Parity tests — engine output must match the source XLSX cell-by-cell.
+ * Parity tests — engine output must match the source spreadsheet cell-by-cell.
  *
  * Two modes:
  *   - 'literal': reproduce sheet's behavior, including the M16 wealth-gap bug.
@@ -14,13 +14,13 @@
 
 import { describe, expect, it } from 'vitest';
 import { compute } from '../index';
-import { EXPECTED_CORRECTED, EXPECTED_LITERAL, RIGHTEXIT_SAMPLE } from './fixtures/rightexitSample';
+import { EXPECTED_CORRECTED, EXPECTED_LITERAL, SAMPLE_FIRM } from './fixtures/sampleFirm';
 
 const CENTS = 0.01;
 const EPS = 1e-9;
 
-describe('RightExit sample firm — literal-mode parity (reproduces source XLSX exactly)', () => {
-  const out = compute({ ...RIGHTEXIT_SAMPLE, mode: 'literal' });
+describe('Sample firm — literal-mode parity (reproduces source spreadsheet exactly)', () => {
+  const out = compute({ ...SAMPLE_FIRM, mode: 'literal' });
 
   it('Step 1 scoring', () => {
     expect(out.sellability.step1Score).toBe(EXPECTED_LITERAL.step1Score);
@@ -109,8 +109,8 @@ describe('RightExit sample firm — literal-mode parity (reproduces source XLSX 
   });
 });
 
-describe('RightExit sample firm — corrected-mode (webapp default)', () => {
-  const out = compute({ ...RIGHTEXIT_SAMPLE, mode: 'corrected' });
+describe('Sample firm — corrected-mode (webapp default)', () => {
+  const out = compute({ ...SAMPLE_FIRM, mode: 'corrected' });
 
   it('Sellability, EBITDA, multiple, and acceleration are unchanged by mode', () => {
     expect(out.sellability.sellabilityPct).toBeCloseTo(EXPECTED_CORRECTED.sellabilityPct, 9);
@@ -132,24 +132,24 @@ describe('RightExit sample firm — corrected-mode (webapp default)', () => {
   });
 
   it('Correction is exactly 2 × non-mortgage debt vs literal (the bug magnitude)', () => {
-    const literal = compute({ ...RIGHTEXIT_SAMPLE, mode: 'literal' });
+    const literal = compute({ ...SAMPLE_FIRM, mode: 'literal' });
     const diff = out.wealthGap.wealthGap - literal.wealthGap.wealthGap;
-    expect(diff).toBeCloseTo(2 * RIGHTEXIT_SAMPLE.wealthGap.nonMortgageDebt, CENTS);
+    expect(diff).toBeCloseTo(2 * SAMPLE_FIRM.wealthGap.nonMortgageDebt, CENTS);
   });
 });
 
 describe('Owner-salary anchor — corrected mode only', () => {
   it('without marketRateReplacementSalary, behaves like literal (adds back full $230K)', () => {
-    const out = compute({ ...RIGHTEXIT_SAMPLE, mode: 'corrected' });
+    const out = compute({ ...SAMPLE_FIRM, mode: 'corrected' });
     expect(out.ebitda.salaryAddBackUsed).toBeCloseTo(230_000, CENTS);
     expect(out.ebitda.adjustedEbitda).toBeCloseTo(580_000, CENTS);
   });
 
   it('with market rate $180K, adds back only the $50K delta → EBITDA $400K', () => {
     const out = compute({
-      ...RIGHTEXIT_SAMPLE,
+      ...SAMPLE_FIRM,
       mode: 'corrected',
-      financials: { ...RIGHTEXIT_SAMPLE.financials, marketRateReplacementSalary: 180_000 },
+      financials: { ...SAMPLE_FIRM.financials, marketRateReplacementSalary: 180_000 },
     });
     expect(out.ebitda.salaryAddBackUsed).toBeCloseTo(50_000, CENTS);
     expect(out.ebitda.adjustedEbitda).toBeCloseTo(400_000, CENTS);
@@ -157,9 +157,9 @@ describe('Owner-salary anchor — corrected mode only', () => {
 
   it('with market rate $300K (owner under-paid), adds back $0 → EBITDA $350K', () => {
     const out = compute({
-      ...RIGHTEXIT_SAMPLE,
+      ...SAMPLE_FIRM,
       mode: 'corrected',
-      financials: { ...RIGHTEXIT_SAMPLE.financials, marketRateReplacementSalary: 300_000 },
+      financials: { ...SAMPLE_FIRM.financials, marketRateReplacementSalary: 300_000 },
     });
     expect(out.ebitda.salaryAddBackUsed).toBeCloseTo(0, CENTS);
     expect(out.ebitda.adjustedEbitda).toBeCloseTo(350_000, CENTS);
@@ -169,7 +169,7 @@ describe('Owner-salary anchor — corrected mode only', () => {
 describe('Multiple chain edge cases', () => {
   it('From Financials + Risk Weighting Off + Canadian = industry median - 0.5', () => {
     const out = compute({
-      ...RIGHTEXIT_SAMPLE,
+      ...SAMPLE_FIRM,
       mode: 'literal',
       multipleConfig: {
         source: 'From Financials',
@@ -185,9 +185,9 @@ describe('Multiple chain edge cases', () => {
   it('From Financials + Risk Weighting On + sellability ≤0.5 → industry 10th pct', () => {
     // Force a low sellability by zeroing all risk answers
     const out = compute({
-      ...RIGHTEXIT_SAMPLE,
+      ...SAMPLE_FIRM,
       mode: 'literal',
-      risk: RIGHTEXIT_SAMPLE.risk.map((q) => ({ ...q, rawScore: 0 })),
+      risk: SAMPLE_FIRM.risk.map((q) => ({ ...q, rawScore: 0 })),
       multipleConfig: {
         source: 'From Financials',
         riskWeighting: 'Risk Weighting On',
@@ -201,7 +201,7 @@ describe('Multiple chain edge cases', () => {
   });
 
   it('Use Custom Multiple + Risk Weighting On still returns custom value, NOT risk-adjusted', () => {
-    const out = compute({ ...RIGHTEXIT_SAMPLE, mode: 'literal' });
+    const out = compute({ ...SAMPLE_FIRM, mode: 'literal' });
     // Sample fixture: customMultiple=4.0, but risk-weighted display would be 4.25
     expect(out.multiple.ebitdaMultipleUsed).toBe(4.0);
     expect(out.multiple.riskWeightedDisplay).toBeCloseTo(4.25, 6);
@@ -221,10 +221,10 @@ describe('Size-score lookup boundaries', () => {
     [99_999_999, 75],
   ])('EBITDA $%d → size score %d', (ebitda, expectedScore) => {
     const out = compute({
-      ...RIGHTEXIT_SAMPLE,
+      ...SAMPLE_FIRM,
       mode: 'literal',
       financials: {
-        ...RIGHTEXIT_SAMPLE.financials,
+        ...SAMPLE_FIRM.financials,
         // Make EBITDA exactly the target value by zeroing add-backs and setting profit
         pretaxProfit: ebitda,
         ownerSalary: 0,

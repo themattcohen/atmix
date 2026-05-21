@@ -1,12 +1,12 @@
 /**
- * RightExit sample firm fixture — verified against the XLSX cell-by-cell.
+ * Sample firm fixture — verified against the source spreadsheet cell-by-cell.
  *
- * Raw scores per question (1-5) reflect the source sheet's answer→score mapping for the
- * sample's entered answers. Step 1 stores unweighted raw; Step 2 sums raw × G.
+ * Raw scores per question (1-5) reflect the source spreadsheet's answer→score mapping
+ * for the sample's entered answers. Step 1 stores unweighted raw; Step 2 sums raw × G.
  *
- * Expected outputs come from the cached values in the XLSX (via openpyxl data_only=True).
- * Two output sets:
- *   - expectedLiteral: what the source sheet computes (bugs preserved)
+ * Expected outputs come from the cached values in the source spreadsheet (via openpyxl
+ * data_only=True). Two output sets:
+ *   - expectedLiteral: what the source spreadsheet computes (bugs preserved)
  *   - expectedCorrected: what the webapp should ship (M16 wealth-gap bug fixed)
  */
 
@@ -69,7 +69,7 @@ export const SAMPLE_RISK: EngineInputs['risk'] = [
   { id: 'q_spof_count', weight_G: 1, rawScore: -4 },
 ];
 
-export const RIGHTEXIT_SAMPLE: EngineInputs = {
+export const SAMPLE_FIRM: EngineInputs = {
   readiness: SAMPLE_READINESS,
   risk: SAMPLE_RISK,
   financials: {

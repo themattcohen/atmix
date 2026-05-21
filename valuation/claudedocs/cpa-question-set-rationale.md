@@ -5,7 +5,7 @@ Someday Consulting Valuation Webapp
 
 ## Why This Question Set
 
-The original RightExit question set was designed for generic SMB sellers. Eight questions used language ("CRM vs. ERP", "lease remaining", "cash and carry") that either does not exist in CPA firm context or captures the wrong variable entirely. This rewrite preserves the J4 sellability formula exactly (all G weights, all max scores, the COMBINED_MAX=210 denominator) while replacing 8 of 22 scoring questions with CPA-specific equivalents. The net effect: higher signal per question, lower confusion per dropdown, and multiples that actually match what CPA acquirers underwrite against.
+The source spreadsheet's original question set was designed for generic SMB sellers. Eight questions used language ("CRM vs. ERP", "lease remaining", "cash and carry") that either does not exist in CPA firm context or captures the wrong variable entirely. This rewrite preserves the J4 sellability formula exactly (all G weights, all max scores, the COMBINED_MAX=210 denominator) while replacing 8 of 22 scoring questions with CPA-specific equivalents. The net effect: higher signal per question, lower confusion per dropdown, and multiples that actually match what CPA acquirers underwrite against.
 
 ---
 

@@ -1,4 +1,4 @@
-"""Extract every formula from the RightExit Value Calculator XLSX.
+"""Extract every formula from the source valuation calculator XLSX.
 
 Writes a markdown report grouped by tab. For each formula-bearing cell we record:
   - cell address
@@ -48,7 +48,7 @@ def extract_workbook(xlsx_path: Path, out_path: Path) -> None:
     wb_v = load_workbook(xlsx_path, data_only=True)
 
     lines: list[str] = []
-    lines.append(f"# RightExit Calculator — Full Formula Extraction (openpyxl)\n")
+    lines.append(f"# Source Calculator — Full Formula Extraction (openpyxl)\n")
     lines.append(f"**Source:** `{xlsx_path.name}`")
     lines.append(f"**Method:** openpyxl 3.1, formula + cached-value pull from the XLSX archive XML")
     lines.append("")
