@@ -245,6 +245,70 @@
       margin-top: 12px;
       font-style: italic;
     }
+    .cta-aftlink {
+      margin: 14px 0 0;
+      font-size: 14px;
+      color: var(--slate-mid);
+    }
+    .cta-aftlink a {
+      color: var(--forest);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    .cta-aftlink a:hover { color: var(--gold); }
+
+    /* Mobile-only quick-action card (Taleb static preview, replaces sticky-earlier idea) */
+    .mobile-quick-card { display: none; }
+    @media (max-width: 640px) {
+      .mobile-quick-card {
+        display: block;
+        background: var(--forest);
+        color: var(--cream-light);
+        padding: 20px 22px;
+        margin: 24px 0 22px;
+        border-radius: 3px;
+      }
+      .mobile-quick-card p {
+        margin: 0 0 14px;
+        font-size: 15px;
+        color: var(--cream);
+        line-height: 1.5;
+      }
+      .mobile-quick-card p strong { color: var(--cream-light); }
+      .mobile-quick-card .btn {
+        background: var(--gold);
+        color: var(--forest);
+        width: 100%;
+        text-align: center;
+      }
+      .mobile-quick-card .btn:hover {
+        background: var(--gold-light);
+        color: var(--forest);
+        opacity: 1;
+      }
+      /* Tighter hero h1 on mobile (Fix D1) */
+      .hero h1 { font-size: clamp(28px, 7vw, 36px); max-width: 100%; }
+    }
+
+    /* Step deliverables nested under process step 4 */
+    .step-deliverables {
+      list-style: none;
+      padding: 16px 0 0;
+      margin: 14px 0 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .step-deliverables li {
+      padding: 6px 0;
+      font-size: 15px;
+      color: var(--slate-mid);
+      line-height: 1.5;
+    }
+    .step-deliverables li strong {
+      color: var(--forest);
+      font-weight: 600;
+    }
 
     .section-label {
       font-family: 'Inter', sans-serif;
@@ -730,15 +794,21 @@
           <h1>You spent 25 years building it. The exit should be built the same way.</h1>
           <p class="hero-subhead">Sell-side M&amp;A advisory for accounting firm owners &mdash; from valuation through closing documents. Not a listing service.</p>
           <div class="hero-proof">
-            <p><strong>Sara Sharp</strong> has closed <span data-placeholder>[DEAL COUNT]</span> accounting firm transactions worth <span data-placeholder>[$VALUE]</span> over the last <span data-placeholder>[WINDOW]</span>.</p>
+            <p><strong>Sara Sharp</strong> has closed 100+ accounting firm transactions over the last 24 months.</p>
             <p>She wrote <em>Here's the Deal</em> &mdash; the book on accounting firm M&amp;A.</p>
             <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
           </div>
           <div class="cta-row">
             <a href="#talk" class="btn btn-primary">Find out what your firm is worth</a>
-            <a href="#magnet" class="btn btn-secondary">Get the positioning chapter</a>
           </div>
           <span class="cta-microcopy">15 minutes with Matt. He's a CPA who sold his own firm through Sara &mdash; he'll tell you where yours stands and whether now is the right time.</span>
+
+          <aside class="mobile-quick-card" aria-label="Quick action">
+            <p><strong>Sara has closed 100+ accounting firm deals.</strong> 15 minutes with Matt tells you if yours fits.</p>
+            <a href="#talk" class="btn btn-primary">Book the call</a>
+          </aside>
+
+          <p class="cta-aftlink"><a href="#magnet">Or read Sara's positioning chapter first &rarr;</a></p>
         </div>
       </section>
 
@@ -746,32 +816,44 @@
         <div class="container">
           <p class="section-label">What full representation looks like</p>
           <h2>Most sellers hire a listing broker. They get an intro and paperwork. They needed someone in the chair beside them.</h2>
-          <p>Someday Consulting does the work most listing services don't &mdash; the work that moves the price and the work that protects the seller.</p>
 
-          <dl class="diff-list">
-            <div class="diff-row">
-              <dt>The deal narrative</dt>
-              <dd>Confidential Information Memorandum (CIM), positioning, defensible valuation. Sara writes the firm so the buyer sees their growth thesis, not their fixer-upper.</dd>
-            </div>
-            <div class="diff-row">
-              <dt>The diligence</dt>
-              <dd>Data room prep, response strategy, surfacing risk before the buyer does. Two re-trades caught in diligence pay for the engagement.</dd>
-            </div>
-            <div class="diff-row">
-              <dt>The negotiation</dt>
-              <dd>LOI through definitive docs. Sara advises on price, terms, and structure end to end. The negotiation does not get delegated.</dd>
-            </div>
-            <div class="diff-row">
-              <dt>The close</dt>
-              <dd>Signing day, transition planning, escrow, holdback, earnout structuring. The mechanics of the actual transaction.</dd>
-            </div>
-            <div class="diff-row">
-              <dt>The 90 days after</dt>
-              <dd>Client retention, staff transition, your identity after the deal. In the engagement, not an upsell.</dd>
-            </div>
-          </dl>
+          <p>Listing brokers introduce buyers and shepherd paperwork. They make their fee whether or not the seller's interests are well-defended. Someday Consulting is built the opposite way: Sara works for the seller end to end, and her economics line up with yours.</p>
 
-          <p><em>Sara advises the seller end to end. Matt runs the first call so Sara's time stays on the work. We are not a brokerage. We are sell-side M&amp;A advisory for accounting firms.</em></p>
+          <p>The work that moves the price and protects the seller isn't on a broker's scope sheet. <strong>Sara writes the firm so the buyer sees their growth thesis, not their fixer-upper.</strong> She catches the diligence items that would re-trade the price before the buyer finds them. She sits in every material negotiation &mdash; on the LOI, on the term sheet, on the definitive docs, on close. And she stays through the transition so the deal you signed is the deal you actually get.</p>
+
+          <h2 style="margin-top: 72px;">What the process looks like.</h2>
+          <p>Written from where you'll be sitting &mdash; not from where we'll be sitting.</p>
+
+          <ol class="process-steps">
+            <li>
+              <h3>You book a 15-minute call with Matt.</h3>
+              <p>A short intake first: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
+            </li>
+            <li>
+              <h3>Matt tells you whether your firm is positioned for a deal in the next 1&ndash;3 years.</h3>
+              <p>If it's not, he tells you that. The call is diagnostic. No pitch.</p>
+            </li>
+            <li>
+              <h3>If your timeline is real, you work with Sara directly from there.</h3>
+              <p>Sara takes a 45-minute working session &mdash; not a sales call. She walks you through what your firm would trade for today and what would widen the band by 2027.</p>
+            </li>
+            <li>
+              <h3>If you decide to engage, Sara advises you end to end.</h3>
+              <p>CIM in 4&ndash;6 weeks. Buyer process kicks off after. Most deals close 4&ndash;8 months from engagement to wire.</p>
+              <ul class="step-deliverables">
+                <li><strong>Positioning &amp; valuation</strong> &mdash; CIM, defensible price band, the deal narrative</li>
+                <li><strong>Diligence support</strong> &mdash; data room prep, response strategy, surfacing risk before the buyer does</li>
+                <li><strong>Negotiation</strong> &mdash; LOI through definitive docs, in every material conversation</li>
+                <li><strong>Close mechanics</strong> &mdash; escrow, holdback, earnout structuring</li>
+              </ul>
+            </li>
+            <li>
+              <h3>Sara stays through the first 90 days post-close.</h3>
+              <p>Client transitions, staff retention, your role and identity after handoff. In the engagement, not an upsell.</p>
+            </li>
+          </ol>
+
+          <p style="margin-top: 40px;"><em>Sara advises the seller end to end. Matt runs the first call so Sara's time stays on the work. We are not a brokerage. We are sell-side M&amp;A advisory for accounting firms.</em></p>
         </div>
       </section>
 
@@ -908,36 +990,6 @@
         </div>
       </section>
 
-      <section>
-        <div class="container">
-          <p class="section-label">What you'll experience</p>
-          <h2>What the process looks like.</h2>
-          <p>Written from where you'll be sitting &mdash; not from where we'll be sitting.</p>
-          <ol class="process-steps">
-            <li>
-              <h3>You book a 15-minute call with Matt.</h3>
-              <p>Three questions on the form first: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
-            </li>
-            <li>
-              <h3>Matt tells you whether your firm is positioned for a deal in the next 1&ndash;3 years.</h3>
-              <p>If it's not, he tells you that. The call is diagnostic. No pitch.</p>
-            </li>
-            <li>
-              <h3>If your timeline is real, you work with Sara directly from there.</h3>
-              <p>Sara takes a 45-minute working session &mdash; not a sales call. She walks you through what your firm would trade for today and what would widen the band by 2027.</p>
-            </li>
-            <li>
-              <h3>If you decide to engage, Sara advises you end to end.</h3>
-              <p>CIM in 4&ndash;6 weeks. Buyer process kicks off after. Most deals close 4&ndash;8 months from engagement to wire. Sara is in every material negotiation; the deal does not get delegated.</p>
-            </li>
-            <li>
-              <h3>Sara stays through the first 90 days post-close.</h3>
-              <p>Client transitions, staff retention, your role and identity after handoff. In the engagement, not an upsell.</p>
-            </li>
-          </ol>
-        </div>
-      </section>
-
       <!-- DUAL MAGNET — Sara primary, Matt secondary -->
       <section id="magnet">
         <div class="container">
@@ -1058,10 +1110,6 @@
                   <option>3 &ndash; 5 years out</option>
                   <option>Not sure / exploring</option>
                 </select>
-              </div>
-              <div>
-                <label for="note">Anything you want Matt to know before the call? (optional)</label>
-                <textarea id="note" name="note" placeholder="He reads these. Skip if you'd rather just talk."></textarea>
               </div>
               <button type="submit" class="btn btn-primary">Book Matt's call</button>
             </form>
