@@ -1,0 +1,13 @@
+# Cloudflare Pages serves this file as response headers on all matching routes.
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+#
+# Applied to valuation.somedayconsultants.com (canonical) only.
+# atmix.org/valuation is served by GitHub Pages which does not honor _headers.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-NE7NLTdEGvRI75YzhKHtjI8WLI3rWYQ1R+0ABzZxcF4='; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://somedayhq.com data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
