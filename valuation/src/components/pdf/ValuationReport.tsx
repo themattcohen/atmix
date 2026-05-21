@@ -604,7 +604,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
 
         <Text style={s.body}>{'\n'}This report was generated from the numbers and answers you provided. The math is
         deterministic. Same inputs, same outputs. If your numbers change, the valuation changes.
-        Run it again any time at the same URL.</Text>
+        Run it again any time at valuation.somedayconsultants.com.</Text>
 
         <Text style={s.footer}>
           {displayName} · Prepared by Someday Consulting · {today}

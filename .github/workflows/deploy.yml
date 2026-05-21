@@ -84,6 +84,23 @@ jobs:
           rm -rf dist/valuation
           cp -r valuation/dist dist/valuation
 
+      # Deploy the SAME valuation/dist/ bundle to Cloudflare Pages so that
+      # https://valuation.somedayconsultants.com/ (brand-canonical) always matches
+      # https://atmix.org/valuation/ (legacy fallback / redirect stub).
+      # This step runs BEFORE the GitHub Pages upload so that a CF Pages failure
+      # aborts the workflow and no version drift is possible between the two URLs.
+      - name: Deploy valuation to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: c8ac24b8ff621ee983bb38e57ab2edfa
+        run: |
+          cd valuation
+          npx wrangler@latest pages deploy dist/ \
+            --project-name someday-valuation \
+            --branch main \
+            --commit-hash ${{ github.sha }} \
+            --commit-message "${{ github.event.head_commit.message }}"
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

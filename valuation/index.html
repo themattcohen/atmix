@@ -10,6 +10,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body class="bg-someday-cream-light text-someday-slate font-body">
+    <script>
+      // Redirect legacy URL to canonical brand URL.
+      // Fail-open: if this script breaks for any reason, the SPA still loads.
+      // Only fires on atmix.org; valuation.somedayconsultants.com and localhost are untouched.
+      (function () {
+        try {
+          if (window.location.hostname === 'atmix.org' || window.location.hostname === 'www.atmix.org') {
+            window.location.replace('https://valuation.somedayconsultants.com/');
+          }
+        } catch (e) { /* fail open */ }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
