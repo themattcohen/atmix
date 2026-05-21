@@ -63,7 +63,7 @@
     a:hover { color: var(--gold); }
 
     .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-    .container-wide { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .container-wide { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
     section { padding: 80px 0; border-bottom: 1px solid var(--hairline); }
     section:last-of-type { border-bottom: none; }
@@ -193,7 +193,151 @@
     nav.primary a:hover { color: var(--forest); }
     @media (max-width: 760px) { nav.primary { display: none; } }
 
-    .hero { padding: 96px 0 88px; background: var(--cream); border-bottom: 1px solid var(--hairline); }
+    /* ---------- HAMBURGER + DRAWER ---------- */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      color: var(--forest);
+      line-height: 1;
+    }
+    @media (max-width: 760px) { .hamburger-btn { display: flex; align-items: center; } }
+
+    .nav-drawer {
+      position: fixed;
+      inset: 0;
+      background: var(--cream-light);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 32px 48px;
+      transform: translateX(100%);
+      transition: transform 0.22s ease-out;
+    }
+    .nav-drawer.open { transform: translateX(0); }
+    .nav-drawer-close {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--forest);
+      font-size: 28px;
+      line-height: 1;
+      padding: 4px 8px;
+      margin-bottom: 40px;
+    }
+    .nav-drawer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .nav-drawer-links a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--forest);
+      text-decoration: none;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--hairline);
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+    .nav-drawer-links a:hover {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+      color: var(--gold);
+    }
+    body.drawer-open { overflow: hidden; }
+
+    /* ---------- HERO TWO-COLUMN ---------- */
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .hero-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 12px;
+    }
+    .hero-portrait-placeholder {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--cream);
+      border: 1px dashed var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-align: center;
+      padding: 16px;
+      line-height: 1.6;
+      border-radius: 3px;
+    }
+    .hero-book-placeholder {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: var(--cream);
+      border: 1px dashed var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-align: center;
+      padding: 16px;
+      line-height: 1.6;
+      border-radius: 3px;
+    }
+    @media (max-width: 760px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+      .hero-visual { flex-direction: row; gap: 14px; max-width: 420px; }
+      .hero-portrait-placeholder { aspect-ratio: 1 / 1; flex: 1; }
+      .hero-book-placeholder { aspect-ratio: 3 / 4; flex: 0 0 120px; }
+    }
+
+    /* ---------- DEAL CAPSULES — 2 column grid inside container-wide ---------- */
+    .deal-capsules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0 40px;
+      margin: 32px 0 0;
+    }
+    @media (max-width: 700px) { .deal-capsules-grid { grid-template-columns: 1fr; } }
+    .deal-capsules-grid .deal-capsules {
+      margin: 0;
+    }
+    /* Reuse deal-capsules list styles inside the grid */
+
+    /* ---------- ACCENT BAND (full-bleed gold hairline + callout) ---------- */
+    .accent-band {
+      border-top: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+      background: var(--cream);
+      padding: 20px 0;
+      text-align: center;
+    }
+    .accent-band p {
+      margin: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--forest);
+      letter-spacing: 0.01em;
+    }
+
+    .hero { padding: 108px 0 100px; background: var(--cream); border-bottom: 1px solid var(--hairline); }
     .hero h1 { max-width: 18ch; margin-bottom: 24px; }
     .hero-subhead {
       font-family: 'Cormorant Garamond', serif;
@@ -784,31 +928,57 @@
           <a href="#deals">Transactions</a>
           <a href="#talk">Start the Call</a>
         </nav>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" aria-controls="navDrawer" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect y="4" width="24" height="2" rx="1" fill="currentColor"/>
+            <rect y="11" width="24" height="2" rx="1" fill="currentColor"/>
+            <rect y="18" width="24" height="2" rx="1" fill="currentColor"/>
+          </svg>
+        </button>
       </div>
     </header>
+
+    <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Navigation menu" aria-modal="true" hidden>
+      <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&#x2715;</button>
+      <nav class="nav-drawer-links" aria-label="Mobile navigation">
+        <a href="#process" id="drawerFirstLink">How It Works</a>
+        <a href="#sara">Sara Sharp</a>
+        <a href="#matt">Why Matt Is Here</a>
+        <a href="#deals">Transactions</a>
+        <a href="#talk">Start the Call</a>
+      </nav>
+    </div>
 
     <main id="main">
 
       <section class="hero" id="hero">
         <div class="container-wide">
-          <h1>You spent 25 years building it. The exit should be built the same way.</h1>
-          <p class="hero-subhead">Sell-side M&amp;A advisory for accounting firm owners &mdash; from valuation through closing documents. Not a listing service.</p>
-          <div class="hero-proof">
-            <p><strong>Sara Sharp</strong> has closed 100+ accounting firm transactions over the last 24 months.</p>
-            <p>She wrote <em>Here's the Deal</em> &mdash; the book on accounting firm M&amp;A.</p>
-            <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
-          </div>
-          <div class="cta-row">
-            <a href="#talk" class="btn btn-primary">Find out what your firm is worth</a>
-          </div>
-          <span class="cta-microcopy">15 minutes with Matt. He's a CPA who sold his own firm through Sara &mdash; he'll tell you where yours stands and whether now is the right time.</span>
+          <div class="hero-inner">
+            <div class="hero-copy">
+              <h1>You spent 25 years building it. The exit should be built the same way.</h1>
+              <p class="hero-subhead">Sell-side M&amp;A advisory for accounting firm owners. Not a listing service.</p>
+              <div class="hero-proof">
+                <p><strong>Sara Sharp</strong> has closed 100+ accounting firm transactions over the last 24 months.</p>
+                <p>She wrote <em>Here's the Deal</em> &mdash; the book on accounting firm M&amp;A.</p>
+                <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
+              </div>
+              <div class="cta-row">
+                <a href="#talk" class="btn btn-primary">Find out what your firm is worth</a>
+              </div>
+              <span class="cta-microcopy">15 minutes with Matt. He's a CPA who sold his own firm through Sara &mdash; he'll tell you where yours stands and whether now is the right time.</span>
 
-          <aside class="mobile-quick-card" aria-label="Quick action">
-            <p><strong>Sara has closed 100+ accounting firm deals.</strong> 15 minutes with Matt tells you if yours fits.</p>
-            <a href="#talk" class="btn btn-primary">Book the call</a>
-          </aside>
+              <aside class="mobile-quick-card" aria-label="Quick action">
+                <p><strong>Sara has closed 100+ accounting firm deals.</strong> 15 minutes with Matt tells you if yours fits.</p>
+                <a href="#talk" class="btn btn-primary">Book the call</a>
+              </aside>
 
-          <p class="cta-aftlink"><a href="#magnet">Or read Sara's positioning chapter first &rarr;</a></p>
+              <p class="cta-aftlink"><a href="#magnet">Or read Sara's positioning chapter first &rarr;</a></p>
+            </div>
+            <aside class="hero-visual" aria-label="Sara Sharp and her book">
+              <div class="hero-portrait-placeholder">SARA SHARP<br>direct-to-camera portrait</div>
+              <div class="hero-book-placeholder">BOOK COVER<br>Here's the Deal (2026)</div>
+            </aside>
+          </div>
         </div>
       </section>
 
@@ -817,9 +987,9 @@
           <p class="section-label">What full representation looks like</p>
           <h2>Most sellers hire a listing broker. They get an intro and paperwork. They needed someone in the chair beside them.</h2>
 
-          <p>Listing brokers introduce buyers and shepherd paperwork. They make their fee whether or not the seller's interests are well-defended. Someday Consulting is built the opposite way: Sara works for the seller end to end, and her economics line up with yours.</p>
+          <p>Listing brokers introduce buyers and shepherd paperwork; their economics don't require them to defend your interests. Sara works for the seller end to end, and her economics line up with yours.</p>
 
-          <p>The work that moves the price and protects the seller isn't on a broker's scope sheet. <strong>Sara writes the firm so the buyer sees their growth thesis, not their fixer-upper.</strong> She catches the diligence items that would re-trade the price before the buyer finds them. She sits in every material negotiation &mdash; on the LOI, on the term sheet, on the definitive docs, on close. And she stays through the transition so the deal you signed is the deal you actually get.</p>
+          <p><strong>Sara writes the firm so the buyer sees their growth thesis, not their fixer-upper.</strong></p>
 
           <h2 style="margin-top: 72px;">What the process looks like.</h2>
           <p>Written from where you'll be sitting &mdash; not from where we'll be sitting.</p>
@@ -847,15 +1017,14 @@
                 <li><strong>Close mechanics</strong> &mdash; escrow, holdback, earnout structuring</li>
               </ul>
             </li>
-            <li>
-              <h3>Sara stays through the first 90 days post-close.</h3>
-              <p>Client transitions, staff retention, your role and identity after handoff. In the engagement, not an upsell.</p>
-            </li>
           </ol>
 
-          <p style="margin-top: 40px;"><em>Sara advises the seller end to end. Matt runs the first call so Sara's time stays on the work. We are not a brokerage. We are sell-side M&amp;A advisory for accounting firms.</em></p>
         </div>
       </section>
+
+      <div class="accent-band">
+        <p>Sara advises the seller end to end. Matt runs the first call so Sara's time stays on the work.</p>
+      </div>
 
       <!-- SARA — primary substance section -->
       <section id="sara">
@@ -868,7 +1037,7 @@
             <div>
               <p>Sara works for sellers. Only sellers. She does not collect commission from buyers, does not list firms in a marketplace, and does not take a percentage to make introductions. Her practice is structured one way: advise the seller from valuation through closing documents.</p>
 
-              <p>She has closed <span data-placeholder>[DEAL COUNT]</span> accounting firm transactions in the last <span data-placeholder>[WINDOW]</span> &mdash; <span data-placeholder>[$VALUE]</span> in transaction value. The work is concentrated in sub-$5M revenue practices, mostly Colorado, mostly closing at the top of their valuation band &mdash; and a number above it.</p>
+              <p>100+ accounting firm transactions in the last 24 months. Work concentrates in sub-$5M revenue practices, mostly Colorado, closing at the top of their valuation band &mdash; and a number above it.</p>
 
               <blockquote class="pull-quote">
                 <span data-placeholder>[Sara quote &mdash; one or two sentences in her voice about what representation means vs brokering. Pulled from the book, a podcast, or her own words.]</span>
@@ -924,7 +1093,7 @@
       </section>
 
       <section>
-        <div class="container">
+        <div class="container-wide">
           <p class="section-label">From sellers who hired Sara</p>
           <h2>What sellers say.</h2>
 
@@ -961,32 +1130,28 @@
       </section>
 
       <section id="deals">
-        <div class="container">
+        <div class="container-wide">
           <p class="section-label">Pattern recognition</p>
           <h2>Recent transactions Sara has closed.</h2>
           <p>Anonymized for client confidentiality. Specific enough to recognize whether your firm fits the pattern.</p>
-          <ul class="deal-capsules">
-            <li>
-              <span class="deal-tag">2025</span>
-              <span data-placeholder>$2.8M-revenue Denver CPA firm. 4 months from CIM to close. Closed at 1.2x revenue, 10% earnout, 90-day transition.</span>
-            </li>
-            <li>
-              <span class="deal-tag">2025</span>
-              <span data-placeholder>$1.4M-revenue Front Range bookkeeping practice. 6 months from engagement to wire. PE-backed roll-up acquirer.</span>
-            </li>
-            <li>
-              <span class="deal-tag">2025</span>
-              <span data-placeholder>$5.1M-revenue tax-only firm, Boulder. Strategic buyer (regional CPA firm). 5-year retention agreement for seller.</span>
-            </li>
-            <li>
-              <span class="deal-tag">2024</span>
-              <span data-placeholder>$3.2M-revenue Denver audit practice. Two-LOI competitive process; closed at 12% above initial offer.</span>
-            </li>
-            <li>
-              <span class="deal-tag">2024</span>
-              <span data-placeholder>$2.0M-revenue Colorado Springs full-service firm. Sold to former associate (internal succession). Owner-financed deal structure.</span>
-            </li>
-          </ul>
+          <div class="deal-capsules-grid">
+            <ul class="deal-capsules">
+              <li>
+                <span class="deal-tag">2025</span>
+                <span data-placeholder>$2.8M-revenue Denver CPA firm. 4 months from CIM to close. Closed at 1.2x revenue, 10% earnout, 90-day transition.</span>
+              </li>
+              <li>
+                <span class="deal-tag">2025</span>
+                <span data-placeholder>$5.1M-revenue tax-only firm, Boulder. Strategic buyer (regional CPA firm). 5-year retention agreement for seller.</span>
+              </li>
+            </ul>
+            <ul class="deal-capsules">
+              <li>
+                <span class="deal-tag">2024</span>
+                <span data-placeholder>$2.0M-revenue Colorado Springs full-service firm. Sold to former associate (internal succession). Owner-financed deal structure.</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -1049,11 +1214,6 @@
           <div class="faq-item">
             <h3 class="faq-q">I'm not sure I want to sell yet. Should I still book the call?</h3>
             <p class="faq-a">Yes, especially. About half of Matt's calls end with "now is not the right time" &mdash; and a plan to revisit in 12 or 24 months. The most common mistake we see is owners deciding to sell six months before they wish they had started preparing. If you'd rather not talk yet, <a href="#" data-placeholder onclick="event.preventDefault();">[join Sara's newsletter]</a> and stay close to the work.</p>
-          </div>
-
-          <div class="faq-item">
-            <h3 class="faq-q">What if I want to buy a firm?</h3>
-            <p class="faq-a">Book the same call. Someday Consulting keeps a working list of buyers and active deals; tell Matt what you're looking for and he'll see if anything in the pipeline fits.</p>
           </div>
 
           <div class="faq-item">
@@ -1149,8 +1309,7 @@
         </div>
       </div>
       <div class="footer-legal">
-        &copy; 2026 Someday Consulting, LLC. All rights reserved.<br>
-        Someday Consulting provides M&amp;A advisory services, not legal advice. Engagement begins only upon a signed agreement.
+        &copy; 2026 Someday Consulting, LLC. All rights reserved. Someday Consulting provides M&amp;A advisory services, not legal advice.
       </div>
     </footer>
 
@@ -1210,6 +1369,49 @@
         } catch (err) {
           errorEl.textContent = 'Browser does not support this preview. Please use a recent Chrome, Edge, Firefox, or Safari.';
         }
+      });
+    })();
+
+    // ---- Mobile nav drawer ----
+    (function() {
+      var btn = document.getElementById('hamburgerBtn');
+      var drawer = document.getElementById('navDrawer');
+      var closeBtn = document.getElementById('navDrawerClose');
+      var firstLink = document.getElementById('drawerFirstLink');
+      if (!btn || !drawer) return;
+
+      function openDrawer() {
+        drawer.hidden = false;
+        drawer.classList.add('open');
+        document.body.classList.add('drawer-open');
+        btn.setAttribute('aria-expanded', 'true');
+        if (firstLink) { firstLink.focus(); }
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        document.body.classList.remove('drawer-open');
+        btn.setAttribute('aria-expanded', 'false');
+        setTimeout(function() { drawer.hidden = true; }, 230);
+        btn.focus();
+      }
+
+      btn.addEventListener('click', openDrawer);
+      if (closeBtn) { closeBtn.addEventListener('click', closeDrawer); }
+
+      // Tap outside drawer content closes it
+      drawer.addEventListener('click', function(e) {
+        if (e.target === drawer) { closeDrawer(); }
+      });
+
+      // Escape key closes drawer
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) { closeDrawer(); }
+      });
+
+      // Clicking any nav link closes drawer
+      drawer.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', closeDrawer);
       });
     })();
 
