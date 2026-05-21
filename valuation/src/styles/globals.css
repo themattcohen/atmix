@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand-matched defaults from public/ss/index.html. */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3, h4 {
+    color: theme('colors.someday.forest');
+    font-family: theme('fontFamily.display');
+  }
+
+  /* Brand focus ring */
+  *:focus-visible {
+    outline: 2px solid theme('colors.someday.gold');
+    outline-offset: -1px;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply font-body text-section-label uppercase text-someday-gold;
+  }
+
+  .btn {
+    @apply inline-block font-body font-semibold rounded transition-opacity duration-150;
+    padding: 14px 28px;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary {
+    @apply btn bg-someday-forest text-someday-cream-light;
+  }
+  .btn-primary:hover {
+    background-color: theme('colors.someday.forest-light');
+  }
+
+  .btn-secondary {
+    @apply btn bg-transparent text-someday-forest border border-someday-forest;
+  }
+  .btn-secondary:hover {
+    @apply bg-someday-forest text-someday-cream-light;
+  }
+
+  .btn-gold {
+    @apply btn bg-someday-gold text-someday-forest;
+  }
+  .btn-gold:hover {
+    background-color: theme('colors.someday.gold-light');
+  }
+
+  .hairline {
+    @apply border-someday-hairline;
+  }
+
+  .card {
+    @apply bg-someday-cream-light border border-someday-hairline rounded p-6;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; }
+}
