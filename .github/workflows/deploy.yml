@@ -70,6 +70,20 @@ jobs:
           cp usmiv/wizard-v2/demo.html dist/wizard-of-iv-v2/index.html
           cp usmiv/wizard-v2/wordpress/treatment-sync.js dist/wizard-of-iv-v2/
 
+      - name: Install valuation dependencies
+        run: cd valuation && npm ci
+
+      - name: Test valuation engine (parity gate)
+        run: cd valuation && npm run test:run
+
+      - name: Build valuation
+        run: cd valuation && npm run build
+
+      - name: Copy valuation into dist
+        run: |
+          rm -rf dist/valuation
+          cp -r valuation/dist dist/valuation
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
