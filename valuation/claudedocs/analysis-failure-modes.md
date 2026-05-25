@@ -66,7 +66,7 @@ CF Worker doesn't reference either URL yet. When wired, must not reference `atmi
 
 Dual URLs train prospects to accept "this might live at different places." Attacker registers `valuation-somedayconsultants.com` (hyphen) or `somedayconsultants.co`, clones tool to harvest CPA financials.
 
-**Mitigation:** Defensively register lookalike domains. Set Google Alert for "Someday Consulting valuation."
+**Mitigation:** Defensively register lookalike domains. Set Google Alert for "Someday Consultants valuation."
 
 ### 8. Sunset confusion
 

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Someday Consulting CPA-firm valuation calculator (live sales asset)",
+  "description": "Someday Consultants CPA-firm valuation calculator (live sales asset)",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

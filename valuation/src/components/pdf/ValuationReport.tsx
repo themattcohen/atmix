@@ -305,12 +305,12 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
   const matt = contact?.matt;
 
   return (
-    <Document title={`${displayName} Valuation`} author="Someday Consulting">
+    <Document title={`${displayName} Valuation`} author="Someday Consultants">
       {/* Cover page */}
       <Page size="LETTER" style={s.page}>
         <View style={s.header}>
           <View>
-            <Text style={s.brand}>Someday Consulting</Text>
+            <Text style={s.brand}>Someday Consultants</Text>
             <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
           </View>
           <Text style={s.headerMeta}>{today}</Text>
@@ -331,7 +331,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         </View>
 
         <Text style={s.footer}>
-          Prepared by Someday Consulting · {today} · Internal valuation, not an offer
+          Prepared by Someday Consultants · {today} · Internal valuation, not an offer
         </Text>
       </Page>
 
@@ -339,7 +339,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
       <Page size="LETTER" style={s.page}>
         <View style={s.header}>
           <View>
-            <Text style={s.brand}>Someday Consulting</Text>
+            <Text style={s.brand}>Someday Consultants</Text>
             <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
           </View>
           <Text style={s.headerMeta}>{displayName} · {today}</Text>
@@ -421,7 +421,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         </View>
 
         <Text style={s.footer}>
-          {displayName} · Prepared by Someday Consulting · {today}
+          {displayName} · Prepared by Someday Consultants · {today}
         </Text>
       </Page>
 
@@ -429,7 +429,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
       <Page size="LETTER" style={s.page}>
         <View style={s.header}>
           <View>
-            <Text style={s.brand}>Someday Consulting</Text>
+            <Text style={s.brand}>Someday Consultants</Text>
             <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
           </View>
           <Text style={s.headerMeta}>{displayName} · {today}</Text>
@@ -502,7 +502,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         </View>
 
         <Text style={s.footer}>
-          {displayName} · Prepared by Someday Consulting · {today}
+          {displayName} · Prepared by Someday Consultants · {today}
         </Text>
       </Page>
 
@@ -511,7 +511,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         <Page size="LETTER" style={s.page}>
           <View style={s.header}>
             <View>
-              <Text style={s.brand}>Someday Consulting</Text>
+              <Text style={s.brand}>Someday Consultants</Text>
               <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
             </View>
             <Text style={s.headerMeta}>{displayName} · {today}</Text>
@@ -558,7 +558,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
           </Text>
 
           <Text style={s.footer}>
-            {displayName} · Prepared by Someday Consulting · {today}
+            {displayName} · Prepared by Someday Consultants · {today}
           </Text>
         </Page>
       )}
@@ -567,7 +567,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
       <Page size="LETTER" style={s.page}>
         <View style={s.header}>
           <View>
-            <Text style={s.brand}>Someday Consulting</Text>
+            <Text style={s.brand}>Someday Consultants</Text>
             <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
           </View>
           <Text style={s.headerMeta}>{displayName} · {today}</Text>
@@ -607,7 +607,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         Run it again any time at valuation.somedayconsultants.com.</Text>
 
         <Text style={s.footer}>
-          {displayName} · Prepared by Someday Consulting · {today}
+          {displayName} · Prepared by Someday Consultants · {today}
         </Text>
       </Page>
 

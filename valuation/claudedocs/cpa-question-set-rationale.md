@@ -1,5 +1,5 @@
 # CPA Question Set Rationale
-Someday Consulting Valuation Webapp
+Someday Consultants Valuation Webapp
 
 ---
 

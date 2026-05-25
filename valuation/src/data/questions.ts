@@ -1,6 +1,6 @@
 /**
  * CPA-Firm Valuation Question Set
- * Someday Consulting — Valuation Webapp
+ * Someday Consultants — Valuation Webapp
  *
  * SOURCE: someday_valuation_engine_spec.md — Section 1 (24-question set, verified from XLSX).
  * This file is a "full CPA rewrite": 8 generic SMB questions replaced with CPA-firm-specific

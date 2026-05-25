@@ -191,7 +191,7 @@ export function AppendixHeader({ firmName, today }: AppendixHeaderProps) {
   return (
     <View style={aStyles.header}>
       <View>
-        <Text style={aStyles.brand}>Someday Consulting</Text>
+        <Text style={aStyles.brand}>Someday Consultants</Text>
         <Text style={aStyles.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
       </View>
       <Text style={aStyles.headerMeta}>{firmName} {today}</Text>
@@ -209,7 +209,7 @@ interface AppendixFooterProps {
 export function AppendixFooter({ firmName, today }: AppendixFooterProps) {
   return (
     <Text style={aStyles.footer}>
-      {firmName} prepared by Someday Consulting {today}
+      {firmName} prepared by Someday Consultants {today}
     </Text>
   );
 }

@@ -1,6 +1,6 @@
 # PDF Math Appendix — Design Spec
 
-**Owner:** Someday Consulting valuation webapp
+**Owner:** Someday Consultants valuation webapp
 **Target file:** `valuation/src/components/pdf/ValuationReport.tsx` (extend) plus a new
 `valuation/src/components/pdf/AppendixPages.tsx` (this doc's deliverable).
 **Audience for the PDF appendix:** CPA firm owners — formula people. The appendix removes
@@ -363,7 +363,7 @@ text/labels to render, and edge cases.
 
 ```
 +-------------------------------------------------------+
-| Someday Consulting          firmName · 2026-05-21     |  ← header
+| Someday Consultants          firmName · 2026-05-21     |  ← header
 +-------------------------------------------------------+
 |                                                       |
 |  APPENDIX A1 OF 7                                     |  ← appendixPageLabel

@@ -64,7 +64,7 @@ export function App() {
       <header className="border-b hairline bg-someday-cream-light no-print">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="font-display text-2xl font-semibold text-someday-forest leading-none">
-            Someday Consulting
+            Someday Consultants
             <span className="block text-[10px] font-body font-semibold uppercase tracking-[0.18em] text-someday-slate-mid mt-1">
               Sell-Side M&amp;A Advisory
             </span>
