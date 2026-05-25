@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install root dependencies
@@ -93,13 +93,16 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: c8ac24b8ff621ee983bb38e57ab2edfa
+          # Pass the commit message via env (not inline ${{ }}) so a multi-line
+          # message with leading dashes can't break npx/shell arg parsing.
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           cd valuation
           npx wrangler@latest pages deploy dist/ \
             --project-name someday-valuation \
             --branch main \
-            --commit-hash ${{ github.sha }} \
-            --commit-message "${{ github.event.head_commit.message }}"
+            --commit-hash "$GITHUB_SHA" \
+            --commit-message "$COMMIT_MESSAGE"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
