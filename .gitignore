@@ -64,6 +64,9 @@ test-results.json
 
 .vercel
 
+# Cloudflare Workers local state (miniflare R2/KV/cache emulation -- regenerable, may hold local test data)
+.wrangler/
+
 # Blog pipeline WIP
 fbar-automator/d2c/src/content/drafts/*.wip
 
