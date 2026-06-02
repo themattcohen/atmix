@@ -124,6 +124,10 @@ export default function Brutalist() {
         {/* Footer */}
         <footer className="border-t border-black pt-8 text-sm text-gray-600">
           <p>&copy; {content.footer.copyright}</p>
+          <p className="mt-2 space-x-3">
+            <a href="/privacy" className="underline hover:text-black">Privacy</a>
+            <a href="/terms" className="underline hover:text-black">Terms</a>
+          </p>
         </footer>
 
       </div>
