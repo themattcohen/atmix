@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/logo.png">
+<meta name="description" content="Atmix Workspace Connector — a self-hosted connector that links a Google account you authorize to an AI assistant via the Model Context Protocol.">
+<title>Atmix Workspace Connector</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #000;
+    background: #fff;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  header.site {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  header.site img { width: 48px; height: 48px; }
+  header.site .brand { font-weight: 700; }
+  header.site .brand span { display: block; font-weight: 400; font-size: 0.8rem; color: #555; }
+  h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .lede { font-size: 1.05rem; margin-bottom: 1rem; }
+  h2 { font-size: 1.1rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid #000; padding-bottom: 0.35rem; }
+  p { margin-bottom: 1rem; }
+  ul { margin: 0 0 1rem 1.4rem; }
+  li { margin-bottom: 0.4rem; }
+  a { color: #000; }
+  strong { font-weight: 700; }
+  .callout { border: 1px solid #000; background: #f5f5f5; padding: 1rem 1.25rem; margin: 1rem 0; }
+  .links a { display: inline-block; border: 2px solid #000; padding: 0.5rem 1rem; margin: 0.25rem 0.5rem 0.25rem 0; text-decoration: none; font-weight: 700; }
+  .links a:hover { background: #000; color: #fff; }
+  footer { margin-top: 3rem; border-top: 1px solid #000; padding-top: 1rem; font-size: 0.85rem; color: #555; }
+  footer a { color: #555; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <img src="/logo.png" alt="Atmix logo">
+  <div class="brand">Atmix<span>audit trail mix &middot; atmix.org</span></div>
+</header>
+
+<h1>Atmix Workspace Connector</h1>
+<p class="lede">
+  A self-hosted connector, operated by Atmix (Matt Cohen), that links a Google account you authorize to an AI
+  assistant &mdash; such as Anthropic&rsquo;s Claude &mdash; using the Model Context Protocol (MCP).
+</p>
+<p>
+  The Atmix Workspace Connector lets the assistant carry out actions on your own Google data &mdash; and only the
+  specific actions you explicitly request. It acts on your account alone, only when you ask, and never runs background
+  crawls or bulk exports of your data.
+</p>
+
+<h2>What it does</h2>
+<ul>
+  <li>Read, search, draft, send, label, and organize messages in your <strong>Gmail</strong>, at your direction.</li>
+  <li>Open, search, create, and modify files in your <strong>Google Drive</strong>.</li>
+  <li>Read, create, and modify events on your <strong>Google Calendar</strong>.</li>
+  <li>Read and edit your <strong>Google Sheets, Docs, and Slides</strong>.</li>
+  <li>Read and manage your <strong>Google Contacts, Tasks, and Forms</strong>.</li>
+  <li>Work with <strong>Google Apps Script</strong> projects and <strong>Google Chat</strong> messages you authorize.</li>
+</ul>
+
+<h2>Data, privacy, and Google&rsquo;s Limited Use policy</h2>
+<p>
+  When you connect, you review and approve the specific Google permissions on Google&rsquo;s standard OAuth consent
+  screen. The connector requests access only to your own account.
+</p>
+<div class="callout">
+  <p style="margin-bottom:0;">
+    The Atmix Workspace Connector&rsquo;s use and transfer of information received from Google APIs adheres to the
+    <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+    including the Limited Use requirements.
+  </p>
+</div>
+<p>
+  Your Google data is used only to fulfill the requests you make. It is not sold, is not used for advertising, and is
+  not used to train generalized AI or machine-learning models. See the full
+  <a href="/privacy">Privacy Policy</a> for details on what data is accessed, how it is handled, and how it is shared.
+</p>
+
+<h2>Connecting and revoking access</h2>
+<p>
+  You connect by authorizing the connector through Google&rsquo;s standard OAuth consent screen. You can review and
+  revoke its access to your Google account at any time at
+  <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.
+</p>
+
+<h2>Who operates this</h2>
+<p>
+  Atmix is a project operated by Matt Cohen. For questions or support, contact
+  <a href="mailto:matt@atmix.org">matt@atmix.org</a>.
+</p>
+
+<p class="links" style="margin-top:2rem;">
+  <a href="/privacy">Privacy Policy</a>
+  <a href="/terms">Terms of Service</a>
+</p>
+
+<footer>
+  Atmix Workspace Connector &mdash; operated by Matt Cohen &mdash; <a href="mailto:matt@atmix.org">matt@atmix.org</a><br>
+  <a href="/">Home</a> &middot; <a href="/mcp">Connector</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a>
+  <p style="margin-top:0.5rem;">&copy; 2026 Matt Cohen</p>
+</footer>
+
+</body>
+</html>
