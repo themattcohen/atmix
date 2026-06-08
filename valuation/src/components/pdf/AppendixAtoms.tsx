@@ -192,7 +192,7 @@ export function AppendixHeader({ firmName, today }: AppendixHeaderProps) {
     <View style={aStyles.header}>
       <View>
         <Text style={aStyles.brand}>Someday Consultants</Text>
-        <Text style={aStyles.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
+        <Text style={aStyles.brandTag}>M&amp;A ADVISORY FOR ACCOUNTING FIRMS</Text>
       </View>
       <Text style={aStyles.headerMeta}>{firmName} {today}</Text>
     </View>
@@ -275,7 +275,7 @@ export function FormulaBox({ formula, pluggedIn, label = 'THIS FIRM' }: FormulaB
 }
 
 // ---------------------------------------------------------------------------
-// QuestionScoringTable — 7-column scoring table (A1 + A2)
+// QuestionScoringTable — 6-column scoring table (A1 + A2) — Cell column removed
 // ---------------------------------------------------------------------------
 interface QuestionScoringTableProps {
   questions: QuestionTrace[];
@@ -290,13 +290,12 @@ export function QuestionScoringTable({
   totalMax,
 }: QuestionScoringTableProps) {
   const colWidths = {
-    prompt: '38%',
-    cell: '7%',
-    weight: '7%',
-    answer: '22%',
+    prompt: '42%',
+    weight: '8%',
+    answer: '26%',
     raw: '8%',
-    contribution: '9%',
-    max: '9%',
+    contribution: '8%',
+    max: '8%',
   } as const;
 
   const headerStyle = {
@@ -323,7 +322,6 @@ export function QuestionScoringTable({
       {/* Header */}
       <View style={aStyles.tableHeaderRow}>
         <Text style={[{ width: colWidths.prompt }, headerStyle]}>Question</Text>
-        <Text style={[{ width: colWidths.cell }, headerStyle]}>Cell</Text>
         <Text style={[{ width: colWidths.weight, textAlign: 'right' }, headerStyle]}>G</Text>
         <Text style={[{ width: colWidths.answer }, headerStyle]}>  Answer</Text>
         <Text style={[{ width: colWidths.raw, textAlign: 'right' }, headerStyle]}>Raw</Text>
@@ -340,7 +338,6 @@ export function QuestionScoringTable({
         return (
           <View key={q.id} wrap={false} style={aStyles.tableRow}>
             <Text style={[{ width: colWidths.prompt }, bodyStyle]}>{truncate(q.prompt, 90)}</Text>
-            <Text style={[{ width: colWidths.cell, fontFamily: 'Courier', fontSize: 7.5, color: C.slateMid }, bodyStyle]}>{q.cell}</Text>
             <Text style={[{ width: colWidths.weight, textAlign: 'right' }, bodyStyle]}>{q.weight_G}</Text>
             <Text style={[{ width: colWidths.answer, paddingLeft: 4 }, bodyStyle]}>{answerDisplay}</Text>
             <Text style={[{ width: colWidths.raw, textAlign: 'right' }, bodyStyle]}>{q.rawScore}</Text>
@@ -365,11 +362,11 @@ export function QuestionScoringTable({
 }
 
 // ---------------------------------------------------------------------------
-// FinancialsTable — 3-column table: label | cell | value (right-aligned)
+// FinancialsTable — 2-column table: label | value (right-aligned) — Cell column removed
 // ---------------------------------------------------------------------------
 export interface FinancialsTableRow {
   label: string;
-  cell: string;
+  cell?: string; // kept for backward compat with call sites; not rendered
   valueLabel: string;
   isTotal?: boolean;
   isPositive?: boolean; // for "+" prefix coloring (gold)
@@ -387,18 +384,11 @@ export function FinancialsTable({ rows, totalRow }: FinancialsTableProps) {
     color: C.slate,
     flex: 1,
   };
-  const cellStyle = {
-    fontFamily: 'Courier',
-    fontSize: 7.5,
-    color: C.slateMuted,
-    width: 40,
-    paddingHorizontal: 2,
-  };
   const valueStyle = {
     fontFamily: 'Helvetica',
     fontSize: 8.5,
     color: C.slate,
-    width: 100,
+    width: 110,
     textAlign: 'right' as const,
   };
   const totalLabelStyle = {
@@ -411,7 +401,7 @@ export function FinancialsTable({ rows, totalRow }: FinancialsTableProps) {
     fontFamily: 'Helvetica-Bold',
     fontSize: 9,
     color: C.forest,
-    width: 100,
+    width: 110,
     textAlign: 'right' as const,
   };
 
@@ -431,7 +421,6 @@ export function FinancialsTable({ rows, totalRow }: FinancialsTableProps) {
           }}
         >
           <Text style={row.isTotal ? totalLabelStyle : labelStyle}>{row.label}</Text>
-          <Text style={cellStyle}>{row.cell}</Text>
           <Text
             style={
               row.isTotal
@@ -458,7 +447,6 @@ export function FinancialsTable({ rows, totalRow }: FinancialsTableProps) {
           }}
         >
           <Text style={totalLabelStyle}>{totalRow.label}</Text>
-          <Text style={{ width: 40 }} />
           <Text style={totalValueStyle}>{totalRow.valueLabel}</Text>
         </View>
       )}

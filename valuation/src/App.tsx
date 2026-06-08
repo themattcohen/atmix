@@ -11,9 +11,14 @@ import { useWizard, TOTAL_STEPS, buildEngineInputs } from './state/useWizard';
 import { fmt } from './lib/format';
 // Lazy-load PDF code — saves ~490KB gzipped from initial bundle
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
 export function App() {
   const w = useWizard();
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const onEmailReport = async () => {
     setPdfBusy(true);
@@ -25,7 +30,7 @@ export function App() {
         inputs: buildEngineInputs(w.state),
         includeWealthGap: w.state.showWealthGap,
         contact: {
-          matt: { name: 'Matt Cohen', email: 'hello@somedayconsultants.com' },
+          matt: { name: 'Matt Cohen', email: 'matt@somedayconsultants.com' },
         },
       });
       const slug = (w.state.firmName.trim() || 'firm')
@@ -49,7 +54,14 @@ export function App() {
         const tag = e.target.tagName;
         if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
       }
-      if (e.key === 'ArrowRight') w.next();
+      if (e.key === 'ArrowRight') {
+        if (w.step === 0 && !isValidEmail(w.state.ownerEmail)) {
+          setEmailError('A valid email address is required to continue.');
+          return;
+        }
+        setEmailError(null);
+        w.next();
+      }
       if (e.key === 'ArrowLeft') w.back();
     };
     window.addEventListener('keydown', onKey);
@@ -66,7 +78,7 @@ export function App() {
           <div className="font-display text-2xl font-semibold text-someday-forest leading-none">
             Someday Consultants
             <span className="block text-[10px] font-body font-semibold uppercase tracking-[0.18em] text-someday-slate-mid mt-1">
-              Sell-Side M&amp;A Advisory
+              M&amp;A Advisory for Accounting Firms
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -93,9 +105,11 @@ export function App() {
             <FirmProfileStep
               firmName={w.state.firmName}
               city={w.state.city}
+              ownerEmail={w.state.ownerEmail}
               onChange={(patch) => {
                 if (patch.firmName !== undefined) w.update('firmName', patch.firmName);
                 if (patch.city !== undefined) w.update('city', patch.city);
+                if (patch.ownerEmail !== undefined) w.update('ownerEmail', patch.ownerEmail);
               }}
             />
           )}
@@ -135,6 +149,8 @@ export function App() {
               onChangeWealthGap={w.updateWealthGap}
               onEmailReport={onEmailReport}
               isEmailing={pdfBusy}
+              ownerEmail={w.state.ownerEmail}
+              wizardState={w.state}
             />
           )}
 
@@ -147,7 +163,18 @@ export function App() {
               Use ← → keys to navigate
             </p>
             {w.step < TOTAL_STEPS - 1 ? (
-              <Button variant="primary" size="md" onClick={w.next}>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => {
+                  if (w.step === 0 && !isValidEmail(w.state.ownerEmail)) {
+                    setEmailError('A valid email address is required to continue.');
+                    return;
+                  }
+                  setEmailError(null);
+                  w.next();
+                }}
+              >
                 Next
               </Button>
             ) : (
@@ -156,6 +183,9 @@ export function App() {
               </Button>
             )}
           </div>
+          {emailError && w.step === 0 && (
+            <p className="mt-2 text-sm text-red-600 text-right no-print">{emailError}</p>
+          )}
         </div>
 
         <div className="no-print">
@@ -166,7 +196,7 @@ export function App() {
       <footer className="border-t hairline bg-someday-cream-light no-print">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm text-someday-slate-muted">
           <p>Internal sales tool · Preview only</p>
-          <p>hello@somedayconsultants.com</p>
+          <p>matt@somedayconsultants.com</p>
         </div>
       </footer>
     </div>

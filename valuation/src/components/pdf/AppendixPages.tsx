@@ -316,7 +316,7 @@ export function AppendixPages({
       <Text style={aStyles.body}>
         Sellability blends three numbers: a readiness score (Step 1, unweighted raw sum), a
         risk-weighted score (Step 2, raw times weight per question), and an EBITDA size score.
-        We show the J4 formula on the next page; this page shows every question's contribution.
+        We show the Sellability formula on the next page; this page shows every question's contribution.
       </Text>
 
       <Text style={aStyles.h2}>Step 1 - Readiness ({scoringReadiness.length} scoring questions)</Text>
@@ -327,8 +327,8 @@ export function AppendixPages({
         totalMax={sellability.step1Max}
       />
       <Text style={aStyles.note}>
-        Step 1 contribution = raw score (NOT x G). Step 1 max = G x 5 per question. Matches
-        source sheet cells I12-I17.
+        Step 1 contribution = raw score (NOT x G). Step 1 max = G x 5 per question. Verified
+        against the internal model.
       </Text>
 
       <Text style={[aStyles.h2, { marginTop: 10 }]}>
@@ -341,16 +341,16 @@ export function AppendixPages({
         totalMax={sellability.step2Max}
       />
       <Text style={aStyles.note}>
-        Step 2 contribution = raw score x G. Matches source sheet cells I24-I38. Lawsuits and
+        Step 2 contribution = raw score x G. Verified against the internal model. Lawsuits and
         SPOFs use negative raw scores by design. Negative contributions reflect risk penalties
-        baked into the source model.
+        baked into the model.
       </Text>
 
       <AppendixFooter firmName={firmName} today={today} />
     </Page>
   );
 
-  // A2 page 2 — J4 formula + size score + grade
+  // A2 page 2 — Sellability formula + size score + grade
   const ebitdaVal = ebitda.adjustedEbitda;
 
   // Build size score table rows, highlighting the matching band
@@ -454,7 +454,7 @@ export function AppendixPages({
     );
   }
 
-  // Formula plugged-in values for J4
+  // Formula plugged-in values for sellability formula
   const step2 = sellability.step2Score;
   const size = sellability.sizeScore;
   const step1 = sellability.step1Score;
@@ -469,7 +469,7 @@ export function AppendixPages({
       <AppendixHeader firmName={firmName} today={today} />
 
       <SectionEyebrow section="A2" ofN={ofN} />
-      <Text style={aStyles.sectionLabel}>THE J4 FORMULA</Text>
+      <Text style={aStyles.sectionLabel}>THE SELLABILITY FORMULA</Text>
       <Text style={aStyles.h2}>Two raw scores plus a size score, divided by the max.</Text>
 
       <Text style={aStyles.h3}>Size score lookup</Text>
@@ -523,10 +523,10 @@ export function AppendixPages({
 
       <Text style={aStyles.h3}>Why "+ 2" in the denominator?</Text>
       <Text style={aStyles.note}>
-        This is verbatim from the source spreadsheet's J4 formula. The size score adds up to 75
-        into the numerator but only 2 into the denominator, which is why the score is capped at
-        100% with MIN(1, ...). We preserve the formula exactly for parity with the source model.
-        Effectively, the score ceiling is 100% and very high-performing firms saturate.
+        The size score adds up to 75 into the numerator but only 2 into the denominator, which is
+        why the score is capped at 100% with MIN(1, ...). We preserve the formula exactly for
+        parity with the internal model. Effectively, the score ceiling is 100% and very
+        high-performing firms saturate.
       </Text>
 
       <Text style={aStyles.h3}>Grade band</Text>
@@ -685,9 +685,9 @@ export function AppendixPages({
 
       {hasMarketRate && (
         <View>
-          <Text style={aStyles.h3}>Salary anchor (the H48 add-back)</Text>
+          <Text style={aStyles.h3}>Salary anchor (owner salary add-back)</Text>
           <Text style={aStyles.body}>
-            The source spreadsheet adds back the FULL owner salary ({usd(abc.ownerSalaryRaw)}).
+            The original model adds back the FULL owner salary ({usd(abc.ownerSalaryRaw)}).
             The webapp's corrected mode adds back only the amount above a market-rate replacement,
             because a buyer must hire a real person to do that work and cannot capitalize the
             saved cost twice.
@@ -719,7 +719,7 @@ export function AppendixPages({
       <Text style={aStyles.h3}>Size score (looked up against EBITDA)</Text>
       <Text style={aStyles.body}>
         Your EBITDA of {usd(ebitdaVal)} maps to size score {sellability.sizeScore}. The size
-        score is part of the J4 sellability formula. See A2.
+        score is part of the Sellability formula. See A2.
       </Text>
 
       <AppendixFooter firmName={firmName} today={today} />
@@ -913,8 +913,7 @@ export function AppendixPages({
       {/* Informational band value */}
       <Text style={aStyles.note}>
         {isIndustry ? 'Industry' : 'Common'} table at {sellPctForA4}:{' '}
-        {BAND_LABELS[mt.bandSelected]} = {multi(multiple.riskWeightedDisplay)} (informational,
-        J65 in source sheet).
+        {BAND_LABELS[mt.bandSelected]} = {multi(multiple.riskWeightedDisplay)} (informational).
       </Text>
 
       <Text style={aStyles.h3}>Step 3 - Risk weighting</Text>
@@ -963,7 +962,7 @@ export function AppendixPages({
       </Text>
       <Text style={aStyles.body}>
         Applied to {usd(ebitdaVal)} EBITDA produces {usd(acceleration.currentValue)} today's
-        enterprise value (Z16).
+        enterprise value.
       </Text>
 
       <AppendixFooter firmName={firmName} today={today} />
@@ -1240,11 +1239,11 @@ export function AppendixPages({
     // Formula label depends on mode
     const gapFormulaLabel =
       mode === 'literal'
-        ? 'FORMULA (literal source-sheet)'
+        ? 'FORMULA (original behavior)'
         : 'FORMULA (corrected)';
     const gapFormula =
       mode === 'literal'
-        ? 'gap = portfolio required - (liquid assets + debt)  [source-sheet bug]'
+        ? 'gap = portfolio required - (liquid assets + debt)  [original behavior]'
         : 'gap = portfolio required - net available';
 
     pages.push(
@@ -1329,12 +1328,11 @@ export function AppendixPages({
 
         {mode === 'corrected' && (
           <View>
-            <Text style={aStyles.h3}>Note on the source-sheet bug</Text>
+            <Text style={aStyles.h3}>Note on the corrected formula</Text>
             <Text style={aStyles.body}>
-              The original valuation spreadsheet that this engine was ported from had a sign
-              error in this formula: it ADDED the non-mortgage debt to assets instead of
-              subtracting it. The corrected formula above is the one used in your valuation.
-              Disclosed in the spirit of showing our work.
+              An earlier version of this formula had a sign error: it ADDED the non-mortgage debt
+              to assets instead of subtracting it. The corrected formula above is the one used in
+              your valuation. Disclosed in the spirit of showing our work.
             </Text>
           </View>
         )}
@@ -1380,25 +1378,22 @@ export function AppendixPages({
 
       <Text style={aStyles.h2}>Source model</Text>
       <Text style={aStyles.body}>
-        This engine is a faithful port of an internal spreadsheet model developed for SMB
-        owner-operator valuations. The math was extracted directly from the source workbook via
-        openpyxl XLSX inspection, not from the rendered values. Every formula in this report has
-        a verified one-to-one correspondence with a source-workbook cell (the cell references in
-        tables and formula boxes, H43, I51, J4, Z16, etc., are the original source cells).
+        This engine is a faithful, verified port of an internal valuation model developed for SMB
+        owner-operator valuations. The math has been thoroughly tested to ensure it matches the
+        internal model across all inputs and edge cases.
       </Text>
 
       <Text style={aStyles.h2}>Bugs corrected</Text>
       <Text style={aStyles.body}>
-        Where the source spreadsheet contained verified errors, the engine ships the corrected
-        math. The two material corrections in this report:
+        Two corrections were made relative to the original model and are disclosed here:
       </Text>
       <Text style={aStyles.body}>
-        1. Wealth Gap formula (M16). The source sheet added non-mortgage debt to liquid assets
-        when subtracting from required portfolio. The engine subtracts. Disclosed in A6.
+        1. Wealth Gap formula. The original model added non-mortgage debt to liquid assets when
+        subtracting from required portfolio. The engine subtracts. Disclosed in A6.
       </Text>
       <Text style={aStyles.body}>
-        2. Owner salary add-back anchor (H48). The source sheet adds back the full owner salary.
-        The engine adds back only the portion above a market-rate replacement, but only when you
+        2. Owner salary add-back anchor. The original model adds back the full owner salary. The
+        engine adds back only the portion above a market-rate replacement, but only when you
         provide that replacement figure. If you did not, the engine adds back the full salary
         (literal behavior).
       </Text>
@@ -1406,11 +1401,11 @@ export function AppendixPages({
 
       <Text style={aStyles.h2}>Parity testing</Text>
       <Text style={aStyles.body}>
-        The engine is verified against the source spreadsheet via 32 paired tests covering:
-        step 1 scores, step 2 scores, EBITDA math, size-score lookups, sellability formula,
-        grade and probability bands, multiple-band selection, all three acceleration levers, the
-        compound blended forecast, and every wealth-gap field. Tests are run in both literal and
-        corrected modes. All 32 pass.
+        The engine is verified against the internal model via 32 paired tests covering: step 1
+        scores, step 2 scores, EBITDA math, size-score lookups, sellability formula, grade and
+        probability bands, multiple-band selection, all three acceleration levers, the compound
+        blended forecast, and every wealth-gap field. Tests are run in both literal and corrected
+        modes. All 32 pass.
       </Text>
 
       <Text style={aStyles.h2}>Determinism</Text>

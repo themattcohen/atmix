@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<!--
-  Someday Consultants — Landing Page v2 (rebalanced 2026-05-20)
-  Password-gated preview. Atmix.org/ss only.
-  Rebalanced to ~60/40 Sara/Matt per business-panel synthesis:
-  /claudedocs/business_panel_someday_rebalance_2026-05-20.md
--->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex,nofollow">
-  <meta name="description" content="Private preview.">
-  <title>Someday Consultants &mdash; preview</title>
+  <meta name="description" content="M&amp;A advisory for accounting firm owners. Sara Sharp has closed 100+ accounting firm transactions. Matt Cohen, a CPA who sold his own firm through Sara, runs the first call.">
+  <link rel="canonical" href="https://atmix.org/ss">
+  <title>Someday Consultants | M&amp;A Advisory for Accounting Firms</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <style>
     :root {
@@ -68,81 +65,6 @@
     section { padding: 80px 0; border-bottom: 1px solid var(--hairline); }
     section:last-of-type { border-bottom: none; }
     @media (max-width: 640px) { section { padding: 56px 0; } }
-
-    /* ---------- PASSWORD GATE ---------- */
-    .gate {
-      position: fixed;
-      inset: 0;
-      background: var(--cream);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 1000;
-    }
-    .gate-card {
-      max-width: 420px;
-      width: 100%;
-      background: var(--cream-light);
-      padding: 48px 40px;
-      border-radius: 4px;
-      border: 1px solid var(--hairline);
-      text-align: center;
-    }
-    .gate-brand {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px;
-      font-weight: 600;
-      color: var(--forest);
-      margin: 0 0 4px;
-      line-height: 1;
-    }
-    .gate-tag {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--slate-muted);
-      margin-bottom: 36px;
-    }
-    .gate-prompt {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 17px;
-      color: var(--slate-mid);
-      margin-bottom: 24px;
-    }
-    .gate-form { display: flex; flex-direction: column; gap: 12px; }
-    .gate-form input {
-      padding: 13px 16px;
-      border: 1px solid var(--hairline);
-      border-radius: 3px;
-      background: var(--cream-light);
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      color: var(--slate);
-      text-align: center;
-      letter-spacing: 0.06em;
-    }
-    .gate-form input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
-    .gate-form button {
-      padding: 13px 24px;
-      background: var(--forest);
-      color: var(--cream-light);
-      border: none;
-      border-radius: 3px;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-    .gate-form button:hover { background: var(--forest-light); }
-    .gate-error { margin-top: 14px; font-size: 13px; color: #8a2a2a; min-height: 18px; }
-    .gate-footnote { margin-top: 24px; font-size: 12px; color: var(--slate-muted); }
 
     /* ---------- LANDING ---------- */
     header.site-header {
@@ -318,7 +240,6 @@
     .deal-capsules-grid .deal-capsules {
       margin: 0;
     }
-    /* Reuse deal-capsules list styles inside the grid */
 
     /* ---------- ACCENT BAND (full-bleed gold hairline + callout) ---------- */
     .accent-band {
@@ -403,7 +324,7 @@
     }
     .cta-aftlink a:hover { color: var(--gold); }
 
-    /* Mobile-only quick-action card (Taleb static preview, replaces sticky-earlier idea) */
+    /* Mobile-only quick-action card */
     .mobile-quick-card { display: none; }
     @media (max-width: 640px) {
       .mobile-quick-card {
@@ -427,32 +348,18 @@
         width: 100%;
         text-align: center;
       }
-      .mobile-quick-card .btn:hover {
-        background: var(--gold-light);
-        color: var(--forest);
-        opacity: 1;
-      }
-      /* Tighter hero h1 on mobile (Fix D1) */
+      .mobile-quick-card .btn:hover { background: var(--gold-light); color: var(--forest); opacity: 1; }
       .hero h1 { font-size: clamp(28px, 7vw, 36px); max-width: 100%; }
     }
 
-    /* Step deliverables nested under process step 4 */
     .step-deliverables {
       list-style: none;
       padding: 16px 0 0;
       margin: 14px 0 0;
       border-top: 1px solid var(--hairline);
     }
-    .step-deliverables li {
-      padding: 6px 0;
-      font-size: 15px;
-      color: var(--slate-mid);
-      line-height: 1.5;
-    }
-    .step-deliverables li strong {
-      color: var(--forest);
-      font-weight: 600;
-    }
+    .step-deliverables li { padding: 6px 0; font-size: 15px; color: var(--slate-mid); line-height: 1.5; }
+    .step-deliverables li strong { color: var(--forest); font-weight: 600; }
 
     .section-label {
       font-family: 'Inter', sans-serif;
@@ -473,17 +380,10 @@
       border-bottom: 1px solid var(--hairline);
     }
     .diff-row:last-child { border-bottom: none; }
-    .diff-row dt {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--forest);
-      line-height: 1.25;
-    }
+    .diff-row dt { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--forest); line-height: 1.25; }
     .diff-row dd { margin: 0; color: var(--slate-mid); }
     @media (max-width: 640px) { .diff-row { grid-template-columns: 1fr; gap: 6px; } }
 
-    /* Person blocks — Sara block is taller / has more content */
     .person {
       display: grid;
       grid-template-columns: 200px 1fr;
@@ -515,7 +415,6 @@
       .person-photo { width: 180px; height: 200px; margin-bottom: 8px; }
     }
 
-    /* Sara's pull quote */
     .pull-quote {
       border-left: 3px solid var(--gold);
       padding: 14px 0 14px 22px;
@@ -538,7 +437,6 @@
       color: var(--slate-muted);
     }
 
-    /* Content strip — Sara's published work */
     .content-strip {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -565,22 +463,9 @@
       color: var(--gold);
       margin-bottom: 6px;
     }
-    .content-card-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--forest);
-      line-height: 1.2;
-      margin: 0 0 4px;
-    }
-    .content-card-meta {
-      font-size: 12px;
-      color: var(--slate-muted);
-      line-height: 1.4;
-    }
-    @media (max-width: 760px) {
-      .content-strip { grid-template-columns: 1fr; }
-    }
+    .content-card-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: var(--forest); line-height: 1.2; margin: 0 0 4px; }
+    .content-card-meta { font-size: 12px; color: var(--slate-muted); line-height: 1.4; }
+    @media (max-width: 760px) { .content-strip { grid-template-columns: 1fr; } }
 
     .bio-credentials { list-style: none; padding: 0; margin: 18px 0; color: var(--slate-mid); }
     .bio-credentials li { padding: 5px 0 5px 18px; position: relative; }
@@ -597,17 +482,13 @@
 
     .testimonials-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 24px;
       margin-top: 32px;
     }
+    .testimonial-stars { color: #B8972E; font-size: 18px; letter-spacing: 2px; }
     @media (max-width: 880px) { .testimonials-grid { grid-template-columns: 1fr; } }
-    .testimonial {
-      background: var(--cream);
-      padding: 32px 28px;
-      border-radius: 3px;
-      border: 1px solid var(--hairline);
-    }
+    .testimonial { background: var(--cream); padding: 32px 28px; border-radius: 3px; border: 1px solid var(--hairline); }
     .testimonial-photo {
       width: 56px; height: 56px;
       border-radius: 50%;
@@ -622,19 +503,8 @@
       font-weight: 600;
       letter-spacing: 0.05em;
     }
-    .testimonial-quote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 19px;
-      font-style: italic;
-      line-height: 1.42;
-      color: var(--forest);
-      margin: 0 0 22px;
-    }
-    .testimonial-attribution {
-      font-size: 13px;
-      color: var(--slate-mid);
-      line-height: 1.5;
-    }
+    .testimonial-quote { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-style: italic; line-height: 1.42; color: var(--forest); margin: 0 0 22px; }
+    .testimonial-attribution { font-size: 13px; color: var(--slate-mid); line-height: 1.5; }
     .testimonial-attribution strong { color: var(--slate); font-weight: 600; display: block; }
 
     .deal-capsules { list-style: none; padding: 0; margin: 32px 0 0; }
@@ -684,29 +554,11 @@
       .process-steps li:before { font-size: 36px; top: 22px; }
     }
 
-    /* Dual magnet — two side-by-side panels */
-    .magnet-dual {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 24px;
-      margin-top: 16px;
-    }
-    @media (max-width: 760px) {
-      .magnet-dual { grid-template-columns: 1fr; }
-    }
-    .magnet-primary {
-      background: var(--forest);
-      color: var(--cream-light);
-      padding: 48px 40px;
-      border-radius: 3px;
-    }
-    .magnet-secondary {
-      background: var(--cream);
-      color: var(--slate);
-      padding: 48px 40px;
-      border-radius: 3px;
-      border: 1px solid var(--hairline);
-    }
+    /* Dual magnet */
+    .magnet-dual { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; margin-top: 16px; }
+    @media (max-width: 760px) { .magnet-dual { grid-template-columns: 1fr; } }
+    .magnet-primary { background: var(--forest); color: var(--cream-light); padding: 48px 40px; border-radius: 3px; }
+    .magnet-secondary { background: var(--cream); color: var(--slate); padding: 48px 40px; border-radius: 3px; border: 1px solid var(--hairline); }
     .magnet-primary h3 { color: var(--cream-light); font-size: 26px; }
     .magnet-primary .section-label { color: var(--gold-light); }
     .magnet-primary p { color: var(--cream); }
@@ -714,58 +566,46 @@
     .magnet-secondary .section-label { color: var(--gold); }
     .magnet-secondary p { color: var(--slate-mid); }
     .magnet-form { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
-    .magnet-form input {
-      flex: 1;
-      min-width: 160px;
-      padding: 12px 14px;
-      border-radius: 3px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-    }
-    .magnet-primary .magnet-form input {
-      border: 1px solid var(--forest-light);
-      background: var(--cream-light);
-      color: var(--slate);
-    }
-    .magnet-secondary .magnet-form input {
-      border: 1px solid var(--hairline);
-      background: var(--cream-light);
-      color: var(--slate);
-    }
+    .magnet-form input { flex: 1; min-width: 160px; padding: 12px 14px; border-radius: 3px; font-family: 'Inter', sans-serif; font-size: 14px; }
+    .magnet-primary .magnet-form input { border: 1px solid var(--forest-light); background: var(--cream-light); color: var(--slate); }
+    .magnet-secondary .magnet-form input { border: 1px solid var(--hairline); background: var(--cream-light); color: var(--slate); }
     .magnet-form input:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
     .magnet-primary .magnet-form .btn { background: var(--gold); color: var(--forest); padding: 12px 20px; font-size: 14px; }
     .magnet-primary .magnet-form .btn:hover { background: var(--gold-light); opacity: 1; }
     .magnet-secondary .magnet-form .btn { background: var(--forest); color: var(--cream-light); padding: 12px 20px; font-size: 14px; }
     .magnet-secondary .magnet-form .btn:hover { background: var(--forest-light); opacity: 1; }
-    .magnet-aside {
-      font-size: 12px;
-      opacity: 0.75;
-      margin-top: 14px;
-      font-style: italic;
-    }
+    .magnet-aside { font-size: 12px; opacity: 0.75; margin-top: 14px; font-style: italic; }
     .magnet-primary .magnet-aside { color: var(--cream); }
     .magnet-secondary .magnet-aside { color: var(--slate-muted); }
-    @media (max-width: 760px) {
-      .magnet-primary, .magnet-secondary { padding: 36px 26px; }
+    @media (max-width: 760px) { .magnet-primary, .magnet-secondary { padding: 36px 26px; } }
+
+    /* Form success states */
+    .form-success {
+      display: none;
+      padding: 20px;
+      background: rgba(29, 58, 40, 0.08);
+      border-left: 3px solid var(--forest);
+      border-radius: 2px;
+      margin-top: 16px;
     }
+    .form-success p { margin: 0; font-size: 15px; color: var(--forest); }
+    .form-error {
+      display: none;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #8a2a2a;
+    }
+
+    /* GHL calendar embed — revealed after intake success */
+    .calendar-embed { display: none; margin-top: 28px; }
+    .calendar-embed iframe { width: 100%; border: none; border-radius: 3px; }
 
     .faq-item { padding: 26px 0; border-bottom: 1px solid var(--hairline); }
     .faq-item:last-child { border-bottom: none; }
-    .faq-q {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--forest);
-      margin: 0 0 10px;
-    }
+    .faq-q { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); margin: 0 0 10px; }
     .faq-a { color: var(--slate-mid); margin: 0; }
 
-    .intake-section {
-      background: var(--cream);
-      padding: 56px 48px;
-      border-radius: 3px;
-      border: 1px solid var(--hairline);
-    }
+    .intake-section { background: var(--cream); padding: 56px 48px; border-radius: 3px; border: 1px solid var(--hairline); }
     .intake-fields { display: grid; gap: 22px; margin: 32px 0 24px; }
     .intake-fields label { display: block; font-size: 14px; font-weight: 600; color: var(--slate); margin-bottom: 8px; }
     .intake-fields select, .intake-fields textarea, .intake-fields input {
@@ -778,20 +618,16 @@
       font-size: 15px;
       color: var(--slate);
     }
-    .intake-fields select:focus,
-    .intake-fields textarea:focus,
-    .intake-fields input:focus {
+    .intake-fields select:focus, .intake-fields textarea:focus, .intake-fields input:focus {
       outline: 2px solid var(--gold);
       outline-offset: -1px;
     }
     .intake-fields textarea { resize: vertical; min-height: 88px; font-family: 'Inter', sans-serif; }
     @media (max-width: 640px) { .intake-section { padding: 40px 26px; } }
-    .intake-meta {
-      font-size: 13px;
-      color: var(--slate-muted);
-      margin-top: 12px;
-      font-style: italic;
-    }
+    .intake-meta { font-size: 13px; color: var(--slate-muted); margin-top: 12px; font-style: italic; }
+
+    /* Honeypot field — visually hidden */
+    .hp-field { position: absolute; left: -9999px; opacity: 0; pointer-events: none; tab-index: -1; }
 
     footer.site-footer { background: var(--forest); color: var(--cream); padding: 64px 0 36px; }
     .footer-grid {
@@ -804,42 +640,12 @@
     }
     @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
     @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
-    .footer-brand {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 30px;
-      font-weight: 600;
-      color: var(--cream-light);
-      margin: 0 0 6px;
-    }
+    .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; color: var(--cream-light); margin: 0 0 6px; }
     .footer-tagline { font-size: 14px; color: var(--cream); opacity: 0.8; margin-bottom: 16px; }
-    footer h4 {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      margin: 0 0 16px;
-    }
-    footer p, footer a {
-      font-size: 14px;
-      color: var(--cream);
-      opacity: 0.85;
-      margin: 0 0 8px;
-      text-decoration: none;
-      display: block;
-    }
+    footer h4 { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light); margin: 0 0 16px; }
+    footer p, footer a { font-size: 14px; color: var(--cream); opacity: 0.85; margin: 0 0 8px; text-decoration: none; display: block; }
     footer a:hover { color: var(--gold-light); opacity: 1; }
-    .footer-legal {
-      margin: 56px auto 0;
-      max-width: 960px;
-      padding: 24px 24px 0;
-      border-top: 1px solid var(--forest-light);
-      font-size: 12px;
-      color: var(--cream);
-      opacity: 0.6;
-      line-height: 1.5;
-    }
+    .footer-legal { margin: 56px auto 0; max-width: 960px; padding: 24px 24px 0; border-top: 1px solid var(--forest-light); font-size: 12px; color: var(--cream); opacity: 0.6; line-height: 1.5; }
 
     [data-placeholder] {
       border-bottom: 1px dashed var(--gold);
@@ -889,349 +695,362 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
+
+    /* Spinner for form submit state */
+    .btn-loading { opacity: 0.7; cursor: not-allowed; }
+    .btn-loading::after { content: " ..."; }
   </style>
 </head>
 <body>
 
-  <!-- PASSWORD GATE -->
-  <div class="gate" id="gate" role="dialog" aria-labelledby="gate-brand">
-    <div class="gate-card">
-      <p class="gate-brand" id="gate-brand">Someday Consultants</p>
-      <span class="gate-tag">Private Preview</span>
-      <p class="gate-prompt">Enter the access word to view.</p>
-      <form class="gate-form" id="gateForm" autocomplete="off">
-        <input type="password" id="gatePw" name="pw" placeholder="Access word" autofocus aria-label="Access word">
-        <button type="submit">Enter</button>
-      </form>
-      <p class="gate-error" id="gateError" role="status" aria-live="polite"></p>
-      <p class="gate-footnote">Working draft. Not for distribution.</p>
-    </div>
-  </div>
+  <div class="preview-banner">Preview (private draft, not for distribution)</div>
 
-  <!-- LANDING CONTENT -->
-  <div id="content" hidden>
+  <a class="skip" href="#main">Skip to main content</a>
 
-    <div class="preview-banner">Preview &mdash; private draft &middot; not indexed &middot; not for distribution</div>
-
-    <a class="skip" href="#main">Skip to main content</a>
-
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="logo" href="#hero">
-          Someday Consultants
-          <span class="logo-tagline">M&amp;A Advisory for Accounting Firms</span>
-        </a>
-        <nav class="primary" aria-label="Primary">
-          <a href="#process">How It Works</a>
-          <a href="#sara">Sara Sharp</a>
-          <a href="#matt">Why Matt Is Here</a>
-          <a href="#deals">Transactions</a>
-          <a href="#talk">Start the Call</a>
-        </nav>
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" aria-controls="navDrawer" aria-expanded="false">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect y="4" width="24" height="2" rx="1" fill="currentColor"/>
-            <rect y="11" width="24" height="2" rx="1" fill="currentColor"/>
-            <rect y="18" width="24" height="2" rx="1" fill="currentColor"/>
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Navigation menu" aria-modal="true" hidden>
-      <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&#x2715;</button>
-      <nav class="nav-drawer-links" aria-label="Mobile navigation">
-        <a href="#process" id="drawerFirstLink">How It Works</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#hero">
+        Someday Consultants
+        <span class="logo-tagline">M&amp;A Advisory for Accounting Firms</span>
+      </a>
+      <nav class="primary" aria-label="Primary">
+        <a href="#process">How It Works</a>
         <a href="#sara">Sara Sharp</a>
-        <a href="#matt">Why Matt Is Here</a>
+        <a href="#matt">Matt Cohen</a>
         <a href="#deals">Transactions</a>
         <a href="#talk">Start the Call</a>
       </nav>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" aria-controls="navDrawer" aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect y="4" width="24" height="2" rx="1" fill="currentColor"/>
+          <rect y="11" width="24" height="2" rx="1" fill="currentColor"/>
+          <rect y="18" width="24" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Navigation menu" aria-modal="true" hidden>
+    <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">&#x2715;</button>
+    <nav class="nav-drawer-links" aria-label="Mobile navigation">
+      <a href="#process" id="drawerFirstLink">How It Works</a>
+      <a href="#sara">Sara Sharp</a>
+      <a href="#matt">Matt Cohen</a>
+      <a href="#deals">Transactions</a>
+      <a href="#talk">Start the Call</a>
+    </nav>
+  </div>
+
+  <main id="main">
+
+    <section class="hero" id="hero">
+      <div class="container-wide">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <h1>Sara Sharp has closed 100+ accounting firm deals. She represents you, and only you.</h1>
+            <p class="hero-subhead">M&amp;A advisory for accounting firm owners, $5M to $10M revenue. Conflict-free, full representation.</p>
+            <div class="hero-proof">
+              <p><strong>Sara Sharp</strong> has closed 100+ accounting firm transactions over the last 24 months.</p>
+              <p>She wrote <em>The Structured Deal</em>, the book on accounting firm M&amp;A.</p>
+              <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
+            </div>
+            <div class="cta-row">
+              <a href="#talk" class="btn btn-primary">Book a 15-minute call with Matt</a>
+            </div>
+            <span class="cta-microcopy">15 minutes with Matt. He's a CPA who sold his own firm through Sara. He'll tell you where yours stands and whether now is the right time.</span>
+
+            <aside class="mobile-quick-card" aria-label="Quick action">
+              <p><strong>Sara has closed 100+ accounting firm deals.</strong> 15 minutes with Matt tells you if yours fits.</p>
+              <a href="#talk" class="btn btn-primary">Book the call</a>
+            </aside>
+
+            <p class="cta-aftlink"><a href="#magnet">Or read Sara's positioning chapter first &rarr;</a></p>
+          </div>
+          <aside class="hero-visual" aria-label="Sara Sharp and her book">
+            <img src="/ss/assets/sara-sharp-headshot.jpg" alt="Sara Sharp" class="hero-portrait-placeholder" style="object-fit:cover;object-position:50% 30%;border:none;background:none;">
+            <img src="/ss/assets/heres-the-deal-cover.jpg" alt="The Structured Deal by Sara Sharp" class="hero-book-placeholder" style="object-fit:cover;object-position:50% 20%;aspect-ratio:2/3;border:none;background:none;">
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container">
+        <p class="section-label">What full representation looks like</p>
+        <h2>A listing broker gets paid to close the deal. We get paid to defend you through it.</h2>
+
+        <p>Most brokers in this market collect fees from both buyer and seller. Their incentive is a signed contract, not your terms. Someday Consultants represents one side of each transaction, the side we represent, and our fee structure reflects that. When the buyer pushes on indemnification or post-close involvement, we hold the line. That is the whole job.</p>
+
+        <h2 style="margin-top: 72px;">What the process looks like.</h2>
+        <p>Written from where you'll be sitting, not from where we'll be sitting.</p>
+
+        <ol class="process-steps">
+          <li>
+            <h3>You book a 15-minute call with Matt.</h3>
+            <p>A short intake first: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
+          </li>
+          <li>
+            <h3>Matt tells you whether your firm is positioned for a deal in the next 1 to 3 years.</h3>
+            <p>If it's not, he tells you that. The call is diagnostic. No pitch.</p>
+          </li>
+          <li>
+            <h3>If your timeline is real, you work with Sara directly from there.</h3>
+            <p>Sara takes a 45-minute working session (not a sales call). She walks you through what your firm would trade for today and what would widen the band by 2027.</p>
+          </li>
+          <li>
+            <h3>If you decide to engage, we're with you every step of the way.</h3>
+            <p>From positioning and valuation through closing documents, we're in every material conversation. You get the benefit of Sara's full advisory and Matt's peer-level context, from the first LOI to the wire.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="accent-band">
+      <p>Conflict-free representation from first call to signed close. Matt screens. Sara represents.</p>
     </div>
 
-    <main id="main">
+    <!-- SARA — primary substance section -->
+    <section id="sara">
+      <div class="container">
+        <p class="section-label">Founder &amp; lead advisor</p>
+        <h2>Sara Sharp.</h2>
 
-      <section class="hero" id="hero">
-        <div class="container-wide">
-          <div class="hero-inner">
-            <div class="hero-copy">
-              <h1>You spent 25 years building it. The exit should be built the same way.</h1>
-              <p class="hero-subhead">M&amp;A advisory for accounting firm owners. Not a listing service.</p>
-              <div class="hero-proof">
-                <p><strong>Sara Sharp</strong> has closed 100+ accounting firm transactions over the last 24 months.</p>
-                <p>She wrote <em>The Structured Deal</em> &mdash; the book on accounting firm M&amp;A.</p>
-                <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
-              </div>
-              <div class="cta-row">
-                <a href="#talk" class="btn btn-primary">Find out what your firm is worth</a>
-              </div>
-              <span class="cta-microcopy">15 minutes with Matt. He's a CPA who sold his own firm through Sara &mdash; he'll tell you where yours stands and whether now is the right time.</span>
+        <div class="person">
+          <img src="/ss/assets/sara-sharp-headshot.jpg" alt="Sara Sharp" class="person-photo" style="object-fit:cover;object-position:50% 30%;border:none;background:none;">
+          <div>
+            <p>Sara's practice is built around one structural rule: she is paid by the side she represents, and only that side. Brokers routinely collect fees from both buyer and seller on the same transaction. Sara does not. She does not list firms in a marketplace, and does not take a percentage to make introductions.</p>
 
-              <aside class="mobile-quick-card" aria-label="Quick action">
-                <p><strong>Sara has closed 100+ accounting firm deals.</strong> 15 minutes with Matt tells you if yours fits.</p>
-                <a href="#talk" class="btn btn-primary">Book the call</a>
-              </aside>
+            <p>100+ accounting firm transactions in the last 24 months. Work concentrates in $5M to $10M revenue practices, mostly Colorado, closing at the top of their valuation band. A number above it.</p>
 
-              <p class="cta-aftlink"><a href="#magnet">Or read Sara's positioning chapter first &rarr;</a></p>
+            <blockquote class="pull-quote">
+              <span>You only have the one firm to sell, and you don't have time to practice the process on your biggest asset. Skip the learning curve, get a great advisor on board, and you'll make more money and save yourself the sleepless nights.</span>
+              <span class="pull-quote-attr">Sara Sharp</span>
+            </blockquote>
+
+            <p>Her published work on accounting firm M&amp;A:</p>
+
+            <div class="content-strip">
+              <a class="content-card" href="https://www.amazon.com/dp/B0H3J6LT9X/" target="_blank" rel="noopener">
+                <img src="/ss/assets/heres-the-deal-cover.jpg" alt="The Structured Deal book cover" style="height:44px;width:auto;object-fit:contain;display:block;margin-bottom:10px;">
+                <div class="content-card-kind">Book</div>
+                <div class="content-card-title">The Structured Deal</div>
+                <div class="content-card-meta">Accounting firm M&amp;A, 2026</div>
+              </a>
+              <a class="content-card" href="https://www.youtube.com/channel/UCnLI19Jb9TJ88WuMKUJZRiw" target="_blank" rel="noopener">
+                <img src="/ss/assets/yt-dealmakers-logo.jpg" alt="Sara Sharp's Dealmakers" style="height:44px;width:auto;object-fit:contain;display:block;margin-bottom:10px;">
+                <div class="content-card-kind">YouTube</div>
+                <div class="content-card-title">Sara Sharp's Dealmakers</div>
+                <div class="content-card-meta">Weekly conversations on selling a firm</div>
+              </a>
+              <a class="content-card" href="https://dealacademy.org/" target="_blank" rel="noopener">
+                <img src="/ss/assets/da-academy-logo.png" alt="Deal Academy" style="height:44px;width:auto;object-fit:contain;display:block;margin-bottom:10px;">
+                <div class="content-card-kind">Course</div>
+                <div class="content-card-title">Deal Academy</div>
+                <div class="content-card-meta">dealacademy.org</div>
+              </a>
             </div>
-            <aside class="hero-visual" aria-label="Sara Sharp and her book">
-              <img src="assets/sara-sharp-headshot.jpg" alt="Sara Sharp" class="hero-portrait-placeholder" style="object-fit:cover;object-position:50% 30%;border:none;background:none;">
-              <img src="assets/heres-the-deal-cover.jpg" alt="The Structured Deal by Sara Sharp" class="hero-book-placeholder" style="object-fit:cover;border:none;background:none;">
-            </aside>
+
+            <ul class="bio-credentials">
+              <li>CPA Practice Advisor 40 Under 40</li>
+              <li>Speaker, 2025 Jetpack Workflow M&amp;A Summit. SBA structuring for accounting firm acquisitions</li>
+              <li>Speaker, RightWorks RightNow 2025 and 2026</li>
+            </ul>
           </div>
         </div>
-      </section>
-
-      <section id="process">
-        <div class="container">
-          <p class="section-label">What full representation looks like</p>
-          <h2>Most owners hire a listing broker. They get an intro and paperwork. They needed someone in the chair beside them.</h2>
-
-          <p>Listing brokers introduce buyers and shepherd paperwork; their economics don't require them to defend your interests. We represent one side of each transaction, and our economics line up with yours.</p>
-
-          <h2 style="margin-top: 72px;">What the process looks like.</h2>
-          <p>Written from where you'll be sitting &mdash; not from where we'll be sitting.</p>
-
-          <ol class="process-steps">
-            <li>
-              <h3>You book a 15-minute call with Matt.</h3>
-              <p>A short intake first: revenue range, owner count, timeline. Matt sees your answers before the call.</p>
-            </li>
-            <li>
-              <h3>Matt tells you whether your firm is positioned for a deal in the next 1&ndash;3 years.</h3>
-              <p>If it's not, he tells you that. The call is diagnostic. No pitch.</p>
-            </li>
-            <li>
-              <h3>If your timeline is real, you work with Sara directly from there.</h3>
-              <p>Sara takes a 45-minute working session &mdash; not a sales call. She walks you through what your firm would trade for today and what would widen the band by 2027.</p>
-            </li>
-            <li>
-              <h3>If you decide to engage, we're with you every step of the way.</h3>
-              <p>From positioning and valuation through closing documents, we're in every material conversation. You get the benefit of Sara's full advisory and Matt's peer-level context, from the first LOI to the wire.</p>
-            </li>
-          </ol>
-
-        </div>
-      </section>
-
-      <div class="accent-band">
-        <p>We advise the side we represent, end to end. Matt runs the first call so Sara's time stays on the work.</p>
       </div>
+    </section>
 
-      <!-- SARA — primary substance section -->
-      <section id="sara">
-        <div class="container">
-          <p class="section-label">Founder &amp; lead advisor</p>
-          <h2>Sara Sharp.</h2>
+    <!-- MATT — compressed peer bridge section -->
+    <section id="matt">
+      <div class="container">
+        <p class="section-label">Matt Cohen</p>
+        <h2>A CPA who sold his firm through Sara, and now opens the door.</h2>
 
-          <div class="person">
-            <img src="assets/sara-sharp-headshot.jpg" alt="Sara Sharp" class="person-photo" style="object-fit:cover;object-position:50% 30%;border:none;background:none;">
-            <div>
-              <p>Sara's practice is built around one structural rule: she is paid by the side she represents, and only that side. Brokers routinely collect fees from both buyer and seller on the same transaction. Sara does not. She does not list firms in a marketplace, and does not take a percentage to make introductions.</p>
+        <div class="person">
+          <img src="/ss/assets/matt-cohen-headshot.jpg" alt="Matt Cohen" class="person-photo" style="object-fit:cover;object-position:50% 30%;">
+          <div>
+            <p>Matt Cohen is a CPA. He founded a cloud-native outsourced accounting practice in 2016, grew it to the low-seven figures, and sold it in 2025 at 3x gross revenue, through Sara at Someday Consultants.</p>
 
-              <p>100+ accounting firm transactions in the last 24 months. Work concentrates in $5M&ndash;$10M revenue practices, mostly Colorado, closing at the top of their valuation band &mdash; and a number above it.</p>
+            <p>He interviewed three brokers before picking her. None could explain how they'd price appropriately for Matt's offer, only how they'd run the process. Sara could. He hired her, closed at the number on the first LOI, and stayed in touch.</p>
 
-              <blockquote class="pull-quote">
-                <span>You only have the one firm to sell, and you don't have time to practice the process on your biggest asset. Skip the learning curve, get a great advisor on board, and you'll make more money and save yourself the sleepless nights.</span>
-                <span class="pull-quote-attr">&mdash; Sara Sharp</span>
-              </blockquote>
+            <p>Matt now runs the first 15 minutes of every inquiry that comes in. He'll tell you whether your firm is positioned for a deal in the next 1 to 3 years, including if the honest answer is "not yet." If your timeline is real, you work with Sara from there. His full deal post-mortem is one of the downloads below if you want the long version.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-              <p>Her published work on accounting firm M&amp;A:</p>
+    <section>
+      <div class="container-wide">
+        <p class="section-label">From sellers who hired Sara</p>
+        <h2>What sellers say.</h2>
 
-              <div class="content-strip">
-                <a class="content-card" href="https://www.amazon.com/dp/B0H3J6LT9X/" target="_blank" rel="noopener">
-                  <img src="assets/heres-the-deal-cover.jpg" alt="The Structured Deal book cover" style="height:44px;width:auto;object-fit:contain;display:block;margin-bottom:10px;">
-                  <div class="content-card-kind">Book</div>
-                  <div class="content-card-title">The Structured Deal</div>
-                  <div class="content-card-meta">Accounting firm M&amp;A, 2026</div>
-                </a>
-                <a class="content-card" href="https://www.youtube.com/channel/UCnLI19Jb9TJ88WuMKUJZRiw" target="_blank" rel="noopener">
-                  <img src="assets/yt-dealmakers-logo.jpg" alt="Sara Sharp's Dealmakers" style="height:44px;width:auto;object-fit:contain;display:block;margin-bottom:10px;">
-                  <div class="content-card-kind">YouTube</div>
-                  <div class="content-card-title">Sara Sharp's Dealmakers</div>
-                  <div class="content-card-meta">Weekly conversations on selling a firm</div>
-                </a>
-                <a class="content-card" href="https://dealacademy.org/" target="_blank" rel="noopener">
-                  <img src="assets/da-academy-logo.png" alt="Deal Academy" style="height:44px;width:auto;object-fit:contain;display:block;margin-bottom:10px;">
-                  <div class="content-card-kind">Course</div>
-                  <div class="content-card-title">Deal Academy</div>
-                  <div class="content-card-meta">dealacademy.org</div>
-                </a>
-              </div>
+        <div class="testimonials-grid">
+          <article class="testimonial">
+            <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testimonial-quote">"What sets Sara apart isn't just the legal expertise. It's knowing how to navigate the inevitable setbacks, who to involve, and how to get a deal back on track. A true trusted partner when it counts."</p>
+            <p class="testimonial-attribution">
+              <strong>Alla Christoforou</strong>
+              Co-Founder/CEO, Pathfinders Advisory
+            </p>
+          </article>
+          <article class="testimonial">
+            <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testimonial-quote">"Sara is highly knowledgeable in the advisory field and demonstrated exceptional professionalism throughout the entire process. Her guidance was thoughtful, strategic, and always delivered with our best interests in mind. She consistently kept us informed, ensuring we understood every step and felt confident in the decisions being made. In addition to her expertise, she was incredibly approachable and always made herself available to answer questions and address concerns with patience and care. Her communication was timely, clear, and reassuring from beginning to end. We truly appreciated her expertise, dedication, and commitment to delivering an outstanding experience."</p>
+            <p class="testimonial-attribution">
+              <strong>Kim Hitchcock, CPA</strong>
+              MHC Certified Public Accountants
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-              <ul class="bio-credentials">
-                <li>CPA Practice Advisor 40 Under 40</li>
-                <li>Speaker, 2025 Jetpack Workflow M&amp;A Summit &mdash; SBA structuring for accounting firm acquisitions</li>
-              </ul>
+    <section id="deals">
+      <div class="container-wide">
+        <p class="section-label">Track record</p>
+        <h2>Recent transactions Sara has closed.</h2>
+        <p>Anonymized for client confidentiality. Specific enough to recognize whether your firm fits the pattern.</p>
+        <div class="deal-capsules-grid">
+          <ul class="deal-capsules">
+            <li>
+              <span class="deal-tag">2025</span>
+              Tax practice, $1.35M revenue. Sold in 2025 for $1.8M (1.33x gross revenue). A specialty book that cleared a premium to the typical practice multiple.
+            </li>
+            <li>
+              <span class="deal-tag">2025</span>
+              Niche accounting firm. Sold in 2025 for $11M at more than 2x revenue. A defensible niche drove an outlier multiple.
+            </li>
+          </ul>
+          <ul class="deal-capsules">
+            <li>
+              <span class="deal-tag">2025</span>
+              Full-service practice (tax, accounting, bookkeeping), $2.9M revenue. Sold in 2025 for $3.6M (~1.24x revenue). A clean benchmark for what a standard, well-run firm trades at.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- DUAL MAGNET — Sara primary (chapter), Matt secondary (post-mortem) -->
+    <section id="magnet">
+      <div class="container">
+        <p class="section-label">Read before you book</p>
+        <h2>Two ways in.</h2>
+        <div class="magnet-dual">
+
+          <!-- Sara's chapter magnet -->
+          <div class="magnet-primary">
+            <p class="section-label">From Sara</p>
+            <h3>A chapter from <em>The Structured Deal</em>.</h3>
+            <p>The chapter on positioning your firm for a deal: what buyers actually look for, what re-trades the price, and what to fix 18 months before you intend to sell.</p>
+            <form class="magnet-form" id="formChapter" novalidate>
+              <!-- Honeypot — bots fill this, humans don't -->
+              <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <label for="m1-name" class="skip">Name</label>
+              <input type="text" id="m1-name" name="name" placeholder="Your name" required autocomplete="name">
+              <label for="m1-email" class="skip">Work email</label>
+              <input type="email" id="m1-email" name="email" placeholder="Work email" required autocomplete="email">
+              <div class="cf-turnstile" data-sitekey="0x4AAAAAADT1O8f4MmzPG9oK" data-size="invisible" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError"></div>
+              <button type="submit" class="btn" id="btnChapter">Get the positioning chapter</button>
+            </form>
+            <div class="form-success" id="successChapter">
+              <p>Check your inbox. The chapter is on its way. It may take a minute.</p>
             </div>
+            <div class="form-error" id="errorChapter"></div>
+            <p class="magnet-aside">No newsletter sign-up. We send the chapter and one follow-up two weeks later asking if it was useful.</p>
           </div>
-        </div>
-      </section>
 
-      <!-- MATT — compressed peer bridge section -->
-      <section id="matt">
-        <div class="container">
-          <p class="section-label">Why Matt is here</p>
-          <h2>The CPA who sold his firm through Sara &mdash; and now opens the door.</h2>
-
-          <div class="person">
-            <div class="person-photo">PORTRAIT<br>MATT COHEN<br>(direct-to-camera<br>real office)</div>
-            <div>
-              <p>Matt Cohen is a CPA. He founded a cloud-native outsourced accounting practice in 2016 and sold it in 2025 at 3x gross revenue (low seven-figures) &mdash; through Sara at Someday Consultants.</p>
-
-              <p>He interviewed three brokers before picking her. None could explain how they'd raise the price, only how they'd run the process. Sara could. He hired her, closed at the number on the first LOI, and stayed in touch.</p>
-
-              <p>Matt now runs the first 15 minutes of every inquiry that comes in. He'll tell you whether your firm is positioned for a deal in the next 1&ndash;3 years &mdash; including if the honest answer is "not yet." If your timeline is real, you work with Sara from there. His full deal post-mortem is one of the downloads below if you want the long version.</p>
+          <!-- Matt's post-mortem magnet -->
+          <div class="magnet-secondary">
+            <p class="section-label">From Matt</p>
+            <h3>His deal post-mortem.</h3>
+            <p>What he wishes he'd known before the LOI, what Sara caught that saved the deal, and what he'd do differently if he were doing it over.</p>
+            <form class="magnet-form" id="formPostMortem" novalidate>
+              <!-- Honeypot -->
+              <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <label for="m2-name" class="skip">Name</label>
+              <input type="text" id="m2-name" name="name" placeholder="Your name" required autocomplete="name">
+              <label for="m2-email" class="skip">Work email</label>
+              <input type="email" id="m2-email" name="email" placeholder="Work email" required autocomplete="email">
+              <div class="cf-turnstile" data-sitekey="0x4AAAAAADT1O8f4MmzPG9oK" data-size="invisible" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError"></div>
+              <button type="submit" class="btn" id="btnPostMortem">Get Matt's deal post-mortem</button>
+            </form>
+            <div class="form-success" id="successPostMortem">
+              <p>Check your inbox. The post-mortem is on its way.</p>
             </div>
+            <div class="form-error" id="errorPostMortem"></div>
+            <p class="magnet-aside">Same single follow-up. No sequence.</p>
           </div>
+
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section>
-        <div class="container-wide">
-          <p class="section-label">From sellers who hired Sara</p>
-          <h2>What sellers say.</h2>
+    <section>
+      <div class="container">
+        <p class="section-label">Questions owners ask</p>
+        <h2>Before you book.</h2>
 
-          <div class="testimonials-grid">
-            <article class="testimonial">
-              <div class="testimonial-photo">PHOTO</div>
-              <p class="testimonial-quote">"What sets Sara apart isn't just the legal expertise. It's knowing how to navigate the inevitable setbacks, who to involve, and how to get a deal back on track. A true trusted partner when it counts."</p>
-              <p class="testimonial-attribution">
-                <strong>Alla Christoforou</strong>
-                Co-Founder/CEO, Pathfinders Advisory
-              </p>
-            </article>
-            <article class="testimonial">
-              <div class="testimonial-photo">PHOTO</div>
-              <p class="testimonial-quote">"Sara is highly knowledgeable in the advisory field and demonstrated exceptional professionalism throughout the entire process. Her guidance was thoughtful, strategic, and always delivered with our best interests in mind. She consistently kept us informed, ensuring we understood every step and felt confident in the decisions being made. In addition to her expertise, she was incredibly approachable and always made herself available to answer questions and address concerns with patience and care. Her communication was timely, clear, and reassuring from beginning to end. We truly appreciated her expertise, dedication, and commitment to delivering an outstanding experience."</p>
-              <p class="testimonial-attribution">
-                <strong>Kim Hitchcock, CPA</strong>
-                MHC Certified Public Accountants
-              </p>
-            </article>
-          </div>
+        <div class="faq-item">
+          <h3 class="faq-q">What size firm does Sara typically work with?</h3>
+          <p class="faq-a">Our typical engagement is firms with $5M to $10M in revenue. If your firm is smaller, we're still happy to talk. Book the call and Matt will give you an honest read.</p>
         </div>
-      </section>
 
-      <section id="deals">
-        <div class="container-wide">
-          <p class="section-label">Pattern recognition</p>
-          <h2>Recent transactions Sara has closed.</h2>
-          <p>Anonymized for client confidentiality. Specific enough to recognize whether your firm fits the pattern.</p>
-          <div class="deal-capsules-grid">
-            <ul class="deal-capsules">
-              <li>
-                <span class="deal-tag">2025</span>
-                Tax practice, $1.35M revenue &mdash; sold in 2025 for $1.8M (1.33x gross revenue). A specialty book that cleared a premium to the typical practice multiple.
-              </li>
-              <li>
-                <span class="deal-tag">2025</span>
-                Niche accounting firm &mdash; sold in 2025 for $11M at more than 2x revenue. A defensible niche drove an outlier multiple.
-              </li>
-            </ul>
-            <ul class="deal-capsules">
-              <li>
-                <span class="deal-tag">2025</span>
-                Full-service practice (tax, accounting, bookkeeping), $2.9M revenue &mdash; sold in 2025 for $3.6M (~1.24x revenue). A clean benchmark for what a standard, well-run firm trades at.
-              </li>
-            </ul>
-          </div>
+        <div class="faq-item">
+          <h3 class="faq-q">How much does it cost?</h3>
+          <p class="faq-a">It depends on the deal. Someday Consultants' fees are competitive with everyone else in the market. Because we do the work most listing services don't, the value side of the equation is heavier. Matt gives you a sense on the call.</p>
         </div>
-      </section>
 
-      <!-- DUAL MAGNET — Sara primary, Matt secondary -->
-      <section id="magnet">
-        <div class="container">
-          <p class="section-label">Read before you book</p>
-          <h2>Two ways in.</h2>
-          <div class="magnet-dual">
-            <div class="magnet-primary">
-              <p class="section-label">From Sara</p>
-              <h3>A chapter from <em>The Structured Deal</em>.</h3>
-              <p>The chapter on positioning your firm for a deal &mdash; what buyers actually look for, what re-trades the price, and what to fix 18 months before you intend to sell.</p>
-              <form class="magnet-form" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 wires this to the backend.');">
-                <label for="m1-name" class="skip">Name</label>
-                <input type="text" id="m1-name" name="name" placeholder="Your name" required>
-                <label for="m1-email" class="skip">Work email</label>
-                <input type="email" id="m1-email" name="email" placeholder="Work email" required>
-                <button type="submit" class="btn">Get the positioning chapter</button>
-              </form>
-              <p class="magnet-aside">No newsletter sign-up. We send the chapter and one follow-up two weeks later asking if it was useful.</p>
-            </div>
-            <div class="magnet-secondary">
-              <p class="section-label">From Matt</p>
-              <h3>His deal post-mortem.</h3>
-              <p>What he wishes he'd known before the LOI, what Sara caught that saved the deal, and what he'd do differently if he were doing it over.</p>
-              <form class="magnet-form" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 wires this to the backend.');">
-                <label for="m2-name" class="skip">Name</label>
-                <input type="text" id="m2-name" name="name" placeholder="Your name" required>
-                <label for="m2-email" class="skip">Work email</label>
-                <input type="email" id="m2-email" name="email" placeholder="Work email" required>
-                <button type="submit" class="btn">Get Matt's deal post-mortem</button>
-              </form>
-              <p class="magnet-aside">Same single follow-up. No sequence.</p>
-            </div>
-          </div>
+        <div class="faq-item">
+          <h3 class="faq-q">Do you only work with Colorado firms?</h3>
+          <p class="faq-a">Most of our work is in Colorado, but we work with firms nationally.</p>
         </div>
-      </section>
 
-      <section>
-        <div class="container">
-          <p class="section-label">Questions owners ask</p>
-          <h2>Before you book.</h2>
-
-          <div class="faq-item">
-            <h3 class="faq-q">What size firm does Sara typically work with?</h3>
-            <p class="faq-a">Our typical engagement is firms with $5M&ndash;$10M in revenue. If your firm is smaller, we're still happy to talk &mdash; book the call and Matt will give you an honest read.</p>
-          </div>
-
-          <div class="faq-item">
-            <h3 class="faq-q">How much does it cost?</h3>
-            <p class="faq-a">It depends on the deal. Someday Consultants' fees are competitive with everyone else in the market &mdash; and because we do the work most listing services don't, the value side of the equation is heavier. Matt gives you a sense on the call.</p>
-          </div>
-
-          <div class="faq-item">
-            <h3 class="faq-q">Do you only work with Colorado firms?</h3>
-            <p class="faq-a">Most of our work is in Colorado, but we work with firms nationally.</p>
-          </div>
-
-          <div class="faq-item">
-            <h3 class="faq-q">I'm not sure I want to sell yet. Should I still book the call?</h3>
-            <p class="faq-a">Yes, especially. About half of Matt's calls end with "now is not the right time" &mdash; and a plan to revisit in 12 or 24 months. The most common mistake we see is sellers not giving themselves enough time to prepare their firm and sell it. Book the call whenever the timing feels right.</p>
-          </div>
-
-          <div class="faq-item">
-            <h3 class="faq-q">What happens if I decide not to engage after the working session?</h3>
-            <p class="faq-a">Nothing. Both the 15-minute call with Matt and the 45-minute working session with Sara are free. We don't put owners under contract until you've seen the proposal and agreed on scope.</p>
-          </div>
+        <div class="faq-item">
+          <h3 class="faq-q">I'm not sure I want to sell yet. Should I still book the call?</h3>
+          <p class="faq-a">Yes, especially. About half of Matt's calls end with "now is not the right time" and a plan to revisit in 12 or 24 months. The most common mistake we see is sellers not giving themselves enough time to prepare their firm and sell it. Book the call whenever the timing feels right.</p>
         </div>
-      </section>
 
-      <section id="talk">
-        <div class="container">
-          <div class="intake-section">
-            <p class="section-label">Start the call</p>
-            <h2>Three questions. Then a real answer.</h2>
-            <p>The 15-minute call is diagnostic. Matt will tell you whether your firm is positioned for a deal in the next 1&ndash;3 years &mdash; including if the honest answer is no. If it's yes, you work with Sara from there.</p>
+        <div class="faq-item">
+          <h3 class="faq-q">What happens if I decide not to engage after the working session?</h3>
+          <p class="faq-a">Nothing. Both the 15-minute call with Matt and the 45-minute working session with Sara are free. We don't put owners under contract until you've seen the proposal and agreed on scope.</p>
+        </div>
 
-            <form class="intake-fields" onsubmit="event.preventDefault(); alert('Preview only — Phase 3 wires this to the calendar.');">
+        <div class="faq-item">
+          <h3 class="faq-q">Why is this all Sara and Matt? Is this a real firm?</h3>
+          <p class="faq-a">Because they are your deal team. This is not a large firm with a junior team that does the work while a partner takes the credit. Sara Sharp closes the deals. Matt Cohen runs the first call. There is no one between you and the people you see on this page. We limit how many engagements we take on at any given time. That is a deliberate constraint. A firm under contract with Sara gets her attention, not a fraction of it. If the volume were higher, the quality would not hold. The advisory experience you are evaluating, 100+ accounting firm transactions, a published practitioner, a CPA peer who recently went through the same process, is not a product you can outsource. It is Sara's practice and Matt's experience, available to the firms they choose to work with.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="talk">
+      <div class="container">
+        <div class="intake-section">
+          <p class="section-label">Start the call</p>
+          <h2>Three questions. Then a real answer.</h2>
+          <p>The 15-minute call is diagnostic. Matt will tell you whether your firm is positioned for a deal in the next 1 to 3 years, including if the honest answer is no. If it's yes, you work with Sara from there.</p>
+
+          <form id="formIntake" novalidate>
+            <!-- Honeypot -->
+            <input type="text" name="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="intake-fields">
               <div>
                 <label for="i-name">Your name</label>
-                <input type="text" id="i-name" name="name" required>
+                <input type="text" id="i-name" name="name" required autocomplete="name">
               </div>
               <div>
                 <label for="i-email">Work email</label>
-                <input type="email" id="i-email" name="email" required>
+                <input type="email" id="i-email" name="email" required autocomplete="email">
               </div>
               <div>
                 <label for="revenue">What's your firm's annual revenue?</label>
                 <select id="revenue" name="revenue" required>
                   <option value="">Select a range</option>
                   <option>Under $300K</option>
-                  <option>$300K &ndash; $1M</option>
-                  <option>$1M &ndash; $3M</option>
-                  <option>$3M &ndash; $7M</option>
-                  <option>$7M &ndash; $15M</option>
+                  <option>$300K to $1M</option>
+                  <option>$1M to $3M</option>
+                  <option>$3M to $7M</option>
+                  <option>$7M to $15M</option>
                   <option>Over $15M</option>
                 </select>
               </div>
@@ -1240,8 +1059,8 @@
                 <select id="owners" name="owners" required>
                   <option value="">Select</option>
                   <option>1 (just me)</option>
-                  <option>2 &ndash; 3</option>
-                  <option>4 &ndash; 7</option>
+                  <option>2 to 3</option>
+                  <option>4 to 7</option>
                   <option>8+</option>
                 </select>
               </div>
@@ -1250,112 +1069,78 @@
                 <select id="timeline" name="timeline" required>
                   <option value="">Select</option>
                   <option>Within the next 12 months</option>
-                  <option>1 &ndash; 3 years out</option>
-                  <option>3 &ndash; 5 years out</option>
+                  <option>1 to 3 years out</option>
+                  <option>3 to 5 years out</option>
                   <option>Not sure / exploring</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary">Book Matt's call</button>
-            </form>
-            <p class="intake-meta">Matt screens. Sara represents.</p>
+            </div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAADT1O8f4MmzPG9oK" data-size="invisible" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError"></div>
+            <button type="submit" class="btn btn-primary" id="btnIntake">Book Matt's call</button>
+          </form>
+
+          <!-- Success state: shown after form submission -->
+          <div class="form-success" id="successIntake">
+            <p><strong>Done.</strong> Pulling up Matt's calendar now. Pick a 15-minute slot below.</p>
           </div>
-        </div>
-      </section>
+          <div class="form-error" id="errorIntake"></div>
 
-    </main>
+          <!-- GHL calendar embed — revealed on intake success -->
+          <div class="calendar-embed" id="calendarEmbed">
+            <iframe
+              src="https://api.leadconnectorhq.com/widget/booking/OSRXGhNXywYcuwvgBTiG"
+              style="width:100%; height:700px; border:none; border-radius:3px;"
+              title="Book a 15-minute call with Matt"
+              loading="lazy"
+            ></iframe>
+          </div>
 
-    <footer class="site-footer">
-      <div class="footer-grid">
-        <div>
-          <p class="footer-brand">Someday Consultants</p>
-          <p class="footer-tagline">M&amp;A advisory for accounting firm owners.</p>
-          <p><a href="mailto:hello@somedayconsultants.com">hello@somedayconsultants.com</a></p>
-          <p>191 University Blvd, Ste 183<br>Denver, CO 80206</p>
-        </div>
-        <div>
-          <h4>From Sara</h4>
-          <a href="#" onclick="event.preventDefault();">The Structured Deal (book)</a>
-          <a href="#" onclick="event.preventDefault();">Dealmakers (YouTube)</a>
-          <a href="#" onclick="event.preventDefault();">Deal Academy</a>
-        </div>
-        <div>
-          <h4>The Firm</h4>
-          <a href="#process">How It Works</a>
-          <a href="#sara">Sara Sharp</a>
-          <a href="#matt">Why Matt Is Here</a>
-          <a href="#deals">Transactions</a>
-          <a href="#talk">Start the Call</a>
-        </div>
-        <div>
-          <h4>Policies</h4>
-          <a href="privacy.html">Privacy</a>
-          <a href="terms.html">Terms</a>
+          <p class="intake-meta">Matt screens. Sara represents.</p>
         </div>
       </div>
-      <div class="footer-legal">
-        &copy; 2026 Someday Consultants, LLC. All rights reserved. Someday Consultants provides M&amp;A advisory services, not legal advice.
-      </div>
-    </footer>
+    </section>
 
-    <div class="sticky-cta" id="stickyCta" aria-hidden="true">
-      <p>Sara has closed 100+ accounting firm deals. 15 minutes tells you where yours fits.</p>
-      <a href="#talk" class="btn">Find out what your firm is worth</a>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand">Someday Consultants</p>
+        <p class="footer-tagline">M&amp;A advisory for accounting firm owners.</p>
+        <p><a href="mailto:hello@somedayconsultants.com">hello@somedayconsultants.com</a></p>
+        <p>191 University Blvd, Ste 183<br>Denver, CO 80206</p>
+      </div>
+      <div>
+        <h4>From Sara</h4>
+        <a href="https://www.amazon.com/dp/B0H3J6LT9X/" target="_blank" rel="noopener">The Structured Deal (book)</a>
+        <a href="https://www.youtube.com/channel/UCnLI19Jb9TJ88WuMKUJZRiw" target="_blank" rel="noopener">Dealmakers (YouTube)</a>
+        <a href="https://dealacademy.org/" target="_blank" rel="noopener">Deal Academy</a>
+      </div>
+      <div>
+        <h4>The Firm</h4>
+        <a href="#process">How It Works</a>
+        <a href="#sara">Sara Sharp</a>
+        <a href="#matt">Matt Cohen</a>
+        <a href="#deals">Transactions</a>
+        <a href="#talk">Start the Call</a>
+      </div>
+      <div>
+        <h4>Policies</h4>
+        <a href="https://somedayconsultants.com/privacy">Privacy</a>
+        <a href="https://somedayconsultants.com/terms">Terms</a>
+      </div>
     </div>
+    <div class="footer-legal">
+      &copy; 2026 Someday Consultants, LLC. All rights reserved. Someday Consultants provides M&amp;A advisory services, not legal advice.
+    </div>
+  </footer>
 
-  </div><!-- /#content -->
+  <div class="sticky-cta" id="stickyCta" aria-hidden="true">
+    <p>Sara has closed 100+ accounting firm deals. 15 minutes tells you where yours fits.</p>
+    <a href="#talk" class="btn">Find out what your firm is worth</a>
+  </div>
 
   <script>
-    (function() {
-      var EXPECTED = '233c0ee4290408f134284baabcdec32a2ecd764237d24aefa4f6ed62ce3f9c56';
-      var STORAGE_KEY = 'ss_unlocked_v1';
-      var gate = document.getElementById('gate');
-      var content = document.getElementById('content');
-      var form = document.getElementById('gateForm');
-      var pwInput = document.getElementById('gatePw');
-      var errorEl = document.getElementById('gateError');
-
-      function reveal() {
-        gate.style.display = 'none';
-        content.hidden = false;
-        try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch(e) {}
-        initStickyCta();
-      }
-
-      try {
-        if (sessionStorage.getItem(STORAGE_KEY) === '1') { reveal(); return; }
-      } catch(e) {}
-
-      async function sha256Hex(str) {
-        var buf = new TextEncoder().encode(str);
-        var hash = await crypto.subtle.digest('SHA-256', buf);
-        var bytes = new Uint8Array(hash);
-        var hex = '';
-        for (var i = 0; i < bytes.length; i++) {
-          hex += bytes[i].toString(16).padStart(2, '0');
-        }
-        return hex;
-      }
-
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        errorEl.textContent = '';
-        var pw = (pwInput.value || '').trim().toLowerCase();
-        if (!pw) return;
-        try {
-          var hex = await sha256Hex(pw);
-          if (hex === EXPECTED) {
-            reveal();
-          } else {
-            errorEl.textContent = 'Not quite. Try again.';
-            pwInput.value = '';
-            pwInput.focus();
-          }
-        } catch (err) {
-          errorEl.textContent = 'Browser does not support this preview. Please use a recent Chrome, Edge, Firefox, or Safari.';
-        }
-      });
-    })();
-
     // ---- Mobile nav drawer ----
     (function() {
       var btn = document.getElementById('hamburgerBtn');
@@ -1383,23 +1168,21 @@
       btn.addEventListener('click', openDrawer);
       if (closeBtn) { closeBtn.addEventListener('click', closeDrawer); }
 
-      // Tap outside drawer content closes it
       drawer.addEventListener('click', function(e) {
         if (e.target === drawer) { closeDrawer(); }
       });
 
-      // Escape key closes drawer
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && drawer.classList.contains('open')) { closeDrawer(); }
       });
 
-      // Clicking any nav link closes drawer
       drawer.querySelectorAll('a').forEach(function(link) {
         link.addEventListener('click', closeDrawer);
       });
     })();
 
-    function initStickyCta() {
+    // ---- Sticky CTA ----
+    (function() {
       var sticky = document.getElementById('stickyCta');
       var hero = document.querySelector('.hero');
       var talkSection = document.getElementById('talk');
@@ -1418,7 +1201,188 @@
       }
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+    })();
+
+    // ---- Form submission helpers ----
+    function showSuccess(successId, formEl) {
+      formEl.style.display = 'none';
+      var el = document.getElementById(successId);
+      if (el) { el.style.display = 'block'; }
     }
+
+    function showError(errorId, message) {
+      var el = document.getElementById(errorId);
+      if (el) { el.textContent = message; el.style.display = 'block'; }
+    }
+
+    function setLoading(btn, loading) {
+      if (!btn) return;
+      btn.disabled = loading;
+      if (loading) { btn.classList.add('btn-loading'); }
+      else { btn.classList.remove('btn-loading'); }
+    }
+
+    // Honeypot check — if filled, silently succeed (it's a bot)
+    function isHoneypotFilled(form) {
+      var hp = form.querySelector('input[name="website"]');
+      return hp && hp.value.length > 0;
+    }
+
+    // Turnstile callbacks — the widget executes the pending submit when verified
+    window._pendingSubmit = null;
+    window.onTurnstileSuccess = function(token) {
+      if (window._pendingSubmit) {
+        window._pendingSubmit(token);
+        window._pendingSubmit = null;
+      }
+    };
+    window.onTurnstileError = function() {
+      // Turnstile failed (network issue etc.) — let the backend validate as missing token
+      if (window._pendingSubmit) {
+        window._pendingSubmit('');
+        window._pendingSubmit = null;
+      }
+    };
+
+    // ---- Intake form ----
+    document.getElementById('formIntake').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var form = this;
+      var btn = document.getElementById('btnIntake');
+
+      if (isHoneypotFilled(form)) {
+        // Bot. Show success, do nothing.
+        showSuccess('successIntake', form);
+        return;
+      }
+
+      setLoading(btn, true);
+      document.getElementById('errorIntake').style.display = 'none';
+
+      var data = new FormData(form);
+      var payload = {
+        name: data.get('name'),
+        email: data.get('email'),
+        revenue: data.get('revenue'),
+        owners: data.get('owners'),
+        timeline: data.get('timeline'),
+      };
+
+      // Execute Turnstile challenge, then submit when token is ready
+      window._pendingSubmit = function(token) {
+        payload['cf-turnstile-response'] = token;
+        fetch('https://somedayhq.com/api/intake', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result.ok) {
+            showSuccess('successIntake', form);
+            // Reveal the GHL calendar embed
+            var cal = document.getElementById('calendarEmbed');
+            if (cal) { cal.style.display = 'block'; }
+          } else {
+            setLoading(btn, false);
+            showError('errorIntake', result.message || 'Something went wrong. Please try again.');
+          }
+        })
+        .catch(function() {
+          setLoading(btn, false);
+          showError('errorIntake', 'Network error. Please try again.');
+        });
+      };
+
+      // Trigger Turnstile (invisible mode executes automatically on execute() call)
+      if (window.turnstile) {
+        window.turnstile.execute();
+      } else {
+        // Turnstile script not loaded yet — submit without token; backend handles gracefully
+        window.onTurnstileSuccess('');
+      }
+    });
+
+    // ---- Chapter magnet form ----
+    document.getElementById('formChapter').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var form = this;
+      var btn = document.getElementById('btnChapter');
+
+      if (isHoneypotFilled(form)) { showSuccess('successChapter', form); return; }
+
+      setLoading(btn, true);
+      document.getElementById('errorChapter').style.display = 'none';
+
+      var data = new FormData(form);
+      var payload = { name: data.get('name'), email: data.get('email') };
+
+      window._pendingSubmit = function(token) {
+        payload['cf-turnstile-response'] = token;
+        fetch('https://somedayhq.com/api/magnet/chapter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result.ok) {
+            showSuccess('successChapter', form);
+          } else {
+            setLoading(btn, false);
+            showError('errorChapter', result.message || 'Something went wrong. Please try again.');
+          }
+        })
+        .catch(function() {
+          setLoading(btn, false);
+          showError('errorChapter', 'Network error. Please try again.');
+        });
+      };
+
+      if (window.turnstile) { window.turnstile.execute(); }
+      else { window.onTurnstileSuccess(''); }
+    });
+
+    // ---- Post-mortem magnet form ----
+    document.getElementById('formPostMortem').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var form = this;
+      var btn = document.getElementById('btnPostMortem');
+
+      if (isHoneypotFilled(form)) { showSuccess('successPostMortem', form); return; }
+
+      setLoading(btn, true);
+      document.getElementById('errorPostMortem').style.display = 'none';
+
+      var data = new FormData(form);
+      var payload = { name: data.get('name'), email: data.get('email') };
+
+      window._pendingSubmit = function(token) {
+        payload['cf-turnstile-response'] = token;
+        fetch('https://somedayhq.com/api/magnet/post-mortem', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result.ok) {
+            showSuccess('successPostMortem', form);
+          } else {
+            setLoading(btn, false);
+            showError('errorPostMortem', result.message || 'Something went wrong. Please try again.');
+          }
+        })
+        .catch(function() {
+          setLoading(btn, false);
+          showError('errorPostMortem', 'Network error. Please try again.');
+        });
+      };
+
+      if (window.turnstile) { window.turnstile.execute(); }
+      else { window.onTurnstileSuccess(''); }
+    });
   </script>
+
 </body>
 </html>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import type { EngineInputs, EngineOutput } from '../../engine';
+import type { WizardState } from '../../state/useWizard';
 import { blobToBase64 } from '../../lib/pdf';
 
 interface Props {
@@ -9,6 +10,10 @@ interface Props {
   inputs: EngineInputs;
   outputs: EngineOutput;
   includeWealthGap: boolean;
+  /** Pre-fills the email field from the step-1 ownerEmail captured in wizard state. */
+  prefillEmail?: string;
+  /** Full wizard state, sent to the worker so Matt gets complete answers. */
+  wizardState?: WizardState;
 }
 
 type Status = 'idle' | 'generating' | 'sending' | 'sent' | 'error';
@@ -20,10 +25,10 @@ const SUBMIT_URL =
   import.meta.env.VITE_SUBMIT_URL ??
   'https://somedayhq.com/api/valuation/submit';
 
-export function EmailReportForm({ firmName, inputs, outputs, includeWealthGap }: Props) {
+export function EmailReportForm({ firmName, inputs, outputs, includeWealthGap, prefillEmail, wizardState }: Props) {
   const [open, setOpen] = useState(false);
   const [ownerName, setOwnerName] = useState('');
-  const [ownerEmail, setOwnerEmail] = useState('');
+  const [ownerEmail, setOwnerEmail] = useState(prefillEmail ?? '');
   const [website, setWebsite] = useState(''); // honeypot
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -44,7 +49,7 @@ export function EmailReportForm({ firmName, inputs, outputs, includeWealthGap }:
         firmName,
         inputs,
         includeWealthGap,
-        contact: { matt: { name: 'Matt Cohen', email: 'hello@somedayconsultants.com' } },
+        contact: { matt: { name: 'Matt Cohen', email: 'matt@somedayconsultants.com' } },
       });
       const pdfBase64 = await blobToBase64(blob);
 
@@ -63,6 +68,7 @@ export function EmailReportForm({ firmName, inputs, outputs, includeWealthGap }:
             blendedSalePrice: outputs.acceleration.blendedSalePrice,
             sellabilityGrade: outputs.sellability.grade,
           },
+          wizardAnswers: wizardState ?? null,
         }),
       });
       const data = (await resp.json().catch(() => ({}))) as { ok?: boolean; message?: string };

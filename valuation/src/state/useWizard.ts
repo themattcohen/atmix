@@ -21,6 +21,7 @@ export type AnswerMap = Record<string, string | number | null>;
 export interface WizardState {
   firmName: string;
   city: string;
+  ownerEmail: string;
   readinessAnswers: AnswerMap;
   riskAnswers: AnswerMap;
   financials: FinancialInputs;
@@ -71,6 +72,7 @@ const DEFAULT_WEALTH_GAP: WealthGapInputs = {
 const INITIAL_STATE: WizardState = {
   firmName: '',
   city: '',
+  ownerEmail: '',
   readinessAnswers: {},
   riskAnswers: {},
   financials: DEFAULT_FINANCIALS,
@@ -84,6 +86,7 @@ const INITIAL_STATE: WizardState = {
 const DEMO_STATE: WizardState = {
   firmName: 'Sample CPA Firm',
   city: '',
+  ownerEmail: '',
   readinessAnswers: {
     q_how_heard: 'Referral from a colleague or friend',
     q_thinking_about_selling: 'Curious but no timeline yet',

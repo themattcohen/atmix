@@ -311,7 +311,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         <View style={s.header}>
           <View>
             <Text style={s.brand}>Someday Consultants</Text>
-            <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
+            <Text style={s.brandTag}>M&amp;A ADVISORY FOR ACCOUNTING FIRMS</Text>
           </View>
           <Text style={s.headerMeta}>{today}</Text>
         </View>
@@ -340,7 +340,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         <View style={s.header}>
           <View>
             <Text style={s.brand}>Someday Consultants</Text>
-            <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
+            <Text style={s.brandTag}>M&amp;A ADVISORY FOR ACCOUNTING FIRMS</Text>
           </View>
           <Text style={s.headerMeta}>{displayName} · {today}</Text>
         </View>
@@ -430,7 +430,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         <View style={s.header}>
           <View>
             <Text style={s.brand}>Someday Consultants</Text>
-            <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
+            <Text style={s.brandTag}>M&amp;A ADVISORY FOR ACCOUNTING FIRMS</Text>
           </View>
           <Text style={s.headerMeta}>{displayName} · {today}</Text>
         </View>
@@ -512,7 +512,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
           <View style={s.header}>
             <View>
               <Text style={s.brand}>Someday Consultants</Text>
-              <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
+              <Text style={s.brandTag}>M&amp;A ADVISORY FOR ACCOUNTING FIRMS</Text>
             </View>
             <Text style={s.headerMeta}>{displayName} · {today}</Text>
           </View>
@@ -568,7 +568,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
         <View style={s.header}>
           <View>
             <Text style={s.brand}>Someday Consultants</Text>
-            <Text style={s.brandTag}>SELL-SIDE M&amp;A ADVISORY</Text>
+            <Text style={s.brandTag}>M&amp;A ADVISORY FOR ACCOUNTING FIRMS</Text>
           </View>
           <Text style={s.headerMeta}>{displayName} · {today}</Text>
         </View>
@@ -596,7 +596,7 @@ export function ValuationReport({ firmName, city, outputs, includeWealthGap, con
             "not yet, here is the plan to revisit in 12-24 months."{'\n\n'}
             Reach out:{' '}
             <Text style={{ color: C.goldLight, fontWeight: 600 }}>
-              {matt?.email ?? 'hello@somedayconsultants.com'}
+              {matt?.email ?? 'matt@somedayconsultants.com'}
             </Text>
             {matt?.calendly ? `\nBook a call: ${matt.calendly}` : ''}
           </Text>

@@ -1,4 +1,5 @@
 import type { EngineInputs, EngineOutput, WealthGapInputs } from '../../engine';
+import type { WizardState } from '../../state/useWizard';
 import { SectionLabel } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { fmt } from '../../lib/format';
@@ -16,6 +17,8 @@ interface Props {
   onChangeWealthGap: (patch: Partial<WealthGapInputs>) => void;
   onEmailReport: () => void;
   isEmailing?: boolean;
+  ownerEmail?: string;
+  wizardState?: WizardState;
 }
 
 export function ResultsStep({
@@ -28,6 +31,8 @@ export function ResultsStep({
   onChangeWealthGap,
   onEmailReport,
   isEmailing,
+  ownerEmail,
+  wizardState,
 }: Props) {
   const { acceleration, sellability, ebitda, multiple, wealthGap } = outputs;
   const displayName = firmName.trim() || 'Your firm';
@@ -129,6 +134,8 @@ export function ResultsStep({
             inputs={inputs}
             outputs={outputs}
             includeWealthGap={showWealthGap}
+            prefillEmail={ownerEmail}
+            wizardState={wizardState}
           />
           <Button variant="secondary" size="lg" onClick={onEmailReport} disabled={isEmailing}>
             {isEmailing ? 'Generating PDF…' : 'Or download directly'}
