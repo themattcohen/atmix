@@ -759,13 +759,13 @@
               <p>Matt Cohen, a CPA who sold his own firm through her, runs the first call.</p>
             </div>
             <div class="cta-row">
-              <a href="#talk" class="btn btn-primary">Book a 15-minute call with Matt</a>
+              <a href="#talk" class="btn btn-primary">Request a call with Matt</a>
             </div>
             <span class="cta-microcopy">15 minutes with Matt. He's a CPA who sold his own firm through Sara. He'll tell you where yours stands and whether now is the right time.</span>
 
             <aside class="mobile-quick-card" aria-label="Quick action">
               <p><strong>Sara has closed 100+ accounting firm deals.</strong> 15 minutes with Matt tells you if yours fits.</p>
-              <a href="#talk" class="btn btn-primary">Book the call</a>
+              <a href="#talk" class="btn btn-primary">Request the call</a>
             </aside>
 
             <p class="cta-aftlink"><a href="#magnet">Or read Sara's positioning chapter first &rarr;</a></p>
@@ -1080,24 +1080,20 @@
               </div>
             </div>
             <div class="cf-turnstile" data-sitekey="0x4AAAAAADT1O8f4MmzPG9oK" data-size="invisible" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError"></div>
-            <button type="submit" class="btn btn-primary" id="btnIntake">Book Matt's call</button>
+            <button type="submit" class="btn btn-primary" id="btnIntake">Request a call</button>
           </form>
 
           <!-- Success state: shown after form submission -->
           <div class="form-success" id="successIntake">
-            <p><strong>Done.</strong> Pulling up Matt's calendar now. Pick a 15-minute slot below.</p>
+            <p><strong>Done.</strong> Matt will review your answers and reach out within one business day to set up your 15-minute call.</p>
           </div>
           <div class="form-error" id="errorIntake"></div>
 
-          <!-- GHL calendar embed — revealed on intake success -->
-          <div class="calendar-embed" id="calendarEmbed">
-            <iframe
-              src="https://api.leadconnectorhq.com/widget/booking/OSRXGhNXywYcuwvgBTiG"
-              style="width:100%; height:700px; border:none; border-radius:3px;"
-              title="Book a 15-minute call with Matt"
-              loading="lazy"
-            ></iframe>
-          </div>
+          <!-- GHL calendar embed temporarily removed 2026-06-09 pending scheduler setup
+               (Google Calendar connect + reminders workflow publish). The lead is still
+               captured via /api/intake (Resend + GHL). To restore: re-insert the booking
+               iframe (calendar OSRXGhNXywYcuwvgBTiG, or the new scheduler widget) here, and
+               revert the success-message copy + the reveal JS in the intake handler below. -->
 
           <p class="intake-meta">Matt screens. Sara represents.</p>
         </div>
@@ -1284,9 +1280,8 @@
         .then(function(result) {
           if (result.ok) {
             showSuccess('successIntake', form);
-            // Reveal the GHL calendar embed
-            var cal = document.getElementById('calendarEmbed');
-            if (cal) { cal.style.display = 'block'; }
+            // Booking calendar temporarily removed 2026-06-09 pending scheduler setup.
+            // Lead is captured via /api/intake (Resend notification + GHL contact). No slot-pick step.
           } else {
             setLoading(btn, false);
             showError('errorIntake', result.message || 'Something went wrong. Please try again.');
