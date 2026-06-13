@@ -6,6 +6,7 @@ import type { WizardAction } from '../types/state';
 import type { WizardMeta } from '../data/meta';
 import { RULES } from '../constants/rules';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { openMangomintBooking } from '../data/mangomint';
 import { RecommendationCard } from './RecommendationCard';
 import { AddonChip } from './AddonChip';
 import { SessionPlan } from './SessionPlan';
@@ -71,7 +72,7 @@ export function MultiResultScreen({
   }
 
   function handleBookSession(): void {
-    // Open Acuity directly for the primary (first non-injection) item in the session.
+    // Open Mangomint overlay for the primary (first non-injection) item in the session.
     // If there's no primary, use the top result.
     const primary = sessionPlan.find((i) => !i.isInjection);
     const fallbackId = results[0]?.treatmentId;
@@ -83,12 +84,7 @@ export function MultiResultScreen({
 
     analytics.fireBookClicked(t.id, t.name);
     analytics.fireBookingStarted(t.id);
-    dispatch({
-      type: 'START_BOOKING',
-      treatmentId: t.id,
-      acuityTypeId: t.acuityTypeId,
-      acuityDropdownValue: t.acuityDropdownValue,
-    });
+    openMangomintBooking({ id: t.id, category: t.category });
   }
 
   // Top score for badge tier computation
