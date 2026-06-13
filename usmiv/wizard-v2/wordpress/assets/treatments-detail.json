@@ -28,8 +28,8 @@
       ],
       "whatToExpect": {
         "onset": "You may feel the cool saline moving through your arm initially. Most people notice improved energy and clarity within 15-20 minutes.",
-        "duration": "30 minutes, seated comfortably.",
-        "frequency": "As needed. Works well as a daily wellness tool or one-time reset.",
+        "duration": "60 min.",
+        "frequency": "As needed. Works well as a general wellness tool or one-time reset.",
         "howItFeels": "A small IV catheter is placed in your arm — a brief pinch. From there you relax, scroll your phone, or just sit quietly. Your nurse checks on you throughout."
       },
       "glp1": null,
@@ -62,7 +62,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "A potent antioxidant that supports immune function, collagen synthesis, and iron absorption.",
           "whyItMatters": "IV Vitamin C achieves blood concentrations 50-70x higher than oral doses, making it dramatically more bioavailable when you need it most.",
           "evidenceLevel": "strong"
@@ -102,7 +102,7 @@
       ],
       "whatToExpect": {
         "onset": "Most people notice improved energy and mental clarity starting around 20-30 minutes into the infusion.",
-        "duration": "45 minutes, seated comfortably.",
+        "duration": "60 min.",
         "frequency": "Monthly for maintenance. Weekly during illness or high-stress periods.",
         "howItFeels": "You'll feel the saline going in — it's room temperature and occasionally you'll notice a slight magnesium warmth. Your nurse manages your rate for comfort."
       },
@@ -124,34 +124,22 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12",
-          "whatItDoes": "Supports white blood cell production and the cellular energy your immune system needs to fight.",
-          "whyItMatters": "Your immune cells are metabolically demanding. B12 ensures they have the energy substrate to do their job.",
-          "evidenceLevel": "strong"
-        },
-        {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C (5g)",
           "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
           "whyItMatters": "At high IV doses, Vitamin C has documented antiviral properties and shortens illness duration in clinical studies.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Zinc",
+          "name": "Zinc (max dose)",
           "whatItDoes": "Directly inhibits viral replication, is required for T-cell and NK cell development, and is essential for testosterone synthesis and broader endocrine function.",
           "whyItMatters": "Zinc deficiency is one of the most common nutritional immune deficiencies, and is also linked to lower testosterone and hormone imbalances. Repleting it supports both immune function and endocrine health.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione",
+          "name": "Glutathione (double dose)",
           "whatItDoes": "Reduces oxidative stress in immune cells and supports the liver's detox function during illness.",
           "whyItMatters": "During a viral infection, oxidative stress spikes significantly. Glutathione helps keep the immune response controlled and efficient.",
           "evidenceLevel": "moderate"
-        },
-        {
-          "name": "Vitamin D3",
-          "whatItDoes": "Regulates immune cell behavior and reduces excessive inflammatory responses.",
-          "whyItMatters": "Vitamin D deficiency is strongly associated with increased susceptibility to respiratory infections. A single therapeutic dose can rapidly restore immune readiness.",
-          "evidenceLevel": "strong"
         }
       ],
       "personas": [
@@ -165,12 +153,12 @@
         },
         {
           "headline": "You're in the thick of it and want to recover faster",
-          "detail": "When you're already sick, your body is burning through vitamins C, D, and zinc at an accelerated rate. Replenishing them via IV bypasses the gut symptoms that make oral supplements hard to take."
+          "detail": "When you're already sick, your body is burning through vitamins C and zinc at an accelerated rate. Replenishing them via IV bypasses the gut symptoms that make oral supplements hard to take."
         }
       ],
       "whatToExpect": {
         "onset": "Some people notice reduced fatigue and improved breathing clarity within an hour of the infusion.",
-        "duration": "45 minutes.",
+        "duration": "60 min.",
         "frequency": "At first sign of illness. Can be repeated every 3-4 days during active illness.",
         "howItFeels": "Standard IV drip. Your nurse monitors you throughout. Some people feel a mild flush from the high-dose Vitamin C — this is normal and passes quickly."
       },
@@ -204,7 +192,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (500mg)",
+          "name": "Vitamin C",
           "whatItDoes": "Supports immune function and collagen synthesis for both mother and developing baby at a conservative, pregnancy-safe dose.",
           "whyItMatters": "Kept at a conservative, pregnancy-safe dose as is standard in prenatal nutrition guidelines.",
           "evidenceLevel": "strong"
@@ -240,7 +228,7 @@
       ],
       "whatToExpect": {
         "onset": "Nausea relief often begins 20-30 minutes into the infusion as hydration is restored.",
-        "duration": "45 minutes.",
+        "duration": "60 min.",
         "frequency": "As needed, especially during heavy nausea periods.",
         "howItFeels": "Same as any IV — a small catheter, then you relax. All ingredients are dosed conservatively for prenatal safety. Your nurse is there throughout."
       },
@@ -275,12 +263,6 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin C (1g)",
-          "whatItDoes": "Reduces oxidative stress caused by increased UV exposure and lower oxygen availability at elevation.",
-          "whyItMatters": "High-altitude UV exposure dramatically increases free radical production. Vitamin C is your primary defense.",
-          "evidenceLevel": "moderate"
-        },
-        {
           "name": "Magnesium",
           "whatItDoes": "Relaxes blood vessel walls, which helps manage the elevated blood pressure common in altitude sickness.",
           "whyItMatters": "Magnesium's vasodilatory effects can ease the vascular component of altitude headaches.",
@@ -293,9 +275,15 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Ondansetron / Zofran (4mg)",
+          "name": "Zofran",
           "whatItDoes": "A prescription anti-nausea medication that blocks serotonin receptors in the gut and brain.",
           "whyItMatters": "Nausea is a cardinal symptom of altitude sickness. Zofran provides fast, reliable relief so you can actually enjoy your trip.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Toradol (optional)",
+          "whatItDoes": "A prescription NSAID anti-inflammatory for headache and pain relief.",
+          "whyItMatters": "Altitude headaches can be severe. Toradol addresses the inflammatory component quickly and effectively.",
           "evidenceLevel": "strong"
         }
       ],
@@ -315,7 +303,7 @@
       ],
       "whatToExpect": {
         "onset": "Headache and nausea often improve noticeably within 20-30 minutes. Full effect by end of infusion.",
-        "duration": "45-60 minutes.",
+        "duration": "60 min.",
         "frequency": "Once upon arrival or at first symptoms. May repeat if symptoms persist beyond 24 hours.",
         "howItFeels": "A standard IV drip with an added anti-nausea medication. The Zofran typically makes most people feel significantly better before the bag is even done."
       },
@@ -349,10 +337,10 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
-          "whatItDoes": "Reduces oxidative stress from alcohol metabolism byproducts — specifically acetaldehyde.",
-          "whyItMatters": "Acetaldehyde is what actually makes you feel terrible the morning after. Vitamin C helps neutralize it.",
-          "evidenceLevel": "moderate"
+          "name": "Magnesium",
+          "whatItDoes": "Reduces the headache and muscle tension that follow heavy alcohol consumption.",
+          "whyItMatters": "Alcohol depletes magnesium and causes vascular inflammation. Restoring it directly addresses both the headache and body aches.",
+          "evidenceLevel": "strong"
         },
         {
           "name": "Glutathione",
@@ -361,15 +349,21 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Ondansetron / Zofran (4mg)",
+          "name": "Zofran",
           "whatItDoes": "Prescription anti-nausea medication that stops the nausea and vomiting cycle quickly.",
           "whyItMatters": "When your stomach is revolting, you can't hydrate orally. Zofran breaks that cycle so the saline can do its job.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Ketorolac / Toradol (30mg)",
+          "name": "Toradol",
           "whatItDoes": "A powerful prescription NSAID — similar to high-dose ibuprofen but delivered intravenously for faster action.",
           "whyItMatters": "Alcohol causes inflammation and dilates blood vessels in the brain, causing that crushing headache. IV Toradol addresses it faster than anything you can swallow.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Famotidine (Pepcid)",
+          "whatItDoes": "Relieves stomach acid and heartburn.",
+          "whyItMatters": "Alcohol irritates the stomach lining and increases acid production. Famotidine settles the stomach so you can tolerate fluids and food again.",
           "evidenceLevel": "strong"
         }
       ],
@@ -385,7 +379,7 @@
       ],
       "whatToExpect": {
         "onset": "Most people feel the nausea lift within 10-15 minutes of Zofran administration. Full recovery typically felt by end of infusion.",
-        "duration": "45-60 minutes.",
+        "duration": "60 min.",
         "frequency": "As needed. Works every time regardless of how many times you've done it.",
         "howItFeels": "A small IV catheter, then you recline and let the drip work. The combination of anti-nausea and pain medications makes most people feel dramatically better before they're even halfway through."
       },
@@ -407,9 +401,9 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Magnesium (triple dose)",
+          "name": "Magnesium (max dose)",
           "whatItDoes": "Relaxes blood vessel walls and interrupts the cortical spreading depression (CSD) that drives migraine pain.",
-          "whyItMatters": "IV Magnesium is a Level A evidence treatment for acute migraine in emergency settings. Many migraine sufferers are chronically deficient in magnesium, making this especially impactful.",
+          "whyItMatters": "IV Magnesium is a Level A evidence treatment for acute migraine. Many migraine sufferers are chronically deficient in magnesium, making this especially impactful.",
           "evidenceLevel": "strong"
         },
         {
@@ -425,28 +419,34 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Vitamin C (1g)",
-          "whatItDoes": "Reduces neuroinflammation and oxidative stress in the brain during and after a migraine attack.",
-          "whyItMatters": "Migraines involve significant neuroinflammation. Antioxidant support helps the brain recover.",
-          "evidenceLevel": "moderate"
-        },
-        {
           "name": "Glutathione",
           "whatItDoes": "Your brain's primary antioxidant defense against the neuroinflammatory cascade triggered by a migraine.",
           "whyItMatters": "Glutathione levels in the brain drop during migraine attacks. IV delivery restores them when they're needed most.",
           "evidenceLevel": "emerging"
         },
         {
-          "name": "Ondansetron / Zofran (4mg)",
+          "name": "Taurine",
+          "whatItDoes": "Provides neuroprotective support and helps stabilize neuronal activity during a migraine.",
+          "whyItMatters": "Taurine supports inhibitory neurotransmission, which is disrupted during migraine attacks.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Toradol",
+          "whatItDoes": "IV anti-inflammatory that addresses the vascular and inflammatory components of migraine pain.",
+          "whyItMatters": "IV Toradol is used for acute migraine precisely because it works so well. It's one of the most effective non-opioid options available.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "Zofran",
           "whatItDoes": "Controls the nausea and vomiting that accompany most severe migraines.",
           "whyItMatters": "Migraine nausea prevents oral medication from working. Zofran administered IV bypasses this barrier completely.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Ketorolac / Toradol (30mg)",
-          "whatItDoes": "IV anti-inflammatory that addresses the vascular and inflammatory components of migraine pain.",
-          "whyItMatters": "IV Toradol is used in emergency departments for acute migraine precisely because it works so well. It's one of the most effective non-opioid options available.",
-          "evidenceLevel": "strong"
+          "name": "Benadryl",
+          "whatItDoes": "Calms nausea and eases discomfort.",
+          "whyItMatters": "Benadryl augments the anti-nausea regimen and can provide additional relief from migraine-associated discomfort and anxiety.",
+          "evidenceLevel": "moderate"
         }
       ],
       "personas": [
@@ -461,7 +461,7 @@
       ],
       "whatToExpect": {
         "onset": "Nausea relief usually within 10-15 minutes. Pain reduction typically begins within 20-30 minutes of the magnesium.",
-        "duration": "60 minutes — magnesium infuses slowly to maximize comfort.",
+        "duration": "60 min.",
         "frequency": "As needed for acute episodes. Monthly preventive infusions for chronic migraine.",
         "howItFeels": "Magnesium infused quickly causes a warm flush throughout the body — we infuse it slowly to keep you comfortable. Your nurse adjusts the rate based on your feedback. Lights can be dimmed on request."
       },
@@ -501,7 +501,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (2g)",
+          "name": "Vitamin C",
           "whatItDoes": "Stimulates collagen synthesis and provides antioxidant protection against age-accelerating free radicals.",
           "whyItMatters": "Collagen production declines with age and Vitamin C is its primary cofactor. High-dose IV delivery supports skin, joint, and vascular integrity.",
           "evidenceLevel": "strong"
@@ -537,7 +537,7 @@
       ],
       "whatToExpect": {
         "onset": "NAD+ infusions often produce a subtle energy and mental clarity effect that builds over the first hour and continues improving over the following 24-48 hours.",
-        "duration": "60-90 minutes. NAD+ infuses slowly for best tolerance.",
+        "duration": "60 min.",
         "frequency": "Monthly for maintenance. More frequent initially if starting a longevity protocol.",
         "howItFeels": "NAD+ can cause a transient chest tightness, nausea, or flushed feeling when infused too quickly. Your nurse controls the rate and monitors you throughout — most people find it very manageable."
       },
@@ -571,9 +571,9 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (2g -- doubled)",
+          "name": "Vitamin C (double dose)",
           "whatItDoes": "Enhanced antioxidant protection and immune stimulation at therapeutic dose.",
-          "whyItMatters": "2g IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
+          "whyItMatters": "Double-dose IV Vitamin C achieves blood levels that are fully in the therapeutic range for immune and anti-inflammatory effects.",
           "evidenceLevel": "strong"
         },
         {
@@ -593,12 +593,6 @@
           "whatItDoes": "Full immune system support, enzyme cofactor saturation, and testosterone synthesis support.",
           "whyItMatters": "Higher zinc dose is particularly valuable during active immune challenges, recovery from intense training, and for supporting healthy testosterone levels.",
           "evidenceLevel": "strong"
-        },
-        {
-          "name": "Calcium Gluconate",
-          "whatItDoes": "Supports neuromuscular transmission and cardiac function, and balances the magnesium at higher doses.",
-          "whyItMatters": "At elevated magnesium doses, calcium co-administration ensures optimal neuromuscular function and prevents any imbalance.",
-          "evidenceLevel": "strong"
         }
       ],
       "personas": [
@@ -613,7 +607,7 @@
       ],
       "whatToExpect": {
         "onset": "Most people notice a more pronounced energy effect than the standard Myers' — typically within 20-30 minutes.",
-        "duration": "60 minutes.",
+        "duration": "60 min.",
         "frequency": "Monthly or quarterly as an upgrade to your regular Myers' protocol.",
         "howItFeels": "The higher magnesium dose may produce more warmth during infusion. Your nurse manages your infusion rate based on your feedback."
       },
@@ -635,7 +629,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "NAD+ (50mg)",
+          "name": "NAD+ (100mg)",
           "whatItDoes": "Activates sirtuins (longevity proteins) and supports mitochondrial efficiency for better energy output.",
           "whyItMatters": "NAD+ is essential to the ATP synthesis cycle that powers muscle contraction. Athletes with optimized NAD+ levels recover faster and perform better.",
           "evidenceLevel": "moderate"
@@ -659,7 +653,7 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (1g)",
+          "name": "Vitamin C",
           "whatItDoes": "Reduces exercise-induced oxidative stress and supports collagen synthesis for tendon and joint health.",
           "whyItMatters": "High-intensity training generates significant free radicals. Vitamin C is the primary water-soluble antioxidant defense.",
           "evidenceLevel": "strong"
@@ -675,6 +669,12 @@
           "whatItDoes": "Neutralizes the oxidative damage generated during intense training and supports faster cellular repair.",
           "whyItMatters": "Elite athletes experience significantly higher oxidative stress. Glutathione is the cell's most potent mechanism for handling it.",
           "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Zinc",
+          "whatItDoes": "Supports immune defense, healthy testosterone, and recovery.",
+          "whyItMatters": "Intense training depletes zinc through sweat and increases demand. Zinc is essential for testosterone production, immune function, and protein synthesis during recovery.",
+          "evidenceLevel": "strong"
         }
       ],
       "personas": [
@@ -689,7 +689,7 @@
       ],
       "whatToExpect": {
         "onset": "Improved hydration and reduced fatigue typically felt within 20-30 minutes.",
-        "duration": "60 minutes.",
+        "duration": "60 min.",
         "frequency": "Post-training as needed. Some athletes do weekly during competition season.",
         "howItFeels": "A standard IV drip. Some people notice a slight muscle relaxation effect from the magnesium during the infusion."
       },
@@ -706,26 +706,26 @@
       "ingredients": [
         {
           "name": "Normal Saline (1L)",
-          "whatItDoes": "Full hydration base for all platinum-dose nutrients.",
+          "whatItDoes": "Full hydration base for all maximum-dose nutrients.",
           "whyItMatters": "Optimal nutrient delivery requires adequate circulatory volume.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (triple dose)",
+          "name": "Vitamin B12 (max dose)",
           "whatItDoes": "Maximum neurological support and red blood cell optimization.",
-          "whyItMatters": "Triple B12 is used for cases of significant B12 deficiency or when neurological support is the primary goal.",
+          "whyItMatters": "Max-dose B12 is used for significant B12 deficiency or when neurological support is the primary goal.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "B-Complex (triple dose)",
+          "name": "B-Complex (max dose)",
           "whatItDoes": "Complete saturation of B vitamin-dependent energy pathways.",
-          "whyItMatters": "At triple dose, the B-complex delivers the most robust mitochondrial support available in an IV formulation.",
+          "whyItMatters": "At max dose, the B-complex delivers the most robust mitochondrial support available in an IV formulation.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (3g -- tripled)",
+          "name": "Vitamin C (5x dose)",
           "whatItDoes": "High-dose immune stimulation and powerful antioxidant protection at near-therapeutic IV range.",
-          "whyItMatters": "3g IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
+          "whyItMatters": "5x-dose IV Vitamin C is where research shows meaningful antiviral and immune-activating effects beyond what any oral supplement achieves.",
           "evidenceLevel": "strong"
         },
         {
@@ -741,22 +741,10 @@
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Zinc (triple dose)",
+          "name": "Zinc (max dose)",
           "whatItDoes": "Maximum immune enzyme activation, antiviral support, and full testosterone synthesis support.",
           "whyItMatters": "This dose is used therapeutically for significant zinc depletion states, intense immune challenges, and where hormone support is a priority.",
           "evidenceLevel": "strong"
-        },
-        {
-          "name": "Calcium Gluconate",
-          "whatItDoes": "Balances the elevated magnesium and supports cardiac and neuromuscular function.",
-          "whyItMatters": "Required to ensure safety and comfort at triple-magnesium doses.",
-          "evidenceLevel": "strong"
-        },
-        {
-          "name": "NAD+ (50mg)",
-          "whatItDoes": "Activates cellular repair, mitochondrial energy, and longevity pathways alongside the elevated vitamin doses.",
-          "whyItMatters": "The combination of high-dose vitamins and NAD+ creates a synergistic effect — each enhancing the other's impact on cellular restoration.",
-          "evidenceLevel": "moderate"
         }
       ],
       "personas": [
@@ -766,14 +754,14 @@
         },
         {
           "headline": "You've done Myers' before and are ready to go further",
-          "detail": "Platinum is the Myers' Gold formula amplified again — with NAD+ added. It's the top of the IV drip stack."
+          "detail": "Platinum is our highest dosed Myers' package — the top of the IV drip stack."
         }
       ],
       "whatToExpect": {
         "onset": "Many people feel a notable shift in energy and clarity that builds through the infusion and peaks about an hour after.",
-        "duration": "75-90 minutes. The high doses require a controlled infusion rate.",
+        "duration": "60 min.",
         "frequency": "Quarterly or monthly. Not typically needed more frequently.",
-        "howItFeels": "This is a comfortable but potent infusion. Your nurse closely monitors your rate and comfort throughout. Expect warmth from the magnesium and a gradual energy build from the B vitamins and NAD+."
+        "howItFeels": "This is a comfortable but potent infusion. Your nurse closely monitors your rate and comfort throughout. Expect warmth from the magnesium and a gradual energy build from the B vitamins."
       },
       "glp1": null,
       "relatedSlugs": [
@@ -793,44 +781,44 @@
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin B12 (double dose)",
-          "whatItDoes": "Neurological and energy support at an elevated dose.",
+          "name": "Vitamin B12",
+          "whatItDoes": "Neurological and energy support.",
           "whyItMatters": "B12 is depleted by virtually every stressor — illness, alcohol, poor sleep, medication use. This restores it quickly.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "B-Complex (double dose)",
+          "name": "B-Complex",
           "whatItDoes": "Comprehensive energy system restoration.",
           "whyItMatters": "When your body has been through something — a long illness, a hard week, a rough stretch — your B vitamins need restoring.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Vitamin C (2g)",
+          "name": "Vitamin C",
           "whatItDoes": "High-dose antioxidant and immune support.",
-          "whyItMatters": "2g IV is therapeutic-range Vitamin C -- meaningfully different from what any capsule can achieve.",
+          "whyItMatters": "IV Vitamin C delivers meaningful immune and antioxidant support that no oral supplement can match.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Glutathione (double dose)",
+          "name": "Glutathione",
           "whatItDoes": "Deep cellular detox and antioxidant restoration.",
-          "whyItMatters": "At this dose, glutathione produces a more thorough cellular cleansing effect.",
+          "whyItMatters": "Glutathione produces a thorough cellular cleansing effect that supports recovery.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Magnesium (double dose)",
+          "name": "Magnesium",
           "whatItDoes": "Clinical-level muscle relaxation and anti-inflammatory support.",
           "whyItMatters": "Clinical-level IV magnesium provides meaningful support for pain, inflammation, and neuromuscular function.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Zinc (double dose)",
+          "name": "Zinc",
           "whatItDoes": "Immune support, enzymatic restoration, and hormone synthesis.",
           "whyItMatters": "Higher zinc dose is particularly helpful after illness, stress, or prolonged depletion, and supports testosterone recovery after physical or physiological stress.",
           "evidenceLevel": "strong"
         },
         {
-          "name": "Choose 3 Medications (from menu)",
-          "whatItDoes": "Customizable add-on medications to address your specific symptoms: Zofran (nausea), Toradol (pain/inflammation), Pepcid (heartburn/reflux), Benadryl (allergy/sleep), B12 push, or Vitamin C push.",
+          "name": "Your choice of 3 medications",
+          "whatItDoes": "Customizable add-on medications to address your specific symptoms: Zofran (nausea/vomiting), Toradol (pain/inflammation), Famotidine/Pepcid (stomach acid), or Benadryl (allergy/discomfort).",
           "whyItMatters": "The Revival is designed to be adaptable. Your nurse reviews your symptoms and helps you choose the three medications that will have the most impact for you specifically.",
           "evidenceLevel": "strong"
         }
@@ -842,12 +830,12 @@
         },
         {
           "headline": "You've been through something hard and need a serious reset",
-          "detail": "High-dose vitamins, full glutathione, clinical magnesium, plus whatever medications your symptoms require. This is the all-hands-on-deck IV."
+          "detail": "Our most comprehensive IV, a full vitamin stack plus choice of 3 meds, for when your body is at its lowest point."
         }
       ],
       "whatToExpect": {
         "onset": "Varies by medication selection. Nausea and pain medications take effect within 15-20 minutes. Vitamin effects build through the infusion.",
-        "duration": "60-75 minutes.",
+        "duration": "60 min.",
         "frequency": "As needed for acute situations. Also popular as an occasional deep-reset.",
         "howItFeels": "Your nurse reviews your symptoms and personalizes your medication selection before you start. This is the most customized IV we offer."
       },
@@ -887,7 +875,7 @@
       ],
       "whatToExpect": {
         "onset": "NAD+ effects are often subtle during the infusion but build over the following 24-48 hours. Some people notice improved mental clarity or mood the day after.",
-        "duration": "30-45 minutes at the 100mg dose.",
+        "duration": "60-90 min.",
         "frequency": "Can be done monthly or stacked with other IVs. A good starting point for a NAD+ protocol.",
         "howItFeels": "Some people experience mild chest tightness, nausea, or a warm flushed feeling — these are normal and resolve quickly. Your nurse controls your infusion rate based on tolerance."
       },
@@ -903,39 +891,55 @@
       "category": "iv",
       "ingredients": [
         {
-          "name": "NAD+ (250mg)",
-          "whatItDoes": "A meaningful therapeutic dose of NAD+ that activates sirtuins, supports mitochondrial biogenesis, and enables cellular DNA repair mechanisms.",
-          "whyItMatters": "250mg is widely considered the sweet spot for NAD+ therapy — high enough for clinically meaningful effects, manageable in a single outpatient session. Most people notice effects lasting 3-5 days post-infusion.",
+          "name": "NAD+ (100mg) — $100",
+          "whatItDoes": "Entry-level NAD+ dose — gives you a real sense of the effects including mental clarity and a mild energy shift without a longer infusion time.",
+          "whyItMatters": "NAD+ declines dramatically with age — levels at 60 can be half what they were at 20. IV delivery achieves significantly higher cellular concentrations than oral NMN or NR supplements.",
           "evidenceLevel": "moderate"
         },
         {
-          "name": "Normal Saline (500mL)",
-          "whatItDoes": "Dilution medium that allows precise control of NAD+ infusion rate.",
-          "whyItMatters": "A slower infusion rate dramatically improves tolerance and ensures the full dose is delivered comfortably.",
+          "name": "NAD+ (250mg) — $250",
+          "whatItDoes": "Our most popular dose — high enough for clinically meaningful effects on energy, cognition, and recovery, manageable in a single outpatient session.",
+          "whyItMatters": "250mg is widely considered the sweet spot for NAD+ therapy. Most people notice effects lasting 3-5 days post-infusion.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "NAD+ (500mg) — $400",
+          "whatItDoes": "High-dose NAD+ that deeply saturates cellular NAD+ stores, producing a sustained and pronounced effect on energy, cognition, and cellular repair.",
+          "whyItMatters": "500mg IV NAD+ is used in clinical settings for addiction recovery, neurodegenerative support, and deep anti-aging protocols. The effects are noticeably more profound and longer-lasting than lower doses.",
+          "evidenceLevel": "moderate"
+        },
+        {
+          "name": "Normal Saline",
+          "whatItDoes": "Carrier solution that ensures comfortable, well-tolerated NAD+ delivery.",
+          "whyItMatters": "NAD+ infused too quickly causes side effects. The saline dilution allows us to manage your infusion rate for comfort.",
           "evidenceLevel": "strong"
         }
       ],
       "personas": [
         {
+          "headline": "You're curious about NAD+ and want to try it before committing to a larger dose",
+          "detail": "100mg is our entry-level NAD+ experience. It gives you a real sense of the effects — mental clarity, mild energy shift — without the longer infusion time of higher doses."
+        },
+        {
           "headline": "You want to experience what NAD+ is actually about",
           "detail": "250mg is our most popular NAD+ dose — enough to produce the mental clarity, energy, and recovery effects that have made NAD+ therapy so popular. Most people who try this come back monthly."
         },
         {
-          "headline": "You're in your 40s+ and want to address the cellular aging process directly",
-          "detail": "NAD+ decline is one of the most studied mechanisms of aging. 250mg IV NAD+ is a direct intervention at the cellular level."
+          "headline": "You've done NAD+ before and want the full experience",
+          "detail": "500mg is the dose where most people describe feeling a meaningful shift — deeper sleep, sustained cognitive clarity for days, and accelerated recovery from physical exertion."
         }
       ],
       "whatToExpect": {
-        "onset": "Many people feel a subtle mental sharpening during the infusion. The full effect — improved energy, mood clarity, and cognitive performance — typically peaks 12-24 hours later.",
-        "duration": "60-90 minutes.",
-        "frequency": "Monthly is a popular maintenance schedule. Some people do it every 2-3 weeks.",
-        "howItFeels": "NAD+ has a characteristic feeling — some describe it as an intensified aliveness or heightened sensory awareness. Side effects (mild nausea, chest tightness) are dose-related and manageable by adjusting infusion rate."
+        "onset": "Effects are often subtle during the infusion but build over the following 24-48 hours. Some people notice improved mental clarity or mood the day after.",
+        "duration": "60-90 min.",
+        "frequency": "Monthly is a popular maintenance schedule. Some people do it every 2-3 weeks. Can be stacked with other IVs.",
+        "howItFeels": "Some people experience mild chest tightness, nausea, or a warm flushed feeling — these are normal and resolve quickly. Your nurse controls your infusion rate based on tolerance."
       },
       "glp1": null,
       "relatedSlugs": [
-        "nad500",
         "longevity",
-        "myersPlatinum"
+        "myersPlatinum",
+        "labComplete"
       ]
     },
     {
@@ -967,7 +971,7 @@
       ],
       "whatToExpect": {
         "onset": "Some people feel effects building during the infusion. The signature experience — improved energy, mental clarity, sense of restoration — peaks over the 24-48 hours after.",
-        "duration": "2-3 hours. High-dose NAD+ must be infused slowly for comfort.",
+        "duration": "60-90 min.",
         "frequency": "Every 1-3 months for maintenance. Can be done more frequently during an intensive initial protocol.",
         "howItFeels": "This is a longer session and NAD+ side effects (nausea, chest pressure, warmth) are more likely at this dose. Your nurse stays with you and adjusts rate as needed. Most people find it deeply worth it."
       },
@@ -1007,6 +1011,7 @@
       },
       "glp1": {
         "mechanism": "GLP-1 (glucagon-like peptide-1) receptor agonist. Mimics the body's natural post-meal satiety signal, suppressing appetite and slowing digestion.",
+        "programFeatures": "This is a 1:1 guided program with your own designated RN. Includes monthly in-home follow-up visits, a free body composition scan, home app tracking for your progress, and free supplemental vitamin injections — B12, Lipo-Mino, Aminos, and Vitamin D — throughout the program. Free Zofran is provided for any unexpected GI upset. Dosing is tailored to your progress and individual sensitivity, never one-size-fits-all.",
         "eligibility": {
           "bmiRequirement": "BMI 27+ with a weight-related condition (hypertension, diabetes, high cholesterol), or BMI 30+ without comorbidities",
           "contraindications": [
@@ -1093,6 +1098,7 @@
       },
       "glp1": {
         "mechanism": "Dual GLP-1 and GIP (glucose-dependent insulinotropic polypeptide) receptor agonist. Activates two complementary gut hormone pathways for enhanced appetite suppression and improved insulin sensitivity.",
+        "programFeatures": "This is a 1:1 guided program with your own designated RN. Because tirzepatide targets both GLP-1 and GIP, it delivers even stronger appetite suppression and broader metabolic benefit than GLP-1 alone. Your program includes monthly in-home follow-up visits, a free body composition scan, home app tracking for your progress, and free supplemental vitamin injections — B12, Lipo-Mino, Aminos, and Vitamin D — throughout the program. Free Zofran is provided for any unexpected GI upset. Dosing is tailored to your progress and individual sensitivity.",
         "eligibility": {
           "bmiRequirement": "BMI 27+ with a weight-related condition, or BMI 30+ without comorbidities",
           "contraindications": [
@@ -1183,6 +1189,8 @@
         "frequency": "Weekly or monthly, depending on your baseline levels and energy goals.",
         "howItFeels": "A quick intramuscular injection — a brief pinch in the deltoid or glute. Done in minutes."
       },
+      "price": 150,
+      "priceLabel": "$150/vial",
       "glp1": null,
       "relatedSlugs": [
         "glutathioneShot",
@@ -1231,7 +1239,7 @@
         {
           "name": "Glutathione",
           "whatItDoes": "Your body's master antioxidant — neutralizes free radicals, supports liver detox pathways, recycles other antioxidants, and plays a central role in cellular immunity.",
-          "whyItMatters": "Glutathione is destroyed in the digestive tract, making oral supplements largely ineffective. IM injection achieves dramatically higher bioavailability. It's involved in skin brightening, liver health, athletic recovery, and immune function.",
+          "whyItMatters": "Glutathione is destroyed in the digestive tract, making oral supplements largely ineffective. IM injection achieves dramatically higher bioavailability. Glutathione levels naturally decline with age and stress, and it plays a central role in liver detoxification, immune function, and skin clarity. It's involved in skin brightening, liver health, athletic recovery, and immune function.",
           "evidenceLevel": "moderate"
         }
       ],
@@ -1251,6 +1259,8 @@
         "frequency": "2-3x per week for cosmetic goals. Weekly for general wellness.",
         "howItFeels": "A brief, quick injection. Occasionally patients notice a mild sulfur-like taste or smell briefly after — this is normal and passes in seconds."
       },
+      "price": 150,
+      "priceLabel": "$150/vial",
       "glp1": null,
       "relatedSlugs": [
         "biotinShot",
@@ -1263,9 +1273,9 @@
       "category": "injection",
       "ingredients": [
         {
-          "name": "Vitamin C (500mg)",
+          "name": "Vitamin C",
           "whatItDoes": "Stimulates white blood cell production and protects immune cells from oxidative damage during an active immune response.",
-          "whyItMatters": "IM Vitamin C at 500mg achieves blood concentrations significantly above what oral dosing can reach.",
+          "whyItMatters": "IM Vitamin C achieves blood concentrations significantly above what oral dosing can reach.",
           "evidenceLevel": "strong"
         },
         {
@@ -1310,8 +1320,8 @@
       "ingredients": [
         {
           "name": "Vitamin D3",
-          "whatItDoes": "Regulates calcium absorption for bone density, modulates immune system behavior, supports mood regulation, and reduces systemic inflammation.",
-          "whyItMatters": "Vitamin D deficiency affects an estimated 41% of American adults. A single high-dose IM injection can restore deficient levels in one dose — something oral supplements take weeks to accomplish.",
+          "whatItDoes": "Regulates calcium absorption for bone density, modulates immune system behavior, supports muscle function and energy production, supports mood regulation and cognitive health, and reduces systemic inflammation.",
+          "whyItMatters": "Vitamin D deficiency affects an estimated 41% of American adults. A single high-dose IM injection can restore deficient levels in one dose — something oral supplements take weeks to accomplish. Low Vitamin D is linked to muscle weakness, fatigue, cognitive decline, depression, and increased susceptibility to infection. Restoring levels supports energy, strength, mental clarity, and immune resilience.",
           "evidenceLevel": "strong"
         }
       ],
@@ -1347,6 +1357,24 @@
       "category": "injection",
       "ingredients": [
         {
+          "name": "B1 (Thiamine)",
+          "whatItDoes": "Energy metabolism and nerve function.",
+          "whyItMatters": "Thiamine is essential for converting carbohydrates into usable energy and maintaining healthy nerve signaling.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B2 (Riboflavin)",
+          "whatItDoes": "Energy production and cellular repair.",
+          "whyItMatters": "Riboflavin is a key cofactor in the cellular energy cycle and supports tissue repair at the mitochondrial level.",
+          "evidenceLevel": "strong"
+        },
+        {
+          "name": "B6 (Pyridoxine)",
+          "whatItDoes": "Metabolism and neurotransmitter support.",
+          "whyItMatters": "B6 is required for amino acid metabolism and the production of serotonin and dopamine — directly impacting mood and metabolic rate.",
+          "evidenceLevel": "strong"
+        },
+        {
           "name": "MIC Complex (Methionine, Inositol, Choline)",
           "whatItDoes": "Three compounds that work together to enhance fat metabolism, prevent fat accumulation in the liver, and support bile production for dietary fat digestion.",
           "whyItMatters": "Methionine is an essential amino acid that metabolizes fat and prevents fat buildup in the liver. Inositol supports insulin signaling and fat emulsification. Choline is essential for fat transport out of the liver.",
@@ -1375,6 +1403,8 @@
         "frequency": "1-3x per week during active weight loss. Weekly for maintenance.",
         "howItFeels": "A quick IM injection. No significant sensation beyond a brief pinch."
       },
+      "price": 150,
+      "priceLabel": "$150/vial",
       "glp1": null,
       "relatedSlugs": [
         "semaglutide",
@@ -1524,12 +1554,6 @@
           "flaggedBy": "Elevated fasting insulin with normal glucose is the earliest warning sign of metabolic syndrome."
         },
         {
-          "name": "CRP-hs (High-Sensitivity C-Reactive Protein)",
-          "measuresWhat": "A sensitive marker of systemic inflammation, particularly relevant for cardiovascular disease risk.",
-          "whyItMatters": "Chronic low-grade inflammation is now recognized as a primary driver of heart disease, metabolic disease, and accelerated aging.",
-          "flaggedBy": "Above 1 mg/L increases cardiovascular risk. Above 3 mg/L signals significant systemic inflammation."
-        },
-        {
           "name": "Homocysteine",
           "measuresWhat": "An amino acid byproduct of methionine metabolism — elevated levels damage blood vessel walls.",
           "whyItMatters": "High homocysteine is an independent cardiovascular and neurological risk factor, and is directly corrected by B vitamins (B6, B12, folate).",
@@ -1564,6 +1588,12 @@
           "measuresWhat": "PSA: prostate-specific antigen for prostate health screening. CA-125: marker associated with ovarian cancer risk.",
           "whyItMatters": "Screening markers that provide baseline values and flag significant changes over time.",
           "flaggedBy": "Elevated PSA warrants urological consultation. Elevated CA-125 warrants gynecological evaluation."
+        },
+        {
+          "name": "Apolipoprotein B",
+          "measuresWhat": "The primary protein component of LDL and other atherogenic lipoprotein particles — a direct count of cardiovascular risk particles.",
+          "whyItMatters": "Apolipoprotein B is considered the best single predictor of cardiovascular risk, outperforming standard LDL cholesterol measurements. Each LDL particle carries exactly one ApoB molecule, making it a direct particle count.",
+          "flaggedBy": "Elevated ApoB indicates high atherogenic particle burden, even when standard LDL appears normal."
         }
       ],
       "personas": [
