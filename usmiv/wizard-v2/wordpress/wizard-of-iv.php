@@ -11,7 +11,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WIZARD_OF_IV_VERSION', '2.0.13');
+define('WIZARD_OF_IV_VERSION', '2.0.15');
 define('WIZARD_OF_IV_OPTION', 'wizard_of_iv_config');
 define('WIZARD_OF_IV_HISTORY_OPTION', 'wizard_of_iv_config_history');
 define('WIZARD_OF_IV_HISTORY_MAX', 20);
@@ -194,6 +194,30 @@ function wizard_of_iv_treatment_sync() {
     }
 }
 add_action('wp_enqueue_scripts', 'wizard_of_iv_treatment_sync');
+
+// ---------------------------------------------------------------------------
+// Mangomint online-booking embed (overlay)
+// ---------------------------------------------------------------------------
+// Loads ONLY on the wizard shortcode page and the /treatments/<id>/ Learn More
+// pages. With this script present, any link to booking.mangomint.com/992490
+// opens the booking in an on-page overlay instead of navigating away. Scoped so
+// no other page is affected. Owner-approved (keeps the Mangomint web-chat bubble).
+function wizard_of_iv_mangomint_embed() {
+    global $post;
+    $on_wizard = is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'treatment-wizard');
+
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $path = strtok($request_uri, '?');
+    $path = rtrim($path, '/') . '/';
+    $on_treatment = (bool) preg_match('#^/treatments/([^/]+)/$#', $path);
+
+    if ($on_wizard || $on_treatment) {
+        echo "\n<!-- Mangomint online-booking embed (wizard + treatment pages only) -->\n";
+        echo "<script>window.Mangomint = window.Mangomint || {}; window.Mangomint.CompanyId = 992490;</script>\n";
+        echo "<script src=\"https://booking.mangomint.com/app.js\" async></script>\n";
+    }
+}
+add_action('wp_head', 'wizard_of_iv_mangomint_embed');
 
 // ---------------------------------------------------------------------------
 // Shortcode

@@ -1229,11 +1229,23 @@ const V1_RENDERER_JS = `(function (root) {
   }
 
   function buildAcuityUrl(wizardConfig, treatment) {
-    var base = (wizardConfig.meta && wizardConfig.meta.acuityBase) || 'https://usmobilemedics.as.me/usmobileiv';
-    if (treatment.acuityTypeId) {
-      return base + '?appointmentTypeID=' + encodeURIComponent(treatment.acuityTypeId);
-    }
-    return base;
+    // Mangomint per-service booking link (opens the on-page embed overlay; falls
+    // back to a new tab if the embed script is unavailable). Injections + NAD have
+    // no standalone Mangomint service, so they route to the IV category where the
+    // shot / NAD dose is added as a booster. Map mirrors src/data/mangomint.ts.
+    var MM = 'https://booking.mangomint.com/992490';
+    var SERVICE_ID = {
+      hydration: 12, myers: 13, immunity: 14, pregnancy: 15, altitude: 16,
+      hangover: 17, migraine: 18, longevity: 19, performance: 20, revival: 21,
+      myersGold: 26, myersPlatinum: 27, labGeneral: 22, labInDepth: 23,
+      labVitamin: 24, labComplete: 25, semaglutide: 29, tirzepatide: 29
+    };
+    var CATEGORY_ID = { injection: 4, nad: 4 };
+    var id = treatment.id || treatment.slug, cat = treatment.category;
+    if (id && Object.prototype.hasOwnProperty.call(SERVICE_ID, id)) return MM + '?serviceId=' + SERVICE_ID[id];
+    if (id === 'nadPlusLabs') return MM + '?serviceCategoryId=4';
+    if (cat && Object.prototype.hasOwnProperty.call(CATEGORY_ID, cat)) return MM + '?serviceCategoryId=' + CATEGORY_ID[cat];
+    return MM;
   }
 
   function renderCategoryBadge(category) {
