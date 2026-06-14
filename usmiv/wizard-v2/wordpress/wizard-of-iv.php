@@ -215,6 +215,9 @@ function wizard_of_iv_mangomint_embed() {
         echo "\n<!-- Mangomint online-booking embed (wizard + treatment pages only) -->\n";
         echo "<script>window.Mangomint = window.Mangomint || {}; window.Mangomint.CompanyId = 992490;</script>\n";
         echo "<script src=\"https://booking.mangomint.com/app.js\" async></script>\n";
+        // Hide the floating "Myers-Bag" mascot contact popover on the wizard +
+        // treatment pages so it doesn't overlap the Mangomint booking overlay.
+        echo "<style>.fb-floating-contact{display:none !important;}</style>\n";
     }
 }
 add_action('wp_head', 'wizard_of_iv_mangomint_embed');
