@@ -1189,8 +1189,8 @@
         "frequency": "Weekly or monthly, depending on your baseline levels and energy goals.",
         "howItFeels": "A quick intramuscular injection — a brief pinch in the deltoid or glute. Done in minutes."
       },
-      "price": 150,
-      "priceLabel": "$150/vial",
+      "price": 35,
+      "priceLabel": "$35/shot",
       "glp1": null,
       "relatedSlugs": [
         "glutathioneShot",
@@ -1230,7 +1230,9 @@
         "glutathioneShot",
         "b12Shot",
         "longevity"
-      ]
+      ],
+      "price": 35,
+      "priceLabel": "$35/shot"
     },
     {
       "slug": "glutathioneShot",
@@ -1259,8 +1261,8 @@
         "frequency": "2-3x per week for cosmetic goals. Weekly for general wellness.",
         "howItFeels": "A brief, quick injection. Occasionally patients notice a mild sulfur-like taste or smell briefly after — this is normal and passes in seconds."
       },
-      "price": 150,
-      "priceLabel": "$150/vial",
+      "price": 35,
+      "priceLabel": "$35/shot",
       "glp1": null,
       "relatedSlugs": [
         "biotinShot",
@@ -1312,7 +1314,9 @@
         "vitaminDShot",
         "immunity",
         "b12Shot"
-      ]
+      ],
+      "price": 35,
+      "priceLabel": "$35/shot"
     },
     {
       "slug": "vitaminDShot",
@@ -1350,7 +1354,9 @@
         "triImmuneShot",
         "b12Shot",
         "immunity"
-      ]
+      ],
+      "price": 35,
+      "priceLabel": "$35/shot"
     },
     {
       "slug": "lipoShots",
@@ -1403,8 +1409,8 @@
         "frequency": "1-3x per week during active weight loss. Weekly for maintenance.",
         "howItFeels": "A quick IM injection. No significant sensation beyond a brief pinch."
       },
-      "price": 150,
-      "priceLabel": "$150/vial",
+      "price": 35,
+      "priceLabel": "$35/shot",
       "glp1": null,
       "relatedSlugs": [
         "semaglutide",
