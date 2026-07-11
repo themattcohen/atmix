@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/logo.png">
+<meta name="description" content="Atmix Bookkeeping Connector for QuickBooks Online: an internal bookkeeping-automation tool operated by All Solutions Consulting.">
+<title>QuickBooks Online Connector &mdash; Atmix</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #000;
+    background: #fff;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  header.site {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  header.site img { width: 48px; height: 48px; }
+  header.site .brand { font-weight: 700; }
+  header.site .brand span { display: block; font-weight: 400; font-size: 0.8rem; color: #555; }
+  h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.1rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid #000; padding-bottom: 0.35rem; }
+  p { margin-bottom: 1rem; }
+  ul { margin: 0 0 1rem 1.4rem; }
+  li { margin-bottom: 0.4rem; }
+  a { color: #000; }
+  strong { font-weight: 700; }
+  .meta { color: #555; font-size: 0.9rem; margin-bottom: 2rem; }
+  .callout { border: 1px solid #000; background: #f5f5f5; padding: 1rem 1.25rem; margin: 1rem 0; }
+  .actions a { display: inline-block; border: 1px solid #000; padding: 0.5rem 1rem; margin: 0.25rem 0.5rem 0.25rem 0; text-decoration: none; }
+  footer { margin-top: 3rem; border-top: 1px solid #000; padding-top: 1rem; font-size: 0.85rem; color: #555; }
+  footer a { color: #555; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <img src="/logo.png" alt="Atmix logo">
+  <div class="brand">Atmix<span>audit trail mix &middot; atmix.org</span></div>
+</header>
+
+<h1>QuickBooks Online Connector</h1>
+<p class="meta"><strong>Atmix Bookkeeping Connector &middot; operated by All Solutions Consulting</strong></p>
+
+<p>
+  The Atmix Bookkeeping Connector is an internal bookkeeping-automation tool that connects an authorized
+  QuickBooks Online company to help prepare that company&rsquo;s monthly close. It reads existing accounting
+  records to categorize new bank and credit-card activity, reconciles that activity against statements, and,
+  after a person reviews and approves each entry, records the approved transactions back into QuickBooks Online.
+</p>
+
+<div class="callout">
+  <p style="margin-bottom:0;">
+    This is an internal tool operated by the bookkeeping practice for its own clients. It is not a self-service
+    consumer application. QuickBooks Online companies are connected by the firm&rsquo;s authorized administrator,
+    with the account owner&rsquo;s permission.
+  </p>
+</div>
+
+<h2>What it does</h2>
+<ul>
+  <li>Reads posted transactions, register balances, the chart of accounts, and the vendor list for the connected company.</li>
+  <li>Categorizes new bank and credit-card activity from the company&rsquo;s own history and the firm&rsquo;s coding guidelines.</li>
+  <li>Reconciles that activity against bank and credit-card statements before anything is written.</li>
+  <li>Records the expense, deposit, transfer, and credit-card entries a person has reviewed and approved. Nothing is written to the books without human approval.</li>
+</ul>
+
+<h2>Getting connected</h2>
+<p class="actions">
+  <a href="/qbo/connect">Connect / Reconnect</a>
+  <a href="/qbo/disconnect">Disconnect</a>
+</p>
+
+<h2>Legal</h2>
+<p>
+  Use of the connector is governed by the
+  <a href="/qboeula">End User License Agreement</a> and the
+  <a href="/qboprivacypolicy">Privacy Policy</a>.
+</p>
+
+<h2>Contact</h2>
+<p>Questions: <a href="mailto:matt@atmix.org">matt@atmix.org</a></p>
+
+<p style="margin-top:1.5rem;font-size:0.9rem;color:#555;">
+  QuickBooks and Intuit are trademarks of Intuit Inc., used here for identification only. This connector is an
+  independent application and is not endorsed or certified by Intuit.
+</p>
+
+<footer>
+  Atmix, operated by Matt Cohen &mdash; <a href="mailto:matt@atmix.org">matt@atmix.org</a><br>
+  <a href="/">Home</a> &middot; <a href="/qbo">Connector</a> &middot; <a href="/qboeula">QBO EULA</a> &middot; <a href="/qboprivacypolicy">QBO Privacy</a>
+  <p style="margin-top:0.5rem;">&copy; 2026 Matt Cohen</p>
+</footer>
+
+</body>
+</html>
