@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/logo.png">
+<meta name="description" content="Privacy Policy for the Atmix Bookkeeping Connector for QuickBooks Online, describing how QuickBooks Online data is accessed, used, stored, and shared.">
+<title>QuickBooks Online Connector Privacy Policy &mdash; Atmix</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #000;
+    background: #fff;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  header.site {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  header.site img { width: 48px; height: 48px; }
+  header.site .brand { font-weight: 700; }
+  header.site .brand span { display: block; font-weight: 400; font-size: 0.8rem; color: #555; }
+  h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.1rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid #000; padding-bottom: 0.35rem; }
+  p { margin-bottom: 1rem; }
+  ul { margin: 0 0 1rem 1.4rem; }
+  li { margin-bottom: 0.4rem; }
+  a { color: #000; }
+  strong { font-weight: 700; }
+  .meta { color: #555; font-size: 0.9rem; margin-bottom: 2rem; }
+  .callout { border: 1px solid #000; background: #f5f5f5; padding: 1rem 1.25rem; margin: 1rem 0; }
+  footer { margin-top: 3rem; border-top: 1px solid #000; padding-top: 1rem; font-size: 0.85rem; color: #555; }
+  footer a { color: #555; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <img src="/logo.png" alt="Atmix logo">
+  <div class="brand">Atmix<span>audit trail mix &middot; atmix.org</span></div>
+</header>
+
+<h1>QuickBooks Online Connector &mdash; Privacy Policy</h1>
+<p class="meta"><strong>Last updated: July 11, 2026</strong></p>
+
+<p>
+  This Privacy Policy explains how Atmix (&ldquo;Atmix,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;),
+  a project operated by Matt Cohen, handles information in connection with the Atmix Bookkeeping Connector for
+  QuickBooks Online (the &ldquo;Service&rdquo;). The Service is a bookkeeping-automation tool that connects a
+  QuickBooks Online company you authorize so that it can help prepare that company&rsquo;s monthly close: it reads
+  existing accounting records to categorize new bank and credit-card activity, reconciles that activity against
+  statements, and, after a person reviews and approves each entry, records the approved transactions back into
+  QuickBooks Online.
+</p>
+<p>
+  Questions about this policy: <a href="mailto:matt@atmix.org">matt@atmix.org</a>
+</p>
+
+<h2>QuickBooks Online data we access</h2>
+<p>
+  When you connect a QuickBooks Online company, the Service uses Intuit&rsquo;s standard OAuth authorization flow to
+  request access to that company&rsquo;s accounting data. The Service acts only on the company you connect and only
+  to perform the bookkeeping tasks described below. It accesses:
+</p>
+<ul>
+  <li><strong>Transactions</strong> &mdash; posted expenses, deposits, transfers, credit-card charges, and their line detail and register balances, so we can reconcile against bank and credit-card statements and avoid creating duplicates.</li>
+  <li><strong>Chart of accounts</strong> &mdash; your account list, so new activity can be categorized to the correct accounts.</li>
+  <li><strong>Vendors and payees</strong> &mdash; your vendor list and identifiers, so activity can be matched to the right payee.</li>
+  <li><strong>Company information</strong> &mdash; basic company and connection identifiers needed to route data to the correct QuickBooks Online company.</li>
+</ul>
+<p>
+  The Service <strong>writes</strong> to QuickBooks Online only after a person has reviewed and approved the entries:
+  it creates the approved expense, deposit, transfer, and credit-card-charge transactions, and creates new vendor
+  records when an approved transaction requires one. Nothing is written to your books automatically without that
+  human approval.
+</p>
+
+<h2>How we use your data</h2>
+<p>
+  We use this access solely to perform bookkeeping for the company you connect &mdash; categorizing new activity from
+  your own historical records and guidelines, reconciling it against statements, and posting the entries you approve.
+  We do not use your QuickBooks Online data for advertising, and we do not sell it.
+</p>
+
+<h2>AI processing</h2>
+<p>
+  To suggest how a transaction should be categorized, the Service may send transaction details (such as the payee name,
+  amount, and description) to an AI provider that powers the assistant (for example, Anthropic) for processing in real
+  time, and a suggested categorization is returned. The AI provider processes this data as our service provider, under
+  its own terms, only to perform the request &mdash; it does not use your data to train its models. A person reviews
+  and approves the categorization before anything is written back to QuickBooks Online.
+</p>
+
+<h2>How we store and protect your data</h2>
+<p>
+  To keep your company connected, we store the OAuth access and refresh tokens that Intuit issues, encrypted at rest,
+  on a private server we control. To categorize new activity accurately, the Service also maintains a working copy of
+  the connected company&rsquo;s recent transaction history, chart of accounts, and vendor list on that server; this
+  working data is used only to perform bookkeeping for that company. We restrict access to the tokens, working data,
+  and the server that holds them to authorized personnel. No method of electronic storage or transmission over the
+  internet is completely secure, so while we take reasonable measures to protect your information, we cannot guarantee
+  absolute security.
+</p>
+
+<h2>How we share your data</h2>
+<p>We share information only as described here:</p>
+<ul>
+  <li><strong>Intuit / QuickBooks Online</strong> &mdash; the source of the data, accessed through Intuit&rsquo;s APIs under the permissions you grant.</li>
+  <li><strong>AI provider (e.g., Anthropic)</strong> &mdash; as a service provider, only to process the categorization requests described under &ldquo;AI processing.&rdquo;</li>
+  <li><strong>Authorized bookkeeping personnel</strong> &mdash; the people who operate the Service and review and approve entries on your behalf, which is a core function of the Service.</li>
+  <li><strong>Legal and safety</strong> &mdash; where we are required to do so by applicable law, regulation, or legal process, or where necessary to protect against fraud, abuse, or security threats.</li>
+</ul>
+<p>We do not sell your information and we do not use it for advertising.</p>
+
+<h2>Data retention</h2>
+<p>
+  Connection tokens are retained until you disconnect the Service from your QuickBooks Online company, until you ask us
+  to delete them, or after a prolonged period of inactivity, whichever comes first. Working copies of your accounting
+  data are retained only as long as needed to perform bookkeeping for the connected company and are deleted on request
+  or when the connection ends.
+</p>
+
+<h2>Your choices and how to revoke access</h2>
+<p>
+  You can review and revoke the Service&rsquo;s access to your QuickBooks Online company at any time from within
+  QuickBooks Online, under <strong>Settings &rarr; Apps</strong> (Connected Apps), or from your Intuit account&rsquo;s
+  connected-apps settings. To request deletion of any stored tokens or working data we hold about you, email
+  <a href="mailto:matt@atmix.org">matt@atmix.org</a> and we will action the request promptly. Revoking access stops all
+  future processing; it does not affect entries already recorded at your direction.
+</p>
+
+<h2>Children</h2>
+<p>The Service is a business tool and is not directed at children under 13, and we do not knowingly collect personal information from children.</p>
+
+<h2>Your rights</h2>
+<p>
+  Depending on where you live, you may have rights to access, correct, or delete personal information we hold about you
+  (for example, under the California Consumer Privacy Act or the EU/UK General Data Protection Regulation). To exercise
+  any such right, email <a href="mailto:matt@atmix.org">matt@atmix.org</a>; we will respond within the time required by
+  applicable law.
+</p>
+
+<h2>Changes to this policy</h2>
+<p>
+  If we materially change this policy, we will update the &ldquo;Last updated&rdquo; date above and post the revised
+  version at this URL. We encourage you to review this page periodically.
+</p>
+
+<h2>Intuit trademarks</h2>
+<p>
+  QuickBooks and Intuit are trademarks of Intuit Inc., used here for identification only. The Service is an independent
+  application and is not endorsed or certified by Intuit.
+</p>
+
+<footer>
+  Atmix, operated by Matt Cohen &mdash; <a href="mailto:matt@atmix.org">matt@atmix.org</a><br>
+  <a href="/">Home</a> &middot; <a href="/qboeula">QBO EULA</a> &middot; <a href="/qboprivacypolicy">QBO Privacy</a>
+  <p style="margin-top:0.5rem;">&copy; 2026 Matt Cohen</p>
+</footer>
+
+</body>
+</html>
