@@ -1,0 +1,6 @@
+# This file only works if served at a domain root. Caliber deploys to atmix.org/caliber/, a
+# subdirectory, so a crawler fetching atmix.org/robots.txt will never see this file -- it is
+# included here for completeness only and does not block indexing on its own. The
+# <meta name="robots" content="noindex, nofollow"> tag on every page is what actually does that.
+User-agent: *
+Disallow: /

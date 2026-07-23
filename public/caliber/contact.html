@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.replace('no-js','js')</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Enquire — Caliber</title>
+<meta name="description" content="Reach Caliber. Local, by appointment.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<!-- caliber:header:start -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+<div class="wrap">
+<div class="top__row">
+<a class="mark" href="index.html">CALIBER</a>
+<button class="navtoggle" id="navtoggle" aria-label="Menu" aria-expanded="false" aria-controls="topnav">&#9776;</button>
+<nav class="topnav" id="topnav">
+<a href="catalog.html">Catalogue</a>
+<a href="testing.html">The Standard</a>
+<a href="coa.html">Verify a lot</a>
+<a href="contact.html" class="active">Enquire</a>
+</nav>
+</div>
+</div>
+</header>
+<!-- caliber:header:end -->
+<main id="main">
+
+  <section class="section" style="padding-bottom:0"><div class="wrap">
+    <span class="kicker">Contact</span>
+    <h1 class="rv" style="margin-top:.6em;max-width:14ch">Get in touch.</h1>
+    <p class="measure muted rv">Local, by appointment. Questions about batches, testing, or a certificate of analysis are welcome — we do not offer guidance on use.</p>
+  </div></section>
+
+  <hr class="rule" style="margin-top:56px">
+  <section class="section"><div class="wrap">
+    <div class="cols-2">
+
+      <div>
+        <noscript><p class="note">This enquiry form requires JavaScript to submit. Please enable JavaScript and reload this page to send your message.</p></noscript>
+        <form id="contact-form" action="contact.html" method="post">
+          <div style="margin-bottom:32px">
+            <label class="lbl" for="cf-name">Name</label>
+            <input class="field" id="cf-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div style="margin-bottom:32px">
+            <label class="lbl" for="cf-email">Email</label>
+            <input class="field" id="cf-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div style="margin-bottom:32px">
+            <label class="lbl" for="cf-message">Message</label>
+            <textarea class="field" id="cf-message" name="message" required></textarea>
+          </div>
+          <div style="margin:32px 0">
+            <label class="check">
+              <input type="checkbox" id="cf-confirm" required>
+              <span>I confirm I am 21 or older and enquiring for research use only.</span>
+            </label>
+          </div>
+          <button class="btn-solid" id="cf-submit" type="submit">Send</button>
+        </form>
+      </div>
+
+      <div class="stack">
+        <div>
+          <span class="kicker">Area</span>
+          <p class="dim" style="margin-top:.6em">Colorado.</p>
+        </div>
+        <div>
+          <span class="kicker">Hand-off</span>
+          <p class="dim" style="margin-top:.6em">Local, by appointment only. No shipping, no forwarding.</p>
+        </div>
+        <div>
+          <span class="kicker">Response</span>
+          <p class="dim" style="margin-top:.6em">Within one business day.</p>
+        </div>
+        <p class="note">Caliber provides no guidance on use, dosing, or protocol. <!-- caliber:compliance:start -->FOR LABORATORY RESEARCH USE ONLY. Products offered by Caliber are not drugs, foods, or dietary supplements, are not for human or veterinary consumption, and are not intended to diagnose, treat, cure, or prevent any disease. Nothing on this site is medical advice. Statements have not been evaluated by the FDA. You must be 21 or older.<!-- caliber:compliance:end --></p>
+      </div>
+
+    </div>
+  </div></section>
+
+</main>
+<!-- caliber:footer:start -->
+<footer class="site-footer">
+<div class="wrap">
+<div class="foot">
+<div>
+<div class="foot__mark">CALIBER</div>
+<p class="muted" style="max-width:32ch;margin-top:1rem;font-size:.92rem">Independently tested research compounds, verified to the lot, offered locally in limited batches.</p>
+</div>
+<div>
+<p class="foot__label">Catalogue</p>
+<nav aria-label="Catalogue">
+<a href="catalog.html">All batches</a>
+<a href="testing.html">The Standard</a>
+<a href="coa.html">Verify a lot</a>
+<a href="faq.html">Enquiries</a>
+</nav>
+</div>
+<div>
+<p class="foot__label">Terms</p>
+<nav aria-label="Terms">
+<a href="terms.html">Terms of Sale</a>
+<a href="disclaimer.html">Disclaimer</a>
+<a href="privacy.html">Privacy</a>
+<a href="contact.html">Contact</a>
+</nav>
+</div>
+</div>
+<div class="ruo"><!-- caliber:compliance:start -->FOR LABORATORY RESEARCH USE ONLY. Products offered by Caliber are not drugs, foods, or dietary supplements, are not for human or veterinary consumption, and are not intended to diagnose, treat, cure, or prevent any disease. Nothing on this site is medical advice. Statements have not been evaluated by the FDA. You must be 21 or older.<!-- caliber:compliance:end --> &copy; 2026 Caliber.</div>
+</div>
+</footer>
+<!-- caliber:footer:end -->
+<script src="assets/app.js"></script>
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  var form = document.getElementById('contact-form');
+  var msg = document.createElement('p');
+  msg.className = 'serif-italic';
+  msg.style.fontSize = '1.4rem';
+  msg.textContent = 'Thank you. We will be in touch.';
+  form.replaceWith(msg);
+});
+</script>
+</body>
+</html>
