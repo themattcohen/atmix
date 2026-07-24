@@ -41,22 +41,35 @@
   .verify-btn{ transition: background .25s; }     .verify-btn:hover{ background: #2F5573 !important; }
   .chip-fam  { transition: border-color .25s, color .25s; }
 
-  /* mobile fallback — the source is desktop-first (fixed 1440 grid); collapse the major splits */
-  @media (max-width: 880px) {
-    .wrap  { padding-left: 22px !important; padding-right: 22px !important; }
+  /* ---- responsive / mobile ---- */
+  @media (max-width: 900px) {
+    .wrap  { padding-left: 20px !important; padding-right: 20px !important; }
     .split { grid-template-columns: 1fr !important; }
-    .split > * { border-left: none !important; border-right: none !important; }
-    .disp-xl { font-size: 44px !important; }
-    .disp-lg { font-size: 34px !important; }
-    .no-min  { min-height: 300px !important; }
+    .split > * { padding-left: 20px !important; padding-right: 20px !important; border-left: none !important; border-right: none !important; }
+    .split > .imgcell { padding: 0 !important; }
+    .imgcell { min-height: 300px !important; }
+    .hero-lead { padding-top: 52px !important; padding-bottom: 44px !important; }
+    .stats3 { grid-template-columns: 1fr 1fr !important; }
+    .disp-xl { font-size: 40px !important; line-height: 1.06 !important; }
+    .disp-lg { font-size: 30px !important; }
     .hdr-cta { display: none !important; }
     .hdr-nav { gap: 16px !important; font-size: 12px !important; }
   }
   @media (max-width: 560px) {
     .hdr-word { display: none !important; }
-    .hdr-nav  { gap: 12px !important; font-size: 11px !important; }
+    .hdr-nav  { gap: 13px !important; font-size: 11.5px !important; }
+    .stats3   { grid-template-columns: 1fr !important; }
+    .disp-xl  { font-size: 33px !important; }
+    .disp-lg  { font-size: 25px !important; }
+    .imgcell  { min-height: 260px !important; }
+    /* data tables -> stacked cards */
+    .tbl-min  { min-width: 0 !important; }
+    .tbl-head { display: none !important; }
+    .row-hover { display: block !important; padding: 16px 0 !important; }
+    .row-hover > * { display: block !important; text-align: left !important; }
+    .row-hover > * + * { margin-top: 2px !important; }
   }
-</style>
+  </style>
 </head>
 <body>
 <div id="app"></div>
@@ -300,7 +313,7 @@ function viewHome() {
 
   return `<div>
     <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr); border-bottom:1px solid #1A1F22;">
-      <div style="min-width:0; padding:118px 56px 88px;">
+      <div class="hero-lead" style="min-width:0; padding:118px 56px 88px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:30px;">Batch 014 &nbsp;·&nbsp; Released 09 July 2026 &nbsp;·&nbsp; 40 units</div>
         <h1 class="disp-xl" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:76px; line-height:1.02; margin:0 0 30px; color:#E8EAEA; letter-spacing:-.005em;">Nothing ships<br>unsigned.</h1>
         <p style="font-size:16.5px; line-height:1.66; color:#9BA4A9; max-width:460px; margin:0 0 40px;">Every batch is tested whole by an independent laboratory, and the release is signed by our medical director against the lot number printed on the vial. You can read the certificate before you read the price.</p>
@@ -314,14 +327,14 @@ function viewHome() {
           <div><div style="font-family:'IBM Plex Mono',monospace; font-size:29px; color:#E8EAEA; line-height:1;">17025</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:9px; white-space:nowrap;">ISO/IEC ACCREDITED</div></div>
         </div>
       </div>
-      <div class="no-min" style="position:relative; min-width:0; overflow:hidden; border-left:1px solid #1A1F22; min-height:680px;">
+      <div class="no-min imgcell" style="position:relative; min-width:0; overflow:hidden; border-left:1px solid #1A1F22; min-height:680px;">
         ${photo('hero-vial.png','Caliber vial CAL-PB15, lot GLD-BLK-014','center')}
         <div style="position:absolute; bottom:26px; right:26px; pointer-events:none; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#E8EAEA; background:rgba(14,17,19,.74); padding:8px 11px;">CAL-PB15 &nbsp;·&nbsp; 10 MG &nbsp;·&nbsp; GLD-BLK-014</div>
       </div>
     </div>
 
     <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:300px minmax(0,1fr) 340px; border-bottom:1px solid #1A1F22;">
-      <div class="no-min" style="position:relative; min-width:0; overflow:hidden; border-right:1px solid #1A1F22; min-height:400px;">
+      <div class="no-min imgcell" style="position:relative; min-width:0; overflow:hidden; border-right:1px solid #1A1F22; min-height:400px;">
         ${photo('director.png','Caliber medical director','center top')}
       </div>
       <div style="min-width:0; padding:54px 52px;">
@@ -357,8 +370,8 @@ function viewHome() {
     </div>
 
     <div class="wrap" style="max-width:1440px; margin:0 auto; padding:24px 56px 0;">
-      <div style="overflow-x:auto;"><div style="min-width:1000px;">
-        <div style="display:grid; grid-template-columns:100px minmax(250px,1fr) 156px 88px 96px 84px 84px; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
+      <div style="overflow-x:auto;"><div class="tbl-min" style="min-width:1000px;">
+        <div class="tbl-head" style="display:grid; grid-template-columns:100px minmax(250px,1fr) 156px 88px 96px 84px 84px; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
           <span>CODE</span><span>COMPOUND</span><span>LOT / LABORATORY</span><span>PURITY</span><span>METHOD</span><span>REMAINING</span><span style="text-align:right;">PRICE</span>
         </div>
         ${rows}
@@ -375,7 +388,7 @@ function viewHome() {
           <p style="font-size:14.5px; line-height:1.72; color:#7C868C; margin:0;">When a compound is asked for often enough to justify a full panel on every run of it, we add it. That's the only reason the list ever grows.</p>
         </div>
         <div style="min-width:0; display:flex; flex-direction:column; justify-content:space-between; background:#121618;">
-          <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr));">
+          <div class="stats3" style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr));">
             <div style="padding:44px 32px; border-right:1px solid #1A1F22; border-bottom:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:38px; color:#E8EAEA; line-height:1;">${PRODUCTS.length}</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:12px;">COMPOUNDS CARRIED</div></div>
             <div style="padding:44px 32px; border-right:1px solid #1A1F22; border-bottom:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:38px; color:#E8EAEA; line-height:1;">${totalUnits}</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:12px;">UNITS OPEN TODAY</div></div>
             <div style="padding:44px 32px; border-bottom:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:38px; color:#B79A63; line-height:1;">0</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:12px;">RESTOCKS EVER</div></div>
@@ -482,8 +495,8 @@ function viewCatalogue() {
       <div style="display:flex; flex-wrap:wrap; gap:10px; padding-bottom:34px;">${chips}</div>
     </div>
     <div class="wrap" style="max-width:1440px; margin:0 auto; padding:0 56px 120px;">
-      <div style="overflow-x:auto;"><div style="min-width:1060px;">
-        <div style="display:grid; grid-template-columns:100px minmax(250px,1fr) 92px 156px 88px 84px 80px 34px; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
+      <div style="overflow-x:auto;"><div class="tbl-min" style="min-width:1060px;">
+        <div class="tbl-head" style="display:grid; grid-template-columns:100px minmax(250px,1fr) 92px 156px 88px 84px 80px 34px; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
           <span>CODE</span><span>COMPOUND</span><span>SIZE</span><span>LOT / LABORATORY</span><span>PURITY</span><span>REMAINING</span><span style="text-align:right;">PRICE</span><span></span>
         </div>
         ${rows}
@@ -526,7 +539,7 @@ function viewProduct() {
         </div>
       </div>
       <div style="min-width:0; position:sticky; top:110px;">
-        <div class="no-min" style="position:relative; min-height:360px; border:1px solid #1A1F22; overflow:hidden;">
+        <div class="no-min imgcell" style="position:relative; min-height:360px; border:1px solid #1A1F22; overflow:hidden;">
           ${photo('product-shot.png','Caliber vial, label and lot number','center')}
         </div>
         <div style="border:1px solid #1A1F22; border-top:none; padding:28px 26px; background:#121618;">
@@ -573,7 +586,7 @@ function viewTesting() {
     <div class="wrap" style="max-width:1440px; margin:76px auto 0; padding:0 56px;">${steps}</div>
     <div class="wrap" style="max-width:1440px; margin:90px auto 0; padding:0 56px;">
       <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);">
-        <div class="no-min" style="position:relative; min-width:0; overflow:hidden; min-height:460px; border:1px solid #1A1F22;">
+        <div class="no-min imgcell" style="position:relative; min-width:0; overflow:hidden; min-height:460px; border:1px solid #1A1F22;">
           ${photo('testing-shot.png','HPLC testing of a Caliber batch','center')}
         </div>
         <div style="min-width:0; padding:56px 48px; border:1px solid #1A1F22; border-left:none; background:#121618;">
@@ -600,7 +613,7 @@ function viewClinical() {
     </div>`).join('');
   return `<div>
     <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,480px) minmax(0,1fr); border-bottom:1px solid #1A1F22;">
-      <div class="no-min" style="position:relative; min-width:0; overflow:hidden; min-height:620px; border-right:1px solid #1A1F22;">
+      <div class="no-min imgcell" style="position:relative; min-width:0; overflow:hidden; min-height:620px; border-right:1px solid #1A1F22;">
         ${photo('director-large.png','Caliber clinical director','center')}
       </div>
       <div style="min-width:0; padding:104px 56px 80px;">
