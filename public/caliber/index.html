@@ -8,7 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 76' fill='none'%3E%3Ccircle cx='38' cy='38' r='30' stroke='%23B79A63' stroke-width='2.8'/%3E%3Cpath d='M38 8v9M38 59v9M8 38h9M59 38h9' stroke='%23B79A63' stroke-width='2.8'/%3E%3Cpath d='M46 29a12 12 0 100 18' stroke='%23E8EAEA' stroke-width='5' stroke-linecap='square'/%3E%3C/svg%3E">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: #0E1113; -webkit-font-smoothing: antialiased; font-family: 'Archivo', sans-serif; }
@@ -184,16 +186,9 @@ function panelFor(p) {
 
 const axis = (col) => `<div style="display:flex; justify-content:space-between; margin-top:14px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:${col || '#5C656A'};"><span>0.0 MIN</span><span>RETENTION TIME</span><span>12.0 MIN</span></div>`;
 
-// image-slot placeholder — the design's slots are unfilled; render the art direction so it stays useful
-function slot(note, theme) {
-  if (theme === 'light') {
-    return `<div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:20px; background:repeating-linear-gradient(135deg,#E4E6E8,#E4E6E8 10px,#DEE1E3 10px,#DEE1E3 20px);">
-      <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; color:#9AA1A6; text-transform:uppercase; margin-bottom:9px;">Image placeholder</div>
-      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; line-height:1.6; color:#7B838A; max-width:340px;">${note}</div></div>`;
-  }
-  return `<div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:22px; background:linear-gradient(150deg,#171B1E 0%,#0E1113 72%);">
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; color:#3F474B; text-transform:uppercase; margin-bottom:10px;">Image placeholder</div>
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.62; color:#5C656A; max-width:360px;">${note}</div></div>`;
+// real photography — absolute-fills its positioned (relative + overflow:hidden) container
+function photo(file, alt, pos) {
+  return `<img src="assets/img/${file}" alt="${alt}" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:${pos||'center'}; display:block;">`;
 }
 
 const brandMark = (size, ring, arc, rw, aw) => `<svg width="${size}" height="${size}" viewBox="0 0 76 76" fill="none" style="flex:none;">
@@ -320,14 +315,14 @@ function viewHome() {
         </div>
       </div>
       <div class="no-min" style="position:relative; min-width:0; overflow:hidden; border-left:1px solid #1A1F22; min-height:680px;">
-        ${slot('HERO — vertical macro, single amber 10 mL vial standing on a cold graphite countertop. Hard raking light from upper left; crimped cap catches one gold specular highlight; lyophilized cake visible through the glass. Deep shadow filling the lower right. No hands, no gloves, no lab coat, no seamless white sweep.')}
+        ${photo('hero-vial.png','Caliber vial CAL-PB15, lot GLD-BLK-014','center')}
         <div style="position:absolute; bottom:26px; right:26px; pointer-events:none; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#E8EAEA; background:rgba(14,17,19,.74); padding:8px 11px;">CAL-PB15 &nbsp;·&nbsp; 10 MG &nbsp;·&nbsp; GLD-BLK-014</div>
       </div>
     </div>
 
     <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:300px minmax(0,1fr) 340px; border-bottom:1px solid #1A1F22;">
       <div class="no-min" style="position:relative; min-width:0; overflow:hidden; border-right:1px solid #1A1F22; min-height:400px;">
-        ${slot('DIRECTOR — chest-up portrait, straight to camera, neutral expression, no smile. Dark clinic interior behind, out of focus. Cool white balance to match the graphite. Plain scrubs or shirt. No folded arms, no stethoscope prop, no white-cyclorama headshot.')}
+        ${photo('director.png','Caliber medical director','center top')}
       </div>
       <div style="min-width:0; padding:54px 52px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:22px;">Medical direction</div>
@@ -532,7 +527,7 @@ function viewProduct() {
       </div>
       <div style="min-width:0; position:sticky; top:110px;">
         <div class="no-min" style="position:relative; min-height:360px; border:1px solid #1A1F22; overflow:hidden;">
-          ${slot('PRODUCT — three-quarter view of the vial on graphite, label legible with lot number visible, single hard light source, no props. Match the hero\'s colour temperature.')}
+          ${photo('product-shot.png','Caliber vial, label and lot number','center')}
         </div>
         <div style="border:1px solid #1A1F22; border-top:none; padding:28px 26px; background:#121618;">
           <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:18px; border-bottom:1px solid #1D2225;">
@@ -579,7 +574,7 @@ function viewTesting() {
     <div class="wrap" style="max-width:1440px; margin:90px auto 0; padding:0 56px;">
       <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);">
         <div class="no-min" style="position:relative; min-width:0; overflow:hidden; min-height:460px; border:1px solid #1A1F22;">
-          ${slot('PROCESS — an actual HPLC instrument or an autosampler tray of amber vials, shot straight on in available light. Slightly cool, slightly imperfect, real room. Absolutely no smiling technician, no blue-tinted stock lab, no gloved hand holding a pipette to camera.')}
+          ${photo('testing-shot.png','HPLC testing of a Caliber batch','center')}
         </div>
         <div style="min-width:0; padding:56px 48px; border:1px solid #1A1F22; border-left:none; background:#121618;">
           <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; color:#6A7378; margin-bottom:22px;">What gets screened</div>
@@ -606,7 +601,7 @@ function viewClinical() {
   return `<div>
     <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,480px) minmax(0,1fr); border-bottom:1px solid #1A1F22;">
       <div class="no-min" style="position:relative; min-width:0; overflow:hidden; min-height:620px; border-right:1px solid #1A1F22;">
-        ${slot('DIRECTOR, FULL — three-quarter length, standing, straight to camera, neutral. Dark clinic corridor or dispensary shelving behind, out of focus. Cool balance. No crossed arms, no white coat with hands in pockets, no smile.')}
+        ${photo('director-large.png','Caliber clinical director','center')}
       </div>
       <div style="min-width:0; padding:104px 56px 80px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:26px;">Clinical direction</div>
@@ -714,7 +709,7 @@ function viewVerify() {
         <div style="border:1px solid #C3C8CC; border-top:none; background:#ECEDEE; padding:30px 34px;">
           <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#6D767C; margin-bottom:20px;">WHERE THE NUMBER IS</div>
           <div style="position:relative; min-height:190px; border:1px solid #D6DADD; overflow:hidden;">
-            ${slot('LABEL MACRO — extreme close-up of the printed lot number on a vial label, shot flat and bright so the characters are legible. This is a diagram, not a mood shot.', 'light')}
+            ${photo('label-macro.png','Caliber label showing the lot number','center')}
           </div>
           <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.7; color:#6D767C; margin-top:16px;">Lower right of the label,<br>beneath the fill volume.</div>
         </div>
