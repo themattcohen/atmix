@@ -1,133 +1,791 @@
-<!doctype html>
-<html lang="en" class="no-js">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<script>document.documentElement.classList.replace('no-js','js')</script>
-<script src="assets/gate.js"></script>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Caliber — Verified to the lot</title>
-<meta name="description" content="Independently tested research compounds. Known to the molecule, verified to the lot. Offered locally in limited batches.">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css">
+<title>Caliber — Nothing ships unsigned</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 76' fill='none'%3E%3Ccircle cx='38' cy='38' r='30' stroke='%23B79A63' stroke-width='2.8'/%3E%3Cpath d='M38 8v9M38 59v9M8 38h9M59 38h9' stroke='%23B79A63' stroke-width='2.8'/%3E%3Cpath d='M46 29a12 12 0 100 18' stroke='%23E8EAEA' stroke-width='5' stroke-linecap='square'/%3E%3C/svg%3E">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0E1113; -webkit-font-smoothing: antialiased; font-family: 'Archivo', sans-serif; }
+  input { font-family: inherit; }
+  a { color: #B79A63; text-decoration: none; border-bottom: 1px solid rgba(183,154,99,.35); }
+  a:hover { border-bottom-color: #B79A63; }
+
+  @keyframes cal-strike {
+    0%   { transform: scale(1.9); opacity: 0; }
+    60%  { transform: scale(1); opacity: 1; }
+    72%  { transform: scale(.965); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes cal-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+  @keyframes cal-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* hover states (design used style-hover; ported to CSS, !important to beat inline base styles) */
+  .nav-link  { transition: color .25s; }        .nav-link:hover  { color: #E8EAEA !important; }
+  .lot-chip  { transition: border-color .25s; } .lot-chip:hover  { border-color: #4A5257 !important; }
+  .btn-gold  { transition: background .3s, color .3s; } .btn-gold:hover { background: #B79A63 !important; color: #0E1113 !important; }
+  .link-ghost{ transition: color .25s, border-color .25s; } .link-ghost:hover { color: #E8EAEA !important; border-color: #6E7A80 !important; }
+  .link-gold { transition: border-color .25s; } .link-gold:hover { border-color: #B79A63 !important; }
+  .row-hover { transition: background .25s; }    .row-hover:hover { background: #14181A !important; }
+  .foot-link { cursor: pointer; transition: color .2s; } .foot-link:hover { color: #E8EAEA !important; }
+  .h-bright  { transition: color .25s; }         .h-bright:hover  { color: #E8EAEA !important; }
+  .h-ink:hover { color: #1A1E21 !important; }
+  .samp      { transition: border-color .2s; }   .samp:hover      { border-color: #2F5573 !important; }
+  .verify-btn{ transition: background .25s; }     .verify-btn:hover{ background: #2F5573 !important; }
+  .chip-fam  { transition: border-color .25s, color .25s; }
+
+  /* mobile fallback — the source is desktop-first (fixed 1440 grid); collapse the major splits */
+  @media (max-width: 880px) {
+    .wrap  { padding-left: 22px !important; padding-right: 22px !important; }
+    .split { grid-template-columns: 1fr !important; }
+    .split > * { border-left: none !important; border-right: none !important; }
+    .disp-xl { font-size: 44px !important; }
+    .disp-lg { font-size: 34px !important; }
+    .no-min  { min-height: 300px !important; }
+    .hdr-cta { display: none !important; }
+    .hdr-nav { gap: 16px !important; font-size: 12px !important; }
+  }
+  @media (max-width: 560px) {
+    .hdr-word { display: none !important; }
+    .hdr-nav  { gap: 12px !important; font-size: 11px !important; }
+  }
+</style>
 </head>
 <body>
-<!-- caliber:header:start -->
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="top">
-<div class="wrap">
-<div class="top__row">
-<a class="mark" href="index.html">CALIBER</a>
-<button class="navtoggle" id="navtoggle" aria-label="Menu" aria-expanded="false" aria-controls="topnav">&#9776;</button>
-<nav class="topnav" id="topnav">
-<a href="catalog.html">Catalogue</a>
-<a href="testing.html">The Standard</a>
-<a href="coa.html">Verify a lot</a>
-<a href="contact.html">Enquire</a>
-</nav>
-</div>
-</div>
-</header>
-<!-- caliber:header:end -->
-<main id="main">
+<div id="app"></div>
 
-  <section class="hero"><div class="wrap">
-    <div class="hero__index">N&deg; 001 — COLORADO</div>
-    <p class="kicker rv">Research compounds &middot; Independently verified</p>
-    <h1 class="rv">Known to the molecule.<br><em class="soft">Verified to the lot.</em></h1>
-    <p class="hero__sub rv">Every batch is analysed by an independent laboratory and published against the lot number on the vial. Offered locally, in limited runs, to those who would rather not guess.</p>
-    <a class="textlink hero__cta rv" href="catalog.html">View the catalogue &rarr;</a>
-  </div></section>
+<script>
+"use strict";
 
-  <hr class="rule">
-  <section class="section"><div class="wrap">
-    <div class="lead lead--spaced">
-      <div><span class="kicker">The standard</span></div>
-      <h2 class="rv">Four disciplines. No exceptions, and nothing else claimed.</h2>
+/* ---------------- data (ported verbatim from Caliber.dc.html) ---------------- */
+const PRODUCTS = [
+  { code: 'CAL-PB15', name: 'Pentadecapeptide BPC-157', family: 'Repair', size: '10 mg', purity: 99.3, lot: 'GLD-BLK-014', lab: 'ACS Peptide Labs', method: 'RP-HPLC / MS', price: 175, batch: '014', units: 40, signed: '2026-07-09',
+    note: 'A well-behaved compound to test — it resolves cleanly and the impurity profile is easy to read, so there is nowhere for a marginal run to hide. This batch came back at the top of its range on the first pass.' },
+  { code: 'CAL-CG50', name: 'Copper Peptide GHK-Cu', family: 'Copper', size: '50 mg', purity: 99.1, lot: 'BLU-GLD-022', lab: 'ILS Laboratories', method: 'LC-MS', price: 99, batch: '022', units: 60, signed: '2026-06-27',
+    note: 'Copper complexes are where free-copper content matters more than the headline purity figure, so that is tested separately and reported here. A high purity number alone would not tell you much.' },
+  { code: 'CAL-TB10', name: 'Thymosin β-4 Fragment (TB-500)', family: 'Repair', size: '10 mg', purity: 98.9, lot: 'GRN-BLK-009', lab: 'Kovera Labs', method: 'RP-HPLC / MS', price: 175, batch: '009', units: 30, signed: '2026-06-14',
+    note: 'Fragment peptides are prone to truncated sequences that pass a purity assay while failing identity. Mass confirmation is mandatory on this one, and it is reported alongside the trace.' },
+  { code: 'CAL-SX10', name: 'Semax (ACTH 4-10 analog)', family: 'Neuro', size: '10 mg', purity: 99.0, lot: 'WHT-GLD-017', lab: 'ACS Peptide Labs', method: 'RP-HPLC', price: 125, batch: '017', units: 40, signed: '2026-07-02',
+    note: 'Short chains synthesise consistently, which makes an unusual result a supply question rather than a chemistry one. Source qualification does most of the work here.' },
+  { code: 'CAL-TA10', name: 'Tri-Agonist LY3437943', family: 'Metabolic', size: '10 mg', purity: 99.4, lot: 'GLD-RED-031', lab: 'ILS Laboratories', method: 'LC-MS', price: 149, batch: '031', units: 25, signed: '2026-07-15',
+    note: 'Complex agonists are the most commonly misrepresented items in this category. Identity is confirmed by mass before purity is even considered relevant.' },
+  { code: 'CAL-GB10', name: 'GHRH / GHRP Blend (CJC-1295 + Ipamorelin)', family: 'Secretagogue', size: '10 mg', purity: 98.7, lot: 'BLK-GLD-012', lab: 'Kovera Labs', method: 'RP-HPLC / MS', price: 175, batch: '012', units: 30, signed: '2026-06-30',
+    note: 'A blend has to be tested as a ratio, not just as a pair of purities. Both components are quantified and the ratio is reported, because that is the part a blend gets wrong.' },
+  { code: 'CAL-GR05', name: 'GRF Analog TH9507 (Tesamorelin)', family: 'Secretagogue', size: '5 mg', purity: 98.8, lot: 'SLV-BLK-005', lab: 'ACS Peptide Labs', method: 'RP-HPLC', price: 150, batch: '005', units: 20, signed: '2026-06-08',
+    note: 'Sensitive to handling and to moisture, so residual water content is on the panel. A dry cake that looks right can still be out of specification.' },
+  { code: 'CAL-EL10', name: 'Mitochondrial Peptide SS-31', family: 'Mitochondrial', size: '10 mg', purity: 97.9, lot: 'RED-BLK-003', lab: 'ILS Laboratories', method: 'LC-MS', price: 99, batch: '003', units: 20, signed: '2026-05-29',
+    note: 'The lowest purity figure in the catalogue, and released deliberately — the panel threshold for this class is 97.5% and the impurities present are characterised and benign. Publishing the number is the point.' },
+  { code: 'CAL-DA30', name: 'Dual Agonist LY3298176', family: 'Metabolic', size: '30 mg', purity: 99.5, lot: 'GLD-GRN-028', lab: 'Kovera Labs', method: 'LC-MS', price: 299, batch: '028', units: 10, signed: '2026-07-11',
+    note: 'The cleanest run we have had on this compound. Larger fill volumes also get a sterility and endotoxin screen, which is why the panel below is longer than most.' },
+  { code: 'CAL-ND1000', name: 'NAD+ (β-Nicotinamide Adenine Dinucleotide)', family: 'Coenzyme', size: '1000 mg', purity: 99.2, lot: 'WHT-BLK-019', lab: 'ACS Peptide Labs', method: 'RP-HPLC', price: 275, batch: '019', units: 10, signed: '2026-07-06',
+    note: 'Not a peptide, and degradation rather than synthesis is the risk. Assay is run against a reference standard and the material is screened for breakdown products.' }
+];
+
+const RUN_SIZE = {
+  'CAL-PB15': 60, 'CAL-CG50': 80, 'CAL-TB10': 50, 'CAL-SX10': 60, 'CAL-TA10': 40,
+  'CAL-GB10': 50, 'CAL-GR05': 40, 'CAL-EL10': 40, 'CAL-DA30': 30, 'CAL-ND1000': 25
+};
+PRODUCTS.forEach(p => { p.batchSize = RUN_SIZE[p.code] || p.units; });
+
+const LABS = [
+  { n: '01', name: 'ACS Peptide Testing Labs', scope: 'Identity, purity, contaminant panels', accred: 'ISO/IEC 17025' },
+  { n: '02', name: 'ILS Laboratories', scope: 'Mass confirmation and purity', accred: 'ISO/IEC 17025' },
+  { n: '03', name: 'Kovera Labs', scope: 'LC-MS identity, endotoxin, sterility', accred: 'CAP / CLIA' }
+];
+
+const STEPS = [
+  { n: '01', title: 'Source qualification', body: 'Every synthesis source is qualified before a batch is placed with it, and the qualification is reviewed on an ongoing basis rather than assumed once and left alone. A source that drifts is replaced.' },
+  { n: '02', title: 'Independent analysis', body: 'Identity and purity are established by a laboratory with no stake in the result. We do not own the labs, we do not run the instruments, and we cannot ask for a second opinion on a number we do not like.' },
+  { n: '03', title: 'Contaminant screening', body: 'Qualification includes heavy metals, residual solvents and endotoxin in addition to the identity and purity panel. Larger fill volumes add a sterility screen.' },
+  { n: '04', title: 'Release on a pass, only', body: 'A batch that does not clear every panel is not offered, not adjusted, and not blended with one that did. It is set aside and the next run is synthesised.' },
+  { n: '05', title: 'Signed, published, tied to the lot', body: 'The medical director signs the release against the lot number printed on the vial. The certificate is published under that number and stays available for lookup for as long as the vial exists.' }
+];
+
+const SCREENS = [
+  { k: 'Identity', v: 'MASS CONFIRMATION' },
+  { k: 'Purity', v: 'RP-HPLC, % AREA' },
+  { k: 'Heavy metals', v: 'ICP-MS' },
+  { k: 'Residual solvents', v: 'HEADSPACE GC' },
+  { k: 'Endotoxin', v: 'LAL, EU/MG' },
+  { k: 'Water content', v: 'KARL FISCHER' },
+  { k: 'Sterility', v: 'LARGE FILLS ONLY' }
+];
+
+const PANELS = [
+  { cls: 'Repair peptides', min: '98.0% area', method: 'RP-HPLC / MS', extra: 'ENDOTOXIN' },
+  { cls: 'Copper complexes', min: '98.5% area', method: 'LC-MS', extra: 'FREE COPPER' },
+  { cls: 'Secretagogue blends', min: '98.5% area', method: 'RP-HPLC / MS', extra: 'COMPONENT RATIO' },
+  { cls: 'Metabolic agonists', min: '99.0% area', method: 'LC-MS', extra: 'IDENTITY FIRST' },
+  { cls: 'Mitochondrial peptides', min: '97.5% area', method: 'LC-MS', extra: 'IMPURITY ID' },
+  { cls: 'Coenzymes', min: '99.0% assay', method: 'RP-HPLC', extra: 'DEGRADANTS' }
+];
+
+const FAMILIES = ['All', 'Repair', 'Copper', 'Neuro', 'Metabolic', 'Secretagogue', 'Mitochondrial', 'Coenzyme'];
+
+/* ---------------- state ---------------- */
+const state = {
+  page: 'home', activeIndex: 0, openIndex: -1, family: 'All',
+  lotInput: '', result: null, notFound: false, verifying: false
+};
+let verifyTimer = null;
+
+/* ---------------- helpers ---------------- */
+const settled = t => t.toFixed(1);
+
+function trace(purity, opts) {
+  opts = opts || {};
+  const w = 1000, h = opts.h || 200, base = h - 22, top = 20;
+  const impurity = Math.max(0.1, 100 - purity);
+  const peaks = [
+    { c: 0.40, s: 0.026, a: 1 },
+    { c: 0.22, s: 0.013, a: Math.min(0.34, impurity * 0.11) },
+    { c: 0.63, s: 0.016, a: Math.min(0.26, impurity * 0.08) },
+    { c: 0.79, s: 0.011, a: Math.min(0.13, impurity * 0.04) }
+  ];
+  const pts = [], N = 320;
+  for (let i = 0; i <= N; i++) {
+    const x = i / N;
+    let y = 0;
+    for (const p of peaks) y += p.a * Math.exp(-Math.pow(x - p.c, 2) / (2 * p.s * p.s));
+    const noise = Math.sin(x * 210) * 0.004 + Math.sin(x * 77) * 0.003;
+    pts.push([x * w, base - (Math.min(1, y) * (base - top)) + noise * (base - top)]);
+  }
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  let len = 0;
+  for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+  const stroke = opts.stroke || '#B79A63', grid = opts.grid || '#1D2225';
+  let g = '';
+  for (let i = 1; i < 6; i++) { const yy = (base / 6) * i; g += `<line x1="0" x2="${w}" y1="${yy}" y2="${yy}" stroke="${grid}" stroke-width="1"/>`; }
+  g += `<line x1="0" x2="${w}" y1="${base}" y2="${base}" stroke="${grid}" stroke-width="1.5"/>`;
+  const path = `<path d="${d}" fill="none" stroke="${stroke}" stroke-width="2" stroke-linejoin="round" stroke-dasharray="${len}" stroke-dashoffset="0" style="--len:${len}px; animation: cal-draw 1.5s cubic-bezier(.25,.7,.3,1);"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" style="display:block; overflow:visible;">${g}${path}</svg>`;
+}
+
+function panelFor(p) {
+  const rows = [
+    { k: 'IDENTITY', v: 'CONFIRMED' },
+    { k: 'PURITY', v: p.purity.toFixed(1) + '% AREA' },
+    { k: 'METHOD', v: p.method.toUpperCase() },
+    { k: 'HEAVY METALS', v: 'BELOW LIMIT' },
+    { k: 'RESIDUAL SOLVENTS', v: 'BELOW LIMIT' },
+    { k: 'ENDOTOXIN', v: '< 0.05 EU/MG' },
+    { k: 'LABORATORY', v: p.lab.toUpperCase() },
+    { k: 'DATE OF ANALYSIS', v: p.signed }
+  ];
+  if (p.family === 'Copper') rows.splice(3, 0, { k: 'FREE COPPER', v: 'WITHIN SPEC' });
+  if (p.family === 'Secretagogue') rows.splice(3, 0, { k: 'COMPONENT RATIO', v: '1 : 1 CONFIRMED' });
+  return rows;
+}
+
+const axis = (col) => `<div style="display:flex; justify-content:space-between; margin-top:14px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:${col || '#5C656A'};"><span>0.0 MIN</span><span>RETENTION TIME</span><span>12.0 MIN</span></div>`;
+
+// image-slot placeholder — the design's slots are unfilled; render the art direction so it stays useful
+function slot(note, theme) {
+  if (theme === 'light') {
+    return `<div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:20px; background:repeating-linear-gradient(135deg,#E4E6E8,#E4E6E8 10px,#DEE1E3 10px,#DEE1E3 20px);">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; color:#9AA1A6; text-transform:uppercase; margin-bottom:9px;">Image placeholder</div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; line-height:1.6; color:#7B838A; max-width:340px;">${note}</div></div>`;
+  }
+  return `<div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:22px; background:linear-gradient(150deg,#171B1E 0%,#0E1113 72%);">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; color:#3F474B; text-transform:uppercase; margin-bottom:10px;">Image placeholder</div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.62; color:#5C656A; max-width:360px;">${note}</div></div>`;
+}
+
+const brandMark = (size, ring, arc, rw, aw) => `<svg width="${size}" height="${size}" viewBox="0 0 76 76" fill="none" style="flex:none;">
+  <circle cx="38" cy="38" r="30" stroke="${ring}" stroke-width="${rw}"></circle>
+  <path d="M38 8v9M38 59v9M8 38h9M59 38h9" stroke="${ring}" stroke-width="${rw}"></path>
+  <path d="M46 29a12 12 0 100 18" stroke="${arc}" stroke-width="${aw}" stroke-linecap="square"></path></svg>`;
+
+const A = (act, extra) => `data-action="${act}"${extra || ''}`; // shorthand for onclick actions
+
+/* ---------------- header + footer ---------------- */
+function header() {
+  const on = '#E8EAEA', dim = '#7C868C';
+  const navCat = (state.page === 'catalogue' || state.page === 'product') ? on : dim;
+  const navTest = state.page === 'testing' ? on : dim;
+  const navClin = state.page === 'clinical' ? on : dim;
+  const navVer = state.page === 'verify' ? on : dim;
+  return `
+  <div style="position:sticky; top:0; z-index:40; background:rgba(14,17,19,.94); backdrop-filter:blur(8px); border-bottom:1px solid #1A1F22;">
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:0 56px; display:flex; align-items:center; justify-content:space-between; height:78px;">
+      <div ${A('goHome')} style="display:flex; align-items:center; gap:13px; cursor:pointer;">
+        ${brandMark(24, '#B79A63', '#E8EAEA', 2.8, 5)}
+        <span class="hdr-word" style="font-family:'Bodoni Moda',serif; font-size:16px; letter-spacing:.32em; color:#E8EAEA;">CALIBER</span>
+      </div>
+      <div class="hdr-nav" style="display:flex; align-items:center; gap:36px; font-size:13px;">
+        <span class="nav-link" ${A('goCatalogue')} style="cursor:pointer; color:${navCat};">Catalogue</span>
+        <span class="nav-link" ${A('goTesting')} style="cursor:pointer; color:${navTest};">Testing</span>
+        <span class="nav-link" ${A('goClinical')} style="cursor:pointer; color:${navClin};">Clinical</span>
+        <span class="nav-link" ${A('goVerify')} style="cursor:pointer; color:${navVer};">Verify a lot</span>
+      </div>
+      <div class="lot-chip hdr-cta" ${A('goVerify')} style="display:flex; align-items:center; gap:10px; border:1px solid #262B2E; padding:9px 13px; cursor:pointer;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">LOT</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#C9D0D3;">Look up</span>
+        <span style="color:#B79A63; font-family:'IBM Plex Mono',monospace; font-size:12px;">&rarr;</span>
+      </div>
     </div>
-    <ol class="ledger">
-      <li class="ledger__row rv"><div class="ledger__no">01</div><div><h3 class="ledger__h">Tested every lot</h3><p class="ledger__p">Each batch is sent to an independent, accredited laboratory for identity and purity before it is offered. A batch that does not pass is never listed.</p></div></li>
-      <li class="ledger__row rv"><div class="ledger__no">02</div><div><h3 class="ledger__h">Traceable to the batch</h3><p class="ledger__p">Every vial carries a lot number that resolves to a single published Certificate of Analysis. The record on the vial and the record on file are the same record.</p></div></li>
-      <li class="ledger__row rv"><div class="ledger__no">03</div><div><h3 class="ledger__h">Limited by design</h3><p class="ledger__p">Batches are small and discrete. Each is tested as a unit, offered until it is gone, and not restocked. A new batch is released in its place.</p></div></li>
-      <li class="ledger__row rv"><div class="ledger__no">04</div><div><h3 class="ledger__h">Local, in hand</h3><p class="ledger__p">No forwarding, no multi-week wait, no exposure on your side. A single person is accountable for what you receive.</p></div></li>
-    </ol>
-  </div></section>
+  </div>`;
+}
 
-  <section class="section section--flush-top"><div class="wrap">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
-      <span class="kicker">Current batches</span><span class="kicker faint">Selected</span>
+function footer() {
+  return `
+  <div style="border-top:1px solid #1A1F22; background:#0E1113;">
+    <div class="wrap split" style="max-width:1440px; margin:0 auto; padding:76px 56px 40px; display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr); gap:48px;">
+      <div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+          ${brandMark(22, '#B79A63', '#E8EAEA', 2.8, 5)}
+          <span style="font-family:'Bodoni Moda',serif; font-size:15px; letter-spacing:.3em; color:#E8EAEA;">CALIBER</span>
+        </div>
+        <p style="font-size:13.5px; line-height:1.75; color:#6A7378; max-width:290px; margin:0;">Independently tested research compounds, verified to the lot, released in limited batches under medical direction.</p>
+      </div>
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.18em; color:#4E575C; margin-bottom:18px;">CATALOGUE</div>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px; color:#9BA4A9;">
+          <span class="foot-link" ${A('goCatalogue')}>All batches</span>
+          <span class="foot-link" ${A('goTesting')}>Testing</span>
+          <span class="foot-link" ${A('goVerify')}>Verify a lot</span>
+          <span class="foot-link" ${A('goClinical')}>Clinical direction</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.18em; color:#4E575C; margin-bottom:18px;">TERMS</div>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px; color:#9BA4A9;">
+          <span class="foot-link">Terms of sale</span><span class="foot-link">Disclaimer</span>
+          <span class="foot-link">Privacy</span><span class="foot-link">Shipping</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.18em; color:#4E575C; margin-bottom:18px;">ENQUIRIES</div>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px; color:#9BA4A9;">
+          <span>[email]</span><span>[telephone]</span><span>[city, state]</span>
+        </div>
+      </div>
     </div>
-    <ul class="plist">
-      <li><a class="prow rv" href="products/cal-pb15.html">
-        <div class="prow__sku">CAL-PB15</div>
-        <div><div class="prow__name">Pentadecapeptide BPC-157</div><div class="prow__meta">10 mg &middot; 99.3% &middot; Lot GLD-BLK-014</div></div>
-        <div class="prow__right">$175<small>Batch 014 &middot; 40</small></div>
-      </a></li>
-      <li><a class="prow rv" href="products/cal-gb10.html">
-        <div class="prow__sku">CAL-GB10</div>
-        <div><div class="prow__name">GHRH / GHRP Blend (CJC-1295 + Ipamorelin)</div><div class="prow__meta">10 mg &middot; 98.7% &middot; Lot BLK-GLD-012</div></div>
-        <div class="prow__right">$175<small>Batch 012 &middot; 30</small></div>
-      </a></li>
-      <li><a class="prow rv" href="products/cal-da30.html">
-        <div class="prow__sku">CAL-DA30</div>
-        <div><div class="prow__name">Dual Agonist LY3298176</div><div class="prow__meta">30 mg &middot; 99.5% &middot; Lot GLD-GRN-028</div></div>
-        <div class="prow__right">$299<small>Batch 028 &middot; 10</small></div>
-      </a></li>
-      <li><a class="prow rv" href="products/cal-nd1000.html">
-        <div class="prow__sku">CAL-ND1000</div>
-        <div><div class="prow__name">NAD+ (β-Nicotinamide Adenine Dinucleotide)</div><div class="prow__meta">1000 mg &middot; 99.2% &middot; Lot WHT-BLK-019</div></div>
-        <div class="prow__right">$275<small>Batch 019 &middot; 10</small></div>
-      </a></li>
-    </ul>
-    <div style="margin-top:40px"><a class="textlink" href="catalog.html">The full catalogue &rarr;</a></div>
-  </div></section>
-
-  <hr class="rule">
-  <section class="section"><div class="wrap">
-    <div class="proof rv">
-      <p>&ldquo;The lot number on the vial matched the COA on the site exactly. First time I have been able to check that. Same-day, in person, done right.&rdquo;</p>
-      <cite>Marcus T. &middot; Verified buyer</cite>
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:30px 56px 60px;">
+      <div style="padding-top:26px; border-top:1px solid #1A1F22; font-family:'IBM Plex Mono',monospace; font-size:9.5px; line-height:2; letter-spacing:.06em; color:#3F474B; max-width:1000px;">FOR LABORATORY RESEARCH USE ONLY. PRODUCTS OFFERED BY CALIBER ARE NOT DRUGS, FOODS, OR DIETARY SUPPLEMENTS, ARE NOT FOR HUMAN OR VETERINARY CONSUMPTION, AND ARE NOT INTENDED TO DIAGNOSE, TREAT, CURE, OR PREVENT ANY DISEASE. NOTHING ON THIS SITE IS MEDICAL ADVICE. STATEMENTS HAVE NOT BEEN EVALUATED BY THE FDA. YOU MUST BE 21 OR OLDER. © 2026 CALIBER.</div>
     </div>
-  </div></section>
+  </div>`;
+}
 
-  <hr class="rule">
-  <section class="section"><div class="wrap verify rv">
-    <div><h2 class="h--sm">Verify any lot before you reserve it.</h2><p>Enter the number printed on the vial and read the certificate it resolves to.</p></div>
-    <a class="textlink" href="coa.html">Open batch lookup &rarr;</a>
-  </div></section>
+/* ---------------- shared rows ---------------- */
+function labsRows() {
+  return LABS.map(l => `
+    <div class="split" style="display:grid; grid-template-columns:44px minmax(0,1fr) 260px 168px; align-items:baseline; gap:24px; padding:26px 0; border-top:1px solid #1A1F22;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#4E575C;">${l.n}</span>
+      <span style="font-family:'Bodoni Moda',serif; font-size:23px; color:#E8EAEA;">${l.name}</span>
+      <span style="font-size:13.5px; color:#9BA4A9;">${l.scope}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.1em; color:#B79A63; text-align:right;">${l.accred}</span>
+    </div>`).join('');
+}
+function kvRows(rows, valColor) {
+  return rows.map(r => `<div style="display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px solid #1D2225; font-family:'IBM Plex Mono',monospace; font-size:11px; color:${valColor || '#E8EAEA'};"><span style="color:#6A7378;">${r.k}</span><span>${r.v}</span></div>`).join('');
+}
 
-</main>
-<!-- caliber:footer:start -->
-<footer class="site-footer">
-<div class="wrap">
-<div class="foot">
-<div>
-<div class="foot__mark">CALIBER</div>
-<p class="muted" style="max-width:32ch;margin-top:1rem;font-size:.92rem">Independently tested research compounds, verified to the lot, offered locally in limited batches.</p>
-</div>
-<div>
-<p class="foot__label">Catalogue</p>
-<nav aria-label="Catalogue">
-<a href="catalog.html">All batches</a>
-<a href="testing.html">The Standard</a>
-<a href="coa.html">Verify a lot</a>
-<a href="faq.html">Enquiries</a>
-</nav>
-</div>
-<div>
-<p class="foot__label">Terms</p>
-<nav aria-label="Terms">
-<a href="terms.html">Terms of Sale</a>
-<a href="disclaimer.html">Disclaimer</a>
-<a href="privacy.html">Privacy</a>
-<a href="contact.html">Contact</a>
-</nav>
-</div>
-</div>
-<div class="ruo"><!-- caliber:compliance:start -->FOR LABORATORY RESEARCH USE ONLY. Products offered by Caliber are not drugs, foods, or dietary supplements, are not for human or veterinary consumption, and are not intended to diagnose, treat, cure, or prevent any disease. Nothing on this site is medical advice. Statements have not been evaluated by the FDA. You must be 21 or older.<!-- caliber:compliance:end --> &copy; 2026 Caliber.</div>
-</div>
-</footer>
-<!-- caliber:footer:end -->
-<script src="assets/app.js"></script>
+/* ---------------- views ---------------- */
+function viewHome() {
+  const featured = PRODUCTS.slice(0, 5);
+  const totalUnits = PRODUCTS.reduce((a, p) => a + p.units, 0);
+  const rows = featured.map((p, i) => {
+    const unitsColor = p.units <= 10 ? '#B79A63' : '#7C868C';
+    return `<div class="row-hover" ${A('openProduct', ' data-index="' + i + '"')} style="display:grid; grid-template-columns:100px minmax(250px,1fr) 156px 88px 96px 84px 84px; align-items:center; gap:16px; padding:22px 0; border-bottom:1px solid #1A1F22; cursor:pointer;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6A7378;">${p.code}</span>
+      <span style="font-family:'Bodoni Moda',serif; font-size:19px; color:#E8EAEA;">${p.name}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.55; color:#7C868C;">${p.lot}<br>${p.lab}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:15px; color:#E8EAEA;">${p.purity.toFixed(1)}%</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7C868C;">${p.method}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:${unitsColor};">${p.units} left</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:14px; color:#E8EAEA; text-align:right;">$${p.price}</span>
+    </div>`;
+  }).join('');
+
+  return `<div>
+    <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr); border-bottom:1px solid #1A1F22;">
+      <div style="min-width:0; padding:118px 56px 88px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:30px;">Batch 014 &nbsp;·&nbsp; Released 09 July 2026 &nbsp;·&nbsp; 40 units</div>
+        <h1 class="disp-xl" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:76px; line-height:1.02; margin:0 0 30px; color:#E8EAEA; letter-spacing:-.005em;">Nothing ships<br>unsigned.</h1>
+        <p style="font-size:16.5px; line-height:1.66; color:#9BA4A9; max-width:460px; margin:0 0 40px;">Every batch is tested whole by an independent laboratory, and the release is signed by our medical director against the lot number printed on the vial. You can read the certificate before you read the price.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
+          <span class="btn-gold" ${A('goCatalogue')} style="border:1px solid #B79A63; color:#B79A63; font-size:13.5px; letter-spacing:.03em; padding:14px 24px; cursor:pointer;">See the current batches</span>
+          <span class="link-ghost" ${A('goTesting')} style="font-size:13.5px; color:#9BA4A9; border-bottom:1px solid #3A4247; padding-bottom:3px; cursor:pointer;">How we test</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:34px 52px; margin-top:76px; padding-top:30px; border-top:1px solid #1A1F22;">
+          <div><div style="font-family:'IBM Plex Mono',monospace; font-size:29px; color:#E8EAEA; line-height:1;">100<span style="font-size:16px;">%</span></div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:9px; white-space:nowrap;">BATCHES TESTED</div></div>
+          <div><div style="font-family:'IBM Plex Mono',monospace; font-size:29px; color:#E8EAEA; line-height:1;">3</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:9px; white-space:nowrap;">INDEPENDENT LABS</div></div>
+          <div><div style="font-family:'IBM Plex Mono',monospace; font-size:29px; color:#E8EAEA; line-height:1;">17025</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:9px; white-space:nowrap;">ISO/IEC ACCREDITED</div></div>
+        </div>
+      </div>
+      <div class="no-min" style="position:relative; min-width:0; overflow:hidden; border-left:1px solid #1A1F22; min-height:680px;">
+        ${slot('HERO — vertical macro, single amber 10 mL vial standing on a cold graphite countertop. Hard raking light from upper left; crimped cap catches one gold specular highlight; lyophilized cake visible through the glass. Deep shadow filling the lower right. No hands, no gloves, no lab coat, no seamless white sweep.')}
+        <div style="position:absolute; bottom:26px; right:26px; pointer-events:none; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#E8EAEA; background:rgba(14,17,19,.74); padding:8px 11px;">CAL-PB15 &nbsp;·&nbsp; 10 MG &nbsp;·&nbsp; GLD-BLK-014</div>
+      </div>
+    </div>
+
+    <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:300px minmax(0,1fr) 340px; border-bottom:1px solid #1A1F22;">
+      <div class="no-min" style="position:relative; min-width:0; overflow:hidden; border-right:1px solid #1A1F22; min-height:400px;">
+        ${slot('DIRECTOR — chest-up portrait, straight to camera, neutral expression, no smile. Dark clinic interior behind, out of focus. Cool white balance to match the graphite. Plain scrubs or shirt. No folded arms, no stethoscope prop, no white-cyclorama headshot.')}
+      </div>
+      <div style="min-width:0; padding:54px 52px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:22px;">Medical direction</div>
+        <div style="display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;">
+          <span style="font-family:'Bodoni Moda',serif; font-size:31px; color:#E8EAEA;">Dr. [Name], DO</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#B79A63; letter-spacing:.1em;">LIC. [0000000] · [STATE]</span>
+        </div>
+        <p style="font-size:15px; line-height:1.7; color:#9BA4A9; margin:18px 0 0; max-width:580px;">He sets the panel each compound is tested against, reads every certificate before a batch is released, and signs the release against its lot number. Where a product requires evaluation, the consultation is with him — not with a queue.</p>
+        <div style="display:flex; flex-wrap:wrap; margin-top:30px; border-top:1px solid #1A1F22;">
+          <div style="flex:1 1 150px; padding:18px 20px 0 0;"><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">SETS</div><div style="font-size:13.5px; color:#C9D0D3; margin-top:7px;">Test panels per compound</div></div>
+          <div style="flex:1 1 150px; padding:18px 20px 0; border-left:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">REVIEWS</div><div style="font-size:13.5px; color:#C9D0D3; margin-top:7px;">Every CoA, every lot</div></div>
+          <div style="flex:1 1 150px; padding:18px 0 0 20px; border-left:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">SIGNS</div><div style="font-size:13.5px; color:#C9D0D3; margin-top:7px;">The release, by lot number</div></div>
+        </div>
+        <div class="link-gold" ${A('goClinical')} style="display:inline-block; margin-top:28px; font-size:13px; color:#B79A63; border-bottom:1px solid rgba(183,154,99,.35); padding-bottom:3px; cursor:pointer;">The standing panels &rarr;</div>
+      </div>
+      <div style="min-width:0; border-left:1px solid #1A1F22; padding:54px 40px; background:#121618;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:24px;">Release record</div>
+        ${[['LOT','GLD-BLK-014'],['PURITY','99.3%'],['METHOD','RP-HPLC / MS'],['LABORATORY','ACS Peptide'],['SIGNED','2026-07-09']].map((r,i)=>`<div style="display:flex; justify-content:space-between; ${i===0?'padding-bottom:12px;':'padding:12px 0;'} border-bottom:1px solid #1D2225; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#E8EAEA;"><span style="color:#6A7378;">${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+        <div style="display:flex; align-items:center; gap:13px; margin-top:26px;">
+          ${brandMark(36, '#B79A63', '#B79A63', 2, 3.8)}
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; line-height:1.65; color:#B79A63; letter-spacing:.1em;">STRUCK ON RELEASE<br><span style="color:#6A7378;">Signature on file</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:96px 56px 20px; display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:18px;">Currently offered</div>
+        <h2 class="disp-lg" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:42px; line-height:1.1; margin:0; color:#E8EAEA;">Certificate first,<br>price last.</h2>
+      </div>
+      <p style="font-size:14.5px; line-height:1.7; color:#7C868C; max-width:380px; margin:0;">Each row is a discrete synthesis run, tested as a unit. When it's gone it isn't restocked — a new batch is released in its place, with its own certificate.</p>
+    </div>
+
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:24px 56px 0;">
+      <div style="overflow-x:auto;"><div style="min-width:1000px;">
+        <div style="display:grid; grid-template-columns:100px minmax(250px,1fr) 156px 88px 96px 84px 84px; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
+          <span>CODE</span><span>COMPOUND</span><span>LOT / LABORATORY</span><span>PURITY</span><span>METHOD</span><span>REMAINING</span><span style="text-align:right;">PRICE</span>
+        </div>
+        ${rows}
+      </div></div>
+      <div class="link-gold" ${A('goCatalogue')} style="display:inline-block; margin-top:30px; font-size:13.5px; color:#B79A63; border-bottom:1px solid rgba(183,154,99,.35); padding-bottom:3px; cursor:pointer;">All ten batches &rarr;</div>
+    </div>
+
+    <div class="wrap" style="max-width:1440px; margin:96px auto 0; padding:0 56px;">
+      <div class="split" style="display:grid; grid-template-columns:minmax(0,420px) minmax(0,1fr); gap:0; border:1px solid #1A1F22;">
+        <div style="padding:52px 44px; border-right:1px solid #1A1F22;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:22px;">Inventory policy</div>
+          <h3 style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:36px; line-height:1.1; margin:0 0 20px; color:#E8EAEA;">Ten compounds.<br>On purpose.</h3>
+          <p style="font-size:14.5px; line-height:1.72; color:#9BA4A9; margin:0 0 18px;">Testing every batch of a hundred SKUs is a promise nobody keeps. Testing every batch of ten is arithmetic. The narrow catalogue is what makes the guarantee affordable, so it stays narrow.</p>
+          <p style="font-size:14.5px; line-height:1.72; color:#7C868C; margin:0;">When a compound is asked for often enough to justify a full panel on every run of it, we add it. That's the only reason the list ever grows.</p>
+        </div>
+        <div style="min-width:0; display:flex; flex-direction:column; justify-content:space-between; background:#121618;">
+          <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr));">
+            <div style="padding:44px 32px; border-right:1px solid #1A1F22; border-bottom:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:38px; color:#E8EAEA; line-height:1;">${PRODUCTS.length}</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:12px;">COMPOUNDS CARRIED</div></div>
+            <div style="padding:44px 32px; border-right:1px solid #1A1F22; border-bottom:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:38px; color:#E8EAEA; line-height:1;">${totalUnits}</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:12px;">UNITS OPEN TODAY</div></div>
+            <div style="padding:44px 32px; border-bottom:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:38px; color:#B79A63; line-height:1;">0</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:12px;">RESTOCKS EVER</div></div>
+          </div>
+          <div style="padding:38px 32px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-bottom:14px;">REQUEST A COMPOUND</div>
+            <p style="font-size:14px; line-height:1.7; color:#9BA4A9; margin:0 0 22px; max-width:480px;">Tell us what you want to see carried and which panel you'd expect it to clear. Requests are counted, and the count is what decides.</p>
+            <div style="display:flex; gap:0; max-width:460px; border:1px solid #262B2E;">
+              <input name="compound" aria-label="Compound name" placeholder="Compound name" style="flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#E8EAEA; padding:14px 16px;">
+              <div class="btn-gold" style="border-left:1px solid #262B2E; color:#B79A63; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; padding:14px 18px; cursor:pointer; white-space:nowrap;">SUBMIT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap" style="max-width:1440px; margin:104px auto 0; padding:0 56px;">
+      <div class="split" style="background:#121618; border:1px solid #1A1F22; display:grid; grid-template-columns:minmax(0,380px) minmax(0,1fr);">
+        <div style="padding:52px 44px; border-right:1px solid #1A1F22;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:20px;">Lot GLD-BLK-014 &nbsp;·&nbsp; RP-HPLC</div>
+          <h3 style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:34px; line-height:1.12; margin:0 0 20px; color:#E8EAEA;">The trace, not<br>the adjective.</h3>
+          <p style="font-size:14.5px; line-height:1.7; color:#9BA4A9; margin:0 0 26px;">One dominant peak, two minor ones, and a flat baseline. Nobody has to take our word for the number when the chromatogram is on the page.</p>
+          <div style="display:flex; align-items:baseline; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:44px; color:#E8EAEA; line-height:1;">${settled(99.3)}</span><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.16em; color:#6A7378;">% AREA</span></div>
+        </div>
+        <div style="min-width:0; padding:44px 44px 36px; display:flex; flex-direction:column; justify-content:center;">
+          ${trace(99.3, { h: 220 })}
+          ${axis()}
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap" style="max-width:1440px; margin:104px auto 0; padding:0 56px 110px;">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap; padding-bottom:30px;">
+        <h2 class="disp-lg" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:42px; line-height:1.1; margin:0; color:#E8EAEA;">Three labs, no stake<br>in the answer.</h2>
+        <p style="font-size:14.5px; line-height:1.7; color:#7C868C; max-width:360px; margin:0;">We don't own them, we don't get to choose the result, and we rotate work between them so no single relationship becomes comfortable.</p>
+      </div>
+      ${labsRows()}
+    </div>
+  </div>`;
+}
+
+function viewCatalogue() {
+  const list = state.family === 'All' ? PRODUCTS : PRODUCTS.filter(p => p.family === state.family);
+  const shownUnits = list.reduce((a, p) => a + p.units, 0);
+  const chips = FAMILIES.map(f => {
+    const border = state.family === f ? '#B79A63' : '#262B2E';
+    const color = state.family === f ? '#B79A63' : '#7C868C';
+    return `<span class="chip-fam" ${A('selectFamily', ' data-family="' + f + '"')} style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; padding:9px 14px; border:1px solid ${border}; color:${color}; cursor:pointer;">${f.toUpperCase()}</span>`;
+  }).join('');
+
+  const rows = list.map(p => {
+    const gi = PRODUCTS.indexOf(p);
+    const unitsColor = p.units <= 10 ? '#B79A63' : '#7C868C';
+    const isOpen = state.openIndex === gi;
+    const glyph = isOpen ? '−' : '+';
+    let expanded = '';
+    if (isOpen) {
+      expanded = `<div style="border-bottom:1px solid #1A1F22; background:#121618; animation:cal-rise .4s cubic-bezier(.2,.7,.3,1);">
+        <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,420px); gap:0;">
+          <div style="min-width:0; padding:38px 40px 30px; border-right:1px solid #1A1F22;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#5C656A; margin-bottom:20px;">CHROMATOGRAM &nbsp;·&nbsp; ${p.method} &nbsp;·&nbsp; ${p.lab}</div>
+            ${trace(p.purity, { h: 150 })}
+            <p style="font-size:14px; line-height:1.7; color:#9BA4A9; margin:26px 0 0; max-width:620px;">${p.note}</p>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; color:#6A7378; margin-top:14px;">— DR. [NAME], DO &nbsp;·&nbsp; ${p.signed}</div>
+          </div>
+          <div style="min-width:0; padding:38px 40px 30px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#5C656A; margin-bottom:20px;">PANEL</div>
+            ${kvRows(panelFor(p))}
+            <div style="display:flex; gap:12px; margin-top:26px;">
+              <span class="btn-gold" ${A('openProduct', ' data-index="' + gi + '"')} style="border:1px solid #B79A63; color:#B79A63; font-size:13px; padding:12px 20px; cursor:pointer;">Full record</span>
+              <span class="h-bright" ${A('goVerify')} style="font-size:13px; color:#9BA4A9; border-bottom:1px solid #3A4247; padding-bottom:3px; align-self:center; cursor:pointer;">Verify this lot</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `<div>
+      <div class="row-hover" ${A('toggleRow', ' data-index="' + gi + '"')} style="display:grid; grid-template-columns:100px minmax(250px,1fr) 92px 156px 88px 84px 80px 34px; align-items:center; gap:16px; padding:24px 0; border-bottom:1px solid #1A1F22; cursor:pointer;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6A7378;">${p.code}</span>
+        <span style="font-family:'Bodoni Moda',serif; font-size:20px; color:#E8EAEA;">${p.name}</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#7C868C;">${p.size}</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.55; color:#7C868C;">${p.lot}<br>${p.lab}</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:15px; color:#E8EAEA;">${p.purity.toFixed(1)}%</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:${unitsColor};">${p.units} left</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:14px; color:#E8EAEA; text-align:right;">$${p.price}</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:15px; color:#B79A63; text-align:right;">${glyph}</span>
+      </div>
+      ${expanded}
+    </div>`;
+  }).join('');
+
+  return `<div>
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:96px 56px 0;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:26px;">The catalogue &nbsp;·&nbsp; Ten batches open</div>
+      <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,420px); gap:60px; align-items:end; padding-bottom:44px;">
+        <h1 class="disp-xl" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:64px; line-height:1.04; margin:0; color:#E8EAEA;">Open a row.<br>Read the certificate.</h1>
+        <p style="font-size:15px; line-height:1.7; color:#9BA4A9; margin:0;">Ten compounds, deliberately. Nothing here is restocked — each line is one synthesis run, tested whole, offered until the units are gone. Click any row to see its trace and panel without leaving the page.</p>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:44px; padding-bottom:36px;">
+        <div><div style="font-family:'IBM Plex Mono',monospace; font-size:22px; color:#E8EAEA; line-height:1;">${list.length}</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:8px;">COMPOUNDS SHOWN</div></div>
+        <div><div style="font-family:'IBM Plex Mono',monospace; font-size:22px; color:#E8EAEA; line-height:1;">${shownUnits}</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:8px;">UNITS REMAINING</div></div>
+        <div><div style="font-family:'IBM Plex Mono',monospace; font-size:22px; color:#B79A63; line-height:1;">0</div><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378; margin-top:8px;">RESTOCKS PLANNED</div></div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; padding-bottom:34px;">${chips}</div>
+    </div>
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:0 56px 120px;">
+      <div style="overflow-x:auto;"><div style="min-width:1060px;">
+        <div style="display:grid; grid-template-columns:100px minmax(250px,1fr) 92px 156px 88px 84px 80px 34px; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
+          <span>CODE</span><span>COMPOUND</span><span>SIZE</span><span>LOT / LABORATORY</span><span>PURITY</span><span>REMAINING</span><span style="text-align:right;">PRICE</span><span></span>
+        </div>
+        ${rows}
+      </div></div>
+      <div style="margin-top:40px; padding-left:18px; border-left:1px solid #2A3033; font-size:13px; line-height:1.75; color:#6A7378; max-width:620px;">For laboratory research use only. Not for human or animal use. A certificate of analysis confirms the identity and purity of the tested sample; it is not a statement about use.</div>
+    </div>
+  </div>`;
+}
+
+function viewProduct() {
+  const a = PRODUCTS[state.activeIndex] || PRODUCTS[0];
+  const unitsColor = a.units <= 10 ? '#B79A63' : '#E8EAEA';
+  const pct = Math.round((a.units / a.batchSize) * 100) + '%';
+  return `<div>
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:40px 56px 0;">
+      <div class="h-bright" ${A('goCatalogue')} style="display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; color:#6A7378; cursor:pointer;">&larr; ALL BATCHES</div>
+    </div>
+    <div class="wrap split" style="max-width:1440px; margin:0 auto; padding:34px 56px 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,400px); gap:56px; align-items:start;">
+      <div style="min-width:0;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; color:#6A7378; margin-bottom:22px;">${a.code} &nbsp;·&nbsp; ${a.family.toUpperCase()} &nbsp;·&nbsp; BATCH ${a.batch}</div>
+        <h1 class="disp-lg" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:52px; line-height:1.06; margin:0 0 24px; color:#E8EAEA;">${a.name}</h1>
+        <p style="font-size:15.5px; line-height:1.7; color:#9BA4A9; max-width:620px; margin:0 0 44px;">${a.note}</p>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em; color:#6A7378; margin:-30px 0 44px;">— DR. [NAME], DO &nbsp;·&nbsp; SIGNED ${a.signed}</div>
+        <div style="border:1px solid #1A1F22; background:#121618;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; padding:20px 32px; border-bottom:1px solid #1A1F22;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#6A7378;">CERTIFICATE OF ANALYSIS</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#B79A63;">PASS</span>
+          </div>
+          <div style="padding:34px 32px 26px;">
+            <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:30px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:54px; color:#E8EAEA; line-height:1;">${settled(a.purity)}</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.16em; color:#6A7378;">% AREA · ${a.method.toUpperCase()}</span>
+            </div>
+            ${trace(a.purity, { h: 220 })}
+            ${axis()}
+          </div>
+          <div style="border-top:1px solid #1A1F22; padding:26px 32px 30px;">
+            ${panelFor(a).map(r=>`<div style="display:flex; justify-content:space-between; align-items:baseline; padding:12px 0; border-bottom:1px solid #1D2225; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#E8EAEA;"><span style="color:#6A7378;">${r.k}</span><span>${r.v}</span></div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div style="min-width:0; position:sticky; top:110px;">
+        <div class="no-min" style="position:relative; min-height:360px; border:1px solid #1A1F22; overflow:hidden;">
+          ${slot('PRODUCT — three-quarter view of the vial on graphite, label legible with lot number visible, single hard light source, no props. Match the hero\'s colour temperature.')}
+        </div>
+        <div style="border:1px solid #1A1F22; border-top:none; padding:28px 26px; background:#121618;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:18px; border-bottom:1px solid #1D2225;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:26px; color:#E8EAEA;">$${a.price}</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.12em; color:#6A7378;">${a.size.toUpperCase()}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:14px 0 0; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7C868C;">
+            <span style="color:#6A7378;">UNITS REMAINING</span><span style="color:${unitsColor};">${a.units} of ${a.batchSize}</span>
+          </div>
+          <div style="height:3px; background:#1D2225; margin:12px 0 0;"><div style="height:3px; width:${pct}; background:${unitsColor}; transition:width .8s cubic-bezier(.2,.7,.3,1);"></div></div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.12em; color:#5C656A; margin-top:10px;">NOT RESTOCKED — A NEW BATCH REPLACES IT</div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0 20px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7C868C;">
+            <span style="color:#6A7378;">LOT</span><span style="color:#E8EAEA;">${a.lot}</span>
+          </div>
+          <div class="btn-gold" style="border:1px solid #B79A63; color:#B79A63; text-align:center; font-size:13.5px; padding:15px 0; cursor:pointer;">Add to order</div>
+          <div class="h-bright" ${A('goVerify')} style="text-align:center; font-size:12.5px; color:#7C868C; margin-top:16px; cursor:pointer;">Verify ${a.lot} independently</div>
+        </div>
+        <div style="padding:22px 4px 0; font-size:12px; line-height:1.7; color:#5C656A;">For laboratory research use only. Not for human or animal use.</div>
+      </div>
+    </div>
+    <div style="height:120px;"></div>
+  </div>`;
+}
+
+function viewTesting() {
+  const steps = STEPS.map(s => `
+    <div class="split" style="display:grid; grid-template-columns:88px minmax(0,340px) minmax(0,1fr); gap:40px; align-items:start; padding:40px 0; border-top:1px solid #1A1F22;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; color:#4E575C;">${s.n}</span>
+      <h3 style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:27px; line-height:1.2; margin:0; color:#E8EAEA;">${s.title}</h3>
+      <p style="font-size:15px; line-height:1.72; color:#9BA4A9; margin:0; max-width:640px;">${s.body}</p>
+    </div>`).join('');
+  const screens = SCREENS.map(r => `
+    <div style="display:flex; justify-content:space-between; align-items:baseline; gap:20px; padding:15px 0; border-bottom:1px solid #1D2225;">
+      <span style="font-size:14px; color:#C9D0D3;">${r.k}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; color:#7C868C; text-align:right;">${r.v}</span>
+    </div>`).join('');
+  return `<div>
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:96px 56px 0;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:26px;">Testing</div>
+      <h1 class="disp-xl" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:68px; line-height:1.04; margin:0 0 30px; color:#E8EAEA; max-width:760px;">A batch is either released or it isn't.</h1>
+      <p style="font-size:16px; line-height:1.7; color:#9BA4A9; max-width:560px; margin:0;">There's no third outcome, no blending a marginal run into a good one, and no adjusting a figure to clear a threshold. That's the entire policy, and it's why the process below never changes.</p>
+    </div>
+    <div class="wrap" style="max-width:1440px; margin:76px auto 0; padding:0 56px;">${steps}</div>
+    <div class="wrap" style="max-width:1440px; margin:90px auto 0; padding:0 56px;">
+      <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);">
+        <div class="no-min" style="position:relative; min-width:0; overflow:hidden; min-height:460px; border:1px solid #1A1F22;">
+          ${slot('PROCESS — an actual HPLC instrument or an autosampler tray of amber vials, shot straight on in available light. Slightly cool, slightly imperfect, real room. Absolutely no smiling technician, no blue-tinted stock lab, no gloved hand holding a pipette to camera.')}
+        </div>
+        <div style="min-width:0; padding:56px 48px; border:1px solid #1A1F22; border-left:none; background:#121618;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; color:#6A7378; margin-bottom:22px;">What gets screened</div>
+          ${screens}
+          <p style="font-size:13.5px; line-height:1.7; color:#6A7378; margin:26px 0 0;">Panels are set per compound, not applied uniformly — a copper peptide and a GLP-1 analog fail in different ways, so they're asked different questions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" style="max-width:1440px; margin:90px auto 0; padding:0 56px 120px;">
+      <h2 class="disp-lg" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:40px; line-height:1.1; margin:0 0 34px; color:#E8EAEA;">The laboratories.</h2>
+      ${labsRows()}
+    </div>
+  </div>`;
+}
+
+function viewClinical() {
+  const panels = PANELS.map(r => `
+    <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) 200px 168px 200px; align-items:baseline; gap:24px; padding:22px 0; border-bottom:1px solid #1A1F22;">
+      <span style="font-family:'Bodoni Moda',serif; font-size:20px; color:#E8EAEA;">${r.cls}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:#E8EAEA;">${r.min}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7C868C;">${r.method}</span>
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7C868C; text-align:right;">${r.extra}</span>
+    </div>`).join('');
+  return `<div>
+    <div class="wrap split" style="max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,480px) minmax(0,1fr); border-bottom:1px solid #1A1F22;">
+      <div class="no-min" style="position:relative; min-width:0; overflow:hidden; min-height:620px; border-right:1px solid #1A1F22;">
+        ${slot('DIRECTOR, FULL — three-quarter length, standing, straight to camera, neutral. Dark clinic corridor or dispensary shelving behind, out of focus. Cool balance. No crossed arms, no white coat with hands in pockets, no smile.')}
+      </div>
+      <div style="min-width:0; padding:104px 56px 80px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#6A7378; margin-bottom:26px;">Clinical direction</div>
+        <h1 class="disp-lg" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:56px; line-height:1.06; margin:0 0 12px; color:#E8EAEA;">Dr. [Name], DO</h1>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.12em; color:#B79A63; margin-bottom:34px;">LIC. [0000000] · [STATE] &nbsp;·&nbsp; [BOARD CERTIFICATION]</div>
+        <p style="font-size:16px; line-height:1.72; color:#9BA4A9; max-width:560px; margin:0 0 22px;">I set the panel every compound here is tested against, and I read the certificate before a batch is released. If a run doesn't clear its panel, it doesn't get offered — it gets set aside, and the next one gets synthesised.</p>
+        <p style="font-size:16px; line-height:1.72; color:#9BA4A9; max-width:560px; margin:0 0 40px;">None of that is unusual practice. It's just unusual to publish it, which tells you more about the category than about us.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:0; border-top:1px solid #1A1F22;">
+          <div style="flex:1 1 170px; padding:22px 24px 0 0;"><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">[00] YEARS</div><div style="font-size:13.5px; color:#C9D0D3; margin-top:8px;">Internal medicine</div></div>
+          <div style="flex:1 1 170px; padding:22px 24px 0; border-left:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">CONSULTS</div><div style="font-size:13.5px; color:#C9D0D3; margin-top:8px;">Personally, not a queue</div></div>
+          <div style="flex:1 1 170px; padding:22px 0 0 24px; border-left:1px solid #1A1F22;"><div style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; color:#6A7378;">SIGNS</div><div style="font-size:13.5px; color:#C9D0D3; margin-top:8px;">Every release, by lot</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:90px 56px 0;">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap; padding-bottom:30px;">
+        <h2 class="disp-lg" style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:40px; line-height:1.1; margin:0; color:#E8EAEA;">The standing panels.</h2>
+        <p style="font-size:14.5px; line-height:1.7; color:#7C868C; max-width:400px; margin:0;">Set in advance, per compound class, so nobody decides after the fact what counts as clean. These are the thresholds a batch has to clear before I'll sign it.</p>
+      </div>
+      <div class="split" style="display:grid; grid-template-columns:minmax(0,1fr) 200px 168px 200px; align-items:end; gap:24px; padding-bottom:14px; border-bottom:1px solid #262B2E; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#5C656A;">
+        <span>COMPOUND CLASS</span><span>MINIMUM PURITY</span><span>METHOD</span><span style="text-align:right;">ADDITIONAL</span>
+      </div>
+      ${panels}
+    </div>
+    <div class="wrap" style="max-width:1440px; margin:80px auto 0; padding:0 56px 120px;">
+      <div style="border:1px solid #1A1F22; background:#121618; padding:46px 44px; max-width:860px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; color:#6A7378; margin-bottom:20px;">On consultation</div>
+        <p style="font-family:'Bodoni Moda',serif; font-weight:400; font-size:25px; line-height:1.5; color:#E8EAEA; margin:0 0 20px;">Where a product requires evaluation before purchase, you'll meet with me. Not a rotating panel, not an intake form that approves itself.</p>
+        <p style="font-size:14.5px; line-height:1.72; color:#7C868C; margin:0; max-width:620px;">Some items in the catalogue are offered for laboratory research use only and involve no consultation at all. Which is which is stated on every record, plainly, before anything is added to an order.</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewVerify() {
+  const res = state.result;
+  const sampleLots = ['GLD-BLK-014', 'RED-BLK-003', 'GLD-GRN-028'].map(l =>
+    `<span class="samp" ${A('pickLot', ' data-lot="' + l + '"')} style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em; color:#2F5573; border-bottom:1px solid rgba(47,85,115,.35); cursor:pointer;">${l}</span>`).join('');
+
+  let resultBlock = '';
+  if (res) {
+    resultBlock = `<div style="margin-top:52px; border:1px solid #C3C8CC; background:#F5F6F7; animation:cal-rise .45s cubic-bezier(.2,.7,.3,1);">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:20px 30px; border-bottom:1px solid #D6DADD; flex-wrap:wrap; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#6D767C;">CERTIFICATE OF ANALYSIS &nbsp;·&nbsp; ${res.lot}</span>
+        <span style="background:#4C7A57; color:#F5F6F7; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.18em; padding:7px 11px;">PASS</span>
+      </div>
+      <div style="padding:34px 30px 8px;">
+        <div style="font-family:'Archivo',sans-serif; font-weight:500; font-size:26px; letter-spacing:-.02em; color:#1A1E21;">${res.name}</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6D767C; margin-top:8px; letter-spacing:.06em;">${res.code} &nbsp;·&nbsp; ${res.size.toUpperCase()} &nbsp;·&nbsp; BATCH ${res.batch}</div>
+        <div style="display:flex; align-items:baseline; gap:14px; margin-top:30px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:50px; color:#1A1E21; line-height:1;">${settled(res.purity)}</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.16em; color:#6D767C;">% AREA · ${res.method.toUpperCase()}</span>
+        </div>
+      </div>
+      <div style="padding:26px 30px 4px;">${trace(res.purity, { h: 180, stroke: '#2F5573', grid: '#DFE3E5' })}</div>
+      <div style="display:flex; justify-content:space-between; padding:0 30px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#8B9298;"><span>0.0 MIN</span><span>RETENTION TIME</span><span>12.0 MIN</span></div>
+      <div style="padding:30px 30px 34px;">
+        ${panelFor(res).map(r=>`<div style="display:flex; justify-content:space-between; align-items:baseline; padding:12px 0; border-bottom:1px solid #DFE3E5; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#1A1E21;"><span style="color:#6D767C;">${r.k}</span><span>${r.v}</span></div>`).join('')}
+      </div>
+    </div>`;
+  } else if (state.notFound) {
+    resultBlock = `<div style="margin-top:52px; border:1px solid #C3C8CC; background:#F5F6F7; padding:34px 30px; animation:cal-rise .4s cubic-bezier(.2,.7,.3,1);">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#8B9298; margin-bottom:14px;">NO RECORD</div>
+      <div style="font-family:'Archivo',sans-serif; font-weight:500; font-size:22px; letter-spacing:-.02em; color:#1A1E21;">That lot isn't in the register.</div>
+      <p style="font-size:14.5px; line-height:1.7; color:#3E464B; margin:12px 0 0; max-width:480px;">Either it was mistyped, or the vial didn't come from us. Both are worth knowing. Send us a photograph of the label and we'll tell you which.</p>
+    </div>`;
+  }
+
+  const signatureBlock = res ? `
+    <div style="display:flex; align-items:center; gap:18px; padding-bottom:26px; border-bottom:1px solid #DFE3E5;">
+      <div style="animation:cal-strike .09s cubic-bezier(.2,.9,.3,1); flex:none;">${brandMark(58, '#8A6E3C', '#1A1E21', 2.2, 4.2)}</div>
+      <div>
+        <div style="font-family:'Archivo',sans-serif; font-weight:500; font-size:15px; color:#1A1E21;">Dr. [Name], DO</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; color:#6D767C; margin-top:6px;">LIC. [0000000] · SIGNED ${res.signed}</div>
+      </div>
+    </div>` : '';
+
+  return `<div style="background:#ECEDEE; min-height:calc(100vh - 78px);">
+    <div class="wrap" style="max-width:1440px; margin:0 auto; padding:30px 56px 0;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding-bottom:22px; border-bottom:1px solid #C3C8CC; flex-wrap:wrap; gap:16px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#6D767C;">CALIBER &nbsp;/&nbsp; LOT REGISTER &nbsp;/&nbsp; PUBLIC LOOKUP</div>
+        <div class="h-ink" ${A('goHome')} style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; color:#6D767C; cursor:pointer;">&larr; BACK TO CATALOGUE</div>
+      </div>
+    </div>
+    <div class="wrap split" style="max-width:1440px; margin:0 auto; padding:68px 56px 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,460px); gap:72px; align-items:start;">
+      <div style="min-width:0;">
+        <h1 class="disp-lg" style="font-family:'Archivo',sans-serif; font-weight:600; font-size:50px; line-height:1.06; letter-spacing:-.03em; margin:0 0 22px; color:#1A1E21;">Check a lot against the register.</h1>
+        <p style="font-size:15.5px; line-height:1.7; color:#3E464B; max-width:520px; margin:0 0 40px;">Enter the lot number printed on the vial. The record returned is the one the laboratory issued and the director signed — not a marketing summary of it.</p>
+        <div style="display:flex; gap:0; max-width:560px; border:1px solid #1A1E21; background:#FFFFFF;">
+          <input id="lotInput" name="lot" aria-label="Lot number" value="${state.lotInput}" placeholder="GLD-BLK-014" style="flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:'IBM Plex Mono',monospace; font-size:15px; letter-spacing:.1em; color:#1A1E21; padding:18px 20px;">
+          <div class="verify-btn" ${A('submitLot')} style="background:#1A1E21; color:#ECEDEE; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.18em; padding:18px 26px; cursor:pointer; white-space:nowrap;">${state.verifying ? 'CHECKING' : 'LOOK UP'}</div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; align-items:center;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.14em; color:#8B9298;">TRY</span>
+          ${sampleLots}
+        </div>
+        ${resultBlock}
+      </div>
+      <div style="min-width:0; position:sticky; top:108px;">
+        <div style="border:1px solid #C3C8CC; background:#F5F6F7; padding:38px 34px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#6D767C; margin-bottom:28px;">RELEASE SIGNATURE</div>
+          ${signatureBlock}
+          <div style="font-size:13.5px; line-height:1.75; color:#3E464B; padding-top:22px;">A signature here means one named, licensed person read the laboratory's result for this specific lot and released it. If the number on your vial doesn't return a record, don't use the vial.</div>
+        </div>
+        <div style="border:1px solid #C3C8CC; border-top:none; background:#ECEDEE; padding:30px 34px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; color:#6D767C; margin-bottom:20px;">WHERE THE NUMBER IS</div>
+          <div style="position:relative; min-height:190px; border:1px solid #D6DADD; overflow:hidden;">
+            ${slot('LABEL MACRO — extreme close-up of the printed lot number on a vial label, shot flat and bright so the characters are legible. This is a diagram, not a mood shot.', 'light')}
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.7; color:#6D767C; margin-top:16px;">Lower right of the label,<br>beneath the fill volume.</div>
+        </div>
+      </div>
+    </div>
+    <div style="height:110px;"></div>
+  </div>`;
+}
+
+/* ---------------- render + actions ---------------- */
+function currentView() {
+  switch (state.page) {
+    case 'catalogue': return viewCatalogue();
+    case 'product': return viewProduct();
+    case 'testing': return viewTesting();
+    case 'clinical': return viewClinical();
+    case 'verify': return viewVerify();
+    default: return viewHome();
+  }
+}
+
+function render() {
+  document.getElementById('app').innerHTML = header() + currentView() + footer();
+}
+
+function nav(page, extra) {
+  Object.assign(state, { page: page, openIndex: -1 }, extra || {});
+  render();
+  window.scrollTo(0, 0);
+}
+
+function submitLot() {
+  const q = (state.lotInput || '').trim().toUpperCase();
+  if (!q) return;
+  state.verifying = true; state.result = null; state.notFound = false;
+  render();
+  clearTimeout(verifyTimer);
+  verifyTimer = setTimeout(() => {
+    const hit = PRODUCTS.find(p => p.lot === q) || null;
+    state.verifying = false; state.result = hit; state.notFound = !hit;
+    render();
+  }, 640);
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const act = el.getAttribute('data-action');
+  switch (act) {
+    case 'goHome': nav('home'); break;
+    case 'goCatalogue': nav('catalogue'); break;
+    case 'goTesting': nav('testing'); break;
+    case 'goClinical': nav('clinical'); break;
+    case 'goVerify': nav('verify'); break;
+    case 'openProduct': e.stopPropagation(); nav('product', { activeIndex: +el.getAttribute('data-index') }); break;
+    case 'toggleRow': { const i = +el.getAttribute('data-index'); state.openIndex = state.openIndex === i ? -1 : i; render(); break; }
+    case 'selectFamily': state.family = el.getAttribute('data-family'); state.openIndex = -1; render(); break;
+    case 'submitLot': submitLot(); break;
+    case 'pickLot': state.lotInput = el.getAttribute('data-lot'); submitLot(); break;
+  }
+});
+
+// lot field: update state without re-rendering (keeps focus); Enter submits
+document.addEventListener('input', e => {
+  if (e.target && e.target.id === 'lotInput') state.lotInput = e.target.value;
+});
+document.addEventListener('keydown', e => {
+  if (e.target && e.target.id === 'lotInput' && e.key === 'Enter') submitLot();
+});
+
+render();
+</script>
 </body>
 </html>
