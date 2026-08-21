@@ -65,21 +65,6 @@ export default function Brutalist() {
           </div>
         </section>
 
-        {/* Things I've Built */}
-        <section className="mb-24">
-          <h3 className="text-2xl font-bold mb-6 border-b border-black pb-2">
-            {content.thingsBuilt.heading}
-          </h3>
-          <div className="space-y-8">
-            {content.thingsBuilt.items.map((item, i) => (
-              <div key={i}>
-                <h4 className="font-bold text-xl mb-2">{item.title}</h4>
-                <p className="leading-relaxed">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Outside Work */}
         <section className="mb-24">
           <h3 className="text-2xl font-bold mb-6 border-b border-black pb-2">

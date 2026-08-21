@@ -59,47 +59,6 @@
       }
     ]
   },
-  "thingsBuilt": {
-    "heading": "Things I've Built",
-    "items": [
-      {
-        "title": "An Accounting Practice",
-        "description": "Started as a side hustle, grew it into something real, sold it because I wanted to build other things. The new owner is taking it to the next level."
-      },
-      {
-        "title": "Finance Operations That Scale",
-        "description": "Systems that don't drown you in month-end close. Board decks that don't take 40 hours to pull together. Processes that work when you're 10 people and still work when you're 150."
-      },
-      {
-        "title": "benchproof.app",
-        "description": "A tool (and Chrome extension) for bread bakers. Baking bread is technically fussy in annoying ways. I got tired of the friction, so I built something to fix it. Turns out other people had the same problem."
-      },
-      {
-        "title": "Automation for a Broker Business",
-        "description": "Email routing + project management. Saved 45 mins per day for the company's most expensive employee. Quote turnaround went from hours to minutes. Digital board replaced printed sheets."
-      },
-      {
-        "title": "AI Voice Agent for a Cleaning Company",
-        "description": "Calls Angi leads within 2 minutes. Quotes, schedules, connects to owner if needed. No more lost leads."
-      },
-      {
-        "title": "Travel Documentation System",
-        "description": "Email and photo geotag scraping for a busy CEO. Automated proof of where he was and how he traveled."
-      },
-      {
-        "title": "Provider Payment Template for Medical Practice",
-        "description": "Consolidated disparate reports for doctor commission transparency. Calculation time: 25 hours per doctor per month down to under one hour. Centralized math, bulletproof accuracy."
-      },
-      {
-        "title": "Marketing Measurement Dashboard",
-        "description": "Funnel tracking by lead source. Shows prospect behavior and quality to help allocate marketing spend."
-      },
-      {
-        "title": "Ice Creamery Recipe Database",
-        "description": "120+ tested Ninja Creami recipes with nutritional data, scoopability scores, and scientific formulation. Searchable and filterable. Because ice cream should be a solved problem."
-      }
-    ]
-  },
   "outsideWork": {
     "heading": "Outside Work",
     "paragraphs": [
