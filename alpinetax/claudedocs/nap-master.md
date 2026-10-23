@@ -14,6 +14,7 @@
 | **Email** | contact@alpinetax.co |
 | **Owner** | Vincent Boettcher |
 | **Credentials** | Enrolled Agent (EA), PTIN Holder |
+| **PTIN (single source of truth)** | P02191625 (Vincent Boettcher). EA enrollment number: not recorded; do not publish one unless confirmed |
 
 ## Address Handling
 

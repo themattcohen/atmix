@@ -10,6 +10,7 @@ export const siteConfig = {
   owner: 'Vinnie Boettcher',
   ownerTitle: 'Founder & Enrolled Agent (EA)',
   ownerCredential: 'Enrolled Agent (EA)',
+  ownerPtin: 'P02191625',
   experience: 'Nearly a decade',
 
   address: {

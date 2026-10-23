@@ -21,6 +21,11 @@ export default function AboutPage() {
           name: 'Vincent Boettcher',
           alternateName: 'Vinnie Boettcher',
           jobTitle: 'Enrolled Agent (EA)',
+          identifier: {
+            '@type': 'PropertyValue',
+            propertyID: 'PTIN',
+            value: 'P02191625',
+          },
           url: `${siteConfig.url}/about`,
           worksFor: {
             '@type': 'ProfessionalService',
@@ -84,7 +89,7 @@ export default function AboutPage() {
               <p>
                 Vinnie is an Enrolled Agent (EA), a federal tax practitioner status that authorizes him
                 to represent taxpayers before the IRS. He is also an IRS-registered tax preparer and
-                PTIN holder. He specializes in individual returns, small business filings (Schedule C,
+                PTIN holder (PTIN P02191625). He specializes in individual returns, small business filings (Schedule C,
                 LLCs, S-Corps, and partnerships), tax planning, and IRS representation.
               </p>
               <p>
@@ -115,6 +120,7 @@ export default function AboutPage() {
             <div>
               <p className="text-3xl font-heading font-bold text-alpine-blue">Enrolled Agent (EA)</p>
               <p className="text-text-secondary mt-1">Authorized to Represent Taxpayers Before the IRS</p>
+              <p className="text-text-secondary mt-1 text-base">PTIN P02191625</p>
             </div>
             <div>
               <p className="text-3xl font-heading font-bold text-alpine-blue">Year-Round</p>
