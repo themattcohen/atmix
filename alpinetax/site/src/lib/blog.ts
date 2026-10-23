@@ -25,12 +25,12 @@ export function getAllPosts(): BlogPost[] {
       const filePath = path.join(BLOG_DIR, filename);
       const content = fs.readFileSync(filePath, 'utf-8');
 
-      const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+      const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
       if (!frontmatterMatch) return null;
 
       const frontmatter = frontmatterMatch[1];
       const meta: Record<string, string> = {};
-      frontmatter.split('\n').forEach(line => {
+      frontmatter.split(/\r?\n/).forEach(line => {
         const [key, ...valueParts] = line.split(':');
         if (key && valueParts.length) {
           meta[key.trim()] = valueParts
