@@ -2,17 +2,49 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { CallToAction } from '@/components/CallToAction';
+import { JsonLd } from '@/components/JsonLd';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'About Vinnie Boettcher — Alpine Tax & Consulting',
   description:
-    'Meet Vinnie Boettcher, founder of Alpine Tax & Consulting. Nearly a decade of tax preparation experience serving individuals and small businesses.',
+    'Meet Vinnie Boettcher, Enrolled Agent (EA) and founder of Alpine Tax & Consulting. Nearly a decade of tax preparation experience serving individuals and small businesses.',
 };
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: 'Vincent Boettcher',
+          alternateName: 'Vinnie Boettcher',
+          jobTitle: 'Enrolled Agent (EA)',
+          url: `${siteConfig.url}/about`,
+          worksFor: {
+            '@type': 'ProfessionalService',
+            name: siteConfig.name,
+            url: siteConfig.url,
+          },
+          hasCredential: {
+            '@type': 'EducationalOccupationalCredential',
+            name: 'Enrolled Agent (EA)',
+            credentialCategory: 'Professional certification',
+            recognizedBy: {
+              '@type': 'GovernmentOrganization',
+              name: 'Internal Revenue Service',
+            },
+          },
+          knowsAbout: [
+            'Individual tax preparation',
+            'Small business taxation',
+            'S-Corp and partnership taxation',
+            'Tax planning',
+            'IRS representation',
+          ],
+        }}
+      />
       <div className="section-padding">
         <div className="container-content">
           <Breadcrumbs
@@ -50,9 +82,10 @@ export default function AboutPage() {
 
             <div className="space-y-4 text-text-secondary text-lg leading-relaxed mb-12">
               <p>
-                Vinnie is an IRS-registered tax preparer and PTIN holder. He specializes in individual
-                returns, small business filings (Schedule C, LLCs, S-Corps, and partnerships), tax
-                planning, and IRS correspondence.
+                Vinnie is an Enrolled Agent (EA), a federal tax practitioner status that authorizes him
+                to represent taxpayers before the IRS. He is also an IRS-registered tax preparer and
+                PTIN holder. He specializes in individual returns, small business filings (Schedule C,
+                LLCs, S-Corps, and partnerships), tax planning, and IRS representation.
               </p>
               <p>
                 Vinnie serves clients throughout Colorado — including the Denver metro area, Aurora,
@@ -80,8 +113,8 @@ export default function AboutPage() {
               <p className="text-text-secondary mt-1">Tax Preparation Experience</p>
             </div>
             <div>
-              <p className="text-3xl font-heading font-bold text-alpine-blue">IRS-Registered</p>
-              <p className="text-text-secondary mt-1">PTIN Holder</p>
+              <p className="text-3xl font-heading font-bold text-alpine-blue">Enrolled Agent (EA)</p>
+              <p className="text-text-secondary mt-1">Authorized to Represent Taxpayers Before the IRS</p>
             </div>
             <div>
               <p className="text-3xl font-heading font-bold text-alpine-blue">Year-Round</p>

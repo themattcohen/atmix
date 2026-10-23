@@ -6,7 +6,7 @@ slug: "/services/"
 
 # Tax Services for Individuals & Small Businesses
 
-Tax season doesn't have to be stressful. At Alpine Tax & Consulting, you work directly with Vinnie Boettcher — an experienced tax professional who takes the time to understand your situation, not a rotating cast of strangers at a high-volume tax mill.
+Tax season doesn't have to be stressful. At Alpine Tax & Consulting, you work directly with Vinnie Boettcher, an experienced Enrolled Agent (EA) who takes the time to understand your situation, not a rotating cast of strangers at a high-volume tax mill.
 
 Serving clients throughout Colorado and nationwide via virtual appointments, Alpine Tax delivers the kind of personal attention that larger firms can't afford to give you.
 
@@ -48,7 +48,7 @@ The best tax outcomes don't happen at filing time — they happen throughout the
 
 ### IRS Representation
 
-Got a letter from the IRS? Alpine Tax can help you understand what it means, organize your documentation, and respond to correspondence accurately and on time. Expanded representation services are coming soon.
+Got a letter from the IRS? Vinnie Boettcher is an Enrolled Agent (EA), federally authorized to represent taxpayers before the IRS. Alpine Tax can help you understand what it means, organize your documentation, respond to correspondence accurately and on time, and represent you in audits and collection matters.
 
 [Learn more about IRS Representation](/services/irs-representation/)
 

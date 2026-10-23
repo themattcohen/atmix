@@ -8,7 +8,8 @@ export const siteConfig = {
   phoneTel: '+17194021571',
   email: 'contact@alpinetax.co',
   owner: 'Vinnie Boettcher',
-  ownerTitle: 'Founder & Tax Consultant',
+  ownerTitle: 'Founder & Enrolled Agent (EA)',
+  ownerCredential: 'Enrolled Agent (EA)',
   experience: 'Nearly a decade',
 
   address: {

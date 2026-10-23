@@ -179,7 +179,7 @@ export default function TaxPlanningPage() {
               reports the past. A planner influences the future.
             </p>
             <p>
-              Alpine Tax approaches every client relationship with a planning mindset — not just
+              Vinnie Boettcher is an Enrolled Agent (EA). Alpine Tax approaches every client relationship with a planning mindset — not just
               during formal planning sessions, but throughout the year. If something changes in your
               life or business that has tax implications, you should be able to call and talk it
               through before you make the decision, not after.

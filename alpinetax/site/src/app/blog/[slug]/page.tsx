@@ -44,7 +44,7 @@ export default async function BlogPost({ params }: Props) {
           '@type': 'Article',
           headline: post.title,
           description: post.description,
-          author: { '@type': 'Person', name: post.author },
+          author: { '@type': 'Person', name: post.author, jobTitle: 'Enrolled Agent (EA)', url: `${siteConfig.url}/about` },
           publisher: { '@type': 'Organization', name: siteConfig.name },
           datePublished: post.date,
           url: `${siteConfig.url}/blog/${post.slug}`,

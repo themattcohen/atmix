@@ -31,6 +31,13 @@ export default function HomePage() {
             { '@type': 'State', name: 'Colorado' },
             { '@type': 'Country', name: 'United States' },
           ],
+          founder: {
+            '@type': 'Person',
+            name: 'Vincent Boettcher',
+            alternateName: 'Vinnie Boettcher',
+            jobTitle: 'Enrolled Agent (EA)',
+            url: `${siteConfig.url}/about`,
+          },
           serviceType: [
             'Tax Preparation',
             'Tax Planning',
@@ -60,11 +67,11 @@ export default function HomePage() {
             Personal attention. Transparent pricing. Year-round support.
           </p>
           <p className="text-lg text-white/80 max-w-2xl mx-auto mb-4">
-            Work directly with an experienced tax professional who takes the time to
+            Work directly with Vinnie Boettcher, an Enrolled Agent (EA) who takes the time to
             understand your situation &mdash; not a revolving door of seasonal staff.
           </p>
           <p className="text-base text-white/70 max-w-xl mx-auto mb-8">
-            Nearly a decade of experience serving individuals and small businesses.
+            Nearly a decade of experience serving individuals and small businesses. Federally authorized to represent taxpayers before the IRS.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <Link href="/schedule" className="btn-primary">
@@ -195,7 +202,7 @@ export default function HomePage() {
               {
                 title: 'Direct Access',
                 description:
-                  'Work with Vinnie directly, not a rotating cast of seasonal preparers.',
+                  'Work with Vinnie, an Enrolled Agent (EA), directly, not a rotating cast of seasonal preparers.',
               },
               {
                 title: 'Transparent Pricing',

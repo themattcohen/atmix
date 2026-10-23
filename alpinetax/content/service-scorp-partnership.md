@@ -49,7 +49,7 @@ S-Corp owners running payroll for themselves need their W-2 and the corporate re
 
 Pass-through entity returns done well require more than filling out forms. They require understanding how the entity, the owner's compensation, and the personal return interact — and making deliberate decisions about each.
 
-Alpine Tax brings that integrated perspective. Vinnie reviews the full picture: entity structure, compensation strategy, deduction positioning, and how all of it flows to your personal return. Many business owners who come to Alpine Tax after working with general-purpose tax preparers find that there were planning opportunities being left unused year after year.
+Alpine Tax brings that integrated perspective. Vinnie, an Enrolled Agent (EA), reviews the full picture: entity structure, compensation strategy, deduction positioning, and how all of it flows to your personal return. Many business owners who come to Alpine Tax after working with general-purpose tax preparers find that there were planning opportunities being left unused year after year.
 
 ---
 

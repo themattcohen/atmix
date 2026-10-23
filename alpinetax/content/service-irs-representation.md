@@ -1,6 +1,6 @@
 ---
 title: "IRS Correspondence & Representation | Alpine Tax & Consulting"
-description: "Help responding to IRS notices and correspondence in Denver, CO. Alpine Tax assists with documentation, written responses, and understanding what the IRS is asking for."
+description: "IRS notices, audits, and collections handled by an Enrolled Agent (EA) in Denver, CO. Vinnie Boettcher is federally authorized to represent taxpayers before the IRS."
 slug: "/services/irs-representation/"
 ---
 
@@ -10,16 +10,19 @@ An IRS notice in your mailbox is unsettling. Most of the time, it's less serious
 
 Alpine Tax & Consulting can help you make sense of IRS correspondence, organize the documentation needed to respond, and draft a clear, accurate reply. If you're not sure what a notice means or what the IRS is asking for, that's a good place to start.
 
+Vinnie Boettcher is an Enrolled Agent (EA), federally authorized to represent taxpayers before the IRS. Enrolled Agents have unlimited practice rights: they can represent any taxpayer on any tax matter, not only returns they prepared.
+
 ---
 
-## Current Scope of Service
+## Scope of Service
 
-At this time, Alpine Tax assists with:
+Alpine Tax assists with:
 
 - **Understanding IRS notices** — translating the official language into plain terms and explaining what action, if any, is required
 - **Responding to correspondence** — drafting written responses to IRS letters and notices that explain your position clearly and include the supporting documentation they're asking for
 - **Organizing your records** — identifying what documentation supports your return and helping you gather it before you respond
 - **CP2000 and underreporter notices** — helping you review whether a proposed change is correct and how to respond if you disagree
+- **Representation before the IRS**: as an Enrolled Agent, Vinnie can communicate with the IRS on your behalf in audits and collection matters, with your written authorization
 
 ---
 

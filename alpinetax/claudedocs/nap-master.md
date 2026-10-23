@@ -13,7 +13,7 @@
 | **Website** | https://alpinetax.co |
 | **Email** | contact@alpinetax.co |
 | **Owner** | Vincent Boettcher |
-| **Credentials** | PTIN Holder (IRS-registered tax preparer) |
+| **Credentials** | Enrolled Agent (EA), PTIN Holder |
 
 ## Address Handling
 
@@ -62,9 +62,8 @@ Credit card, debit card, check, bank transfer
 
 | Status | Safe Language |
 |--------|--------------|
-| **Current** | "tax professional", "tax preparer", "IRS-registered tax preparer", "PTIN holder" |
-| **After AFSP** | Add "AFSP participant", "IRS Annual Filing Season Program" |
-| **After EA** | "Enrolled Agent (EA)", "IRS-authorized tax practitioner", "federally licensed tax practitioner" |
+| **Current (EA earned 2026-10)** | "Enrolled Agent (EA)", "federally authorized to represent taxpayers before the IRS", "IRS-registered tax preparer", "PTIN holder" |
+| **Avoid** | "IRS-certified", "licensed by the IRS", "federally licensed" (not how the IRS describes EA status); no enrollment number or issue date without confirmation |
 | **NEVER** | CPA, Certified Public Accountant, licensed accountant |
 
 ## Change Log

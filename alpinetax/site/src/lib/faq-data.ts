@@ -59,7 +59,19 @@ export const faqData: FaqItem[] = [
   {
     question: 'What if I received an IRS notice?',
     answer:
-      'Don\'t ignore it and don\'t panic. Most IRS notices are informational or relate to a specific discrepancy. Alpine Tax can help you understand what it means, gather documentation, and respond accurately and on time.',
+      'Don\'t ignore it and don\'t panic. Most IRS notices are informational or relate to a specific discrepancy. Vinnie Boettcher is an Enrolled Agent and can help you understand what the notice means, gather documentation, and respond accurately and on time. Contact us with a copy of the notice and we will advise on next steps.',
+    category: 'Services & Expertise',
+  },
+  {
+    question: 'What is an Enrolled Agent (EA)?',
+    answer:
+      'An Enrolled Agent is a federal tax practitioner who is federally authorized to represent taxpayers before the IRS. Enrolled Agents have unlimited practice rights, which means they can represent any taxpayer on any tax matter, including audits, collections, and appeals. Vinnie Boettcher is an Enrolled Agent (EA).',
+    category: 'Services & Expertise',
+  },
+  {
+    question: 'Can you represent me in an IRS audit?',
+    answer:
+      'Yes. As an Enrolled Agent, Vinnie is federally authorized to represent taxpayers before the IRS, including in audits and collection matters. Audit defense and full representation are quoted separately from return preparation.',
     category: 'Services & Expertise',
   },
 
@@ -85,7 +97,7 @@ export const faqData: FaqItem[] = [
   {
     question: 'Why should I choose a personal tax preparer over a big chain?',
     answer:
-      'At Alpine Tax, you work directly with Vinnie Boettcher \u2014 the same person who knows your situation, prepares your return, and answers your questions. For anything beyond a straightforward return, having an experienced tax professional who actually reviews your situation pays for itself.',
+      'At Alpine Tax, you work directly with Vinnie Boettcher \u2014 the same person who knows your situation, prepares your return, and answers your questions. For anything beyond a straightforward return, having an experienced Enrolled Agent who actually reviews your situation pays for itself.',
     category: 'Pricing & Payment',
   },
 

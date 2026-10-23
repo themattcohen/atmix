@@ -50,7 +50,7 @@ export default function IndividualTaxPage() {
             <p>Your taxes are personal. Your tax preparer should treat them that way.</p>
             <p>
               At Alpine Tax &amp; Consulting, every individual return is prepared by Vinnie
-              Boettcher — an experienced, IRS-registered tax professional who reviews your situation
+              Boettcher — an experienced Enrolled Agent (EA) who reviews your situation
               in full, asks the right questions, and makes sure your return is accurate and complete.
               You won&rsquo;t get handed off to a junior preparer or rushed through a checklist.
             </p>

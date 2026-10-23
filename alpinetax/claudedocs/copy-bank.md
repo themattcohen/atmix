@@ -34,8 +34,8 @@
 ## Credential Language Rules (copy from nap-master.md)
 
 - **NEVER**: CPA, Certified Public Accountant, licensed accountant
-- **SAFE**: "tax professional", "tax preparer", "IRS-registered tax preparer", "PTIN holder"
-- **EA progress**: "Currently pursuing Enrolled Agent designation" (only if actively taking exams)
+- **SAFE**: "Enrolled Agent (EA)", "federally authorized to represent taxpayers before the IRS", "IRS-registered tax preparer", "PTIN holder"
+- **AVOID**: "IRS-certified", "licensed by the IRS"; no "pursuing EA" language (credential earned)
 - **Positioning**: Lead with EXPERIENCE + PERSONAL SERVICE + ACCESSIBILITY
 
 ---

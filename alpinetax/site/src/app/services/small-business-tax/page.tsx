@@ -57,7 +57,7 @@ export default function SmallBusinessTaxPage() {
               efficiently — and to make sure they&rsquo;re not paying more than they owe.
             </p>
             <p>
-              Vinnie Boettcher brings hands-on experience with the tax issues that small business
+              Vinnie Boettcher, an Enrolled Agent (EA), brings hands-on experience with the tax issues that small business
               owners actually face: tracking deductible expenses, reconciling books before filing,
               planning for quarterly payments, and making smart decisions about business structure.
             </p>

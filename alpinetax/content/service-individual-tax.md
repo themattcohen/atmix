@@ -8,7 +8,7 @@ slug: "/services/individual-tax/"
 
 Your taxes are personal. Your tax preparer should treat them that way.
 
-At Alpine Tax & Consulting, every individual return is prepared by Vinnie Boettcher — an experienced, IRS-registered tax professional who reviews your situation in full, asks the right questions, and makes sure your return is accurate and complete. You won't get handed off to a junior preparer or rushed through a checklist.
+At Alpine Tax & Consulting, every individual return is prepared by Vinnie Boettcher — an experienced Enrolled Agent (EA) who reviews your situation in full, asks the right questions, and makes sure your return is accurate and complete. You won't get handed off to a junior preparer or rushed through a checklist.
 
 ---
 

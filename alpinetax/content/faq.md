@@ -50,7 +50,7 @@ Yes. Entity structure decisions have meaningful tax implications, and the right 
 
 ### What if I received an IRS notice?
 
-Don't ignore it and don't panic. Most IRS notices are informational or relate to a specific discrepancy, and many can be resolved with a clear, documented response. Alpine Tax can help you understand what the notice means, gather the right documentation, and respond accurately and on time. [Reach out to us](/contact/) with a copy of the notice and we'll advise on next steps.
+Don't ignore it and don't panic. Most IRS notices are informational or relate to a specific discrepancy, and many can be resolved with a clear, documented response. Vinnie Boettcher is an Enrolled Agent (EA), federally authorized to represent taxpayers before the IRS. Alpine Tax can help you understand what the notice means, gather the right documentation, and respond accurately and on time. [Reach out to us](/contact/) with a copy of the notice and we'll advise on next steps.
 
 ---
 

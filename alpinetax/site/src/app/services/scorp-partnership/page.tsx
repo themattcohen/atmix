@@ -55,7 +55,7 @@ export default function SCorpPartnershipPage() {
             <p>
               Alpine Tax &amp; Consulting specializes in pass-through entity returns for S-Corps,
               partnerships, and multi-member LLCs. This is the service where the difference between
-              an experienced, attentive tax professional and a generic filing service is most
+              an experienced, attentive Enrolled Agent (EA) and a generic filing service is most
               apparent.
             </p>
           </div>
@@ -180,7 +180,7 @@ export default function SCorpPartnershipPage() {
               return interact — and making deliberate decisions about each.
             </p>
             <p>
-              Alpine Tax brings that integrated perspective. Vinnie reviews the full picture: entity
+              Alpine Tax brings that integrated perspective. Vinnie, an Enrolled Agent (EA), reviews the full picture: entity
               structure, compensation strategy, deduction positioning, and how all of it flows to
               your personal return. Many business owners who come to Alpine Tax after working with
               general-purpose tax preparers find that there were planning opportunities being left

@@ -10,7 +10,7 @@ Small business owners wear enough hats. Tax preparation shouldn't be one of them
 
 Alpine Tax & Consulting works with sole proprietors, single-member LLCs, and multi-member business entities to handle their annual filings accurately and efficiently — and to make sure they're not paying more than they owe.
 
-Vinnie Boettcher brings hands-on experience with the tax issues that small business owners actually face: tracking deductible expenses, reconciling books before filing, planning for quarterly payments, and making smart decisions about business structure.
+Vinnie Boettcher, an Enrolled Agent (EA), brings hands-on experience with the tax issues that small business owners actually face: tracking deductible expenses, reconciling books before filing, planning for quarterly payments, and making smart decisions about business structure.
 
 ---
 

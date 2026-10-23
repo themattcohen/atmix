@@ -7,7 +7,7 @@ import { siteConfig } from '@/lib/site-config';
 export const metadata: Metadata = {
   title: 'IRS Correspondence & Representation',
   description:
-    'Help responding to IRS notices and correspondence in Denver, CO.',
+    'IRS notices, audits, and collections handled by an Enrolled Agent (EA) in Denver, CO. Vinnie Boettcher is federally authorized to represent taxpayers before the IRS.',
 };
 
 export default function IrsRepresentationPage() {
@@ -58,6 +58,11 @@ export default function IrsRepresentationPage() {
               not sure what a notice means or what the IRS is asking for, that&rsquo;s a good place
               to start.
             </p>
+            <p>
+              Vinnie Boettcher is an Enrolled Agent (EA), federally authorized to represent
+              taxpayers before the IRS. Enrolled Agents have unlimited practice rights: they can
+              represent any taxpayer on any tax matter, not only returns they prepared.
+            </p>
           </div>
         </div>
       </div>
@@ -65,10 +70,10 @@ export default function IrsRepresentationPage() {
       <section className="section-padding bg-alpine-cream">
         <div className="container-content">
           <h2 className="text-3xl font-heading font-bold text-alpine-blue mb-6">
-            Current Scope of Service
+            Scope of Service
           </h2>
           <p className="text-text-secondary text-lg mb-4 max-w-3xl">
-            At this time, Alpine Tax assists with:
+            Alpine Tax assists with:
           </p>
           <ul className="space-y-3 text-text-secondary text-lg max-w-3xl">
             <li>
@@ -87,6 +92,11 @@ export default function IrsRepresentationPage() {
             <li>
               <strong>CP2000 and underreporter notices</strong> — helping you review whether a
               proposed change is correct and how to respond if you disagree
+            </li>
+            <li>
+              <strong>Representation before the IRS</strong>: as an Enrolled Agent, Vinnie can
+              communicate with the IRS on your behalf in audits and collection matters, with your
+              written authorization
             </li>
           </ul>
         </div>

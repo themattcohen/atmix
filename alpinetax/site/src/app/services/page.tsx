@@ -48,7 +48,7 @@ export default function ServicesPage() {
           <div className="max-w-3xl space-y-4 text-text-secondary text-lg leading-relaxed mb-12">
             <p>
               Tax season doesn&rsquo;t have to be stressful. At Alpine Tax &amp; Consulting, you
-              work directly with Vinnie Boettcher — an experienced tax professional who takes the
+              work directly with Vinnie Boettcher, an experienced Enrolled Agent (EA) who takes the
               time to understand your situation, not a rotating cast of strangers at a high-volume
               tax mill.
             </p>
