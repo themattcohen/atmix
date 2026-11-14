@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How revenue recognition works</title>
+<style>
+html,body{margin:0;height:100%;background:#06080e;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;
+  background:#0b0f1a;color:#e9ecf3;font-family:Inter,"Liberation Sans","DejaVu Sans",Arial,sans-serif;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:120px 120px}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 10%,rgba(58,214,194,.09),transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(245,185,66,.09),transparent 50%)}
+.scene{position:absolute;inset:0;display:none;padding:110px 140px;box-sizing:border-box}
+.a{opacity:0;will-change:transform,opacity}
+.mono{font-family:"DejaVu Sans Mono","Liberation Mono",Menlo,monospace}
+.kicker{font-size:22px;letter-spacing:.22em;text-transform:uppercase;color:#f5b942;font-weight:700}
+.h2{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:16px 0 0}
+.sub{font-size:34px;color:#a3abbd;line-height:1.35}
+.accent{color:#f5b942}.teal{color:#3ad6c2}.red{color:#ff6b6b}.dim{color:#6b7385}
+#bar{position:absolute;left:0;bottom:0;height:6px;background:#3ad6c2;width:0;z-index:5}
+.brand{position:absolute;right:140px;top:70px;font-weight:800;letter-spacing:-.02em;font-size:28px;color:#6b7385}
+.brand b{color:#f5b942}
+.title{position:absolute;left:140px;top:300px}
+.title .word{font-size:120px;font-weight:800;letter-spacing:-.045em;line-height:1}
+/* terminal */
+.term{position:absolute;left:140px;top:330px;width:1120px;height:520px;background:#070a10;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-sizing:border-box;padding:70px 40px 40px;font-size:26px;line-height:1.55;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.term::before{content:"";position:absolute;left:24px;top:22px;width:14px;height:14px;border-radius:50%;background:#ff5f57;box-shadow:24px 0 0 #febc2e,48px 0 0 #28c840}
+.term .p{color:#3ad6c2}.term .c{color:#f5b942}.term .g{color:#3ad6c2}.term .y{color:#f5b942}.term .d{color:#6b7385}
+.term .cur{display:inline-block;width:14px;height:28px;background:#e9ecf3;vertical-align:-4px;margin-left:4px}
+.side{position:absolute;left:1320px;top:360px;width:460px;font-size:30px;line-height:1.45;color:#c3c9d6}
+.side b{display:block;color:#f5b942;font-size:20px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
+/* map */
+.rail{position:absolute;left:140px;top:420px;width:1640px}
+.groups{display:flex;gap:30px}
+.group{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:26px 24px 22px;box-sizing:border-box}
+.group .gname{font-size:20px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;margin-bottom:20px}
+.group .nodes{display:flex;flex-direction:column;gap:12px}
+.nd{display:flex;align-items:center;gap:14px;font-size:24px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04)}
+.nd span{font-family:"DejaVu Sans Mono",monospace;color:#6b7385;min-width:54px;font-size:20px}
+.g1 .gname{color:#9fb0ff}.g2 .gname{color:#f5b942}.g3 .gname{color:#3ad6c2}.g4 .gname{color:#ff9f6b}
+.mapline{position:absolute;left:140px;top:930px;font-size:36px;color:#c3c9d6;width:1640px}
+/* panels */
+.panels{position:absolute;left:140px;top:330px;width:1640px;display:flex;gap:26px}
+.panel{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:30px 30px 26px;box-sizing:border-box;min-height:560px;display:flex;flex-direction:column}
+.panel h3{margin:0 0 20px;font-size:30px;letter-spacing:-.015em;display:flex;align-items:center;gap:14px}
+.panel h3 span{font-family:"DejaVu Sans Mono",monospace;font-size:20px;color:#0b0f1a;background:#f5b942;padding:4px 10px;border-radius:7px;font-weight:800}
+.panel .body{flex:1;font-size:23px;line-height:1.45;color:#c3c9d6}
+.panel .body>div{margin-bottom:14px}
+.panel .art{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.art i{font-style:normal;font-family:"DejaVu Sans Mono",monospace;font-size:17px;color:#9aa3b5;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:5px 10px;border-radius:7px}
+.ok{color:#3ad6c2;font-weight:800}.warn{color:#f5b942;font-weight:800}.bad{color:#ff6b6b;font-weight:800}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:18px;font-weight:800;letter-spacing:.08em}
+.badge.ok{background:rgba(58,214,194,.15);border:1px solid rgba(58,214,194,.4)}
+.badge.warn{background:rgba(245,185,66,.15);border:1px solid rgba(245,185,66,.4)}
+.row{display:flex;justify-content:space-between;gap:12px}
+.row .mono{font-size:20px}
+.chk{display:flex;gap:10px;align-items:center}
+.chk i{width:18px;height:18px;border:2px solid #6b7385;border-radius:4px;display:inline-block;flex:none}
+.chk i.on{background:#3ad6c2;border-color:#3ad6c2}
+.cascade div{padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.04);margin-bottom:8px;display:flex;justify-content:space-between}
+.cascade div b{color:#9aa3b5;font-weight:600;font-size:19px}
+.q{background:rgba(255,255,255,.04);border-radius:12px;padding:16px;font-size:21px}
+.q .opt{padding:8px 10px;border-radius:8px;margin-top:6px;border:1px solid rgba(255,255,255,.1);display:flex;gap:10px;align-items:center}
+.q .opt.rec{border-color:#f5b942;color:#f5b942}
+.q .opt i{width:16px;height:16px;border:2px solid currentColor;border-radius:4px;display:inline-block;flex:none}
+.q .opt i.on{background:currentColor}
+.caption{position:absolute;left:140px;top:930px;font-size:34px;color:#c3c9d6;width:1640px}
+/* files */
+.tree{position:absolute;left:140px;top:330px;width:900px;font-size:24px;line-height:1.75;color:#c3c9d6}
+.tree .d{color:#6b7385}
+.tree .f{color:#e9ecf3}
+.tree .n{color:#3ad6c2}
+.notes{position:absolute;left:1120px;top:360px;width:660px;font-size:30px;line-height:1.5;color:#c3c9d6}
+.notes div{margin-bottom:34px}
+.notes b{display:block;color:#f5b942;font-family:"DejaVu Sans Mono",monospace;font-size:24px;font-weight:600;margin-bottom:6px}
+/* status */
+.status{position:absolute;left:140px;top:300px;width:1120px;height:690px;background:#070a10;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-sizing:border-box;padding:60px 40px 30px;font-size:22px;line-height:1.5}
+.status::before{content:"";position:absolute;left:24px;top:22px;width:14px;height:14px;border-radius:50%;background:#ff5f57;box-shadow:24px 0 0 #febc2e,48px 0 0 #28c840}
+.status .st{display:flex;gap:20px}
+.status .st span:first-child{min-width:60px;color:#6b7385}
+.status .st span:nth-child(2){min-width:420px}
+.close{position:absolute;left:1320px;top:380px;width:460px}
+.close .word{font-size:120px;font-weight:800;letter-spacing:-.05em;line-height:.95}
+.close .l{font-size:34px;margin-top:26px;color:#c3c9d6;line-height:1.4}
+</style>
+<style>
+/* local to this piece */
+#s5 .panel .body,#s7 .panel .body{font-size:20px;line-height:1.38}
+#s5 .panel .body>div,#s7 .panel .body>div{margin-bottom:11px}
+#s5 .panel h3,#s7 .panel h3{font-size:27px;margin-bottom:14px}
+#s7 .panel{padding:24px 24px 22px}
+.bars{position:absolute;left:140px;top:360px;width:1640px;height:520px}
+.barset{position:absolute;top:0;width:780px;height:420px}
+.barset .lab{position:absolute;left:0;top:-54px;font-size:24px;color:#a3abbd;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.barset .lab b{color:#e9ecf3;font-weight:800;margin-left:12px;text-transform:none;letter-spacing:0;font-size:28px}
+.barset .base{position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.2)}
+.bar{position:absolute;bottom:2px;width:46px;border-radius:6px 6px 0 0;transform-origin:bottom}
+.bar.hot{background:linear-gradient(180deg,#ff8a6b,#c0392b)}
+.bar.ok{background:linear-gradient(180deg,#3ad6c2,#1f8f82)}
+.bar span{position:absolute;left:50%;transform:translateX(-50%);bottom:-34px;font-size:18px;color:#6b7385;font-family:"DejaVu Sans Mono",monospace}
+.bar i{position:absolute;left:50%;transform:translateX(-50%);top:-30px;font-size:19px;font-style:normal;color:#e9ecf3;font-family:"DejaVu Sans Mono",monospace;white-space:nowrap}
+.layers{position:absolute;left:140px;top:360px;width:1640px;display:flex;gap:26px}
+.layer{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:34px 32px;box-sizing:border-box;min-height:430px}
+.layer .ln{font-family:"DejaVu Sans Mono",monospace;font-size:22px;color:#f5b942;font-weight:700;letter-spacing:.1em}
+.layer h3{margin:10px 0 16px;font-size:36px;letter-spacing:-.02em}
+.layer p{margin:0 0 14px;font-size:24px;line-height:1.4;color:#c3c9d6}
+.layer .tag{display:inline-block;margin-top:8px;padding:5px 12px;border-radius:999px;font-size:17px;font-weight:800;letter-spacing:.08em}
+.tag.built{background:rgba(58,214,194,.15);color:#3ad6c2;border:1px solid rgba(58,214,194,.4)}
+.tag.spec{background:rgba(245,185,66,.15);color:#f5b942;border:1px solid rgba(245,185,66,.4)}
+.sched{position:absolute;left:140px;top:340px;width:1640px}
+.sched .hdr{display:flex;gap:40px;font-size:26px;color:#c3c9d6;margin-bottom:26px;flex-wrap:wrap}
+.sched .hdr div{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 18px}
+.sched .hdr b{color:#e9ecf3;font-weight:800}
+.cells{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px 8px;text-align:center}
+.cell .m{font-size:18px;color:#6b7385;letter-spacing:.08em;text-transform:uppercase}
+.cell .v{font-family:"DejaVu Sans Mono",monospace;font-size:26px;margin-top:8px;color:#e9ecf3}
+.cell.last .v{color:#f5b942}
+.sum{display:flex;justify-content:space-between;margin-top:26px;font-size:28px;color:#c3c9d6}
+.sum b{font-family:"DejaVu Sans Mono",monospace;color:#3ad6c2;font-weight:800}
+.srcline{position:absolute;left:140px;top:820px;width:1640px;font-size:30px;line-height:1.45;color:#c3c9d6}
+.srcline b{color:#e9ecf3}
+.targets{width:100%;border-collapse:collapse;font-size:17px;margin-top:4px}
+.targets th{text-align:left;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#6b7385;padding:0 0 8px;font-weight:700}
+.targets td{padding:7px 0;border-top:1px solid rgba(255,255,255,.08)}
+.targets td.n{text-align:right;font-family:"DejaVu Sans Mono",monospace;padding-left:10px;white-space:nowrap}
+.je{font-family:"DejaVu Sans Mono",monospace;font-size:17px;line-height:1.5}
+.je .row{display:flex;justify-content:space-between;gap:10px}.je .row span:last-child{white-space:nowrap}
+.je .k{color:#f5b942;font-weight:700;min-width:46px;display:inline-block}
+.cu{position:absolute;left:140px;top:360px;width:1640px;display:flex;gap:26px;align-items:stretch}
+.cu .months{flex:1.2;display:flex;flex-direction:column;gap:14px}
+.cu .mo{display:flex;align-items:center;gap:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;font-size:26px}
+.cu .mo span{font-family:"DejaVu Sans Mono",monospace;color:#6b7385;min-width:120px}
+.cu .mo em{font-style:normal;margin-left:auto;font-size:20px;font-weight:800;letter-spacing:.06em}
+.cu .mo em.closed{color:#6b7385}.cu .mo em.open{color:#3ad6c2}.cu .mo em.fold{color:#f5b942}
+.cu .notes{position:static;flex:1;font-size:28px;line-height:1.5;color:#c3c9d6;width:auto}
+.cu .notes div{margin-bottom:26px}
+.cu .notes b{display:block;color:#f5b942;font-size:20px;letter-spacing:.14em;text-transform:uppercase;font-family:inherit;font-weight:800;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bar"></div>
+
+  <!-- 1 title -->
+  <section class="scene" id="s1">
+    <div class="title">
+      <div class="kicker a" id="t-k">Elizia, revenue recognition</div>
+      <div class="word a" id="t-w">Deferred revenue,<br>from contract to entry.</div>
+      <div class="sub a" id="t-s" style="margin-top:34px;font-size:40px">Accrual clients only. Four layers, each useful on its own.</div>
+    </div>
+  </section>
+
+  <!-- 2 the problem -->
+  <section class="scene" id="s2">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="p-k">The break it exists for</div>
+    <div class="h2 a" id="p-h">Billed once. Earned over twelve months.</div>
+    <div class="bars">
+      <div class="barset a" id="p-left" style="left:0"><div class="lab">Ledger as found <b>all in July</b></div><div class="base"></div></div>
+      <div class="barset a" id="p-right" style="left:860px"><div class="lab">As earned <b>one twelfth a month</b></div><div class="base"></div></div>
+    </div>
+    <div class="caption a" id="p-cap">Books that skip the deferral overstate July and understate every month after it. Catching that, and booking the difference, is the job.</div>
+  </section>
+
+  <!-- 3 four layers -->
+  <section class="scene" id="s3">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="l-k">Four layers</div>
+    <div class="h2 a" id="l-h">Each one shippable alone. Each gated on the accrual method.</div>
+    <div class="layers" id="l-layers">
+      <div class="layer a"><div class="ln">L1</div><h3>Detect</h3><p>Read-only. Classifies every deferred-account line and flags the breaks.</p><span class="tag built">built</span></div>
+      <div class="layer a"><div class="ln">L2</div><h3>Schedule</h3><p>One row per billing line and obligation from the cutover on, spread by a stamped convention.</p><span class="tag built">built</span></div>
+      <div class="layer a"><div class="ln">L3</div><h3>Plan and post</h3><p>Target minus actual per account. One entry a month, backup attached, posted under the write controls.</p><span class="tag spec">specified, builds next</span></div>
+      <div class="layer a"><div class="ln">L4</div><h3>Catch-up</h3><p>Missed months as an ordered, reviewable set of plans. Never auto-posted.</p><span class="tag spec">specified, builds next</span></div>
+    </div>
+    <div class="caption a" id="l-cap">A null accounting method is never guessed: the month asks "cash or accrual?" and waits. A cash client stops at detect with "not applicable".</div>
+  </section>
+
+  <!-- 4 L1 detect -->
+  <section class="scene" id="s4">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="d-k">L1, detect</div>
+    <div class="h2 a" id="d-h">Read the whole year. Classify every line.</div>
+    <div class="panels">
+      <div class="panel a" id="d-p1"><h3><span>READ</span>Full fiscal years</h3><div class="body">
+        <div>Invoices, sales receipts, credit memos, refunds, deposits to billing income.</div>
+        <div>Journal entries.</div>
+        <div>The ledger of every deferred, long-term, contract-asset and A/R account, on the accrual basis.</div>
+        <div>Never cut at the as-of date, so one snapshot serves the year.</div>
+        <div class="art"><i>roles.json</i></div></div></div>
+      <div class="panel a" id="d-p2"><h3><span>CLASS</span>Every deferred line</h3><div class="body">
+        <div class="row"><span>deferral</span><span class="dim">billing parked</span></div>
+        <div class="row"><span>release</span><span class="dim">earned this month</span></div>
+        <div class="row"><span>release reversal</span><span class="dim">undone</span></div>
+        <div class="row"><span>direct billing</span><span class="dim">straight to revenue</span></div>
+        <div class="row"><span>credit, LT reclass</span><span class="dim">adjustments</span></div>
+        <div class="row"><span>native, other</span><span class="dim">QuickBooks' own, unknown</span></div>
+        <div class="art"><i>detect.json</i><i>detect.md</i></div></div></div>
+      <div class="panel a" id="d-p3"><h3><span>FLAG</span>What it reports</h3><div class="body">
+        <div class="row"><span>Billings with no deferral</span><span class="warn">month</span></div>
+        <div class="row"><span>Invoice lines straight to recognition</span><span class="warn">line</span></div>
+        <div class="row"><span>Multi-year item, no long-term account</span><span class="warn">item</span></div>
+        <div class="row"><span>Releases that trace to nothing</span><span class="warn">entry</span></div>
+        <div class="row"><span>Native rev rec on beside manual entries</span><span class="bad">stop</span></div>
+        <div class="row"><span>Rev rec entries with no backup attached</span><span class="warn">month</span></div>
+        <div>Runs in the new-books assessment and in every month's self-review.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 5 policy, rigor, contracts, cutover -->
+  <section class="scene" id="s5">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="c-k">Before any schedule</div>
+    <div class="h2 a" id="c-h">Every judgment is a stamped answer, never a default.</div>
+    <div class="panels">
+      <div class="panel a" id="c-p1"><h3><span>POLICY</span>Set from answers</h3><div class="body">
+        <div>Cutover month, proration, term basis, credit-memo treatment, discount allocation, gross or net per channel, long-term account.</div>
+        <div>Each value carries the date, the person and the question it answers, in the client's config.</div>
+        <div>A null value a row touches refuses the month.</div>
+        <div class="art"><i>config.yaml revrec:</i><i>guidelines.md</i></div></div></div>
+      <div class="panel a" id="c-p2"><h3><span>RIGOR</span>How much 606 matters</h3><div class="body">
+        <div>The engine measures: multi-year share, reseller channels, bundles, discount lines, foreign currency, who reads the statements.</div>
+        <div class="row"><span>simplified</span><span class="dim">straight line by billing line</span></div>
+        <div class="row"><span>standard</span><span class="dim">contracts for the hard ones</span></div>
+        <div class="row"><span>full</span><span class="dim">a confirmed contract per line</span></div>
+        <div>A rule table recommends. The owner stamps the tier.</div>
+        <div class="art"><i>rigor-assessment.md</i></div></div></div>
+      <div class="panel a" id="c-p3"><h3><span>CONTRACTS</span>Request, read, confirm</h3><div class="body">
+        <div>One request drafted per customer with billings and no contract on file. A person sends it.</div>
+        <div>A reader agent extracts every date, amount and clause with its page and a verbatim quote.</div>
+        <div>A person confirms each field. Only confirmed fields ever schedule.</div>
+        <div class="art"><i>contracts-register.jsonl</i></div></div></div>
+      <div class="panel a" id="c-p4"><h3><span>CUTOVER</span>Opening schedule</h3><div class="body">
+        <div>The owner sets the cutover month.</div>
+        <div>Opening rows are imported or built from the client's own schedule.</div>
+        <div class="row"><span>Opening deferred</span><span class="mono">= GL to the cent</span></div>
+        <div>Or the owner accepts the residual, by amount, with a reason.</div>
+        <div class="art"><i>opening.json</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 6 L2 schedule -->
+  <section class="scene" id="s6">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="h-k">L2, schedule</div>
+    <div class="h2 a" id="h-h">One row per billing line. Cents are arithmetic.</div>
+    <div class="sched">
+      <div class="hdr a" id="h-hdr">
+        <div>Invoice <b>1042</b>, line 1</div><div>Obligation <b>annual plan, ratable</b></div><div>Net <b>1,000.00</b></div><div>Start <b>2026-07-15</b>, 12 months</div><div>Proration <b>full month</b></div>
+      </div>
+      <div class="cells" id="h-cells">
+        <div class="cell a"><div class="m">Jul</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Aug</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Sep</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Oct</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Nov</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Dec</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Jan</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Feb</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Mar</div><div class="v">83.33</div></div><div class="cell a"><div class="m">Apr</div><div class="v">83.33</div></div><div class="cell a"><div class="m">May</div><div class="v">83.33</div></div><div class="cell last a"><div class="m">Jun</div><div class="v">83.37</div></div>
+      </div>
+      <div class="sum a" id="h-sum"><span>Remainder on the last period. Every schedule asserts <b>sum = total</b>, consecutive months, none before the start.</span></div>
+    </div>
+    <div class="srcline a" id="h-src"><b>Where each fact comes from, in order.</b> Obligation: configured item pattern, then a confirmed contract row, then Jev over the client's own closed set, then a question. Start: contract, then the line's service date, then the configured school-year window, then a question. Jev never touches a cent.</div>
+  </section>
+
+  <!-- 7 L3 plan and post -->
+  <section class="scene" id="s7">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="e-k">L3, plan and post</div>
+    <div class="h2 a" id="e-h">Target minus actual. One entry. Backup attached.</div>
+    <div class="panels">
+      <div class="panel a" id="e-p1"><h3><span>PLAN</span>Balance based</h3><div class="body">
+        <div>Per account: the schedule's target at month end minus what the ledger holds, whoever posted it.</div>
+        <table class="targets"><tr><th>Account</th><th style="text-align:right">Target</th><th style="text-align:right">Actual</th><th style="text-align:right">Line</th></tr>
+          <tr><td>Deferred revenue</td><td class="n">48,200.00</td><td class="n">51,400.00</td><td class="n ok">3,200.00</td></tr>
+          <tr><td>Subscription revenue</td><td class="n">31,600.00</td><td class="n">28,400.00</td><td class="n ok">3,200.00</td></tr></table>
+        <div>Anything already booked is absorbed. An unclassified entry by someone else in the month refuses.</div>
+        <div class="art"><i>revrec-plan.json</i><i>revrec-plan.md</i></div></div></div>
+      <div class="panel a" id="e-p2"><h3><span>ENTRY</span>RevRec 2026-10</h3><div class="body">
+        <div class="je"><div class="row"><span><span class="k">DEF</span>Deferred revenue</span><span>Dr 3,200.00</span></div><div class="row"><span><span class="k">REC</span>Subscription revenue</span><span>Cr 3,200.00</span></div><div class="row"><span><span class="k">LT</span>Long-term deferred</span><span class="dim">0.00</span></div><div class="row"><span><span class="k">RCL</span>Same-month reclass</span><span class="dim">0.00</span></div></div>
+        <div>Named the same way every month, so a reader finds it and sees it booked consistently.</div>
+        <div>Line names per entry family are asked once and stamped.</div></div></div>
+      <div class="panel a" id="e-p3"><h3><span>BACKUP</span>RevRec 2026-10.xlsx</h3><div class="body">
+        <div class="row"><span class="mono">Entry</span><span class="dim">every line, totals</span></div>
+        <div class="row"><span class="mono">Targets</span><span class="dim">the tie, per account</span></div>
+        <div class="row"><span class="mono">Deferral, Release</span><span class="dim">detail rows</span></div>
+        <div class="row"><span class="mono">Rollforward, Inputs</span><span class="dim">before, after, hashes</span></div>
+        <div>Built from the plan, no clock value anywhere. If a target difference does not equal its entry line, no plan is written.</div>
+        <div>Uploaded to the entry and read back by name and size.</div></div></div>
+      <div class="panel a" id="e-p4"><h3><span>POST</span>Under the controls</h3><div class="body">
+        <div class="chk"><i class="on"></i>Write log on, collision check green</div>
+        <div class="chk"><i class="on"></i>Source documents unchanged since the plan</div>
+        <div class="chk"><i class="on"></i>Realm on the allowed list</div>
+        <div class="chk"><i class="on"></i>A person's stamp on the plan hash</div>
+        <div>Then post, read back, log with undo, attach, verify. A posted month re-run with no change posts nothing.</div>
+        <div class="art"><i>revrec-verify.json</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 8 L4 catch-up -->
+  <section class="scene" id="s8">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="u-k">L4, catch-up</div>
+    <div class="h2 a" id="u-h">Missed months, rebuilt as a plan a person can read.</div>
+    <div class="cu">
+      <div class="months" id="u-months">
+        <div class="mo a"><span>2026-07</span>First break found<em class="closed">closed, folded forward</em></div>
+        <div class="mo a"><span>2026-08</span>Missed<em class="closed">closed, folded forward</em></div>
+        <div class="mo a"><span>2026-09</span>Missed<em class="closed">closed, folded forward</em></div>
+        <div class="mo a"><span>2026-10</span>First open month<em class="fold">carries the folded set</em></div>
+        <div class="mo a"><span>2026-11</span>Current<em class="open">regular plan</em></div>
+      </div>
+      <div class="notes" id="u-notes">
+        <div class="a"><b>Ordered</b>One balance-based plan per month from the first open month, oldest first.</div>
+        <div class="a"><b>Folded</b>Closed months fold into the first open month under a strategy the owner stamped.</div>
+        <div class="a"><b>Checked</b>A roll-forward before and after. The owner's stamp on the set. Never auto-posted.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 status -->
+  <section class="scene" id="s9">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="z-k">Where it stands</div>
+    <div class="h2 a" id="z-h">One tool, one noun, verbs in order.</div>
+    <div class="status mono a" id="z-term">
+      <div style="margin-bottom:14px"><span class="teal">$</span> <span class="accent">liz</span> revrec revrec --help</div>
+      <div id="z-rows">
+        <div class="st a"><span>L1</span><span>detect, roles, rollforward, rigor assess</span><span class="ok">BUILT</span></div>
+        <div class="st a"><span>&nbsp;</span><span>policy set, native-guard record</span><span class="ok">BUILT</span></div>
+        <div class="st a"><span>&nbsp;</span><span>opening import, build, tie</span><span class="ok">BUILT</span></div>
+        <div class="st a"><span>&nbsp;</span><span>contracts request, receive, extract, confirm</span><span class="ok">BUILT</span></div>
+        <div class="st a"><span>&nbsp;</span><span>workbook ingest, analyze</span><span class="ok">BUILT</span></div>
+        <div class="st a"><span>L2</span><span>import, schedule build, schedule show</span><span class="ok">BUILT</span></div>
+        <div class="st a"><span>L3</span><span>plan, post, record, verify</span><span class="warn">SPECIFIED, PRD 0.5</span></div>
+        <div class="st a"><span>L4</span><span>catchup</span><span class="warn">SPECIFIED, PRD 0.5</span></div>
+        <div class="st a"><span>&nbsp;</span><span>first client schedule</span><span class="warn">WAITS ON THE RIGOR RULING</span></div>
+      </div>
+    </div>
+    <div class="close">
+      <div class="word a" id="z-w">Elizia.</div>
+      <div class="l a" id="z-l">The schedule is arithmetic. The judgments are yours, on record.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Elizia animation engine. Deterministic: every frame is a pure function of time,
+// so the live player and the offline renderer (render.py, window.__seek) agree.
+(function () {
+  var W = 1920, H = 1080;
+  var stage = document.getElementById('stage');
+  var bar = document.getElementById('bar');
+  function fit() {
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  var scenes = [], starts = [], total = 0;
+  window.scene = function (id, dur, draw) {
+    scenes.push({ el: document.getElementById(id), dur: dur, draw: draw });
+  };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  window.clamp = clamp;
+  window.lerp = function (a, b, p) { return a + (b - a) * p; };
+  window.linear = function (p) { return p; };
+  window.easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  window.easeIn = function (p) { return p * p * p; };
+  window.easeInOut = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  window.prog = function (t, a, b, e) { return (e || easeOut)(clamp((t - a) / (b - a), 0, 1)); };
+  window.$ = function (id) { return typeof id === 'string' ? document.getElementById(id) : id; };
+  window.fx = function (el, o) {
+    el = $(el); o = o || {};
+    if (o.o !== undefined) el.style.opacity = o.o;
+    el.style.transform = 'translate(' + (o.x || 0) + 'px,' + (o.y || 0) + 'px) scale(' + (o.s === undefined ? 1 : o.s) + ') rotate(' + (o.r || 0) + 'deg)';
+  };
+  // fade + rise in, starting at a (ms into scene), lasting d
+  window.rise = function (el, t, a, d, dy) {
+    d = d || 600; dy = dy === undefined ? 40 : dy;
+    var p = prog(t, a, a + d);
+    fx(el, { o: p, y: (1 - p) * dy });
+    return p;
+  };
+  // fade out starting at a
+  window.fade = function (el, t, a, d) {
+    d = d || 400; var p = prog(t, a, a + d, linear);
+    $(el).style.opacity = 1 - p; return p;
+  };
+  window.typed = function (el, str, t, a, cps) {
+    el = $(el); cps = cps || 40;
+    var n = clamp(Math.floor((t - a) / 1000 * cps), 0, str.length);
+    el.textContent = str.slice(0, n);
+    return n >= str.length;
+  };
+  window.count = function (el, t, a, b, from, to, fmt) {
+    var p = prog(t, a, b, easeInOut);
+    $(el).textContent = fmt(lerp(from, to, p));
+  };
+  window.fmtInt = function (v) { return Math.round(v).toLocaleString('en-US'); };
+  window.fmtMoney = function (v) {
+    var neg = v < 0; v = Math.abs(v);
+    return (neg ? '-' : '') + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  // draw an SVG path progressively (expects pathLength set to 1)
+  window.stroke = function (el, t, a, d) {
+    var p = prog(t, a, a + (d || 500), easeInOut);
+    $(el).style.strokeDashoffset = 1 - p; return p;
+  };
+  // sequentially reveal children of a container
+  window.list = function (el, t, a, gap, d) {
+    el = $(el); d = d || 500; gap = gap || 350;
+    var kids = el.children, done = 0;
+    for (var i = 0; i < kids.length; i++) {
+      var p = prog(t, a + i * gap, a + i * gap + d);
+      fx(kids[i], { o: p, y: (1 - p) * 24 });
+      if (p >= 1) done++;
+    }
+    return done === kids.length;
+  };
+
+  function init() {
+    total = 0; starts = [];
+    scenes.forEach(function (s) { starts.push(total); total += s.dur; });
+    window.__total = total;
+  }
+  function render(T) {
+    T = clamp(T, 0, total - 1);
+    var i = 0;
+    while (i < scenes.length - 1 && T >= starts[i + 1]) i++;
+    scenes.forEach(function (s, j) { s.el.style.display = j === i ? 'block' : 'none'; });
+    var s = scenes[i], t = T - starts[i];
+    var fin = prog(t, 0, 350, linear), fout = 1 - prog(t, s.dur - 350, s.dur, linear);
+    s.el.style.opacity = Math.min(fin, fout);
+    s.draw(t, s.dur);
+    if (bar) bar.style.width = (T / total * 100) + '%';
+  }
+  window.__seek = function (ms) { render(ms); };
+
+  var playing = true, t0 = null, offset = 0, last = 0;
+  function loop(now) {
+    if (t0 === null) t0 = now;
+    if (playing) {
+      last = offset + (now - t0);
+      if (last >= total) { last = 0; offset = 0; t0 = now; }
+      render(last);
+    }
+    requestAnimationFrame(loop);
+  }
+  function seekBy(ms) { offset = clamp(last + ms, 0, total - 1); t0 = null; if (!playing) render(offset), last = offset; }
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space') { playing = !playing; if (playing) { t0 = null; offset = last; } e.preventDefault(); }
+    if (e.code === 'ArrowRight') seekBy(5000);
+    if (e.code === 'ArrowLeft') seekBy(-5000);
+    if (e.code === 'Home') { offset = 0; t0 = null; }
+  });
+  document.addEventListener('click', function () { playing = !playing; if (playing) { t0 = null; offset = last; } });
+  window.addEventListener('load', function () {
+    init();
+    if (location.hash.indexOf('render') >= 0) { render(0); window.__ready = true; }
+    else requestAnimationFrame(loop);
+  });
+})();
+
+</script>
+<script>
+function panels(ids, t, a, gap) {
+  ids.forEach(function (id, i) {
+    var s = a + i * gap;
+    rise(id, t, s, 600, 40);
+    list($(id).querySelector('.body'), t, s + 400, 260, 450);
+  });
+}
+// build the bar charts once
+(function () {
+  var L = $('p-left'), R = $('p-right');
+  var months = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  months.forEach(function (m, i) {
+    var b = document.createElement('div'); b.className = 'bar hot'; b.style.left = (i * 64) + 'px';
+    b.style.height = (i === 0 ? 360 : 6) + 'px'; b.innerHTML = '<span>' + m + '</span>' + (i === 0 ? '<i>12,000.00</i>' : '');
+    L.appendChild(b);
+    var c = document.createElement('div'); c.className = 'bar ok'; c.style.left = (i * 64) + 'px';
+    c.style.height = '30px'; c.innerHTML = '<span>' + m + '</span>' + (i === 0 ? '<i>1,000.00</i>' : '');
+    R.appendChild(c);
+  });
+})();
+
+scene('s1', 5000, function (t) {
+  rise('t-k', t, 200, 500, 20); rise('t-w', t, 500, 900, 60); rise('t-s', t, 1800, 700);
+});
+
+scene('s2', 11000, function (t) {
+  rise('p-k', t, 100, 500, 20); rise('p-h', t, 300, 700);
+  rise('p-left', t, 1000, 600, 30);
+  var g = prog(t, 1400, 2400);
+  var lb = $('p-left').querySelectorAll('.bar');
+  lb.forEach(function (b, i) { b.style.transform = 'scaleY(' + g + ')'; });
+  rise('p-right', t, 3600, 600, 30);
+  var rb = $('p-right').querySelectorAll('.bar');
+  rb.forEach(function (b, i) { var p = prog(t, 4000 + i * 120, 4500 + i * 120); b.style.transform = 'scaleY(' + p + ')'; });
+  rise('p-cap', t, 6400, 700, 20);
+});
+
+scene('s3', 12000, function (t) {
+  rise('l-k', t, 100, 500, 20); rise('l-h', t, 300, 700);
+  list('l-layers', t, 1000, 1100, 600);
+  rise('l-cap', t, 6200, 700, 20);
+});
+
+scene('s4', 14000, function (t) {
+  rise('d-k', t, 100, 500, 20); rise('d-h', t, 300, 700);
+  panels(['d-p1', 'd-p2', 'd-p3'], t, 1100, 3600);
+});
+
+scene('s5', 16000, function (t) {
+  rise('c-k', t, 100, 500, 20); rise('c-h', t, 300, 700);
+  panels(['c-p1', 'c-p2', 'c-p3', 'c-p4'], t, 1100, 3200);
+});
+
+scene('s6', 14000, function (t) {
+  rise('h-k', t, 100, 500, 20); rise('h-h', t, 300, 700);
+  rise('h-hdr', t, 1000, 600, 20);
+  list('h-cells', t, 1800, 220, 350);
+  rise('h-sum', t, 5000, 600, 16);
+  rise('h-src', t, 6800, 800, 20);
+});
+
+scene('s7', 17000, function (t) {
+  rise('e-k', t, 100, 500, 20); rise('e-h', t, 300, 700);
+  panels(['e-p1', 'e-p2', 'e-p3', 'e-p4'], t, 1100, 3500);
+});
+
+scene('s8', 11000, function (t) {
+  rise('u-k', t, 100, 500, 20); rise('u-h', t, 300, 700);
+  list('u-months', t, 1000, 500, 500);
+  list('u-notes', t, 3800, 1300, 600);
+});
+
+scene('s9', 11000, function (t) {
+  rise('z-k', t, 100, 500, 20); rise('z-h', t, 300, 700);
+  rise('z-term', t, 900, 600, 30);
+  list('z-rows', t, 1500, 380, 300);
+  rise('z-w', t, 6000, 900, 50);
+  rise('z-l', t, 6900, 700, 20);
+});
+</script>
+</body>
+</html>

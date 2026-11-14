@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How onboarding works</title>
+<style>
+html,body{margin:0;height:100%;background:#06080e;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;
+  background:#0b0f1a;color:#e9ecf3;font-family:Inter,"Liberation Sans","DejaVu Sans",Arial,sans-serif;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:120px 120px}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 10%,rgba(58,214,194,.09),transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(245,185,66,.09),transparent 50%)}
+.scene{position:absolute;inset:0;display:none;padding:110px 140px;box-sizing:border-box}
+.a{opacity:0;will-change:transform,opacity}
+.mono{font-family:"DejaVu Sans Mono","Liberation Mono",Menlo,monospace}
+.kicker{font-size:22px;letter-spacing:.22em;text-transform:uppercase;color:#f5b942;font-weight:700}
+.h2{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:16px 0 0}
+.sub{font-size:34px;color:#a3abbd;line-height:1.35}
+.accent{color:#f5b942}.teal{color:#3ad6c2}.red{color:#ff6b6b}.dim{color:#6b7385}
+#bar{position:absolute;left:0;bottom:0;height:6px;background:#3ad6c2;width:0;z-index:5}
+.brand{position:absolute;right:140px;top:70px;font-weight:800;letter-spacing:-.02em;font-size:28px;color:#6b7385}
+.brand b{color:#f5b942}
+.title{position:absolute;left:140px;top:300px}
+.title .word{font-size:120px;font-weight:800;letter-spacing:-.045em;line-height:1}
+/* terminal */
+.term{position:absolute;left:140px;top:330px;width:1120px;height:520px;background:#070a10;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-sizing:border-box;padding:70px 40px 40px;font-size:26px;line-height:1.55;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.term::before{content:"";position:absolute;left:24px;top:22px;width:14px;height:14px;border-radius:50%;background:#ff5f57;box-shadow:24px 0 0 #febc2e,48px 0 0 #28c840}
+.term .p{color:#3ad6c2}.term .c{color:#f5b942}.term .g{color:#3ad6c2}.term .y{color:#f5b942}.term .d{color:#6b7385}
+.term .cur{display:inline-block;width:14px;height:28px;background:#e9ecf3;vertical-align:-4px;margin-left:4px}
+.side{position:absolute;left:1320px;top:360px;width:460px;font-size:30px;line-height:1.45;color:#c3c9d6}
+.side b{display:block;color:#f5b942;font-size:20px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
+/* map */
+.rail{position:absolute;left:140px;top:420px;width:1640px}
+.groups{display:flex;gap:30px}
+.group{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:26px 24px 22px;box-sizing:border-box}
+.group .gname{font-size:20px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;margin-bottom:20px}
+.group .nodes{display:flex;flex-direction:column;gap:12px}
+.nd{display:flex;align-items:center;gap:14px;font-size:24px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04)}
+.nd span{font-family:"DejaVu Sans Mono",monospace;color:#6b7385;min-width:54px;font-size:20px}
+.g1 .gname{color:#9fb0ff}.g2 .gname{color:#f5b942}.g3 .gname{color:#3ad6c2}.g4 .gname{color:#ff9f6b}
+.mapline{position:absolute;left:140px;top:930px;font-size:36px;color:#c3c9d6;width:1640px}
+/* panels */
+.panels{position:absolute;left:140px;top:330px;width:1640px;display:flex;gap:26px}
+.panel{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:30px 30px 26px;box-sizing:border-box;min-height:560px;display:flex;flex-direction:column}
+.panel h3{margin:0 0 20px;font-size:30px;letter-spacing:-.015em;display:flex;align-items:center;gap:14px}
+.panel h3 span{font-family:"DejaVu Sans Mono",monospace;font-size:20px;color:#0b0f1a;background:#f5b942;padding:4px 10px;border-radius:7px;font-weight:800}
+.panel .body{flex:1;font-size:23px;line-height:1.45;color:#c3c9d6}
+.panel .body>div{margin-bottom:14px}
+.panel .art{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.art i{font-style:normal;font-family:"DejaVu Sans Mono",monospace;font-size:17px;color:#9aa3b5;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:5px 10px;border-radius:7px}
+.ok{color:#3ad6c2;font-weight:800}.warn{color:#f5b942;font-weight:800}.bad{color:#ff6b6b;font-weight:800}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:18px;font-weight:800;letter-spacing:.08em}
+.badge.ok{background:rgba(58,214,194,.15);border:1px solid rgba(58,214,194,.4)}
+.badge.warn{background:rgba(245,185,66,.15);border:1px solid rgba(245,185,66,.4)}
+.row{display:flex;justify-content:space-between;gap:12px}
+.row .mono{font-size:20px}
+.chk{display:flex;gap:10px;align-items:center}
+.chk i{width:18px;height:18px;border:2px solid #6b7385;border-radius:4px;display:inline-block;flex:none}
+.chk i.on{background:#3ad6c2;border-color:#3ad6c2}
+.cascade div{padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.04);margin-bottom:8px;display:flex;justify-content:space-between}
+.cascade div b{color:#9aa3b5;font-weight:600;font-size:19px}
+.q{background:rgba(255,255,255,.04);border-radius:12px;padding:16px;font-size:21px}
+.q .opt{padding:8px 10px;border-radius:8px;margin-top:6px;border:1px solid rgba(255,255,255,.1);display:flex;gap:10px;align-items:center}
+.q .opt.rec{border-color:#f5b942;color:#f5b942}
+.q .opt i{width:16px;height:16px;border:2px solid currentColor;border-radius:4px;display:inline-block;flex:none}
+.q .opt i.on{background:currentColor}
+.caption{position:absolute;left:140px;top:930px;font-size:34px;color:#c3c9d6;width:1640px}
+/* files */
+.tree{position:absolute;left:140px;top:330px;width:900px;font-size:24px;line-height:1.75;color:#c3c9d6}
+.tree .d{color:#6b7385}
+.tree .f{color:#e9ecf3}
+.tree .n{color:#3ad6c2}
+.notes{position:absolute;left:1120px;top:360px;width:660px;font-size:30px;line-height:1.5;color:#c3c9d6}
+.notes div{margin-bottom:34px}
+.notes b{display:block;color:#f5b942;font-family:"DejaVu Sans Mono",monospace;font-size:24px;font-weight:600;margin-bottom:6px}
+/* status */
+.status{position:absolute;left:140px;top:300px;width:1120px;height:690px;background:#070a10;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-sizing:border-box;padding:60px 40px 30px;font-size:22px;line-height:1.5}
+.status::before{content:"";position:absolute;left:24px;top:22px;width:14px;height:14px;border-radius:50%;background:#ff5f57;box-shadow:24px 0 0 #febc2e,48px 0 0 #28c840}
+.status .st{display:flex;gap:20px}
+.status .st span:first-child{min-width:60px;color:#6b7385}
+.status .st span:nth-child(2){min-width:420px}
+.close{position:absolute;left:1320px;top:380px;width:460px}
+.close .word{font-size:120px;font-weight:800;letter-spacing:-.05em;line-height:.95}
+.close .l{font-size:34px;margin-top:26px;color:#c3c9d6;line-height:1.4}
+</style>
+<style>
+.paths{position:absolute;left:140px;top:360px;width:1640px;display:flex;gap:26px}
+.path{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:34px 32px;box-sizing:border-box;min-height:430px}
+.path .pn{font-family:"DejaVu Sans Mono",monospace;font-size:22px;color:#f5b942;font-weight:700;letter-spacing:.1em}
+.path h3{margin:10px 0 16px;font-size:36px;letter-spacing:-.02em}
+.path p{margin:0 0 14px;font-size:24px;line-height:1.4;color:#c3c9d6}
+.path .when{font-size:20px;color:#9fb0ff;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-top:10px}
+.rules{position:absolute;left:140px;top:320px;font-size:40px;line-height:1.3;letter-spacing:-.015em;width:1640px}
+.rules div{padding:17px 0;border-bottom:1px solid rgba(255,255,255,.08);display:flex;gap:30px}
+.rules span{color:#f5b942;font-family:"DejaVu Sans Mono",monospace;font-size:34px;min-width:60px;padding-top:6px}
+.steps2{display:flex;flex-direction:column;gap:8px}
+.steps2 div{display:flex;gap:12px;align-items:baseline}
+.steps2 b{font-family:"DejaVu Sans Mono",monospace;color:#f5b942;font-size:18px;min-width:24px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bar"></div>
+
+  <!-- 1 title -->
+  <section class="scene" id="s1">
+    <div class="title">
+      <div class="kicker a" id="t-k">Elizia, onboarding</div>
+      <div class="word a" id="t-w">From intake to the<br>first closed month.</div>
+      <div class="sub a" id="t-s" style="margin-top:34px;font-size:40px">Ten stages, N0 to N9. Nothing guessed. Nothing created.</div>
+    </div>
+  </section>
+
+  <!-- 2 three paths -->
+  <section class="scene" id="s2">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="p-k">Three ways in</div>
+    <div class="h2 a" id="p-h">The path depends on what already exists.</div>
+    <div class="paths" id="p-paths">
+      <div class="path a"><div class="pn">A0 to A8</div><h3>Assess new books</h3><p>Books just connected, no work started. Read-only: census every balance-sheet account, measure integrity, review coding and naming, grade, publish the work plan the lead approves.</p><div class="when">Before any work</div></div>
+      <div class="path a"><div class="pn">E0 to E8</div><h3>Learn the books</h3><p>An existing client with QuickBooks and ClickUp history but no engine-closed month. Inventory, ground truth, twelve months of history, guidelines, a shadow close, trust.</p><div class="when">Existing client</div></div>
+      <div class="path a"><div class="pn">N0 to N9</div><h3>Onboard new client</h3><p>No client folder, thin history. Intake, connection, skeleton, accounts, statements, cold-start knowledge, checklist, catch-up months, trust, handoff. Reuses E1 to E5.</p><div class="when">New client, this piece</div></div>
+    </div>
+    <div class="caption a" id="p-cap">All three share one rule: a fact comes from QuickBooks or ClickUp. If neither has it, it is a question, never a guess.</div>
+  </section>
+
+  <!-- 3 N0 to N2 -->
+  <section class="scene" id="s3">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="a-k" style="color:#9fb0ff">N0 to N2</div>
+    <div class="h2 a" id="a-h">Facts, connection, skeleton.</div>
+    <div class="panels">
+      <div class="panel a" id="a-p1"><h3><span>N0</span>Intake</h3><div class="body">
+        <div>Facts from the onboarding form and the ClickUp task: entity type, fiscal year end, payroll provider, sales tax, processors, loans, deadline tier.</div>
+        <div>Asked, one multi-select question each:</div>
+        <div class="chk"><i class="on"></i>Cash or accrual? Cash recommended. Never guessed.</div>
+        <div class="chk"><i class="on"></i>How we reach each bank and card account</div>
+        <div class="chk"><i class="on"></i>Which QuickBooks user, which plan</div>
+        <div class="chk"><i class="on"></i>Special instructions</div>
+        <div class="art"><i>intake.md</i></div></div></div>
+      <div class="panel a" id="a-p2"><h3><span>N1</span>QuickBooks connection</h3><div class="body">
+        <div class="steps2"><div><b>1</b>The engine prints the Intuit consent address.</div><div><b>2</b>A person signs in and consents. Never Claude.</div><div><b>3</b>They paste the address the browser landed on.</div><div><b>4</b>The token is stored, the realm written to config.</div></div>
+        <div class="row"><span>auth-check</span><span class="ok">HEALTHY</span></div>
+        <div>The client is then opened in both QuickBooks paths before any work.</div>
+        <div class="art"><i>qbo_realm_id</i><i>data/qbo_tokens/</i></div></div></div>
+      <div class="panel a" id="a-p3"><h3><span>N2</span>Client skeleton</h3><div class="body">
+        <div>Config and guidelines written through the writer, committed.</div>
+        <div class="row"><span>Park account</span><span class="warn">must already exist</span></div>
+        <div class="row"><span>ClickUp customer option</span><span class="dim">binds the tasks</span></div>
+        <div class="row"><span>Accounting method</span><span class="dim">recorded, dated, by whom</span></div>
+        <div>Until the method is recorded, the month preflight stays pending.</div>
+        <div class="art"><i>clients/acme/config.yaml</i><i>guidelines.md</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 4 N3 to N4 -->
+  <section class="scene" id="s4">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="b-k">N3 to N4</div>
+    <div class="h2 a" id="b-h">Which accounts, which statements, which month first.</div>
+    <div class="panels">
+      <div class="panel a" id="b-p1"><h3><span>N3</span>Account census</h3><div class="body">
+        <div>Discovery finds bank and card accounts in QuickBooks and merges them with the ClickUp statements checklist.</div>
+        <div class="row"><span class="mono">Chase ...4471</span><span>Operating Checking</span></div>
+        <div class="row"><span class="mono">Amex ...1009</span><span>Amex Business</span></div>
+        <div class="row"><span class="mono">SBA loan</span><span class="warn">added by hand</span></div>
+        <div class="row"><span class="mono">Card ...2210, cardholder</span><span class="dim">inactive</span></div>
+        <div>Lines of credit, loans and investments are added by hand. An exclusion carries its reason. One question per ambiguous account.</div>
+        <div class="art"><i>account-census.json</i></div></div></div>
+      <div class="panel a" id="b-p2"><h3><span>N4</span>Statements and start month</h3><div class="body">
+        <div>Statements requested for the agreed rebuild period. The request is a draft; a person stamps and sends it.</div>
+        <div class="row"><span>Rebuild from</span><span class="mono">2026-07</span></div>
+        <div class="row"><span>Catch-up due</span><span class="mono">business day 15</span></div>
+        <div class="row"><span>active_since</span><span class="dim">set by Austin</span></div>
+        <div>The start month stays Austin's until two good months exist; then the scan proposes and Austin applies.</div>
+        <div class="art"><i>drafts/statement-requests.md</i><i>statements-status.md</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 5 N5 to N6 -->
+  <section class="scene" id="s5">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="c-k">N5 to N6</div>
+    <div class="h2 a" id="c-h">Knowledge before the first row is coded.</div>
+    <div class="panels">
+      <div class="panel a" id="c-p1"><h3><span>N5</span>Cold-start knowledge</h3><div class="body">
+        <div>Thin or dirty history means the matcher resolves little. The coder leans on the chart of accounts and the guidelines.</div>
+        <div class="row"><span>Chart and vendor list</span><span class="dim">pulled, read-only</span></div>
+        <div class="row"><span>Coding history</span><span class="dim">whatever exists, or empty</span></div>
+        <div>Guidelines seeded from firm precedents by entity type: equity naming, personal tax payments as owner draws, officer wages.</div>
+        <div class="row"><span>Each seed marked</span><span class="warn">firm precedent, owner to confirm</span></div>
+        <div class="art"><i>history/coa.json</i><i>history/vendors.json</i></div></div></div>
+      <div class="panel a" id="c-p2"><h3><span>N6</span>Bespoke checklist</h3><div class="body">
+        <div>Layered, in order:</div>
+        <div class="row"><span>canonical</span><span class="dim">every client</span></div>
+        <div class="row"><span>entity type</span><span class="dim">S corp, LLC, nonprofit</span></div>
+        <div class="row"><span>accounts</span><span class="dim">one item per tracked account</span></div>
+        <div class="row"><span>SOP</span><span class="dim">mined at month three</span></div>
+        <div>Austin confirms the file and any custom item.</div>
+        <div class="art"><i>checklist.yaml</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 6 N7 to N9 -->
+  <section class="scene" id="s6">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="d-k" style="color:#3ad6c2">N7 to N9</div>
+    <div class="h2 a" id="d-h">Catch up, earn trust, hand off.</div>
+    <div class="panels">
+      <div class="panel a" id="d-p1"><h3><span>N7</span>Catch-up months</h3><div class="body">
+        <div>Oldest first. Each month runs the full fifteen-stage loop at maximal review depth.</div>
+        <div class="chk"><i class="on"></i>Every pending row decided</div>
+        <div class="chk"><i class="on"></i>Every month read by the review agent</div>
+        <div class="chk"><i class="on"></i>Parked rows to the park account</div>
+        <div class="chk"><i class="on"></i>Opening balances traced to the first statement</div>
+        <div class="row"><span>Plug</span><span class="bad">never</span></div>
+        <div class="art"><i>month-report.md, per month</i></div></div></div>
+      <div class="panel a" id="d-p2"><h3><span>N8</span>Shadow and trust</h3><div class="body">
+        <div>After the first clean month the trust position is computed.</div>
+        <div class="row"><span>Months of clean evidence</span><span class="mono">1</span></div>
+        <div class="row"><span>Unflagged error rate</span><span class="mono">0.0%</span></div>
+        <div>The review agent's findings per month are the evidence. Austin decides when review depth relaxes. The engine never relaxes it on its own.</div>
+        <div class="art"><i>trust show</i></div></div></div>
+      <div class="panel a" id="d-p3"><h3><span>N9</span>Handoff</h3><div class="body">
+        <div>The "books learned" report and the monthly cadence:</div>
+        <div class="row"><span>Due-date tier</span><span class="mono">BD 10</span></div>
+        <div class="row"><span>Statement release dates</span><span class="dim">per account</span></div>
+        <div class="row"><span>Access scenario</span><span class="dim">per account</span></div>
+        <div>Austin signs. The client enters M0 and the regular month begins.</div>
+        <div class="art"><i>books-inventory.md</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 7 rules -->
+  <section class="scene" id="s7">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="r-k">Rules of the path</div>
+    <div class="h2 a" id="r-h">Five things onboarding never does.</div>
+    <div class="rules" id="r-list">
+      <div class="a"><span>1</span>Guess the accounting method. Null means ask; the month waits for the answer.</div>
+      <div class="a"><span>2</span>Create an account. A missing park account stops the client and asks.</div>
+      <div class="a"><span>3</span>Apply an unconfirmed rule silently. Firm-precedent seeds are marked until the owner confirms.</div>
+      <div class="a"><span>4</span>Sign in anywhere. The Intuit consent is a person's, by hand, every time.</div>
+      <div class="a"><span>5</span>Push, plug or post during learning. The shadow close writes a diff, never a plan.</div>
+    </div>
+  </section>
+
+  <!-- 8 status -->
+  <section class="scene" id="s8">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="z-k">The tool</div>
+    <div class="h2 a" id="z-h">One client, from nothing to M0.</div>
+    <div class="status mono a" id="z-term">
+      <div style="margin-bottom:14px"><span class="teal">$</span> <span class="accent">liz</span> onboard-client --help</div>
+      <div id="z-rows">
+        <div class="st a"><span>N0</span><span>intake, questions answered</span><span class="ok">DONE</span></div>
+        <div class="st a"><span>N1</span><span>qbo auth, auth-check</span><span class="ok">HEALTHY</span></div>
+        <div class="st a"><span>N2</span><span>client add, client method</span><span class="ok">DONE</span></div>
+        <div class="st a"><span>N3</span><span>account census</span><span class="ok">DONE</span></div>
+        <div class="st a"><span>N4</span><span>statements, active-since</span><span class="ok">2026-07</span></div>
+        <div class="st a"><span>N5</span><span>history pull, guideline seed</span><span class="ok">DONE</span></div>
+        <div class="st a"><span>N6</span><span>checklist generate</span><span class="ok">CONFIRMED</span></div>
+        <div class="st a"><span>N7</span><span>catch-up months, 2026-07 to 2026-10</span><span class="ok">4 of 4</span></div>
+        <div class="st a"><span>N8</span><span>trust show</span><span class="ok">1 CLEAN MONTH</span></div>
+        <div class="st a"><span>N9</span><span>handoff</span><span class="warn">AWAITING AUSTIN'S SIGNATURE</span></div>
+      </div>
+    </div>
+    <div class="close">
+      <div class="word a" id="z-w">Elizia.</div>
+      <div class="l a" id="z-l">The books are learned before the first row is posted.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Elizia animation engine. Deterministic: every frame is a pure function of time,
+// so the live player and the offline renderer (render.py, window.__seek) agree.
+(function () {
+  var W = 1920, H = 1080;
+  var stage = document.getElementById('stage');
+  var bar = document.getElementById('bar');
+  function fit() {
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  var scenes = [], starts = [], total = 0;
+  window.scene = function (id, dur, draw) {
+    scenes.push({ el: document.getElementById(id), dur: dur, draw: draw });
+  };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  window.clamp = clamp;
+  window.lerp = function (a, b, p) { return a + (b - a) * p; };
+  window.linear = function (p) { return p; };
+  window.easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  window.easeIn = function (p) { return p * p * p; };
+  window.easeInOut = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  window.prog = function (t, a, b, e) { return (e || easeOut)(clamp((t - a) / (b - a), 0, 1)); };
+  window.$ = function (id) { return typeof id === 'string' ? document.getElementById(id) : id; };
+  window.fx = function (el, o) {
+    el = $(el); o = o || {};
+    if (o.o !== undefined) el.style.opacity = o.o;
+    el.style.transform = 'translate(' + (o.x || 0) + 'px,' + (o.y || 0) + 'px) scale(' + (o.s === undefined ? 1 : o.s) + ') rotate(' + (o.r || 0) + 'deg)';
+  };
+  // fade + rise in, starting at a (ms into scene), lasting d
+  window.rise = function (el, t, a, d, dy) {
+    d = d || 600; dy = dy === undefined ? 40 : dy;
+    var p = prog(t, a, a + d);
+    fx(el, { o: p, y: (1 - p) * dy });
+    return p;
+  };
+  // fade out starting at a
+  window.fade = function (el, t, a, d) {
+    d = d || 400; var p = prog(t, a, a + d, linear);
+    $(el).style.opacity = 1 - p; return p;
+  };
+  window.typed = function (el, str, t, a, cps) {
+    el = $(el); cps = cps || 40;
+    var n = clamp(Math.floor((t - a) / 1000 * cps), 0, str.length);
+    el.textContent = str.slice(0, n);
+    return n >= str.length;
+  };
+  window.count = function (el, t, a, b, from, to, fmt) {
+    var p = prog(t, a, b, easeInOut);
+    $(el).textContent = fmt(lerp(from, to, p));
+  };
+  window.fmtInt = function (v) { return Math.round(v).toLocaleString('en-US'); };
+  window.fmtMoney = function (v) {
+    var neg = v < 0; v = Math.abs(v);
+    return (neg ? '-' : '') + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  // draw an SVG path progressively (expects pathLength set to 1)
+  window.stroke = function (el, t, a, d) {
+    var p = prog(t, a, a + (d || 500), easeInOut);
+    $(el).style.strokeDashoffset = 1 - p; return p;
+  };
+  // sequentially reveal children of a container
+  window.list = function (el, t, a, gap, d) {
+    el = $(el); d = d || 500; gap = gap || 350;
+    var kids = el.children, done = 0;
+    for (var i = 0; i < kids.length; i++) {
+      var p = prog(t, a + i * gap, a + i * gap + d);
+      fx(kids[i], { o: p, y: (1 - p) * 24 });
+      if (p >= 1) done++;
+    }
+    return done === kids.length;
+  };
+
+  function init() {
+    total = 0; starts = [];
+    scenes.forEach(function (s) { starts.push(total); total += s.dur; });
+    window.__total = total;
+  }
+  function render(T) {
+    T = clamp(T, 0, total - 1);
+    var i = 0;
+    while (i < scenes.length - 1 && T >= starts[i + 1]) i++;
+    scenes.forEach(function (s, j) { s.el.style.display = j === i ? 'block' : 'none'; });
+    var s = scenes[i], t = T - starts[i];
+    var fin = prog(t, 0, 350, linear), fout = 1 - prog(t, s.dur - 350, s.dur, linear);
+    s.el.style.opacity = Math.min(fin, fout);
+    s.draw(t, s.dur);
+    if (bar) bar.style.width = (T / total * 100) + '%';
+  }
+  window.__seek = function (ms) { render(ms); };
+
+  var playing = true, t0 = null, offset = 0, last = 0;
+  function loop(now) {
+    if (t0 === null) t0 = now;
+    if (playing) {
+      last = offset + (now - t0);
+      if (last >= total) { last = 0; offset = 0; t0 = now; }
+      render(last);
+    }
+    requestAnimationFrame(loop);
+  }
+  function seekBy(ms) { offset = clamp(last + ms, 0, total - 1); t0 = null; if (!playing) render(offset), last = offset; }
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space') { playing = !playing; if (playing) { t0 = null; offset = last; } e.preventDefault(); }
+    if (e.code === 'ArrowRight') seekBy(5000);
+    if (e.code === 'ArrowLeft') seekBy(-5000);
+    if (e.code === 'Home') { offset = 0; t0 = null; }
+  });
+  document.addEventListener('click', function () { playing = !playing; if (playing) { t0 = null; offset = last; } });
+  window.addEventListener('load', function () {
+    init();
+    if (location.hash.indexOf('render') >= 0) { render(0); window.__ready = true; }
+    else requestAnimationFrame(loop);
+  });
+})();
+
+</script>
+<script>
+function panels(ids, t, a, gap) {
+  ids.forEach(function (id, i) {
+    var s = a + i * gap;
+    rise(id, t, s, 600, 40);
+    list($(id).querySelector('.body'), t, s + 400, 260, 450);
+  });
+}
+scene('s1', 5000, function (t) {
+  rise('t-k', t, 200, 500, 20); rise('t-w', t, 500, 900, 60); rise('t-s', t, 1800, 700);
+});
+scene('s2', 13000, function (t) {
+  rise('p-k', t, 100, 500, 20); rise('p-h', t, 300, 700);
+  list('p-paths', t, 1000, 1600, 600);
+  rise('p-cap', t, 7200, 700, 20);
+});
+scene('s3', 15000, function (t) {
+  rise('a-k', t, 100, 500, 20); rise('a-h', t, 300, 700);
+  panels(['a-p1', 'a-p2', 'a-p3'], t, 1100, 3800);
+});
+scene('s4', 13000, function (t) {
+  rise('b-k', t, 100, 500, 20); rise('b-h', t, 300, 700);
+  panels(['b-p1', 'b-p2'], t, 1100, 4200);
+});
+scene('s5', 13000, function (t) {
+  rise('c-k', t, 100, 500, 20); rise('c-h', t, 300, 700);
+  panels(['c-p1', 'c-p2'], t, 1100, 4200);
+});
+scene('s6', 15000, function (t) {
+  rise('d-k', t, 100, 500, 20); rise('d-h', t, 300, 700);
+  panels(['d-p1', 'd-p2', 'd-p3'], t, 1100, 3800);
+});
+scene('s7', 11000, function (t) {
+  rise('r-k', t, 100, 500, 20); rise('r-h', t, 300, 700);
+  list('r-list', t, 1200, 1500, 600);
+});
+scene('s8', 11000, function (t) {
+  rise('z-k', t, 100, 500, 20); rise('z-h', t, 300, 700);
+  rise('z-term', t, 900, 600, 30);
+  list('z-rows', t, 1500, 330, 280);
+  rise('z-w', t, 6000, 900, 50);
+  rise('z-l', t, 6900, 700, 20);
+});
+</script>
+</body>
+</html>
