@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Why Elizia</title>
+<style>
+html,body{margin:0;height:100%;background:#06080e;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;
+  background:#0b0f1a;color:#e9ecf3;font-family:Inter,"Liberation Sans","DejaVu Sans",Arial,sans-serif;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:120px 120px}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 30% 20%,rgba(245,185,66,.10),transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(58,214,194,.08),transparent 50%)}
+.scene{position:absolute;inset:0;display:none;padding:110px 140px;box-sizing:border-box}
+.a{opacity:0;will-change:transform,opacity}
+.mono{font-family:"DejaVu Sans Mono","Liberation Mono",Menlo,monospace}
+.kicker{font-size:22px;letter-spacing:.22em;text-transform:uppercase;color:#f5b942;font-weight:700}
+.h1{font-size:112px;font-weight:800;letter-spacing:-.035em;line-height:.98;margin:18px 0 0}
+.h2{font-size:68px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:18px 0 0}
+.sub{font-size:34px;color:#a3abbd;line-height:1.35}
+.accent{color:#f5b942}.teal{color:#3ad6c2}.red{color:#ff6b6b}.dim{color:#6b7385}
+#bar{position:absolute;left:0;bottom:0;height:6px;background:#f5b942;width:0;z-index:5}
+.brand{position:absolute;right:140px;top:70px;font-weight:800;letter-spacing:-.02em;font-size:28px;color:#6b7385}
+.brand b{color:#f5b942}
+/* scene 1 */
+.title{position:absolute;left:140px;top:300px}
+.title .word{font-size:220px;font-weight:800;letter-spacing:-.05em;line-height:.9}
+/* scene 2 */
+.tray{position:absolute;left:140px;top:380px;width:760px;height:520px}
+.pdf{position:absolute;width:300px;height:380px;background:#f4f1ea;color:#1d2230;border-radius:10px;padding:26px;box-sizing:border-box;
+  box-shadow:0 30px 60px rgba(0,0,0,.45);font-size:17px;line-height:1.5}
+.pdf .bank{font-weight:800;font-size:22px;margin-bottom:8px}
+.pdf .l{height:9px;background:#cfd3dc;border-radius:5px;margin:9px 0}
+.pdf .l.s{width:55%}.pdf .l.m{width:80%}
+.pdf .tag{position:absolute;right:20px;top:20px;background:#c0392b;color:#fff;font-weight:800;font-size:13px;padding:4px 8px;border-radius:5px}
+.bignum{position:absolute;left:1040px;top:360px;font-size:220px;font-weight:800;letter-spacing:-.05em;line-height:1}
+.bignum-l{position:absolute;left:1046px;top:600px;font-size:34px;color:#a3abbd}
+.steps{position:absolute;left:1046px;top:690px;font-size:34px;line-height:1.7}
+.steps div{display:flex;align-items:center;gap:18px}
+.steps i{width:14px;height:14px;border-radius:50%;background:#f5b942;display:inline-block}
+.again{position:absolute;left:1046px;top:960px;font-size:30px;color:#6b7385}
+/* scene 3 */
+.cards{position:absolute;left:140px;top:330px;display:flex;gap:40px}
+.card{width:506px;height:470px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:40px;box-sizing:border-box}
+.card h3{margin:0 0 14px;font-size:38px;letter-spacing:-.02em}
+.card .names{font-size:20px;color:#f5b942;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-bottom:28px}
+.card p{font-size:27px;line-height:1.4;color:#c3c9d6;margin:0}
+.punch{position:absolute;left:140px;top:420px;width:1640px}
+.punch .l1{font-size:52px;color:#c3c9d6;letter-spacing:-.02em}
+.punch .l2{font-size:150px;font-weight:800;letter-spacing:-.045em;line-height:1;margin-top:24px}
+.foot{position:absolute;left:140px;bottom:50px;font-size:17px;color:#55607a;width:1640px;line-height:1.4}
+/* scene 4 */
+.flow{position:absolute;left:140px;top:380px;width:1640px;height:300px}
+.node{position:absolute;top:0;height:260px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-sizing:border-box}
+.node .big{font-size:46px;font-weight:800;letter-spacing:-.02em}
+.node .sm{font-size:22px;color:#a3abbd;letter-spacing:.04em}
+#n-pdf{left:0;width:380px;background:#f4f1ea;color:#1d2230}
+#n-pdf .sm{color:#5b6475}
+#n-liz{left:630px;width:380px;background:linear-gradient(160deg,#f5b942,#e0962a);color:#1a1405}
+#n-liz .sm{color:#4a3a10}
+#n-qbo{left:1260px;width:380px;background:#1d2a3e;border:2px solid #3ad6c2}
+#n-qbo .big{color:#3ad6c2}
+.arrow{position:absolute;top:122px;height:4px;background:rgba(255,255,255,.18)}
+#ar1{left:396px;width:218px}#ar2{left:1026px;width:218px}
+.dot{position:absolute;top:116px;width:16px;height:16px;border-radius:50%;background:#f5b942;box-shadow:0 0 18px #f5b942}
+.claims{position:absolute;left:140px;top:740px;font-size:42px;line-height:1.6;letter-spacing:-.01em}
+.claims div{display:flex;gap:22px;align-items:baseline}
+.claims b{color:#3ad6c2;font-weight:800}
+/* scene 5 */
+.eq{position:absolute;left:140px;top:380px;width:1100px;font-size:44px}
+.eq .row{display:flex;justify-content:space-between;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.eq .row.sum{border-top:3px solid rgba(255,255,255,.35);border-bottom:none;font-weight:800;margin-top:6px}
+.eq .op{color:#6b7385;width:60px;display:inline-block}
+.eq .v{font-variant-numeric:tabular-nums}
+.tie{position:absolute;left:1360px;top:430px;width:420px;text-align:center}
+.tie svg{width:260px;height:260px}
+.tie .lab{font-size:54px;font-weight:800;letter-spacing:.12em;color:#3ad6c2;margin-top:10px}
+.stopline{position:absolute;left:140px;top:850px;font-size:36px;color:#a3abbd;width:1640px;line-height:1.4}
+/* scene 6 */
+.tbl{position:absolute;left:140px;top:360px;width:1640px;border-collapse:collapse;font-size:30px}
+.tbl th{text-align:left;font-size:19px;letter-spacing:.14em;text-transform:uppercase;color:#6b7385;padding:0 22px 18px 0;font-weight:700}
+.tbl td{padding:22px 22px 22px 0;border-top:1px solid rgba(255,255,255,.08);vertical-align:middle}
+.tbl tr.a td{transform:inherit}
+.chip{display:inline-block;padding:8px 16px;border-radius:999px;font-size:21px;font-weight:700;letter-spacing:.02em}
+.chip.h{background:rgba(58,214,194,.15);color:#3ad6c2;border:1px solid rgba(58,214,194,.4)}
+.chip.g{background:rgba(245,185,66,.15);color:#f5b942;border:1px solid rgba(245,185,66,.4)}
+.chip.j{background:rgba(140,160,255,.15);color:#9fb0ff;border:1px solid rgba(140,160,255,.4)}
+.chip.f{background:rgba(255,107,107,.15);color:#ff8f8f;border:1px solid rgba(255,107,107,.4)}
+.tblline{position:absolute;left:140px;top:860px;font-size:40px;letter-spacing:-.01em}
+/* scene 7 */
+.tiles{position:absolute;left:140px;top:330px;display:grid;grid-template-columns:1fr 1fr;gap:34px;width:1640px}
+.tile{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:38px 42px;box-sizing:border-box;height:290px}
+.tile h3{margin:0 0 14px;font-size:40px;letter-spacing:-.02em}
+.tile h3 span{color:#f5b942;margin-right:16px;font-family:"DejaVu Sans Mono",monospace;font-size:30px}
+.tile p{margin:0;font-size:28px;line-height:1.4;color:#c3c9d6}
+/* scene 8 */
+.rules{position:absolute;left:140px;top:320px;font-size:40px;line-height:1.3;letter-spacing:-.015em;width:1640px}
+.rules div{padding:17px 0;border-bottom:1px solid rgba(255,255,255,.08);display:flex;gap:30px}
+.rules span{color:#f5b942;font-family:"DejaVu Sans Mono",monospace;font-size:34px;min-width:60px;padding-top:6px}
+/* scene 9 */
+.review{position:absolute;left:140px;top:380px;width:760px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:40px;box-sizing:border-box;font-size:30px}
+.review .r{display:flex;justify-content:space-between;padding:14px 0}
+.review .k{color:#6b7385;font-size:20px;letter-spacing:.14em;text-transform:uppercase}
+.review .old{text-decoration:line-through;color:#6b7385}
+.review .new{color:#3ad6c2;font-weight:800}
+.diff{position:absolute;left:980px;top:380px;width:800px;background:#0a0d14;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:36px 40px;box-sizing:border-box;font-size:24px;line-height:1.6}
+.diff .path{color:#6b7385;margin-bottom:14px}
+.diff .plus{color:#3ad6c2}
+.learnline{position:absolute;left:140px;top:800px;font-size:40px;width:1640px;line-height:1.4}
+/* scene 10 */
+.close{position:absolute;left:140px;top:320px}
+.close .word{font-size:200px;font-weight:800;letter-spacing:-.05em;line-height:.95}
+.close .l{font-size:60px;margin-top:30px;letter-spacing:-.02em}
+.close .m{font-size:30px;margin-top:40px;color:#6b7385}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bar"></div>
+
+  <!-- 1 title -->
+  <section class="scene" id="s1">
+    <div class="title">
+      <div class="kicker a" id="t-k">Cash-basis close automation for QuickBooks Online</div>
+      <div class="word a" id="t-w">Elizia</div>
+      <div class="sub a" id="t-s" style="margin-top:30px;font-size:44px;color:#c3c9d6">Liz. The bookkeeper who starts from the statement.</div>
+    </div>
+  </section>
+
+  <!-- 2 the month -->
+  <section class="scene" id="s2">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="m-k">The month, as it is</div>
+    <div class="h2 a" id="m-h">Statements arrive. Someone types.</div>
+    <div class="tray">
+      <div class="pdf a" id="p1" style="left:0;top:40px"><div class="tag">PDF</div><div class="bank">Chase ...4471</div><div>October 2026</div><div class="l m"></div><div class="l"></div><div class="l s"></div><div class="l"></div><div class="l m"></div><div class="l s"></div><div class="l"></div></div>
+      <div class="pdf a" id="p2" style="left:230px;top:80px"><div class="tag">PDF</div><div class="bank">Amex ...1009</div><div>October 2026</div><div class="l"></div><div class="l s"></div><div class="l m"></div><div class="l"></div><div class="l s"></div><div class="l m"></div><div class="l"></div></div>
+      <div class="pdf a" id="p3" style="left:460px;top:20px"><div class="tag">PDF</div><div class="bank">Wells Fargo ...8820</div><div>October 2026</div><div class="l s"></div><div class="l m"></div><div class="l"></div><div class="l s"></div><div class="l"></div><div class="l m"></div><div class="l s"></div></div>
+    </div>
+    <div class="bignum mono a" id="m-n">0</div>
+    <div class="bignum-l a" id="m-nl">transactions in one client month</div>
+    <div class="steps" id="m-steps">
+      <div class="a"><i></i>Typed from the PDF</div>
+      <div class="a"><i></i>Coded to a vendor and an account</div>
+      <div class="a"><i></i>Matched to QuickBooks</div>
+      <div class="a"><i></i>Reconciled, by hand</div>
+    </div>
+    <div class="again a" id="m-again">Then again next month. For every client.</div>
+  </section>
+
+  <!-- 3 market -->
+  <section class="scene" id="s3">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="k-k">What the market offers</div>
+    <div class="h2 a" id="k-h">Three answers, three catches.</div>
+    <div class="cards" id="k-cards">
+      <div class="card a">
+        <h3>Autonomous ledgers</h3>
+        <div class="names">Digits, Puzzle</div>
+        <p>Your clients' books move into the vendor's own ledger. Digits also sells full-service bookkeeping, which competes with the firm for the client.</p>
+      </div>
+      <div class="card a">
+        <h3>Agents inside QuickBooks</h3>
+        <div class="names">Intuit Accounting Agent</div>
+        <p>Built on a connected bank feed. Gated by plan. Intuit describes it as a supplemental review, not a substitute for professional judgment.</p>
+      </div>
+      <div class="card a">
+        <h3>Outsourced bots</h3>
+        <div class="names">Botkeeper</div>
+        <p>Announced its shutdown in February 2026. The platform was sold in March. Every firm on it had to move its process.</p>
+      </div>
+    </div>
+    <div class="punch">
+      <div class="l1 a" id="k-l1">None of them start from the one document every client already sends.</div>
+      <div class="l2 a" id="k-l2">The PDF statement.</div>
+    </div>
+    <div class="foot a" id="k-foot">Sources, read 2026-11-13: puzzle.io and digits.com comparison pages; CPA Practice Advisor and Fortune on Intuit Intelligence (2026); Xendoo acquisition announcement, March 2026.</div>
+  </section>
+
+  <!-- 4 starts from the statement -->
+  <section class="scene" id="s4">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="f-k">What Elizia does</div>
+    <div class="h2 a" id="f-h">Statement in. Your QuickBooks out.</div>
+    <div class="flow">
+      <div class="node a" id="n-pdf"><div class="big">PDF statement</div><div class="sm">bank or card, any issuer</div></div>
+      <div class="arrow a" id="ar1"></div>
+      <div class="dot a" id="d1"></div>
+      <div class="node a" id="n-liz"><div class="big">Liz</div><div class="sm">parse, tie out, code, decide</div></div>
+      <div class="arrow a" id="ar2"></div>
+      <div class="dot a" id="d2"></div>
+      <div class="node a" id="n-qbo"><div class="big">Your QuickBooks</div><div class="sm">posted, verified, reconciled</div></div>
+    </div>
+    <div class="claims" id="f-claims">
+      <div class="a"><b>No new ledger.</b><span class="dim">The books stay where they are.</span></div>
+      <div class="a"><b>No bank feed required.</b><span class="dim">The statement is the source.</span></div>
+      <div class="a"><b>No new accounts.</b><span class="dim">Liz never adds to the chart of accounts.</span></div>
+    </div>
+  </section>
+
+  <!-- 5 tie-out -->
+  <section class="scene" id="s5">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="e-k">Hard gate one</div>
+    <div class="h2 a" id="e-h">Nothing posts until the statement ties.</div>
+    <div class="eq mono">
+      <div class="row a" id="e-r1"><span><span class="op"></span>Beginning balance</span><span class="v">12,480.22</span></div>
+      <div class="row a" id="e-r2"><span><span class="op">+</span><span id="e-cnt">0</span> transactions, net</span><span class="v">-3,118.90</span></div>
+      <div class="row sum a" id="e-r3"><span><span class="op">=</span>Computed ending</span><span class="v">9,361.32</span></div>
+      <div class="row a" id="e-r4"><span><span class="op"></span>Printed ending</span><span class="v">9,361.32</span></div>
+    </div>
+    <div class="tie a" id="e-tie">
+      <svg viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="44" stroke="#3ad6c2" stroke-width="5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" id="e-circ"/>
+        <path d="M28 52 L44 68 L74 36" stroke="#3ad6c2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" id="e-chk"/>
+      </svg>
+      <div class="lab">TIES</div>
+    </div>
+    <div class="stopline a" id="e-stop">Off by a cent, and the month stops, naming the account and the amount. No downstream command runs on a red tie-out.</div>
+  </section>
+
+  <!-- 6 coding -->
+  <section class="scene" id="s6">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="c-k">Hard gate two</div>
+    <div class="h2 a" id="c-h">Coded the way this client's books already read.</div>
+    <table class="tbl">
+      <thead><tr><th>Bank descriptor</th><th>Name</th><th>Account</th><th>Source</th></tr></thead>
+      <tbody id="c-rows">
+        <tr class="a"><td class="mono">AMZN MKTP US*2K41Q8KL2</td><td>Amazon</td><td>Office Supplies</td><td><span class="chip h">history, 12 months</span></td></tr>
+        <tr class="a"><td class="mono">GUSTO PAYROLL 6632</td><td class="dim">system journal entry</td><td>Payroll</td><td><span class="chip g">client guideline</span></td></tr>
+        <tr class="a"><td class="mono">SQ *BLUE DOOR CAFE</td><td>Blue Door Cafe</td><td>Meals</td><td><span class="chip j">Jev, closed-set choice</span></td></tr>
+        <tr class="a"><td class="mono">ZELLE TO J RAMIREZ</td><td class="dim">unknown</td><td>Parked, ask</td><td><span class="chip f">flagged for review</span></td></tr>
+      </tbody>
+    </table>
+    <div class="tblline a" id="c-line">Every coding carries its source. Deterministic match first, the client's guidelines second, judgment last and flagged.</div>
+  </section>
+
+  <!-- 7 controls -->
+  <section class="scene" id="s7">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="w-k">Controls on every write</div>
+    <div class="h2 a" id="w-h">Post freely. The controls do the worrying.</div>
+    <div class="tiles" id="w-tiles">
+      <div class="tile a"><h3><span>01</span>Collision check</h3><p>Live QuickBooks is compared with the saved baseline before each push. Red, and the push refuses to run.</p></div>
+      <div class="tile a"><h3><span>02</span>Write log</h3><p>Every post is recorded before it happens, with an undo by record and an audit against QuickBooks' own change feed.</p></div>
+      <div class="tile a"><h3><span>03</span>Fresh reviewer</h3><p>A second agent with no memory of the work reads the month and files findings. Sign-off waits on each one.</p></div>
+      <div class="tile a"><h3><span>04</span>Zero is not proof</h3><p>A 0.00 difference triggers the uncleared sweep across all dates and a one-to-one tie of cleared lines to statement rows.</p></div>
+    </div>
+  </section>
+
+  <!-- 8 rules -->
+  <section class="scene" id="s8">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="r-k">Owner rules, built into the loop</div>
+    <div class="h2 a" id="r-h">Five things Liz never does.</div>
+    <div class="rules" id="r-list">
+      <div class="a"><span>1</span>Leave a transaction unnamed. Transfers and card payments are booked as transfers.</div>
+      <div class="a"><span>2</span>Create an account. A missing one stops that client and asks.</div>
+      <div class="a"><span>3</span>Plug. No balancing or adjusting line to force a difference to zero.</div>
+      <div class="a"><span>4</span>Add a vendor silently. New names are fuzzy-matched against every vendor on file, then listed for review.</div>
+      <div class="a"><span>5</span>Send anything to a client or a third party without a per-item approval stamp.</div>
+    </div>
+  </section>
+
+  <!-- 9 learns -->
+  <section class="scene" id="s9">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="l-k">It learns in the open</div>
+    <div class="h2 a" id="l-h">A correction becomes a rule.</div>
+    <div class="review a" id="l-rev">
+      <div class="k">Review, October 2026</div>
+      <div class="r"><span class="mono">SQ *BLUE DOOR CAFE</span><span class="mono">84.50</span></div>
+      <div class="r"><span class="dim">Account</span><span><span class="old" id="l-old">Meals</span> <span class="new a" id="l-new">Client Entertainment</span></span></div>
+      <div class="r"><span class="dim">By</span><span>operator</span></div>
+    </div>
+    <div class="diff mono a" id="l-diff">
+      <div class="path">clients/acme/guidelines.md</div>
+      <div class="plus a" id="l-d1">+ 2026-11-13. SQ *BLUE DOOR CAFE codes to Client Entertainment.</div>
+      <div class="plus a" id="l-d2">+ Source: operator correction, October 2026 review.</div>
+      <div class="dim a" id="l-d3" style="margin-top:14px">committed and pushed</div>
+    </div>
+    <div class="learnline a" id="l-line">Dated rules, in git, per client. Next month codes itself from them, and the diff is visible at review.</div>
+  </section>
+
+  <!-- 10 close -->
+  <section class="scene" id="s10">
+    <div class="close">
+      <div class="word a" id="z-w">Elizia.</div>
+      <div class="l a" id="z-l">Liz runs the month. You sign it.</div>
+      <div class="m mono a" id="z-m">Statements in. Reconciled QuickBooks out.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Elizia animation engine. Deterministic: every frame is a pure function of time,
+// so the live player and the offline renderer (render.py, window.__seek) agree.
+(function () {
+  var W = 1920, H = 1080;
+  var stage = document.getElementById('stage');
+  var bar = document.getElementById('bar');
+  function fit() {
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  var scenes = [], starts = [], total = 0;
+  window.scene = function (id, dur, draw) {
+    scenes.push({ el: document.getElementById(id), dur: dur, draw: draw });
+  };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  window.clamp = clamp;
+  window.lerp = function (a, b, p) { return a + (b - a) * p; };
+  window.linear = function (p) { return p; };
+  window.easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  window.easeIn = function (p) { return p * p * p; };
+  window.easeInOut = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  window.prog = function (t, a, b, e) { return (e || easeOut)(clamp((t - a) / (b - a), 0, 1)); };
+  window.$ = function (id) { return typeof id === 'string' ? document.getElementById(id) : id; };
+  window.fx = function (el, o) {
+    el = $(el); o = o || {};
+    if (o.o !== undefined) el.style.opacity = o.o;
+    el.style.transform = 'translate(' + (o.x || 0) + 'px,' + (o.y || 0) + 'px) scale(' + (o.s === undefined ? 1 : o.s) + ') rotate(' + (o.r || 0) + 'deg)';
+  };
+  // fade + rise in, starting at a (ms into scene), lasting d
+  window.rise = function (el, t, a, d, dy) {
+    d = d || 600; dy = dy === undefined ? 40 : dy;
+    var p = prog(t, a, a + d);
+    fx(el, { o: p, y: (1 - p) * dy });
+    return p;
+  };
+  // fade out starting at a
+  window.fade = function (el, t, a, d) {
+    d = d || 400; var p = prog(t, a, a + d, linear);
+    $(el).style.opacity = 1 - p; return p;
+  };
+  window.typed = function (el, str, t, a, cps) {
+    el = $(el); cps = cps || 40;
+    var n = clamp(Math.floor((t - a) / 1000 * cps), 0, str.length);
+    el.textContent = str.slice(0, n);
+    return n >= str.length;
+  };
+  window.count = function (el, t, a, b, from, to, fmt) {
+    var p = prog(t, a, b, easeInOut);
+    $(el).textContent = fmt(lerp(from, to, p));
+  };
+  window.fmtInt = function (v) { return Math.round(v).toLocaleString('en-US'); };
+  window.fmtMoney = function (v) {
+    var neg = v < 0; v = Math.abs(v);
+    return (neg ? '-' : '') + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  // draw an SVG path progressively (expects pathLength set to 1)
+  window.stroke = function (el, t, a, d) {
+    var p = prog(t, a, a + (d || 500), easeInOut);
+    $(el).style.strokeDashoffset = 1 - p; return p;
+  };
+  // sequentially reveal children of a container
+  window.list = function (el, t, a, gap, d) {
+    el = $(el); d = d || 500; gap = gap || 350;
+    var kids = el.children, done = 0;
+    for (var i = 0; i < kids.length; i++) {
+      var p = prog(t, a + i * gap, a + i * gap + d);
+      fx(kids[i], { o: p, y: (1 - p) * 24 });
+      if (p >= 1) done++;
+    }
+    return done === kids.length;
+  };
+
+  function init() {
+    total = 0; starts = [];
+    scenes.forEach(function (s) { starts.push(total); total += s.dur; });
+    window.__total = total;
+  }
+  function render(T) {
+    T = clamp(T, 0, total - 1);
+    var i = 0;
+    while (i < scenes.length - 1 && T >= starts[i + 1]) i++;
+    scenes.forEach(function (s, j) { s.el.style.display = j === i ? 'block' : 'none'; });
+    var s = scenes[i], t = T - starts[i];
+    var fin = prog(t, 0, 350, linear), fout = 1 - prog(t, s.dur - 350, s.dur, linear);
+    s.el.style.opacity = Math.min(fin, fout);
+    s.draw(t, s.dur);
+    if (bar) bar.style.width = (T / total * 100) + '%';
+  }
+  window.__seek = function (ms) { render(ms); };
+
+  var playing = true, t0 = null, offset = 0, last = 0;
+  function loop(now) {
+    if (t0 === null) t0 = now;
+    if (playing) {
+      last = offset + (now - t0);
+      if (last >= total) { last = 0; offset = 0; t0 = now; }
+      render(last);
+    }
+    requestAnimationFrame(loop);
+  }
+  function seekBy(ms) { offset = clamp(last + ms, 0, total - 1); t0 = null; if (!playing) render(offset), last = offset; }
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space') { playing = !playing; if (playing) { t0 = null; offset = last; } e.preventDefault(); }
+    if (e.code === 'ArrowRight') seekBy(5000);
+    if (e.code === 'ArrowLeft') seekBy(-5000);
+    if (e.code === 'Home') { offset = 0; t0 = null; }
+  });
+  document.addEventListener('click', function () { playing = !playing; if (playing) { t0 = null; offset = last; } });
+  window.addEventListener('load', function () {
+    init();
+    if (location.hash.indexOf('render') >= 0) { render(0); window.__ready = true; }
+    else requestAnimationFrame(loop);
+  });
+})();
+
+</script>
+<script>
+// ---- scene 1: title (4.5s)
+scene('s1', 4500, function (t) {
+  rise('t-w', t, 200, 900, 60);
+  rise('t-s', t, 1000, 700);
+  rise('t-k', t, 1700, 600, 20);
+});
+
+// ---- scene 2: the month (10s)
+scene('s2', 10000, function (t) {
+  rise('m-k', t, 100, 500, 20); rise('m-h', t, 300, 700);
+  [['p1', 900, -6], ['p2', 1400, 3], ['p3', 1900, -2]].forEach(function (c) {
+    var p = prog(t, c[1], c[1] + 700);
+    fx(c[0], { o: p, x: (1 - p) * -500, y: (1 - p) * 80, r: lerp(-18, c[2], p) });
+  });
+  var pn = prog(t, 2400, 2800); fx('m-n', { o: pn }); fx('m-nl', { o: pn });
+  count('m-n', t, 2600, 5200, 0, 412, fmtInt);
+  list('m-steps', t, 5400, 450, 500);
+  rise('m-again', t, 8000, 600, 16);
+});
+
+// ---- scene 3: market (15s)
+scene('s3', 15000, function (t) {
+  rise('k-k', t, 100, 500, 20); rise('k-h', t, 300, 700);
+  var cards = $('k-cards').children;
+  for (var i = 0; i < 3; i++) {
+    var a = 900 + i * 1100, p = prog(t, a, a + 700);
+    var out = prog(t, 9600, 10200);
+    fx(cards[i], { o: p * (1 - out), y: (1 - p) * 60 - out * 40 });
+  }
+  $('k-h').style.opacity = Math.min(prog(t, 300, 1000), 1 - prog(t, 9600, 10200, linear));
+  $('k-k').style.opacity = $('k-h').style.opacity;
+  rise('k-l1', t, 10400, 700);
+  rise('k-l2', t, 11300, 800, 60);
+  fx('k-foot', { o: prog(t, 4200, 4800) * 1 });
+});
+
+// ---- scene 4: flow (11s)
+scene('s4', 11000, function (t) {
+  rise('f-k', t, 100, 500, 20); rise('f-h', t, 300, 700);
+  rise('n-pdf', t, 1000, 600, 30);
+  var a1 = prog(t, 1600, 2100); fx('ar1', { o: a1, s: 1 }); $('ar1').style.transformOrigin = 'left'; $('ar1').style.transform = 'scaleX(' + a1 + ')';
+  rise('n-liz', t, 2100, 600, 30);
+  var a2 = prog(t, 2700, 3200); $('ar2').style.opacity = a2; $('ar2').style.transformOrigin = 'left'; $('ar2').style.transform = 'scaleX(' + a2 + ')';
+  rise('n-qbo', t, 3200, 600, 30);
+  // travelling dots, loop every 1600ms after 3800
+  function dot(id, x0, w, off) {
+    if (t < 3800) { $(id).style.opacity = 0; return; }
+    var ph = ((t - 3800 + off) % 1600) / 1600;
+    var o = Math.sin(ph * Math.PI);
+    fx(id, { o: o, x: x0 + ph * w });
+  }
+  dot('d1', 396, 218, 0); dot('d2', 1026, 218, 800);
+  list('f-claims', t, 4600, 1300, 600);
+});
+
+// ---- scene 5: tie-out (10.5s)
+scene('s5', 10500, function (t) {
+  rise('e-k', t, 100, 500, 20); rise('e-h', t, 300, 700);
+  rise('e-r1', t, 1100, 500, 20);
+  rise('e-r2', t, 1600, 500, 20);
+  count('e-cnt', t, 1700, 3600, 0, 412, fmtInt);
+  rise('e-r3', t, 3700, 500, 20);
+  rise('e-r4', t, 4300, 500, 20);
+  fx('e-tie', { o: prog(t, 5000, 5300) });
+  stroke('e-circ', t, 5100, 700);
+  stroke('e-chk', t, 5700, 500);
+  rise('e-stop', t, 7000, 700, 20);
+});
+
+// ---- scene 6: coding (11s)
+scene('s6', 11000, function (t) {
+  rise('c-k', t, 100, 500, 20); rise('c-h', t, 300, 700);
+  var rows = $('c-rows').children;
+  for (var i = 0; i < rows.length; i++) {
+    var a = 1200 + i * 1100, p = prog(t, a, a + 500);
+    rows[i].style.opacity = p; rows[i].style.transform = 'translateX(' + (1 - p) * -30 + 'px)';
+  }
+  rise('c-line', t, 6400, 700, 20);
+});
+
+// ---- scene 7: controls (11s)
+scene('s7', 11000, function (t) {
+  rise('w-k', t, 100, 500, 20); rise('w-h', t, 300, 700);
+  list('w-tiles', t, 1200, 1500, 600);
+});
+
+// ---- scene 8: rules (11s)
+scene('s8', 11000, function (t) {
+  rise('r-k', t, 100, 500, 20); rise('r-h', t, 300, 700);
+  list('r-list', t, 1200, 1500, 600);
+});
+
+// ---- scene 9: learns (9.5s)
+scene('s9', 9500, function (t) {
+  rise('l-k', t, 100, 500, 20); rise('l-h', t, 300, 700);
+  rise('l-rev', t, 1000, 600, 30);
+  var strike = prog(t, 2200, 2600); $('l-old').style.opacity = lerp(1, .45, strike);
+  rise('l-new', t, 2400, 400, 10);
+  rise('l-diff', t, 3400, 600, 30);
+  rise('l-d1', t, 4000, 400, 10); rise('l-d2', t, 4500, 400, 10); rise('l-d3', t, 5100, 400, 10);
+  rise('l-line', t, 6000, 700, 20);
+});
+
+// ---- scene 10: close (7s)
+scene('s10', 7000, function (t) {
+  rise('z-w', t, 200, 900, 60);
+  rise('z-l', t, 1100, 700);
+  rise('z-m', t, 2000, 600, 16);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How Elizia works</title>
+<style>
+html,body{margin:0;height:100%;background:#06080e;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;
+  background:#0b0f1a;color:#e9ecf3;font-family:Inter,"Liberation Sans","DejaVu Sans",Arial,sans-serif;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:120px 120px}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 10%,rgba(58,214,194,.09),transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(245,185,66,.09),transparent 50%)}
+.scene{position:absolute;inset:0;display:none;padding:110px 140px;box-sizing:border-box}
+.a{opacity:0;will-change:transform,opacity}
+.mono{font-family:"DejaVu Sans Mono","Liberation Mono",Menlo,monospace}
+.kicker{font-size:22px;letter-spacing:.22em;text-transform:uppercase;color:#f5b942;font-weight:700}
+.h2{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:16px 0 0}
+.sub{font-size:34px;color:#a3abbd;line-height:1.35}
+.accent{color:#f5b942}.teal{color:#3ad6c2}.red{color:#ff6b6b}.dim{color:#6b7385}
+#bar{position:absolute;left:0;bottom:0;height:6px;background:#3ad6c2;width:0;z-index:5}
+.brand{position:absolute;right:140px;top:70px;font-weight:800;letter-spacing:-.02em;font-size:28px;color:#6b7385}
+.brand b{color:#f5b942}
+.title{position:absolute;left:140px;top:300px}
+.title .word{font-size:120px;font-weight:800;letter-spacing:-.045em;line-height:1}
+/* terminal */
+.term{position:absolute;left:140px;top:330px;width:1120px;height:520px;background:#070a10;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-sizing:border-box;padding:70px 40px 40px;font-size:26px;line-height:1.55;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.term::before{content:"";position:absolute;left:24px;top:22px;width:14px;height:14px;border-radius:50%;background:#ff5f57;box-shadow:24px 0 0 #febc2e,48px 0 0 #28c840}
+.term .p{color:#3ad6c2}.term .c{color:#f5b942}.term .g{color:#3ad6c2}.term .y{color:#f5b942}.term .d{color:#6b7385}
+.term .cur{display:inline-block;width:14px;height:28px;background:#e9ecf3;vertical-align:-4px;margin-left:4px}
+.side{position:absolute;left:1320px;top:360px;width:460px;font-size:30px;line-height:1.45;color:#c3c9d6}
+.side b{display:block;color:#f5b942;font-size:20px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
+/* map */
+.rail{position:absolute;left:140px;top:420px;width:1640px}
+.groups{display:flex;gap:30px}
+.group{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:26px 24px 22px;box-sizing:border-box}
+.group .gname{font-size:20px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;margin-bottom:20px}
+.group .nodes{display:flex;flex-direction:column;gap:12px}
+.nd{display:flex;align-items:center;gap:14px;font-size:24px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04)}
+.nd span{font-family:"DejaVu Sans Mono",monospace;color:#6b7385;min-width:54px;font-size:20px}
+.g1 .gname{color:#9fb0ff}.g2 .gname{color:#f5b942}.g3 .gname{color:#3ad6c2}.g4 .gname{color:#ff9f6b}
+.mapline{position:absolute;left:140px;top:930px;font-size:36px;color:#c3c9d6;width:1640px}
+/* panels */
+.panels{position:absolute;left:140px;top:330px;width:1640px;display:flex;gap:26px}
+.panel{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:30px 30px 26px;box-sizing:border-box;min-height:560px;display:flex;flex-direction:column}
+.panel h3{margin:0 0 20px;font-size:30px;letter-spacing:-.015em;display:flex;align-items:center;gap:14px}
+.panel h3 span{font-family:"DejaVu Sans Mono",monospace;font-size:20px;color:#0b0f1a;background:#f5b942;padding:4px 10px;border-radius:7px;font-weight:800}
+.panel .body{flex:1;font-size:23px;line-height:1.45;color:#c3c9d6}
+.panel .body>div{margin-bottom:14px}
+.panel .art{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.art i{font-style:normal;font-family:"DejaVu Sans Mono",monospace;font-size:17px;color:#9aa3b5;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:5px 10px;border-radius:7px}
+.ok{color:#3ad6c2;font-weight:800}.warn{color:#f5b942;font-weight:800}.bad{color:#ff6b6b;font-weight:800}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:18px;font-weight:800;letter-spacing:.08em}
+.badge.ok{background:rgba(58,214,194,.15);border:1px solid rgba(58,214,194,.4)}
+.badge.warn{background:rgba(245,185,66,.15);border:1px solid rgba(245,185,66,.4)}
+.row{display:flex;justify-content:space-between;gap:12px}
+.row .mono{font-size:20px}
+.chk{display:flex;gap:10px;align-items:center}
+.chk i{width:18px;height:18px;border:2px solid #6b7385;border-radius:4px;display:inline-block;flex:none}
+.chk i.on{background:#3ad6c2;border-color:#3ad6c2}
+.cascade div{padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.04);margin-bottom:8px;display:flex;justify-content:space-between}
+.cascade div b{color:#9aa3b5;font-weight:600;font-size:19px}
+.q{background:rgba(255,255,255,.04);border-radius:12px;padding:16px;font-size:21px}
+.q .opt{padding:8px 10px;border-radius:8px;margin-top:6px;border:1px solid rgba(255,255,255,.1);display:flex;gap:10px;align-items:center}
+.q .opt.rec{border-color:#f5b942;color:#f5b942}
+.q .opt i{width:16px;height:16px;border:2px solid currentColor;border-radius:4px;display:inline-block;flex:none}
+.q .opt i.on{background:currentColor}
+.caption{position:absolute;left:140px;top:930px;font-size:34px;color:#c3c9d6;width:1640px}
+/* files */
+.tree{position:absolute;left:140px;top:330px;width:900px;font-size:24px;line-height:1.75;color:#c3c9d6}
+.tree .d{color:#6b7385}
+.tree .f{color:#e9ecf3}
+.tree .n{color:#3ad6c2}
+.notes{position:absolute;left:1120px;top:360px;width:660px;font-size:30px;line-height:1.5;color:#c3c9d6}
+.notes div{margin-bottom:34px}
+.notes b{display:block;color:#f5b942;font-family:"DejaVu Sans Mono",monospace;font-size:24px;font-weight:600;margin-bottom:6px}
+/* status */
+.status{position:absolute;left:140px;top:300px;width:1120px;height:690px;background:#070a10;border:1px solid rgba(255,255,255,.12);border-radius:16px;box-sizing:border-box;padding:60px 40px 30px;font-size:22px;line-height:1.5}
+.status::before{content:"";position:absolute;left:24px;top:22px;width:14px;height:14px;border-radius:50%;background:#ff5f57;box-shadow:24px 0 0 #febc2e,48px 0 0 #28c840}
+.status .st{display:flex;gap:20px}
+.status .st span:first-child{min-width:60px;color:#6b7385}
+.status .st span:nth-child(2){min-width:420px}
+.close{position:absolute;left:1320px;top:380px;width:460px}
+.close .word{font-size:120px;font-weight:800;letter-spacing:-.05em;line-height:.95}
+.close .l{font-size:34px;margin-top:26px;color:#c3c9d6;line-height:1.4}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bar"></div>
+
+  <!-- 1 title -->
+  <section class="scene" id="s1">
+    <div class="title">
+      <div class="kicker a" id="t-k">How Elizia works</div>
+      <div class="word a" id="t-w">One client.<br>One month.<br>One session.</div>
+      <div class="sub a" id="t-s" style="margin-top:34px;font-size:40px">Fifteen stages. Each one writes a file. Each file is a gate.</div>
+    </div>
+  </section>
+
+  <!-- 2 terminal -->
+  <section class="scene" id="s2">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="o-k">Start</div>
+    <div class="h2 a" id="o-h">The operator sets the scope.</div>
+    <div class="term mono a" id="o-term">
+      <div><span class="p">$</span> <span id="o-l1"></span><span class="cur" id="o-c1"></span></div>
+      <div class="d a" id="o-l2">session client acme, month 2026-10. Set from the terminal; read-only to the session.</div>
+      <div class="a" id="o-l3w"><span class="c">liz</span> <span id="o-l3"></span><span class="cur" id="o-c3"></span></div>
+      <div class="a" id="o-l4">M0 Preflight &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="y">PENDING</span></div>
+      <div class="a" id="o-l5">accounting method &nbsp;&nbsp;&nbsp;&nbsp;cash</div>
+      <div class="a" id="o-l6">QuickBooks realm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="g">HEALTHY</span></div>
+      <div class="a d" id="o-l7">next: liz monthly-close month preflight --client acme --month 2026-10</div>
+    </div>
+    <div class="side a" id="o-side"><b>Scope is not Liz's to change</b>One client per session. One month per session. The session cannot write its own scope, read another client's folder, or run outside this repo.</div>
+  </section>
+
+  <!-- 3 map -->
+  <section class="scene" id="s3">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="p-k">The month</div>
+    <div class="h2 a" id="p-h">Fifteen stages, four groups.</div>
+    <div class="rail">
+      <div class="groups">
+        <div class="group g1 a"><div class="gname">Prepare</div><div class="nodes" id="g1">
+          <div class="nd a"><span>M0</span>Preflight</div><div class="nd a"><span>M1</span>Checklist from ClickUp</div><div class="nd a"><span>M2</span>Statements and tie-out</div><div class="nd a"><span>M3</span>Account census</div></div></div>
+        <div class="group g2 a"><div class="gname">Code</div><div class="nodes" id="g2">
+          <div class="nd a"><span>M4</span>QuickBooks state and history</div><div class="nd a"><span>M5</span>Parse, tie out, code</div><div class="nd a"><span>M6</span>Anomaly scan</div><div class="nd a"><span>M7</span>Decide</div></div></div>
+        <div class="group g3 a"><div class="gname">Post</div><div class="nodes" id="g3">
+          <div class="nd a"><span>M8</span>Reconcile against QuickBooks</div><div class="nd a"><span>M9</span>Collision check</div><div class="nd a"><span>M10</span>Post, verify, reconcile</div></div></div>
+        <div class="group g4 a"><div class="gname">Review</div><div class="nodes" id="g4">
+          <div class="nd a"><span>M11</span>Self-review</div><div class="nd a"><span>M12</span>Open questions</div><div class="nd a"><span>M13</span>Apply answers</div><div class="nd a"><span>M14</span>Close-out and sign-off</div></div></div>
+      </div>
+    </div>
+    <div class="mapline a" id="p-line">Every stage writes a gate file. A red upstream file, and the downstream command refuses to run.</div>
+  </section>
+
+  <!-- 4 prepare -->
+  <section class="scene" id="s4">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="a-k" style="color:#9fb0ff">Prepare, M0 to M3</div>
+    <div class="h2 a" id="a-h">Know what the month is before touching it.</div>
+    <div class="panels">
+      <div class="panel a" id="a-p1"><h3><span>M1</span>Checklist</h3><div class="body">
+        <div>Pulled from the client's ClickUp close task.</div>
+        <div class="chk"><i class="on"></i>Statements received</div>
+        <div class="chk"><i class="on"></i>Payroll journal entry</div>
+        <div class="chk"><i></i>Sales tax filed</div>
+        <div class="chk"><i></i>Owner draws confirmed</div>
+        <div class="art"><i>checklist.md</i></div></div></div>
+      <div class="panel a" id="a-p2"><h3><span>M2</span>Statements</h3><div class="body">
+        <div>Three PDFs ingested and parsed.</div>
+        <div class="row"><span class="mono">Chase ...4471</span><span class="mono">188 rows</span></div>
+        <div class="row"><span class="mono">Amex ...1009</span><span class="mono">164 rows</span></div>
+        <div class="row"><span class="mono">Wells ...8820</span><span class="mono">60 rows</span></div>
+        <div>Tie-out, every account: <span class="badge ok">TIES</span></div>
+        <div class="art"><i>statements.json</i><i>transactions.jsonl</i><i>tieout.json</i></div></div></div>
+      <div class="panel a" id="a-p3"><h3><span>M3</span>Account census</h3><div class="body">
+        <div>Each statement account maps to exactly one QuickBooks account.</div>
+        <div class="row"><span class="mono">Chase ...4471</span><span>Operating Checking</span></div>
+        <div class="row"><span class="mono">Amex ...1009</span><span>Amex Business</span></div>
+        <div class="row"><span class="mono">Wells ...8820</span><span>Payroll Checking</span></div>
+        <div>Unmapped account: <span class="warn">stop and ask</span></div>
+        <div class="art"><i>account-census.json</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 5 code -->
+  <section class="scene" id="s5">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="b-k">Code, M4 to M7</div>
+    <div class="h2 a" id="b-h">Code from the client's own history first.</div>
+    <div class="panels">
+      <div class="panel a" id="b-p1"><h3><span>M4</span>State and history</h3><div class="body">
+        <div>Pull QuickBooks as it stands, plus twelve months of coded history.</div>
+        <div class="row"><span>History rows</span><span class="mono" id="b-hist">0</span></div>
+        <div class="row"><span>Vendors on file</span><span class="mono" id="b-vend">0</span></div>
+        <div class="row"><span>Chart of accounts</span><span class="mono">read-only</span></div>
+        <div class="art"><i>qbo-state.json</i><i>history/coa.json</i><i>history/vendors.json</i></div></div></div>
+      <div class="panel a" id="b-p2"><h3><span>M5</span>Code</h3><div class="body cascade">
+        <div><span>Exact history match</span><b>first</b></div>
+        <div><span>Client guideline</span><b>second</b></div>
+        <div><span>Jev, closed-set choice</span><b>third</b></div>
+        <div><span>AI judgment, flagged</span><b>last</b></div>
+        <div style="background:none;padding:6px 0">Every row keeps its source tag.</div>
+        <div class="art" style="background:none;padding:0"><i>coded.jsonl</i></div></div></div>
+      <div class="panel a" id="b-p3"><h3><span>M6</span>Anomaly scan</h3><div class="body">
+        <div>Recurring items, outliers, duplicates.</div>
+        <div class="row"><span class="mono">ZELLE TO J RAMIREZ</span><span class="warn">new payee</span></div>
+        <div class="row"><span class="mono">ADOBE *CREATIVE</span><span class="warn">4x usual</span></div>
+        <div class="row"><span class="mono">UBER TRIP x2</span><span class="warn">same day</span></div>
+        <div class="art"><i>weird.json</i><i>inferred-accounts.json</i></div></div></div>
+      <div class="panel a" id="b-p4"><h3><span>M7</span>Decide</h3><div class="body">
+        <div>Transfer pairs confirmed by rule only when unique.</div>
+        <div class="row"><span class="mono">4471 to 1009</span><span class="ok">auto, unique</span></div>
+        <div class="row"><span class="mono">4471 to 8820 x2</span><span class="warn">ambiguous, ask</span></div>
+        <div>Anything uncertain is parked, never guessed.</div>
+        <div class="art"><i>decisions.jsonl</i><i>transfer-pairs.jsonl</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 6 post -->
+  <section class="scene" id="s6">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="c-k" style="color:#3ad6c2">Post, M8 to M10</div>
+    <div class="h2 a" id="c-h">Post under controls. Verify by reading back.</div>
+    <div class="panels">
+      <div class="panel a" id="c-p1"><h3><span>M8</span>Reconcile first</h3><div class="body">
+        <div>Statement rows, coded rows and the QuickBooks register, matched three ways.</div>
+        <div class="row"><span>Already in QuickBooks</span><span class="mono">24</span></div>
+        <div class="row"><span>To post</span><span class="mono">388</span></div>
+        <div class="row"><span>Conflicts</span><span class="mono ok">0</span></div>
+        <div class="art"><i>reconcile.json</i><i>rec-decisions.jsonl</i></div></div></div>
+      <div class="panel a" id="c-p2"><h3><span>M9</span>Collision check</h3><div class="body">
+        <div>Live QuickBooks against the saved baseline.</div>
+        <div class="row"><span>Outside edits since baseline</span><span class="mono ok">0</span></div>
+        <div>Result: <span class="badge ok">GREEN</span></div>
+        <div>Red, and every push command refuses to run until a person looks.</div>
+        <div class="art"><i>collisions/last-check.json</i></div></div></div>
+      <div class="panel a" id="c-p3"><h3><span>M10</span>Post, verify, reconcile</h3><div class="body">
+        <div>Each write logged before it happens.</div>
+        <div class="row"><span>Posted</span><span class="mono" id="c-posted">0 / 388</span></div>
+        <div class="row"><span>Read back and matched</span><span class="mono" id="c-verified">0 / 388</span></div>
+        <div class="row"><span>Reconciliation, each account</span><span class="mono">0.00</span></div>
+        <div>Then the uncleared sweep and the one-to-one tie: <span class="badge ok" id="c-sweep">CLEAN</span></div>
+        <div class="art"><i>push-log.jsonl</i><i>verify.json</i><i>rec-verify.json</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 7 review -->
+  <section class="scene" id="s7">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="d-k" style="color:#ff9f6b">Review, M11 to M14</div>
+    <div class="h2 a" id="d-h">A second agent checks. People answer. Liz applies.</div>
+    <div class="panels">
+      <div class="panel a" id="d-p1"><h3><span>M11</span>Self-review</h3><div class="body">
+        <div>A fresh agent with no memory of the work reads the whole month.</div>
+        <div class="row"><span>Checks passed</span><span class="mono ok">14</span></div>
+        <div class="row"><span>Needs verification</span><span class="mono warn">1</span></div>
+        <div class="row"><span>Failed</span><span class="mono">0</span></div>
+        <div>Sign-off waits until each finding is verified or accepted with a reason.</div>
+        <div class="art"><i>review/findings.json</i></div></div></div>
+      <div class="panel a" id="d-p2"><h3><span>M12</span>Open questions</h3><div class="body">
+        <div class="q"><div class="mono" style="margin-bottom:8px">ZELLE TO J RAMIREZ, 1,200.00</div><div>Who is this payee?</div>
+          <div class="opt rec"><i id="d-opt"></i>Contractor, 1099 eligible (recommended)</div>
+          <div class="opt"><i></i>Owner draw</div>
+          <div class="opt"><i></i>Reimbursement</div>
+          <div class="opt"><i></i>Other, free text</div></div>
+        <div class="art"><i>questions.json</i><i>answers.jsonl</i></div></div></div>
+      <div class="panel a" id="d-p3"><h3><span>M13</span>Apply answers</h3><div class="body">
+        <div>Each answer re-codes its rows and appends a dated rule to the client's guidelines.</div>
+        <div class="row"><span class="mono">J RAMIREZ</span><span>Contract Labor</span></div>
+        <div class="mono dim" style="font-size:19px">+ guidelines.md, 2026-11-13</div>
+        <div class="art"><i>answers-applied.jsonl</i><i>guidelines.md</i></div></div></div>
+      <div class="panel a" id="d-p4"><h3><span>M14</span>Close-out</h3><div class="body">
+        <div>Month report written. ClickUp updated by Liz, naming the person who drove.</div>
+        <div class="row"><span>Report</span><span class="ok">written</span></div>
+        <div class="row"><span>ClickUp</span><span class="ok">commented, for Austin</span></div>
+        <div class="row"><span>Lock</span><span class="warn">owner's stamp only</span></div>
+        <div class="art"><i>month-report.md</i><i>clickup-updates.md</i></div></div></div>
+    </div>
+  </section>
+
+  <!-- 8 files -->
+  <section class="scene" id="s8">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="e-k">Evidence</div>
+    <div class="h2 a" id="e-h">Every gate is a file. Every file is evidence.</div>
+    <div class="tree mono" id="e-tree">
+      <div class="a"><span class="d">data/acme/2026-10/</span></div>
+      <div class="a">&nbsp;&nbsp;<span class="f">preflight.json</span> <span class="d">checklist.md</span> <span class="f">statements.json</span> <span class="f">tieout.json</span></div>
+      <div class="a">&nbsp;&nbsp;<span class="f">coded.jsonl</span> <span class="f">weird.json</span> <span class="f">decisions.jsonl</span> <span class="f">reconcile.json</span></div>
+      <div class="a">&nbsp;&nbsp;<span class="f">push-log.jsonl</span> <span class="f">verify.json</span> <span class="f">rec-plan.json</span> <span class="f">rec-verify.json</span></div>
+      <div class="a">&nbsp;&nbsp;<span class="d">review/</span><span class="f">findings.json</span> &nbsp;<span class="f">questions.json</span> <span class="f">answers-applied.jsonl</span></div>
+      <div class="a">&nbsp;&nbsp;<span class="d">labs-evidence/</span> <span class="d">drafts/</span> <span class="f">month-report.md</span></div>
+      <div class="a"><span class="d">data/acme/</span><span class="n">runs.log</span> &nbsp;<span class="d">write-log/</span> &nbsp;<span class="d">collisions/</span> &nbsp;<span class="d">history/</span></div>
+      <div class="a"><span class="d">clients/acme/</span><span class="n">guidelines.md</span> <span class="n">config.yaml</span> &nbsp;<span class="d">(committed)</span></div>
+    </div>
+    <div class="notes" id="e-notes">
+      <div class="a"><b>runs.log</b>Every engine command, in order, with its arguments.</div>
+      <div class="a"><b>write-log/</b>Every QuickBooks write, recorded before it ran, with undo.</div>
+      <div class="a"><b>labs-evidence/</b>Every connector response saved as it came back.</div>
+    </div>
+  </section>
+
+  <!-- 9 status -->
+  <section class="scene" id="s9">
+    <div class="brand">eliz<b>ia</b></div>
+    <div class="kicker a" id="z-k">Done</div>
+    <div class="h2 a" id="z-h">Status is a command, not a feeling.</div>
+    <div class="status mono a" id="z-term">
+      <div style="margin-bottom:14px"><span class="teal">$</span> <span class="accent">liz</span> monthly-close month status --client acme --month 2026-10</div>
+      <div id="z-rows">
+        <div class="st a"><span>M0</span><span>Preflight</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M1</span><span>Checklist</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M2</span><span>Statements and tie-out</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M3</span><span>Account census</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M4</span><span>QuickBooks state and history</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M5</span><span>Parse, tie out, code</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M6</span><span>Anomaly scan</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M7</span><span>Decide</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M8</span><span>Reconcile against QuickBooks</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M9</span><span>Collision check</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M10</span><span>Post, verify, reconcile</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M11</span><span>Self-review</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M12</span><span>Open questions</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M13</span><span>Apply answers</span><span class="ok">GREEN</span></div>
+        <div class="st a"><span>M14</span><span>Close-out and sign-off</span><span class="warn">AWAITING OWNER LOCK</span></div>
+      </div>
+    </div>
+    <div class="close">
+      <div class="word a" id="z-w">Elizia.</div>
+      <div class="l a" id="z-l">Liz ran the month. The owner signs it.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Elizia animation engine. Deterministic: every frame is a pure function of time,
+// so the live player and the offline renderer (render.py, window.__seek) agree.
+(function () {
+  var W = 1920, H = 1080;
+  var stage = document.getElementById('stage');
+  var bar = document.getElementById('bar');
+  function fit() {
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  var scenes = [], starts = [], total = 0;
+  window.scene = function (id, dur, draw) {
+    scenes.push({ el: document.getElementById(id), dur: dur, draw: draw });
+  };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  window.clamp = clamp;
+  window.lerp = function (a, b, p) { return a + (b - a) * p; };
+  window.linear = function (p) { return p; };
+  window.easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  window.easeIn = function (p) { return p * p * p; };
+  window.easeInOut = function (p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  window.prog = function (t, a, b, e) { return (e || easeOut)(clamp((t - a) / (b - a), 0, 1)); };
+  window.$ = function (id) { return typeof id === 'string' ? document.getElementById(id) : id; };
+  window.fx = function (el, o) {
+    el = $(el); o = o || {};
+    if (o.o !== undefined) el.style.opacity = o.o;
+    el.style.transform = 'translate(' + (o.x || 0) + 'px,' + (o.y || 0) + 'px) scale(' + (o.s === undefined ? 1 : o.s) + ') rotate(' + (o.r || 0) + 'deg)';
+  };
+  // fade + rise in, starting at a (ms into scene), lasting d
+  window.rise = function (el, t, a, d, dy) {
+    d = d || 600; dy = dy === undefined ? 40 : dy;
+    var p = prog(t, a, a + d);
+    fx(el, { o: p, y: (1 - p) * dy });
+    return p;
+  };
+  // fade out starting at a
+  window.fade = function (el, t, a, d) {
+    d = d || 400; var p = prog(t, a, a + d, linear);
+    $(el).style.opacity = 1 - p; return p;
+  };
+  window.typed = function (el, str, t, a, cps) {
+    el = $(el); cps = cps || 40;
+    var n = clamp(Math.floor((t - a) / 1000 * cps), 0, str.length);
+    el.textContent = str.slice(0, n);
+    return n >= str.length;
+  };
+  window.count = function (el, t, a, b, from, to, fmt) {
+    var p = prog(t, a, b, easeInOut);
+    $(el).textContent = fmt(lerp(from, to, p));
+  };
+  window.fmtInt = function (v) { return Math.round(v).toLocaleString('en-US'); };
+  window.fmtMoney = function (v) {
+    var neg = v < 0; v = Math.abs(v);
+    return (neg ? '-' : '') + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  // draw an SVG path progressively (expects pathLength set to 1)
+  window.stroke = function (el, t, a, d) {
+    var p = prog(t, a, a + (d || 500), easeInOut);
+    $(el).style.strokeDashoffset = 1 - p; return p;
+  };
+  // sequentially reveal children of a container
+  window.list = function (el, t, a, gap, d) {
+    el = $(el); d = d || 500; gap = gap || 350;
+    var kids = el.children, done = 0;
+    for (var i = 0; i < kids.length; i++) {
+      var p = prog(t, a + i * gap, a + i * gap + d);
+      fx(kids[i], { o: p, y: (1 - p) * 24 });
+      if (p >= 1) done++;
+    }
+    return done === kids.length;
+  };
+
+  function init() {
+    total = 0; starts = [];
+    scenes.forEach(function (s) { starts.push(total); total += s.dur; });
+    window.__total = total;
+  }
+  function render(T) {
+    T = clamp(T, 0, total - 1);
+    var i = 0;
+    while (i < scenes.length - 1 && T >= starts[i + 1]) i++;
+    scenes.forEach(function (s, j) { s.el.style.display = j === i ? 'block' : 'none'; });
+    var s = scenes[i], t = T - starts[i];
+    var fin = prog(t, 0, 350, linear), fout = 1 - prog(t, s.dur - 350, s.dur, linear);
+    s.el.style.opacity = Math.min(fin, fout);
+    s.draw(t, s.dur);
+    if (bar) bar.style.width = (T / total * 100) + '%';
+  }
+  window.__seek = function (ms) { render(ms); };
+
+  var playing = true, t0 = null, offset = 0, last = 0;
+  function loop(now) {
+    if (t0 === null) t0 = now;
+    if (playing) {
+      last = offset + (now - t0);
+      if (last >= total) { last = 0; offset = 0; t0 = now; }
+      render(last);
+    }
+    requestAnimationFrame(loop);
+  }
+  function seekBy(ms) { offset = clamp(last + ms, 0, total - 1); t0 = null; if (!playing) render(offset), last = offset; }
+  document.addEventListener('keydown', function (e) {
+    if (e.code === 'Space') { playing = !playing; if (playing) { t0 = null; offset = last; } e.preventDefault(); }
+    if (e.code === 'ArrowRight') seekBy(5000);
+    if (e.code === 'ArrowLeft') seekBy(-5000);
+    if (e.code === 'Home') { offset = 0; t0 = null; }
+  });
+  document.addEventListener('click', function () { playing = !playing; if (playing) { t0 = null; offset = last; } });
+  window.addEventListener('load', function () {
+    init();
+    if (location.hash.indexOf('render') >= 0) { render(0); window.__ready = true; }
+    else requestAnimationFrame(loop);
+  });
+})();
+
+</script>
+<script>
+function panels(ids, t, a, gap) {
+  ids.forEach(function (id, i) {
+    var s = a + i * gap;
+    rise(id, t, s, 600, 40);
+    list($(id).querySelector('.body'), t, s + 400, 260, 450);
+  });
+}
+
+// 1 title (5s)
+scene('s1', 5000, function (t) {
+  rise('t-k', t, 200, 500, 20);
+  rise('t-w', t, 500, 900, 60);
+  rise('t-s', t, 1700, 700);
+});
+
+// 2 terminal (11s)
+scene('s2', 11000, function (t) {
+  rise('o-k', t, 100, 500, 20); rise('o-h', t, 300, 700);
+  rise('o-term', t, 900, 600, 30);
+  var d1 = typed('o-l1', 'BE_CLIENT=acme BE_MONTH=2026-10 claude', t, 1500, 34);
+  $('o-c1').style.opacity = d1 ? 0 : (Math.floor(t / 400) % 2);
+  fx('o-l2', { o: prog(t, 2900, 3200) });
+  fx('o-l3w', { o: prog(t, 3600, 3800) });
+  var d3 = typed('o-l3', 'monthly-close month next --client acme --month 2026-10', t, 3800, 40);
+  $('o-c3').style.opacity = d3 ? 0 : (Math.floor(t / 400) % 2);
+  fx('o-l4', { o: prog(t, 5400, 5600) }); fx('o-l5', { o: prog(t, 5700, 5900) });
+  fx('o-l6', { o: prog(t, 6000, 6200) }); fx('o-l7', { o: prog(t, 6400, 6600) });
+  rise('o-side', t, 7200, 700, 20);
+});
+
+// 3 map (11s)
+scene('s3', 11000, function (t) {
+  rise('p-k', t, 100, 500, 20); rise('p-h', t, 300, 700);
+  var groups = document.querySelectorAll('#s3 .group');
+  for (var i = 0; i < 4; i++) {
+    var a = 1000 + i * 1500;
+    rise(groups[i], t, a, 600, 40);
+    list('g' + (i + 1), t, a + 400, 250, 400);
+  }
+  rise('p-line', t, 7600, 700, 20);
+});
+
+// 4 prepare (13s)
+scene('s4', 13000, function (t) {
+  rise('a-k', t, 100, 500, 20); rise('a-h', t, 300, 700);
+  panels(['a-p1', 'a-p2', 'a-p3'], t, 1100, 3200);
+});
+
+// 5 code (15s)
+scene('s5', 15000, function (t) {
+  rise('b-k', t, 100, 500, 20); rise('b-h', t, 300, 700);
+  panels(['b-p1', 'b-p2', 'b-p3', 'b-p4'], t, 1100, 2900);
+  count('b-hist', t, 1900, 3600, 0, 1844, fmtInt);
+  count('b-vend', t, 2200, 3800, 0, 212, fmtInt);
+});
+
+// 6 post (15s)
+scene('s6', 15000, function (t) {
+  rise('c-k', t, 100, 500, 20); rise('c-h', t, 300, 700);
+  panels(['c-p1', 'c-p2', 'c-p3'], t, 1100, 3400);
+  var p1 = prog(t, 8400, 10400, linear);
+  $('c-posted').textContent = fmtInt(388 * p1) + ' / 388';
+  var p2 = prog(t, 9000, 11200, linear);
+  $('c-verified').textContent = fmtInt(388 * p2) + ' / 388';
+});
+
+// 7 review (15s)
+scene('s7', 15000, function (t) {
+  rise('d-k', t, 100, 500, 20); rise('d-h', t, 300, 700);
+  panels(['d-p1', 'd-p2', 'd-p3', 'd-p4'], t, 1100, 2900);
+  $('d-opt').className = t > 7200 ? 'on' : '';
+});
+
+// 8 files (10s)
+scene('s8', 10000, function (t) {
+  rise('e-k', t, 100, 500, 20); rise('e-h', t, 300, 700);
+  list('e-tree', t, 1000, 380, 450);
+  list('e-notes', t, 4400, 1100, 600);
+});
+
+// 9 status (10s)
+scene('s9', 10000, function (t) {
+  rise('z-k', t, 100, 500, 20); rise('z-h', t, 300, 700);
+  rise('z-term', t, 900, 600, 30);
+  list('z-rows', t, 1500, 220, 250);
+  rise('z-w', t, 5600, 900, 50);
+  rise('z-l', t, 6500, 700, 20);
+});
+</script>
+</body>
+</html>
